@@ -202,7 +202,8 @@ jakartaeeMe: true
 	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
 	com.ibm.ws.webserver.plugin.runtime.interfaces;version=latest,\
 	com.ibm.ws.org.apache.commons.io;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.core
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
@@ -214,4 +215,6 @@ jakartaeeMe: true
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.kernel.boot;version=latest, \
-	com.ibm.ws.javaee.ddmodel;version=latest
+	com.ibm.ws.javaee.ddmodel;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.core

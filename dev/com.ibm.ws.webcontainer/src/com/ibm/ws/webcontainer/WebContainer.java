@@ -37,6 +37,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.FrameworkWiring;
+import org.osgi.framework.namespace.PackageNamespace;
+
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.ServletContextListener;
@@ -104,6 +116,9 @@ import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
  */
 @SuppressWarnings("unchecked")
 public abstract class WebContainer extends BaseContainer {
+
+    protected static final TraceComponent tc = Tr.register(WebContainer.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+
     protected static final String ISO = "ISO-8859-1";
 
     protected String encoding = null;
@@ -206,6 +221,23 @@ public abstract class WebContainer extends BaseContainer {
     private static boolean servletCachingInitNeeded = true; //TODO: make false and require dynacache to set to true
 
     public static boolean appInstallBegun = false;
+
+    private static final int DEFAULT_SPEC_LEVEL = 30;
+
+    protected static Map<String, Integer> versionMappings = new HashMap<>();
+    static {
+        versionMappings.put("2.6.0", 30);
+        versionMappings.put("2.7.0", 31);
+        versionMappings.put("2.8.0", 40);
+        versionMappings.put("5.0.0", 50);
+        versionMappings.put("-1", com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_UNLOADED);
+    }
+
+    protected static int loadedContainerSpecLevel = -1;
+
+    static {
+        loadServletSpecVersion();
+    }
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -228,6 +260,46 @@ public abstract class WebContainer extends BaseContainer {
             logger.logp(Level.FINE, CLASS_NAME, "initialize", "Web Container invocationCache --> [" + invocationCacheSize+ "]");
 
         webConProperties = new Properties();
+    }
+
+    /*
+    * Should only be called by loadServletSpecVersion
+    */
+    public static void setVersion(int version){
+        WebContainer.loadedContainerSpecLevel = version;
+    }
+
+    protected static void loadServletSpecVersion() {
+        String methodName = "loadServletSpecVersion";
+
+        String capabiltityVersion = "-1"; // SPEC_LEVEL_UNLOADED
+       try {
+            Bundle myBundle = FrameworkUtil.getBundle(WebContainer.class);
+            BundleWiring myWiring = myBundle.adapt(BundleWiring.class);
+            List<BundleWire> packageWires = myWiring.getRequiredWires(PackageNamespace.PACKAGE_NAMESPACE);
+
+            for (BundleWire wire : packageWires) {
+                if (wire.getCapability().getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE).equals("javax.servlet")) {
+                    capabiltityVersion = wire.getCapability().getAttributes().get(PackageNamespace.CAPABILITY_VERSION_ATTRIBUTE).toString();
+                    break;
+                } else if (wire.getCapability().getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE).equals("jakarta.servlet")) {
+                    capabiltityVersion = wire.getCapability().getAttributes().get(PackageNamespace.CAPABILITY_VERSION_ATTRIBUTE).toString();
+                    break;
+                } ;
+
+            }
+        } catch (Exception e) {
+            // Also catches an NPE in unit tests since no bundles are active
+            setVersion(DEFAULT_SPEC_LEVEL);
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
+            return;
+        }
+        System.out.println("DEBUG: setting Version " + versionMappings.get(capabiltityVersion));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
+        }
+        
+        setVersion(versionMappings.get(capabiltityVersion));
     }
 
     /**

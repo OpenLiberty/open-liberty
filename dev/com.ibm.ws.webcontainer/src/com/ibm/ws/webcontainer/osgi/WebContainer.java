@@ -110,7 +110,7 @@ import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implements ModuleRuntimeContainer, VirtualHostListener {
     // Note: registration of this class as a  VirtualHostListener is used by the HttpDispatcher to help migrate config
     
-    private static final TraceComponent tc = Tr.register(WebContainer.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+    //private static final TraceComponent tc = Tr.register(WebContainer.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
 
     private static final String CLASS_NAME = "com.ibm.ws.webcontainer.osgi.WebContainer";
 
@@ -226,7 +226,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private AsyncContextFactory asyncContextFactory;
     
     private static final int DEFAULT_MAX_VERSION = 30;
-    private ServiceReference<ServletVersion> versionRef;
     
     private static boolean serverStopping = false;
 
@@ -1567,58 +1566,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     protected void unsetCacheServletWrapperFactory(CacheServletWrapperFactory factory) {
         // no-op intended here to avoid cacheServletWrapperFactory being null when switching service implementations
     }
-
-    
-    @Reference(service=ServletVersion.class, cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
-    protected synchronized void setVersion(ServiceReference<ServletVersion> reference) {
-        String methodName = "setVersion";
-        versionRef = reference;
-        WebContainer.loadedContainerSpecLevel = (Integer) reference.getProperty("version");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
-        }
-    }
-
-    protected synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            WebContainer.loadedContainerSpecLevel = DEFAULT_MAX_VERSION;
-        }
-    }
     
     public static final int SPEC_LEVEL_UNLOADED = -1;
     public static final int SPEC_LEVEL_30 = 30;
     public static final int SPEC_LEVEL_31 = 31;
     public static final int SPEC_LEVEL_40 = 40;
     public static final int SPEC_LEVEL_50 = 50;
-    private static final int DEFAULT_SPEC_LEVEL = 30;
-    
-    private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;
     
     public static int getServletContainerSpecLevel() {
-        String methodName = "getServletContainerSpecLevel";
-
-        if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-            CountDownLatch currentLatch = selfInit;
-            // wait for activation
-            try {
-                currentLatch.await(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // auto-FFDC
-                Thread.currentThread().interrupt();
-            }
-            currentLatch.countDown(); // don't wait again
-
-            if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-                logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
-                return WebContainer.DEFAULT_SPEC_LEVEL;
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
-        }
-
         return WebContainer.loadedContainerSpecLevel;
     }
     
