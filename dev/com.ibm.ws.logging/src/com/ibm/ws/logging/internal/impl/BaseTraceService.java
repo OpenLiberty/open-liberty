@@ -461,20 +461,20 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If consoleFormat has been configured to 'json', create the consoleLogHandler as necessary or
+         * If messageFormat has been configured to 'json', create the messageLogHandler as necessary or
          * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
-         * consoleJsonConfigured flag as appropriate and update the connection between the unique message
+         * messageJsonConfigured flag as appropriate and update the connection between the unique message
          * and trace conduits to the handler.
          */
-        if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
-            if (consoleLogHandler != null) {
-                consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
-                consoleLogHandler.setAppsWriteJson(appsWriteJson);
+        if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            if (messageLogHandler != null) {
+                messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                messageLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
-                //if json && messages, trace sourcelist
-                consoleLogHandler.modified(filterdConsoleSourceList);
-                updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+                messageLogHandler.modified(filterdMessageSourceList);
+                updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
             }
+
         }
 
         /*
