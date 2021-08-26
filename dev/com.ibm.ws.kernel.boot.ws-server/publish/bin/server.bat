@@ -430,11 +430,12 @@ goto:eof
 
   @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
   @rem RC=0 indicates the server is running; ie the stop request failed.
-  @rem      Reset RC to the return code given by prunsrv (expect rc=6 when stop fails).
-  @rem RC=1 is what we are expecting, meaning server running, but change it to RC=0 to indicate success1
+  @rem      Change RC to the return code given by prunsrv (expect rc=6 when stop fails).
+  @rem RC=1 is what we are expecting, meaning server stopped. 
+  @rem      Change RC to RC=0 to indicate success.
   call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
-  if !RC! EQU 0 set /A RC = !PRUNSRV_RC!
-  if !RC! EQU 1 set /A RC = 0
+  if !RC! EQU 0 set RC=!PRUNSRV_RC!
+  if !RC! EQU 1 set RC=0
 goto:eof
 
 :unregisterWinService
@@ -729,8 +730,8 @@ goto:eof
 @REM
 @REM serverRunning: Return 0 if the server is running (.sLock file is in use), 
 @REM                       1 if not (file is not in use),
-@REM Parmeters %1 - optional.  Time in seconds to wait for a particular status
-@REM                 default if not specfied is 0 - don't wait for status
+@REM Parmeters %1 - optional.  Time (in seconds) to wait for a particular status.
+@REM                 default: 0 
 @REM           %2 - optional. (0 or 1). Status to wait for.
 @REM                 0: wait for server to be running
 @REM                 1: wait for server to be stopped
