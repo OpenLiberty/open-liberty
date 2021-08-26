@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -239,6 +239,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public static final String KEY_CLIENT_PUBLIC_CLIENT = "publicClient";
 
     public static final String KEY_ROPC_PREFER_USERSECURITYNAME = "ropcPreferUserSecurityName";
+    public static final String KEY_ROPC_PREFER_USERPRINCIPALNAME = "ropcPreferUserPrincipalName";
 
     private volatile SecurityService securityService;
 
@@ -352,6 +353,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     private String tokenFormat;
     private boolean revokeAccessTokensWithRefreshTokens = true;
     private boolean ropcPreferUserSecurityName = false;
+    private boolean ropcPreferUserPrincipalName = false;
     private boolean trackOAuthClients = false;
     private OAuthEndpointSettings oauthEndpointSettings;
 
@@ -476,6 +478,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         appTokenOrPasswordLimit = (Long) properties.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT);
         clientSecretEncoding = getClientSecretEncodingFromConfig();
         ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
+        ropcPreferUserPrincipalName = (Boolean) properties.get(KEY_ROPC_PREFER_USERPRINCIPALNAME);
         trackOAuthClients = (Boolean) properties.get(KEY_TRACK_OAUTH_CLIENTS);
         oauthEndpointSettings = populateOAuthEndpointSettings(properties, KEY_OAUTH_ENDPOINT);
         refreshedAccessTokenLimit = configUtils.getLongConfigAttribute(properties, KEY_REFRESHED_ACCESS_TOKEN_LIMIT, refreshedAccessTokenLimit);
@@ -2454,6 +2457,11 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     @Override
     public boolean isROPCPreferUserSecurityName() {
         return this.ropcPreferUserSecurityName;
+    }
+
+    @Override
+    public boolean isROPCPreferUserPrincipalName() {
+        return this.ropcPreferUserPrincipalName;
     }
 
     @Override

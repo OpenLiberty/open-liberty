@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -437,13 +437,18 @@ public class ClientAuthentication {
             }
 
             // switch the username if needed. Oauth20ComponentImpl.buildTokenAttributeList will pick this up.
-            if (valid && provider.isROPCPreferUserSecurityName()) {
-                String userSecName = reg.getUserSecurityName(userName);
-                if (!userSecName.equals(userName)) {
+            if (valid) {
+                String userNameOverride = userName;
+                if (provider.isROPCPreferUserPrincipalName()) {
+                    userNameOverride = request.getUserPrincipal().getName();
+                } else if (provider.isROPCPreferUserSecurityName()) {
+                    userNameOverride = reg.getUserSecurityName(userName);
+                }
+                if (!userNameOverride.equals(userName)) {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "setting attribute to override user name to " + userSecName);
+                        Tr.debug(tc, "setting attribute to override user name to " + userNameOverride);
                     }
-                    request.setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, userSecName);
+                    request.setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, userNameOverride);
                 }
             }
 

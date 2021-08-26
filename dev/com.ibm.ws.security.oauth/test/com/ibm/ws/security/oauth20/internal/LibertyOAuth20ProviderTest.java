@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,12 +36,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
 import com.google.gson.JsonArray;
-import org.osgi.service.cm.Configuration;
-
 import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
@@ -194,7 +193,8 @@ public class LibertyOAuth20ProviderTest {
             assertEquals("The appPasswordLifetime value must be set.", appPasswordLifetime, provider.getAppPasswordLifetime());
             assertEquals("The appTokenLifetime value must be set.", appTokenLifetime, provider.getAppTokenLifetime());
             assertEquals("The appPasswordLifetime value must be set.", appTokenOrPasswordLimit, provider.getAppTokenOrPasswordLimit());
-            assertFalse("The ropcPreferUserSecurityName value must be set", provider.isROPCPreferUserSecurityName());
+            assertFalse("The ropcPreferUserSecurityName value must be set.", provider.isROPCPreferUserSecurityName());
+            assertFalse("The ropcPreferUserPrincipalName value must be set.", provider.isROPCPreferUserPrincipalName());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable("default", t);
@@ -656,6 +656,7 @@ public class LibertyOAuth20ProviderTest {
         properties.put(LibertyOAuth20Provider.KEY_APP_TOKEN_OR_PASSWORD_LIMIT, 100L);
         properties.put(LibertyOAuth20Provider.KEY_STORE_ACCESSTOKEN_ENCODING, "plain");
         properties.put(LibertyOAuth20Provider.KEY_ROPC_PREFER_USERSECURITYNAME, Boolean.FALSE);
+        properties.put(LibertyOAuth20Provider.KEY_ROPC_PREFER_USERPRINCIPALNAME, Boolean.FALSE);
         properties.put(LibertyOAuth20Provider.KEY_TRACK_OAUTH_CLIENTS, Boolean.FALSE);
 
         return properties;
