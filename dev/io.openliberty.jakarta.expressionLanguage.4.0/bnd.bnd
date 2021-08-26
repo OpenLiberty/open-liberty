@@ -15,8 +15,7 @@ Bundle-SymbolicName: io.openliberty.jakarta.expressionLanguage.4.0; singleton:=t
 Bundle-Description: Jakarta Expression Language, version 4.0
 
 Export-Package: \
- jakarta.el;thread-context=true; version="4.0.0", \
- com.ibm.wsspi.el;thread-context=true; version="4.0.0"
+ jakarta.el;thread-context=true; version="4.0.0"
 
  Provide-Capability: \
    osgi.contract;\
