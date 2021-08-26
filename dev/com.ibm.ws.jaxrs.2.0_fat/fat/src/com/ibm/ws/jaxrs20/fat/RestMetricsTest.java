@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
@@ -46,6 +47,8 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class RestMetricsTest {
+
+    private final static Class<?> c = RestMetricsTest.class;
 
      // Array to hold the names that identify the methods in metrics 2.3
     static final String[] METHOD_STRINGS = {
@@ -59,10 +62,12 @@ public class RestMetricsTest {
                                             "putMessage_java.lang.String",
                                             "deleteMessage",
                                             "getCheckedException_java.lang.String",
-                                            "getUncheckedException_java.lang.String"};
+                                            "getUncheckedException_java.lang.String",
+                                            "getAbortTest"};
 
     static final int CHECKED_METHOD_INDEX = 9;
     static final int UNCHECKED_METHOD_INDEX = 10;
+    static final int ABORT_METHOD_INDEX = 11;
 
     static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") +
                     "/restmetrics/rest/";
@@ -96,7 +101,7 @@ public class RestMetricsTest {
         try {
             server.startServer(true);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            Log.error(c, "setup", e, "Exception while starting server");
         }
 
         // Pause for the smarter planet message
@@ -111,7 +116,6 @@ public class RestMetricsTest {
                       server.waitForStringInLog("CWWKS4105I.*"));
         }
     }
-
 
     @AfterClass
     public static void tearDown() throws Exception {
@@ -173,7 +177,7 @@ public class RestMetricsTest {
         // Execute delete method once.
         runDeleteMethod(++method_Index);
 
-        ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
+        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
 
         //Confirm the metrics information is available.
         for (int i = 0; i <= method_Index; i++) {
@@ -184,7 +188,22 @@ public class RestMetricsTest {
         }
     }
 
-    //    @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedCheckedException")
+    @Test
+    public void testAbort() throws IOException {
+
+        runAbortGetMethod(ABORT_METHOD_INDEX, 200, "/restmetrics/rest/restmetrics/abortTest", "Metrics!");
+
+        // Expect a 200 when metrics from other methods have already been collected. However, if this test is run first or by itself
+        // no metrics should exist and a 404 would be expected.
+        boolean allow404 = true;
+        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, allow404);
+
+        // getMetricsStrings() doesn't run for EE9 so metricsList will be null in that case
+        if ((metricsList != null) && (metricsList.contains("abortTest"))) {
+            fail("The /restmetrics/rest/restmetrics/abortTest method should not have run following the ContainerRequestFilter abort so no metrics information should be collected." + metricsList.toString());
+        }
+        ensureEmptyMonitorStats(ABORT_METHOD_INDEX);
+    }
 
     @Test
     @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
@@ -195,7 +214,7 @@ public class RestMetricsTest {
 
         runGetCheckedExceptionMethod(CHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
 
-        ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
+        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[CHECKED_METHOD_INDEX] = checkMetrics(metricsList, CHECKED_METHOD_INDEX);
@@ -213,7 +232,7 @@ public class RestMetricsTest {
         runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
 
 
-        ArrayList<String> metricsList = getMetricsStrings(METRICS_URL_STRING);
+        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[UNCHECKED_METHOD_INDEX] = checkMetrics(metricsList, UNCHECKED_METHOD_INDEX);
@@ -222,7 +241,6 @@ public class RestMetricsTest {
         runCheckMonitorStats(200, UNCHECKED_METHOD_INDEX);
 
     }
-
 
     private void runCheckMonitorStats(int exprc, int index) throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() +
@@ -238,6 +256,50 @@ public class RestMetricsTest {
 
             retcode = con.getResponseCode();
 
+            if (retcode != exprc) {
+                fail("Bad return Code getting Monitor stats. Expected " + exprc + "Got "
+                     + retcode);
+                return;
+            }
+            if (retcode == 200) {
+                InputStream is = con.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                }
+
+                if (lines.indexOf("Passed!") < 0)
+                    fail("Missing success message in output. " + lines);
+            }
+
+            return;
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    private void ensureEmptyMonitorStats(int index) throws IOException {
+        URL url = new URL("http://" + getHost() + ":" + getPort() +
+                          "/restmetrics/rest/restmetrics/ensureempty/" + index);
+        int retcode;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+
+            retcode = con.getResponseCode();
+
+            if (retcode != 200) {
+                fail("Bad return Code getting Monitor stats. Expected 200, " + "Got "
+                     + retcode);
+                return;
+            }
             InputStream is = con.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -251,11 +313,7 @@ public class RestMetricsTest {
             if (lines.indexOf("Passed!") < 0)
                 fail("Missing success message in output. " + lines);
 
-            if (retcode != exprc)
-                fail("Bad return Code getting Monitor stats. Expected " + exprc + "Got"
-                     + retcode);
-
-            return;
+             return;
         } finally {
             con.disconnect();
         }
@@ -374,6 +432,46 @@ public class RestMetricsTest {
             if (retcode != exprc)
                 fail("Bad return Code from Get. Expected: " + exprc + ", Received: "
                      + retcode);
+
+            return;
+        } finally {
+            con.disconnect();
+        }
+    }
+    private void runAbortGetMethod(int index, int exprc, String requestUri, String testOut) throws IOException {
+
+         URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
+        int retcode;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+
+            retcode = con.getResponseCode();
+            InputStream is = con.getInputStream();
+
+            if (is != null) {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                }
+                // The response code should be 200, but no resource method should have run so the stream
+                // should be empty.
+                if (lines.length() > 0)
+                    fail("The abortTest resource method should not have run. InputStream = " + lines);
+
+            }
+
+            if (retcode != exprc) {
+                fail("Bad return Code from Get. Expected: " + exprc + ", Received: "
+                     + retcode);
+            }
 
             return;
         } finally {
@@ -545,7 +643,7 @@ public class RestMetricsTest {
         }
     }
 
-    private ArrayList<String> getMetricsStrings(String metricString) {
+    private ArrayList<String> getMetricsStrings(int expectedRc, String metricString, boolean allow404) {
         //TODO: remove this check when MP 5.0 is available - where MP Metrics supports EE9:
         if (JakartaEE9Action.isActive()) {
             return null;
@@ -562,24 +660,31 @@ public class RestMetricsTest {
             con.setRequestMethod("GET");
 
             retcode = con.getResponseCode();
-            if (retcode != 200) {
+            // Since these tests an run asynchronously it is possible that a testcase that does not expect metrics to be
+            // collected (for example testAbort) may run first or be specified as the only test to run.  In
+            // this case a 404 is expected.
+            if ((retcode != expectedRc) &&
+                ((retcode == 404) && (!allow404))){
 
-                fail("Bad return Code from Metrics method call. Expected 200: Got"
+                fail("Bad return Code from Metrics method call. Expected " + expectedRc + ": Received "
                      + retcode + ", URL = " + url.toString());
 
                 return null;
             }
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
+            if (retcode == 200) {
+                InputStream is = con.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
 
-            BufferedReader br = new BufferedReader(isr);
+                BufferedReader br = new BufferedReader(isr);
 
-            ArrayList<String> lines = new ArrayList<String>();
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                lines.add(line);
+                ArrayList<String> lines = new ArrayList<String>();
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.add(line);
+                }
+                return lines;
             }
-            return lines;
+            return null;
 
         } catch (Exception e) {
             fail("Caught unexpected exception: " + e);
