@@ -96,6 +96,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
                 Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         testOPServer.addIgnoredServerException("CWOAU0039W"); // Ignore errors from the malformed discovery url
+        testOPServer.addIgnoredServerException("CWWKO0801E");
         testRPServer.addIgnoredServerException("CWWKS1859E"); //Ignore exceptions from bad client secret test
         testRPServer.addIgnoredServerException("SRVE8094W");
         testRPServer.addIgnoredServerException("SRVE0190E");
