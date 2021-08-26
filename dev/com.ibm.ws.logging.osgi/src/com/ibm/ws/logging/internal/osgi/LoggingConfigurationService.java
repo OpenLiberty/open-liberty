@@ -17,6 +17,7 @@ import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.LOG_SERVICE_GROU
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_SPEC_OSGI_EVENTS;
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_ENABLED;
 
+import java.lang.instrument.Instrumentation;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -42,6 +43,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCConfigurator;
+import com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyActivator;
+import com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyActivatorStorage;
 
 /**
  * This class is instantiated during RAS bundle activation. It registers itself
@@ -53,9 +56,13 @@ public class LoggingConfigurationService implements ManagedService {
 
     /** PID: identifies bundle to ConfigAdminService */
     public static final String RAS_TR_CFG_PID = "com.ibm.ws.logging";
+    
+    private static final String STACK_JOIN_SERVER_XML_CONFIG_NAME = "stackJoin";
 
     /** reference to registered RAS config service */
     private ServiceRegistration<ManagedService> configRef = null;
+    
+    private static Map<String, Object> serverXmlHashMap = null;
 
     protected BundleContext context;
 
@@ -86,6 +93,7 @@ public class LoggingConfigurationService implements ManagedService {
 
         loggerAdmin = getService(LoggerAdmin.class, context);
         configureLoggerAdmin();
+        
     }
 
     <T> T getService(Class<T> type, BundleContext context) {
@@ -120,22 +128,28 @@ public class LoggingConfigurationService implements ManagedService {
             return;
         }
 
-        Map<String, Object> newMap = null;
+        serverXmlHashMap = null;
         if (properties instanceof Map) {
-            newMap = (Map<String, Object>) properties;
+        	serverXmlHashMap = (Map<String, Object>) properties;
         } else {
-            newMap = new HashMap<String, Object>();
+        	serverXmlHashMap = new HashMap<String, Object>();
             Enumeration<String> keys = properties.keys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-                newMap.put(key, properties.get(key));
+                serverXmlHashMap.put(key, properties.get(key));
             }
         }
-
+        
+        boolean stackJoinValue = false;
+        if(serverXmlHashMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME) != null && ((Boolean) serverXmlHashMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == true) {
+        	stackJoinValue = true;
+        }
+        updateThrowableProxyActivator(stackJoinValue);
+        
         // Update Tr and/or FFDC configurations.
         // --> of concern is changing the log directory.
-        TrConfigurator.update(newMap);
-        FFDCConfigurator.update(newMap);
+        TrConfigurator.update(serverXmlHashMap);
+        FFDCConfigurator.update(serverXmlHashMap);
         configureLoggerAdmin();
     }
 
@@ -265,5 +279,32 @@ public class LoggingConfigurationService implements ManagedService {
         Hashtable<String, String> ht = new Hashtable<String, String>();
         ht.put(org.osgi.framework.Constants.SERVICE_PID, RAS_TR_CFG_PID);
         return ht;
+    }
+    
+    public static Map<String, Object> getServerXmlHashMap(){
+    	return serverXmlHashMap;
+    }
+    
+    private static void updateThrowableProxyActivator(boolean stackJoinValue) {
+        ThrowableProxyActivatorStorage throwableProxyActivatorStorage = ThrowableProxyActivatorStorage.getInstance();
+        
+        try {
+        	if(throwableProxyActivatorStorage == null) {
+        		return;
+        	}
+        	ThrowableProxyActivator throwableProxyActivator = new ThrowableProxyActivator(throwableProxyActivatorStorage.getInstrumentation(), throwableProxyActivatorStorage.getBundleContext());
+        	
+	        // If the feature should be activated (ThrowableProxyActivator 
+	        if(stackJoinValue && throwableProxyActivator != null) {
+				throwableProxyActivator.activate();
+	        }
+	        else if(throwableProxyActivator != null) {
+	        	throwableProxyActivator.deactivate();
+	        }
+        }
+        catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

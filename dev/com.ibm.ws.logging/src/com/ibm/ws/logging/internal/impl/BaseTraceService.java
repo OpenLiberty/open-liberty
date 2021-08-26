@@ -244,6 +244,7 @@ public class BaseTraceService implements TrService {
     };
 
     public final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
+    public volatile static boolean STACK_JOINER_FEATURE_ENABLED = false;
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -375,6 +376,11 @@ public class BaseTraceService implements TrService {
         String messageFormat = trConfig.getMessageFormat();
         String consoleFormat = trConfig.getConsoleFormat();
 
+        /**
+         * Retrieve the format setting for our stack traces
+         */
+        STACK_JOINER_FEATURE_ENABLED = trConfig.getStackJoinConfiguration();
+
         //Retrieve the source lists of both message and console
         List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());
         List<String> consoleSourceList = new ArrayList<String>(trConfig.getConsoleSource());
@@ -455,20 +461,20 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If messageFormat has been configured to 'json', create the messageLogHandler as necessary or
+         * If consoleFormat has been configured to 'json', create the consoleLogHandler as necessary or
          * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
-         * messageJsonConfigured flag as appropriate and update the connection between the unique message
+         * consoleJsonConfigured flag as appropriate and update the connection between the unique message
          * and trace conduits to the handler.
          */
-        if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
-            if (messageLogHandler != null) {
-                messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
-                messageLogHandler.setAppsWriteJson(appsWriteJson);
+        if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            if (consoleLogHandler != null) {
+                consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                consoleLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
-                messageLogHandler.modified(filterdMessageSourceList);
-                updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+                //if json && messages, trace sourcelist
+                consoleLogHandler.modified(filterdConsoleSourceList);
+                updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
-
         }
 
         /*
@@ -1685,8 +1691,8 @@ public class BaseTraceService implements TrService {
             int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256 * 1024; //256 KiloBytes
 
             try {
-                if ((System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD") != null)) {
-                    int byteArrayOutputStreamThreshold = Integer.valueOf(System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD"));
+                if ((System.getenv("WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE") != null)) {
+                    int byteArrayOutputStreamThreshold = Integer.valueOf(System.getenv("WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE"));
 
                     if (byteArrayOutputStreamThreshold >= 0)
                         return byteArrayOutputStreamThreshold;

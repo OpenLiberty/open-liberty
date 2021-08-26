@@ -96,6 +96,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Format to use for messages.log */
     protected volatile String messageFormat = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
 
+    protected volatile boolean stackJoinerConfiguration = false;
+
     /** Mapping to use for json.fields */
     protected volatile String jsonFields = "";
 
@@ -168,6 +170,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
                                                            appsWriteJson);
+
+        stackJoinerConfiguration = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
+                                                                      stackJoinerConfiguration);
+
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
@@ -244,6 +250,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
         appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
+        stackJoinerConfiguration = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackJoinerConfiguration, isInit);;
     }
 
     /**
@@ -403,6 +410,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return messageFormat;
     }
 
+    public boolean getStackJoinConfiguration() {
+        return stackJoinerConfiguration;
+    }
+
     public String getjsonFields() {
         return jsonFields;
     }
@@ -449,6 +460,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);
         sb.append(",newLogsOnStart=").append(newLogsOnStart);
+        sb.append(",stackJoin=").append(stackJoinerConfiguration);
         sb.append("]");
 
         return sb.toString();
@@ -473,6 +485,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
         JSON_FIELD_MAPPINGS("jsonFieldMappings", "com.ibm.ws.logging.json.field.mappings"),
+        STACK_JOIN_CONFIGURATION("stackJoin", "com.ibm.ws.logging.stackJoin"),
 
         JSON_ENABLE_CUSTOM_ACCESS_LOG_FIELDS("jsonAccessLogFields", "com.ibm.ws.logging.json.access.log.fields"),
         APPS_WRITE_JSON("appsWriteJson", "com.ibm.ws.logging.apps.write.json"),

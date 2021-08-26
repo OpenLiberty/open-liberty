@@ -22,16 +22,19 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
+import com.ibm.ws.logging.internal.osgi.LoggingConfigurationService;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.AddVersionFieldClassAdapter;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.ThrowableClassFileTransformer;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.boot.templates.ThrowableProxy;
+import com.ibm.ws.logging.utils.StackJoinerConfigurations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -44,9 +47,8 @@ import org.osgi.framework.Bundle;
 public class ThrowableProxyActivator {
 	
 	private MethodProxy methodProxy;
-	private Instrumentation inst;
-	private BundleContext bundleContext;
 	
+	private static volatile boolean throwableProxyIsActivated = false;
 	/**
 	 * The target package for the boot loader delegated classes.
 	 */
@@ -91,9 +93,14 @@ public class ThrowableProxyActivator {
 	final String BASE_TRACE_SERVICE_METHOD_NAME = "printStackTraceOverride";
 	
 	
+	/**
+	 * Storage of Instrumentation and BundleContext object
+	 */
+	private static ThrowableProxyActivatorStorage throwableProxyActivatorStorage = null;
+	
+	
 	public ThrowableProxyActivator(Instrumentation inst, BundleContext bundleContext) {
-		this.inst = inst;
-		this.bundleContext = bundleContext;
+		throwableProxyActivatorStorage = ThrowableProxyActivatorStorage.getInstance(inst, bundleContext);
 	}
 	
 	/**
@@ -103,12 +110,16 @@ public class ThrowableProxyActivator {
 	 * @param bundleContext the bundleContext
 	 */
 	public void activate() throws Exception {   
+		Instrumentation inst = throwableProxyActivatorStorage.getInstrumentation();
 		
+		// Don't proceed with ThrowableProxy activation if the feature has already been activated
+		if(throwableProxyIsActivated) {
+			return;
+		}
 		if(isEnabled()) {
 			// Create a methodProxy of the printStackTraceOverride method within the BaseTraceService Class
 			methodProxy = new MethodProxy(inst, BASE_TRACE_SERVICE_CLASS_NAME, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
 		}
-
 		if (methodProxy != null && methodProxy.isInitialized()) {
 			String runtimeVersion = getRuntimeClassVersion();
 	        
@@ -127,6 +138,7 @@ public class ThrowableProxyActivator {
 			try {
 				inst.addTransformer(tcfTransformer, true);
 				inst.retransformClasses(Throwable.class); //something to replace retransfornm
+				throwableProxyIsActivated = true;
 			} 
 			catch (Throwable t) {
 				t.printStackTrace();
@@ -139,8 +151,10 @@ public class ThrowableProxyActivator {
 	
 	public void deactivate() throws Exception {
 		try {
-			if (isEnabled())
+			if (throwableProxyIsActivated) {
+				throwableProxyIsActivated = false;
 				deactivateThrowableProxyTarget();
+			}
 		} catch (Exception e) {
 			throw new Exception(e);
 		}
@@ -175,13 +189,12 @@ public class ThrowableProxyActivator {
 	 * @throws IOException if a file I/O error occurs
 	 */
 	JarFile createBootProxyJar() throws IOException {
-		File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
+		File dataFile = throwableProxyActivatorStorage.getBundleContext().getDataFile("boot-proxy-throwable.jar");
 	
 		// Create the file if it doesn't already exist
 		if (!dataFile.exists()) {
 			dataFile.createNewFile();
 		}
-		
 		// Generate a manifest
 		Manifest manifest = createBootJarManifest();
 		
@@ -193,7 +206,7 @@ public class ThrowableProxyActivator {
 		createDirectoryEntries(jarOutputStream, BOOT_DELEGATED_PACKAGE);
 		
 		// Map the template classes into the delegation package and add to the jar
-		Bundle bundle = bundleContext.getBundle();
+		Bundle bundle = throwableProxyActivatorStorage.getBundleContext().getBundle();
 		Enumeration<?> entryPaths = bundle.getEntryPaths(TEMPLATE_CLASSES_PATH);
 		if (entryPaths != null) {
 		    while (entryPaths.hasMoreElements()) {
@@ -292,7 +305,7 @@ public class ThrowableProxyActivator {
 	 *         bundle's version
 	 */
 	JarFile getBootProxyJarIfCurrent() {
-		File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
+		File dataFile = throwableProxyActivatorStorage.getBundleContext().getDataFile("boot-proxy-throwable.jar");
 		if (!dataFile.exists()) {
 			return null;
 		}
@@ -336,7 +349,7 @@ public class ThrowableProxyActivator {
 	 * @return the host bundle's version string
 	 */
 	String getCurrentVersion() {
-		return bundleContext.getBundle().getVersion().toString();
+		return throwableProxyActivatorStorage.getBundleContext().getBundle().getVersion().toString();
 	}
 	
 	/**
@@ -396,8 +409,25 @@ public class ThrowableProxyActivator {
 	 * Returns true if the stack joiner feature has been enabled, otherwise false
 	 * @return true if the stack joiner feature has been enabled, otherwise false
 	 */
-	public boolean isEnabled() {
-		if (ProductInfo.getBetaEdition() || (System.getenv("WLP_LOGGING_STACK_JOIN") != null && System.getenv("WLP_LOGGING_STACK_JOIN").equals("true")) ) return Boolean.TRUE;
+	public static boolean isEnabled() {
+		Map<String,Object> serverXmlHashMap = LoggingConfigurationService.getServerXmlHashMap();
+		Boolean stackJoinConfig = null;
+		if(serverXmlHashMap != null) {
+			stackJoinConfig =  (Boolean) serverXmlHashMap.get("stackJoin");
+		}
+        
+		// Check if the stackJoin logging property in server.xml has been configured
+        if(stackJoinConfig != null && stackJoinConfig == true) {
+        	return Boolean.TRUE;
+        }
+        
+        // Check if the WLP_LOGGING_STACK_JOIN logging property in server.env has been configured
+        // Or if the com.ibm.ws.logging.stack.join logging property in bootstrap.properties has been configured
+		boolean isEnabled = StackJoinerConfigurations.getInstance().stackJoinerEnabled();
+		if(isEnabled) {
+			return Boolean.TRUE;
+		}
+		
 		return Boolean.FALSE;
 	}
     

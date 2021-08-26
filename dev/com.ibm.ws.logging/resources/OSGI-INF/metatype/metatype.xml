@@ -80,7 +80,11 @@
         <AD name="%isoDateFormat" description="%isoDateFormat.desc"
         	ibm:variable="com.ibm.ws.logging.isoDateFormat"
             id="isoDateFormat" required="false" type="Boolean" default="false" />
-
+            
+		<AD name="%stackJoin" description="%stackJoin.desc"
+        	ibm:variable="com.ibm.ws.logging.stackJoin"
+            id="stackJoin" required="false" type="Boolean" default="false" />
+            
         <AD name="%console.level" description="%console.level.desc" 
             ibm:variable="com.ibm.ws.logging.console.log.level"
             id="consoleLogLevel" required="false" type="String" default="AUDIT">
