@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -349,6 +349,12 @@ public class CommonFilter {
                     HTTPheader = req.getApplicationName();
                 } else if (key.equals(AuthFilterConfig.KEY_COOKIE)) {
                     HTTPheader = req.getCookieName(key);
+                    if (HTTPheader == null) {
+                        HTTPheader = "";
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "No cookie in the ServletRequest so assigned the cookie name to BLANK");
+                        }
+                    }
                 } else if (cond instanceof NotContainsCondition) {
                     continue;
                 } else {
