@@ -87,12 +87,13 @@ public class ServletConfigMock {
         final Set<String> annotatedClasses = new HashSet<String>();
 
         WebContainer webContainer = new WebContainer();
-        final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
+
+        webContainer.setVersion(version);
 
         context.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
-                will(returnValue(version));
+                // allowing(versionRef).getProperty(ServletVersion.VERSION);
+                // will(returnValue(version));
 
                 // The Fragment merging requires annotations to function. We're
                 // mocking out all use of annotations and making this XML only,
@@ -200,10 +201,10 @@ public class ServletConfigMock {
 
         Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
 
-        Method versionSetter = clazz.getDeclaredMethod("setVersion", ServiceReference.class);
+        // Method versionSetter = clazz.getDeclaredMethod("setVersion", ServiceReference.class);
 
-        versionSetter.setAccessible(true);
-        versionSetter.invoke(webContainer, versionRef);
+        // versionSetter.setAccessible(true);
+        // versionSetter.invoke(webContainer, versionRef);
 
         //With the above object structure, we pass in a mock container with a LIVE nonpersistent cache.
         //The cache is a simple in-memory set of hashmaps used for storing data.
