@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -21,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -33,6 +26,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  *
@@ -110,7 +104,8 @@ public class WCApplicationMBeanStatusTest {
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void test_AppStatusInstalled() throws Exception {
-        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
+        HttpUtils.findStringInReadyUrl(server, "/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener",
+                                       "PASS: INSTALLED");
     }
 
     /**
@@ -121,7 +116,8 @@ public class WCApplicationMBeanStatusTest {
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void test_AppStatusStarted() throws Exception {
-        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
+        HttpUtils.findStringInReadyUrl(server, "/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40",
+                                       "PASS: STARTED");
     }
 
     /**
@@ -141,30 +137,15 @@ public class WCApplicationMBeanStatusTest {
     @Mode(TestMode.FULL)
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void test_AppStatusInstalled_servlet5_default() throws Exception {
-        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
+        HttpUtils.findStringInReadyUrl(server, "/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener",
+                                       "PASS: INSTALLED");
     }
 
     @Test
     @Mode(TestMode.FULL)
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void test_AppStatusStarted_servlet5_default() throws Exception {
-        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
-    }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
-
+        HttpUtils.findStringInReadyUrl(server, "/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40",
+                                       "PASS: STARTED");
     }
 }
