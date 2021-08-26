@@ -181,8 +181,8 @@ public class LaunchArguments {
                         // special handling for clean: it needs to over-ride a system property
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
-                    } else if (argToLower.startsWith("--checkpoint=")) {
-                        String phase = argToLower.substring("--checkpoint=".length());
+                    } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
+                        String phase = argToLower.substring("--internal-checkpoint-at=".length());
                         if (CheckpointHookFactory.Phase.getPhase(phase) == null) {
                             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
                             System.out.println();
