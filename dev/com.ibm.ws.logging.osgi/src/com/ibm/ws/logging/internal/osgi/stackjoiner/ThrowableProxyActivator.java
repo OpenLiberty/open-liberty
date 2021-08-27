@@ -153,7 +153,8 @@ public class ThrowableProxyActivator {
 		try {
 			if (throwableProxyIsActivated) {
 				throwableProxyIsActivated = false;
-				deactivateThrowableProxyTarget();
+				Instrumentation inst = throwableProxyActivatorStorage.getInstrumentation();
+				inst.retransformClasses(Throwable.class); // Transform Throwable.class back to its original format
 			}
 		} catch (Exception e) {
 			throw new Exception(e);
@@ -377,15 +378,6 @@ public class ThrowableProxyActivator {
 	}
 	
 	/**
-	 * Unbinds the Activator class' and its method from ThrowableProxy.
-	 *
-	 * @throws Exception
-	 */
-	void deactivateThrowableProxyTarget() throws Exception {
-		findThrowableProxySetFireTargetMethod().invoke(null, null, null);
-	}
-	
-	/**
 	 * Invokes the static BaseTraceService.printStackTraceOverride() method from the com.ibm.ws.logging package.
 	 * This method is bound to the ThrowableProxy, which will be visible by the bootstrap class loader
 	 * 
@@ -412,17 +404,17 @@ public class ThrowableProxyActivator {
 	public static boolean isEnabled() {
 		Map<String,Object> serverXmlHashMap = LoggingConfigurationService.getServerXmlHashMap();
 		Boolean stackJoinConfig = null;
+		
+		// First check if 'stackJoin' has been configured in the server.xml file
 		if(serverXmlHashMap != null) {
 			stackJoinConfig =  (Boolean) serverXmlHashMap.get("stackJoin");
 		}
-        
-		// Check if the stackJoin logging property in server.xml has been configured
         if(stackJoinConfig != null && stackJoinConfig == true) {
         	return Boolean.TRUE;
         }
         
-        // Check if the WLP_LOGGING_STACK_JOIN logging property in server.env has been configured
-        // Or if the com.ibm.ws.logging.stack.join logging property in bootstrap.properties has been configured
+        // Otherwise, check if WLP_LOGGING_STACK_JOIN has been set in the server.env
+        // Or if com.ibm.ws.logging.stack.join has been set in the bootstrap.properties 
 		boolean isEnabled = StackJoinerConfigurations.getInstance().stackJoinerEnabled();
 		if(isEnabled) {
 			return Boolean.TRUE;

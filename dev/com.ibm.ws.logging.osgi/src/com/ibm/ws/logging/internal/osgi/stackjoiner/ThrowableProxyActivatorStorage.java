@@ -18,7 +18,6 @@ public class ThrowableProxyActivatorStorage{
 	* Create getInstance method which is the only way that WeakSet object can be accessed.
 	*/
 	public synchronized static ThrowableProxyActivatorStorage getInstance(Instrumentation inst, BundleContext bundleContext) {
-		 System.out.println("Within the ThrowableProxyActivatorStorage Constrcutor");
 		if (throwableProxyActivatorStorage == null) {
 			throwableProxyActivatorStorage = new ThrowableProxyActivatorStorage(inst, bundleContext);
 

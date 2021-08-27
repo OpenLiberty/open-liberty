@@ -17,18 +17,14 @@ import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.LOG_SERVICE_GROU
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_SPEC_OSGI_EVENTS;
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_ENABLED;
 
-import java.lang.instrument.Instrumentation;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -62,7 +58,7 @@ public class LoggingConfigurationService implements ManagedService {
     /** reference to registered RAS config service */
     private ServiceRegistration<ManagedService> configRef = null;
     
-    private static Map<String, Object> serverXmlHashMap = null;
+    private static Map<String, Object> serverXmlMap = null;
 
     protected BundleContext context;
 
@@ -128,28 +124,28 @@ public class LoggingConfigurationService implements ManagedService {
             return;
         }
 
-        serverXmlHashMap = null;
         if (properties instanceof Map) {
-        	serverXmlHashMap = (Map<String, Object>) properties;
+        	serverXmlMap = (Map<String, Object>) properties;
         } else {
-        	serverXmlHashMap = new HashMap<String, Object>();
+        	serverXmlMap = new HashMap<String, Object>();
             Enumeration<String> keys = properties.keys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-                serverXmlHashMap.put(key, properties.get(key));
+                serverXmlMap.put(key, properties.get(key));
             }
         }
         
+        // Trigger activate/deactivate for stackJoin feature
         boolean stackJoinValue = false;
-        if(serverXmlHashMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME) != null && ((Boolean) serverXmlHashMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == true) {
+        if(serverXmlMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME) != null && ((Boolean) serverXmlMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == true) {
         	stackJoinValue = true;
         }
         updateThrowableProxyActivator(stackJoinValue);
         
         // Update Tr and/or FFDC configurations.
         // --> of concern is changing the log directory.
-        TrConfigurator.update(serverXmlHashMap);
-        FFDCConfigurator.update(serverXmlHashMap);
+        TrConfigurator.update(serverXmlMap);
+        FFDCConfigurator.update(serverXmlMap);
         configureLoggerAdmin();
     }
 
@@ -282,22 +278,25 @@ public class LoggingConfigurationService implements ManagedService {
     }
     
     public static Map<String, Object> getServerXmlHashMap(){
-    	return serverXmlHashMap;
+    	return serverXmlMap;
     }
     
     private static void updateThrowableProxyActivator(boolean stackJoinValue) {
         ThrowableProxyActivatorStorage throwableProxyActivatorStorage = ThrowableProxyActivatorStorage.getInstance();
         
         try {
+        	// If the singleton object has not been set, return null
         	if(throwableProxyActivatorStorage == null) {
         		return;
         	}
+        	
         	ThrowableProxyActivator throwableProxyActivator = new ThrowableProxyActivator(throwableProxyActivatorStorage.getInstrumentation(), throwableProxyActivatorStorage.getBundleContext());
         	
 	        // If the feature should be activated (ThrowableProxyActivator 
 	        if(stackJoinValue && throwableProxyActivator != null) {
 				throwableProxyActivator.activate();
 	        }
+	        // if the feature should be deactivated
 	        else if(throwableProxyActivator != null) {
 	        	throwableProxyActivator.deactivate();
 	        }
