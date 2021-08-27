@@ -329,6 +329,13 @@ mkdirs()
   fi
 }
 
+mvIfExists()
+{
+  if [ -f "$1" ]; then
+    mv "$1" "$2"
+  fi
+}
+
 ##
 ## rmIfExist: Remove files if they exist.
 ##
@@ -874,8 +881,27 @@ javaCmd()
   if [ -n "${JAVA_CMD_LOG}" ]; then
     rmIfExist "${JAVA_CMD_LOG}"
     "${JAVA_CMD}" "$@" >> "${JAVA_CMD_LOG}" 2>&1 &
-  elif [ $ACTION = "run" ] || [ $ACTION = "debug" ] || [ $ACTION = "checkpoint" ]; then
+  elif [ $ACTION = "run" ] || [ $ACTION = "debug" ]; then
     exec "${JAVA_CMD}" "$@"
+  elif [ $ACTION = "checkpoint" ]; then
+    # trap on the signals here to ensure the background tail process always ends below
+    trap "exit" INT TERM
+    trap "kill 0" EXIT
+
+    # Tail is used to print the content of the log file to
+    # the console output.
+    # This is done so we can restore in the foreground (run)
+    # and in the background (start)
+    CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+    rmIfExist "${CHECKPOINT_CONSOLE_LOG}"
+    mkdirs "${X_LOG_DIR}"
+    # touch the log so we can tail it immediately
+    touch "${CHECKPOINT_CONSOLE_LOG}"
+    tail -f "${CHECKPOINT_CONSOLE_LOG}" &
+
+    "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1
+    rc=$?
+    return $rc
   else
     "${JAVA_CMD}" "$@"
   fi
@@ -1083,7 +1109,7 @@ serverCmd()
     OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
-      # Verify/wait for the process to start unless a checkpoint is requested
+      # Verify/wait for the process to start
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
       rc=$?
       # write the pid file if return is OK or UNKNOWN
@@ -1109,11 +1135,6 @@ checkCriuSupport()
 restoreServer()
 {
     BACKGROUND_RESTORE=$1
-    if $BACKGROUND_RESTORE
-    then
-      # do not restore in the background for now
-      return 1
-    fi
 
     if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
       return 1
@@ -1129,24 +1150,59 @@ restoreServer()
       fi
     done
 
+    echo "Launch server from image."
+
     # restore artifacts and environment prior to checkpoint here
     
     # no good way to check for criu support since fast startup is imperitive
     #   just let criu invocation fail with a hopefully informative error message.
     mkdirs ${X_LOG_DIR}/checkpoint
-    # invoke criu command
-    echo Launch server from image.
+
+    # save off the log during checkpoint and start fresh from restore 
+    RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+    CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
+    mvIfExists $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
+    mkdirs "${X_LOG_DIR}"
+    touch "${RESTORE_CONSOLE_LOG}"
+ 
+    # record the start of restoreTime
     echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
+
     if $BACKGROUND_RESTORE
     then
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log &
-    else 
-      exec criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -d -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+      rc=$?
+      if [ $rc = 0 ]; then
+        # successful restore, not check server status
+
+        JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+        IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+        OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
+
+        # Verify/wait for the process to start
+        # TODO figure out the PID restored
+        javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start
+        rc=$?
+        # write the pid file if return is OK or UNKNOWN
+        if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
+            safeEcho "${PID}" > "${X_PID_FILE}"
+        fi
+      fi        
+    else
+      # trap on the signals here to ensure the background tail process always ends below
+      trap "exit" INT TERM
+      trap "kill 0" EXIT
+
+      # For checkpoint we always write to the log file.
+      # Use tail to bring the content to the console output
+      tail -f "${RESTORE_CONSOLE_LOG}" &
+
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+      rc=$?
     fi
-    rc=$?
+
     if [ $rc != 0 ]; then
-       echo The criu restore command exited with error code $rc        
-       #TODO check if server really not running and if not launch it normally.  
+       echo The criu restore command exited with error code $rc
     fi
     return $rc
 }
