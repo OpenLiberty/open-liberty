@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs.fat.client.echoapp;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +30,7 @@ import com.ibm.ws.jaxrs.fat.client.jaxb.Echo;
 
 @Path("/echoaccept")
 public class EchoResource {
+    private static Logger LOG = Logger.getLogger(EchoResource.class.getName());
 
     @Context
     HttpHeaders requestHeaders;
@@ -39,6 +41,7 @@ public class EchoResource {
         List<String> acceptHeader = requestHeaders.getRequestHeader(HttpHeaders.ACCEPT);
 
         if (acceptHeader != null) {
+            LOG.info(() -> "Accept: " + acceptHeader);
             for (String s : acceptHeader) {
                 sb.append(s);
             }
@@ -46,6 +49,7 @@ public class EchoResource {
 
         if (acceptHeader == null || acceptHeader.isEmpty()
             || MediaType.WILDCARD_TYPE.equals(requestHeaders.getAcceptableMediaTypes().get(0))) {
+            LOG.info(() -> "Nothing or */* from Accept header");
             return Response.ok(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
         }
 
@@ -56,14 +60,17 @@ public class EchoResource {
                                                     MediaType.APPLICATION_JSON_TYPE).add().build());
         if (variant != null) {
             if (MediaType.APPLICATION_JSON_TYPE.isCompatible(variant.getMediaType())) {
+                LOG.info(() -> "Variant is compatible with application/json");
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("value", sb.toString());
                 return Response.ok(jsonObject).type(MediaType.APPLICATION_JSON).build();
             } else if (MediaType.TEXT_XML_TYPE.isCompatible(variant.getMediaType())) {
+                LOG.info(() -> "Variant is compatible with text/xml");
                 Echo e = new Echo();
                 e.setValue(sb.toString());
                 return Response.ok(e).type(MediaType.TEXT_XML).build();
             }
+            LOG.info(() -> "Variant is not null, but not compatible with application/json nor text/xml");
         }
 
         return Response.ok(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
