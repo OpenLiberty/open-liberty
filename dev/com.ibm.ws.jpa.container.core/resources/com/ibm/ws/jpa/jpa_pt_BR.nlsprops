@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -302,9 +302,15 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: A implementa\u00e7\u00e3o {0}, {
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=O provedor de persist\u00eancia JPA n\u00e3o pode ser usado porque falta a implementa\u00e7\u00e3o de m\u00e9todos que s\u00e3o necess\u00e1rios pela especifica\u00e7\u00e3o de JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtenha uma vers\u00e3o mais nova do provedor de persist\u00eancia JPA que est\u00e1 em conformidade com a especifica\u00e7\u00e3o JPA 2.1.
 
-ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Ocorreu um erro ao tentar transformar a classe Java {0}. O seguinte detalhe foi obtido: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Ocorreu um erro ao tentar transformar a classe Java {0}.  O seguinte detalhe foi obtido: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Ocorreu um erro inesperado ao transformar a classeclasse Java. Esse erro geralmente \u00e9 causado por um bytecode Java inv\u00e1lido.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=\u00c9 poss\u00edvel que o cache de classe esteja corrompido ou que o pacote do aplicativo esteja incorreto. Primeiro, limpe o cache de classe. Se essa a\u00e7\u00e3o n\u00e3o resolver o problema, revise o archive do aplicativo em busca de erros no pacote.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Uma propriedade padr\u00e3o JPA configurada no arquivo server.xml cont\u00e9m um nome vazio ou um valor vazio: nome = [{0}], valor = [{1}]. A propriedade ser\u00e1 ignorada.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Os atributos de nome e valor para uma propriedade padr\u00e3o JPA n\u00e3o devem estar vazios.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Mude a configura\u00e7\u00e3o do servidor para fornecer um nome e um valor n\u00e3o vazios para a propriedade ou remova a propriedade.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
