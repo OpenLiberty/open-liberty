@@ -23,7 +23,6 @@ import com.ibm.ws.el30.fat.varargstest.EnumBean;
 import com.ibm.ws.el30.fat.varargstest.Bird;
 import com.ibm.ws.el30.fat.varargstest.Falcon;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -61,7 +60,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testSingleEnum() throws Exception {
 
         getMethodExpression("testBean.testMethod(enum1)", "(IEnum enum1)");
@@ -69,7 +67,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testSingleString() throws Exception {
 
         getMethodExpression("testBean.testMethod('string1')", "(String param1)");
@@ -77,7 +74,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testWithNoArguments() throws Exception {
 
         getMethodExpression("testBean.testMethod()", "(int... param1)");
@@ -85,7 +81,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testString_VarargsString() throws Exception {
 
         getMethodExpression("testBean.testMethod('string1', 'string2', 'string3')", "(String param1, String... param2)");
@@ -93,7 +88,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testString_String() throws Exception {
 
         getMethodExpression("testBean.testMethod('string1', 'string2')", "(String param1, String param2)");
@@ -101,7 +95,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testEnum_VarargsEnum() throws Exception {
         
         getMethodExpression("testBean.testMethod(enum1, enum1, enum1)", "(IEnum enum1, IEnum... enum2)");
@@ -109,7 +102,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testString_VarargsMultipleEnum() throws Exception {
         
         getMethodExpression("testBean.testMethod('string1', enum1, enum1)", "(String param1, IEnum... param2)");
@@ -117,7 +109,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void selectMethodWithNoVarargs() throws Exception {
         
         getMethodExpression("testBean.chirp(falcon)", "(Bird bird1)");
@@ -125,7 +116,6 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testString_VarargsBird() throws Exception {
         
         getMethodExpression("testBean.chirp('string1', bird, bird)", "(String string1, Bird... bird2)");
