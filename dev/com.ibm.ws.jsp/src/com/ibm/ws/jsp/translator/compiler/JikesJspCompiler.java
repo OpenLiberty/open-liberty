@@ -52,6 +52,7 @@ public class JikesJspCompiler implements JspCompiler {
     protected boolean isVerbose = false;
     protected boolean isDeprecation = false;
     protected int jdkSourceLevel;
+    protected Integer javaSourceLevel;
 
     protected boolean useOptimizedClasspath = false;
     protected String absouluteContextRoot = null;
@@ -69,6 +70,7 @@ public class JikesJspCompiler implements JspCompiler {
         this.isVerbose = options.isVerbose();
         this.isDeprecation =  options.isDeprecation();
         jdkSourceLevel =  options.getJdkSourceLevel();
+        javaSourceLevel = options.getJavaSourceLevel();
         out = new CharArrayWriter();
 
     }
@@ -200,9 +202,11 @@ public class JikesJspCompiler implements JspCompiler {
         }
 
         // Jikes must default to -source 1.3; override if jdkSourceLevel is set 
-        //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
         argList.add("-source");
-        if (jdkSourceLevel == 14) {
+        if (javaSourceLevel != -1) { // 7183
+            argList.add(javaSourceLevel.toString());
+        }
+        else if (jdkSourceLevel == 14) {
             argList.add("1.4");
         }
         else if (jdkSourceLevel == 15) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -276,6 +276,17 @@ public abstract class AbstractJspModC {
                 booleanProperty = (Boolean) this.optionOverrides.get(JspToolsOptionKey.useJikesKey);
                 if (booleanProperty != null) {
                     options.setUseJikes(booleanProperty.booleanValue());
+                }
+                String javaSourceLevel = (String) this.optionOverrides.get(JspToolsOptionKey.javaSourceLevelKey);
+                int javaLevel = -1;
+                if (javaSourceLevel != null) {
+                    if (javaSourceLevel.equals("1.8")) javaSourceLevel="8";
+                    try {
+                       javaLevel = Integer.parseInt(javaSourceLevel);       
+                    } catch (NumberFormatException e) {
+                        
+                    }
+                    options.setJavaSourceLevel(javaLevel);
                 }
                 // Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
                 // jdk 1.4 source level.  Only jdkSourceLevel will be used elsewhere in the JSP container.

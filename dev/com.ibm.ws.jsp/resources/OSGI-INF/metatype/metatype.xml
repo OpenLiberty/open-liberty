@@ -20,6 +20,22 @@
             id="disableJspRuntimeCompilation" required="false" type="Boolean" default="false"/>
         <AD description="%extendedDocumentRoot" name="%extendedDocumentRoot.name"
             id="extendedDocumentRoot" required="false" type="String" default="" /> 
+        <AD description="%javaSourceLevel" name="%javaSourceLevel.name"
+            id="javaSourceLevel" required="false" type="String">
+            <Option label="8" value="8"/>
+            <Option label="1.8" value="1.8"/>
+            <Option label="11" value="11"/>
+            <Option label="12" value="12"/>
+            <Option label="13" value="13"/>
+            <Option label="14" value="14"/>
+            <Option label="15" value="15"/>
+            <Option label="16" value="16"/>
+            <Option label="17" value="17"/>
+            <Option label="18" value="18"/>
+            <Option label="19" value="19"/>
+            <Option label="20" value="20"/>
+            <Option label="21" value="21"/>
+        </AD> 
         <AD description="%jdkSourceLevel" name="%jdkSourceLevel.name"
             id="jdkSourceLevel" required="false" type="String">
             <Option label="13" value="13"/>

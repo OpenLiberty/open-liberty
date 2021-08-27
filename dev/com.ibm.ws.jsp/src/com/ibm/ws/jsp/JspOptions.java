@@ -54,7 +54,8 @@ public class JspOptions {
     protected String     ieClassId = "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93";
     protected boolean    isZOS = false;
     protected String     javaEncoding = "UTF-8";
-    private   int        jdkSourceLevel;
+    private   int        jdkSourceLevel = -1;
+    private   int        javaSourceLevel = -1; 
     protected String     jspCompileClasspath = null;
     protected boolean    keepGenerated = false;
     protected boolean    keepGeneratedclassfiles = true;
@@ -126,7 +127,7 @@ public class JspOptions {
         populateOptions(jspParams);
     }
     
-	public void populateOptions(Properties jspParams) {
+    public void populateOptions(Properties jspParams) {
 
 		/*--------------------*/
 		/* Load Option Values */
@@ -222,7 +223,9 @@ public class JspOptions {
         }
         
         int useJdkSourceLevel = -1;
+        int useJavaSourceLevel = -1;
         String rawJdkSourceLevel = jspParams.getProperty("jdkSourceLevel");
+        String rawJavaSourceLevel = jspParams.getProperty("javaSourceLevel");
         try {
             if (rawJdkSourceLevel != null)
                 useJdkSourceLevel = Integer.parseInt(rawJdkSourceLevel);
@@ -235,6 +238,17 @@ public class JspOptions {
             logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.jdksourcelevel.value", new Object[] { useJdkSourceLevel })); //152472
             setJdkSourceLevel(useJdkSourceLevel);
         }
+        if (rawJavaSourceLevel != null && rawJavaSourceLevel.equals("1.8")) // only for Java 8 do we accept 1.8 
+            rawJavaSourceLevel = "8";
+        try {
+            if (rawJavaSourceLevel != null)
+                useJavaSourceLevel = Integer.parseInt(rawJavaSourceLevel);            
+        } catch(NumberFormatException e) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for javaSourceLevel = " + rawJavaSourceLevel + ".");
+            }
+        }
+        setJavaSourceLevel(useJavaSourceLevel);
         
         // Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
         // jdk 1.4 source level.  Only jdkSourceLevel will be used elsewhere in the JSP container.
@@ -1072,8 +1086,25 @@ public class JspOptions {
         this.jdkSourceLevel = jdkSourceLevel;
     }
 
+    public void setJavaSourceLevel(int javaSourceLevel) {
+        int jmv = JavaInfo.majorVersion();
+        if (javaSourceLevel > jmv) {
+            // can not specify higher than running Java
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "setJavaSourceLevel", "Requested javaSourceLevel=" + javaSourceLevel + 
+                            " exceeds installed Java " + jmv + ", therefore forcing to " + jmv);
+            }
+            javaSourceLevel = jmv;
+        }
+        this.javaSourceLevel = javaSourceLevel;
+    }
+    
     public int getJdkSourceLevel() {
         return jdkSourceLevel;
+    }
+    
+    public int getJavaSourceLevel() {
+        return javaSourceLevel;
     }
 
     public void setVerbose(boolean verbose) {
@@ -1628,6 +1659,7 @@ public class JspOptions {
                 "ieClassId =                           [" + ieClassId +"]"+separatorString+
                 "isZOS =                               [" + isZOS +"]"+separatorString+
                 "javaEncoding =                        [" + javaEncoding +"]"+separatorString+
+                "javaSourceLevel =                     [" + javaSourceLevel +"]"+separatorString+
                 "jdkSourceLevel =                      [" + jdkSourceLevel +"]"+separatorString+
                 "jspCompileClasspath =                 [" + tmpJspCompileClasspath +"]"+separatorString+
                 "keepGenerated =                       [" + keepGenerated +"]"+separatorString+

@@ -55,6 +55,7 @@ private static final int DONOTESCAPEWHITESPACECHARSINEXPRESSION = 32; //PM94792
 private final static int DELETECLASSFILESBEFORERECOMPILE = 33;  //PI12939
 private static final int ALLOWMULTIPLEATTRIBUTEVALUES = 34; //PI30519
 private final static int ALLOWPRECEDENDEINJSPEXPRESSIONSWITHCONSTANTSTRING = 35;  //PI37304
+private final static int JAVASOURCELEVEL = 36; //issue 7183
 
 public final static JspToolsOptionKey keepGeneratedKey=new JspToolsOptionKey(KEEPGENERATED);
 public final static JspToolsOptionKey verboseKey=new JspToolsOptionKey(VERBOSE);
@@ -97,6 +98,7 @@ public final static JspToolsOptionKey doNotEscapeWhitespaceCharsInExpression=new
 public final static JspToolsOptionKey deleteClassFilesBeforeRecompile=new JspToolsOptionKey(DELETECLASSFILESBEFORERECOMPILE); //PI12939
 public final static JspToolsOptionKey allowMultipleAttributeValues=new JspToolsOptionKey(ALLOWMULTIPLEATTRIBUTEVALUES); //PI30519
 public final static JspToolsOptionKey allowPrecedenceInJspExpressionsWithConstantString=new JspToolsOptionKey(ALLOWPRECEDENDEINJSPEXPRESSIONSWITHCONSTANTSTRING); //PI37304
+public final static JspToolsOptionKey javaSourceLevelKey=new JspToolsOptionKey(JAVASOURCELEVEL); //issue 7183
 private int key=0;
 /**
  *

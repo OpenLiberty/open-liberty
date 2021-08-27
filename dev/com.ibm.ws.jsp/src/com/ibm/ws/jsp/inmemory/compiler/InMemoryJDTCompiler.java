@@ -67,6 +67,7 @@ public class InMemoryJDTCompiler implements JspCompiler {
 	private boolean isVerbose = false;
 	private boolean isDeprecation = false; 
 	private int jdkSourceLevel;
+	private Integer javaSourceLevel;
 	private boolean useFullPackageNames = false;
     
     public InMemoryJDTCompiler(ClassLoader loader, JspOptions options) {
@@ -78,6 +79,7 @@ public class InMemoryJDTCompiler implements JspCompiler {
         isVerbose = options.isVerbose();
         isDeprecation =  options.isDeprecation();
         jdkSourceLevel =  options.getJdkSourceLevel();
+        javaSourceLevel = options.getJavaSourceLevel();
         useFullPackageNames = options.isUseFullPackageNames();
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "Entering InMemoryJDTCompiler.");
@@ -87,7 +89,11 @@ public class InMemoryJDTCompiler implements JspCompiler {
             logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "isDebugEnabled: ["+isDebugEnabled+"]");
             logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "isVerbose: ["+isVerbose+"]");
             logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "isDeprecation: ["+isDeprecation+"]");
-            logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "jdkSourceLevel: ["+jdkSourceLevel+"]");
+            if (javaSourceLevel == -1) {
+               logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "jdkSourceLevel: ["+jdkSourceLevel+"]");
+            } else {
+               logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "javaSourceLevel: ["+javaSourceLevel+"]");
+            }   
             logger.logp(Level.FINE, CLASS_NAME, "InMemoryJDTCompiler", "useFullPackageNames: ["+useFullPackageNames+"]");
         }
     }
@@ -123,8 +129,12 @@ public class InMemoryJDTCompiler implements JspCompiler {
         }
         compilerOptionsMap.put(CompilerOptions.OPTION_Encoding, javaEncoding);
         
-        //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
-        if (jdkSourceLevel == 14) {
+        if (javaSourceLevel != -1) {
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, javaSourceLevel.toString());
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, javaSourceLevel.toString());
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, javaSourceLevel.toString());
+        }
+        else if (jdkSourceLevel == 14) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_4);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_4);  //PM32704
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_4);  //PM32704

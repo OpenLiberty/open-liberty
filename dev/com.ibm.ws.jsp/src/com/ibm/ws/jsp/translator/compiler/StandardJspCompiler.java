@@ -53,7 +53,8 @@ public class StandardJspCompiler implements JspCompiler  {
     protected boolean isDebugEnabled = false;
     protected boolean isVerbose = false;
     protected boolean isDeprecation = false; 
-    protected int jdkSourceLevel; 
+    protected int jdkSourceLevel;
+    protected Integer javaSourceLevel; 
     protected String javaEncoding = null; 
     protected String outputDir = null;
     protected JavaCompiler compiler;
@@ -76,6 +77,7 @@ public class StandardJspCompiler implements JspCompiler  {
         this.isDeprecation =  options.isDeprecation();
         this.javaEncoding = options.getJavaEncoding();
         this.jdkSourceLevel=  options.getJdkSourceLevel();
+        this.javaSourceLevel = options.getJavaSourceLevel();
         this.outputDir = options.getOutputDir().getPath();
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
@@ -184,9 +186,12 @@ public class StandardJspCompiler implements JspCompiler  {
             argList.add("-deprecation");
         }
         
-        //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
         argList.add("-source");
-        if (jdkSourceLevel == 14) {
+        // issue 7183: look at javaSourceLevel first before using jdkSourceLevel
+        if (javaSourceLevel != -1) {
+            argList.add(javaSourceLevel.toString());
+        }
+        else if (jdkSourceLevel == 14) {
             argList.add("1.4");
         }
         else if (jdkSourceLevel == 15) {
