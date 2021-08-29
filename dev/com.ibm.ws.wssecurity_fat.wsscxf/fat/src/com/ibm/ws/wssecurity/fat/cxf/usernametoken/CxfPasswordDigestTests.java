@@ -13,7 +13,6 @@ package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -61,6 +60,8 @@ public class CxfPasswordDigestTests extends CommonTests {
     private static String httpsPortNumber = "";
 
     private static String pwdCBHVersion = "";
+    //issue 18363
+    private static String featureVersion = "";
 
     static String strJksLocation = "./securitykeys/sslClientDefault.jks";
 
@@ -97,9 +98,13 @@ public class CxfPasswordDigestTests extends CommonTests {
         //The PWDigestCallbackHandler version doesn't use this flag but determined by the server.xml/server_wss4j.xml/server_withClCallback.xml/server_withClCallback_wss4j.xml
         if (features.contains("jaxws-2.2")) {
             pwdCBHVersion = "EE7";
+            //issue 18363
+            featureVersion = "EE7";
         }
         if (features.contains("jaxws-2.3")) {
             pwdCBHVersion = "EE8";
+            //issue 18363
+            featureVersion = "EE8";
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
@@ -395,68 +400,57 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //issue 18363
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testPWDigestCXFSvcClientaltCallbackEE7Only() throws Exception {
+    public void testPWDigestCXFSvcClientaltCallback() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        } //End of issue 18363
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback1", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
         return;
 
     }
 
+    //issue 18363
     @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testPWDigestCXFSvcClientaltCallbackEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
-
-        genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback1", "UsrTokenPWDigestWebSvc",
-                    "This is WSSECFVT CXF Web Service (Password Digest)", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-
-        return;
-
-    }
-
-    @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testPWDigestCXFSvcClientaltCallbackSSLEE7Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback1", "UsrTokenPWDigestWebSvcSSL",
-                    "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
-                    "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-        return;
-
-    }
-
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testPWDigestCXFSvcClientaltCallbackSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcClientaltCallbackSSL() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        } //End of issue 18363
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback1", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
         return;
 
@@ -520,70 +514,57 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //issue 18363
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testPWDigestCXFSvcClientClCallbackInServerXmlEE7Only() throws Exception {
+    public void testPWDigestCXFSvcClientClCallbackInServerXml() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        } //End of issue 18363
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user88", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
         return;
 
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testPWDigestCXFSvcClientClCallbackInServerXmlEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
-
-        genericTest(testName.getMethodName(), clientHttpUrl, "", "user88", "UsrTokenPWDigestWebSvc",
-                    "This is WSSECFVT CXF Web Service (Password Digest)",
-                    "The " + testName.getMethodName() + " test failed - did not receive the correct response");
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-
-        return;
-
-    }
-
-    @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testPWDigestCXFSvcClientClCallbackInServerXmlSSLEE7Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-
-        genericTest(testName.getMethodName(), clientHttpUrl, httpsPortNumber, "user88", "UsrTokenPWDigestWebSvcSSL",
-                    "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
-                    "The " + testName.getMethodName() + " test failed - did not receive the correct response");
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-        return;
-
-    }
-
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testPWDigestCXFSvcClientClCallbackInServerXmlSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcClientClCallbackInServerXmlSSL() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
+        } //End of issue 18363
 
         genericTest(testName.getMethodName(), clientHttpUrl, httpsPortNumber, "user88", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
         return;
 
