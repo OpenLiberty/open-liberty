@@ -43,10 +43,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     private volatile Map<String, Object> _props;
     ComponentContext _cc;
-    private static String logDir = null;
+    private static String logDir;
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
-    private boolean activateHasBeenCalled = false; // Used for eyecatcher in trace for startup ordering.
-    private boolean _dataSourceFactorySet = false;
+    private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
+    private boolean _dataSourceFactorySet;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -54,19 +54,22 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      */
     private static final AtomicServiceReference<ResourceFactory> dataSourceFactoryRef = new AtomicServiceReference<ResourceFactory>("dataSourceFactory");
 
+    private static final int HEURISTIC_RETRY_INTERVAL_DEFAULT = 60;
+
     /**
      * Flag whether we are using a Transaction Log stored in the filesystem or a Transaction Log
      * stored in an RDBMS.
      */
-    private static boolean _isSQLRecoveryLog = false;
-    private ResourceFactory _theDataSourceFactory = null;
+    private static boolean _isSQLRecoveryLog;
+    private ResourceFactory _theDataSourceFactory;
 
-    private String _recoveryIdentity = null;
-    private String _recoveryGroup = null;
-    private TransactionManagerService tmsRef = null;
+    private String _recoveryIdentity;
+    private String _recoveryGroup;
+    private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {}
+    public JTMConfigurationProvider() {
+    }
 
     /*
      * Called by DS to activate service
@@ -235,16 +238,24 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     public int getHeuristicRetryInterval() {
-        // return Integer.valueOf(_props.get("heuristic.retry.interval"));
-        //return ((Integer) _props.get("heuristicRetryInterval")).intValue();
-        Number num = (Number) _props.get("heuristicRetryInterval");
-        return num.intValue();
+        int interval = ((Number) _props.get("heuristicRetryInterval")).intValue();
+        if (interval == HEURISTIC_RETRY_INTERVAL_DEFAULT) {
+            // We got the default for heuristicRetryInterval but maybe
+            // heuristicRetryWait was set like in the olden days
+            int wait = ((Number) _props.get("heuristicRetryWait")).intValue();
+            if (wait != HEURISTIC_RETRY_INTERVAL_DEFAULT) {
+                // heuristicRetryWait was set
+                interval = wait;
+            }
+        }
+
+        return interval;
     }
 
-    // TODO: is this the correct attribute mapping?
     @Override
     public int getHeuristicRetryLimit() {
-        return ((Integer) _props.get("heuristicRetryWait")).intValue();
+        Number num = (Number) _props.get("heuristicRetryLimit");
+        return num.intValue();
     }
 
     @Override
