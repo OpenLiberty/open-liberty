@@ -54,6 +54,7 @@ import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final String DIR_CHECKPOINT = "checkpoint/";
+    private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
     private static final String CHECKPOINT_LOG_FILE = "checkpoint.log";
 
@@ -160,6 +161,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "Failed to do checkpoint.", e, 0);
         }
         restore(phase, checkpointHooks);
+        createRestoreMarker();
+    }
+
+    /**
+     *
+     */
+    private void createRestoreMarker() {
+        // create a marker to indicate that another restore needs to restore the workarea
+        locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_RESTORE_MARKER).create();
     }
 
     List<CheckpointHook> getHooks(Object[] factories, Phase phase) {

@@ -555,6 +555,12 @@ serverEnvDefaults()
     unset PID_FILE
   fi
 
+  if [ -z "$WLP_IN_CONTAINER" ]; then
+    X_WLP_IN_CONTAINER=false
+  else
+    X_WLP_IN_CONTAINER=$WLP_IN_CONTAINER
+  fi
+
   if [ -z "${JAVA_HOME}" ]
   then
     if [ -z "${JRE_HOME}" ]
@@ -866,12 +872,11 @@ javaCmd()
 
   if [ $ACTION = "checkpoint" ]; then
     if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then
-      echo remove existing checkpoint image
       rm -r ${SERVER_OUTPUT_DIR}/workarea/checkpoint
       rc=$? 
-      if [ $rc != 0 ]; then
+      if [ $rc -ne 0 ]; then
          #TODO issue localized error
-         echo error deleting checkpoint
+         echo "error deleting checkpoint"
          return $rc
       fi   
     fi
@@ -896,11 +901,14 @@ javaCmd()
     rmIfExist "${CHECKPOINT_CONSOLE_LOG}"
     mkdirs "${X_LOG_DIR}"
     # touch the log so we can tail it immediately
-    touch "${CHECKPOINT_CONSOLE_LOG}"
+    touchIfNotExist "${CHECKPOINT_CONSOLE_LOG}"
     tail -f "${CHECKPOINT_CONSOLE_LOG}" &
+    TAIL_PID=$!
 
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1
     rc=$?
+    kill $TAIL_PID
+    backupWorkarea
     return $rc
   else
     "${JAVA_CMD}" "$@"
@@ -1121,90 +1129,160 @@ serverCmd()
   return $rc
 }
 
-### Basic precheck for criu on this platform. Some checks only possible from liberty proper
-### so may want to remove this check in lieu of liberty internal checks
-checkCriuSupport()
+backupWorkarea()
 {
-  return 0  
+  if $X_WLP_IN_CONTAINER
+  then
+    return 0
+  fi
+  if [ -d "${SERVER_OUTPUT_DIR}/workarea-checkpoint" ]; then
+    rm -rf "${SERVER_OUTPUT_DIR}/workarea-checkpoint"
+  fi
+  # copy everything but the checkpoint directory; temporarily move checkpoint while copying
+  mv "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    return 3
+  fi
+  cp -r "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/workarea-checkpoint"
+  rc=$?
+  # mv checkpoint directory back
+  mv "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
+  if [ $rc -ne 0 ]; then
+    return 3
+  fi
 }
 
-## restoreServer: restore a server from a checkpoint image if it exists
-##
+restoreWorkarea()
+{
+  if [ ! -f "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreMarker" ]; then
+    return 0
+  fi
+  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea-checkpoint" ]; then
+    return 1
+  fi
+  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then
+    return 2
+  fi
+  # remove everything but the checkpoint directory; temporarily move checkpoint while removing
+  mv "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    return 3
+  fi
+  rm -rf "${SERVER_OUTPUT_DIR}/workarea"
+  # copy backup to workarea
+  cp -r "${SERVER_OUTPUT_DIR}/workarea-checkpoint" "${SERVER_OUTPUT_DIR}/workarea"
+  rc=$?
+  # mv checkpoint directory back
+  mkdirs "${SERVER_OUTPUT_DIR}/workarea/"
+  mv "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
+  if [ $rc -ne 0 ]; then
+    return 4
+  fi
+  rc=$?
+  rmIfExist "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreMarker"
+    if [ $rc -ne 0 ]; then
+    return 5
+  fi
+}
+
 ##           restoreInBackground
 ##               If true the restore command will start in the background
+criuRestore()
+{
+  restoreWorkarea
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    #TODO localize error message
+    echo "Failed to restore workarea for restore."
+    return $rc
+  fi 
+
+  BACKGROUND_RESTORE=$1
+  if $BACKGROUND_RESTORE
+  then
+    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -d -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+    rc=$?
+    if [ $rc = 0 ]; then
+      # successful restore, not check server status
+      JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+      IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+      OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
+
+      # Verify/wait for the process to start
+      # TODO figure out the PID restored
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start
+      rc=$?
+      # write the pid file if return is OK or UNKNOWN
+      if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
+        safeEcho "${PID}" > "${X_PID_FILE}"
+      fi
+    fi        
+  else
+    # trap on the signals here to ensure the background tail process always ends below
+    trap "exit" INT TERM
+    trap "kill 0" EXIT
+    # For checkpoint we always write to the log file.
+    # Use tail to bring the content to the console output
+    tail -s0.1 -f "${RESTORE_CONSOLE_LOG}" &
+    TAIL_PID=$!
+
+    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+    rc=$?
+
+    kill $TAIL_PID
+  fi
+
+  return $rc
+}
+## restoreServer: restore a server from a checkpoint image if it exists
+##
+
 restoreServer()
 {
-    BACKGROUND_RESTORE=$1
+  BACKGROUND_RESTORE=$1
 
-    if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
-      return 1
-    fi
+  if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
+    return 1
+  fi
 
-    # must check for --clean option before restoring
-    for option in "$@"; do
-      if [ -n "${option}" ]; then
-        if [ -z "${option##--clean}" ]; then
-          # never restore if --clean is specified
-          return 1
-        fi
+  # must check for --clean option before restoring
+  for option in "$@"; do
+    if [ -n "${option}" ]; then
+      if [ -z "${option##--clean}" ]; then
+        # never restore if --clean is specified
+        return 1
       fi
-    done
+    fi
+  done
 
-    echo "Launch server from image."
+  # TODO we cannot localize this without invoking java; probably need to get rid of it
+  echo "Launch server from image."
 
-    # restore artifacts and environment prior to checkpoint here
+  # restore artifacts and environment prior to checkpoint here
     
-    # no good way to check for criu support since fast startup is imperitive
-    #   just let criu invocation fail with a hopefully informative error message.
-    mkdirs ${X_LOG_DIR}/checkpoint
+  # no good way to check for criu support since fast startup is imperitive
+  #   just let criu invocation fail with a hopefully informative error message.
+  mkdirs ${X_LOG_DIR}/checkpoint
 
-    # save off the log during checkpoint and start fresh from restore 
-    RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
-    CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
-    mvIfExists $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
-    mkdirs "${X_LOG_DIR}"
-    touch "${RESTORE_CONSOLE_LOG}"
+  # save off the log during checkpoint and start fresh from restore 
+  RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+  CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
+  mvIfExists $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
+  mkdirs "${X_LOG_DIR}"
+  touchIfNotExist "${RESTORE_CONSOLE_LOG}"
  
-    # record the start of restoreTime
-    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
+  # record the start of restoreTime
+  echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
 
-    if $BACKGROUND_RESTORE
-    then
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -d -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
-      rc=$?
-      if [ $rc = 0 ]; then
-        # successful restore, not check server status
-
-        JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
-        IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-        OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
-
-        # Verify/wait for the process to start
-        # TODO figure out the PID restored
-        javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start
-        rc=$?
-        # write the pid file if return is OK or UNKNOWN
-        if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
-            safeEcho "${PID}" > "${X_PID_FILE}"
-        fi
-      fi        
-    else
-      # trap on the signals here to ensure the background tail process always ends below
-      trap "exit" INT TERM
-      trap "kill 0" EXIT
-
-      # For checkpoint we always write to the log file.
-      # Use tail to bring the content to the console output
-      tail -f "${RESTORE_CONSOLE_LOG}" &
-
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
-      rc=$?
-    fi
-
-    if [ $rc != 0 ]; then
-       echo The criu restore command exited with error code $rc
-    fi
-    return $rc
+  criuRestore $BACKGROUND_RESTORE
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    # TODO localize message
+    echo "The criu restore command exited with error code $rc"
+  fi
+  return $rc
 }
 
 JAVA_DEBUG=
