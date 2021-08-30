@@ -64,7 +64,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         return isSynthetic;
     }
 
-    static String getPrivateRegistry() {
+    public static String getPrivateRegistry() {
         String artifactoryServer = System.getProperty("fat.test.artifactory.download.server");
         if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${"))
             throw new IllegalStateException("No private registry configured. System property 'fat.test.artifactory.download.server' was: " + artifactoryServer);
