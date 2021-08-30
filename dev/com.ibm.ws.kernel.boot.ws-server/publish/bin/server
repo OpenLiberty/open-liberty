@@ -1225,7 +1225,7 @@ criuRestore()
     trap "kill 0" EXIT
     # For checkpoint we always write to the log file.
     # Use tail to bring the content to the console output
-    tail -f "${RESTORE_CONSOLE_LOG}" &
+    tail -s0.1 -f "${RESTORE_CONSOLE_LOG}" &
     TAIL_PID=$!
 
     criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
