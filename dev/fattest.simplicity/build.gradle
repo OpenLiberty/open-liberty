@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,10 +44,12 @@ jar {
 
 configurations {
     arquillianFeature
+    arquillianJakartaFeature
 }
 
 dependencies {
     arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.5:feature@zip'
+    arquillianJakartaFeature 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.0:feature@zip'
 }
 
 task extractArquillianSupportFeature(type:Sync) {
@@ -63,9 +65,28 @@ task extractArquillianSupportFeature(type:Sync) {
     }
 }
 
+task extractArquillianSupportJakartaFeature(type:Sync) {
+    configurations.arquillianJakartaFeature.each {
+        from(zipTree(it))
+    }
+    rename { String mfFile ->
+        mfFile.replace("arquillian-liberty-support.mf", "arquillian-liberty-support-jakarta.mf")
+    }
+    into('build/arquillian-jakarta-feature-extract')
+
+    doLast {
+        // Update the feature manifest to mark it as a test feature
+        file('build/arquillian-jakarta-feature-extract/extension/lib/features/arquillian-liberty-support-jakarta.mf')
+            .append('IBM-Test-Feature: true\n')
+    }
+}
+
 task publishArquillianSupportFeature(type:Copy) {
     dependsOn extractArquillianSupportFeature
     from('build/arquillian-feature-extract/extension')
+    dependsOn extractArquillianSupportJakartaFeature
+    from('build/arquillian-jakarta-feature-extract/extension')
+
     into(buildImage.file('wlp'))
 }
 

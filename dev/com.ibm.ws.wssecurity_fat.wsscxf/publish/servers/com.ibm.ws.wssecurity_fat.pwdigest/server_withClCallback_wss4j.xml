@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
 <server>
 	<featureManager>
 		<feature>servlet-3.1</feature>
@@ -62,25 +73,13 @@
 		ws-security.return.security.error="true"
 	>
 	</wsSecurityProvider>
-	<!-- 3/2021 added ws-security.return.security.error -->
-    <!-- 2/2021 EE8 callbackhandler -->
     
-        <!-- orig from CL
-	<wsSecurityClient
-		id="default"
-		ws-security.password="security"
-		ws-security.username="user22"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.fat.pwdigest.ClientPWDigestCallbackHandler"
-	>
-        -->
-        <!-- update to work on OL using client package -->
         <wsSecurityClient
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user22"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.fat.pwdigestclient.ClientPWDigestCallbackHandlerWss4j"
 	>
-    <!-- 2/2021 EE8 callbackhandler -->
     
 	</wsSecurityClient>
 
@@ -98,29 +97,7 @@
 		<classloader apiTypeVisibility="spec, ibm-api, third-party" />
 	</application>
 	
-	 <!-- added 12/2020 -->
-    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/pwdigest/SOAPServicePWDigest" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/pwdigest/SOAPServicePWDigestWithSSL" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/pwdigest/SOAPServicePWDigestCreated" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/pwdigest/SOAPServicePWDigestCreatedWithSSL" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/pwdigest/SOAPServicePWDigestNonceCreated" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/pwdigest/SOAPServicePWDigestNonceCreatedWithSSL" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/pwdigest/SOAPServicePWDigestNonce" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/pwdigest/SOAPServicePWDigestNonceWithSSL" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/pwdigest/SOAPServicePWDigestNoPassword" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/pwdigest/SOAPServicePWDigestNoPasswordWithSSL" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
-    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>    
-    <!-- 2/2021 EE8 -->
-    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
-    <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
-       
+	<include location="imports/java2Permissions.xml" />
+	
 </server>
 

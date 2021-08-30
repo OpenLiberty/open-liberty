@@ -34,7 +34,6 @@
 # Using 0000-0299 for General DataStore Adapter exception messages and warnings
 # 
 # ----------------------------------------------------------------------------
-# 0010E      SQL_STATE_ERROR_CODE
 # 
 # {0}        The SQLSTATE.
 # {1}        The ERRORCODE
@@ -66,8 +65,6 @@ DSA_INTERNAL_WARNING.useraction=L\u00e1togassa meg az IBM term\u00e9kt\u00e1moga
 # 0060 deleted
 # 0070 deleted
 
-# 0080E      DSA_ERROR
-# 
 # {0}        The exception.
 DSA_ERROR=DSRA0080E: A Data Store Adapter egy kiv\u00e9telt kapott. Tekintse meg az eredeti kiv\u00e9tel\u00fczenetet: {0}.
 DSA_ERROR.explanation=Az adatb\u00e1zis-h\u00e1tt\u00e9r egy kiv\u00e9telt \u00e1ll\u00edtott el\u0151, amelyet a Data Store Adapter \u00e9szlelt.
@@ -85,48 +82,41 @@ UNSUPPORTED_METHOD=DSRA0091I: A(z) {0} met\u00f3dus nem t\u00e1mogatott ehhez a 
 UNSUPPORTED_METHOD.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt.
 UNSUPPORTED_METHOD.useraction=L\u00e1togassa meg az IBM term\u00e9kt\u00e1mogat\u00e1si webhely\u00e9t hibafelder\u00edt\u00e9ssel kapcsolatos inform\u00e1ci\u00f3k\u00e9rt.
 
-#TRANSLATOR Do Not Translate: DataSource
-RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: A rendszer implicit adatb\u00e1zis tranzakci\u00f3t \u00e9szlelt. A WebSphere {0} m\u0171veletet fog v\u00e9gezni a tranzakci\u00f3val. Ez az \u00fczenet minden Datasource adatforr\u00e1shoz egyszer ker\u00fcl napl\u00f3z\u00e1sra. Az ezt k\u00f6vet\u0151 implicit tranzakci\u00f3k automatikusan felold\u00e1sra ker\u00fclnek. 
+#Do not translate: DataSource
+RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: A rendszer implicit adatb\u00e1zis-tranzakci\u00f3t \u00e9szlelt, amely a(z) {0} m\u0171velettel ker\u00fclt megold\u00e1sra. Ez az \u00fczenet az egyes adatforr\u00e1sokra vonatkoz\u00f3an egyszer ker\u00fcl napl\u00f3z\u00e1sra. Az ezt k\u00f6vet\u0151 implicit tranzakci\u00f3k automatikusan felold\u00e1sra ker\u00fclnek.
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e9szlelte, hogy az adatb\u00e1zis elind\u00edtott egy tranzakci\u00f3t. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lja feloldani a tranzakci\u00f3t az adatforr\u00e1s egy\u00e9ni be\u00e1ll\u00edt\u00e1sai alapj\u00e1n.
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Semmit sem kell tennie. 
 
-#TRANSLATOR Do Not Translate: Datasource, FFDC
+#Do not translate: Datasource, FFDC
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: A rendszer implicit adatb\u00e1zis tranzakci\u00f3t \u00e9szlelt. A WebSphere megpr\u00f3b\u00e1lt {0} m\u0171velet v\u00e9grehajtani a tranzakci\u00f3n, de a k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {1}.
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e9szlelte, hogy az adatb\u00e1zis elind\u00edtott egy tranzakci\u00f3t. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lja feloldani a tranzakci\u00f3t az adatforr\u00e1s egy\u00e9ni be\u00e1ll\u00edt\u00e1sai alapj\u00e1n. Hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozta a tranzakci\u00f3 felold\u00e1s\u00e1t.
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Gy\u0171jtse \u00f6ssze az FFDC napl\u00f3f\u00e1jlokat \u00e9s a kiszolg\u00e1l\u00f3 valamennyi napl\u00f3f\u00e1jlj\u00e1t. Ha a hib\u00e1t nem egy adatb\u00e1zis el\u00e9rhetetlens\u00e9ge okozza, akkor l\u00e1togassa meg az IBM term\u00e9kt\u00e1mogat\u00e1si webhelyet hibafelder\u00edt\u00e9s v\u00e9gett.
 
-#TRANSLATOR Do Not Translate: Datasource
-IMPLICIT_TRANSACTION_FOUND=DSRA0095I: A rendszer olyan adatb\u00e1zis tranzakci\u00f3t tal\u00e1lt, amit a WebSphere nem k\u00f6vet, k\u00eds\u00e9rletet tesz a visszag\u00f6rget\u00e9sre a kapcsolat t\u00f6rl\u00e9se el\u0151tt. Ez az \u00fczenet minden Datasource adatforr\u00e1shoz egyszer ker\u00fcl napl\u00f3z\u00e1sra. Az ezt k\u00f6vet\u0151 implicit tranzakci\u00f3k automatikusan felold\u00e1sra ker\u00fclnek. 
-IMPLICIT_TRANSACTION_FOUND.explanation=Az adatb\u00e1zis egy tranzakci\u00f3t kezdett a kapcsolaton kereszt\u00fcl. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 vissza fogja g\u00f6rgetni a tranzakci\u00f3t a kapcsolat visszaad\u00e1sa el\u0151tt a kapcsolatt\u00e1rba.
+#Do not translate: Datasource
+IMPLICIT_TRANSACTION_FOUND=DSRA0095I: A Liberty \u00e1ltal nem k\u00f6vetett adatb\u00e1zis-tranzakci\u00f3t \u00e9szlelt a rendszer. A kapcsolat t\u00f6rl\u00e9se el\u0151tt k\u00eds\u00e9rlet t\u00f6rt\u00e9nik a visszag\u00f6rget\u00e9sre. Ez az \u00fczenet az egyes adatforr\u00e1sokra vonatkoz\u00f3an egyszer ker\u00fcl napl\u00f3z\u00e1sra. Az ezt k\u00f6vet\u0151 implicit tranzakci\u00f3k automatikusan felold\u00e1sra ker\u00fclnek.
+IMPLICIT_TRANSACTION_FOUND.explanation=Az adatb\u00e1zis egy tranzakci\u00f3t kezdett a kapcsolaton kereszt\u00fcl. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 visszag\u00f6rgeti a tranzakci\u00f3t a kapcsolat t\u00e1rba val\u00f3 visszaad\u00e1sa el\u0151tt.
 IMPLICIT_TRANSACTION_FOUND.useraction=\u00c9rt\u00e9kelje ki az alkalmaz\u00e1s k\u00f3dj\u00e1t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy mi okozza az implicit tranzakci\u00f3t. Lehet, hogy az alkalmaz\u00e1s k\u00f3dja explicit m\u00f3don meg tudja akad\u00e1lyozni a tov\u00e1bbi implicit tranzakci\u00f3kat, vagy be lehet \u00e1ll\u00edtani egy explicit m\u0171veletet az adatforr\u00e1shoz. 
-
 # 0096-0101 deleted
 # 0110 deleted
 # 0174 deleted
 
-# TRANSLATOR Do not translate: ManagedConnection.destroy()
+# Do not translate: ManagedConnection.destroy()
 DSTRY_ERROR_EX=DSRA0180W: Kiv\u00e9tel t\u00f6rt\u00e9nt a ManagedConnection.destroy() met\u00f3dus futtat\u00e1sa sor\u00e1n.  Kiv\u00e9tel: {0}.
 DSTRY_ERROR_EX.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a ManagedConnection megsemmis\u00edt\u00e9s\u00e9nek el\u0151k\u00e9sz\u00edt\u00e9sekor.
 DSTRY_ERROR_EX.useraction=A hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz n\u00e9zze meg az adatb\u00e1zis-szoftver \u00e1ltal jelzett hib\u00e1t.
 
-# 0230E      INVALID_TX_STATE
-# 
 # {0}        The operation.
 # {1}        The transaction state.
 INVALID_TX_STATE=DSRA0230E: A(z) {0} m\u0171velet v\u00e9grehajt\u00e1sa nem enged\u00e9lyezett, mivel a tranzakci\u00f3-\u00e1llapot {1}.
 INVALID_TX_STATE.explanation=A k\u00e9rt m\u0171velet a tranzakci\u00f3 sor\u00e1n nem enged\u00e9lyezett.
 INVALID_TX_STATE.useraction=A tranzakci\u00f3 elkezd\u00e9se el\u0151tt vagy befejez\u00e9se ut\u00e1n hajtsa v\u00e9gre a m\u0171veletet.
 
-# 0240E      INVALID_CONNECTION
-#
 INVALID_CONNECTION=DSRA0240E: \u00c9rv\u00e9nytelen kapcsolat.  A kapcsolatt\u00e1rol\u00f3 ki\u00fcr\u00edt\u00e9sre ker\u00fcl.
 INVALID_CONNECTION.explanation=A felhaszn\u00e1l\u00f3 egy k\u00e9r\u00e9st kezdem\u00e9nyezett a t\u00e1rol\u00f3 ki\u00fcr\u00edt\u00e9s\u00e9re. A k\u00e9r\u00e9s \u00e9rv\u00e9nytelen\u00edti a t\u00e1rol\u00f3ban l\u00e9v\u0151 kapcsolatokat.
-INVALID_CONNECTION.useraction=L\u00e9pjen ki a tranzakci\u00f3b\u00f3l \u00e9s a met\u00f3dushat\u00e1rr\u00f3l, majd pr\u00f3b\u00e1lkozzon \u00fajra a v\u00e9grehajt\u00e1ssal egy \u00faj kapcsolattal.
+INVALID_CONNECTION.useraction=L\u00e9pjen ki a tranzakci\u00f3b\u00f3l \u00e9s a met\u00f3dushat\u00e1rr\u00f3l, majd pr\u00f3b\u00e1lja meg \u00fajra a v\u00e9grehajt\u00e1st egy \u00faj kapcsolattal.
 
 # 0244 deleted
 
-# 0250E		WS_ERROR
-#
 # General purpose template for messages that will not be translated
 WS_ERROR=DSRA0250E: A Data Store Adapter egy kiv\u00e9telt kapott. Tekintse meg az eredeti kiv\u00e9tel\u00fczenetet: {0}.
 WS_ERROR.explanation=CMSG0001
@@ -149,8 +139,6 @@ DISPLAY_XAEX_CONTENT=DSRA0304E:  XAException kiv\u00e9tel t\u00f6rt\u00e9nt. XAE
 DISPLAY_XAEX_CONTENT.explanation=Az adatb\u00e1zison egy k\u00e9tf\u00e1zis\u00fa m\u0171velet kiv\u00e9telt eredm\u00e9nyezett.
 DISPLAY_XAEX_CONTENT.useraction=CMSG0002
 
-# 0310E      XID_MISMATCH
-# 
 # {0}        The Xid from the XAResource.start method.
 # {1}        An XAResource method name.
 # {2}        The Xid for the above XAResource method.
@@ -158,37 +146,24 @@ XID_MISMATCH=DSRA0310E: Az Xid azonos\u00edt\u00f3k nem egyeznek meg.\nXAResourc
 XID_MISMATCH.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 az XAResource.start met\u00f3dushoz haszn\u00e1ltt\u00f3l k\u00fcl\u00f6nb\u00f6z\u0151 Xid azonos\u00edt\u00f3val pr\u00f3b\u00e1lt meg v\u00e9grehajtani egy XAResource m\u0171veletet.
 XID_MISMATCH.useraction=K\u00e9rjen le egy \u00faj kapcsolatot, majd pr\u00f3b\u00e1lja \u00fajra v\u00e9grehajtani a tranzakci\u00f3t.
 
-# 0330E      ORACLE_RAC_RETRY
-# 
-# {0}        The operation being delayed.
-# {1}        Number of milliseconds from the last stale connection.
-# {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
-ORACLE_RAC_RETRY=DSRA0330E: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 k\u00e9slelteti a(z) {0} k\u00e9r\u00e9st, mert a legut\u00f3bbi el\u00e9v\u00fclt kapcsolat \u00f3ta eltelt {1} ezredm\u00e1sodperc az oracleRACXARecoveryDelay \u00e9rt\u00e9ken bel\u00fcl van, ami {2} ezredm\u00e1sodperc.
-ORACLE_RAC_RETRY.explanation=Az oracleRACXARecoveryDelay adatforr\u00e1s egy\u00e9ni tulajdons\u00e1g miatt az alkalmaz\u00e1skiszolg\u00e1l\u00f3 k\u00e9slelteti az xa.commit \u00e9s xa.rollback m\u0171veleteket az \u00fajrapr\u00f3b\u00e1l\u00e1si id\u0151tartam erej\u00e9ig.
-ORACLE_RAC_RETRY.useraction=V\u00e1rja meg a tranzakci\u00f3-kezel\u0151t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. Az oracleRACXARecoveryDelay megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9hez heurisztikus \u00fajrapr\u00f3b\u00e1lkoz\u00e1st kell be\u00e1ll\u00edtani a tranzakci\u00f3-kezel\u0151ben.
+# 0330 unreachable
 
-# 0400W      TBC_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_NOT_SUPPORTED=DSRA0400W: A(z) {0} adatforr\u00e1s nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1st
-TBC_NOT_SUPPORTED.explanation=A(z)  adatforr\u00e1s \u00e1ltal meghat\u00e1rozott adatb\u00e1zis vagy jdbc szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1st csak egy DB2 Universal JCC illeszt\u0151program \u00e1ltal el\u00e9rt DB2 for z/OS adatb\u00e1zisok t\u00e1mogatj\u00e1k.  A laza \u00e1gcsatol\u00e1s alap\u00e9rtelmezett lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez z\u00e1rol\u00e1s id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
+TBC_NOT_SUPPORTED.explanation=A(z) adatforr\u00e1s \u00e1ltal meghat\u00e1rozott adatb\u00e1zis vagy JDBC szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1st csak egy DB2 Universal JCC illeszt\u0151program \u00e1ltal el\u00e9rt DB2 for z/OS adatb\u00e1zisok t\u00e1mogatj\u00e1k.  Az alap\u00e9rtelmezett laza \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez z\u00e1rol\u00e1s id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
 TBC_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1ljon, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
 
 # 0401 deleted
 
-# 0402W      TBC_DB_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_DB_NOT_SUPPORTED=DSRA0402W: A(z) {0} adatforr\u00e1s adatb\u00e1zis v\u00e1ltozata nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1st
-TBC_DB_NOT_SUPPORTED.explanation=Az adatforr\u00e1s \u00e1ltal megadott adatb\u00e1zis nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1st csak a DB2 for z/OS V8 (+ APAR PK47713), valamint a DB2 for Linux, UNIX, Windows V8 \u00e9s \u00fajabb v\u00e1ltozatokhoz l\u00e9tes\u00edtett 4-es t\u00edpus\u00fa kapcsolatok t\u00e1mogatj\u00e1k.  A laza \u00e1gcsatol\u00e1s alap\u00e9rtelmezett lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez z\u00e1rol\u00e1s id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
-TBC_DB_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1ljon, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
+TBC_DB_NOT_SUPPORTED.explanation=Az adatforr\u00e1s \u00e1ltal megadott adatb\u00e1zis nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1st csak a DB2 for z/OS V8 (+ APAR PK47713), valamint a DB2 for Linux, UNIX, Windows V8 \u00e9s \u00fajabb v\u00e1ltozatokhoz l\u00e9tes\u00edtett 4-es t\u00edpus\u00fa kapcsolatok t\u00e1mogatj\u00e1k.  Az alap\u00e9rtelmezett laza \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez a be\u00e1ll\u00edt\u00e1s z\u00e1rol\u00e1si id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
+TBC_DB_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy a t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1lja, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
 
-# 0403W      TBC_JCC_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: A(z) {0} adatforr\u00e1s nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1st, mivel a DB2 JCC illeszt\u0151program nem megfelel\u0151 szint\u0171
-TBC_JCC_NOT_SUPPORTED.explanation=A(z)  adatforr\u00e1s \u00e1ltal meghat\u00e1rozott jdbc szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9g t\u00e1mogat\u00e1s\u00e1hoz legal\u00e1bb a DB2 Universal JCC illeszt\u0151program 3.51-es vagy 3.6-os v\u00e1ltozata sz\u00fcks\u00e9ges, amik a DB2 9.5-\u00f6s vagy 9-es szolg\u00e1ltat\u00e1si szintjeihez, valamint a JCC4 illeszt\u0151program 4.1-es v\u00e1ltozat\u00e1hoz tartoznak.  A laza \u00e1gcsatol\u00e1s alap\u00e9rtelmezett lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez z\u00e1rol\u00e1s id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
-TBC_JCC_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1ljon, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
+TBC_JCC_NOT_SUPPORTED.explanation=Az adatforr\u00e1s \u00e1ltal megadott JDBC szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9g t\u00e1mogat\u00e1s\u00e1hoz legal\u00e1bb a DB2 Universal JCC illeszt\u0151program 3.51-es vagy 3.6-os v\u00e1ltozata sz\u00fcks\u00e9ges, amik a DB2 9.5-\u00f6s vagy 9-es szolg\u00e1ltat\u00e1si szintjeihez, valamint a JCC4 illeszt\u0151program 4.1-es v\u00e1ltozat\u00e1hoz tartoznak.  Az alap\u00e9rtelmezett laza \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez a be\u00e1ll\u00edt\u00e1s z\u00e1rol\u00e1si id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
+TBC_JCC_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy a t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1lja, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
 
 # ----------------------------------------------------------------------------
 # 
@@ -198,18 +173,14 @@ TBC_JCC_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania
 # 1100-1102 deleted
 # 1110 deleted
 
-# 1120E      CONN_NEVER_CLOSED
-# 
 CONN_NEVER_CLOSED=DSRA1120E: Az alkalmaz\u00e1s nem z\u00e1r le explicit m\u00f3don minden kapcsolatazonos\u00edt\u00f3t. A kapcsolat nem t\u00e1rolhat\u00f3.
-CONN_NEVER_CLOSED.explanation=A kapcsolat nem ker\u00fcl vissza\u00e1ll\u00edt\u00e1sra a kapcsolatt\u00e1rol\u00e1shoz, mivel az alkalmaz\u00e1s nem tudott minden azonos\u00edt\u00f3t expliciten lez\u00e1rni.
+CONN_NEVER_CLOSED.explanation=A kapcsolat nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra a kapcsolatt\u00e1rol\u00e1shoz, mivel az alkalmaz\u00e1s nem tudott minden azonos\u00edt\u00f3t explicit m\u00f3don lez\u00e1rni.
 CONN_NEVER_CLOSED.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy mindig z\u00e1rjon be minden kapcsolatazonos\u00edt\u00f3t.
 
 # 1130 deleted
 # 1200 deleted
 # 1210-1213 deleted
 
-# 1300E      FEATURE_NOT_IMPLEMENTED
-# 
 # {0}        The feature (usually a JDBC API method)
 FEATURE_NOT_IMPLEMENTED=DSRA1300E: Szolg\u00e1ltat\u00e1s nincs megval\u00f3s\u00edtva: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=A k\u00e9rt szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
@@ -260,7 +231,7 @@ DSRA4008.tran.none.unsupported.explanation=Az adatforr\u00e1shoz konfigur\u00e1l
 DSRA4008.tran.none.unsupported.useraction=Friss\u00edtse az adatforr\u00e1s konfigur\u00e1ci\u00f3j\u00e1t, hogy az illeszt\u0151program \u00e1ltal t\u00e1mogatott elk\u00fcl\u00f6n\u00edt\u00e9si szintet haszn\u00e1ljon, vagy haszn\u00e1ljon egy olyan illeszt\u0151programot, amely t\u00e1mogatja a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintet. 
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: A(z) {0} adatforr\u00e1s nem konfigur\u00e1lhat\u00f3 TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel \u00e9s transactional=true be\u00e1ll\u00edt\u00e1ssal.
-DSRA4009.tran.none.transactional.unsupported.explanation=Egy TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel konfigur\u00e1lt JDBC illeszt\u0151program nem fogja t\u00e1mogatni a tranzakci\u00f3kat.
+DSRA4009.tran.none.transactional.unsupported.explanation=Egy TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel konfigur\u00e1lt JDBC illeszt\u0151program nem t\u00e1mogatja a tranzakci\u00f3kat.
 DSRA4009.tran.none.transactional.unsupported.useraction=\u00c1ll\u00edtsa be a transactional=false tulajdons\u00e1got az adatforr\u00e1shoz.
 
 DSRA4010.tran.none.autocommit.required=DSRA4010E: A(z) {0} adatforr\u00e1shoz konfigur\u00e1lt TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szint haszn\u00e1latakor automatikus v\u00e9gleges\u00edt\u00e9s sz\u00fcks\u00e9ges.
@@ -294,34 +265,30 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Friss\u00edtse az adatforr
 # 7000 reserved for other NLS file
 # 7001-7009 deleted
 
-# No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Ha a(z) {0} megadott nyomk\u00f6vet\u00e9si f\u00e1jl nem l\u00e9tezik, akkor az adatb\u00e1zis kiv\u00e9telt dob, amennyiben a probl\u00e9ma nem ker\u00fcl kijav\u00edt\u00e1sra.
 DB2_FILE_OUTSTREAM_ERROR.explanation=A megadott nyomk\u00f6vet\u00e9si f\u00e1jl az adatforr\u00e1son nem l\u00e9tezik.
 DB2_FILE_OUTSTREAM_ERROR.useraction=Haszn\u00e1ljon l\u00e9tez\u0151 nyomk\u00f6vet\u00e9si f\u00e1jlt.
 
 # 7011-7013 deleted
 
-# TRANSLATOR Do not translate: DB2 Universal JDBC
+# Do not translate: DB2 Universal JDBC
 DB2ZOS_CONFIG_INFO=DSRA7014I: A DB2 Universal JDBC illeszt\u0151program RRS k\u00f6rnyezetben fut
 DB2ZOS_CONFIG_INFO.explanation=A DB2 Universal JDBC illeszt\u0151program \u00e1t\u00e1ll\u00edt\u00e1sra ker\u00fclt, hogy DB2 for z/OS rendszeren RRS k\u00f6rnyezetben fusson. 
 DB2ZOS_CONFIG_INFO.useraction=Ez egy inform\u00e1ci\u00f3s \u00fczenet a fut\u00f3 JDBC illeszt\u0151program k\u00f6rnyezete sz\u00e1m\u00e1ra.
 
 
-# TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
+# Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
 DB2ZOS_TYPE2_ERROR=DSRA7015E: A DB2 nem t\u00e1mogatja a type 2 illeszt\u0151programot a DB2 for z/OS alatt fut\u00f3 DB2XADataSource-hoz
 DB2ZOS_TYPE2_ERROR.explanation=Az adatforr\u00e1s driverType egy\u00e9ni tulajdons\u00e1g\u00e1nak \u00e9rt\u00e9ke 2-re lett \u00e1ll\u00edtva a DB2XADatasource adatforr\u00e1son. Ezt a be\u00e1ll\u00edt\u00e1st a DB2 for z/OS nem t\u00e1mogatja.
 DB2ZOS_TYPE2_ERROR.useraction=Haszn\u00e1lja a DB2ConnectionPoolDatasource elemet vagy v\u00e1ltson \u00e1t DB2 Universal JDBC driver type 4-re, amennyiben ez rendelkez\u00e9s\u00e9re \u00e1ll konfigur\u00e1ci\u00f3j\u00e1ban.
 
 # 7016 deleted
 
-# DSRA7017I      ORACLE_TRACE_WARNING
-# TRANSLATOR Do not translate: IOException
+# Do not translate: IOException
 ORACLE_TRACE_WARNING=DSRA7017I: A napl\u00f3z\u00e1s a(z) {0} f\u00e1jlba {1} IOException miatt nem hajthat\u00f3 v\u00e9gre
 ORACLE_TRACE_WARNING.explanation=IOException kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte a megadott nyomk\u00f6vet\u00e9si f\u00e1jlt megnyitni.
 ORACLE_TRACE_WARNING.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt, jav\u00edtsa ki az I/O hib\u00e1t \u00e9s ind\u00edtsa el \u00fajra az alkalmaz\u00e1skiszolg\u00e1l\u00f3t.
 
-# DSRA7018I      META_DATA_EXCEPTION
-# 
 META_DATA_EXCEPTION=DSRA7018I: Az adatb\u00e1zis metaadatainak el\u00e9r\u00e9se nem el\u00e9v\u00fclt kapcsolatkiv\u00e9telt okozott.  A norm\u00e1l v\u00e9grehajt\u00e1s folytat\u00e1sra ker\u00fclt.  Kiv\u00e9tel: {0}
 META_DATA_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lt hozz\u00e1f\u00e9rni az adatb\u00e1zis metaadat-objektum\u00e1hoz.
 META_DATA_EXCEPTION.useraction=Ellen\u0151rizze, hogy a metaadatok a h\u00e1tt\u00e9r-adatb\u00e1zison enged\u00e9lyezve vannak-e.
@@ -338,24 +305,18 @@ META_DATA_EXCEPTION.useraction=Ellen\u0151rizze, hogy a metaadatok a h\u00e1tt\u
 # 8000-8001 deleted
 # 8010 deleted
 
-# 8011E      NO_SETTER_METHOD
-# 
 # {0}        The property we cannot find a setter method for.
 NO_SETTER_METHOD=DSRA8011E: Nincs be\u00e1ll\u00edt\u00f3 met\u00f3dus a(z) ''{0}'' tulajdons\u00e1ghoz.
 NO_SETTER_METHOD.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 az adatforr\u00e1son nem tal\u00e1lt be\u00e1ll\u00edt\u00f3 met\u00f3dust a k\u00e9rt tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1hoz.
 NO_SETTER_METHOD.useraction=Ellen\u0151rizze, hogy a megadott tulajdons\u00e1gn\u00e9v helyese-e.
 
-# 8020E      PROP_NOT_FOUND
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 # {0}        The DataSource class name.
 # {1}        The property name.
 PROP_NOT_FOUND=DSRA8020E: Figyelmeztet\u00e9s: A(z) ''{1}'' tulajdons\u00e1g a(z) {0} DataSource oszt\u00e1lyon nem l\u00e9tezik.
 PROP_NOT_FOUND.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tal\u00e1lja a megadott adatforr\u00e1s tulajdons\u00e1got.  A lehets\u00e9ges okok a k\u00f6vetkez\u0151k: 1) Az adatforr\u00e1s tulajdons\u00e1g helytelen\u00fcl lett be\u00edrva (bele\u00e9rtve a kis- \u00e9s nagybet\u0171k el\u00edr\u00e1s\u00e1t), 2) a megadott tulajdons\u00e1g nem vonatkozik a be\u00e1ll\u00edtand\u00f3 data adatforr\u00e1sra, vagy 3) az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a megadott JDBC illeszt\u0151programt\u00f3l elt\u00e9r\u0151 v\u00e1ltozathoz lett alap\u00e9rtelmez\u00e9sben konfigur\u00e1lva, ami az adatforr\u00e1s tulajdons\u00e1gok elt\u00e9r\u00e9s\u00e9t eredm\u00e9nyezte.
 PROP_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a megadott tulajdons\u00e1g az adatforr\u00e1shoz megfelel\u0151-e. Jav\u00edtsa ki az esetleges helyes\u00edr\u00e1si hib\u00e1kat, kis-/nagybet\u0171 el\u00edr\u00e1sokat.  T\u00f6r\u00f6lje a tulajdons\u00e1got, ha a JDBC illeszt\u0151programra nem (vagy m\u00e1r nem) \u00e9rv\u00e9nyes.
 
-# 8021W      PROP_SET_ERROR
-# 
 # {0}        The property name.
 # {1}        The Exception class, if not already included in the exception message.
 # {2}        The Exception.
@@ -369,95 +330,77 @@ PROP_SET_ERROR.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a tu
 # 8060 deleted
 # 8065 deleted
      
-# 8066E
 # {0}         The invalid attribute value
-# {1}         The allowed attribute values
+# {1}         The recommended attribute values
 # Do not translate: identifyException, as
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: \u00c9rv\u00e9nytelen ''{0}'' \u00e9rt\u00e9k lett megadva az identifyException elem ''as'' attrib\u00fatumak\u00e9nt. A megengedett \u00e9rt\u00e9kek: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: \u00c9rv\u00e9nytelen ''{0}'' \u00e9rt\u00e9k lett megadva az identifyException elem ''as'' attrib\u00fatumak\u00e9nt. A javasolt \u00e9rt\u00e9kek: {1}
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Az identifyException konfigur\u00e1ci\u00f3s elemre vonatkoz\u00f3an \u00e9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva.
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adjon meg egy megengedett \u00e9rt\u00e9ket.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adjon meg egy javasolt \u00e9rt\u00e9ket.
 
-# 8067E
 # Do not translate: errorCode, sqlState, identifyException
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Az identifyException elemre vonatkoz\u00f3an az 'errorCode', vagy az 'sqlState' attrib\u00fatumok legal\u00e1bb egyik\u00e9t meg kell adni.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Az errorCode vagy sqlState attrib\u00fatumok valamelyik\u00e9t meg kell adni.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adja meg az errorCode vagy sqlState attrib\u00fatumok egyik\u00e9t az identifyException elemre vonatkoz\u00f3an.
 
-# 8100E      JAVAX_CONN_ERR
-# 
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: A(z) {0} adatforr\u00e1s nem tudja be\u00e1ll\u00edtani az sqlState \u00e9s errorCode attrib\u00fatumokat ugyanazon az identifyException elemen, ha a replaceExceptions attrib\u00fatum "true" \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+8068_EXC_REPLACE_CONFLICT.explanation=A kiv\u00e9telek cser\u00e9jekor a kiv\u00e9telt vagy az SQL \u00e1llapota, vagy a hibak\u00f3dja azonos\u00edthatja, a kett\u0151 egyszerre nem.
+8068_EXC_REPLACE_CONFLICT.useraction=Adjon meg k\u00fcl\u00f6n identifyException konfigur\u00e1ci\u00f3s elemet az sqlState \u00e9s az errorCode sz\u00e1m\u00e1ra.
+
+8069_HELPER_INIT_ERR=DSRA8069E: A(z) {0} adatforr\u00e1s nem tudja inicializ\u00e1lni a(z) {1} DataStoreHelper megval\u00f3s\u00edt\u00e1st egy hiba k\u00f6vetkezt\u00e9ben: {2}
+8069_HELPER_INIT_ERR.explanation=A be\u00e1ll\u00edtott DataStoreHelper oszt\u00e1ly vagy nem volt el\u00e9rhet\u0151 \u00e9s hi\u00e1nyzott egy nyilv\u00e1nos konstruktor egyetlen java.util.Properties param\u00e9terrel, vagy hiba t\u00f6rt\u00e9nt a megh\u00edv\u00e1sakor.
+8069_HELPER_INIT_ERR.useraction=Az ok meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a l\u00e1ncolt kiv\u00e9telt.
+
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: A(z) {0} nem k\u00e9rhet\u0151 le a DataSource-b\u00f3l.
 JAVAX_CONN_ERR.explanation=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a linkedException kiv\u00e9telt.
 JAVAX_CONN_ERR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a linkedException kiv\u00e9telt.
 
-# 8101E      NOT_A_1_PHASE_DS
-# 
-# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
 # {0}        ClassCastException message.
 NOT_A_1_PHASE_DS=DSRA8101E: A DataSource oszt\u00e1ly nem haszn\u00e1lhat\u00f3 egyf\u00e1zis\u00fak\u00e9nt: ClassCastException: {0}
 NOT_A_1_PHASE_DS.explanation=Az 'enable2Phase' tulajdons\u00e1g \u00e9rt\u00e9ke csak akkor lehet hamis, ha az adatforr\u00e1s oszt\u00e1ly megval\u00f3s\u00edtja a ConnectionPoolDatasource fel\u00fcletet.
 NOT_A_1_PHASE_DS.useraction=Az 'enable2Phase' \u00e9rt\u00e9k\u00e9t XADataSource eset\u00e9n igazra, ConnectionPoolDataSource eset\u00e9n pedig hamisra \u00e1ll\u00edtsa.
 
-# 8102E      NOT_A_2_PHASE_DS
-# 
-# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
-# {0}        ClassCastException message.
-NOT_A_2_PHASE_DS=DSRA8102E: A DataSource oszt\u00e1ly nem haszn\u00e1lhat\u00f3 k\u00e9tf\u00e1zis\u00fak\u00e9nt: ClassCastException: {0}
-NOT_A_2_PHASE_DS.explanation=Az 'enable2Phase' tulajdons\u00e1g \u00e9rt\u00e9ke csak akkor lehet igaz, ha az adatforr\u00e1s oszt\u00e1ly megval\u00f3s\u00edtja az XADatasource fel\u00fcletet.
-NOT_A_2_PHASE_DS.useraction=Az 'enable2Phase' \u00e9rt\u00e9k\u00e9t XADataSource eset\u00e9n igazra, ConnectionPoolDataSource eset\u00e9n pedig hamisra \u00e1ll\u00edtsa.
-
+# 8102 deleted
 # 8150 deleted
 # 8160 deleted
 # 8200-8202 deleted
 
-# 8203I      DB_PRODUCT_NAME
-# 
-# TRANSLATOR Do not translate: Database.
+# Do not translate: Database.
 DB_PRODUCT_NAME=DSRA8203I: Database term\u00e9kn\u00e9v: {0}
 DB_PRODUCT_NAME.explanation=Ez az \u00fczenet a Database term\u00e9knev\u00e9t jelen\u00edti meg.
 DB_PRODUCT_NAME.useraction=Az alkalmaz\u00e1sok a Database fent eml\u00edtett nev\u00e9t fogj\u00e1k haszn\u00e1lni.
 
-# 8204I      DB_PRODUCT_VERSION
-# 
 DB_PRODUCT_VERSION=DSRA8204I: Database term\u00e9kv\u00e1ltozat: {0}
 DB_PRODUCT_VERSION.explanation=Ez az \u00fczenet a Database term\u00e9kv\u00e1ltozat\u00e1t jelen\u00edti meg.
 DB_PRODUCT_VERSION.useraction=Az alkalmaz\u00e1sok a Database fent eml\u00edtett v\u00e1ltozat\u00e1t fogj\u00e1k haszn\u00e1lni.
 
-# 8205I      JDBC_DRIVER_NAME
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 JDBC_DRIVER_NAME=DSRA8205I: JDBC driver neve: {0}
 JDBC_DRIVER_NAME.explanation=Ez az \u00fczenet a Java Database Connectivity (JDBC) illeszt\u0151program nev\u00e9t jelen\u00edti meg.
 JDBC_DRIVER_NAME.useraction=Az alkalmaz\u00e1sok a JDBC driver fent eml\u00edtett nev\u00e9t fogj\u00e1k haszn\u00e1lni.
 
-# 8206I      JDBC_DRIVER_VERSION
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 JDBC_DRIVER_VERSION=DSRA8206I: JDBC driver v\u00e1ltozata: {0}
 JDBC_DRIVER_VERSION.explanation=A Java Database Connectivity (JDBC) illeszt\u0151program v\u00e1ltozata.
 JDBC_DRIVER_VERSION.useraction=Az alkalmaz\u00e1sok a JDBC driver fent eml\u00edtett v\u00e1ltozat\u00e1t fogj\u00e1k haszn\u00e1lni.
 
-# 8207I      ORA_READONLY
-# 
-ORA_READONLY=DSRA8207I: A setReadOnly(false) met\u00f3dus figyelmen k\u00edv\u00fcl marad. Nem ker\u00fcl elind\u00edt\u00e1sra Oracle tranzakci\u00f3.
-ORA_READONLY.explanation=Az Oracle adatb\u00e1zisok nem val\u00f3s\u00edtj\u00e1k meg a setReadOnly met\u00f3dust. A setReadOnly(true) met\u00f3dus nem teszi a kapcsolatot \u00edr\u00e1sv\u00e9dett\u00e9. A setReadOnly(false) met\u00f3dus szint\u00e9n nincs megval\u00f3s\u00edtva, \u00e9s az Oracle adatb\u00e1zis implicit m\u00f3don elind\u00edt egy tranzakci\u00f3t. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a sz\u00fcks\u00e9gtelen tranzakci\u00f3 elind\u00edt\u00e1s\u00e1nak megakad\u00e1lyoz\u00e1sa \u00e9rdek\u00e9ben nem h\u00edvja meg a setReadOnly(false) met\u00f3dust az Oracle adatb\u00e1zison.   
+ORA_READONLY=DSRA8207I: A setReadOnly(false) met\u00f3dus figyelmen k\u00edv\u00fcl marad. Nincs elind\u00edtva Oracle tranzakci\u00f3.
+ORA_READONLY.explanation=Az Oracle adatb\u00e1zisok nem val\u00f3s\u00edtj\u00e1k meg a setReadOnly met\u00f3dust. A setReadOnly(true) met\u00f3dus nem teszi a kapcsolatot \u00edr\u00e1sv\u00e9dett\u00e9. A setReadOnly(false) met\u00f3dus szint\u00e9n nincs megval\u00f3s\u00edtva, \u00e9s az Oracle adatb\u00e1zis implicit m\u00f3don elind\u00edt egy tranzakci\u00f3t. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a sz\u00fcks\u00e9gtelen tranzakci\u00f3 elind\u00edt\u00e1s\u00e1nak megakad\u00e1lyoz\u00e1sa \u00e9rdek\u00e9ben nem h\u00edvja meg a setReadOnly(false) met\u00f3dust az Oracle adatb\u00e1zison.
 ORA_READONLY.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st annak ellen\u0151rz\u00e9se \u00e9rdek\u00e9ben, hogy a setReadOnly(false) met\u00f3dus megh\u00edv\u00e1sa ut\u00e1n az alkalmaz\u00e1s nem f\u00fcgg a tranzakci\u00f3t\u00f3l.
 
 # 8208-8212 deleted
 
-# 8213W     PROVIDER_NOT_SUPPORTED
 PROVIDER_NOT_SUPPORTED=DSRA8213W: A(z) {0} JDBC szolg\u00e1ltat\u00f3t m\u00e1r nem t\u00e1mogatja a WebSphere Application Server.  Az alkalmaz\u00e1soknak a k\u00f6vetkez\u0151t kell haszn\u00e1lniuk: {1}.
 PROVIDER_NOT_SUPPORTED.explanation=Az alkalmaz\u00e1s olyan JDBC szolg\u00e1ltat\u00f3t haszn\u00e1lt, amit m\u00e1r nem t\u00e1mogat az alkalmaz\u00e1skiszolg\u00e1l\u00f3.
 PROVIDER_NOT_SUPPORTED.useraction=Haszn\u00e1lja a hiba sz\u00f6veg\u00e9ben megadott JDBC szolg\u00e1ltat\u00f3t.
 
 # 8214-8222 deleted
 
-# 8230W     NONTRAN_DATASOURCE_WARNING
-# 
 # {0}       The name of the data source property for nontransactional behavior
 # {1}       The name of the data source property for configuring commit or rollback on connection cleanup
 NONTRAN_DATASOURCE_WARNING=DSRA8230W: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudja eld\u00f6nteni, hogy a tranzakci\u00f3t feloldja-e, mert a(z) {0} adatforr\u00e1s egy\u00e9ni tulajdons\u00e1g be van \u00e1ll\u00edtva, de a(z) {1} adatforr\u00e1s egy\u00e9ni tulajdons\u00e1g nincs.
-NONTRAN_DATASOURCE_WARNING.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nik egy kapcsolat t\u00e1rol\u00e1s\u00e1ra, melynek AutoCommit \u00e9rt\u00e9ke False (hamis). Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudja eld\u00f6nteni, hogy a tranzakci\u00f3 akt\u00edv-e, mivel az adatforr\u00e1s nem tranzakci\u00f3khoz van be\u00e1ll\u00edtva. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem fogja megk\u00eds\u00e9relni a tranzakci\u00f3 felold\u00e1s\u00e1t, mivel az adatforr\u00e1s nincs be\u00e1ll\u00edtva az automatikus v\u00e9gleges\u00edt\u00e9sre vagy visszag\u00f6rget\u00e9sre a kapcsolat takar\u00edt\u00e1s sor\u00e1n.
+NONTRAN_DATASOURCE_WARNING.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nik egy kapcsolat t\u00e1rol\u00e1s\u00e1ra, melynek AutoCommit \u00e9rt\u00e9ke False (hamis). Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudja eld\u00f6nteni, hogy a tranzakci\u00f3 akt\u00edv-e, mivel az adatforr\u00e1s nem tranzakci\u00f3khoz van be\u00e1ll\u00edtva. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00eds\u00e9rli meg a tranzakci\u00f3 felold\u00e1s\u00e1t, mivel az adatforr\u00e1s nincs be\u00e1ll\u00edtva az automatikus v\u00e9gleges\u00edt\u00e9sre vagy visszag\u00f6rget\u00e9sre a kapcsolat takar\u00edt\u00e1s sor\u00e1n.
 NONTRAN_DATASOURCE_WARNING.useraction=\u00c1ll\u00edtsa be az adatforr\u00e1st, hogy automatikusan v\u00e9gleges\u00edtsen vagy visszag\u00f6rgessen a kapcsolat takar\u00edt\u00e1sakor, vagy \u00e1ll\u00edtsa mindig vissza az AutoCommit \u00e9rt\u00e9k\u00e9t igazra (True).
 
 # ----------------------------------------------------------------------------
@@ -466,9 +409,7 @@ NONTRAN_DATASOURCE_WARNING.useraction=\u00c1ll\u00edtsa be az adatforr\u00e1st, 
 # 
 # 8520 deleted
 
-# 8600W      ERR_CLOSING_OBJECT
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 # {0}        The object
 # {1}        The error
 ERR_CLOSING_OBJECT=DSRA8600W: Hiba a k\u00f6vetkez\u0151 bez\u00e1r\u00e1sakor: {0}\n{1}
@@ -480,9 +421,7 @@ ERR_CLOSING_OBJECT.useraction=CMSG0002
 # 8680 deleted
 # 8710 deleted
 
-# 8720W      MULTITHREADED_ACCESS_DETECTED
-#
-# TRANSLATOR Do not translate: Statements, ResultSets, metadata, Datasource
+# Do not translate: Statements, ResultSets, metadata, Datasource
 # 
 # {0}        Object on which multithreaded access was detected.
 # {1}        The thread id on which access is permissible.
@@ -494,23 +433,17 @@ MULTITHREADED_ACCESS_DETECTED.useraction=\u00c1ll\u00edtsa be \u00fagy az alkalm
 
 # 8730 deleted
 
-# 8750W      UNSUPPORTED_JDBC30_METHOD
-# 
 # {0}        The method trying to be invoked
 UNSUPPORTED_JDBC30_METHOD=DSRA8750W: A(z) {0} JDBC 3.0 met\u00f3dust ez a JDBC szolg\u00e1ltat\u00f3 nem val\u00f3s\u00edtja meg.
 UNSUPPORTED_JDBC30_METHOD.explanation=A megh\u00edvand\u00f3 met\u00f3dus a Java Database Connectivty (JDBC) specifik\u00e1ci\u00f3 3.0 v\u00e1ltozat r\u00e9sze \u00e9s a szolg\u00e1ltat\u00f3n nem l\u00e9tezik.
 UNSUPPORTED_JDBC30_METHOD.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JDBC szolg\u00e1ltat\u00f3 t\u00e1mogatja a JDBC specifik\u00e1ci\u00f3 3.0 v\u00e1ltozat\u00e1t, vagy ne haszn\u00e1lja ezt a met\u00f3dust.
 
-# 8760W      VENDOR_IMPL_NOT_FOUND
-#
 # {0}        The vendor interface requested for the wrapper.
 # {1}        The underlying connection implementation class of the pooled connection.
 VENDOR_IMPL_NOT_FOUND=DSRA8760W: M\u00e1s t\u00e1rolt kapcsolatra v\u00e1lt\u00e1s ut\u00e1n a(z) {0} sz\u00e1ll\u00edt\u00f3 fel\u00fclet megval\u00f3s\u00edt\u00e1sa nem tal\u00e1lhat\u00f3. Az \u00e1t nem alak\u00edtott kapcsolati azonos\u00edt\u00f3 m\u00e1r nem haszn\u00e1lhat\u00f3 az eml\u00edtett fel\u00fcletk\u00e9nt. Az \u00faj kapcsolat megval\u00f3s\u00edt\u00e1si oszt\u00e1ly: {1}
 VENDOR_IMPL_NOT_FOUND.explanation=A kapcsolati azonos\u00edt\u00f3 m\u00e1r elt\u00e9r\u0151 t\u00e1rolt kapcsolathoz tartozik, ami nem val\u00f3s\u00edtja meg az \u00e1talak\u00edt\u00f3 \u00e1ltal ig\u00e9nyelt fel\u00fcletet.
 VENDOR_IMPL_NOT_FOUND.useraction=Ne haszn\u00e1lja a megadott fel\u00fclet \u00e1talak\u00edt\u00f3j\u00e1t olyankor, amikor a Wrapper.isWrapperFor met\u00f3dus azt jelzi, hogy a kapcsolat nem a fel\u00fclet \u00e1talak\u00edt\u00f3ja.
 
-# 8770I      DEFAULT_MATCH_ORIGINAL
-# 
 # {0}        The name of the connection property.
 # {1}        The name of the data source custom property.
 DEFAULT_MATCH_ORIGINAL=DSRA8770I: Alap\u00e9rtelmez\u00e9sben a(z) {0} kapcsolat tulajdons\u00e1g az eredeti kapcsolatk\u00e9r\u00e9sen alapul\u00f3 megoszthat\u00f3 kapcsolatoknak felel meg, nem a kapcsolat jelenlegi \u00e1llapot\u00e1nak. Ez a viselked\u00e9s az adatforr\u00e1s {1} egy\u00e9ni tulajdons\u00e1g\u00e1val konfigur\u00e1lhat\u00f3.
@@ -527,28 +460,19 @@ DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=A figyelmeztet\u00e9s elker\u00fc
 # 
 # Using the 9000's for JDBC wrapper messages.
 # 
-# 9000-9001 deleted
+# 9000-9002 deleted
 
-# 9002E      RESX_TO_SQLX		Reserved, do not use 342913
-#RESX_TO_SQLX=DSRA9002E
-
-# 9010E      METHOD_UNSUPPORTED
-# 
 # {0}        The method name.
 # {1}        The interface class.
 METHOD_UNSUPPORTED=DSRA9010E: A(z) ''{0}'' a(z) {1} WebSphere megval\u00f3s\u00edt\u00e1son nem t\u00e1mogatott.
 METHOD_UNSUPPORTED.explanation=A megadott met\u00f3dust az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megval\u00f3s\u00edt\u00e1sa nem t\u00e1mogatja.
 METHOD_UNSUPPORTED.useraction=Ne haszn\u00e1lja a met\u00f3dust.
 
-# 9020E      NOT_A_JDBC_METHOD
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 NOT_A_JDBC_METHOD=DSRA9020E: A megh\u00edvott met\u00f3dus nem JDBC met\u00f3dus. A met\u00f3dus el\u00e9r\u00e9s\u00e9hez a WebSphere m\u00f3dnak egy \u00e9rv\u00e9nyes kulcsot kell \u00e1tadnia.
 NOT_A_JDBC_METHOD.explanation=A met\u00f3dus csak az alkalmaz\u00e1skiszolg\u00e1l\u00f3 bels\u0151 haszn\u00e1lathoz biztos\u00edtott.
 NOT_A_JDBC_METHOD.useraction=Ne h\u00edvja meg ezt a met\u00f3dust.
 
-# 9110E      OBJECT_CLOSED
-# 
 # {0}        The object class (such as Connection).
 OBJECT_CLOSED=DSRA9110E: A(z) {0} le van z\u00e1rva.
 OBJECT_CLOSED.explanation=Egy lez\u00e1rt objektumon pr\u00f3b\u00e1ltak meg m\u0171veletet v\u00e9grehajtani.
@@ -557,8 +481,6 @@ OBJECT_CLOSED.useraction=K\u00e9rje le az objektum egy \u00faj p\u00e9ld\u00e1ny
 # 9115 deleted
 # 9120-9121 - reserved for other NLS file
 
-# 9122E      NO_WRAPPED_OBJECT
-# 
 # {0}        The WebSphere wrapper object.
 # {1}        The Class of the wrapped object.
 NO_WRAPPED_OBJECT=DSRA9122E: A(z) {0} a(z) {1} t\u00edpus\u00fa objektumokat nem alak\u00edtja \u00e1t.
@@ -567,8 +489,6 @@ NO_WRAPPED_OBJECT.useraction=Ellen\u0151rizze, hogy az \u00e1talak\u00edt\u00f3 
 
 # 9123 reserved for other NLS file
 
-# 9124       NOT_AN_INTERFACE
-#
 # {0}        The Class that was specified to unwrap to
 NOT_AN_INTERFACE=DSRA9124E: Az objektum nem bonthat\u00f3 ki a(z) {0} oszt\u00e1lyba, mert a(z) {0} nem fel\u00fcleti oszt\u00e1ly.
 NOT_AN_INTERFACE.explanation=A kicsomagol\u00e1si met\u00f3dus csak fel\u00fcleti oszt\u00e1lyba t\u00f6rt\u00e9n\u0151 kicsomagol\u00e1st tesz lehet\u0151v\u00e9.
@@ -576,8 +496,6 @@ NOT_AN_INTERFACE.useraction=V\u00e9gezze a kibont\u00e1st egy fel\u00fcletoszt\u
 
 # 9125 reserved for other NLS file
 
-# 9130E      OPERATION_NOT_PERMITTED
-# 
 # {0}        The operation.
 OPERATION_NOT_PERMITTED=DSRA9130E: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem enged\u00e9lyezi a(z) {0} m\u0171veletet.
 OPERATION_NOT_PERMITTED.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem enged\u00e9lyezi a k\u00e9rt m\u0171veletet.
@@ -585,9 +503,7 @@ OPERATION_NOT_PERMITTED.useraction=Nem haszn\u00e1lja a megadott m\u0171veletet.
 
 # 9210 deleted
 
-# 9250E      OP_NOT_SHAREABLE
-# 
-# TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
+# Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
 # {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
 OP_NOT_SHAREABLE=DSRA9250E: A(z) {0} m\u0171velet a Shareable Connection glob\u00e1lis tranzakci\u00f3ja sor\u00e1n nem enged\u00e9lyezett.
 OP_NOT_SHAREABLE.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a Shareable Connection-\u00f6n nem enged\u00e9lyezi a setTypeMap, setReadOnly vagy setCatalog met\u00f3dusok megh\u00edv\u00e1s\u00e1t, am\u00edg a glob\u00e1lis tranzakci\u00f3 akt\u00edv.
@@ -601,56 +517,42 @@ OP_NOT_SHAREABLE.useraction=Ne h\u00edvja meg a setTypeMap, setReadOnly \u00e9s 
 # 9330 deleted
 # 9340 deleted
 
-# 9350E      OP_NOT_VALID_IN_GT
-# 
-# TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
+# Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
 # {0}        The operation being performed (such as Connection.commit)
 OP_NOT_VALID_IN_GT=DSRA9350E: A(z) {0} m\u0171velet a glob\u00e1lis tranzakci\u00f3 sor\u00e1n nem enged\u00e9lyezett.
 OP_NOT_VALID_IN_GT.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a Connection-\u00f6n nem enged\u00e9lyezi commit, rollback, setSavepoint vagy releaseSavepoint met\u00f3dusok megh\u00edv\u00e1s\u00e1t, am\u00edg a glob\u00e1lis tranzakci\u00f3 akt\u00edv.
-OP_NOT_VALID_IN_GT.useraction=Ne h\u00edvja meg a commit, rollback, setSavepoint vagy releaseSavepoint met\u00f3dust a Connection-\u00f6n, am\u00edg a glob\u00e1lis tranzakci\u00f3 akt\u00edv. Nem tranzakci\u00f3s adatforr\u00e1s haszn\u00e1lata eset\u00e9n (p\u00e9ld\u00e1ul non-jta-data-source Java Persistence alkalmaz\u00e1sprogramoz\u00e1si fel\u00fclethez) \u00e1ll\u00edtsa be a persistence.xml f\u00e1jlban a non-jta-data-source \u00e9rt\u00e9ket \u00e9s az adatforr\u00e1son a nonTransactionalDataSource egy\u00e9ni tulajdons\u00e1got.
+OP_NOT_VALID_IN_GT.useraction=Ne h\u00edvja meg a commit, rollback, setSavepoint vagy releaseSavepoint met\u00f3dust a Connection-\u00f6n, am\u00edg a glob\u00e1lis tranzakci\u00f3 akt\u00edv. Nem tranzakci\u00f3s adatforr\u00e1s haszn\u00e1lata eset\u00e9n (p\u00e9ld\u00e1ul non-jta-data-source Java Persistence alkalmaz\u00e1sprogramoz\u00e1si fel\u00fclethez) \u00e1ll\u00edtsa be a non-jta-data-source elemet a persistence.xml f\u00e1jlban, valamint a 'tranzakci\u00f3s' adatforr\u00e1s attrib\u00fatumot a server.xml f\u00e1jlban 'false' \u00e9rt\u00e9kre.
 
-# 9360E      INVALID_TRAN_STATE
-# 
 # {0}        String representing the current ManagedConnection transaction state.
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 INVALID_TRAN_STATE=DSRA9360E: A k\u00e9rt m\u0171velet az al\u00e1bbi tranzakci\u00f3-\u00e1llapotban nem h\u00edvhat\u00f3 meg: {0}.
 INVALID_TRAN_STATE.explanation=Am\u00edg az alkalmaz\u00e1s a jelenlegi tranzakci\u00f3-\u00e1llapotban van, addig nem hajthat\u00f3k v\u00e9gre m\u0171veletek.
 INVALID_TRAN_STATE.useraction=A m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz adjon meg egy \u00faj Connection-t.
 
 # 9380 deleted
 
-# 9400E      REASSOCIATION_ERR
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 # {0}        The error.
 REASSOCIATION_ERR=DSRA9400E: A Connection \u00fajb\u00f3li t\u00e1rs\u00edt\u00e1sa sor\u00e1n v\u00e9gzetes hiba t\u00f6rt\u00e9nt: {0}
 REASSOCIATION_ERR.explanation=Az aktu\u00e1lis Connection azonos\u00edt\u00f3 nem t\u00e1rs\u00edthat\u00f3 \u00fajra.
 REASSOCIATION_ERR.useraction=Pr\u00f3b\u00e1ljon meg egy \u00faj Connection-t l\u00e9tes\u00edteni.
 
-# 9410E      CANNOT_REASSOCIATE
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 # {0}        Current Connection state.
 CANNOT_REASSOCIATE=DSRA9410E: Az azonos\u00edt\u00f3 \u00fajb\u00f3li t\u00e1rs\u00edt\u00e1sa csak INACTIVE \u00e1llapotban enged\u00e9lyezett. Az aktu\u00e1lis Connection \u00e1llapot: {0}.
 CANNOT_REASSOCIATE.explanation=A Connection azonos\u00edt\u00f3k csak INACTIVE \u00e1llapotban t\u00e1rs\u00edthat\u00f3k \u00fajra.
 CANNOT_REASSOCIATE.useraction=Z\u00e1rja be az aktu\u00e1lis Connection azonos\u00edt\u00f3t \u00e9s k\u00e9rjen egy \u00fajat.
 
-# 9420E      CHILDREN_STILL_OPEN
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 CHILDREN_STILL_OPEN=DSRA9420E: A Connection nem t\u00e1rs\u00edthat\u00f3 \u00fajra, mivel a lesz\u00e1rmazott objektumok tov\u00e1bbra is meg vannak nyitva.
 CHILDREN_STILL_OPEN.explanation=A Connection azonos\u00edt\u00f3k csak akkor t\u00e1rs\u00edthat\u00f3k \u00fajra, ha minden lesz\u00e1rmazott objektum be van z\u00e1rva.
 CHILDREN_STILL_OPEN.useraction=Z\u00e1rja be az aktu\u00e1lis Connection azonos\u00edt\u00f3t \u00e9s k\u00e9rjen egy \u00fajat.
 
-# 9430E      HANDLE_IN_USE
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 HANDLE_IN_USE=DSRA9430E: A Connection azonos\u00edt\u00f3 t\u00e1rs\u00edt\u00e1sa nem sz\u00fcntethet\u0151 meg, mivel pillanatnyilag haszn\u00e1latban van.
 HANDLE_IN_USE.explanation=A Connection azonos\u00edt\u00f3n jelenleg m\u0171velet ker\u00fcl v\u00e9grehajt\u00e1sra. A m\u0171velet sor\u00e1n nem sz\u00fcntethet\u0151 meg a t\u00e1rs\u00edt\u00e1s.
 HANDLE_IN_USE.useraction=V\u00e1rjon, am\u00edg az azonos\u00edt\u00f3 minden m\u0171velete befejez\u00e9sre ker\u00fcl, majd sz\u00fcntesse meg az azonos\u00edt\u00f3 t\u00e1rs\u00edt\u00e1s\u00e1t.
 
-# 9500E      NO_NEGATIVE_FETCH_SIZES
-# 
 NO_NEGATIVE_FETCH_SIZES=DSRA9500E: A leh\u00edv\u00e1si m\u00e9rethez nem adhat\u00f3 meg negat\u00edv \u00e9rt\u00e9k.
 NO_NEGATIVE_FETCH_SIZES.explanation=A leh\u00edv\u00e1si m\u00e9ret csak nem negat\u00edv \u00e9rt\u00e9kre \u00e1ll\u00edthat\u00f3.
 NO_NEGATIVE_FETCH_SIZES.useraction=A leh\u00edv\u00e1si m\u00e9rethez v\u00e1lasszon ki egy nem negat\u00edv \u00e9rt\u00e9ket.
@@ -659,10 +561,9 @@ NO_NEGATIVE_FETCH_SIZES.useraction=A leh\u00edv\u00e1si m\u00e9rethez v\u00e1las
 # 9520 deleted
 # 9530-9542 deleted
 
-# DSRA9543W      KERBEROS_NOT_SUPPORTED_WARNING
-# TRANSLATOR Do not translate: Kerberos
-KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e1mogatja az alkalmazott h\u00e1tt\u00e9radatb\u00e1zisokhoz a Kerberos hiteles\u00edt\u00e9st.  A kapcsolathoz nem ker\u00fcl felhaszn\u00e1l\u00f3i n\u00e9v \u00e9s jelsz\u00f3 felhaszn\u00e1l\u00e1sra.
-KERBEROS_NOT_SUPPORTED_WARNING.explanation= Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st a haszn\u00e1latban l\u00e9v\u0151 h\u00e1tt\u00e9radatb\u00e1zisokhoz. A kapcsolathoz sem felhaszn\u00e1l\u00f3i n\u00e9v, sem jelsz\u00f3 nem ker\u00fcl felhaszn\u00e1l\u00e1sra.
+# Do not translate: Kerberos
+KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e1mogatja az alkalmazott h\u00e1tt\u00e9radatb\u00e1zisokhoz a Kerberos hiteles\u00edt\u00e9st.  A kapcsolathoz nem ker\u00fcl alkalmaz\u00e1sra felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3.
+KERBEROS_NOT_SUPPORTED_WARNING.explanation= Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st a haszn\u00e1latban l\u00e9v\u0151 h\u00e1tt\u00e9radatb\u00e1zisokhoz. A kapcsolathoz sem felhaszn\u00e1l\u00f3n\u00e9v, sem jelsz\u00f3 nem ker\u00fcl alkalmaz\u00e1sra.
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Kapcsolja ki a Kerberos hiteles\u00edt\u00e9st, vagy haszn\u00e1ljon DB2 h\u00e1tteret DB2 Universal JDBC illeszt\u0151programmal.
 
 # 9544-9548 deleted

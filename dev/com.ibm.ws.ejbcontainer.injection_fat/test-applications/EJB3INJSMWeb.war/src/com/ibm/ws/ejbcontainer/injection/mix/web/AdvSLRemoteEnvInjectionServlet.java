@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithCDI;
+import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithEE9CDI;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBRemote;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBRemoteHome;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionRemote;
@@ -523,7 +524,7 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC("javax.ejb.EJBException")
-    @SkipForRepeat({ RepeatWithCDI.ID })
+    @SkipForRepeat({ RepeatWithCDI.ID, RepeatWithEE9CDI.ID })
     public void testSLRAdvCompEnvObjMthdInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test

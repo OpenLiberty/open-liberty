@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -334,7 +334,8 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())    
                 Tr.debug(tc, "print String");
             if(value!=null) {
-                this.write(value.getBytes(), 0, value.length());        
+                byte[] stringBytes = value.getBytes();
+                this.write(stringBytes, 0, stringBytes.length);
             }
         }
     }
@@ -500,7 +501,8 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
                 Tr.debug(tc, "println String");
             synchronized(this) {
                 if(s!=null) {
-                    this.write(s.getBytes(), 0, s.length());
+                    byte[] stringBytes = s.getBytes();
+                    this.write(stringBytes, 0, stringBytes.length);
                 }
                 this.write(CRLF, 0, 2);
             }

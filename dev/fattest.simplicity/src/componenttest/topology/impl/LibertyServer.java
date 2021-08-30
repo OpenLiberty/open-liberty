@@ -1055,7 +1055,7 @@ public class LibertyServer implements LogMonitorClient {
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(getHttpDefaultPort()));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port is currently bound");
+            Log.error(c, "checkPortsOpen", ex, "http default port (" + httpDefaultPort + ") is currently bound");
             printProcessHoldingPort(getHttpDefaultPort());
             if (retry) {
                 Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");
@@ -5473,6 +5473,18 @@ public class LibertyServer implements LogMonitorClient {
      */
     public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp, long timeout, RemoteFile outputFile) {
         return logMonitor.waitForMultipleStringsInLogUsingMark(numberOfMatches, regexp, timeout, outputFile);
+    }
+
+    /**
+     * Check for multiple instances of the regex in log using mark
+     *
+     * @param  numberOfMatches number of matches required
+     * @param  regexp          a regular expression to search for
+     * @param  outputFile      file to check
+     * @return                 number of matches found
+     */
+    public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp, RemoteFile outputFile) {
+        return logMonitor.waitForMultipleStringsInLogUsingMark(numberOfMatches, regexp, LOG_SEARCH_TIMEOUT, outputFile);
     }
 
     /**

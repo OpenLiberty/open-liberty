@@ -171,6 +171,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * @throws Exception
      */
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" })
     @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
     @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)

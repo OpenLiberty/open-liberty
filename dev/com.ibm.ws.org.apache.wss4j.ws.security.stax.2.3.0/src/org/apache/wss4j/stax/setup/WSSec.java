@@ -60,24 +60,7 @@ public class WSSec {
 
     static {
         WSProviderConfig.init();
-        ClassLoader cl = null;
         try {
-            //Liberty code change start 
-            //TODO: look into why we are not finding this provider
-            ClassLoader jaxbimplcl = null;
-            try {
-                jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
-            } catch (Throwable t) {
-                //ncdfe
-            }  
-            if (jaxbimplcl != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("setting the glassfish classes loader!");
-                }
-                cl = Thread.currentThread().getContextClassLoader();
-                Thread.currentThread().setContextClassLoader(jaxbimplcl);
-            }
-            //Liberty code change end
             Init.init(ClassLoaderUtils.getResource("wss/wss-config.xml", WSSec.class).toURI(), WSSec.class);
 
             WSSConstants.setJaxbContext(
@@ -101,14 +84,7 @@ public class WSSec {
         } catch (XMLSecurityException | JAXBException
             | SAXException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
-        } finally { //Liberty code change start
-            if (cl != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("setting back the original class loader!");
-                }
-                Thread.currentThread().setContextClassLoader(cl); 
-            }    
-        } //Liberty code change end
+        }
     }
 
     public static void init() {

@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
 <server>
 
 	<!--  3/2021 update to add cxf_features.xml content here to replace the include of imports/cxf_features.xml -->
@@ -10,36 +21,12 @@
 		<feature>jndi-1.0</feature>
 		<feature>jaxws-2.2</feature>
 		<feature>appSecurity-2.0</feature>
-		<!-- 1/26/2021 -->
-		<!-- <feature>servlet-3.0</feature>-->
 		<feature>servlet-3.1</feature>
 		<feature>wsSecuritySaml-1.1</feature>
 		<feature>samlWeb-2.0</feature>
 		<feature>usr:wsseccbh-1.0</feature>
 	</featureManager>
 
-    <!-- Added 1/26/2021 -->
-        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.saml.sso20.token.Saml20TokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>  
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.xml.serializer.dom3"/>
-        <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samlcallertoken/FatSamlC01Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samlcallertoken/FatSamlC03Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samlcallertoken/FatSamlC02Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samlcallertoken/FatSamlC04Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samlcallertoken/FatSamlC02aService" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samlcallertoken/FatSamlC01Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samlcallertoken/FatSamlC03Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samlcallertoken/FatSamlC02Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samlcallertoken/FatSamlC04Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
-        
 	<!-- 3/2021 <include location="imports/cxf_features.xml" /> -->
 	
 	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
@@ -47,5 +34,6 @@
 	<include location="imports/goodSSLSettings.xml" />
 	<include location="imports/securityProviderWithCaller_1.xml" />
 	<include location="imports/samlcallertoken_testApp.xml" />
-
+    <include location="imports/java2Permissions.xml" />
+    
 </server>

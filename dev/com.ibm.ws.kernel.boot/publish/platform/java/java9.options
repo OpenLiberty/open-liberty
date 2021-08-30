@@ -10,6 +10,9 @@ java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED
 # for Oracle Kerberos
 --add-exports
 java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED
+# for Dump action: com.ibm.ws.kernel.boot.internal.commands.HotSpotJavaDumperImpl$VirtualMachine.remoteDataDump(HotSpotJavaDumperImpl.java:339)
+--add-exports
+jdk.attach/sun.tools.attach=ALL-UNNAMED
 ### Opens
 --add-opens
 java.base/java.util=ALL-UNNAMED

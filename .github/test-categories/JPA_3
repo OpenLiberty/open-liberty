@@ -3,6 +3,10 @@ com.ibm.ws.jpa.tests.spec10.callback_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.callback_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.callback_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.embeddable_fat
+com.ibm.ws.jpa.tests.spec10.entity_jpa_2.0_fat
+com.ibm.ws.jpa.tests.spec10.entity_jpa_2.1_fat
+com.ibm.ws.jpa.tests.spec10.entity_jpa_2.2_fat
+com.ibm.ws.jpa.tests.spec10.entity_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.entitymanager_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.entitymanager_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.entitymanager_jpa_2.2_fat
@@ -11,6 +15,10 @@ com.ibm.ws.jpa.tests.spec10.inheritance_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.inheritance_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.inheritance_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.inheritance_jpa_3.0_fat
+com.ibm.ws.jpa.tests.spec10.packaging_jpa_2.0_fat
+com.ibm.ws.jpa.tests.spec10.packaging_jpa_2.1_fat
+com.ibm.ws.jpa.tests.spec10.packaging_jpa_2.2_fat
+com.ibm.ws.jpa.tests.spec10.packaging_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_jpa_2.2_fat

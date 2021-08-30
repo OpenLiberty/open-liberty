@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -74,6 +75,7 @@ public class ApplicationTracker {
     @Reference(service = Application.class,
                cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
                target = "(application.state=STARTED)")
     protected void addStartedApplication(ServiceReference<Application> ref) {
         ExecutorService executor;
@@ -101,6 +103,7 @@ public class ApplicationTracker {
     @Reference(service = Application.class,
                cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
                target = "(application.state=STARTING)")
     protected void addStartingApplication(ServiceReference<Application> ref) {
         String appName = (String) ref.getProperty(NAME);

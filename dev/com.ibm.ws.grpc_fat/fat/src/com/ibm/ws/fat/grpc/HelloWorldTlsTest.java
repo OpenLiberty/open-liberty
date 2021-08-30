@@ -76,6 +76,10 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
+        // If not set to null, test failures may occur (since the incorrect server.xml could be used)
+        serverConfigurationFile = null;
+
         // SRVE0777E: for testHelloWorldWithTlsInvalidClientTrustStore case
         // CWWKO0801E: for testHelloWorldWithTlsInvalidClientTrustStore case
         //     Unable to initialize SSL connection. Unauthorized access was denied or security settings have expired.

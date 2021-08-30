@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ configurations {
   jersey
   json
   httpclient
+  prototype
 }
 
 configurations.jersey {
@@ -35,14 +36,6 @@ dependencies {
     'org.codehaus.jackson:jackson-xc:1.6.2'
   jackson2x project(':io.openliberty.com.fasterxml.jackson'),
     project(':io.openliberty.com.fasterxml.jackson.jaxrs')
-  requiredLibs 'commons-httpclient:commons-httpclient:3.1',
-    project(':io.openliberty.org.apache.commons.logging'),
-    project(':com.ibm.ws.org.apache.httpcomponents'),
-    project(':io.openliberty.com.fasterxml.jackson'),
-    'org.apache.wink:wink-client:1.4',
-    'org.apache.wink:wink-common:1.4',
-    "org.slf4j:slf4j-api:1.7.7",
-    project(':io.openliberty.org.apache.commons.codec')
   jersey 'org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10',
     'org.ow2.asm:asm-debug-all:5.2',
     'org.glassfish.hk2:hk2-api:2.3.0-b10',
@@ -64,47 +57,64 @@ dependencies {
   json 'org.json:json:20080701'
   httpclient project(':com.ibm.ws.org.apache.httpcomponents'),
 	project(':io.openliberty.org.apache.commons.logging')
+  requiredLibs 'commons-httpclient:commons-httpclient:3.1',
+    project(':io.openliberty.org.apache.commons.logging'),
+    project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':io.openliberty.com.fasterxml.jackson'),
+    'org.apache.wink:wink-client:1.4',
+    'org.apache.wink:wink-common:1.4',
+    "org.slf4j:slf4j-api:1.7.7",
+    project(':io.openliberty.org.apache.commons.codec'),
+    'org.apache.cxf:cxf-core:3.4.3',
+    'org.apache.cxf:cxf-rt-frontend-jaxrs:3.4.3',
+    'org.apache.cxf:cxf-rt-rs-client:3.4.3',
+    'org.apache.cxf:cxf-rt-transports-http:3.4.3'
 }
 
 task addCXF(type: Copy) {
   from configurations.cxf
-  into "${buildDir}/autoFVT/publish/shared/resources/cxf/"
+  into "${buildDir}/autoFVT/appLibs/cxf/"
 }
 
 task addJackson1x(type: Copy) {
   from configurations.jackson1x
-  into "${buildDir}/autoFVT/publish/shared/resources/jackson1x/"
+  into "${buildDir}/autoFVT/appLibs/jackson1x/"
 }
 
 task addJackson2x(type: Copy) {
   from configurations.jackson2x
-  into "${buildDir}/autoFVT/publish/shared/resources/jackson2x/"
+  into "${buildDir}/autoFVT/appLibs/jackson2x/"
 }
 
 task addJersey(type: Copy) {
   from configurations.jersey
-  into "${buildDir}/autoFVT/publish/shared/resources/jersey/"
+  into "${buildDir}/autoFVT/appLibs/jersey/"
 }
 
 task addJersey2(type: Copy) {
   from configurations.jersey
-  into "${buildDir}/autoFVT/publish/shared/resources/jerseywithinjection/"  
+  into "${buildDir}/autoFVT/appLibs/jerseywithinjection/"  
 }
 
 task addJson(type: Copy) {
   from configurations.json
-  into "${buildDir}/autoFVT/publish/shared/resources/json/"
+  into "${buildDir}/autoFVT/appLibs/json/"
 }
 
 task addHttpClient(type: Copy) {
   from configurations.httpclient
-  into "${buildDir}/autoFVT/publish/shared/resources/httpclient/"
+  into "${buildDir}/autoFVT/appLibs/httpclient/"
 }
 
 task createWadlTempDir {
   doLast {
     mkdir "${buildDir}/autoFVT/publish/servers/com.ibm.ws.jaxrs.fat.wadl/temp/WADL2JAVASrc"
   }
+}
+
+task addPrototypeLibs(type: Copy) {
+  from configurations.prototype
+  into "${buildDir}/autoFVT/appLibs/prototype/"
 }
 
 addRequiredLibraries {
@@ -117,6 +127,7 @@ addRequiredLibraries {
   dependsOn addHttpClient
   dependsOn createWadlTempDir
   dependsOn addDerby
+  dependsOn addPrototypeLibs
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

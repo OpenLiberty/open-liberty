@@ -29,7 +29,7 @@ fat.project: true
 # In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
 tested.features: \
 	servlet-4.0, cdi-2.0, jdbc-4.2, appsecurity-3.0, jaxrs-2.1, jpa-2.2, jaxb-2.3, jaxws-2.3,\
-	expressionlanguage-4.0, xmlws-3.0, cdi-3.0, enterprisebeanslite-4.0, pages-3.0
+	servlet-5.0, expressionlanguage-4.0, xmlws-3.0, cdi-3.0, enterprisebeanslite-4.0, pages-3.0, connectors-2.0
 
 -buildpath: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \

@@ -117,9 +117,33 @@ autoFVT.dependsOn unzip1, unzip2
 
 autoFVT.doLast {
 
-/* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
+/* Copy common files to all servers */
 
   def servers = [
+        'com.ibm.ws.wssecurity_fat',
+        'com.ibm.ws.wssecurity_fat.ssl',
+        'com.ibm.ws.wssecurity_fat.pwdigest',
+        'com.ibm.ws.wssecurity_fat.derived',
+        'com.ibm.ws.wssecurity_fat.caller',
+        'com.ibm.ws.wssecurity_fat.x509caller',
+        'com.ibm.ws.wssecurity_fat.x509symcaller', 
+        'com.ibm.ws.wssecurity_fat.wsstemplates',
+        'com.ibm.ws.wssecurity_fat.wsstemplateswithep',
+        'com.ibm.ws.wssecurity_fat.sample'
+        
+  ]
+
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/serversettings')
+      include '*.xml'
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+  }
+    
+/* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
+
+  servers = [
         'com.ibm.ws.wssecurity_fat.ssl',
         'com.ibm.ws.wssecurity_fat.pwdigest',
         'com.ibm.ws.wssecurity_fat.derived',
@@ -242,12 +266,12 @@ autoFVT.doLast {
     }
   }
 
+  //Uncomment when the sample client war to be retrieved
+  /*
   servers = [
         'com.ibm.ws.wssecurity_fat.sample'
   ]
   
-  //Uncomment when the sample client war to be retrieved
-  /*
   servers.each { server ->
     copy {
     from new File(appBuildDir, 'webcontent.war')

@@ -69,7 +69,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
 import com.ibm.wsspi.jsp.context.JspClassloaderContext;
 import com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -78,6 +77,7 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 @Component(configurationPid="com.ibm.ws.jsp.2.2",
    configurationPolicy=ConfigurationPolicy.REQUIRE,

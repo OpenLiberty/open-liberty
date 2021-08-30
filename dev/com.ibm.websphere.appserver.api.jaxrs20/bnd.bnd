@@ -18,8 +18,8 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.api.jaxrs20
 Import-Package: \
   com.ibm.websphere.jaxrs.providers.json4j, \
   com.ibm.websphere.jaxrs20.multipart, \
-  com.ibm.websphere.jaxrs.monitor;resolution:=optional, \
-  com.ibm.websphere.monitor.jmx;resolution:=optional, \
+  com.ibm.websphere.jaxrs.monitor;resolution:=dynamic, \
+  com.ibm.websphere.monitor.jmx;resolution:=dynamic, \
   com.ibm.websphere.ras, \
   com.ibm.ws.jaxrs20.multipart.impl;resolution:=optional, \
   javax.activation, \

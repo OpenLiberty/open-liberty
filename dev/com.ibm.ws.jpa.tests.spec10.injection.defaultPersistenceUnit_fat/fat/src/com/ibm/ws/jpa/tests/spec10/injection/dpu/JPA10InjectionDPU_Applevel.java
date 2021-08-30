@@ -222,6 +222,11 @@ public class JPA10InjectionDPU_Applevel extends JPAFATServletClient {
             ClassloaderElement loader = new ClassloaderElement();
             loader.getCommonLibraryRefs().add("HibernateLib");
             cel.add(loader);
+        } else if (FATSuite.repeatPhase != null && FATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
         }
 
         server1.setMarkToEndOfLog();

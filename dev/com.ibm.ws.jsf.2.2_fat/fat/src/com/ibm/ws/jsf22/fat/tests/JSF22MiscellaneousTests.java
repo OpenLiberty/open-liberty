@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,8 @@ public class JSF22MiscellaneousTests {
 
         WebArchive SerializeWar = ShrinkHelper.buildDefaultApp("JSF22MiscellaneousSerialize.war", "");
 
+        WebArchive xmlnsWar = ShrinkHelper.buildDefaultApp("FacesConfigMissingXmlns.war", "");
+
         EnterpriseArchive JSF22MiscellaneousEar = ShrinkWrap.create(EnterpriseArchive.class, "JSF22Miscellaneous.ear");
 
         JSF22MiscellaneousWar.addAsLibraries(JSF22MiscellaneousJar);
@@ -77,6 +79,8 @@ public class JSF22MiscellaneousTests {
         ShrinkHelper.addDirectory(JSF22MiscellaneousEar, "test-applications" + "/JSF22Miscellaneous.ear" + "/resources");
 
         ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, JSF22MiscellaneousEar);
+
+        ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, xmlnsWar);
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "FunctionMapper.war", "com.ibm.ws.jsf23.fat.functionmapper");
 
@@ -459,6 +463,29 @@ public class JSF22MiscellaneousTests {
             page = page.getElementById("form1:button1").click();
 
             assertTrue("Function Mapper is null!", page.asText().contains("FunctionMapper Exists (Expecting true): true"));
+        }
+    }
+
+    /**
+     * Check to make sure that an app starts correctly when it has a faces-config.xml which is missing a "xmlns" declaration.
+     * 
+     * See https://github.com/OpenLiberty/open-liberty/issues/18155
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFacesConfigMissingXmlns() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            String contextRoot = "FacesConfigMissingXmlns";
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "index.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            if (page == null) {
+                Assert.fail("index.xhtml did not render properly.");
+            } else if (!page.asText().contains("Test Success")) {
+                Assert.fail("/FacesConfigMissingXmlns/index.xhtml did not contain \"Test Success\":\n" + page.asXml());
+            }
         }
     }
 }

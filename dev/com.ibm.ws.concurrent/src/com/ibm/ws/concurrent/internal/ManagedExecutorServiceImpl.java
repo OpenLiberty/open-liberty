@@ -90,6 +90,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         // control issues since ForkJoinPool doesn't have doPriv calls for getting some properties
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
+            @Trivial
             public Void run() {
                 ForkJoinPool.commonPool();
                 return null;
@@ -315,7 +316,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Override
     public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
-        if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
+        if (!MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
 
         final CompletableFuture<T> copy = ManagedCompletableFuture.JAVA8 //
@@ -417,15 +418,21 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
+    @Trivial
     public WSContextService getContextService() {
+        WSContextService contextSvc;
         if (mpContextService == null)
             try {
-                return contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
+                contextSvc = contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
             } catch (IllegalStateException x) {
                 throw new RejectedExecutionException(x);
             }
         else
-            return mpContextService;
+            contextSvc = mpContextService;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getContextService: " + contextSvc);
+        return contextSvc;
     }
 
     @Override
@@ -436,12 +443,21 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
+    @Trivial
     public PolicyExecutor getLongRunningPolicyExecutor() {
-        return longRunningPolicyExecutorRef.get();
+        PolicyExecutor executor = longRunningPolicyExecutorRef.get();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getLongRunningPolicyExecutor: " + executor);
+        return executor;
     }
 
     @Override
+    @Trivial
     public PolicyExecutor getNormalPolicyExecutor() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getNormalPolicyExecutor: " + policyExecutor);
+
         return policyExecutor;
     }
 

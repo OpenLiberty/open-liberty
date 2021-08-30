@@ -21,7 +21,7 @@ fat.project: true
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
 tested.features: \
-	servlet-4.0, jaxb-2.3, jaxws-2.3, xmlws-3.0
+	servlet-4.0, servlet-5.0, jaxb-2.3, jaxws-2.3, xmlws-3.0, connectors-2.0
 
 -buildpath: \
   com.ibm.websphere.javaee.jaxws.2.2;version=latest,\

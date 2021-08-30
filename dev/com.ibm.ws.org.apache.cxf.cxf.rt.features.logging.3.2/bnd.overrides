@@ -1,0 +1,39 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2
+
+CXFVersion=3.4.3
+
+Export-Package: \
+  org.apache.cxf.ext.logging;version=${CXFVersion},\
+  org.apache.cxf.ext.logging.event;version=${CXFVersion},\
+  org.apache.cxf.ext.logging.osgi;version=${CXFVersion},\
+  org.apache.cxf.ext.logging.slf4j;version=${CXFVersion}
+
+
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: \
+  !java.*, \
+  !com.sun.codemodel.writer, \
+  !com.sun.tools.internal.xjc.api, \
+  !com.sun.tools.xjc.api, \
+  !com.sun.xml.bind.api, \
+  !org.apache.karaf.jaas.boot.principal, \
+  !sun.misc, \
+  !com.ctc.wstx.*, \
+  !com.sun.xml.fastinfoset.*;resolution:=optional, \
+  !org.codehaus.stax2.*, \
+  !com.sun.msv.*, \
+  !com.sun.xml.bind.marshaller, \
+  !org.apache.log4j.*, \
+  !net.sf.cglib.proxy.*, \
+  !org.springframework.*, \
+  !javax.validation.*, \
+  !org.apache.aries.*, \
+  !org.apache.cxf.transport.https, \
+  !org.osgi.service.blueprint.*, \
+  !javax.xml.ws.*
+

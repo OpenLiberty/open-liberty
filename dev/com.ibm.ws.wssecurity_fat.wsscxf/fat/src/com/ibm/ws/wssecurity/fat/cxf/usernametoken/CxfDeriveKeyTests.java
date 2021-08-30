@@ -1250,7 +1250,8 @@ public class CxfDeriveKeyTests extends CommonTests {
                 newWsdl = null;
                 newClientWsdl = null;
             }
-            restoreServer();
+            //Removed to resolve RTC 285305
+            //restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }

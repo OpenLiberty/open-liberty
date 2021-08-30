@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -157,23 +157,23 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     private void createJAASClientLoginContextEntry(Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries) throws IllegalArgumentException {
 
         List<AppConfigurationEntry> loginModuleEntries;
-        if (Krb5Common.isIBMJdk18) {
-            loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
+        if (Krb5Common.IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
+            loginModuleEntries = createIBMKrb5loginModuleAppConfigurationEntry();
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
-        } else if (Krb5Common.isOtherSupportJDKs) {
-            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(false, "true");
+        } else if (Krb5Common.OTHER_KRB5_LOGIN_MODULE_AVAILABLE) {
+            loginModuleEntries = createOtherKrb5loginModuleAppConfigurationEntry(false, "true");
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
             jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
 
             //TODO:
-            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(true, "true");
+            loginModuleEntries = createOtherKrb5loginModuleAppConfigurationEntry(true, "true");
             jaasConfigurationEntries.put(Krb5LoginModuleWrapper.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
         }
     }
 
-    private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry() {
+    private List<AppConfigurationEntry> createIBMKrb5loginModuleAppConfigurationEntry() {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         String loginModuleClassName = Krb5LoginModuleWrapper.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
@@ -191,7 +191,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         return loginModuleEntries;
     }
 
-    private List<AppConfigurationEntry> createJdk11Krb5loginModuleAppConfigurationEntry(boolean proxy, String initiatorValue) {
+    private List<AppConfigurationEntry> createOtherKrb5loginModuleAppConfigurationEntry(boolean proxy, String initiatorValue) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         Map<String, Object> options = new HashMap<String, Object>();
         String loginModuleClassName = Krb5LoginModuleWrapper.class.getCanonicalName();

@@ -66,7 +66,9 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
+
+        assertFalse("Should have run through setKerberosCredentials", server.findStringsInLogsAndTrace("setKerberosCredentials").isEmpty());
     }
 
     /**
@@ -84,7 +86,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**

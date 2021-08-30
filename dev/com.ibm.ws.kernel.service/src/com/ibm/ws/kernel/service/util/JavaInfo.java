@@ -13,6 +13,8 @@ package com.ibm.ws.kernel.service.util;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  * API for reading information related to the JDK
  */
@@ -141,6 +143,45 @@ public class JavaInfo {
         return instance().MICRO;
     }
 
+    /**
+     * In rare cases where different behaviour is performed based on the JVM vendor
+     * this method should be used to test for a unique JVM class provided by the
+     * vendor rather than using the vendor method. For example if on JVM provides a
+     * different Kerberos login module testing for that login module being loadable
+     * before configuring to use it is preferable to using the vendor data.
+     *
+     * @param className the name of a class in the JVM to test for
+     * @return true if the class is available, false otherwise.
+     */
+    public static boolean isAvailable(String className) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            @FFDCIgnore(ClassNotFoundException.class)
+            public Boolean run() {
+                try {
+                    // passing null to only look at the system classloader
+                    Class.forName(className, false, null);
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    //No FFDC needed
+                    return false;
+                }
+            }
+        });
+    }
+
+    @Deprecated
+    /**
+     * This method should not be used to change behaviour based on the Java vendor.
+     * Instead if there are behaviour differences between JVMs a test should be performed
+     * to detect the actual capability used before making a decision. For example if there
+     * is a different class on one JVM that needs to be used vs another an attempt should
+     * be made to load the class and take the code path.
+     *
+     * <p>This method is intended to only be used for debug purposes.</p>
+     *
+     * @return the detected vendor of the JVM
+     */
     public static Vendor vendor() {
         return instance().VENDOR;
     }
@@ -151,6 +192,15 @@ public class JavaInfo {
 
     public static int fixPack() {
         return instance().FIXPACK;
+    }
+
+    /**
+     * For debug purposes only
+     *
+     * @return a String containing basic info about the JDK
+     */
+    public static String debugString() {
+        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
     }
 
     /**

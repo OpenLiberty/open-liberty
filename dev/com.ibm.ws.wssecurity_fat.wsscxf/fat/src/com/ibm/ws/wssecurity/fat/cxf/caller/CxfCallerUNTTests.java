@@ -134,7 +134,7 @@ public class CxfCallerUNTTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpPolicy";
         methodFull = "testCxfCallerHttpPolicy";
 
@@ -166,7 +166,7 @@ public class CxfCallerUNTTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpsPolicy";
         methodFull = "testCxfCallerHttpsPolicy";
 
@@ -197,7 +197,7 @@ public class CxfCallerUNTTests {
 
     @Test
     public void testCxfCallerNoPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerNoPolicy";
         methodFull = "testCxfCallerNoPolicy";
 
@@ -228,7 +228,7 @@ public class CxfCallerUNTTests {
 
     @Test
     public void testCxfCallerHttpsNoUntPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpsNoUntPolicy";
         methodFull = "testCxfCallerHttpsNoUntPolicy";
 

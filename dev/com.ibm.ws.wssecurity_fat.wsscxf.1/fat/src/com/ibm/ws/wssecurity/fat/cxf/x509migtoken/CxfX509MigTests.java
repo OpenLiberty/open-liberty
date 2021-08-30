@@ -940,7 +940,7 @@ public class CxfX509MigTests {
                         "", //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
                         "UrnX509Token11", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1095,7 +1095,7 @@ public class CxfX509MigTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
                         "UrnX509Token11", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1295,7 +1295,7 @@ public class CxfX509MigTests {
                         "", //String portNumberSecure
                         "FatBAX13Service", //String strServiceName,
                         "UrnX509Token13", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                        errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1860,7 +1860,7 @@ public class CxfX509MigTests {
                         "", //String portNumberSecure
                         "FatBAX16Service", //String strServiceName,
                         "UrnX509Token16", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                        errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2206,7 +2206,7 @@ public class CxfX509MigTests {
                         "", //String portNumberSecure
                         "FatBAX17Service", //String strServiceName,
                         "UrnX509Token17", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2938,7 +2938,7 @@ public class CxfX509MigTests {
                            "", //String portNumberSecure
                            "FatBAX02Service", //String strServiceName,
                            "UrnX509Token02", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3002,7 +3002,7 @@ public class CxfX509MigTests {
                            "", //String portNumberSecure
                            "FatBAX08Service", //String strServiceName,
                            "UrnX509Token08", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3033,7 +3033,7 @@ public class CxfX509MigTests {
                            portNumberSecure, //String portNumberSecure
                            "FatBAX10Service", //String strServiceName,
                            "UrnX509Token10", //String strServicePort
-                           errMsgVersion //2/2021  CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3123,7 +3123,7 @@ public class CxfX509MigTests {
                            portNumberSecure, //String portNumberSecure
                            "FatBAX13Service", //String strServiceName,
                            "UrnX509Token13", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3212,7 +3212,7 @@ public class CxfX509MigTests {
                            portNumberSecure, //String portNumberSecure
                            "FatBAX16Service", //String strServiceName,
                            "UrnX509Token16", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3350,7 +3350,7 @@ public class CxfX509MigTests {
                            "", //String portNumberSecure
                            "FatBAX21Service", //String strServiceName,
                            "UrnX509Token21", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;

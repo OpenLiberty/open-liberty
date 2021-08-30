@@ -24,6 +24,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -34,6 +35,7 @@ public class TranTimeoutTest extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig(DFLT_SERVER_XML, testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);

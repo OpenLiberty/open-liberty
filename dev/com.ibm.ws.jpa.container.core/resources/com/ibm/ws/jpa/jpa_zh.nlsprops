@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -294,6 +294,11 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: \u5c1d\u8bd5\u53d8\u6362 Java \u
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=\u53d8\u6362\u8be5 Java \u7c7b\u65f6\u53d1\u751f\u610f\u5916\u9519\u8bef\u3002\u901a\u5e38\u662f\u7531\u65e0\u6548 Java \u5b57\u8282\u7801\u5bfc\u81f4\u6b64\u9519\u8bef\u3002
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=\u7c7b\u9ad8\u901f\u7f13\u5b58\u53ef\u80fd\u5df2\u635f\u574f\uff0c\u6216\u8005\u53ef\u80fd\u4e0d\u6b63\u786e\u5730\u6253\u5305\u4e86\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002\u9996\u5148\uff0c\u6e05\u9664\u7c7b\u9ad8\u901f\u7f13\u5b58\u3002\u5982\u679c\u8be5\u64cd\u4f5c\u672a\u89e3\u51b3\u95ee\u9898\uff0c\u90a3\u4e48\u590d\u67e5\u5e94\u7528\u7a0b\u5e8f\u5f52\u6863\u4ee5\u627e\u51fa\u6253\u5305\u9519\u8bef\u3002
 
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: server.xml \u6587\u4ef6\u4e2d\u914d\u7f6e\u7684 JPA \u7f3a\u7701\u5c5e\u6027\u5305\u542b\u7a7a\u540d\u79f0\u6216\u7a7a\u503c\uff1a\u540d\u79f0 = [{0}]\uff0c\u503c = [{1}]\u3002\u5c06\u5ffd\u7565\u8be5\u5c5e\u6027\u3002
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=JPA \u7f3a\u7701\u5c5e\u6027\u7684\u540d\u79f0\u548c\u503c\u5c5e\u6027\u4e0d\u5f97\u4e3a\u7a7a\u3002
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=\u66f4\u6539\u670d\u52a1\u5668\u914d\u7f6e\uff0c\u4ee5\u5bf9\u8be5\u5c5e\u6027\u63d0\u4f9b\u975e\u7a7a\u540d\u79f0\u548c\u503c\uff0c\u6216\u8005\u79fb\u9664\u8be5\u5c5e\u6027\u3002
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
 #-------------------------------------------------------------------------------

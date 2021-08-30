@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -395,7 +397,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
 
@@ -432,8 +434,8 @@ public class CxfX509EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongEncKeyAlgorithmEE8Only() throws Exception {
 
@@ -463,7 +465,7 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    "An error was discovered processing the <wsse:Security> header", //@AV999
+                    "An error was discovered processing the <wsse:Security> header",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -481,7 +483,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongDataEncAlgorithmEE7Only() throws Exception {
 
@@ -519,8 +521,8 @@ public class CxfX509EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongDataEncAlgorithmEE8Only() throws Exception {
 
@@ -550,7 +552,7 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    "An error was discovered processing the <wsse:Security> header", //@AV999
+                    "An error was discovered processing the <wsse:Security> header",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -568,7 +570,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
 
@@ -612,8 +614,8 @@ public class CxfX509EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongEncryptionKeyEE8Only() throws Exception {
 
@@ -644,7 +646,7 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    "Cannot find key for alias: [alice]", //@AV999
+                    "Cannot find key for alias: [alice]",
                     // msg to issue if do NOT get the expected result
                     "The test expected an exception from the server.");
 
@@ -667,8 +669,10 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientEncryptionBeforeSignEE7Only() throws Exception {
+
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
                     // test name for logging
                     "testCXFClientEncryptionBeforeSign",
@@ -696,7 +700,7 @@ public class CxfX509EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptionBeforeSignEE8Only() throws Exception {
 
@@ -758,7 +762,8 @@ public class CxfX509EncTests extends CommonTests {
                 newWsdl = null;
                 newClientWsdl = null;
             }
-            restoreServer();
+            //Removed to resolve RTC 285315
+            //restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }

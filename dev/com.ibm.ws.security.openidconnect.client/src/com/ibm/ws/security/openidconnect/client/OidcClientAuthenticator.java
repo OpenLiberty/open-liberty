@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,14 +169,12 @@ public class OidcClientAuthenticator {
             return result;
         }
         Set<Object> creds = result.getSubject().getPrivateCredentials();
-        if (creds.size() > 0) {
-            Object o = creds.iterator().next();
-            if (o instanceof OidcTokenImplBase) {
-                creds.remove(o);
-                creds.add(new OidcTokenImpl((OidcTokenImplBase) o));
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "idToken in subject is replaced with OidcTokenImpl");
-                }
+        Set<OidcTokenImplBase> oidcTokens = result.getSubject().getPrivateCredentials(OidcTokenImplBase.class);
+        for (OidcTokenImplBase oidcToken : oidcTokens) {
+            creds.remove(oidcToken);
+            creds.add(new OidcTokenImpl(oidcToken));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "idToken in subject is replaced with OidcTokenImpl");
             }
         }
         return result;

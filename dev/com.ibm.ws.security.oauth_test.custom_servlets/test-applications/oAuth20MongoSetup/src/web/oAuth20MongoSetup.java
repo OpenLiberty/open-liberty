@@ -34,6 +34,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.ServerAddress;
 
 @WebServlet(name = "oAuth20MongoSetup", urlPatterns = { "/oAuth20MongoSetup" })
@@ -54,6 +55,8 @@ public class oAuth20MongoSetup extends HttpServlet {
     static String OAUTHCLIENT = OAUTHCLIENT_BASE;
     static String OAUTHTOKEN = OAUTHTOKEN_BASE;
     static String OAUTHCONSENT = OAUTHCONSENT_BASE;
+
+    private final static int RETRY_COUNT = 3;
 
     // Database keys
     // Do not change these unless the CustomStoreSample is also changing
@@ -319,13 +322,59 @@ public class oAuth20MongoSetup extends HttpServlet {
         }
     }
 
+    /**
+     * Get the requested clientId from mongoDB, return on network type exceptions.
+     *
+     * @param clientId
+     * @param providerId
+     * @return
+     * @throws Exception
+     */
+    private DBObject getDBObject(String clientId, String providerId) throws Exception {
+        for (int i = 0; i < RETRY_COUNT; i++) {
+            try {
+                DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
+                BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
+                d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
+                return col.findOne(d);
+            } catch (Exception e) {
+                if (i < RETRY_COUNT && isNetworkFailure(e)) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e1) {
+                    }
+                } else {
+                    throw new Exception("oAuth20MongoSetup Failed to get client " + clientId, e);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check the exception statck for network failure type exceptions
+     *
+     * @param e
+     * @return
+     */
+    private boolean isNetworkFailure(Exception e) {
+        System.out.println("oAuth20MongoSetup isNetworkFailure processing for " + e);
+        Throwable causeBy = e;
+        while (causeBy != null) {
+            if (causeBy instanceof IOException || causeBy instanceof MongoTimeoutException) {
+                System.out.println("oAuth20MongoSetup Hit an IOException: " + causeBy);
+                return true;
+            } else {
+                System.out.println("oAuth20MongoSetup Not an IOException: " + causeBy);
+                causeBy = causeBy.getCause();
+            }
+        }
+        return false;
+    }
+
     private String getSecretType(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-
-        BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
-        d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
-        DBObject dbo = col.findOne(d);
+        DBObject dbo = getDBObject(clientId, providerId);
 
         if (dbo == null) {
             System.out.println("getSecretType: Could not find client " + clientId + " providerId " + providerId + " from " + OAUTHCLIENT);
@@ -352,13 +401,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     }
 
     private String getAlgorithm(String clientId, String providerId) throws Exception {
-
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-
-        BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
-        d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
-        DBObject dbo = col.findOne(d);
-
+        DBObject dbo = getDBObject(clientId, providerId);
         if (dbo == null) {
             System.out.println("getAlgorithm: Could not find client " + clientId + " providerId " + providerId);
             return "null_client";
@@ -378,11 +421,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getIteration(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-
-        BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
-        d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
-        DBObject dbo = col.findOne(d);
+        DBObject dbo = getDBObject(clientId, providerId);
 
         if (dbo == null) {
             System.out.println("getIteration: Could not find client " + clientId + " providerId " + providerId);
@@ -403,11 +442,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getSalt(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-
-        BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
-        d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
-        DBObject dbo = col.findOne(d);
+        DBObject dbo = getDBObject(clientId, providerId);
 
         if (dbo == null) {
             System.out.println("getSalt: Could not find client " + clientId + " providerId " + providerId);

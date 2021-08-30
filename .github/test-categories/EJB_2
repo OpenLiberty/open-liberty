@@ -9,3 +9,4 @@ com.ibm.ws.ejbcontainer.timer.persistent_fat
 com.ibm.ws.ejbcontainer.tx_fat
 com.ibm.ws.injection_fat
 com.ibm.ws.managedbeans_fat
+io.openliberty.ejbcontainer.v40_fat

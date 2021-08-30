@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
@@ -66,10 +67,7 @@ public class WCServerTest {
         testServlet40War.addPackage("testservlet40.war.servlets");
         testServlet40War.addPackage("testservlet40.war.listeners");
 
-        WebArchive testServlet40Ear = ShrinkWrap.create(WebArchive.class, SERVLET_40_APP_JAR_NAME + ".ear");
-        testServlet40Ear.addAsLibrary(testServlet40War);
-
-        ShrinkHelper.exportDropinAppToServer(server, testServlet40Ear);
+        ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 
         server.startServer(WCServerTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
@@ -92,9 +90,7 @@ public class WCServerTest {
      */
     @Test
     public void testSimpleServlet() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/SimpleTestServlet";
-        String expectedResponse = "Hello World";
-        verifyResponse(url, expectedResponse);
+        HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/SimpleTestServlet", "Hello World");
     }
 
     /**
@@ -235,9 +231,9 @@ public class WCServerTest {
         if (JakartaEE9Action.isActive()) {
             majorVersionExpectedResult = "majorVersion: 5";
         }
-        verifyResponse(url + "/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
+        HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
-        verifyResponse(url + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
+        HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
     }
 
     /**
@@ -304,23 +300,6 @@ public class WCServerTest {
                 for (String expectedResponse : expectedResponseStrings) {
                     assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
                 }
-            }
-        }
-    }
-
-    private void verifyResponse(String url, String expectedResponse) throws Exception {
-        LOG.info("url: " + url);
-        LOG.info("expectedResponse: " + expectedResponse);
-
-        HttpGet getMethod = new HttpGet(url);
-
-        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (final CloseableHttpResponse response = client.execute(getMethod)) {
-                String responseText = EntityUtils.toString(response.getEntity());
-                LOG.info("\n" + "Response Text:");
-                LOG.info("\n" + responseText);
-
-                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
             }
         }
     }

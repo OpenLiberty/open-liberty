@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ public class SessionManagerConfig implements Cloneable {
     private int rowSize = 4;
     private String tableSpaceName = null;
     private boolean usingMultirow = false;
+    private int rowSizeLimit  = 2;
 
     // Object which contains MTM settings
     private Object drsSettings;
@@ -570,6 +571,20 @@ public class SessionManagerConfig implements Cloneable {
         usingMultirow = b;
     }
 
+    /**
+     * @return the rowSizeLimit
+     */
+    public final int getRowSizeLimit() {
+        return rowSizeLimit;
+    }
+
+    /**
+     * @param rowSizeLimit the rowSizeLimit to set
+     */
+    public final void setRowSizeLimit(int rowSizeLimit) {
+        this.rowSizeLimit = rowSizeLimit;
+    }    
+    
     // drsSettings
     public final Object getDRSSettings() {
         return drsSettings;

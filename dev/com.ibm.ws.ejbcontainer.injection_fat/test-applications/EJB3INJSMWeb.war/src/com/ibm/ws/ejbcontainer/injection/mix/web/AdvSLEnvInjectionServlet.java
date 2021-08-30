@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithCDI;
+import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithEE9CDI;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBLocal;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBLocalHome;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionLocal;
@@ -451,7 +452,7 @@ public class AdvSLEnvInjectionServlet extends FATServlet {
      * </ol>
      */
     @Test
-    @SkipForRepeat({ RepeatWithCDI.ID })
+    @SkipForRepeat({ RepeatWithCDI.ID, RepeatWithEE9CDI.ID })
     public void testSLLAdvCompEnvObjMthdInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test

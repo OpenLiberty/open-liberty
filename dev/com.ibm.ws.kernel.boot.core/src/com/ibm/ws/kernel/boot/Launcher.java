@@ -325,7 +325,7 @@ public class Launcher {
         if (consoleLogFileStr == null)
             consoleLogFileStr = getEnv(BootstrapConstants.ENV_LOG_FILE);
 
-        String serviceBindingRoot = getEnv(BootstrapConstants.ENV_SERVICE_BINDING_ROOT);
+        String variablePath = getEnv(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
 
         BootstrapLocations locations = new BootstrapLocations();
         locations.setProcessName(processName);
@@ -333,7 +333,7 @@ public class Launcher {
         locations.setServerDir(serversDirStr);
         locations.setLogDir(logDirStr);
         locations.setConsoleLogFile(consoleLogFileStr);
-        locations.setServiceBindingRoot(serviceBindingRoot);
+        locations.setVariableSourceDirs(variablePath);
 
         // Do enough processing to know where the directories should be.
         // this should not cause any directories to be created

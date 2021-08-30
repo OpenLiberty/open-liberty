@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -305,6 +305,12 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Z\u00edskejte nov\u011bj\u0161\u0
 ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Do\u0161lo k chyb\u011b p\u0159i pokusu o transformaci t\u0159\u00eddy Java {0}. Byly shrom\u00e1\u017ed\u011bny n\u00e1sleduj\u00edc\u00ed podrobnosti selh\u00e1n\u00ed: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=P\u0159i transformaci t\u0159\u00eddy Java do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b. Tato chyba je obvykle zp\u016fsobena neplatn\u00fdm bajtov\u00fdm k\u00f3dem Java.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Je mo\u017en\u00e9, \u017ee mezipam\u011b\u0165 t\u0159\u00edd je po\u0161kozena nebo \u017ee je aplikace nespr\u00e1vn\u011b zabalena. Nejprve vyma\u017ete mezipam\u011b\u0165 t\u0159\u00eddy. Pokud tato akce probl\u00e9m nevy\u0159e\u0161\u00ed, zkontrolujte archiv aplikace, zda neobsahuje chyby balen\u00ed.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: V\u00fdchoz\u00ed vlastnost JPA nakonfigurovan\u00e1 v souboru server.xml obsahuje pr\u00e1zdn\u00fd n\u00e1zev nebo pr\u00e1zdnou hodnotu: n\u00e1zev = [{0}], hodnota = [{1}]. Vlastnost bude ignorov\u00e1na.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atributy n\u00e1zvu a hodnoty pro v\u00fdchoz\u00ed vlastnost JPA nesm\u00ed b\u00fdt pr\u00e1zdn\u00e9.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Zm\u011b\u0148te konfiguraci serveru tak, aby poskytovala nepr\u00e1zdn\u00fd n\u00e1zev a hodnotu vlastnosti, nebo odeberte vlastnost.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
