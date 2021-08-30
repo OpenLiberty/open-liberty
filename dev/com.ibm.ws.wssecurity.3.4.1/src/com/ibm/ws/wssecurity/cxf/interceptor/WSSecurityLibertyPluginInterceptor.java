@@ -125,7 +125,8 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                 String key = keyIt.next();
                 if (message.getContextualProperty(key) == null) {
                     //check whether config has password
-                    if (WSSecurityConstants.CXF_SIG_PROPS.equals(key) || WSSecurityConstants.SEC_SIG_PROPS.equals(key)) {
+                    if ((WSSecurityConstants.CXF_SIG_PROPS.equals(key) || WSSecurityConstants.SEC_SIG_PROPS.equals(key)) && 
+                                    message.getContextualProperty(WSSecurityConstants.SEC_SIG_PROPS) == null ) {
                         Map<String, Object> tempMap = (Map<String, Object>) clientConfigMap.
                                         get(WSSecurityConstants.SEC_SIG_PROPS); //v3
                         if (tempMap == null) {
@@ -146,7 +147,8 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                             //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, Utils.getCrypto(sigProps)); //@2020 TODO
                             SignatureAlgorithms.setAlgorithm(message, (String) tempMap.get(SIGNATURE_METHOD));
                         }
-                    } else if (WSSecurityConstants.CXF_ENC_PROPS.equals(key) || WSSecurityConstants.SEC_ENC_PROPS.equals(key)) {
+                    } else if ((WSSecurityConstants.CXF_ENC_PROPS.equals(key) || WSSecurityConstants.SEC_ENC_PROPS.equals(key)) && 
+                                    message.getContextualProperty(WSSecurityConstants.SEC_ENC_PROPS) == null ) {
                         Map<String, Object> tempMap = (Map<String, Object>) clientConfigMap.
                                         get(WSSecurityConstants.SEC_ENC_PROPS); //v3
                         if (tempMap == null) {
@@ -230,7 +232,8 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                 String key = keyIt.next();
 
                 //check whether config has password
-                if (WSSecurityConstants.CXF_SIG_PROPS.equals(key) || WSSecurityConstants.SEC_SIG_PROPS.equals(key)) {
+                if ((WSSecurityConstants.CXF_SIG_PROPS.equals(key) || WSSecurityConstants.SEC_SIG_PROPS.equals(key)) && 
+                                message.getContextualProperty(WSSecurityConstants.SEC_SIG_PROPS) == null ) {
                     Map<String, Object> tempMap = (Map<String, Object>) providerConfigMap.
                                     get(WSSecurityConstants.SEC_SIG_PROPS); //v3
                     if (tempMap == null) {
@@ -251,7 +254,8 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                         //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, Utils.getCrypto(sigProps)); //@2020 TODO
                         SignatureAlgorithms.setAlgorithm(message, (String) tempMap.get(SIGNATURE_METHOD));
                     }
-                } else if (WSSecurityConstants.CXF_ENC_PROPS.equals(key) || WSSecurityConstants.SEC_ENC_PROPS.equals(key)) {
+                } else if ((WSSecurityConstants.CXF_ENC_PROPS.equals(key) || WSSecurityConstants.SEC_ENC_PROPS.equals(key)) && 
+                                message.getContextualProperty(WSSecurityConstants.SEC_ENC_PROPS) == null) {
                     Map<String, Object> tempMap = (Map<String, Object>) providerConfigMap.
                                     get(WSSecurityConstants.SEC_ENC_PROPS); //v3
                     if (tempMap == null) {

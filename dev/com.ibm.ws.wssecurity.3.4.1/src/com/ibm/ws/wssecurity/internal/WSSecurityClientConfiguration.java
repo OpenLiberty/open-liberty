@@ -169,7 +169,8 @@ public class WSSecurityClientConfiguration implements ConfigurationListener {
                         for (String key : SPECIAL_CFG_KEYS) {
                             signaturePropertyMap.remove(key);
                         }
-                        defaultConfigMap.put(WSSecurityConstants.SEC_SIG_PROPS, signaturePropertyMap);  //v3
+                        //defaultConfigMap.put(WSSecurityConstants.SEC_SIG_PROPS, signaturePropertyMap);  //v3
+                        defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap);  //v3 - backward compatibility
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Object sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
                                             signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
@@ -207,7 +208,8 @@ public class WSSecurityClientConfiguration implements ConfigurationListener {
                         for (String key : SPECIAL_CFG_KEYS) {
                             encryptionPropertyMap.remove(key);
                         }
-                        defaultConfigMap.put(WSSecurityConstants.SEC_ENC_PROPS, encryptionPropertyMap);  //v3
+                        //defaultConfigMap.put(WSSecurityConstants.SEC_ENC_PROPS, encryptionPropertyMap);  //v3
+                        defaultConfigMap.put(WSSecurityConstants.CXF_ENC_PROPS, encryptionPropertyMap);  //v3 - backward compatibility
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Object encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
                                             encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE): encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
