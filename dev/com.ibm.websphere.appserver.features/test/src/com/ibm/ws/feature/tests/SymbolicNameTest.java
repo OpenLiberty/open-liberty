@@ -28,14 +28,14 @@ public class SymbolicNameTest {
 
     private static FeatureFileList featureFileList = null;
 
-	@BeforeClass
-	public static void setUpClass() {
-	    featureFileList = new FeatureFileList("./visibility/");
-	}
+    @BeforeClass
+    public static void setUpClass() {
+        featureFileList = new FeatureFileList("./visibility/");
+    }
 
-	@Test
-	public void testSymbolicName() {
-	    for (File featureFile : featureFileList) {
+    @Test
+    public void testSymbolicName() {
+        for (File featureFile : featureFileList) {
             FeatureInfo featureInfo = new FeatureInfo(featureFile);
             String symbolicName = featureInfo.getName();
             String fileName = featureFile.getName();
@@ -44,25 +44,30 @@ public class SymbolicNameTest {
                 fileName = fileName.substring(0, index);
             }
             Assert.assertEquals("symbolicName doesn't match the name of the file", fileName, symbolicName);
-	    }
-	}
+        }
+    }
 
-	/**
-	 * Validates that if multiple features start with the same prefix that they are appropriately
-	 * marked as singletons so that they can't both load in the same server.
-	 */
-	@Test
-	public void testSingleton() {
-	    Map<String, Map<String, List<FeatureInfo>>> featureMap = new HashMap<>();
+    /**
+     * Validates that if multiple features start with the same prefix that they are appropriately marked as singletons
+     * so that they can't both load in the same server.
+     */
+    @Test
+    public void testSingleton() {
+        StringBuilder errorMessage = new StringBuilder();
+        Map<String, Map<String, List<FeatureInfo>>> featureMap = new HashMap<>();
         for (File featureFile : featureFileList) {
             FeatureInfo featureInfo = new FeatureInfo(featureFile);
             if (featureInfo.isAutoFeature()) {
+                if (featureInfo.isSingleton()) {
+                    errorMessage.append("Found issues with " + featureInfo.getName() + '\n');
+                    errorMessage.append("     Auto features should not be marked as singleton" + '\n');
+                }
                 continue;
             }
             String symbolicName = featureInfo.getName();
             // javaeePlatform and appSecurity are special because they have dependencies on each other.
-            if (symbolicName.startsWith("com.ibm.websphere.appserver.javaeePlatform") ||
-                    symbolicName.startsWith("com.ibm.websphere.appserver.appSecurity")) {
+            if (symbolicName.startsWith("com.ibm.websphere.appserver.javaeePlatform")
+                    || symbolicName.startsWith("com.ibm.websphere.appserver.appSecurity")) {
                 continue;
             }
 
@@ -86,14 +91,15 @@ public class SymbolicNameTest {
             }
             featureList.add(featureInfo);
         }
-        StringBuilder errorMessage = new StringBuilder();
         for (Map<String, List<FeatureInfo>> featureListMap : featureMap.values()) {
             for (List<FeatureInfo> featureList : featureListMap.values()) {
                 if (featureList.size() > 1) {
                     for (FeatureInfo featureInfo : featureList) {
                         if (!featureInfo.isSingleton()) {
                             errorMessage.append("Found issues with " + featureInfo.getName() + '\n');
-                            errorMessage.append("     There are other versions with the same name and it isn't marked as a singleton: " + '\n');
+                            errorMessage.append(
+                                    "     There are other versions with the same name and it isn't marked as a singleton: "
+                                            + '\n');
                         }
                     }
                 }
@@ -102,5 +108,5 @@ public class SymbolicNameTest {
         if (errorMessage.length() != 0) {
             Assert.fail("Found features that aren't correctly marked as singletons: " + '\n' + errorMessage.toString());
         }
-	}
+    }
 }
