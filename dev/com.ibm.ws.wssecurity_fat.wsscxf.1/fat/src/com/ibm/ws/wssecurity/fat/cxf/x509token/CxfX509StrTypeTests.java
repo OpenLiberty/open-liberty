@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -48,6 +46,8 @@ public class CxfX509StrTypeTests extends CommonTests {
     static private final Class<?> thisClass = CxfX509StrTypeTests.class;
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509sig";
+    //issue 18361
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -66,12 +66,55 @@ public class CxfX509StrTypeTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             commonSetUp(serverName, "server_enc.xml", false, "/x509sigclient/CxfX509SigSvcClient");
+            //issue 18361
+            featureVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_enc_wss4j.xml", false, "/x509sigclient/CxfX509SigSvcClient");
+            //issue 18361
+            featureVersion = "EE8";
         }
+
+    }
+
+    //issue 18361 - rearranging the method sequence: testCxfClientSignIssuerSerial() on top of testCxfClientSignThumbPrint()
+
+    /**
+     * Description:
+     * The SOAP Body is signed in the request message using Issuer serial as the security token reference method.
+     * In the response message, the SOAP Body is also signed using the Issuer serial reference method.
+     * This is a positive scenario.
+     */
+
+    @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testCxfClientSignIssuerSerial() throws Exception {
+
+        genericTest(
+                    // test name for logging
+                    "testCxfClientSignIssuerSerial",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlStrService2",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Str2",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is X509XmlStrService2 Web Service",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
 
     }
 
@@ -114,88 +157,22 @@ public class CxfX509StrTypeTests extends CommonTests {
     /**
      * Description:
      * The SOAP Body is signed in the request message using Issuer serial as the security token reference method.
-     * In the response message, the SOAP Body is also signed using the Issuer serial reference method.
-     * This is a positive scenario.
-     */
-
-    @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfClientSignIssuerSerial() throws Exception {
-
-        genericTest(
-                    // test name for logging
-                    "testCxfClientSignIssuerSerial",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlStrService2",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Str2",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is X509XmlStrService2 Web Service",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-    }
-
-    /**
-     * Description:
-     * The SOAP Body is signed in the request message using Issuer serial as the security token reference method.
      * but the Web service is configured with a keystore that does not contain the key used for signing the
      * SOAP body. The request is expected to be rejected with an appropriate exception.
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfClientKeysMismatchEE7Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc.xml");
-
-        genericTest(
-                    // test name for logging
-                    "testCxfClientKeysMismatch",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlStrService2",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Str2",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "The signature or decryption was invalid",
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfClientKeysMismatchEE8Only() throws Exception {
+    public void testCxfClientKeysMismatch() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc_wss4j.xml");
+        //issue 18361 - adding the conditional flag instead of originally split test methods
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc_wss4j.xml");
+        } //End of issue 18361
 
         genericTest(
                     // test name for logging
@@ -221,7 +198,13 @@ public class CxfX509StrTypeTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18361 - adding the conditional flag instead of originally split test methods and replacing server_enc.xml/server_enc_wss4j.xml for server_orig.xml/server_orig_wss4j.xml
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc_wss4j.xml");
+        } //End of issue 18361
 
     }
 
