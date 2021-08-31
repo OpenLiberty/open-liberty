@@ -646,6 +646,26 @@ public class OIDCClientAuthenticatorUtilTest {
         }
     }
 
+    @Test
+    public void testAuthenticate_missingAuthEndpoint() {
+        try {
+            mock.checking(new Expectations() {
+                {
+                    one(convClientConfig).getAuthorizationEndpointUrl();
+                    will(returnValue(null));
+                    one(convClientConfig).getClientId();
+                    will(returnValue(CLIENTID));
+                }
+            });
+
+            ProviderAuthenticationResult result = oidcCAUtil.authenticate(req, res, convClientConfig);
+            assertEquals("The authentication result status must be SEND_401.", AuthResult.SEND_401, result.getStatus());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     private void createCommonAuthenticateExpectations(final byte[] oidcCodeCookie) {
         createReqCookieExpectation(oidcCodeCookie);
     }
