@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -51,6 +49,8 @@ public class CxfX509SigTests extends CommonTests {
     static private UpdateWSDLPortNum newWsdl = null;
     static private String newClientWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509sig";
+    //issue 18363
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -63,11 +63,15 @@ public class CxfX509SigTests extends CommonTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            //issue 18363
+            featureVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            //issue 18363
+            featureVersion = "EE8";
         }
 
         ShrinkHelper.defaultDropinApp(server, "x509sigclient", "com.ibm.ws.wssecurity.fat.x509sigclient", "test.wssecfvt.x509sig", "test.wssecfvt.x509sig.types");
@@ -110,70 +114,66 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfBodyNotSignedEE7Only() throws Exception {
+    public void testCxfBodyNotSigned() throws Exception {
 
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigNoClientSig.wsdl",
                                          defaultClientWsdlLoc + "X509XmlSigNoClientSigUpdated.wsdl");
         Log.info(thisClass, "testCxfBodyNotSigned", "Using " + newClientWsdl);
-        genericTest(
-                    // test name for logging
-                    "testCxfBodyNotSignedEE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    //Orig:
-                    "Body not SIGNED",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            genericTest(
+                        // test name for logging
+                        "testCxfBodyNotSigned",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        //Orig:
+                        "Body not SIGNED",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
+        } // End of issue 18363
 
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCxfBodyNotSignedEE8Only() throws Exception {
-
-        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigNoClientSig.wsdl",
-                                         defaultClientWsdlLoc + "X509XmlSigNoClientSigUpdated.wsdl");
-        Log.info(thisClass, "testCxfBodyNotSigned", "Using " + newClientWsdl);
-        genericTest(
-                    // test name for logging
-                    "testCxfBodyNotSignedEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Soap Body is not SIGNED", //@AV999
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion == "EE8") {
+            genericTest(
+                        // test name for logging
+                        "testCxfBodyNotSigned",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Soap Body is not SIGNED",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
+        } // End of issue 18363
 
     }
 
@@ -308,217 +308,205 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfClientSignWithExpKeyEE7Only() throws Exception {
+    public void testCxfClientSignWithExpKey() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert.xml");
+        // use server config with expired cert
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientSignWithExpKey",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl service that svc client code should use
+                        "X509XmlSigService4",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig4",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "cannot create instance",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-        genericTest(
-                    // test name for logging
-                    "testCxfClientSignWithExpKeyEE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService4",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig4",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    //Orig:
-                    "cannot create instance",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        } //End of issue 18363
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        //issue 18363
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientSignWithExpKey",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService4",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig4",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Cannot create Crypto class",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-    }
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCxfClientSignWithExpKeyEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
-
-        genericTest(
-                    // test name for logging
-                    "testCxfClientSignWithExpKeyEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService4",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig4",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Cannot create Crypto class", //@AV999
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfClientBadClKeyStorePswdEE7Only() throws Exception {
+    public void testCxfClientBadClKeyStorePswd() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd.xml");
+        // use server config with bad client pw
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientBadClKeyStorePswd",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "cannot create instance",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-        genericTest(
-                    // test name for logging
-                    "testCxfClientBadClKeyStorePswdEE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    //Orig:
-                    "cannot create instance",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        } //End of issue 18363
 
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientBadClKeyStorePswd",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Cannot create Crypto class",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
+
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
+        } //End of issue 18363
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCxfClientBadClKeyStorePswdEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
-
-        genericTest(
-                    // test name for logging
-                    "testCxfClientBadClKeyStorePswdEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Cannot create Crypto class", //@AV999
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfClientBadSrvKeyStorePswdEE7Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd.xml");
-
-        genericTest(
-                    // test name for logging
-                    "testCxfClientBadSrvKeyStorePswdEE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    //Orig:
-                    "cannot create instance",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfClientBadSrvKeyStorePswdEE8Only() throws Exception {
+    public void testCxfClientBadSrvKeyStorePswd() throws Exception {
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
+        // use server config with bad server pw
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientBadSrvKeyStorePswd",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "cannot create instance",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-        genericTest(
-                    // test name for logging
-                    "testCxfClientBadSrvKeyStorePswdEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509XmlSigService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnX509Sig",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Cannot create Crypto class",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
+            genericTest(
+                        // test name for logging
+                        "testCxfClientBadSrvKeyStorePswd",
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "X509XmlSigService1",
+                        // wsdl that the svc client code should use
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnX509Sig",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Cannot create Crypto class",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        }
     }
 
     public String updateClientWsdl(String origClientWsdl,

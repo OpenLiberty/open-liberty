@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11enc;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -46,6 +44,8 @@ public class CxfWss11EncTests extends CommonTests {
     static private final Class<?> thisClass = CxfWss11EncTests.class;
     //static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.wss11enc";
+    //issue 18363
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -58,11 +58,15 @@ public class CxfWss11EncTests extends CommonTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            //issue 18363
+            featureVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            //issue 18363
+            featureVersion = "EE8";
         }
 
         ShrinkHelper.defaultDropinApp(server, "wss11encclient", "com.ibm.ws.wssecurity.fat.wss11encclient", "test.wssecfvt.wss11enc", "test.wssecfvt.wss11enc.types");
@@ -99,46 +103,20 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientEncryptHeaderNS1EE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFClientEncryptHeaderNS1EE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11EncService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSS11Enc1",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is Wss11EncWebSvc1 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientEncryptHeaderNS1EE8Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
+    public void testCXFClientEncryptHeaderNS1() throws Exception {
+
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFClientEncryptHeaderNS1EE8Only",
+                    "testCXFClientEncryptHeaderNS1",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -160,8 +138,13 @@ public class CxfWss11EncTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -193,42 +176,20 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientEncryptHeaderNS2EE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFClientEncryptHeaderNS2EE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11EncService1",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSS11Enc1",
-                    // msg to send from svc client to server
-                    "multiHeaders",
-                    // expected response from server
-                    "Response: This is Wss11EncWebSvc1 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientEncryptHeaderNS2EE8Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+    public void testCXFClientEncryptHeaderNS2() throws Exception {
+
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFClientEncryptHeaderNS2EE8Only",
+                    "testCXFClientEncryptHeaderNS2",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -277,42 +238,20 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientEncryptHeaderAnyEE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFClientEncryptHeaderAnyEE7Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11EncService2",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSS11Enc2",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is Wss11EncWebSvc2 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientEncryptHeaderAnyEE8Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+    public void testCXFClientEncryptHeaderAny() throws Exception {
+
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFClientEncryptHeaderAnyEE8Only",
+                    "testCXFClientEncryptHeaderAny",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use

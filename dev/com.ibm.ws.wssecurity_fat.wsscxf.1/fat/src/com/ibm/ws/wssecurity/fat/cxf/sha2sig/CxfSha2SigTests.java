@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sha2sig;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -48,6 +46,8 @@ public class CxfSha2SigTests extends CommonTests {
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sha2sig";
 
     static private final Class<?> thisClass = CxfSha2SigTests.class;
+    //issue 18363
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -60,11 +60,15 @@ public class CxfSha2SigTests extends CommonTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            //issue 18363
+            featureVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            //issue 18363
+            featureVersion = "EE8";
         }
 
         ShrinkHelper.defaultDropinApp(server, "sha2sigclient", "com.ibm.ws.wssecurity.fat.sha2sigclient", "test.wssecfvt.sha2sig", "test.wssecfvt.sha2sig.types");
@@ -88,45 +92,18 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
-
-        String thisMethod = "testCxfSha2SignSoapBody";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService1",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig1",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA2 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
+    public void testCxfSha2SignSoapBody() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -165,45 +142,18 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
-
-        String thisMethod = "testCxfSha2DigestAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService2",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig2",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "This is WSSECFVT SHA256 Digest Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
+    public void testCxfSha2DigestAlgorithm() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -241,11 +191,18 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testCxfSha384SigAlgorithm() throws Exception {
 
         String thisMethod = "testTwasSha384SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -271,45 +228,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
-
-        String thisMethod = "testCxfSha384SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService3",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig3",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA384 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -323,11 +248,18 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testCxfSha512SigAlgorithm() throws Exception {
 
         String thisMethod = "testTwasSha512SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -353,45 +285,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
-
-        String thisMethod = "testCxfSha512SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService4",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig4",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA512 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -408,83 +308,76 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
-
-        String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2.xml");
-
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService5",
-                    // wsdl that the svc client code should use
-                    // newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig5",
-                    // msg to send from svc client to server
-                    "",
-                    "Response: javax.xml.ws.soap.SOAPFaultException",
-                    // expected response from server
-                    //Orig:
-                    "The signature method does not match the requirement",
-
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
+    public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2.xml");
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "Sha2SigService5",
+                        // wsdl that the svc client code should use
+                        // newClientWsdl,
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnSha2Sig5",
+                        // msg to send from svc client to server
+                        "",
+                        "Response: javax.xml.ws.soap.SOAPFaultException",
+                        // expected response from server
+                        "The signature method does not match the requirement",
+                        // msg to issue if do NOT get the expected result
+                        "The test did not receive the expected exception from the server.");
 
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService5",
-                    // wsdl that the svc client code should use
-                    // newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig5",
-                    // msg to send from svc client to server
-                    "",
-                    "Response: javax.xml.ws.soap.SOAPFaultException",
-                    // expected response from server
-                    //2/2021
-                    "An error was discovered processing the <wsse:Security> header",
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
+
+        //issue 18363
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2_wss4j.xml");
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "Sha2SigService5",
+                        // wsdl that the svc client code should use
+                        // newClientWsdl,
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnSha2Sig5",
+                        // msg to send from svc client to server
+                        "",
+                        "Response: javax.xml.ws.soap.SOAPFaultException",
+                        // expected response from server
+                        "An error was discovered processing the <wsse:Security> header",
+                        // msg to issue if do NOT get the expected result
+                        "The test did not receive the expected exception from the server.");
+
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
+        } //End of issue 18363
 
     }
 
@@ -500,11 +393,18 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testCxfSha256SigAlg2048Keylen() throws Exception {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -530,45 +430,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha256SigAlg2048KeylenEE8Only() throws Exception {
-
-        String thisMethod = "testCxfSha256SigAlg2048Keylen";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService7",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig7",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA2-2048 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -584,48 +452,18 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha384SymBindingEE7Only() throws Exception {
-
-        String thisMethod = "testCxfSha384SymBinding";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService8",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig8",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA2 SYM Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha384SymBindingEE8Only() throws Exception {
+    public void testCxfSha384SymBinding() throws Exception {
 
         String thisMethod = "testCxfSha384SymBinding";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -651,8 +489,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -668,47 +511,17 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCxfSha512SymBindingEE7Only() throws Exception {
-        String thisMethod = "testCxfSha512SymBinding";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "Sha2SigService8",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "UrnSha2Sig8",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSECFVT SHA2 SYM Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test did not receive the expected exception from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfSha512SymBindingEE8Only() throws Exception {
-
+    public void testCxfSha512SymBinding() throws Exception {
         String thisMethod = "testCxfSha512SymBinding";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -734,8 +547,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 

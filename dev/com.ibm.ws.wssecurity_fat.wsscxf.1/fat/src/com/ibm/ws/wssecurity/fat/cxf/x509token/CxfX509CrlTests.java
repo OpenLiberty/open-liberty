@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -49,6 +47,8 @@ public class CxfX509CrlTests extends CommonTests {
     //static private final Class<?> thisClass = CxfX509CrlTests.class;
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509crl";
+    //issue 18363
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -62,11 +62,15 @@ public class CxfX509CrlTests extends CommonTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            //issue 18363
+            featureVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            //issue 18363
+            featureVersion = "EE8";
         }
 
         WebArchive x509crlclient_war = ShrinkHelper.buildDefaultApp("x509crlclient", "com.ibm.ws.wssecurity.fat.x509crlclient", "test.wssecfvt.x509crl",
@@ -97,48 +101,18 @@ public class CxfX509CrlTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientCRLPNotInListEE7Only() throws Exception {
-
-        String thisMethod = "testCXFClientCRLPNotInList";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509CrlNotInListService",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "X509CrlNotInList",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is X509CrlNotInListService Web Service",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientCRLPNotInListEE8Only() throws Exception {
+    public void testCXFClientCRLPNotInList() throws Exception {
 
         String thisMethod = "testCXFClientCRLPNotInList";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -164,8 +138,13 @@ public class CxfX509CrlTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -182,52 +161,20 @@ public class CxfX509CrlTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCXFClientCRLNInListEE7Only() throws Exception {
-
-        String thisMethod = "testCXFClientCRLNInList";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "X509CrlInListService",
-                    // wsdl that the svc client code should use
-                    //newClientWsdl,
-                    "",
-                    // wsdl port that svc client code should use
-                    "X509CrlInList",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "has been revoked",
-                    // additional string to check for - chc SUN doesn't say what alias has been revoked
-                    //"myx509certN",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientCRLNInListEE8Only() throws Exception {
+    public void testCXFClientCRLNInList() throws Exception {
 
         String thisMethod = "testCXFClientCRLNInList";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -255,8 +202,13 @@ public class CxfX509CrlTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        //Added to resolve RTC 285315
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if (featureVersion == "EE7") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        }
+        if (featureVersion == "EE8") {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
     }
 
