@@ -15,6 +15,9 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/commonLibraryCrossInjectionTestJarOne.jar/src,\
+	test-applications/commonLibraryCrossInjectionTestJarTwo.jar/src,\
+	test-applications/commonLibraryCrossInjectionTest.war/src,\
 	test-applications/jarInRar.jar/src,\
 	test-applications/jarInRar.rar/src,\
 	test-applications/jarInRarEjb.jar/src,\
