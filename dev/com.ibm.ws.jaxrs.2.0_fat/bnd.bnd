@@ -37,6 +37,7 @@ src: \
   test-applications/paramconverter/src,\
   test-applications/options/src,\
   test-applications/params/src,\
+  test-applications/prototype/src,\
   test-applications/providerAndResource/src,\
   test-applications/providerCache/src,\
   test-applications/providers/src,\

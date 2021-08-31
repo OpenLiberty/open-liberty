@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+  <display-name>AutoCreatedTimerBean</display-name>
+  <enterprise-beans>
+    <session id="AutoCreatedTimerMBean_ID">
+      <ejb-name>AutoCreatedTimerMBean</ejb-name>
+      <business-local>io.openliberty.ejbcontainer.fat.timer.auto.np.ejb.AutoCreatedTimerM</business-local>
+      <ejb-class>io.openliberty.ejbcontainer.fat.timer.auto.np.ejb.AutoCreatedTimerMBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <timer id="schedule_override_timer_ID">
+        <schedule>
+          <hour>10</hour>
+        </schedule>
+        <info>firstOverrideXML</info>
+        <timeout-method id="scheduleOverride_method_ID">
+          <method-name>firstOverridenMethod</method-name>
+          <method-params id="firstOverrideMethod_param1_ID">
+            <method-param>jakarta.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="schedules_override_timer_ID">
+        <schedule>
+          <hour>11</hour>
+        </schedule>
+        <info>secondOverrideXML</info>
+        <timeout-method id="schedulesOverride_method_ID">
+          <method-name>secondOverridenMethod</method-name>
+          <method-params id="secondOverrideMethod_param1_ID">
+            <method-param>jakarta.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

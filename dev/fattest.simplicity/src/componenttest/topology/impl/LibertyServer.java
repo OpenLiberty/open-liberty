@@ -5476,6 +5476,18 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Check for multiple instances of the regex in log using mark
+     *
+     * @param  numberOfMatches number of matches required
+     * @param  regexp          a regular expression to search for
+     * @param  outputFile      file to check
+     * @return                 number of matches found
+     */
+    public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp, RemoteFile outputFile) {
+        return logMonitor.waitForMultipleStringsInLogUsingMark(numberOfMatches, regexp, LOG_SEARCH_TIMEOUT, outputFile);
+    }
+
+    /**
      * Wait for a regex in the most recent trace file
      *
      * @param  regexp

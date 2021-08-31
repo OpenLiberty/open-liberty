@@ -1,9 +1,5 @@
 /*******************************************************************************
-<<<<<<< HEAD
  * Copyright (c) 2019, 2021 IBM Corporation and others.
-=======
- * Copyright (c) 2019, 2020, 2021 IBM Corporation and others.
->>>>>>> 5862398631b9f73db9d0aa84056e994716190bee
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -412,20 +408,20 @@ public abstract class FeatureUtilityToolTest {
 
         return usr;
     }
-    
+
     protected static boolean deleteUsrToExtFolder(String methodName){
         boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/cik"));
         Log.info(c, methodName, "DELETED files/folders: /usr/cik ? VALUE: " + usr);
 
         return usr;
     }
-    
+
     protected static void assertFilesExist(String[] filePaths)  throws Exception {
     	for (String filePath : filePaths) {
     		assertTrue(filePath + " does not exist.", new File(minifiedRoot, filePath).exists());
     	}
     }
-    
+
     protected void createExtensionDirs(String extensionName) throws Exception {
         //create extensionName.properties file in wlp/etc/extensions
         String methodName = "createExtensionDirs";
@@ -442,9 +438,9 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "Extension install dir created= " + success);
 
         File propsFile = new File(extensionsDir, propsName);
-        
+
         writeToProps(propsFile.toString(),"com.ibm.websphere.productId", extensionName );
         writeToProps(propsFile.toString(),"com.ibm.websphere.productInstall", extensionsInstallDir.getAbsolutePath() );
-        
+
     }
 }

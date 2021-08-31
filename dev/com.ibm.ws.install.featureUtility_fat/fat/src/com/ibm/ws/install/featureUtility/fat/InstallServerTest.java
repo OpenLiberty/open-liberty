@@ -36,9 +36,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("usr/temp", "../../publish/tmp/serverX.zip");
         replaceWlpProperties(getPreviousWlpVersion());
         replaceWlpProperties(getPreviousWlpVersion());
-        deleteUsrExtFolder(methodName);
-        deleteUsrToExtFolder(methodName);
-        deleteEtcFolder(methodName);
         Log.exiting(c, methodName);
     }
 
@@ -224,7 +221,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
         Log.exiting(c, METHOD_NAME);
     }
-    
+
     /**
      * Install an user feature with the "--featuresBom" parameters
      */
@@ -241,12 +238,12 @@ public class InstallServerTest extends FeatureUtilityToolTest {
                 "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
         copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
                 "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/features-bom/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/features/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/features/19.0.0.8/features-19.0.0.8.json");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/testesa1/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
@@ -254,7 +251,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf",
 								"usr/extension/bin/testesa1.bat" };
         
-        String[] param1s = { "installServerFeatures", "serverX", "--featuresBOM=userTest.user.test.features:features-bom:19.0.0.8", "--verbose"};
+        String[] param1s = { "installServerFeatures", "serverX", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String output = po.getStdout();
         
@@ -284,17 +281,17 @@ public class InstallServerTest extends FeatureUtilityToolTest {
                 "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
         copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
                 "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/features-bom/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/features/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/features/19.0.0.8/features-19.0.0.8.json");
-        copyFileToMinifiedRoot("repo/userTest/user/test/features/testesa1/19.0.0.8",
-                "../../publish/repo/userTest/user/test/features/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
         
-        String[] param1s = { "installServerFeatures", "serverX", "--featuresBOM=userTest.user.test.features:features-bom:19.0.0.8", "--verbose"};
+        String[] param1s = { "installServerFeatures", "serverX", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose"};
         
         createExtensionDirs("ext.test");
         
@@ -312,6 +309,5 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         deleteEtcFolder(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
-
 
 }

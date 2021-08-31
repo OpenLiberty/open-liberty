@@ -159,7 +159,8 @@ public class JavaInfo {
             @FFDCIgnore(ClassNotFoundException.class)
             public Boolean run() {
                 try {
-                    Class.forName(className);
+                    // passing null to only look at the system classloader
+                    Class.forName(className, false, null);
                     return true;
                 } catch (ClassNotFoundException e) {
                     //No FFDC needed
@@ -191,6 +192,15 @@ public class JavaInfo {
 
     public static int fixPack() {
         return instance().FIXPACK;
+    }
+
+    /**
+     * For debug purposes only
+     *
+     * @return a String containing basic info about the JDK
+     */
+    public static String debugString() {
+        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
     }
 
     /**

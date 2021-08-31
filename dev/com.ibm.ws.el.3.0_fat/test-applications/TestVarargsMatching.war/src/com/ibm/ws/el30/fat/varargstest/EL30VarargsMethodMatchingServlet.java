@@ -48,7 +48,7 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
         Falcon falcon = new Falcon();
         Bird bird = new Bird();
         Integer number = new Integer(1);
-        Enum enum1 = EnumBean.ENUM1;
+        IEnum enum1 = EnumBean.ENUM1;
 
         // Add the beans to the ELProcessor
         elp.defineBean("testBean", testBean);
@@ -73,6 +73,14 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     public void testSingleString() throws Exception {
 
         getMethodExpression("testBean.testMethod('string1')", "(String param1)");
+
+    }
+
+    @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    public void testWithNoArguments() throws Exception {
+
+        getMethodExpression("testBean.testMethod()", "(int... param1)");
 
     }
 
@@ -112,7 +120,7 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void selectMethodWithNoVarargs() throws Exception {
         
-        getMethodExpression("testBean.chirp(falcon)", "chirp(Bird bird1)");
+        getMethodExpression("testBean.chirp(falcon)", "(Bird bird1)");
 
     }
 
@@ -120,14 +128,14 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testString_VarargsBird() throws Exception {
         
-        getMethodExpression("testBean.chirp('string1', bird, bird)", "chirp(String string1, Bird... bird2)");
+        getMethodExpression("testBean.chirp('string1', bird, bird)", "(String string1, Bird... bird2)");
 
     }
 
     // Limitions of the varags selection are below -- tests currently fail 
     // See Mark's July 29th comment here: https://bz.apache.org/bugzilla/show_bug.cgi?id=65358
 
-    // No varargs methods are always prefered over varargs 
+    // No varargs methods are always prefered over varargs. Method with (String param1), through coercion,  is selected here instead.
     // @Test
     // @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     // public void testVarargsInt() throws Exception {

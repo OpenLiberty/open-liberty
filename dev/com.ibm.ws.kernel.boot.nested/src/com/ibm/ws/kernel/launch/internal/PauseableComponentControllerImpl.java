@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentController;
 import com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFailedException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * This service provides a means of delivering actions to Listeners.
@@ -431,7 +430,6 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
     @Override
     public boolean isActive(String endpoints) {
-        betaFenceCheck();
 
         Set<String> targetList = createTargetList(endpoints);
 
@@ -452,22 +450,6 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
             return true;
 
         return false;
-    }
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
-
-    private void betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is beta and is not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: The beta method isActive has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
     }
 
     /*

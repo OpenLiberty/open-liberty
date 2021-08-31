@@ -44,9 +44,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class BonusPayoutViaJBatchUtilityTest {
 
-    public static final LibertyServer server = LibertyServerFactory.getLibertyServer("ManagedBonusPayout");
+    public static LibertyServer server;
 
-    BatchManagerCliUtils batchManagerCliUtils = new BatchManagerCliUtils(server);
+    static BatchManagerCliUtils batchManagerCliUtils;
 
     private static final Class testClass = BonusPayoutViaJBatchUtilityTest.class;
 
@@ -59,11 +59,13 @@ public class BonusPayoutViaJBatchUtilityTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        server = LibertyServerFactory.getLibertyServer("ManagedBonusPayout");
+        setConfig("BonusPayoutViaJBatchUtility/server.xml", testClass);
+        batchManagerCliUtils = new BatchManagerCliUtils(server);
         BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsBonusPayoutEAREar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
-        setConfig("BonusPayoutViaJBatchUtility/server.xml", testClass);
         BatchFATHelper.startServer(server, testClass);
 
         FatUtils.waitForSmarterPlanet(server);

@@ -277,8 +277,8 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getMavenCoordFromPath(String coordPath, String groupID) {
-        String result = coordPath;
-        String[] resSplit = result.split(File.separator);
+        String result = coordPath.replace("\\", "/");
+        String[] resSplit = result.split("/");
         String artifactID = resSplit[(resSplit.length - 3)];
         String version = resSplit[(resSplit.length - 2)];
         result = groupID + ":" + artifactID + ":" + version;

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
+
+    <display-name>Packaging10Web</display-name>
+    
+    <module id="WebModule_1">
+        <web>
+            <web-uri>AnoOverride.war</web-uri>
+            <context-root>AnoOverride</context-root>
+        </web>
+    </module>
+    <module id="WebModule_2">
+        <web>
+            <web-uri>MappingFileDefaults.war</web-uri>
+            <context-root>MappingFileDefaults</context-root>
+        </web>
+    </module>
+    <module id="WebModule_3">
+        <web>
+            <web-uri>MetadataComplete.war</web-uri>
+            <context-root>MetadataComplete</context-root>
+        </web>
+    </module>
+    <module id="WebModule_4">
+        <web>
+            <web-uri>XMLMetadataComplete.war</web-uri>
+            <context-root>XMLMetadataComplete</context-root>
+        </web>
+    </module>
+</application>

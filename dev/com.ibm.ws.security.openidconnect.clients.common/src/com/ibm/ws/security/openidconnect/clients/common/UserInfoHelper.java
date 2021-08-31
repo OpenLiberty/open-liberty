@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import java.security.Key;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.jwt.utils.JweHelper;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
  * Utility methods to retrieve UserInfo data, validate it, and update the Subject with it.
@@ -30,9 +43,13 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 public class UserInfoHelper {
     private static final TraceComponent tc = Tr.register(UserInfoHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private ConvergedClientConfig clientConfig = null;
+    private Jose4jUtil jose4jUtil = null;
 
-    public UserInfoHelper(ConvergedClientConfig config) {
+    private static boolean issuedBetaMessage = false;
+
+    public UserInfoHelper(ConvergedClientConfig config, SSLSupport sslSupport) {
         this.clientConfig = config;
+        this.jose4jUtil = new Jose4jUtil(sslSupport);
     }
 
     public boolean willRetrieveUserInfo() {
@@ -46,7 +63,7 @@ public class UserInfoHelper {
      * @return true if PAR was updated with userInfo
      *
      */
-    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, Map<String, String> tokens, SSLSocketFactory sslsf) {
+    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, Map<String, String> tokens, SSLSocketFactory sslsf, OidcClientRequest oidcClientRequest) {
         if (!willRetrieveUserInfo()) {
             return false;
         }
@@ -59,7 +76,7 @@ public class UserInfoHelper {
             subjFromIdToken = idToken.getSubject();
         }
         if (subjFromIdToken != null) {
-            return getUserInfoIfPossible(oidcResult, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken, sslsf);
+            return getUserInfoIfPossible(oidcResult, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken, sslsf, oidcClientRequest);
         }
         return false;
     }
@@ -71,12 +88,12 @@ public class UserInfoHelper {
      * @return true if PAR was updated with userInfo
      *
      */
-    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, String accessToken, String subject, SSLSocketFactory sslsf) {
+    public boolean getUserInfoIfPossible(ProviderAuthenticationResult oidcResult, String accessToken, String subject, SSLSocketFactory sslsf, OidcClientRequest oidcClientRequest) {
         if (!willRetrieveUserInfo()) {
             return false;
         }
         if (subject != null && accessToken != null) {
-            return getUserInfo(oidcResult, sslsf, accessToken, subject);
+            return getUserInfo(oidcResult, sslsf, accessToken, subject, oidcClientRequest);
         }
         return false;
     }
@@ -89,12 +106,12 @@ public class UserInfoHelper {
      *
      */
     public boolean getUserInfo(ProviderAuthenticationResult oidcResult,
-            SSLSocketFactory sslSocketFactory, String accessToken, String subjectFromIdToken) {
+            SSLSocketFactory sslSocketFactory, String accessToken, String subjectFromIdToken, OidcClientRequest oidcClientRequest) {
 
         if (!willRetrieveUserInfo() || accessToken == null) {
             return false;
         }
-        String userInfoStr = getUserInfoFromURL(clientConfig, sslSocketFactory, accessToken);
+        String userInfoStr = getUserInfoFromURL(clientConfig, sslSocketFactory, accessToken, oidcClientRequest);
 
         if (userInfoStr == null) {
             return false;
@@ -136,7 +153,7 @@ public class UserInfoHelper {
      *
      * @return the userInfo string, or null
      */
-    protected String getUserInfoFromURL(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
+    protected String getUserInfoFromURL(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken, OidcClientRequest oidcClientRequest) {
         String url = config.getUserInfoEndpointUrl();
         boolean hostnameVerification = config.isHostNameVerificationEnabled();
 
@@ -160,7 +177,7 @@ public class UserInfoHelper {
                 throw new Exception("HttpResponse from getUserinfo is null");
             }
             statusCode = response.getStatusLine().getStatusCode();
-            responseStr = EntityUtils.toString(response.getEntity(), "UTF-8");
+            responseStr = extractClaimsFromResponse(response, config.getOidcClientConfig(), oidcClientRequest);
         } catch (Exception ex) {
             //ffdc
         }
@@ -169,5 +186,88 @@ public class UserInfoHelper {
             return null;
         }
         return responseStr;
+    }
+
+    String extractClaimsFromResponse(HttpResponse response, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
+        HttpEntity entity = response.getEntity();
+        String jresponse = null;
+        if (entity != null) {
+            jresponse = EntityUtils.toString(entity);
+        }
+        if (jresponse == null || jresponse.isEmpty()) {
+            return null;
+        }
+        String contentType = getContentType(entity);
+        if (contentType == null) {
+            return null;
+        }
+        String claimsStr = null;
+        if (contentType.contains("application/json")) {
+            claimsStr = jresponse;
+        } else if (contentType.contains("application/jwt") && isRunningBetaMode()) {
+            claimsStr = extractClaimsFromJwtResponse(jresponse, clientConfig, oidcClientRequest);
+        }
+        return claimsStr;
+    }
+
+    String getContentType(HttpEntity entity) {
+        Header contentTypeHeader = entity.getContentType();
+        if (contentTypeHeader != null) {
+            return contentTypeHeader.getValue();
+        }
+        return null;
+    }
+
+    @FFDCIgnore({ Exception.class })
+    String extractClaimsFromJwtResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
+        if (responseString == null || responseString.isEmpty()) {
+            return null;
+        }
+        boolean isJwe = false;
+        try {
+            if (JweHelper.isJwe(responseString)) {
+                responseString = JweHelper.extractPayloadFromJweToken(responseString, clientConfig, null);
+                isJwe = true;
+            }
+            if (JweHelper.isJws(responseString)) {
+                return extractClaimsFromJwsResponse(responseString, clientConfig, oidcClientRequest);
+            } else if (isJwe) {
+                // JWE payloads can be either JWS or JSON, so allow falling back to returning JSON in the case of a JWE response
+                return responseString;
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error extracting jwt claims from web response: ", e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    String extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
+        JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
+        if (jwtContext != null) {
+            // Validate the JWS signature only; extract the claims so they can be verified elsewhere
+            JsonWebStructure jwsStructure = jose4jUtil.getJsonWebStructureFromJwtContext(jwtContext);
+            Key signingKey = jose4jUtil.getSignatureVerificationKeyFromJsonWebStructure(jwsStructure, clientConfig, oidcClientRequest);
+            Jose4jValidator validator = new Jose4jValidator(signingKey, clientConfig.getClockSkewInSeconds(), null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
+            JwtClaims claims = validator.validateJwsSignature((JsonWebSignature) jwsStructure, responseString);
+            if (claims != null) {
+                return claims.toJson();
+            }
+        }
+        return null;
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 }

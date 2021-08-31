@@ -87,4 +87,13 @@ public class BasicSseTest extends FATServletClient {
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
     }
+
+    /**
+     * Note that this test tests a non-spec-defined behavior that the JAX-RS 2.1 and 3.0 TCK
+     * relies upon in order for a client test to pass.
+     */
+    @Test
+    public void testNoEventsResultsIn200() throws Exception {
+        runTest(server, SERVLET_PATH, "testNoEventsResultsIn200");
+    }
 }

@@ -14,9 +14,6 @@
  */
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -28,16 +25,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * 1. Test the dynamic add servlet after the dynamic filter, which adds a servlet-filter name mapping for that servlet, to make sure no NPE.
@@ -97,7 +91,8 @@ public class WCServletContainerInitializerFilterServletNameMappingTest {
     public void testDynamicAddServletAfterFilter() throws Exception {
         LOG.info("Testing testDynamicAddServletAfterFilter 1/2");
         try {
-            verifyStringInResponse("/SCIFilterServletNameMapping", "/Test2ServletFilterNameMapping", "SharedFilter.doFilter | Hello World from TestServlet2");
+            HttpUtils.findStringInReadyUrl(server, "SCIFilterServletNameMapping/Test2ServletFilterNameMapping",
+                                           "SharedFilter.doFilter | Hello World from TestServlet2");
         } catch (Exception e) {
             LOG.info("Testing testDynamicAddServletAfterFilter failed.  Skip the checking for Warning message");
             throw e;
@@ -106,22 +101,5 @@ public class WCServletContainerInitializerFilterServletNameMappingTest {
         LOG.info("Testing testDynamicAddServletAfterFilter 2/2 : Checking the expected Warning message CWWWC0002W.");
         org.junit.Assert.assertTrue("CWWWC0002W: No servlet definition is found for the servlet name",
                                     !server.waitForStringInLog("CWWWC0002W.*").isEmpty());
-    }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
-
     }
 }

@@ -9,9 +9,10 @@
     
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<!-- the following permissions seem to be required for the EE9 JAXB implementation... -->
   	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.jaxb.improvedXsiTypeHandling" actions="read"/>
 	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.jaxb.runtime.v2.runtime.JAXBContextImpl.fastBoot" actions="read"/>
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>   
+	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 </server>

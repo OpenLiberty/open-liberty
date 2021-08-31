@@ -27,7 +27,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.ConfigRefresher;
-import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry.FileSystemVariable;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -125,26 +124,11 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         Map<String, DeltaType> deltaMap = new HashMap<String, DeltaType>();
 
-        for (File f : deletedFiles) {
-            // Only create a delta if a variable is actually removed (otherwise it's a directory)
-            if (variableRegistry.removeFileSystemVariable(f)) {
-                deltaMap.put(f.getName(), DeltaType.REMOVED);
-            }
+        variableRegistry.removeFileSystemVariableDeletes(deletedFiles, deltaMap);
 
-        }
-        for (File f : createdFiles) {
-            if (f.isFile()) {
-                FileSystemVariable sbv = variableRegistry.addFileSystemVariable(f);
-                deltaMap.put(sbv.getName(), DeltaType.ADDED);
-            }
-        }
+        variableRegistry.addFileSystemVariableCreates(createdFiles, deltaMap);
 
-        for (File f : modifiedFiles) {
-            if (f.isFile()) {
-                FileSystemVariable sbv = variableRegistry.modifyFileSystemVariable(f);
-                deltaMap.put(sbv.getName(), DeltaType.MODIFIED);
-            }
-        }
+        variableRegistry.modifyFileSystemVariables(modifiedFiles, deltaMap);
 
         configRefresher.variableRefresh(deltaMap);
     }

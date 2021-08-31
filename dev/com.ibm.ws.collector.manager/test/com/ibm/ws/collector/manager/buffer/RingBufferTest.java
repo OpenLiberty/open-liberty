@@ -333,7 +333,8 @@ public class RingBufferTest {
                 try {
                     buffer.get(seqNum);
                 } catch (InterruptedException t) {
-                    //TODO: Do nothing
+                    //Check to see if we're swallowing an interruption
+                    t.printStackTrace();
                 }
             }
         });
@@ -383,7 +384,8 @@ public class RingBufferTest {
             try {
                 Thread.sleep(waitTimeInMilliSecs);
             } catch (InterruptedException e) {
-                //Nothing to do here!!
+                //Check to see if we are swallowing an interruption.
+                e.printStackTrace();
             }
             timeElapsedInMilliSecs += waitTimeInMilliSecs;
             System.out.println("Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());

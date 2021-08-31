@@ -35,7 +35,7 @@
     
     <wsAtomicTransaction sslEnabled="true" sslRef="myDefaultSSLConfig"/>
     
-    <logging traceSpecification="*=info: wsat=all: Transaction=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all"></logging>
+    <logging traceSpecification="*=info: wsat=all: Transaction=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all:com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor=all"></logging>
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
 </server>

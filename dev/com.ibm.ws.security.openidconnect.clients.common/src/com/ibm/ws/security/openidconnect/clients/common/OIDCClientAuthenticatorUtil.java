@@ -303,7 +303,7 @@ public class OIDCClientAuthenticatorUtil {
             } catch (com.ibm.websphere.ssl.SSLException e) {
                 //ffdc
             }
-            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory);
+            new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
         }
 
         return oidcResult;

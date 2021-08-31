@@ -241,8 +241,13 @@ if [ -n "$defaultFileEncoding" ]; then
   fi
 fi
 
+JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
+if [ -z "${JAVA_HOME}" ]; then
+  JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(which java)))/lib/modules
+fi
+
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
-if [ -f "${JAVA_HOME}/lib/modules" ]; then
+if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
   JVM_ARGS="--add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED ${JVM_ARGS}"
 fi
 

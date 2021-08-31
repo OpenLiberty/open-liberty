@@ -13,6 +13,7 @@ import batch.fat.util.BatchFATHelper;
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
@@ -72,6 +73,7 @@ public class JdbcConfigTest extends BatchFATHelper {
 
         log("setup", "start server and execute DDLs");
 
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchAppUtils.addDropinsBatchFATWar(server);
         BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,10 +149,10 @@ public class DatabaseStoreImpl implements DatabaseStore {
     @Activate
     @Trivial
     protected void activate(ComponentContext context) throws Exception {
-        properties = context.getProperties();
+        this.properties = context.getProperties();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", properties);
+            Tr.entry(this, tc, "activate", this.properties);
 
         // The database store should be lazily initialized by the components using it, so there is no need
         // for the database store implementation to have its own lazy initialization.
@@ -166,12 +166,20 @@ public class DatabaseStoreImpl implements DatabaseStore {
      */
     @Override
     public PersistenceServiceUnit createPersistenceServiceUnit(ClassLoader loader, String... entityClassNames) throws Exception {
+        return createPersistenceServiceUnit(loader, new HashMap<String, Object>(), entityClassNames);
+    }
+
+    /**
+     * @see com.ibm.wsspi.persistence.DatabaseStore#createPersistenceServiceUnit(java.lang.ClassLoader, java.util.Map properties, java.lang.String[])
+     */
+    @Override
+    public PersistenceServiceUnit createPersistenceServiceUnit(ClassLoader loader, Map properties, String... entityClassNames) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "createPersistenceServiceUnit", loader, Arrays.asList(entityClassNames));
 
         Map<String, Object> puProps = new HashMap<String, Object>();
-        tablePrefix = (String) properties.get("tablePrefix");
+        tablePrefix = (String) this.properties.get("tablePrefix");
         tablePrefixLength = tablePrefix.length();
         for (int i = 0; i < tablePrefixLength; i++) {
             int codepoint = tablePrefix.codePointAt(i);
@@ -181,7 +189,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
         }
 
-        schema = (String) properties.get("schema");
+        schema = (String) this.properties.get("schema");
         schemaLength = schema == null ? -1 : schema.length();
         for (int i = 0; i < schemaLength; i++) {
             int codepoint = schema.codePointAt(i);
@@ -192,19 +200,34 @@ public class DatabaseStoreImpl implements DatabaseStore {
         }
 
         // Look for EclipseLink persistence properties
-        if (properties.get("persistenceProperties.0.config.referenceType") != null) {
-            for (String key : Collections.list(properties.keys())) {
+        if (this.properties.get("persistenceProperties.0.config.referenceType") != null) {
+            for (String key : Collections.list(this.properties.keys())) {
                 if (key.startsWith("persistenceProperties.0") && !key.equals("persistenceProperties.0.config.referenceType")) {
-                    Object value = properties.get(key);
+                    Object value = this.properties.get(key);
                     key = key.substring(24);
                     puProps.put(key, value);
                 }
             }
         }
 
+        // Look for additional configuration properties
+        int isolationLevel = Connection.TRANSACTION_READ_COMMITTED;
+        if (properties.get("transactionIsolationLevel") != null) {
+            Object configIsolationLevel = properties.get("transactionIsolationLevel");
+
+            if(configIsolationLevel instanceof Number) {
+                int newisolationLevel = ((Number) configIsolationLevel).intValue();
+                if(supportsIsolationLevel(newisolationLevel)) {
+                    isolationLevel = newisolationLevel;
+                } else {
+                    throw new UnsupportedOperationException(Tr.formatMessage(tc, "UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E", isolationLevel));
+                }
+            }
+        }
+
         ResourceConfig resourceInfo = resourceConfigFactory.createResourceConfig(DataSource.class.getName());
         resourceInfo.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);
-        resourceInfo.setIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        resourceInfo.setIsolationLevel(isolationLevel);
         resourceInfo.setResAuthType(ResourceConfig.AUTH_CONTAINER);
 
         if (authDataRef != null) {
@@ -246,7 +269,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
             throw new IllegalStateException(errMsg);
         }
 
-        strategy = (String) properties.get("keyGenerationStrategy");
+        strategy = (String) this.properties.get("keyGenerationStrategy");
         if ("AUTO".equals(strategy)) {
             strategy = dbProductName.contains("oracle") ? "SEQUENCE"
                             : dbProductName.contains("adaptive server") || dbProductName.contains("sybase") ? "TABLE"
@@ -295,7 +318,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
                 throw new IllegalStateException();
             }
 
-            if ((Boolean) properties.get("createTables"))
+            if ((Boolean) this.properties.get("createTables"))
                 if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)
                     ; // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
                       // TODO is there a better way to accomplish this?
@@ -739,11 +762,67 @@ public class DatabaseStoreImpl implements DatabaseStore {
     }
 
     /**
+     * Attempt to ascertain if the given isolation level is supported for this DatabaseStore.
+     * Creates a temporary DataSource and Connection in order to check database support.
+     *<p>
+     *{@link java.sql.DatabaseMetaData#supportsTransactionIsolationLevel()}
+     *
+     * @param isolationLevel valid isolation level value.
+     * @return 'true' if the driver DatabaseMetaData indicates the given transaction isolation is supported; 'false' otherwise
+     * @throws Exception if a failure occurs
+     */
+    private boolean supportsIsolationLevel(int isolationLevel) throws Exception {
+        //Create a temporary DataSource to check the isolation level support
+        ResourceConfig tempResourceInfo = resourceConfigFactory.createResourceConfig(DataSource.class.getName());
+        tempResourceInfo.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);
+        // Use READ_COMMITTED first to determine if the configured isolation level is supported
+        tempResourceInfo.setIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        tempResourceInfo.setResAuthType(ResourceConfig.AUTH_CONTAINER);
+
+        if (authDataRef != null) {
+            String authDataId = (String) authDataRef.getProperty("id");
+            tempResourceInfo.addLoginProperty("DefaultPrincipalMapping",
+                                          authDataId.matches(".*(\\]/).*(\\[default-\\d*\\])")
+                                                          ? (String) authDataRef.getProperty("config.displayId")
+                                                          : authDataId);
+        }
+
+        DataSource tempDataSource = (DataSource) dataSourceFactory.createResource(tempResourceInfo);
+
+        // Query the metadata under a new transaction and commit right away
+        LocalTransactionCurrent localTranCurrent = this.localTranCurrent;
+        LocalTransactionCoordinator suspendedLTC = localTranCurrent.suspend();
+        EmbeddableWebSphereTransactionManager tranMgr = this.tranMgr;
+        Transaction suspendedTran = suspendedLTC == null ? tranMgr.suspend() : null;
+        boolean tranStarted = false;
+        try {
+            tranMgr.begin();
+            tranStarted = true;
+            Connection con = tempDataSource.getConnection();
+            try {
+                return con.getMetaData().supportsTransactionIsolationLevel(isolationLevel);
+            } finally {
+                con.close();
+            }
+        } finally {
+            try {
+                if (tranStarted)
+                    tranMgr.rollback();
+            } finally {
+                // resume
+                if (suspendedTran != null)
+                    tranMgr.resume(suspendedTran);
+                else if (suspendedLTC != null)
+                    localTranCurrent.resume(suspendedLTC);
+            }
+        }
+    }
+
+    /**
      * Declarative Services method for setting the service reference for the default auth data
      *
      * @param ref reference to the service
      */
-
     @Reference(service = AuthData.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.STATIC,

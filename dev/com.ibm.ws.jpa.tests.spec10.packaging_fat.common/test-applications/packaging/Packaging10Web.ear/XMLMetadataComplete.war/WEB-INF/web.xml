@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+
+    <!-- Servlet Definitions -->
+    <servlet>
+        <servlet-name>XMLMetadataCompleteTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.testtooling.vehicle.web.TestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>XMLMetadataCompleteEJBTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>XMLMetadataCompleteTestServlet</servlet-name>
+        <url-pattern>/XMLMetadataCompleteTestServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>XMLMetadataCompleteEJBTestServlet</servlet-name>
+        <url-pattern>/XMLMetadataCompleteEJBTestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Persistence Context Definitions -->
+    <persistence-context-ref>
+        <description>Transaction-Scoped Persistence Context</description>
+        <persistence-context-ref-name>jpa/XMLMetadataComplete_CMTS</persistence-context-ref-name>
+        <persistence-unit-name>XMLMetadataCompleteUnit_JTA</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+    </persistence-context-ref>
+
+    <persistence-unit-ref>
+        <description>Application-Managed JTA-Tran Persistence Context</description>
+        <persistence-unit-ref-name>jpa/XMLMetadataComplete_AMJTA</persistence-unit-ref-name>
+        <persistence-unit-name>XMLMetadataCompleteUnit_JTA</persistence-unit-name>
+    </persistence-unit-ref>
+
+    <persistence-unit-ref>
+        <description>Application-Managed RL-Tran Persistence Context</description>
+        <persistence-unit-ref-name>jpa/XMLMetadataComplete_AMRL</persistence-unit-ref-name>
+        <persistence-unit-name>XMLMetadataCompleteUnit_RL</persistence-unit-name>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <description>Cleanup Persistence Context</description>
+        <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+        <persistence-unit-name>Cleanup</persistence-unit-name>
+    </persistence-unit-ref>
+
+        
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSFEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSFEXEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSLEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSLEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

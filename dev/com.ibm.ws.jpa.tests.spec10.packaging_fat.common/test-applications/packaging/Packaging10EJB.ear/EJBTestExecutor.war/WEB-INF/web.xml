@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+    
+
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/AnoOverrideSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.AnoOverrideSFEJBLocal</local>
+        <ejb-link>AnoOverrideTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/AnoOverrideSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.AnoOverrideSFEXEJBLocal</local>
+        <ejb-link>AnoOverrideTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/AnoOverrideSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.AnoOverrideSLEJBLocal</local>
+        <ejb-link>AnoOverrideTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MappingFileDefaultsSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MappingFileDefaultsSFEJBLocal</local>
+        <ejb-link>MappingFileDefaultsTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MappingFileDefaultsSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MappingFileDefaultsSFEXEJBLocal</local>
+        <ejb-link>MappingFileDefaultsTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MappingFileDefaultsSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MappingFileDefaultsSLEJBLocal</local>
+        <ejb-link>MappingFileDefaultsTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MetadataCompleteSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MetadataCompleteSFEJBLocal</local>
+        <ejb-link>MetadataCompleteTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MetadataCompleteSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MetadataCompleteSFEXEJBLocal</local>
+        <ejb-link>MetadataCompleteTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/MetadataCompleteSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.MetadataCompleteSLEJBLocal</local>
+        <ejb-link>MetadataCompleteTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSFEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSFEXEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/XMLMetadataCompleteSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.packaging.ejblocal.XMLMetadataCompleteSLEJBLocal</local>
+        <ejb-link>XMLMetadataCompleteTestSLEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

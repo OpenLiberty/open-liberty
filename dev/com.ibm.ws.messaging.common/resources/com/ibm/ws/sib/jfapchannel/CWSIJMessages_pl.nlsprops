@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Zdefiniuj domy\u015blny tunelow
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego, bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0}.
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego, bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych.  By\u0107 mo\u017ce ten serwer aplikacji nie b\u0119dzie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105cze\u0144 ze zdalnymi mechanizmami przesy\u0142ania komunikat\u00f3w bramy.
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Zdefiniuj domy\u015blny tunelowany, bezpieczny \u0142a\u0144cuch kana\u0142\u00f3w danych wychodz\u0105cych przesy\u0142ania komunikat\u00f3w dla tego serwera aplikacji.
-
-# -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Nie mo\u017cna znale\u017a\u0107 pliku w\u0142a\u015bciwo\u015bci {0} s\u0142u\u017c\u0105cego do okre\u015blania pocz\u0105tkowych zabezpiecze\u0144 na poziomie transportu przesy\u0142ania komunikat\u00f3w dla klienta.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Nie mo\u017cna znale\u017a\u0107 pliku w\u0142a\u015bciwo\u015bci zawieraj\u0105cego informacje u\u017cywane podczas nawi\u0105zywania bezpiecznych po\u0142\u0105cze\u0144 przesy\u0142ania komunikat\u00f3w dla klienta.  Zostanie u\u017cyty zestaw warto\u015bci domy\u015blnych.  By\u0107 mo\u017ce nie b\u0119dzie mo\u017cliwe nawi\u0105zywanie bezpiecznych po\u0142\u0105cze\u0144 przesy\u0142ania komunikat\u00f3w dla klienta.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Skonfiguruj plik w\u0142a\u015bciwo\u015bci dla poziomu bezpiecze\u0144stwa przesy\u0142ania komunikat\u00f3w klienta.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
@@ -456,18 +450,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nie mo\u017cna znale\u017a\u0107 \u0142a\u0144cucha transportowego o nazwie {0} udost\u0119pniaj\u0105cego konfiguracj\u0119 SSL, kt\u00f3ra mo\u017ce by\u0107 wymagana w celu nawi\u0105zania po\u0142\u0105czenia ze zdalnym hostem o nazwie {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Bie\u017c\u0105ca konfiguracja nie zawiera informacji wymaganych w celu nawi\u0105zania po\u0142\u0105czenia z w\u0119z\u0142em sieci opartego na protokole SSL.  Informacje te zazwyczaj mo\u017cna uzyska\u0107 z odpowiedniej definicji \u0142a\u0144cucha transportowego. Taka definicja \u0142a\u0144cucha ma nazw\u0119 odpowiadaj\u0105c\u0105 \u0142a\u0144cuchowi znajduj\u0105cemu si\u0119 w zdalnym w\u0119\u017ale sieci.  Nie mo\u017cna znale\u017a\u0107 takiego \u0142a\u0144cucha transportowego.  Nawi\u0105zanie po\u0142\u0105czenia mo\u017ce by\u0107 niemo\u017cliwe.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Zdefiniuj dodatkowe \u0142a\u0144cuchy transportowe.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: \u0141a\u0144cuch transportowy o nazwie {0} nie zawiera \u017cadnej konfiguracji SSL, kt\u00f3ra mo\u017ce by\u0107 wymagana w celu nawi\u0105zania po\u0142\u0105czenia ze zdalnym hostem o nazwie {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Bie\u017c\u0105ca konfiguracja nie zawiera informacji wymaganych w celu nawi\u0105zania po\u0142\u0105czenia z w\u0119z\u0142em sieci opartego na protokole SSL.  Informacje te zazwyczaj mo\u017cna uzyska\u0107 z odpowiedniej definicji \u0142a\u0144cucha transportowego. Taka definicja \u0142a\u0144cucha ma nazw\u0119 odpowiadaj\u0105c\u0105 \u0142a\u0144cuchowi znajduj\u0105cemu si\u0119 w zdalnym w\u0119\u017ale sieci.  Nie mo\u017cna znale\u017a\u0107 takiego \u0142a\u0144cucha transportowego.  Nawi\u0105zanie po\u0142\u0105czenia mo\u017ce by\u0107 niemo\u017cliwe.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Skonfiguruj dodatkowe kana\u0142y transportowe SSL dla okre\u015blonego \u0142a\u0144cucha transportowego.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

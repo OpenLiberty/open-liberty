@@ -90,7 +90,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     public static final String HEADER_CONTENT_TYPE_KEY = "Content-Type";
     public static final String MEDIA_TYPE_APPLICATION_JSON = "application/json; charset=UTF-8";
 
-    protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
+    protected static LibertyServer server;
 
     //Instance fields
     private static Map<String, String> adminHeaderMap, submitterHeaderMap, submitter2HeaderMap, submitterAndMonitorHeaderMap, monitorHeaderMap, nobodyHeaderMap;
@@ -117,6 +117,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
 
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
         HttpUtils.trustAllCertificates();
 
         BatchAppUtils.addDropinsDbServletAppWar(server);

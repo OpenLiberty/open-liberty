@@ -90,9 +90,9 @@ final class FacesConfigDDParser extends DDParser {
                 version = 23;
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
-        } else if ("https://jakarta.ee/xml/ns/jakartaee".contentEquals(namespace)) {
+        } else if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
             // Don't allow a faces-config.xml with a version="3.0" if the faces-3.0 feature is not enabled.
-            if ((this.FacesBundleLoadedVersion >= 30) && "3.0".contentEquals(vers)) {
+            if ((this.FacesBundleLoadedVersion >= 30) && "3.0".equals(vers)) {
                 // Jakarta 9 only
                 version = 30;
                 return new FacesConfigType(getDeploymentDescriptorPath());
