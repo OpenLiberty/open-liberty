@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ public class ModulePropertiesUtils {
     private final Map<MetaData, HamObject> ModuleToHam = Collections.synchronizedMap(new WeakHashMap<MetaData, HamObject>());
     private final Map<MetaData, HamLookupObject> ModuleToHamLookup = Collections.synchronizedMap(new WeakHashMap<MetaData, HamLookupObject>());
 
+    private Boolean isHam = null;
+
     protected ModulePropertiesUtils() {}
 
     public static ModulePropertiesUtils getInstance() {
@@ -75,11 +77,14 @@ public class ModulePropertiesUtils {
     }
 
     public boolean isHttpAuthenticationMechanism() {
-        HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
-        if (ham != null) {
-            return true;
-        }
-        return false;
+       if (isHam == null) {
+          HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
+          if (ham != null) {
+              isHam = true;
+          }
+          isHam = false;
+       }
+       return isHam;
     }
 
     public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
