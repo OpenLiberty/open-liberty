@@ -65,9 +65,10 @@ tested.features: \
 	org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava;version=2.30.1,\
 	org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2;version=2.30.1,\
 	org.json:json;version=20080701,\
-	org.mock-server:mockserver-client-java;version=3.10.7,\
-	org.mock-server:mockserver-core;version=3.10.7.IBM20191022,\
-	org.mock-server:mockserver-netty;version=3.10.7,\
+	org.mock-server:mockserver-client-java;version=5.11.2,\
+	org.mock-server:mockserver-core;version=5.11.2,\
+	org.mock-server:mockserver-netty;version=5.11.2,\
+	org.mock-server:mockserver-logging;version=5.3.0,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
 	io.openliberty.com.fasterxml.jackson;version=latest,\
 	io.openliberty.com.fasterxml.jackson.jaxrs;version=latest,\
