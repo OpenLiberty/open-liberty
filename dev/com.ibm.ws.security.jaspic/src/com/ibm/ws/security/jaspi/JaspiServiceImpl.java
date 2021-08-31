@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.io.IOException; 
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
@@ -447,6 +448,9 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.request.wrapper", request);
             }
             Object response = msgInfo.getResponseMessage();
+	    if (response != null) {
+		System.out.println("DEBUG: responseMessage from msgInfo:" + response.toString());
+	    }
             if (response != null && response != jaspiRequest.getHttpServletResponse()) {
                 jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.response.wrapper", response);
             }
@@ -968,7 +972,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
      * @see com.ibm.ws.webcontainer.security.JaspiService#postInvoke(com.ibm.ws.webcontainer.security.WebSecurityContext)
      */
     @Override
-    public void postInvoke(WebSecurityContext webSecurityContext) throws AuthenticationException {
+	public void postInvoke(WebSecurityContext webSecurityContext, HttpServletResponse response) throws AuthenticationException {
         AuthStatus status = null;
         if (webSecurityContext != null) {
             JaspiAuthContext jaspiContext = (JaspiAuthContext) webSecurityContext.getJaspiAuthContext();
@@ -988,6 +992,14 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 status = authContext.secureResponse(msgInfo, serviceSubject);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "secureResponse status: " + status);
+
+		if (AuthStatus.SEND_SUCCESS == status) {
+		    Object responseMsg = msgInfo.getResponseMessage();
+		    System.out.println("DEBUG: AuthStatus.SEND_SUCCESS responseMessage in the msgInfo:" + responseMsg); 
+		    if (response != null) {
+			response.getWriter().write(responseMsg.toString());
+		    }
+		}
 
                 // TODO Which reply or exception?
                 if (AuthStatus.SEND_SUCCESS != status &&
@@ -1010,7 +1022,9 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                  * returned, it should indicate that the failure in request processing occurred after the service invocation.
                  */
                 throw new AuthenticationException("JASPI authentication failed after invoking the requested target service.", e);
-            }
+            } catch (IOException ioe) {
+                throw new AuthenticationException("JASPI authentication failed while writing message to the response. ", ioe);
+	    }
         }
     }
 

@@ -516,11 +516,9 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
         boolean sessionInvoke = collabMetaData.isSessionInvokeRequired();
 
         // Invoke security collaborator here because JSR 375 requires that all CDI scopes are available.
-        boolean postInvokeForSecureResponseNeeded = true;
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY) && securityCollaborator.isCDINeeded()) {
-            postInvokeForSecureResponseNeeded = false;
             Object secObject = collabMetaData.getSecurityObject();
-            this.securityCollaborator.postInvokeForSecureResponse(secObject);
+            this.securityCollaborator.postInvokeForSecureResponse(secObject, httpResponse);
         }
         
         //HttpServletRequest javadocs describe it as:
@@ -588,9 +586,6 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
 
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
             Object secObject = collabMetaData.getSecurityObject();
-            if (postInvokeForSecureResponseNeeded) {
-                this.securityCollaborator.postInvokeForSecureResponse(secObject);
-            }
             this.securityCollaborator.postInvoke(secObject);
         }
         

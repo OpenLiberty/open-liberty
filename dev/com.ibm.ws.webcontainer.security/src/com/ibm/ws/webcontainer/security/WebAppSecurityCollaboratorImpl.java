@@ -520,7 +520,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      *            exception or if no work was done.
      */
     @Override
-    public void postInvokeForSecureResponse(Object secObject) throws ServletException {
+	public void postInvokeForSecureResponse(Object secObject, HttpServletResponse response) throws ServletException {
         try {
             if (jaccServiceRef.getService() != null) {
                 jaccServiceRef.getService().resetPolicyContextHandlerInfo();
@@ -533,7 +533,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     WebAuthenticator jaspiService = webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME);
                     if (jaspiService != null) {
                         try {
-                            ((JaspiService) jaspiService).postInvoke(webSecurityContext);
+                            ((JaspiService) jaspiService).postInvoke(webSecurityContext, response);
                         } catch (Exception e) {
                             throw new ServletException(e);
                         }

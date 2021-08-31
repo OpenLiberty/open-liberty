@@ -26,7 +26,7 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 
 public interface JaspiService extends WebAuthenticator {
 
-    void postInvoke(WebSecurityContext webSecurityContext) throws AuthenticationException;
+    void postInvoke(WebSecurityContext webSecurityContext, HttpServletResponse response) throws AuthenticationException;
 
     Hashtable<String, Object> getCustomCredentials(Subject subject);
 
