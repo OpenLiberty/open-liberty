@@ -11,7 +11,6 @@
 package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
@@ -50,26 +49,22 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
-        StringBuilder sb = null;
-        Log.info(this.getClass(), method, "Starting dynamic test in DualServerDynamicDBRotationTest");
+
         // Start Servers
         if (databaseContainerType != DatabaseContainerType.Derby) {
             startServers(server1, server2);
         } else {
             startServers(server1);
         }
-        Log.info(this.getClass(), method, "now invoke runTestWithResponse from DualServerDynamicDBRotationTest");
+
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
+            runTestWithResponse(server1, servletName, "setupRec" + id);
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "back from runTestWithResponse in DualServerDynamicDBRotationTest, sb is " + sb);
-        assertNull("setupRec" + id + " returned: " + sb, sb);
 
-        Log.info(this.getClass(), method, "wait for first server to go away in DualServerDynamicDBRotationTest");
         // wait for 1st server to have gone away
-        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog("Dump State:"));
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
 
         // Now start server2
         if (databaseContainerType == DatabaseContainerType.Derby) {
@@ -82,15 +77,14 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         // flush the resource states
         try {
-            sb = runTestWithResponse(server2, servletName, "dumpState");
-            Log.info(this.getClass(), method, sb.toString());
+            runTestWithResponse(server2, servletName, "dumpState");
         } catch (Exception e) {
             Log.error(this.getClass(), method, e);
             fail(e.getMessage());
         }
 
         //Stop server2
-        server2.stopServer((String[]) null);
+        stopServers(server2);
 
         // restart 1st server
         server1.resetStarted();
@@ -101,15 +95,14 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         // check resource states
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try {
-            sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+            runTestWithResponse(server1, servletName, "checkRec" + id);
         } catch (Exception e) {
             Log.error(this.getClass(), "dynamicTest", e);
             throw e;
         }
-        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
         // Bounce first server to clear log
-        server1.stopServer((String[]) null);
+        stopServers(server1);
         startServers(server1);
 
         // Check log was cleared
@@ -117,7 +110,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
 
         // Finally stop server1
-        server1.stopServer((String[]) null);
+        stopServers(server1);
     }
 
     protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
@@ -141,29 +134,71 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         for (LibertyServer server : servers) {
             assertNotNull("Attempted to start a null server", server);
-            ProgramOutput po = null;
             int attempt = 0;
-            int maxAttempts = 2;
-            int returnCode = 0;
+            int maxAttempts = 5;
 
             do {
-                ++attempt;
-                setUp(server);
-                po = server.startServerAndValidate(false, false, false);
-                returnCode = po.getReturnCode();
-                if (returnCode != 0) {
-                    server.resetStarted();
-                    Log.info(getClass(), method, po.getCommand() + " returned " + returnCode);
-                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                } else {
-                    server.validateAppLoaded(APP_NAME);
+                if (attempt++ > 0) {
+                    Log.info(getClass(), method, "Waiting 5 seconds after start failure before making attempt " + attempt);
+                    try {
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+                        Log.error(getClass(), method, e);
+                    }
                 }
-            } while (returnCode != 0 && attempt < maxAttempts);
 
-            if (returnCode != 0) {
+                if (server.isStarted()) {
+                    String pid = server.getPid();
+                    Log.info(getClass(), method,
+                             "Server " + server.getServerName() + " is already running." + ((pid != null ? "(pid:" + pid + ")" : "")) + " Maybe it is on the way down.");
+                    server.printProcesses();
+                    continue;
+                }
+
+                ProgramOutput po = null;
+                try {
+                    setUp(server);
+                    po = server.startServerAndValidate(false, false, true);
+                } catch (Exception e) {
+                    Log.error(getClass(), method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
+                }
+
+                if (po != null) {
+                    String s;
+                    int rc = po.getReturnCode();
+
+                    Log.info(getClass(), method, "ReturnCode: " + rc);
+
+                    s = server.getPid();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Pid: " + s);
+
+                    s = po.getStdout();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stdout: " + s.trim());
+
+                    s = po.getStderr();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stderr: " + s.trim());
+
+                    if (rc == 0) {
+                        break;
+                    } else {
+                        String pid = server.getPid();
+                        Log.info(getClass(), method,
+                                 "Non zero return code starting server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : ""))
+                                                     + " Maybe it is on the way down.");
+                        server.printProcessHoldingPort(server.getHttpDefaultPort());
+                    }
+                }
+            } while (attempt < maxAttempts);
+
+            if (!server.isStarted()) {
                 server.postStopServerArchive();
-                throw new Exception(po.getCommand() + " returned " + returnCode);
+                throw new Exception("Failed to start " + server.getServerName() + " after " + attempt + " attempts");
             }
         }
     }
@@ -173,6 +208,76 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
      * @throws Exception
      */
     protected abstract void setUp(LibertyServer server) throws Exception;
+
+    protected void stopServers(LibertyServer... servers) throws Exception {
+        final String method = "stopServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to stop a null server", server);
+            int attempt = 0;
+            int maxAttempts = 5;
+
+            do {
+                if (attempt++ > 0) {
+                    Log.info(getClass(), method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
+                    try {
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+                        Log.error(getClass(), method, e);
+                    }
+                }
+
+                if (!server.isStarted()) {
+                    Log.info(getClass(), method,
+                             "Server " + server.getServerName() + " is not started. Maybe it is on the way up.");
+                    continue;
+                }
+
+                ProgramOutput po = null;
+                try {
+                    po = server.stopServer((String[]) null);
+                } catch (Exception e) {
+                    Log.error(getClass(), method, e, "Server stop attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
+                }
+
+                if (po != null) {
+                    String s;
+                    int rc = po.getReturnCode();
+
+                    Log.info(getClass(), method, "ReturnCode: " + rc);
+
+                    s = server.getPid();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Pid: " + s);
+
+                    s = po.getStdout();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stdout: " + s.trim());
+
+                    s = po.getStderr();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stderr: " + s.trim());
+
+                    if (rc == 0) {
+                        break;
+                    } else {
+                        String pid = server.getPid();
+                        Log.info(getClass(), method,
+                                 "Non zero return code stopping server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : "")));
+                        server.printProcessHoldingPort(server.getHttpDefaultPort());
+                    }
+                }
+            } while (attempt < maxAttempts);
+
+            if (server.isStarted()) {
+                server.postStopServerArchive();
+                throw new Exception("Failed to stop " + server.getServerName() + " after " + attempt + " attempts");
+            }
+        }
+    }
 
     /**
      * @param firstServer

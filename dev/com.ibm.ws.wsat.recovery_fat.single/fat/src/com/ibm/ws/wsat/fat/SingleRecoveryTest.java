@@ -46,6 +46,8 @@ public class SingleRecoveryTest {
 	private static String BASE_URL = "http://" + server.getHostname() + ":"
 			+ server.getHttpDefaultPort();
 	private final static int REQUEST_TIMEOUT = 10;
+    private static final int LOG_SEARCH_TIMEOUT = 300000;
+
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
@@ -71,7 +73,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC001FVT() throws Exception {
 		recoveryTest("01");
 	}
@@ -87,7 +89,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.RollbackException" })
 	public void WSTXREC004FVT() throws Exception {
@@ -109,8 +111,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
-  @Mode(TestMode.LITE)
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+	@Mode(TestMode.LITE)
 	public void WSTXREC007FVT() throws Exception {
 		recoveryTest("07");
 	}
@@ -127,7 +129,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC010FVT() throws Exception {
 		recoveryTest("10");
 	}
@@ -146,7 +148,7 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC013FVT() throws Exception {
 		recoveryTest("13");
 	}
@@ -167,7 +169,7 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	// Should be expected but that doesn't seem to work with multiple ffdc
 	// summaries
 	public void WSTXREC016FVT() throws Exception {
@@ -191,7 +193,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"com.ibm.tx.jta.XAResourceNotAvailableException" })
 	public void WSTXREC037FVT() throws Exception {
@@ -213,7 +215,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.SystemException" })
 	public void WSTXREC040FVT() throws Exception {
@@ -237,8 +239,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
-//	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
+	@Mode(TestMode.LITE)
+	//	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
 	public void WSTXREC043FVT() throws Exception {
 		recoveryTest("43");
 	}
@@ -262,7 +264,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
+	@AllowedFFDC(value = { "java.net.SocketException" })
 	public void WSTXREC046FVT() throws Exception {
 		recoveryTest("46");
 	}
@@ -319,19 +322,19 @@ public class SingleRecoveryTest {
 		System.out.println("Start server return code: " + po.getReturnCode());
 
 		// Server appears to have started ok
-		server.waitForStringInTrace("Performed recovery for "+server.getServerName());
+		server.waitForStringInTrace("Performed recovery for "+server.getServerName(), LOG_SEARCH_TIMEOUT);
 
-		if (id.equals("37") || id.equals("38") || id.equals("39")
-				|| id.equals("40") || id.equals("45")) {
-			try {
-				System.out
-						.println("Sleep some seconds for test " + id + " before RecoveryCheckServlet...");
-				Thread.sleep(30000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		if (id.equals("37") || id.equals("38") || id.equals("39")
+//				|| id.equals("40") || id.equals("45")) {
+//			try {
+//				System.out
+//						.println("Sleep some seconds for test " + id + " before RecoveryCheckServlet...");
+//				Thread.sleep(30000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 		Log.info(this.getClass(), method, "callServlet checkRec" + id);
 		try {
