@@ -159,8 +159,11 @@ public class JavaInfo {
             @FFDCIgnore(ClassNotFoundException.class)
             public Boolean run() {
                 try {
-                    // passing null to only look at the system classloader
-                    Class.forName(className, false, null);
+                    // Using ClassLoader.findSystemClass() instead of
+                    // Class.forName(className, false, null) because Class.forName with a null
+                    // ClassLoader only looks at the boot ClassLoader with Java 9 and above
+                    // which doesn't look at all the modules available to the findSystemClass.
+                    systemClassAccessor.getSystemClass(className);
                     return true;
                 } catch (ClassNotFoundException e) {
                     //No FFDC needed
@@ -168,6 +171,14 @@ public class JavaInfo {
                 }
             }
         });
+    }
+
+    private static final SystemClassAccessor systemClassAccessor = new SystemClassAccessor();
+
+    private static final class SystemClassAccessor extends ClassLoader {
+        public Class<?> getSystemClass(String className) throws ClassNotFoundException {
+            return findSystemClass(className);
+        }
     }
 
     @Deprecated
