@@ -55,7 +55,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "batch-2.0",
                                                   "beanValidation-3.0",
                                                   "cdi-3.0",
-                                                  "concurrent-2.0",
+                                                  "concurrent-3.0",
                                                   "connectors-2.0",
                                                   "connectorsInboundSecurity-2.0",
                                                   "expressionLanguage-4.0",
