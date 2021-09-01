@@ -25,6 +25,11 @@ public class ServiceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
+        System.out.println("doGet - path = " + path);
+
+        //Not setting the content-type header exposes an issue in the EE9 client
+        // Intentionally not setting to ensure client can handle response with no c-t header
+        //resp.setHeader("Content-type", "text/plain");
 
         PrintWriter pw = resp.getWriter();
         if (null != path && path.equals("/BasicResource/echo/alex")) {
