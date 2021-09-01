@@ -132,15 +132,27 @@ public class Utils {
                             configMap.get(WSSecurityConstants.WSS4J_KEY_PASSWORD));
             configMap.put(WSSecurityConstants.WSS4J_KEY_PASSWORD, pwd);
         }
+        if (configMap.containsKey(WSSecurityConstants.WSS4J_2_KEY_PASSWORD)) {
+            String pwd = PasswordUtil.passwordDecode((String)configMap.get(WSSecurityConstants.WSS4J_2_KEY_PASSWORD));
+            configMap.put(WSSecurityConstants.WSS4J_2_KEY_PASSWORD, pwd);
+        }
         if (configMap.containsKey(WSSecurityConstants.WSS4J_KS_PASSWORD)) {
             String pwd = changePasswordType((SerializableProtectedString)
                             configMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD));
             configMap.put(WSSecurityConstants.WSS4J_KS_PASSWORD, pwd);
         }
+        if (configMap.containsKey(WSSecurityConstants.WSS4J_2_KS_PASSWORD)) {
+            String pwd = PasswordUtil.passwordDecode((String)configMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD));
+            configMap.put(WSSecurityConstants.WSS4J_2_KS_PASSWORD, pwd);
+        }
         if (configMap.containsKey(WSSecurityConstants.WSS4J_TS_PASSWORD)) {
             String pwd = changePasswordType((SerializableProtectedString)
                             configMap.get(WSSecurityConstants.WSS4J_TS_PASSWORD));
             configMap.put(WSSecurityConstants.WSS4J_TS_PASSWORD, pwd);
+        }
+        if (configMap.containsKey(WSSecurityConstants.WSS4J_2_TS_PASSWORD)) {
+            String pwd = PasswordUtil.passwordDecode((String)configMap.get(WSSecurityConstants.WSS4J_2_TS_PASSWORD));
+            configMap.put(WSSecurityConstants.WSS4J_2_TS_PASSWORD, pwd);
         }
     }
 

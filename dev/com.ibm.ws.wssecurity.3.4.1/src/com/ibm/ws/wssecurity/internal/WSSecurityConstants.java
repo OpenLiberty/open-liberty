@@ -57,6 +57,10 @@ public class WSSecurityConstants {
     
     public static final String SEC_SIG_PROPS = SEC + ".signature.properties"; //v3
     public static final String SEC_ENC_PROPS = SEC + ".encryption.properties";  //v3
+    
+    public static final String WSS4J_CRYPTO_PROVIDER_NAME = "org.apache.ws.security.components.crypto.Merlin"; // this default value specified in the metatype
+    public static final String WSS4J_2_CRYPTO_PROVIDER_NAME = "org.apache.wss4j.common.crypto.Merlin";
+    
     public static final String SEC_NONCE_CACHE_CONFIG_FILE = SEC + ".cache.config.file"; //v3 this is not nonce cache , security token cache that cxf maintains
 
     public static final String CXF_SAML_CALLBACK_HANDLER = WSSEC + ".saml-callback-handler";
