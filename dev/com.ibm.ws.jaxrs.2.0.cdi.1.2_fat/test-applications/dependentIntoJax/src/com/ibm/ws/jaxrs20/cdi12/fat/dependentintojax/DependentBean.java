@@ -22,7 +22,7 @@ public class DependentBean {
 
 	@PreDestroy
 	public void destroy() {
-		MyResource.registerPreDestroy("");
+	    new Throwable("Diag - PreDestroy").printStackTrace();
+            MyResource.registerPreDestroy("");
 	}
 }
-
