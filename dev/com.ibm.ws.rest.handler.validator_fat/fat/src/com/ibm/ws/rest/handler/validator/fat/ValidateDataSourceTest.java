@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,8 +122,7 @@ public class ValidateDataSourceTest extends FATServletClient {
     }
 
     @Test
-    @ExpectedFFDC({ "java.sql.SQLNonTransientConnectionException",
-                    "java.sql.SQLNonTransientException",
+    @ExpectedFFDC({ "java.sql.SQLNonTransientException",
                     "javax.resource.spi.SecurityException",
                     "javax.resource.spi.ResourceAllocationException" })
     public void testAppAuthFails() throws Exception {
@@ -514,8 +513,10 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertTrue(err, stack.getString(2).startsWith("org.apache.derby."));
     }
 
-    @ExpectedFFDC(value = { "javax.resource.spi.SecurityException", "java.sql.SQLNonTransientException",
-                            "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+    @ExpectedFFDC(value = { "javax.resource.spi.SecurityException",
+                            "java.sql.SQLNonTransientException",
+                            "javax.resource.spi.ResourceAllocationException"
+    })
     @Test
     public void testWrongDefaultAuth() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/WrongDefaultAuth?auth=container")
@@ -542,8 +543,9 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
     }
 
-    @ExpectedFFDC(value = { "javax.resource.spi.SecurityException", "java.sql.SQLNonTransientException",
-                            "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+    @ExpectedFFDC(value = { "javax.resource.spi.SecurityException",
+                            "java.sql.SQLNonTransientException",
+                            "javax.resource.spi.ResourceAllocationException" })
     @Test
     public void testWrongProvidedAuth() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource?auth=container&authAlias=auth2")
