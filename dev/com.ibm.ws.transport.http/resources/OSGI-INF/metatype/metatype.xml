@@ -14,7 +14,7 @@
                    localization="OSGI-INF/l10n/metatype">
 
     <OCD description="%virtualHost.desc" name="%virtualHost.name" 
-         id="com.ibm.ws.http.virtualhost" ibm:alias="virtualHost">
+        id="com.ibm.ws.http.virtualhost" ibm:alias="virtualHost">
 
         <AD name="%virtualHost.enabled" description="%virtualHost.enabled.desc"
             id="enabled" required="false" type="Boolean" default="true" />
@@ -32,7 +32,7 @@
     </Designate>
     
     <OCD name="%http.proxyredirect" description="%http.proxyredirect.desc" 
-         id="com.ibm.ws.http.proxyredirect" ibm:alias="httpProxyRedirect">   
+        id="com.ibm.ws.http.proxyredirect" ibm:alias="httpProxyRedirect">   
 
         <AD name="%http.proxyredirect.enabled" description="%http.proxyredirect.enabled.desc"
             id="enabled" required="false" type="Boolean" default="true" />
@@ -54,8 +54,7 @@
     </Designate>
     
     <OCD name="%http.endpoint" description="%http.endpoint.desc" 
-         id="com.ibm.ws.http"
-         ibm:supportExtensions="true" ibm:alias="httpEndpoint">   
+        id="com.ibm.ws.http" ibm:supportExtensions="true" ibm:alias="httpEndpoint">   
 
         <AD name="%endpoint.enabled" description="%endpoint.enabled.desc"
             id="enabled" required="false" type="Boolean" default="true" />
@@ -79,7 +78,7 @@
             
         <!-- NO DEFAULT PROTOCOL VERSION VALUE: SPECIFICATION IS OPTIONAL -->
         <AD name="%endpoint.protocolVersion" description="%endpoint.protocolVersion.desc"
-        	id="protocolVersion" required="false" type="String"/>    
+            id="protocolVersion" required="false" type="String"/>    
 
         <!--  What should happen if there is a configuration error or the port is already bound? -->    
         <AD id="onError" ibm:variable="onError" name="%onError.name" description="%onError.desc" type="String" ibm:type="onError" default="WARN"> 
@@ -97,31 +96,39 @@
             type="String" required="false" default="defaultRemoteIp" /> 
             
         <AD id="compressionRef" name="%endpoint.compression" description="%endpoint.compression.desc"
-        	ibm:reference="com.ibm.ws.http.compression" ibm:type="pid"
-        	type="String" required="false" default="defaultCompression" />
-        	
+            ibm:reference="com.ibm.ws.http.compression" ibm:type="pid"
+            type="String" required="false" default="defaultCompression" />
+
         <AD id="samesiteRef" name="%endpoint.samesite" description="%endpoint.samesite.desc"
-        	ibm:reference="com.ibm.ws.http.samesite" ibm:type="pid"
-        	type="String" required="false" default="defaultSameSite" />    
+            ibm:reference="com.ibm.ws.http.samesite" ibm:type="pid"
+            type="String" required="false" default="defaultSameSite" />
+            
+        <AD id="headersRef" name="%endpoint.headers" description="%endpoint.headers.desc"
+            ibm:reference="com.ibm.ws.http.headers" ibm:type="pid"
+            type="String" ibm:beta="true" required="false" default="defaultHeaders"/>    
 
          <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
          httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
          httpEndpoint will bounce.  c.f. 91906 -->   
-        <AD id="httpOptions.target" name="internal" description="internal use only" 
+        <AD id="httpOptions.target" name="internal" description="internal use only"
             ibm:final="true" required="false" type="String"
             default="(|(service.pid=${httpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.http.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultHttpOptions))))" /> 
 
-		<AD id="remoteIp.target" name="internal" description="internal use only" 
+        <AD id="remoteIp.target" name="internal" description="internal use only"
             ibm:final="true" required="false" type="String"
-            default="(|(service.pid=${remoteIpRef})(&amp;(service.factoryPid=com.ibm.ws.http.remoteip)(|(id=com.ibm.ws.http-${id}/*)(id=defaultRemoteIp))))" /> 
-       
-       <AD id="compression.target" name="internal" description="internal use only"
-			ibm:final="true" required="false" type = "String"
-			default="(|(service.pid=${compressionRef})(&amp;(service.factoryPid=com.ibm.ws.http.compression)(|(id=com.ibm.ws.http-${id}/*)(id=defaultCompression))))" />
+            default="(|(service.pid=${remoteIpRef})(&amp;(service.factoryPid=com.ibm.ws.http.remoteip)(|(id=com.ibm.ws.http-${id}/*)(id=defaultRemoteIp))))" />
+
+        <AD id="compression.target" name="internal" description="internal use only"
+            ibm:final="true" required="false" type = "String"
+            default="(|(service.pid=${compressionRef})(&amp;(service.factoryPid=com.ibm.ws.http.compression)(|(id=com.ibm.ws.http-${id}/*)(id=defaultCompression))))" />
     
-    	<AD id="samesite.target" name="internal" description="internal use only"
-			ibm:final="true" required="false" type = "String"
-			default="(|(service.pid=${samesiteRef})(&amp;(service.factoryPid=com.ibm.ws.http.samesite)(|(id=com.ibm.ws.http-${id}/*)(id=defaultSameSite))))" />
+        <AD id="samesite.target" name="internal" description="internal use only"
+            ibm:final="true" required="false" type = "String"
+            default="(|(service.pid=${samesiteRef})(&amp;(service.factoryPid=com.ibm.ws.http.samesite)(|(id=com.ibm.ws.http-${id}/*)(id=defaultSameSite))))" />
+    
+        <AD id="headers.target" name="internal" description="internal use only"
+            ibm:final="true" required="false" type = "String" ibm:beta="true"
+            default="(|(service.pid=${headersRef})(&amp;(service.factoryPid=com.ibm.ws.http.headers)(|(id=com.ibm.ws.http-${id}/*)(id=defaultHeaders))))" />
     
         <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
             ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
@@ -132,7 +139,7 @@
             ibm:final="true" required="false" type="String" 
             default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultSSLOptions))))" />
 
-       <AD id="tcpOptionsRef" name="%endpoint.tcpOptions" description="%endpoint.tcpOptions.desc"
+        <AD id="tcpOptionsRef" name="%endpoint.tcpOptions" description="%endpoint.tcpOptions.desc"
             ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid"
             type="String" required="false" default="defaultTCPOptions" />               
 
@@ -154,8 +161,7 @@
     </Designate>
 
     <OCD name="%http.options" description="%http.options.desc" 
-         id="com.ibm.ws.http.options"
-         ibm:alias="httpOptions">   
+        id="com.ibm.ws.http.options" ibm:alias="httpOptions">   
 
         <AD name="%http.keepAlive" description="%http.keepAlive.desc"
             id="keepAliveEnabled" required="false" type="Boolean" default="true" />
@@ -200,19 +206,19 @@
             id="ThrowIOEForInboundConnections" required="false" type="Boolean"/> 
             
         <AD name="%http.decompressionRatioLimit" description="%http.decompressionRatioLimit.desc"
-			id="decompressionRatioLimit" required="false" type="Integer" min="1" default="200" />
+            id="decompressionRatioLimit" required="false" type="Integer" min="1" default="200" />
 
-		<AD name="%http.decompressionTolerance" description="%http.decompressionTolerance.desc"
-			id="decompressionTolerance" required="false" type="Integer" min="0" default="3" />	  
+        <AD name="%http.decompressionTolerance" description="%http.decompressionTolerance.desc"
+            id="decompressionTolerance" required="false" type="Integer" min="0" default="3" />
             
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
-			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
+            id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
-		<AD name="%http2.maxConcurrentStreams" description="%http2.maxConcurrentStreams.desc"
-			id="maxConcurrentStreams" required="false" type="Integer" default="200" />
+        <AD name="%http2.maxConcurrentStreams" description="%http2.maxConcurrentStreams.desc"
+            id="maxConcurrentStreams" required="false" type="Integer" default="200" />
 
-		<AD name="%http2.maxFrameSize" description="%http2.maxFrameSize.desc"
-			id="maxFrameSize" required="false" type="Integer" min="16384" max="16777215" default="57344" /> 
+        <AD name="%http2.maxFrameSize" description="%http2.maxFrameSize.desc"
+            id="maxFrameSize" required="false" type="Integer" min="16384" max="16777215" default="57344" /> 
             
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"
@@ -227,17 +233,16 @@
     </Designate>
     
     <OCD name="%http.remoteip" description="%http.remoteip.desc" 
-         id="com.ibm.ws.http.remoteip"
-         ibm:alias="remoteIp"> 
+        id="com.ibm.ws.http.remoteip" ibm:alias="remoteIp"> 
          
-         <AD name="%http.remoteip.proxies" description="%http.remoteip.proxies.desc"
-         id="proxies" required="false" type="String" default="10\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|192\\.168\\.\\d{1\,3}\\.\\d{1\,3}|169\\.254\\.\\d{1\,3}\\.\\d{1\,3}|127\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.1[6-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.2[0-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.3[0-1]{1}\\.\\d{1\,3}\\.\\d{1\,3}|0:0:0:0:0:0:0:1|::1"/>
+        <AD name="%http.remoteip.proxies" description="%http.remoteip.proxies.desc"
+            id="proxies" required="false" type="String" default="10\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|192\\.168\\.\\d{1\,3}\\.\\d{1\,3}|169\\.254\\.\\d{1\,3}\\.\\d{1\,3}|127\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.1[6-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.2[0-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.3[0-1]{1}\\.\\d{1\,3}\\.\\d{1\,3}|0:0:0:0:0:0:0:1|::1"/>
          
-         <AD name="%http.remoteip.useRemoteIpInAccessLog" description="%http.remoteip.useRemoteIpInAccessLog.desc"
-         id="useRemoteIpInAccessLog" required="false" type="Boolean" default="false" />
+        <AD name="%http.remoteip.useRemoteIpInAccessLog" description="%http.remoteip.useRemoteIpInAccessLog.desc"
+            id="useRemoteIpInAccessLog" required="false" type="Boolean" default="false" />
          
           
-		<AD name="internal" description="internal use only"
+        <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>
 
     </OCD>
@@ -247,8 +252,7 @@
     </Designate>
     
     <OCD name="%http.compression" description="%http.compression.desc"
-        id="com.ibm.ws.http.compression"
-        ibm:alias="compression">
+        id="com.ibm.ws.http.compression" ibm:alias="compression">
 
         <AD name="%http.compression.types" description="%http.compression.types.desc"
             id="types" required="false" type="String" cardinality="5000"
@@ -264,35 +268,58 @@
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.http.compression">
-    	<Object ocdref="com.ibm.ws.http.compression"/>
+        <Object ocdref="com.ibm.ws.http.compression"/>
     </Designate>
     
     <OCD name="%http.samesite" description="%http.samesite.desc"
-    	id="com.ibm.ws.http.samesite"
-    	ibm:alias="samesite">
-    	
-    	<AD name="%http.samesite.lax" description="%http.samesite.lax.desc"
-		id="lax" required="false" type="String" cardinality="5000"/>
-    	
-    	<AD name="%http.samesite.none" description="%http.samesite.none.desc"
-		id="none" required="false" type="String" cardinality="5000"/> 
-		
-		<AD name="%http.samesite.strict" description="%http.samesite.strict.desc"
-		id="strict" required="false" type="String" cardinality="5000"/>
+        id="com.ibm.ws.http.samesite" ibm:alias="samesite">
+        
+        <AD name="%http.samesite.lax" description="%http.samesite.lax.desc"
+           id="lax" required="false" type="String" cardinality="5000"/>
+        
+        <AD name="%http.samesite.none" description="%http.samesite.none.desc"
+           id="none" required="false" type="String" cardinality="5000"/> 
+        
+        <AD name="%http.samesite.strict" description="%http.samesite.strict.desc"
+           id="strict" required="false" type="String" cardinality="5000"/>
 
-    	<AD name="internal" description="internal use only"
-    		id="service.ranking" required="false" type="Integer" default="0"/>
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.http.samesite">
-    	<Object ocdref="com.ibm.ws.http.samesite"/>
+        <Object ocdref="com.ibm.ws.http.samesite"/>
+    </Designate>
+    
+    <OCD name="%http.headers" description="%http.headers.desc"
+        id="com.ibm.ws.http.headers" ibm:alias="headers" ibm:beta="true">
+        
+        <AD name="%http.headers.add" description="%http.headers.add.desc"
+            id="add" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+        
+        <AD name="%http.headers.set" description="%http.headers.set.desc"
+            id="set" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+        
+        <AD name="%http.headers.setIfMissing" description="%http.headers.setIfMissing.desc"
+            id="setIfMissing" required="false" type="String" cardinality="5000" ibm:beta="true"/>   
+                    
+        <AD name="%http.headers.remove" description="%http.headers.remove.desc"
+            id="remove" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+        
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
+        
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.http.headers">
+        <Object ocdref="com.ibm.ws.http.headers"/>
     </Designate>
             
-    <OCD name="%http.dispatcher" description="%http.dispatcher.desc" 
-         id="com.ibm.ws.http.dispatcher" ibm:alias="httpDispatcher">   
+    <OCD name="%http.dispatcher" description="%http.dispatcher.desc"
+        id="com.ibm.ws.http.dispatcher" ibm:alias="httpDispatcher">   
 
-		<AD name="%enableWelcomePage" description="%enableWelcomePage.desc"
+        <AD name="%enableWelcomePage" description="%enableWelcomePage.desc"
             id="enableWelcomePage" required="false" type="Boolean" default="true"/>
             
         <AD name="%appOrContextRootMissingMessage" description="%appOrContextRootMissingMessage.desc"
@@ -301,7 +328,7 @@
         <AD name="%dispatcher.trustedHeaderOrigin" description="%dispatcher.trustedHeaderOrigin.desc"
             id="trustedHeaderOrigin" required="false" type="String" default="*" cardinality="2147483647" />
 
-         <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
+        <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
             id="trustedSensitiveHeaderOrigin" required="false" type="String" default="none" cardinality="2147483647" />
     </OCD>
 
@@ -310,7 +337,7 @@
     </Designate>
 
     <OCD name="%log.access" description="%log.access.desc" 
-         id="com.ibm.ws.http.log.access" ibm:alias="httpAccessLogging">   
+        id="com.ibm.ws.http.log.access" ibm:alias="httpAccessLogging">   
 
         <AD name="%log.access.enabled" description="%log.access.enabled.desc"
             id="enabled" required="false" type="Boolean" default="true" />
