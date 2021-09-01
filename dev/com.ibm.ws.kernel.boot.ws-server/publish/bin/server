@@ -329,8 +329,12 @@ mkdirs()
   fi
 }
 
-mvIfExists()
+backupIfNeededOrRemove()
 {
+  if [ -f "$2" ]; then
+    # backup already exists remove file
+    rm "$1"
+  fi
   if [ -f "$1" ]; then
     mv "$1" "$2"
   fi
@@ -898,7 +902,9 @@ javaCmd()
     # This is done so we can restore in the foreground (run)
     # and in the background (start)
     CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+    # remove existing console log and the possible backup for checkpoint
     rmIfExist "${CHECKPOINT_CONSOLE_LOG}"
+    rmIfExist "${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
     mkdirs "${X_LOG_DIR}"
     # touch the log so we can tail it immediately
     touchIfNotExist "${CHECKPOINT_CONSOLE_LOG}"
@@ -1269,7 +1275,7 @@ restoreServer()
   # save off the log during checkpoint and start fresh from restore 
   RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
   CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
-  mvIfExists $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
+  backupIfNeededOrRemove $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
   mkdirs "${X_LOG_DIR}"
   touchIfNotExist "${RESTORE_CONSOLE_LOG}"
  
