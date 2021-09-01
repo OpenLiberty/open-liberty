@@ -996,8 +996,11 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 		if (AuthStatus.SEND_SUCCESS == status) {
 		    Object responseMsg = msgInfo.getResponseMessage();
 		    System.out.println("DEBUG: AuthStatus.SEND_SUCCESS responseMessage in the msgInfo:" + responseMsg); 
-		    if (response != null) {
+		    if ((response != null) && !response.isCommitted()) {
 			response.getWriter().write(responseMsg.toString());
+			System.out.println("DEBUG: responseMsg has been written to the response");     
+		    } else {
+			System.out.println("DEBUG: SEND_SUCCESS Message was not written to the response because it is already committed");     
 		    }
 		}
 
