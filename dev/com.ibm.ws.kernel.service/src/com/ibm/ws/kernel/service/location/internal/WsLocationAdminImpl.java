@@ -35,20 +35,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
 
 /**
  *
@@ -83,7 +88,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     public static WsLocationAdminImpl createLocations(Map<String, Object> initProps) {
         if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            instance = new WsLocationAdminImpl(initProps);
+            instance = new WsLocationAdminImpl(null, initProps);
         }
 
         return instance;
@@ -100,7 +105,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     public static WsLocationAdminImpl createLocations(BundleContext ctx) {
         if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            instance = new WsLocationAdminImpl(new BundleContextMap(ctx));
+            instance = new WsLocationAdminImpl(ctx, new BundleContextMap(ctx));
         }
 
         return instance;
@@ -226,7 +231,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * @throws IllegalStateException
      *                                      if bootstrap library location or instance root don't exist.
      */
-    protected WsLocationAdminImpl(Map<String, Object> config) {
+    protected WsLocationAdminImpl(BundleContext bundleContext, Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
         String serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
@@ -335,7 +340,54 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS));
+        final String variableSourceDirs = (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS);
+        final String configDirStr = serverCfgDirStr;
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, variableSourceDirs);
+
+        if (bundleContext != null) {
+            bundleContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                @Override
+                public void restore() {
+
+                    List<File> fileSystemVariableDirs = new ArrayList<File>();
+                    String envVarSourceDir = getEnv(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
+
+                    if (envVarSourceDir == null) {
+                        fileSystemVariableDirs.add(new File(configDirStr, "variables"));
+                    } else {
+                        StringTokenizer st = new StringTokenizer(envVarSourceDir, File.pathSeparator);
+                        while (st.hasMoreTokens()) {
+                            String dir = st.nextToken();
+                            fileSystemVariableDirs.add(new File(dir));
+                        }
+                    }
+
+                    String newVariableSourceDirs = getMultiplePathProperty(fileSystemVariableDirs);
+
+                    if (!newVariableSourceDirs.equals(variableSourceDirs)) {
+                        SymbolRegistry.getRegistry().replaceStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, newVariableSourceDirs);
+                    }
+                };
+            }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
+        }
+    }
+
+    String getEnv(final String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+            return System.getenv(key);
+        });
+    }
+
+    String getMultiplePathProperty(List<File> files) {
+        StringBuilder b = new StringBuilder();
+        boolean addSeparator = false;
+        for (File file : files) {
+            if (addSeparator)
+                b.append(File.pathSeparatorChar);
+            b.append(PathUtils.normalize(file.getAbsolutePath())).append('/');
+            addSeparator = true;
+        }
+        return b.toString();
     }
 
     private final void throwInitializationException(RuntimeException t) {
