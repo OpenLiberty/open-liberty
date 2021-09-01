@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,11 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Ob\u0163ine\u0163i un JVM care suport\
 OSGI_SERVICE_ERROR=CWWKX1066E: Serviciul {0} OSGi nu este disponibil.
 OSGI_SERVICE_ERROR.explanation=Aceast\u0103 eroare intern\u0103 de server a survenit deoarece serviciul specificat nu este disponibil.
 OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea de cur\u0103\u0163are.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: Trusa de unelte Admin Center pentru utilizatorul {0} a fost \u00eenc\u0103rcat\u0103 din spa\u0163iul de stocare persistent folosind numele s\u0103u de fi\u015fier vechi \u015fi a fost convertit\u0103 la noul s\u0103u nume de fi\u015fier.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=Produsul a \u00eenc\u0103rcat trusa de unelte Admin Center din spa\u0163iul de stocare persistent folosind numele s\u0103u de fi\u015fier vechi \u015fi a stocat o copie \u00een noul nume de fi\u015fier. Copia din noul nume de fi\u015fier va fi \u00eenc\u0103rcat\u0103 la accesul urm\u0103tor la spa\u0163iul de stocare persistent.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nicio ac\u0163iune necesar\u0103.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Datele uneltei {0} pentru utilizatorul {1} au fost \u00eenc\u0103rcate din spa\u0163iul de stocare persistent folosind numele s\u0103u de fi\u015fier vechi \u015fi au fost convertite la noul nume de fi\u015fier.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Produsul a \u00eenc\u0103rcat datele uneltei din spa\u0163iul de stocare persistent folosind numele de fi\u015fier vechi \u015fi a stocat o copie \u00een noul nume de fi\u015fier. Copia din noul nume de fi\u015fier va fi \u00eenc\u0103rcat\u0103 la accesul urm\u0103tor la spa\u0163iul de stocare persistent.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nicio ac\u0163iune necesar\u0103.

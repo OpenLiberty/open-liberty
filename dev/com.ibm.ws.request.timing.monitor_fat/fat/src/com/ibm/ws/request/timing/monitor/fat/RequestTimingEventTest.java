@@ -42,7 +42,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -109,7 +108,7 @@ public class RequestTimingEventTest {
     static ObjectName ServletInstanceName;
 
     // Keeping a AtomicLong total count because of threads created
-    public static AtomicLong totalRequestCount = new AtomicLong();
+    public static final AtomicLong totalRequestCount = new AtomicLong();
     public static long mbeanServletActiveCount = 1;
 
     public final String TestRequestHandlerUrl = getURLString("TestRequestHandler", 0);
@@ -120,14 +119,9 @@ public class RequestTimingEventTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        totalRequestCount.set(0);
         ShrinkHelper.defaultApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
 
-        JavaInfo java = JavaInfo.forCurrentVM();
-        int javaMajorVersion = java.majorVersion();
-        if (javaMajorVersion != 8) {
-            Log.info(c, "setUp", " Java version = " + javaMajorVersion + " - It is higher than 8, adding --add-exports...");
-            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
-        }
         server.startServer();
         setupTables();
     }
@@ -414,7 +408,7 @@ public class RequestTimingEventTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *                           Value looked for in CountDownLatch
+     *            Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -484,9 +478,9 @@ public class RequestTimingEventTest {
      * test
      *
      * @param th
-     *                    -- array of threads
+     *            -- array of threads
      * @param numReqs
-     *                    -- number of requests is the number of threads needed
+     *            -- number of requests is the number of threads needed
      */
     private void createRequestThreads(Thread[] th, int numReqs, String method) {
         // Send N servlet requests to server, last request used to terminate

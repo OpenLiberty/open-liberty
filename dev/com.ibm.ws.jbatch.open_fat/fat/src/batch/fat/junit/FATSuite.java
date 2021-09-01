@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -69,7 +70,5 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new JakartaEE9Action());
-    // TODO: Use this configuration to enable tests for javaee8 batch features
-    //public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
 }

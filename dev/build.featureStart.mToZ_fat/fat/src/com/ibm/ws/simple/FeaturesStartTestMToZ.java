@@ -214,7 +214,8 @@ public class FeaturesStartTestMToZ {
 
         allowError("logAnalysis-1.0", "CWWKE0702E: .* com.ibm.ws.loganalysis"); // requires binaryLogging-1.0 to be enabled via bootstrap.properties
         allowError("rtcomm-1.0", "CWRTC0002E"); // The Rtcomm service is not able to connect to tcp://localhost:1883.
-        allowError("rtcommGateway-1.0", "CWRTC0002E"); // // The Rtcomm service is not able to connect to tcp://localhost:1883.
+        allowError("rtcommGateway-1.0", "CWRTC0002E"); // The Rtcomm service is not able to connect to tcp://localhost:1883.
+        allowError("rtcommGateway-1.0", "SRVE9956W"); // The Rtcomm service - The following virtual hosts could not be found or are not correctly configured: [abcdefg].
         allowError("samlWeb-2.0", "CWWKS5207W: .* inboundPropagation"); // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
         allowError("wsSecuritySaml-1.1", "CWWKS5207W: .* inboundPropagation"); // pulls in the samlWeb-2.0 feature
 

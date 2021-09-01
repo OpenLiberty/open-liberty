@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import static org.junit.Assert.assertTrue;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -45,6 +48,7 @@ import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MaximumJavaLevel(javaLevel = 15) // TODO The current Oracle JDBC driver (ojdbc8_g.jar v21.1.0.0) only supports Java 8-15, modify/remove this line once it supports 16+
 public class OracleKerberosTest extends FATServletClient {
 
     private static final Class<?> c = OracleKerberosTest.class;
@@ -132,6 +136,22 @@ public class OracleKerberosTest extends FATServletClient {
             config.getKerberos().keytab = originalKeytab;
             updateConfigAndWait(config);
         }
+    }
+
+    /**
+     * Test the hidden <i>sendGSSCredentialOnOracleBuilder</i> Datasource property.
+     * <p>
+     * This confirms that when the property is set on a datasource we will use the path through the OracleHelper
+     * class which creates a connection using the OracleConnectionBuilder, and sends the GSS credential via
+     * the Connection Builder API.
+     */
+    @Test
+    @AllowedFFDC
+    public void testGSSCredentialOnOracleBuilder() throws Exception {
+        server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+        FATServletClient.runTest(server, APP_NAME + "/OracleKerberosTestServlet", testName);
+        int log = server.waitForMultipleStringsInLogUsingMark(3, "Using Connection Builder path for Kerberos", server.getMostRecentTraceFile());
+        assertTrue("Expected 3 Connection Builder strings in trace. Found: " + log, log == 3);
     }
 
     private static class IBMJava8Rule implements TestRule {

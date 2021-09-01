@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    <persistence-unit-metadata>
+        <persistence-unit-defaults>
+            <schema>DefSchmea</schema>
+            <!-- <catalog>DefCat</catalog> -->
+            <!-- <entity-listeners> <entity-listener class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.DefaultEntityListenerFQ"> 
+                <pre-persist method-name="execPrePersist" /> </entity-listener> <entity-listener 
+                class="DefaultEntityListenerNFQ"> <pre-persist method-name="execPrePersist" 
+                /> </entity-listener> </entity-listeners> -->
+        </persistence-unit-defaults>
+    </persistence-unit-metadata>
+    <package>com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities</package>
+    <mapped-superclass
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDMappedSuperclass1">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </mapped-superclass>
+    <mapped-superclass class="MFDMappedSuperclass2">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </mapped-superclass>
+    <entity class="EntListTestEntity">
+        <entity-listeners>
+            <entity-listener
+                class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.EntityListenerFQ">
+                <pre-persist method-name="execPrePersist" />
+            </entity-listener>
+            <entity-listener class="EntityListenerNFQ">
+                <pre-persist method-name="execPrePersist" />
+            </entity-listener>
+        </entity-listeners>
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDEntity1">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </entity>
+    <entity class="MFDEntity2">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDFQEmbedEnt">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <embedded name="embeddable">
+            </embedded>
+        </attributes>
+    </entity>
+    <entity class="MFDNFQEmbedEnt">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <embedded name="embeddable">
+            </embedded>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDMSC1Ent">
+        <attributes>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </entity>
+    <entity class="MFDMSC2Ent">
+        <attributes>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDRelationalEntA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-one name="manyXoneEntityB" target-entity="MFDRelationalMOB"></many-to-one>
+            <one-to-many name="oneXmanyEntityBCollection"
+                target-entity="MFDRelationalOMB">
+                <join-table name="PKGMFD_REA_OMEBC_TBL">
+                    <join-column name="MFDRelationalEntA" />
+                    <inverse-join-column name="MFDRelationalOMB" />
+                </join-table>
+            </one-to-many>
+            <one-to-one name="oneXoneEntityB" target-entity="MFDRelationalOOB"></one-to-one>
+            <many-to-many name="manyXmanyEntityBCollection"
+                target-entity="MFDRelationalMMB">
+                <join-table name="PKGMFD_REA_MMEBC_TBL">
+                    <join-column name="MFDRelationalEntA" />
+                    <inverse-join-column name="MFDRelationalMMB" />
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="MFDRelationalMOB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="MFDRelationalOMB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="MFDRelationalMMB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="MFDRelationalOOB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <embeddable
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.entities.MFDFQEmbeddable">
+        <attributes>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </embeddable>
+    <embeddable class="MFDNFQEmbeddable">
+        <attributes>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </embeddable>
+
+</entity-mappings>

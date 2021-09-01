@@ -27,6 +27,7 @@ import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 /**
@@ -42,6 +43,7 @@ public class LocalServerJobRecoveryAtStartUpTest extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig("LocalJobRecoveryResources/server.xml", testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);

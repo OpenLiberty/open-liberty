@@ -1,9 +1,5 @@
 /*******************************************************************************
-<<<<<<< HEAD
  * Copyright (c) 2020, 2021 IBM Corporation and others.
-=======
- * Copyright (c) 2020 IBM Corporation and others.
->>>>>>> 5862398631b9f73db9d0aa84056e994716190bee
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -194,7 +190,7 @@ public class PropertiesUtils {
         return validationResults;
 
     }
-
+    
     /**
      * checks if options property is enabled for FAT test
      * @param properties file
@@ -206,19 +202,20 @@ public class PropertiesUtils {
     	}
     	return false;
     }	
-    	
+
+
+
     /**
      * Checks if the inputed key is a supported property key
      *
      * @param key The Property key
      * @return True if the key is supported
      */
-
-    private static boolean isKeySupported(String key ) {
+    private static boolean isKeySupported(String key) {
         if (Arrays.asList(SUPPORTED_KEYS).contains(key))
             return true;
         if (key.endsWith(URL_SUFFIX)  ||
-                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX) || key.endsWith(".options") || key.endsWith(FEATURES_BOM))
+                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX)  || key.endsWith(".options") || key.endsWith(FEATURES_BOM))
             return true;
         return false;
     }
@@ -248,14 +245,14 @@ public class PropertiesUtils {
 
             //key is not supported
             if(key.endsWith(FEATURES_BOM) && !isOptionsEnabled(repoProperties)) {
-            	validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
-                        key)));
-            	return;
-            }else if (!isKeySupported(key)) {
-	                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
-	                        key)));
-                return;
-            }
+             	validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
+                         key)));
+             	return;
+             }else if (!isKeySupported(key)) {
+ 	                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
+ 	                        key)));
+                 return;
+             }
 
             /**
              * emptyRepoName

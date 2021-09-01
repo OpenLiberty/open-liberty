@@ -13,12 +13,12 @@ configurations {
 }
 
 dependencies {
-  usrLibs 'test.user.test.features:testesa1:19.0.0.8@esa'
+  usrLibs 'com.ibm.ws.userFeature:testesa1:19.0.0.8@esa'
 }
 
 task addAppLibs (type: Copy) {
 	from configurations.usrLibs
-	into "publish/repo/userTest/user/test/features/testesa1/19.0.0.8"
+	into "publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8"
 }
 
 addRequiredLibraries {

@@ -260,6 +260,40 @@ public class ServiceBindingVarTests extends ServletRunner {
         }
     }
 
+    @Test
+    public void testPropertiesFile() throws Exception {
+        server.setMarkToEndOfLog();
+        server.copyFileToLibertyServerRoot("variables", "varfiles/vars.properties");
+        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+
+        try {
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterUpdated";
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterRemove";
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterUpdated";
+            test(server);
+
+        } finally {
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        }
+    }
+
     private final static String[] MBEAN_METHOD_SIGNATURE = new String[] { Collection.class.getName(),
                                                                           Collection.class.getName(),
                                                                           Collection.class.getName() };

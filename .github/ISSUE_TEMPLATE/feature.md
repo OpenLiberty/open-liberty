@@ -33,7 +33,7 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] POC Design / UFO Reviewed (Feature Owner) or N/A.
 - [ ] Complete any follow-ons from the POC Review.
 - [ ] Design / UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
-- [ ] No Design / No UFO Approval ([Arthur De Magalhaes](https://github.com/arthurdm) - cloud / [Alasdair Nottingham](https://github.com/NottyCode) - server) or N/A.
+- [ ] No Design / No UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] ID Requirements identified ([Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty)). (Epic owner / Feature owner with ID focal point)
 - [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.

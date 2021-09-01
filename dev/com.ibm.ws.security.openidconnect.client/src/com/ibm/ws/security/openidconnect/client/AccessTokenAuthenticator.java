@@ -163,7 +163,7 @@ public class AccessTokenAuthenticator {
                 if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                     oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                     // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                    (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory);
+                    (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
                 } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                     oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                 }

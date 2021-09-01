@@ -25,6 +25,7 @@
 	<classpathentry kind="src" path="test-applications/options/src"/>
 	<classpathentry kind="src" path="test-applications/paramconverter/src"/>
 	<classpathentry kind="src" path="test-applications/params/src"/>
+	<classpathentry kind="src" path="test-applications/prototype/src"/>
 	<classpathentry kind="src" path="test-applications/providerAndResource/src"/>
 	<classpathentry kind="src" path="test-applications/providerCache/src"/>
 	<classpathentry kind="src" path="test-applications/providers/src"/>

@@ -26,6 +26,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction("mpMetrics-3.0", "mpMetrics-2.3").withID("MPM23")).andWith(new FeatureReplacementAction("mpMetrics-2.3", "mpMetrics-2.2").withID("MPM22")).andWith(new FeatureReplacementAction("mpMetrics-2.2", "mpMetrics-2.0").withID("MPM20"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction("mpMetrics-3.0", "mpMetrics-2.3").withID("MPM23")).andWith(new FeatureReplacementAction("mpMetrics-2.3", "mpMetrics-2.2").withID("MPM22")).andWith(new FeatureReplacementAction("mpMetrics-2.2", "mpMetrics-2.0").withID("MPM20")).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("mpMetrics-2.0"));
 
 }

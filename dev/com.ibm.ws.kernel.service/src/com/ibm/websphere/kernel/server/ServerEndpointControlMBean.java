@@ -90,7 +90,6 @@ public interface ServerEndpointControlMBean {
      * @return If a single target is specified, returns true if the target exists, has started, and is not paused. If multiple targets are
      *         specified, returns true only if all specified targets exist, are started, and are not paused.
      */
-    @Deprecated
     public boolean isActive(String targets);
 
 }

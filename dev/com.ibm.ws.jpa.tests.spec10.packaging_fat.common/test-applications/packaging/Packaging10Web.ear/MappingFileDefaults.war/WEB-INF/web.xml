@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+
+    <!-- Servlet Definitions -->
+    <servlet>
+        <servlet-name>MappingFileDefaultsTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.testtooling.vehicle.web.TestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MappingFileDefaultsEJBTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>MappingFileDefaultsTestServlet</servlet-name>
+        <url-pattern>/MappingFileDefaultsTestServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MappingFileDefaultsEJBTestServlet</servlet-name>
+        <url-pattern>/MappingFileDefaultsEJBTestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Persistence Context Definitions -->
+    <persistence-context-ref>
+        <description>Transaction-Scoped Persistence Context</description>
+        <persistence-context-ref-name>jpa/MappingFileDefaults_CMTS</persistence-context-ref-name>
+        <persistence-unit-name>MappingFileDefaults_JTA</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+    </persistence-context-ref>
+
+    <persistence-unit-ref>
+        <description>Application-Managed JTA-Tran Persistence Context</description>
+        <persistence-unit-ref-name>jpa/MappingFileDefaults_AMJTA</persistence-unit-ref-name>
+        <persistence-unit-name>MappingFileDefaults_JTA</persistence-unit-name>
+    </persistence-unit-ref>
+
+    <persistence-unit-ref>
+        <description>Application-Managed RL-Tran Persistence Context</description>
+        <persistence-unit-ref-name>jpa/MappingFileDefaults_AMRL</persistence-unit-ref-name>
+        <persistence-unit-name>MappingFileDefaults_RL</persistence-unit-name>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <description>Cleanup Persistence Context</description>
+        <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+        <persistence-unit-name>Cleanup</persistence-unit-name>
+    </persistence-unit-ref>
+
+</web-app>

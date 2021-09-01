@@ -301,8 +301,12 @@ public final class HttpUtils {
 
     public static Locale getLocale(String value) {
         if (value == null) {
-            return null;
+            return new Locale("", ""); //Liberty change
         }
+        // Liberty change start
+        String[] languageLocale = value.split("-", 2);
+        return languageLocale.length > 1 ? new Locale(languageLocale[0], languageLocale[1]) : new Locale(languageLocale[0]);
+        /*
         String language = null;
         String locale = null;
         int index = value.indexOf('-');
@@ -321,7 +325,8 @@ public final class HttpUtils {
             return new Locale(language);
         }
         return new Locale(language, locale);
-
+        */
+        //Liberty change end
     }
 
     public static int getContentLength(String value) {

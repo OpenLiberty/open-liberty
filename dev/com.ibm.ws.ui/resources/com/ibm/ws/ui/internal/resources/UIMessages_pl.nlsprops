@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,11 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Spo\u015br\u00f3d ofert programu Insta
 OSGI_SERVICE_ERROR=CWWKX1066E: Us\u0142uga OSGi {0} jest niedost\u0119pna.
 OSGI_SERVICE_ERROR.explanation=Jest to wewn\u0119trzny b\u0142\u0105d serwera wyst\u0119puj\u0105cy w zwi\u0105zku z niedost\u0119pno\u015bci\u0105 podanej us\u0142ugi.
 OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer, u\u017cywaj\u0105c opcji clean.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: Panel narz\u0119dzi Centrum administracyjne dla u\u017cytkownika {0} zosta\u0142 za\u0142adowany z utrwalonej pami\u0119ci masowej z pliku o starej nazwie i przekszta\u0142cony w plik o nowej nazwie.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=Produkt za\u0142adowa\u0142 panel narz\u0119dzi Centrum administracyjne z utrwalonej pami\u0119ci masowej, u\u017cywaj\u0105c starej nazwy pliku, i zapisa\u0142 kopi\u0119 w pliku o nowej nazwie. Kopia z pliku o nowej nazwie zostanie za\u0142adowana przy nast\u0119pnym dost\u0119pie do utrwalonej pami\u0119ci masowej.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Dane narz\u0119dzia {0} dla u\u017cytkownika {1} zosta\u0142y za\u0142adowane z utrwalonej pami\u0119ci masowej z pliku o starej nazwie i przekszta\u0142cone w plik o nowej nazwie.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Produkt za\u0142adowa\u0142 dane narz\u0119dzi dla okre\u015blonego u\u017cytkownika i narz\u0119dzia z utrwalonej pami\u0119ci masowej, u\u017cywaj\u0105c starej nazwy pliku, i zapisa\u0142 kopi\u0119 w pliku o nowej nazwie. Kopia z pliku o nowej nazwie zostanie za\u0142adowana przy nast\u0119pnym dost\u0119pie do utrwalonej pami\u0119ci masowej.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

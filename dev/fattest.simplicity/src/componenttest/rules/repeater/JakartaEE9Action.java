@@ -64,7 +64,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "appAuthorization-2.0",
                                                  "appSecurity-4.0",
                                                  "batch-2.0",
-                                                 "batchManagement-2.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",

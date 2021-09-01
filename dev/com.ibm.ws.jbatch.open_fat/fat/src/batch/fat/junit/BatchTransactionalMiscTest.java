@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * As bugs are raised via RI, which itself doesn't handle transactions in SE, let's
@@ -45,6 +46,7 @@ public class BatchTransactionalMiscTest extends BatchFATHelper {
     @BeforeClass
     public static void setup() throws Exception {
 
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchAppUtils.addDropinsBatchFATWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 

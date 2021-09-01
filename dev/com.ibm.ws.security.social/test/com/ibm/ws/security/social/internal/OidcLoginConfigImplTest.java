@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Key;
 import java.security.KeyStoreException;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
     final MockInterface mockInterface = mockery.mock(MockInterface.class);
     final SslRefInfo sslRefInfo = mockery.mock(SslRefInfo.class);
 
+    String keyManagementKeyAlias = "RS256";
     String issuer = "http://some/valid/issuer";
     String token = "https://some/token/endpoint/abc";
     SerializableProtectedString secret = new SerializableProtectedString("secret".toCharArray());
@@ -529,7 +531,74 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    /************************************** getKeyManagementKeyAlias **************************************/
+        
+    @Test
+    public void getKeyManagementKeyAlias_configPropsNotInitialized() {
+        try {
+            String result = configImpl.getKeyManagementKeyAlias();
+            assertNull("Computed keyManagementKeyAlias should have been null but was [" + result + "].", result);
 
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getKeyManagementKeyAlias_keyManagementKeyAliasMissingInProps() {
+        try {
+            Map<String, Object> props = getStandardConfigProps();
+            configImpl.initProps(cc, props);
+
+            String result = configImpl.getKeyManagementKeyAlias();
+
+            assertNull("Computed keyManagementKeyAlias should have been null but was [" + result + "].", result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
+    @Test
+    public void getKeyManagementKeyAlias_keyManagementKeyAliasInProps() {
+        try {
+            Map<String, Object> props = getStandardConfigProps();
+            props.put(OidcLoginConfigImpl.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS, keyManagementKeyAlias);
+            configImpl.initProps(cc, props);
+
+            String result = configImpl.getKeyManagementKeyAlias();
+
+            assertEquals("KeyManagementKeyAlias did not match expected value.", keyManagementKeyAlias, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
+    /************************************** getJweDecryptionKey **************************************/
+
+    @Test
+    public void getJweDecryptionKey_keyManagementKeyAliasMissing() {
+        try {
+            Map<String, Object> props = getStandardConfigProps();
+            configImpl.initProps(cc, props);
+            
+            Key result = configImpl.getJweDecryptionKey();
+            
+            assertNull("Computed jweDecryptionKey should have been null but was [" + result + "].", result);
+            
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
     /************************************** Helper methods **************************************/
     
     

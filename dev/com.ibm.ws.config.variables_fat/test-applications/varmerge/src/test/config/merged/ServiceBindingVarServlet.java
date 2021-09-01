@@ -488,6 +488,72 @@ public class ServiceBindingVarServlet extends HttpServlet {
             }
 
         }
-        assertEquals("There should be exactly one service binding variable", 2, serviceBindingVars);
+        assertEquals("There should be exactly two service binding variables", 2, serviceBindingVars);
+    }
+
+    private static final String PROPS_FILE_VAR1 = "props1";
+    private static final String PROPS_FILE_VAR1_VALUE = "value1";
+    private static final String PROPS_FILE_VAR1_UPDATED_VALUE = "updatedValue1";
+    private static final String PROPS_FILE_VAR2 = "props2";
+    private static final String PROPS_FILE_VAR2_VALUE = "value2";
+    private static final String PROPS_FILE_VAR3 = "props3";
+    private static final String PROPS_FILE_VAR3_VALUE = "value3";
+
+    public void testPropertiesFile() {
+        Collection<LibertyVariable> vars = getVariables();
+        int serviceBindingVars = 0;
+        for (LibertyVariable var : vars) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
+                serviceBindingVars++;
+                if (PROPS_FILE_VAR1.equals(var.getName())) {
+                    assertEquals("The value for " + PROPS_FILE_VAR1 + " should be " + PROPS_FILE_VAR1_VALUE, PROPS_FILE_VAR1_VALUE, var.getValue());
+                } else if (PROPS_FILE_VAR2.equals(var.getName())) {
+                    assertEquals("The value for " + PROPS_FILE_VAR2 + " should be " + PROPS_FILE_VAR2_VALUE, PROPS_FILE_VAR2_VALUE, var.getValue());
+                } else {
+                    fail("Unexpected variable encountered: " + var.toString());
+                }
+            }
+
+        }
+        assertEquals("There should be exactly two service binding variables", 2, serviceBindingVars);
+
+        VariableRegistry registry = getRegistry();
+        assertEquals(PROPS_FILE_VAR1_VALUE, registry.resolveRawString("${" + PROPS_FILE_VAR1 + "}"));
+        assertEquals(PROPS_FILE_VAR2_VALUE, registry.resolveRawString("${" + PROPS_FILE_VAR2 + "}"));
+
+    }
+
+    public void testPropertiesFileAfterUpdated() {
+        Collection<LibertyVariable> vars = getVariables();
+        int serviceBindingVars = 0;
+        for (LibertyVariable var : vars) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
+                serviceBindingVars++;
+                if (PROPS_FILE_VAR1.equals(var.getName())) {
+                    assertEquals("The value for " + PROPS_FILE_VAR1 + " should be " + PROPS_FILE_VAR1_UPDATED_VALUE, PROPS_FILE_VAR1_UPDATED_VALUE, var.getValue());
+                } else if (PROPS_FILE_VAR3.equals(var.getName())) {
+                    assertEquals("The value for " + PROPS_FILE_VAR3 + " should be " + PROPS_FILE_VAR3_VALUE, PROPS_FILE_VAR3_VALUE, var.getValue());
+                } else {
+                    fail("Unexpected variable encountered: " + var.toString());
+                }
+            }
+
+        }
+        assertEquals("There should be exactly two service binding variables", 2, serviceBindingVars);
+        VariableRegistry registry = getRegistry();
+        assertEquals(PROPS_FILE_VAR1_UPDATED_VALUE, registry.resolveRawString("${" + PROPS_FILE_VAR1 + "}"));
+        assertEquals(PROPS_FILE_VAR3_VALUE, registry.resolveRawString("${" + PROPS_FILE_VAR3 + "}"));
+        assertEquals("${" + PROPS_FILE_VAR2 + "}", registry.resolveRawString("${" + PROPS_FILE_VAR2 + "}"));
+    }
+
+    public void testPropertiesFileAfterRemove() {
+        for (LibertyVariable var : getVariables()) {
+            if (var.getSource() == Source.FILE_SYSTEM)
+                fail("Unexpected variable encountered: " + var.toString());
+        }
+        VariableRegistry registry = getRegistry();
+        assertEquals("${" + PROPS_FILE_VAR1 + "}", registry.resolveRawString("${" + PROPS_FILE_VAR1 + "}"));
+        assertEquals("${" + PROPS_FILE_VAR3 + "}", registry.resolveRawString("${" + PROPS_FILE_VAR3 + "}"));
+        assertEquals("${" + PROPS_FILE_VAR2 + "}", registry.resolveRawString("${" + PROPS_FILE_VAR2 + "}"));
     }
 }
