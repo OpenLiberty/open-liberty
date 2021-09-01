@@ -320,6 +320,37 @@ public abstract class AbstractTestLogic {
         };
     }
 
+    /**
+     * Check if given Throwable contains instanceof exceptionClass within Throwable causedby stack
+     *
+     * @param exceptionClass
+     * @param t
+     * @return Throwable of type exceptionClass if found within causedby stack; null otherwise
+     */
+    protected static Throwable containsCauseByException(final Class<?> exceptionClass, Throwable t) {
+        if (exceptionClass == null || t == null) {
+            return null;
+        }
+
+        final ArrayList<Throwable> tList = new ArrayList<Throwable>();
+        while (t != null) {
+            if (exceptionClass.equals(t.getClass()) || exceptionClass.isAssignableFrom(t.getClass())) {
+                return t;
+            }
+
+            // Loop detected, not found
+            if (tList.contains(t)) {
+                return null;
+            }
+
+            tList.add(t);
+            t = t.getCause();
+        }
+
+        // Reached end, not found
+        return t;
+    }
+
     protected String getTestName() {
         final StackTraceElement[] steArr = Thread.currentThread().getStackTrace();
 
