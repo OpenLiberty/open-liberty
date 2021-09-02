@@ -243,8 +243,7 @@ public class CxfCallerUNTTests {
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
                         "test4", // Password
-                        errMsgVersion //2/2021
-            );
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -284,7 +283,7 @@ public class CxfCallerUNTTests {
                        "",
                        untID,
                        untPassword,
-                       null); //2/2021
+                       null);
 
         return;
     }
@@ -403,7 +402,7 @@ public class CxfCallerUNTTests {
                                   String strBadOrGood,
                                   String untID,
                                   String untPassword,
-                                  String errMsgVersion) throws Exception { //2/2021
+                                  String errMsgVersion) throws Exception {
         try {
 
             WebRequest request = null;
@@ -467,7 +466,6 @@ public class CxfCallerUNTTests {
             e.printStackTrace(System.out);
         }
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
