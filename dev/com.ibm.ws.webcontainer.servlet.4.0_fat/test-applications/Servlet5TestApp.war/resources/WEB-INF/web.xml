@@ -43,4 +43,12 @@
 	<error-page>
 		<location>/jsp/errorPage.jsp</location>
 	</error-page>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/jsp/Login.jsp</form-login-page>
+			<form-error-page>/jsp/ReLogin.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
 </web-app>

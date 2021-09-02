@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for testing Servlet 50 jakarta.servlet">
+<server description="Extended Server for testing Servlet 50 jakarta.servlet">
 
   <include location="../fatTestPorts.xml"/>
 
@@ -18,6 +18,8 @@
     <feature>appSecurity-2.0</feature>
   </featureManager>
 
+  <webContainer enablePostOnlyJSecurityCheck="false"/> 
+
   <logging
     traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:GenericBNF=all"
     maxFileSize="20"
@@ -26,4 +28,5 @@
     
     <!--Java2 security-->
   <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
 </server>
