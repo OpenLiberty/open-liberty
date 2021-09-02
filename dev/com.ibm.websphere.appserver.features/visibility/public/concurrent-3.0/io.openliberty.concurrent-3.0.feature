@@ -9,11 +9,12 @@ IBM-API-Service: jakarta.enterprise.concurrent.ContextService; id="DefaultContex
   jakarta.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"
 Subsystem-Name: Jakarta Concurrency 3.0
 #TODO switch to io.openliberty.jakarta.concurrency-3.0 spec, once available
+#TODO switch to eeCompatible-10.0 at same time as other EE 10 features, once they exist
 -features=com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.contextService-1.0, \
-  com.ibm.websphere.appserver.eeCompatible-10.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.jakarta.concurrency-2.0, \
   io.openliberty.org.eclipse.microprofile.contextpropagation-1.3
