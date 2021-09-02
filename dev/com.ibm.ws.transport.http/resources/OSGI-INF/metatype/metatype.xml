@@ -87,9 +87,9 @@
             <Option label="%onError.ignore" value="IGNORE"/>   
         </AD>
 
-        <AD id="httpOptionsRef" name="%endpoint.httpOptions" description="%endpoint.httpOptions.desc"
-            ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
-            type="String" required="false" default="defaultHttpOptions" />
+        <AD id="httpOptionsRef" name="%endpoint.httpOptions" description="%endpoint.httpOptions.desc" 
+        	ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
+        	type="String" required="false" default="defaultHttpOptions" />
          
         <AD id="remoteIpRef" name="%endpoint.remoteIp" description="%endpoint.remoteIp.desc"
             ibm:reference="com.ibm.ws.http.remoteip" ibm:type="pid"
@@ -105,7 +105,7 @@
             
         <AD id="headersRef" name="%endpoint.headers" description="%endpoint.headers.desc"
             ibm:reference="com.ibm.ws.http.headers" ibm:type="pid"
-            type="String" ibm:beta="true" required="false" default="defaultHeaders"/>    
+            type="String" ibm:beta="true" required="false" default="defaultHeaders"/>
 
          <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
          httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
@@ -314,6 +314,30 @@
     
     <Designate factoryPid="com.ibm.ws.http.headers">
         <Object ocdref="com.ibm.ws.http.headers"/>
+    </Designate>
+    
+    <OCD name="%http.headers" description="%http.headers.desc"
+    	id="com.ibm.ws.http.headers" ibm:alias="headers" ibm:beta="true">
+    	
+    	<AD name="%http.headers.add" description="%http.headers.add.desc"
+    		id="add" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+    	
+    	<AD name="%http.headers.set" description="%http.headers.set.desc"
+    		id="set" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+    	
+    	<AD name="%http.headers.setIfMissing" description="%http.headers.setIfMissing.desc"
+    		id="setIfMissing" required="false" type="String" cardinality="5000" ibm:beta="true"/>	
+    				
+    	<AD name="%http.headers.remove" description="%http.headers.remove.desc"
+    		id="remove" required="false" type="String" cardinality="5000" ibm:beta="true"/>
+    	
+    	<AD name="internal" description="internal use only"
+    		id="service.ranking" required="false" type="Integer" default="0"/>
+    	
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.http.headers">
+    	<Object ocdref="com.ibm.ws.http.headers"/>
     </Designate>
             
     <OCD name="%http.dispatcher" description="%http.dispatcher.desc"

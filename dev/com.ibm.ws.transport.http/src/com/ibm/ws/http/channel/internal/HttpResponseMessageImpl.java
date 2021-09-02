@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.ibm.websphere.ras.Tr;
@@ -321,7 +322,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
             H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
             if (!isValidPseudoHeader(header)) {
-                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString()); 
+                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString());
                 pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
                 throw pe;
             }
@@ -709,6 +710,36 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         // @PK20531 - add Cache-Control header if config says to
         if (getServiceContext().getHttpConfig().shouldCookiesConfigureNoCache()) {
             updateCacheControl();
+        }
+
+        if (getServiceContext().getHttpConfig().useHeadersConfiguration()) {
+            //Add all headers configured through the ADD configuration option
+            for (List<Map.Entry<String, String>> headers : getServiceContext().getHttpConfig().getConfiguredHeadersToAdd().values()) {
+                for (Entry<String, String> header : headers) {
+                    this.appendHeader(header.getKey(), header.getValue());
+                }
+            }
+
+            //Set all headers configured through the SET configuration option
+            for (Entry<String, String> header : getServiceContext().getHttpConfig().getConfiguredHeadersToSet().values()) {
+                this.setHeader(header.getKey(), header.getValue());
+            }
+
+            //Set all headers configured through the SET_IF_MISSING configuration option
+            for (Entry<String, String> header : getServiceContext().getHttpConfig().getConfiguredHeadersToSetIfMissing().values()) {
+                //Only set if not present
+                if (!this.containsHeader(header.getKey())) {
+                    this.setHeader(header.getKey(), header.getValue());
+                }
+            }
+
+            //Remove all headers configured through the REMOVE configuration option
+            for (String headerName : getServiceContext().getHttpConfig().getConfiguredHeadersToRemove().values()) {
+                if (this.containsHeader(headerName)) {
+                    this.removeHeader(headerName);
+                }
+            }
+
         }
 
         if (bTrace && tc.isEntryEnabled()) {

@@ -26,6 +26,7 @@ import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
+import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
@@ -87,7 +88,9 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSendRedirectRelativeURLDefault.class,
                 WC5GetContextPath.class,
                 WCSCIHandlesTypesTest.class,
+                WCResponseHeadersTest.class,
                 WCServerMiscTest.class
+
 })
 
 public class FATSuite {
