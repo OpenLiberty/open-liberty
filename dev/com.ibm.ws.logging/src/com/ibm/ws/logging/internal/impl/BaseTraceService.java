@@ -34,6 +34,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.logging.WsLevel;
@@ -227,6 +231,8 @@ public class BaseTraceService implements TrService {
     protected volatile BufferManagerImpl traceConduit;
     protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
     protected volatile Timer earlyMessageTraceKiller_Timer = new Timer();
+    
+    private volatile Timer timedLogRollover_Timer = new Timer();
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
@@ -235,6 +241,23 @@ public class BaseTraceService implements TrService {
     private volatile boolean restore = false;
 
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
+    private static final String ROLLOVER_START_TIME_FORMAT = "([0-1][0-9]|2[0-3]):[0-5][0-9]";
+    private boolean isLogRolloverScheduled = false;
+
+    private static Boolean isBetaEdition;
+
+    public Boolean betaFenceCheck() {
+        TraceComponent tc = Tr.register(BaseTraceService.class);
+        if (isBetaEdition == null) {
+            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                isBetaEdition = true;
+            } else {
+                Tr.warning(tc, "The 'rolloverInterval' and 'rolloverStartTime' logging format options are in beta and are not available in this version of OpenLiberty.");
+                isBetaEdition = false;
+            }
+        }
+        return isBetaEdition;
+    }
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -361,6 +384,9 @@ public class BaseTraceService implements TrService {
             String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
             Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
         }
+
+        if (betaFenceCheck())
+            scheduleTimeBasedLogRollover(trConfig);
 
         /*
          * Need to know the values of wlpServerName and wlpUserDir
@@ -1289,13 +1315,104 @@ public class BaseTraceService implements TrService {
                 ((FileLogHolder) traceLog).releaseFile();
             }
         }
+    }
 
+    /**
+     * Schedule time based log rollover
+     */
+    private void scheduleTimeBasedLogRollover(LogProviderConfigImpl config) {
+        String rolloverStartTime = config.getRolloverStartTime();
+        long rolloverInterval = config.getRolloverInterval();
+        TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+
+        //if the rollover has already been scheduled, cancel it
+        //this is either a reschedule, or a unschedule
+        if (this.isLogRolloverScheduled) {
+            timedLogRollover_Timer.cancel();
+            timedLogRollover_Timer.purge();
+            this.isLogRolloverScheduled = false;
+        }
+
+        //if both rolloverStartTime and rolloverInterval are empty, return
+        if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
+            return;
+        }
+
+        //check and set time based log rollover values/defaults
+        //if rolloverInterval is less than 1 minute -- value returned from server.xml will round down to 0
+        if (rolloverInterval == 0) { 
+            Tr.warning(tc, "LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING");
+            rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
+        }
+        if (!rolloverStartTime.isEmpty()) {
+            //check ISO date format matches HH:MM
+            if (!Pattern.matches(ROLLOVER_START_TIME_FORMAT, rolloverStartTime)) {
+                Tr.warning(tc, "LOG_ROLLOVER_START_TIME_FORMAT_WARNING");
+                rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT;
+            } 
+            //set default of interval to 1d if startTime exists but interval does not
+            if (rolloverInterval < 0)
+                rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
+        }
+        else {
+            //set default of non-existing startTime if interval exists
+            rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT; 
+        }
+
+        //tc = Tr.register(BaseTraceService.class, null, "com.ibm.ws.logging.internal.resources.LoggingMessages");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Scheduling time based log rollover...");
+            Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
+            Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
+        }
+
+        //parse startTimeField
+        String[] hourMinPair = rolloverStartTime.split(":");
+        int startHour = Integer.parseInt(hourMinPair[0]);
+        int startMin = Integer.parseInt(hourMinPair[1]);
+
+        //set calendar start time
+        Calendar sched = Calendar.getInstance();
+        sched.set(Calendar.HOUR_OF_DAY, startHour);
+        sched.set(Calendar.MINUTE, startMin);
+        sched.set(Calendar.SECOND, 0);
+        sched.set(Calendar.MILLISECOND, 0);
+        Calendar currCal = Calendar.getInstance();
+
+        //calculate next rollover after server update
+        //if currTime before startTime, firstRollover = startTime - n(interval)
+        if (currCal.before(sched)) { 
+            while (currCal.before(sched)) {
+                sched.add(Calendar.MINUTE, (int)rolloverInterval*(-1));
+            }
+            sched.add(Calendar.MINUTE, (int)rolloverInterval); //add back interval due to time overlap
+        }
+        //if currTime after startTime, firstRollover = startTime + n(interval)
+        else if (currCal.after(sched)) { 
+            while (currCal.after(sched)) {
+                sched.add(Calendar.MINUTE, (int)rolloverInterval);
+            }
+        }
+        //if currTime == startTime, set first rollover to next rolloverInterval
+        else if (currCal.equals(sched)) { 
+            sched.add(Calendar.MINUTE, (int)rolloverInterval);
+        }
+
+        Date firstRollover = sched.getTime();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Scheduling next log rollover after server update at "+sched.getTime()+"...");
+        }
+        //schedule rollover
+        timedLogRollover_Timer = new Timer();
+        TimedLogRoller tlr = new TimedLogRoller(messagesLog, traceLog);
+        timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval*60000);
+        this.isLogRolloverScheduled = true;
     }
 
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
-        if (!trace && LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
+        if (!trace && LoggingConstants.JSON_FORMAT.equals(messageFormat.toLowerCase())) {
             isJSON = true;
             String jsonHeader = constructJSONHeader(messageFormat, config);
             return new FileLogHeader(jsonHeader, trace, javaLangInstrument, isJSON);
@@ -1957,6 +2074,27 @@ public class BaseTraceService implements TrService {
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
+            }
+        }
+    }
+
+    /**
+     * LogRoller task to be run/scheduled in timed log rollover.
+     */
+    private class TimedLogRoller extends TimerTask {
+        private FileLogHolder flhMessages;
+        private FileLogHolder flhTrace;
+
+        TimedLogRoller(TraceWriter messages, TraceWriter trace) {
+            flhMessages = (FileLogHolder) messages;
+            flhTrace = (FileLogHolder) trace;
+        }
+
+        @Override
+        public void run() {
+            flhMessages.createStream(true);
+            if (TraceComponent.isAnyTracingEnabled()) {
+                flhTrace.createStream(true);
             }
         }
     }

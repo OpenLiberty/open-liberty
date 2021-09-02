@@ -84,7 +84,7 @@ public class FileLogHolder implements TraceWriter {
      * The header written at the beginning of all log files, or null to write
      * nothing.
      */
-    private final FileLogHeader logHeader;
+    private FileLogHeader logHeader;
 
     protected final FileLogSet fileLogSet = new FileLogSet(true);
 
@@ -388,7 +388,7 @@ public class FileLogHolder implements TraceWriter {
     /**
      * @return a new print stream
      */
-    private synchronized PrintStream createStream(boolean showError) {
+    public synchronized PrintStream createStream(boolean showError) {
 
         setStreamFromFile(null, true, 0, showError);
 

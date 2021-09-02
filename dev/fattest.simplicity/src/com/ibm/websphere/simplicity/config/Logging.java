@@ -33,6 +33,8 @@ public class Logging extends ConfigElement {
     private String jsonFields;
     private String consoleFormat;
     private String jsonAccessLogFields;
+    private String rolloverStartTime;
+    private String rolloverInterval;
 
     /**
      * @return the configured log directory
@@ -232,6 +234,40 @@ public class Logging extends ConfigElement {
      */
     public String getJsonAccessLogFields() {
         return this.jsonAccessLogFields;
+    }
+
+    /**
+     * default="default"; options="logFormat"
+     *
+     * @param rolloverStartTime the value of rolloverStartTime configuration to set
+     */
+    @XmlAttribute(name = "rolloverStartTime")
+    public void setRolloverStartTime(String rolloverStartTime) {
+        this.rolloverStartTime = ConfigElement.getValue(rolloverStartTime);
+    }
+
+    /**
+     * @return the value of the rolloverStartTime configuration attribute
+     */
+    public String getRolloverStartTime() {
+        return this.rolloverStartTime;
+    }
+
+        /**
+     * default="default"; options="logFormat"
+     *
+     * @param rolloverInterval the value of rolloverInterval configuration to set
+     */
+    @XmlAttribute(name = "rolloverInterval")
+    public void setRolloverInterval(String rolloverInterval) {
+        this.rolloverInterval = ConfigElement.getValue(rolloverInterval);
+    }
+
+    /**
+     * @return the value of the rolloverInterval configuration attribute
+     */
+    public String getRolloverInterval() {
+        return this.rolloverInterval;
     }
 
     @Override
