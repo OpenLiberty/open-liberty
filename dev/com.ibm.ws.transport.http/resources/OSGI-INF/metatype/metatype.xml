@@ -293,30 +293,6 @@
     </Designate>
     
     <OCD name="%http.headers" description="%http.headers.desc"
-        id="com.ibm.ws.http.headers" ibm:alias="headers" ibm:beta="true">
-        
-        <AD name="%http.headers.add" description="%http.headers.add.desc"
-            id="add" required="false" type="String" cardinality="5000" ibm:beta="true"/>
-        
-        <AD name="%http.headers.set" description="%http.headers.set.desc"
-            id="set" required="false" type="String" cardinality="5000" ibm:beta="true"/>
-        
-        <AD name="%http.headers.setIfMissing" description="%http.headers.setIfMissing.desc"
-            id="setIfMissing" required="false" type="String" cardinality="5000" ibm:beta="true"/>   
-                    
-        <AD name="%http.headers.remove" description="%http.headers.remove.desc"
-            id="remove" required="false" type="String" cardinality="5000" ibm:beta="true"/>
-        
-        <AD name="internal" description="internal use only"
-            id="service.ranking" required="false" type="Integer" default="0"/>
-        
-    </OCD>
-    
-    <Designate factoryPid="com.ibm.ws.http.headers">
-        <Object ocdref="com.ibm.ws.http.headers"/>
-    </Designate>
-    
-    <OCD name="%http.headers" description="%http.headers.desc"
     	id="com.ibm.ws.http.headers" ibm:alias="headers" ibm:beta="true">
     	
     	<AD name="%http.headers.add" description="%http.headers.add.desc"
