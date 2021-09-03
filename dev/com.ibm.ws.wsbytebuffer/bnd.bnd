@@ -26,7 +26,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package: com.ibm.wsspi.bytebuffer;version="1.0";provide:=true, \
 	com.ibm.ws.bytebuffer.internal;version="1.0";provide:=true, \
-	com.ibm.ws.bytebuffer.internal.resources;version="1.0";provide:=true, \
+	com.ibm.ws.bytebuffer.internal.resources;version="1.0";provide:=true
 
 Include-Resource: \
 	OSGI-INF=resources/OSGI-INF
