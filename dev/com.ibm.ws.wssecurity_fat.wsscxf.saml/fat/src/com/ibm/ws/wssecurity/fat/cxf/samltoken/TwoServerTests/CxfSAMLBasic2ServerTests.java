@@ -16,13 +16,11 @@ import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
@@ -30,10 +28,7 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CxfSAMLBasicTests;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.

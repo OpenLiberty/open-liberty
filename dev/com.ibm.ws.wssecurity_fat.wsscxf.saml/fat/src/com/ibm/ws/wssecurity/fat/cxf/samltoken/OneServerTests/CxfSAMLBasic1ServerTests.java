@@ -11,12 +11,11 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.OneServerTests;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +40,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -68,7 +66,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     private static final Class<?> thisClass = CxfSAMLBasicTests.class;
     protected static String audienceRestrictError = "";
     protected static String wantAssertionsSignedError = "";
-
+    
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
@@ -101,8 +99,17 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
 
+        //issue 18363
+        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
+		if (features.contains("jaxws-2.2")) {
+            setFeatureVersion("EE7");
+        }
+        if (features.contains("jaxws-2.3")) {
+            setFeatureVersion("EE8");
+        } // End of 18363
+		
     }
-
+    
     /**
      * TestDescription:
      *
@@ -118,35 +125,19 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
 
-    @SkipForRepeat({ EE8_FEATURES })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @Test
-    public void CxfSAMLBasicTests_clockSkew_testEE7Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_clockskew.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        String expectedResponse = "Some error message";
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-        updatedTestSettings.setSleepBeforeTokenUse(40);
-        updatedTestSettings.setSamlTokenUpdateTimeVars(SAMLConstants.SAML_ISSUE_INSTANT, SAMLConstants.ADD_TIME, SAMLTestSettings.setTimeArray(0, 0, 5, 0), SAMLConstants.DO_NOT_USE_CURRENT_TIME);
-        updatedTestSettings.setRemoveTagInResponse("ds:Signature"); // the whole ds:Signature element
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the clocks were out of sync.", SAMLMessageConstants.CWWKW0217E_CLOCK_SKEW_ERROR);
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-    }
-
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    public void CxfSAMLBasicTests_clockSkew_testEE8Only() throws Exception {
+    public void CxfSAMLBasicTests_clockSkew_test() throws Exception {
 
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_clockskew_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	//issue 18363
+		if ("EE7".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_clockskew.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+		}
+        if ("EE8".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_clockskew_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+		} //End of 18363
+        
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         String expectedResponse = "Some error message";
@@ -158,13 +149,21 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999 TODO select the message depending on the runtime
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the clocks were out of sync.", SAMLMessageConstants.CWWKW0217E_CLOCK_SKEW_ERROR);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        }
+        if ("EE8".equals(getFeatureVersion())) {
+            String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999 TODO select the message depending on the runtime
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the clocks were out of sync.", SAMLMessageConstants.CWWKW0217E_CLOCK_SKEW_ERROR);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        } // End of 18363
         
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the clocks were out of sync.", SAMLMessageConstants.CWWKW0217E_CLOCK_SKEW_ERROR);
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
-    
+   
     /**
      * TestDescription:
      *
@@ -179,38 +178,19 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    @SkipForRepeat({ EE8_FEATURES })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @Test
-    public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignatureEE7Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_samlWantAssertionsSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        String expectedResponse = "Some error message";
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-        updatedTestSettings.setRemoveTagInResponse("ds:Signature"); // the whole ds:Signature element
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        // The server is NOT logging an error message indicating the real cause of the failure - defect 251665 has been opened to add a message
-        // for now, we can look for a debug message that is logged in the trace... (btw, the error in the commented out expectation is just a best guess at what message will actually be logged)
-        //        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
-        
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-    }
-
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignatureEE8Only() throws Exception {
+    public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignature() throws Exception {
 
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_samlWantAssertionsSigned_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	//issue 18363
+    	if ("EE7".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_samlWantAssertionsSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        }
+        if ("EE8".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_samlWantAssertionsSigned_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        } //End of 18363
+        
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         String expectedResponse = "Some error message";
@@ -220,18 +200,25 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
         // The server is NOT logging an error message indicating the real cause of the failure - defect 251665 has been opened to add a message
         // for now, we can look for a debug message that is logged in the trace... (btw, the error in the commented out expectation is just a best guess at what message will actually be logged)
         //        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
         
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        }
+        if ("EE8".equals(getFeatureVersion())) {
+        	String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        } // End of 18363
+        
     }
-    
+
     // 	public void CxfSAMLBasicTests_wantAssertionsSignedFalse_missingSignature() - tested with CxfSAMLBasicTests_clockSkew_test
     //		had to set wantAssertionsSigned to false in order to manipulate the time in the SAML Token
 
@@ -246,27 +233,18 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    @SkipForRepeat({ EE8_FEATURES })
     @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_multiple_validEE7Only() throws Exception {
-        
-    	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_valid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
-    }
-    
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_multiple_validEE8Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_valid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    public void CxfSAMLBasicTests_audienceRestrictions_multiple_valid() throws Exception {
+        
+    	//issue 18363
+    	if ("EE7".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_valid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        }
+    	if ("EE8".equals(getFeatureVersion())) {
+        	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_valid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        } //End of 18363
+        
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -276,69 +254,54 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
-
-    @SkipForRepeat({ EE8_FEATURES })
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalidEE7Only() throws Exception {
-        
-    	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_invalid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-    }
+ 
     
-    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalidEE8Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_invalid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+    public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalid() throws Exception {
+        
+    	//issue 18363
+    	if ("EE7".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_invalid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	}	
+    	if ("EE8".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_multiple_invalid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	}// End of 18363	
+    	
+    	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);     
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        }
+        if ("EE8".equals(getFeatureVersion())) {
+        	String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);         
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        } //End of 18363
     }
 
-    @SkipForRepeat({ EE8_FEATURES })
-    @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_single_validEE7Only() throws Exception {
-        
-    	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_valid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
-    }
-    
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_single_validEE8Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_valid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    public void CxfSAMLBasicTests_audienceRestrictions_single_valid() throws Exception {
+        
+    	//issue 18363
+    	if ("EE7".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_valid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	}
+    	if ("EE8".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_valid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} // End of 18363
+    	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -348,48 +311,42 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
-    
+     
 
-    @SkipForRepeat({ EE8_FEATURES })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_single_invalidEE7Only() throws Exception {
-    
-    	testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_invalid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", true);
-
-        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-    }
-    
-    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    public void CxfSAMLBasicTests_audienceRestrictions_single_invalidEE8Only() throws Exception {
-
-        testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_invalid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+    public void CxfSAMLBasicTests_audienceRestrictions_single_invalid() throws Exception {
+    
+	    //issue 18363
+    	if ("EE7".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_invalid.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	}	
+    	if ("EE8".equals(getFeatureVersion())) {
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_audienceRestrictions_single_invalid_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} //End of 18363
+    	
+    	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-        
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        }
+        if ("EE8".equals(getFeatureVersion())) {
+        	String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
+            List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);        
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
+            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+        } //End of 18363
+		
     }
-    
+
 
 }
