@@ -58,12 +58,12 @@ public class CxfX509ASyncTests extends CommonTests {
         //6/2021 need to update CommonTest.java to get req parameter of CBHVersion; comment out for now
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             CBHVersion = "EE7";
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -100,7 +100,6 @@ public class CxfX509ASyncTests extends CommonTests {
     @Test
     //skip EE7 test
     //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 
         Log.info(thisClass, "setup", "CBHVersion in test method: " + CBHVersion);
@@ -143,7 +142,6 @@ public class CxfX509ASyncTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeBlocking() throws Exception {
 
         genericAsyncTest(
@@ -185,7 +183,6 @@ public class CxfX509ASyncTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeWithHandler() throws Exception {
 
         genericAsyncTest(

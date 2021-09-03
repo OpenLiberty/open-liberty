@@ -57,13 +57,13 @@ public class CxfSha2SigTests extends CommonTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             //issue 18363
             featureVersion = "EE7";
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -92,7 +92,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2SignSoapBody() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
@@ -142,7 +141,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2DigestAlgorithm() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -191,7 +189,6 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SigAlgorithm() throws Exception {
 
         String thisMethod = "testTwasSha384SigAlgorithm";
@@ -248,7 +245,6 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SigAlgorithm() throws Exception {
 
         String thisMethod = "testTwasSha512SigAlgorithm";
@@ -309,7 +305,7 @@ public class CxfSha2SigTests extends CommonTests {
 
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
@@ -393,7 +389,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha256SigAlg2048Keylen() throws Exception {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
@@ -452,7 +447,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SymBinding() throws Exception {
 
         String thisMethod = "testCxfSha384SymBinding";
@@ -511,7 +505,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SymBinding() throws Exception {
         String thisMethod = "testCxfSha512SymBinding";
         //issue 18363
