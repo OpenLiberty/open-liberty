@@ -32,13 +32,11 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -73,12 +71,12 @@ public class CxfBspTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp_wss4j.xml");
@@ -136,7 +134,6 @@ public class CxfBspTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho11Service() throws Exception {
         String thisMethod = "testEcho11Service";
@@ -167,7 +164,6 @@ public class CxfBspTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho12Service() throws Exception {
         String thisMethod = "testEcho12Service";
@@ -198,7 +194,6 @@ public class CxfBspTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho13Service() throws Exception {
         String thisMethod = "testEcho13Service";
@@ -229,7 +224,6 @@ public class CxfBspTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho14Service() throws Exception {
         String thisMethod = "testEcho14Service";

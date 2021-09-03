@@ -151,7 +151,6 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientSpecifyUserSSL() throws Exception {
 
@@ -185,7 +184,6 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientDefaultUserSSL() throws Exception {
 
@@ -203,7 +201,6 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientNoIdValidPwSSL() throws Exception {
 
@@ -325,7 +322,6 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientCreatedSSL() throws Exception {
 
@@ -342,7 +338,6 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientNonceCreatedSSL() throws Exception {
 
@@ -361,7 +356,6 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientNonceSSL() throws Exception {
 
@@ -427,9 +421,7 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    //issue 18363
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientaltCallbackSSL() throws Exception {
 
         //issue 18363
@@ -470,7 +462,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     @Test
     @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientaltCallbackBadUserSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback2", "UsrTokenPWDigestWebSvcSSL",
@@ -543,7 +535,6 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientClCallbackInServerXmlSSL() throws Exception {
 
         //issue 18363

@@ -36,7 +36,6 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -74,12 +73,12 @@ public class CxfSymSampleTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if ((features.contains("jaxws-2.3")) || (features.contains("xmlWS-3.0"))) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
@@ -150,7 +149,6 @@ public class CxfSymSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho1Service() throws Exception {
         String thisMethod = "testEcho1Service";
@@ -175,7 +173,6 @@ public class CxfSymSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho2Service() throws Exception {
         String thisMethod = "testEcho2Service";
@@ -200,7 +197,6 @@ public class CxfSymSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho3Service() throws Exception {
         String thisMethod = "testEcho3Service";
@@ -225,7 +221,6 @@ public class CxfSymSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho5Service() throws Exception {
         String thisMethod = "testEcho5Service";
@@ -250,7 +245,6 @@ public class CxfSymSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho6Service() throws Exception {
         String thisMethod = "testEcho6Service";

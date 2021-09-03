@@ -63,7 +63,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
 
         genericTest(
@@ -104,7 +104,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -146,7 +146,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
@@ -192,7 +191,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUsernameTokenAsEndorsingAndX509Symmetric() throws Exception {
 
         //issue 18363
@@ -251,7 +249,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFX509SymmetricAndEndorsing() throws Exception {
 
         //issue 18363
@@ -317,7 +314,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFX509SymmetricForMessageAndUntForClient() throws Exception {
 
         //issue 18363

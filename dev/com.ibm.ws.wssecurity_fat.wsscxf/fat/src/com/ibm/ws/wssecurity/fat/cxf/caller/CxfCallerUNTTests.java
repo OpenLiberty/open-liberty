@@ -33,11 +33,9 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -80,12 +78,12 @@ public class CxfCallerUNTTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             errMsgVersion = "EE7";
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if ((features.contains("jaxws-2.3")) || (features.contains("xmlWS-3.0"))) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -131,7 +129,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
 
@@ -163,7 +160,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
 
