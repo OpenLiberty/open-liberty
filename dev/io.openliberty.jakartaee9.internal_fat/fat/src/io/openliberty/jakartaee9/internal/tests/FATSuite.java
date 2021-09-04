@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JakartaEE9Test.class
+                JakartaEE9Test.class,
+                EE9FeatureCompatibilityTest.class
 })
 public class FATSuite {
 }

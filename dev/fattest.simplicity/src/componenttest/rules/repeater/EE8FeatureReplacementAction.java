@@ -21,6 +21,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     static final String[] EE8_FEATURES_ARRAY = { "appClientSupport-1.0",
                                                  "javaee-8.0",
+                                                 "jakartaee-8.0",
                                                  "webProfile-8.0",
                                                  "javaeeClient-8.0",
                                                  "servlet-4.0",
@@ -61,7 +62,10 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "wasJmsClient-2.0",
                                                  "wasJmsServer-1.0",
                                                  "wasJmsSecurity-1.0",
-                                                 "jaxws-2.2" };
+                                                 "jaxws-2.2",
+                                                 "j2eeManagement-1.1",
+                                                 "jaspic-1.1",
+                                                 "jacc-1.5" };
 
     public static final Set<String> EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
 

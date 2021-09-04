@@ -574,7 +574,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * @return                     The replacement feature name. Null if no replacement is available.
      */
-    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
+    public static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
         String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
         int dashOffset = originalFeature.indexOf('-');
