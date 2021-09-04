@@ -65,8 +65,7 @@ public class CxfX509SigTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             //issue 18363
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -120,7 +119,7 @@ public class CxfX509SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "X509XmlSigNoClientSigUpdated.wsdl");
         Log.info(thisClass, "testCxfBodyNotSigned", "Using " + newClientWsdl);
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             genericTest(
                         // test name for logging
                         "testCxfBodyNotSigned",
@@ -145,10 +144,8 @@ public class CxfX509SigTests extends CommonTests {
                         "Body not SIGNED",
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
-        } // End of issue 18363
 
-        //issue 18363
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             genericTest(
                         // test name for logging
                         "testCxfBodyNotSigned",
@@ -310,7 +307,7 @@ public class CxfX509SigTests extends CommonTests {
 
         // use server config with expired cert
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert.xml");
             genericTest(
                         // test name for logging
@@ -337,10 +334,8 @@ public class CxfX509SigTests extends CommonTests {
                         "The test expected a succesful message from the server.");
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        } //End of issue 18363
 
-        //issue 18363
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
             genericTest(
                         // test name for logging
@@ -378,7 +373,7 @@ public class CxfX509SigTests extends CommonTests {
 
         // use server config with bad client pw
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd.xml");
             genericTest(
                         // test name for logging
@@ -406,9 +401,7 @@ public class CxfX509SigTests extends CommonTests {
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
-        } //End of issue 18363
-
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
             genericTest(
                         // test name for logging
@@ -446,7 +439,7 @@ public class CxfX509SigTests extends CommonTests {
 
         // use server config with bad server pw
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd.xml");
             genericTest(
                         // test name for logging
@@ -473,9 +466,8 @@ public class CxfX509SigTests extends CommonTests {
                         "The test expected a succesful message from the server.");
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
 
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
             genericTest(
                         // test name for logging

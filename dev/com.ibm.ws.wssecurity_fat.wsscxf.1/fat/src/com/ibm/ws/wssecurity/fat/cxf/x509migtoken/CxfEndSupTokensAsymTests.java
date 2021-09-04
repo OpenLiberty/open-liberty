@@ -67,12 +67,11 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_asym_wss4j.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
-            //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
         }
 
     }

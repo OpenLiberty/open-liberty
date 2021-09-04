@@ -73,8 +73,7 @@ public class CxfX509EncTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             //issue 18363
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -409,7 +408,7 @@ public class CxfX509EncTests extends CommonTests {
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             genericTest(
                         // test name for logging
                         thisMethod,
@@ -433,10 +432,8 @@ public class CxfX509EncTests extends CommonTests {
                         "AsymmetricBinding: The Key transport method does not match the requirement",
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
-        } //End of issue 18363
 
-        //issue 18363
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             genericTest(
                         // test name for logging
                         thisMethod,
@@ -486,8 +483,9 @@ public class CxfX509EncTests extends CommonTests {
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
+
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             genericTest(
                         // test name for logging
                         "testCXFClientWrongDataEncAlgorithm",
@@ -511,10 +509,8 @@ public class CxfX509EncTests extends CommonTests {
                         "AsymmetricBinding: The encryption algorithm does not match the requirement",
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
-        } //End of issue 18363
 
-        //issue 18363
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             genericTest(
                         // test name for logging
                         "testCXFClientWrongDataEncAlgorithm",
@@ -562,7 +558,7 @@ public class CxfX509EncTests extends CommonTests {
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
             genericTest(
                         // test name for logging
@@ -590,9 +586,7 @@ public class CxfX509EncTests extends CommonTests {
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
-        } //End of issue 18363
-
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc_wss4j.xml");
             genericTest(
                         // test name for logging
@@ -641,10 +635,9 @@ public class CxfX509EncTests extends CommonTests {
     public void testCXFClientEncryptionBeforeSign() throws Exception {
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 

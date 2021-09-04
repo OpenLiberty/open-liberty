@@ -62,8 +62,7 @@ public class CxfSha2SigTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             //issue 18363
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -96,10 +95,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testCxfSha2SignSoapBody";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -145,10 +143,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -193,10 +190,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testTwasSha384SigAlgorithm";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
         } //End of issue 18363
 
@@ -226,10 +222,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "The test expected a succesful message from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -249,10 +244,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testTwasSha512SigAlgorithm";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
         } //End of issue 18363
 
@@ -282,10 +276,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "The test expected a succesful message from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -310,7 +303,7 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2.xml");
             genericTest(
                         // test name for logging
@@ -340,10 +333,7 @@ public class CxfSha2SigTests extends CommonTests {
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
-        } //End of issue 18363
-
-        //issue 18363
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2_wss4j.xml");
             genericTest(
                         // test name for logging
@@ -393,10 +383,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048_wss4j.xml");
         } //End of issue 18363
 
@@ -426,10 +415,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "The test did not receive the expected exception from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -451,10 +439,9 @@ public class CxfSha2SigTests extends CommonTests {
 
         String thisMethod = "testCxfSha384SymBinding";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym_wss4j.xml");
         } //End of issue 18363
 
@@ -484,10 +471,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "The test did not receive the expected exception from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 
@@ -508,10 +494,9 @@ public class CxfSha2SigTests extends CommonTests {
     public void testCxfSha512SymBinding() throws Exception {
         String thisMethod = "testCxfSha512SymBinding";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym_wss4j.xml");
         } //End of issue 18363
 
@@ -541,10 +526,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "The test did not receive the expected exception from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         } //End of issue 18363
 

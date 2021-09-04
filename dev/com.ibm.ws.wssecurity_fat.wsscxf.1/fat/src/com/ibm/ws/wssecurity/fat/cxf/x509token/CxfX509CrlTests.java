@@ -64,8 +64,7 @@ public class CxfX509CrlTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             //issue 18363
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -105,10 +104,9 @@ public class CxfX509CrlTests extends CommonTests {
 
         String thisMethod = "testCXFClientCRLPNotInList";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp_wss4j.xml");
         } //End of issue 18363
 
@@ -138,10 +136,9 @@ public class CxfX509CrlTests extends CommonTests {
                     "The test expected a succesful message from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 
@@ -166,10 +163,9 @@ public class CxfX509CrlTests extends CommonTests {
 
         String thisMethod = "testCXFClientCRLNInList";
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn_wss4j.xml");
         } //End of issue 18363
 
@@ -201,12 +197,11 @@ public class CxfX509CrlTests extends CommonTests {
                     "The test expected a succesful message from the server.");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        } //End of issue 18363
+        } //End of 18363
 
     }
 

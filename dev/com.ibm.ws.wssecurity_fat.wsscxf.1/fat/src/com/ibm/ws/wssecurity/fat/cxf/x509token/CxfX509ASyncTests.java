@@ -28,13 +28,11 @@ import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -62,8 +60,7 @@ public class CxfX509ASyncTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             CBHVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -79,8 +76,6 @@ public class CxfX509ASyncTests extends CommonTests {
         clientHttpUrl = "http://localhost:" + portNumber +
                         "/x509aSyncclient/CxfX509AsyncSvcClient";
 
-        Log.info(thisClass, "setup", "CBHVersion in setup: " + CBHVersion);
-
     }
 
     // All tests are using the same server side methods - they just invoke the calls
@@ -95,11 +90,7 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
-    //2/2021 this test failed with EE8, see https://github.com/OpenLiberty/open-liberty/issues/16071
-    //6/20201 disable the test
     @Test
-    //skip EE7 test
-    //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 
         Log.info(thisClass, "setup", "CBHVersion in test method: " + CBHVersion);

@@ -68,8 +68,7 @@ public class CxfX509StrTypeTests extends CommonTests {
             commonSetUp(serverName, "server_enc.xml", false, "/x509sigclient/CxfX509SigSvcClient");
             //issue 18361
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_enc_wss4j.xml", false, "/x509sigclient/CxfX509SigSvcClient");
@@ -164,13 +163,12 @@ public class CxfX509StrTypeTests extends CommonTests {
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientKeysMismatch() throws Exception {
 
-        //issue 18361 - adding the conditional flag instead of originally split test methods
-        if (featureVersion == "EE7") {
+        //issue 18361, 18363
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc_wss4j.xml");
-        } //End of issue 18361
+        } //End of issue 18361, 18363
 
         genericTest(
                     // test name for logging
@@ -196,13 +194,12 @@ public class CxfX509StrTypeTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        //issue 18361 - adding the conditional flag instead of originally split test methods and replacing server_enc.xml/server_enc_wss4j.xml for server_orig.xml/server_orig_wss4j.xml
-        if (featureVersion == "EE7") {
+        //issue 18361, 18363
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc_wss4j.xml");
-        } //End of issue 18361
+        } //End of issue 18361, 18363
 
     }
 
