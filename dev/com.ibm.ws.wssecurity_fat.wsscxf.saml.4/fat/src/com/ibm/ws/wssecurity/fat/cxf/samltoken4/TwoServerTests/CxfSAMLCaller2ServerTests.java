@@ -353,17 +353,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	} //End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
-
-    }
- */   
     /*
      * config settings:
      * mapToUserRegistry = No
@@ -390,17 +380,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
-
-    }
- */   
+  
     /******* mapToUserRegistry = User *******/
     /********** identifiers are Good **********/
     /*
@@ -430,16 +410,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGoodEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
-
-    }
-*/    
+  
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -467,17 +438,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	} //End of 18363
     	
     }
-/*    
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGoodEE8Only() throws Exception {
 
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood_ee8.xml");
-    	
-    }
-*/
     /********** identifiers are Omitted **********/
     /*
      * config settings:
@@ -506,16 +467,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmittedEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted_ee8.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
-
-    }
- */   
+  
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -543,17 +495,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmittedEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted_ee8.xml");
-    	
-    }
-*/    
+   
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -581,16 +523,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}// End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmittedEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
-*/
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -618,17 +551,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmittedEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted_ee8.xml");
-    	
-    }
-*/
+ 
     
     /*
      * config settings:
@@ -657,16 +580,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmittedEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
- */   
+  
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -694,17 +608,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*  
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmittedEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted_ee8.xml");
-
-    }
-*/
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -732,16 +636,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmittedEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
-
-    }
-*/
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -769,17 +664,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmittedEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted_ee8.xml");
-    	
-    }
-*/
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -807,16 +692,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
-*/
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -844,17 +720,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
- /*   
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted_ee8.xml");
-
-    }
-*/
+ 
     /********** identifiers are Bad **********/
     /*
      * config settings:
@@ -883,16 +749,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-
- /*   @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBadEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
-  */  
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -920,17 +777,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBadEE8Only() throws Exception {
 
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad_ee8.xml");
-    	
-    }
-*/    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -959,15 +806,6 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	
     }
     
- /*   @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBadEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
-
-    }
-*/
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -995,17 +833,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBadEE8Only() throws Exception {
-
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad_ee8.xml");
-
-    }
- */   
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1032,17 +860,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*    
-    @SkipForRepeat({ NO_MODIFICATION })
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBadEE8Only() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-
-    }
-*/
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1069,17 +887,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBadEE8Only() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-
-    }
- */   
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1107,16 +915,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End f 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
-
-    }
- */   
+ 
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1144,15 +943,5 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	}//End of 18363
     	
     }
-/*
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
 
-        notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad_ee8.xml");
-
-    }
- */   
 }
