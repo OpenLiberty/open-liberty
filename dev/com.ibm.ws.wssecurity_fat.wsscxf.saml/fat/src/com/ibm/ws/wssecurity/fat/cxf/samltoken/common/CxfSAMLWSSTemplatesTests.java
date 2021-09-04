@@ -127,8 +127,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection";
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
         } //End of 18363
@@ -155,9 +154,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_wsstemplate_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-        }    
-    	
-    	if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
     		if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -201,9 +198,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_wsstemplate_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-        }
-        
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -230,8 +225,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	if ("externalPolicy".equals(policyType)) { //@AV999 TODO in jaxws-2.3 , this is a successful scenario
                 genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_WSS_TEMPLATE_SERVICE_4));
             } else {
@@ -264,9 +258,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_wsstemplate_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_AsymSignEnc.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-        }  
-        
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -292,8 +284,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	if ("externalPolicy".equals(policyType)) { //@AV999 TODO in jaxws-2.3 , this is a successful scenario
                 genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_WSS_TEMPLATE_SERVICE_4));
             } else {
@@ -369,8 +360,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
         	if ("externalPolicy".equals(policyType)) { //@AV999 , jaxws-2.3 this is failing at the client side
                 String CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR = "javax.xml.ws.soap.SOAPFaultException: javax.xml.crypto.dsig.TransformException: org.apache.wss4j.common.ext.WSSecurityException: Referenced Token ";
                 genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
