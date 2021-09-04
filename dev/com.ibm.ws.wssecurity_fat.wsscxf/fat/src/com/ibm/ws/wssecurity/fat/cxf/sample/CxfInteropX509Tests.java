@@ -117,19 +117,18 @@ public class CxfInteropX509Tests {
 
         String vendorName = System.getProperty("java.vendor");
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
-        //7/2021
+
         String javaVersion = System.getProperty("java.version");
         Log.info(thisClass, thisMethod, "JDK Version is: " + javaVersion);
 
         ibmJDK = true;
-        //7/2027
         if ((vendorName.contains("IBM")) & (javaVersion.contains("1.8.0"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK 8");
         } else {
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!");
             ibmJDK = false;
-        } // End 7/2021
+        }
 
         return;
     }
@@ -138,7 +137,6 @@ public class CxfInteropX509Tests {
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -168,7 +166,6 @@ public class CxfInteropX509Tests {
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -198,7 +195,6 @@ public class CxfInteropX509Tests {
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;

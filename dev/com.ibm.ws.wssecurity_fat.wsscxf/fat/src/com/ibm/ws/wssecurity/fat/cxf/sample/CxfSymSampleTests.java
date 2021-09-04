@@ -88,7 +88,6 @@ public class CxfSymSampleTests {
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
 
-        //7/2021
         //JakartaEE9 transforms the sample client applications which exist at '<server>/apps/<appname>'.
         if (JakartaEE9Action.isActive()) {
             Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");

@@ -196,8 +196,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
         } //End of 18363
 
@@ -228,8 +227,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of 18363
 
@@ -254,8 +252,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
         } //End of 18363
 
@@ -286,8 +283,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of 18363
 
@@ -319,8 +315,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
         } //End of 18363
 
@@ -351,8 +346,7 @@ public class CxfWssTemplatesTests extends CommonTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if ("EE8".equals(getFeatureVersion())) {
+        } else if ("EE8".equals(getFeatureVersion())) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of 18363
 

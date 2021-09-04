@@ -100,8 +100,7 @@ public class CxfPasswordDigestTests extends CommonTests {
             pwdCBHVersion = "EE7";
             //issue 18363
             featureVersion = "EE7";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             pwdCBHVersion = "EE8";
             //issue 18363
             featureVersion = "EE8";
@@ -399,10 +398,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     public void testPWDigestCXFSvcClientaltCallback() throws Exception {
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
         } //End of issue 18363
 
@@ -410,10 +408,9 @@ public class CxfPasswordDigestTests extends CommonTests {
                     "This is WSSECFVT CXF Web Service (Password Digest)", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 
@@ -425,10 +422,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     public void testPWDigestCXFSvcClientaltCallbackSSL() throws Exception {
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
         } //End of issue 18363
 
@@ -437,10 +433,9 @@ public class CxfPasswordDigestTests extends CommonTests {
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 
@@ -511,10 +506,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     public void testPWDigestCXFSvcClientClCallbackInServerXml() throws Exception {
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
         } //End of issue 18363
 
@@ -523,10 +517,9 @@ public class CxfPasswordDigestTests extends CommonTests {
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 
@@ -538,10 +531,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     public void testPWDigestCXFSvcClientClCallbackInServerXmlSSL() throws Exception {
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
         } //End of issue 18363
 
@@ -550,10 +542,9 @@ public class CxfPasswordDigestTests extends CommonTests {
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
         //issue 18363
-        if (featureVersion == "EE7") {
+        if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        }
-        if (featureVersion == "EE8") {
+        } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         } //End of issue 18363
 

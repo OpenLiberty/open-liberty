@@ -75,8 +75,7 @@ public class CxfBspTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp_wss4j.xml");
@@ -117,19 +116,18 @@ public class CxfBspTests {
 
         String vendorName = System.getProperty("java.vendor");
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
-        //7/2021
+
         String javaVersion = System.getProperty("java.version");
         Log.info(thisClass, thisMethod, "JDK Version is: " + javaVersion);
 
         ibmJDK = true;
-        //7/2027
         if ((vendorName.contains("IBM")) & (javaVersion.contains("1.8.0"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK 8");
         } else {
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!");
             ibmJDK = false;
-        } // End 7/2021
+        }
 
         return;
     }
@@ -138,7 +136,6 @@ public class CxfBspTests {
     public void testEcho11Service() throws Exception {
         String thisMethod = "testEcho11Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -168,7 +165,6 @@ public class CxfBspTests {
     public void testEcho12Service() throws Exception {
         String thisMethod = "testEcho12Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -198,7 +194,6 @@ public class CxfBspTests {
     public void testEcho13Service() throws Exception {
         String thisMethod = "testEcho13Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -228,7 +223,6 @@ public class CxfBspTests {
     public void testEcho14Service() throws Exception {
         String thisMethod = "testEcho14Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
