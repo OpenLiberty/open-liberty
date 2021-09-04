@@ -114,7 +114,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     @Override
     public String toString() {
-        return "JakartaEE9 FAT repeat action";
+        return "JakartaEE9 FAT repeat action (" + getID() + ")";
     }
 
     //

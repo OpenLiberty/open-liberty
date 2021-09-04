@@ -24,7 +24,7 @@ src: \
 
 fat.project: true
 
-tested.features: mpConfig-2.0
+tested.features: mpConfig-2.0, appsecurity-3.0, el-3.0
 
 -buildpath: \
 	com.ibm.tx.core;version=latest,\

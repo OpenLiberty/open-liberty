@@ -13,8 +13,8 @@ Subsystem-Name: MicroProfile 5.0
   io.openliberty.restfulWS-3.0, \
   io.openliberty.restfulWSClient-3.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
-  io.openliberty.mpCompatible-5.0
-  #com.ibm.websphere.appserver.mpConfig-3.0, \
+  io.openliberty.mpCompatible-5.0, \
+  com.ibm.websphere.appserver.mpConfig-3.0
   #com.ibm.websphere.appserver.mpFaultTolerance-4.0, \
   #com.ibm.websphere.appserver.mpHealth-4.0
   #com.ibm.websphere.appserver.mpJwt-2.0, \

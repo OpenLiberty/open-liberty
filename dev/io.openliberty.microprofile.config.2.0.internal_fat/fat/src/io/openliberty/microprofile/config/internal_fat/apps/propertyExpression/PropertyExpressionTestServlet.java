@@ -22,7 +22,7 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @RequestScoped
-@WebServlet("/propertyExpressionTestServlet")
+@WebServlet("/")
 public class PropertyExpressionTestServlet extends FATServlet {
 
     public static final String PE_TEST_MP_CONFIG_PROPERTIES_KEY = "KeyFromMicroprofileConfigProperties";
