@@ -151,11 +151,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
 		if (features.contains("jaxws-2.2")) {
             setFeatureVersion("EE7");
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             setFeatureVersion("EE8");
-        }
-        if (features.contains("xmlWS-3.0")) {
+        } else if (features.contains("xmlWS-3.0")) {
             setFeatureVersion("EE9");
         }// End of 18363
         
@@ -360,8 +358,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
            generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
     	} //End of 18363
     }
@@ -388,8 +385,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
     	} //End of 18363
     }
@@ -416,8 +412,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	} //End of 18363
     }
@@ -444,8 +439,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	}//End of 18363
     }
@@ -473,8 +467,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {	
+    	} else if ("EE8".equals(getFeatureVersion())) {	
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
     	}//End of 18363
     }
@@ -501,8 +494,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
     	} //End of 18363
     }
@@ -529,8 +521,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	}//End of 18363
     }
@@ -557,8 +548,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	}//End of 18363
     }
@@ -585,8 +575,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
     	}//End of 18363
     }
@@ -613,8 +602,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
     	}//End of 18363
     }
@@ -641,8 +629,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
     	}//End of 18363
     }
@@ -669,8 +656,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
     	}//End of 18363
     }
@@ -697,8 +683,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
     	}//End of 18363
     }
@@ -725,8 +710,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
     	}//End of 18363
     }
@@ -754,8 +738,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	}//End of 18363
     }         
@@ -783,8 +766,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	}//End of 18363
     }
@@ -811,8 +793,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
     	}//End of 18363
     }
@@ -839,8 +820,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	//issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
     	}//End of 18363
     }

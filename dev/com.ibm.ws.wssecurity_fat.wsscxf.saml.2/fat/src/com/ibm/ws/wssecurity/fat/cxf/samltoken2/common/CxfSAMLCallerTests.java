@@ -117,8 +117,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	}
-    	if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
     		if (testSAMLServer2 == null) {
                 //1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -165,8 +164,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 // shouldn't need to reconfig server 1 - we don't need to change anything there
                 //			testSAMLServer.reconfigServer(buildSPServerName("server_1_realmName.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	}
-    	if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
     		if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_realmName_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -212,8 +210,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection_TokenInSubFalse.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	} 
-    	if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
     		if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_TokenInSubFalse_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
