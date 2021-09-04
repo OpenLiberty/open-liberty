@@ -85,7 +85,6 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
         startSPWithIDPServer("com.ibm.ws.wssecurity_fat.saml.wssTemplates", "server_2_in_1.xml", SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, SAMLConstants.EXAMPLE_CALLBACK, SAMLConstants.EXAMPLE_CALLBACK_FEATURE);
 
-        //3/2021
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         
         servicePort = Integer.toString(testSAMLServer.getServerHttpPort());
@@ -101,8 +100,7 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
         if (features.contains("jaxws-2.2")) {
             setFeatureVersion("EE7");
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             setFeatureVersion("EE8");
         } // End of 18363
         

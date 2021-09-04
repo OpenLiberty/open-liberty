@@ -145,8 +145,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-    	}
-    	if ("EE8".equals(getFeatureVersion())) {
+    	} else if ("EE8".equals(getFeatureVersion())) {
     		String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // @AV999 slightly different error with new runtime
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
     	} //End of 18363

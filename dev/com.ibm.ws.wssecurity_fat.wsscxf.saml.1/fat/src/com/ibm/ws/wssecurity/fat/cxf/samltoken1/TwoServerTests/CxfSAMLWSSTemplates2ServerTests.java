@@ -108,8 +108,7 @@ public class CxfSAMLWSSTemplates2ServerTests extends CxfSAMLWSSTemplatesTests {
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
         if (features.contains("jaxws-2.2")) {
             setFeatureVersion("EE7");
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             setFeatureVersion("EE8");
         } // End of 18363
         
