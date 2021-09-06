@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,8 @@ public class SymbolicNameTest {
             }
             String symbolicName = featureInfo.getName();
             // javaeePlatform and appSecurity are special because they have dependencies on each other.
-            if (symbolicName.startsWith("com.ibm.websphere.appserver.javaeePlatform")
+            if (symbolicName.startsWith("io.openliberty.jakartaeePlatform")
+                    || symbolicName.startsWith("com.ibm.websphere.appserver.javaeePlatform")
                     || symbolicName.startsWith("com.ibm.websphere.appserver.appSecurity")) {
                 continue;
             }
