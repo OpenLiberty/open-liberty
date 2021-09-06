@@ -261,6 +261,34 @@ public class MicroProfileActions {
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
+    private static final String[] STANDALONE8_FEATURES_ARRAY = { "mpContextPropagation-1.0",
+                                                                 "mpContextPropagation-1.2",
+                                                                 "mpGraphQL-1.0",
+                                                                 "mpLRA-1.0",
+                                                                 "mpLRACoordinator-1.0",
+                                                                 "mpReactiveMessaging-1.0",
+                                                                 "mpReactiveStreams-1.0" };
+
+    private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3" };
+//                                                                 "mpGraphQL-2.0",
+//                                                                 "mpLRA-2.0",
+//                                                                 "mpLRACoordinator-2.0",
+//                                                                 "mpReactiveMessaging-3.0",
+//                                                                 "mpReactiveStreams-2.0" };
+
+    private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
+    private static final Set<String> STANDALONE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE9_FEATURES_ARRAY)));
+
+    public static final String STANDALONE8_ID = EE8FeatureReplacementAction.ID + "_STANDALONE";
+    public static final String STANDALONE9_ID = JakartaEE9Action.ID + "_STANDALONE";
+
+    public static final FeatureSet MP_STANDALONE8 = new FeatureSet(STANDALONE8_ID, STANDALONE8_FEATURE_SET, EEVersion.EE8);
+    public static final FeatureSet MP_STANDALONE9 = new FeatureSet(STANDALONE9_ID, STANDALONE9_FEATURE_SET, EEVersion.EE9);
+
+    //All MicroProfile Standalone FeatureSets
+    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE8, MP_STANDALONE9 };
+    public static final Set<FeatureSet> STANDALONE_ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_STANDALONE_SETS_ARRAY)));
+
     /**
      * Get a RepeatTests instance for all MP versions. The LATEST will be run in LITE mode. The others will be run in FULL.
      *

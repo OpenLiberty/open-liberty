@@ -48,7 +48,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EERepeatTests.EEVersion;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
@@ -122,34 +124,18 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         nonEE9JavaEEFeatures.remove("ejbTest-1.0");
         nonEE9JavaEEFeatures.remove("ejbTest-2.0");
 
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP10.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP12.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP13.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP14.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP20.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP21.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP22.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP30.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP32.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP33.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP40.getFeatures());
-        nonEE9MicroProfileFeatures.addAll(MicroProfileActions.MP41.getFeatures());
-
-        // Add the MP convenience features as well
-        String[] mpVersions = { "1.0", "1.2", "1.3", "1.4", "2.0", "2.1", "2.2", "3.0",
-                                "3.2", "3.3", "4.0", "4.1" };
-        for (String mpVersion : mpVersions) {
-            nonEE9MicroProfileFeatures.add("microProfile-" + mpVersion);
+        for (FeatureSet mpFeatureSet : MicroProfileActions.ALL) {
+            if (mpFeatureSet.getEEVersion() != EEVersion.EE9) {
+                nonEE9MicroProfileFeatures.addAll(mpFeatureSet.getFeatures());
+            }
         }
 
         // MP standalone features
-        nonEE9MicroProfileFeatures.add("mpContextPropagation-1.0");
-        nonEE9MicroProfileFeatures.add("mpContextPropagation-1.2");
-        nonEE9MicroProfileFeatures.add("mpGraphQL-1.0");
-        nonEE9MicroProfileFeatures.add("mpLRA-1.0");
-        nonEE9MicroProfileFeatures.add("mpLRACoordinator-1.0");
-        nonEE9MicroProfileFeatures.add("mpReactiveMessaging-1.0");
-        nonEE9MicroProfileFeatures.add("mpReactiveStreams-1.0");
+        for (FeatureSet mpFeatureSet : MicroProfileActions.STANDALONE_ALL) {
+            if (mpFeatureSet.getEEVersion() != EEVersion.EE9) {
+                nonEE9MicroProfileFeatures.addAll(mpFeatureSet.getFeatures());
+            }
+        }
 
         incompatibleValueAddFeatures.add("jwtSso-1.0"); // depends on mpJWT
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
