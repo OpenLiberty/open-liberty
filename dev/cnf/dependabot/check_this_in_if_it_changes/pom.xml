@@ -3544,12 +3544,12 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
-      <version>2.1.5</version>
+      <version>2.1.15</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>2.1.5</version>
+      <version>2.1.15</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
