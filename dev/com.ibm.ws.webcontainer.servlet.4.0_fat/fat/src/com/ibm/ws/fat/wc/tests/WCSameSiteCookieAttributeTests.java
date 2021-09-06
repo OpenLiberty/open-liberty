@@ -502,8 +502,6 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setNone("cookieOne");
 
-        configuration.getLogging().setTraceSpecification("HttpChannel=all");
-
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setTraceMarkToEndOfDefaultTrace();
         sameSiteServer.updateServerConfiguration(configuration);
@@ -1794,8 +1792,6 @@ public class WCSameSiteCookieAttributeTests {
 
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setNone("*");
-
-        configuration.getLogging().setTraceSpecification("HttpChannel=all");
 
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setTraceMarkToEndOfDefaultTrace();
