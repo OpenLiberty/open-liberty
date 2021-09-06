@@ -298,7 +298,6 @@ public class MicroProfileActions {
     public static RepeatTests repeatAll(String server) {
         Set<FeatureSet> others = new HashSet<>(ALL);
         others.remove(LATEST);
-        others.remove(MP50); //Does not work yet
         return repeat(server, TestMode.FULL, ALL, LATEST, others);
     }
 
@@ -312,7 +311,6 @@ public class MicroProfileActions {
         Set<FeatureSet> others = new HashSet<>(ALL);
         others.remove(LATEST);
         others.remove(MP10); //Does not contain mpConfig
-        others.remove(MP50); //Does not work yet
         return repeat(server, TestMode.FULL, ALL, LATEST, others);
     }
 

@@ -37,6 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile5.internal.test.helloworld.HelloWorldApplication;
 import io.openliberty.microprofile5.internal.test.helloworld.basic.BasicHelloWorldBean;
+import io.openliberty.microprofile5.internal.test.helloworld.config.ConfiguredHelloWorldBean;
 
 @RunWith(FATRunner.class)
 public class MP5CompatibleTest {
@@ -57,7 +58,7 @@ public class MP5CompatibleTest {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(HelloWorldApplication.class.getPackage())
-                                   .addPackage(BasicHelloWorldBean.class.getPackage())
+                                   .addPackage(ConfiguredHelloWorldBean.class.getPackage())
                                    .addAsResource(config, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
