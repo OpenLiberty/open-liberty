@@ -28,9 +28,11 @@ import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
+import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
+import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
@@ -38,7 +40,6 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMap
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
-import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -81,6 +82,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class,
+                WCSameSiteCookieAttributeSecurityTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
