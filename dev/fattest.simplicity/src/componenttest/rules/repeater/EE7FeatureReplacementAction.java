@@ -70,6 +70,7 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }
