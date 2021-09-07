@@ -505,8 +505,24 @@ public class CustomStoreSample implements OAuthStore {
     @Override
     public void update(OAuthClient oauthClient) throws OAuthStoreException {
         try {
-            DBCollection col = getClientCollection();
-            col.update(createClientKeyHelper(oauthClient), createClientDBObjectHelper(oauthClient), false, false);
+            for (int i = 0; i < RETRY_COUNT; i++) {
+                try {
+                    DBCollection col = getClientCollection();
+                    col.update(createClientKeyHelper(oauthClient), createClientDBObjectHelper(oauthClient), false, false);
+                    break;
+                } catch (Exception e) {
+                    if (i < RETRY_COUNT && isNetworkFailure(e)) {
+                        try {
+                            System.out.println("CustomStoreSample update hit a failure, trying again " + e.getMessage());
+
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e1) {
+                        }
+                    } else {
+                        throw e;
+                    }
+                }
+            }
             System.out.println("CustomStoreSample update on " + oauthClient.getClientId());
         } catch (Exception e) {
             throw new OAuthStoreException("Failed on update for OAuthClient for " + oauthClient.getClientId(), e);
