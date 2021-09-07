@@ -8,17 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.cdi.fat;
+package concurrent.cdi3.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConcurrentCDITest.class,
-                ConcurrentCDI2Test.class,
-                ConcurrentCDI3Test.class
-})
-public class FATSuite {
+@ApplicationScoped
+public class ResourcesProducer {
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Initialized bean: " + this);
+    }
+
+    @Resource(lookup = "concurrent/sampleExecutor")
+    @Produces
+    private ManagedExecutorService exec;
+
 }

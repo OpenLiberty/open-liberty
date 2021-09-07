@@ -8,17 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.cdi.fat;
+package concurrent.cdi3.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.HashMap;
+import java.util.Map;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConcurrentCDITest.class,
-                ConcurrentCDI2Test.class,
-                ConcurrentCDI3Test.class
-})
-public class FATSuite {
+import jakarta.inject.Singleton;
+
+@Singleton
+public class SingletonScopedBean {
+    private final Map<Object, Object> map = new HashMap<Object, Object>();
+
+    public Object get(Object key) {
+        return map.get(key);
+    }
+
+    public Object put(Object key, Object value) {
+        return map.put(key, value);
+    }
 }

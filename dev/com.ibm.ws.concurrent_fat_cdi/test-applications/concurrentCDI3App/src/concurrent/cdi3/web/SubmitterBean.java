@@ -8,17 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.cdi.fat;
+package concurrent.cdi3.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConcurrentCDITest.class,
-                ConcurrentCDI2Test.class,
-                ConcurrentCDI3Test.class
-})
-public class FATSuite {
+import jakarta.enterprise.context.RequestScoped;
+
+import javax.naming.InitialContext;
+
+@RequestScoped
+public class SubmitterBean {
+    public Future<?> submit(Callable<?> task) throws Exception {
+        ExecutorService executor = (ExecutorService) new InitialContext().lookup("java:comp/DefaultManagedExecutorService");
+        return executor.submit(task);
+    }
 }
