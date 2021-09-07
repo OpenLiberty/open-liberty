@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.websphere.security.wim.base
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.wim.internal.base.jar
-#JakartaEE-Bundle-Name: WIM base internal
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.wim.internal.base
-#JakartaEE-Bundle-Description: WIM base internal
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.wim.internal.base.jar
+jakartaFinalBundleName: WIM base internal
+jakartaFinalBundleId: io.openliberty.security.wim.internal.base
+jakartaFinalBundleDescription: WIM base internal; Jakarta Enabled
 
 
 Import-Package: \

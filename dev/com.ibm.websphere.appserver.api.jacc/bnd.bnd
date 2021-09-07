@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.api.jacc
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.jacc.2.0.jar
-#JakartaEE-Bundle-Name: JACC Service Provider Interface
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.jacc.2.0
-#JakartaEE-Bundle-Description: JACC Service Provider Interface, version 2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.jacc.2.0.jar
+jakartaFinalBundleName: JACC Service Provider Interface
+jakartaFinalBundleId: io.openliberty.jacc.2.0
+jakartaFinalBundleDescription: JACC Service Provider Interface, version 2.0
 
 Import-Package: com.ibm.wsspi.security.authorization.jacc
 

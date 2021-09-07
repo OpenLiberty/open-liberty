@@ -19,11 +19,10 @@ Bundle-Description: Liberty Security SAML Web SSO 2.0 WAB, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.saml.internal.wab.2.0.jar
-#JakartaEE-Bundle-Name: Liberty Security SAML Web SSO 2.0 WAB
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.saml.internal.wab.2.0
-#JakartaEE-Bundle-Description: Liberty Security SAML Web SSO 2.0 WAB, version=${bVersion} 
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.saml.internal.wab.2.0.jar
+jakartaFinalBundleName: Liberty Security SAML Web SSO 2.0 WAB
+jakartaFinalBundleId: io.openliberty.security.saml.internal.wab.2.0
+jakartaFinalBundleDescription: Liberty Security SAML Web SSO 2.0 WAB; Jakarta Enabled
 
 Web-ContextPath: /ibm/saml20
 

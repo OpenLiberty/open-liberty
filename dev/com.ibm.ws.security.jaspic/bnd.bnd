@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.security.jaspic.1.1
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.jaspic.2.0.internal.jar
-#JakartaEE-Bundle-Name: JASPI 2.0 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jaspic.2.0.internal
-#JakartaEE-Bundle-Description: JASPI 2.0., version=${bVersion} 
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.jaspic.2.0.internal.jar
+jakartaFinalBundleName: Security JASPIC 2.0 Internal
+jakartaFinalBundleId: io.openliberty.security.jaspic.2.0.internal
+jakartaFinalBundleDescription: Security JASPIC 2.0 Internal; Jakarta Enabled
 
 WS-TraceGroup: \
   JASPI

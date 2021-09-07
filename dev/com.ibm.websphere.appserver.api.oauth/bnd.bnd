@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.api.oauth
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.oauth.jar
-#JakartaEE-Bundle-Name: Liberty OAuth 2.0 web single sign-on API
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.oauth
-#JakartaEE-Bundle-Description: Liberty OAuth 2.0 web single sign-on API; Jakarta enabled
-#JakartaEE-Bundle-Version:
+#jakartaFinalJarName: io.openliberty.oauth.jar
+jakartaFinalBundleName: Liberty OAuth 2.0 web single sign-on API
+jakartaFinalBundleId: io.openliberty.oauth
+jakartaFinalBundleDescription: Liberty OAuth 2.0 web single sign-on API; Jakarta Enabled
 
 Import-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token,com.ibm.ws.security.oauth20.resources,*
 

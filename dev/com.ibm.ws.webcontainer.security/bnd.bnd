@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.webcontainer.security
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.webcontainer.security.internal.jar
-#JakartaEE-Bundle-Name: Jakarta Webcontainer Security Collaborator internal
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.webcontainer.security.internal
-#JakartaEE-Bundle-Description: Jakarta Webcontainer Security Collaborator internal
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.webcontainer.security.internal.jar
+jakartaFinalBundleName: Webcontainer Security Collaborator internal
+jakartaFinalBundleId: io.openliberty.webcontainer.security.internal
+jakartaFinalBundleDescription: Webcontainer Security Collaborator internal; Jakarta Enabled
   
 Export-Package: \
   com.ibm.websphere.security.web, \
