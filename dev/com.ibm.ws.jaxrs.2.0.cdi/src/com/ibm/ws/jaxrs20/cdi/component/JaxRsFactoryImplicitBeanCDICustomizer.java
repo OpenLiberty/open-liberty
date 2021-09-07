@@ -83,15 +83,15 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCustomizer, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(JaxRsFactoryImplicitBeanCDICustomizer.class);
-    private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>("managedObjectService");
+    private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<>("managedObjectService");
 
     private CDIService cdiService;
 
     //The key is Object to match afterServiceInvoke.
-    private Map<Object, CreationalContext> creationalContextsToRelease = new HashMap<Object, CreationalContext>();
+    private final Map<Object, CreationalContext<?>> creationalContextsToRelease = new HashMap<>();
 
-    private static List<String> validRequestScopeList = new ArrayList<String>();
-    private static List<String> validSingletonScopeList = new ArrayList<String>();
+    private static List<String> validRequestScopeList = new ArrayList<>();
+    private static List<String> validSingletonScopeList = new ArrayList<>();
     static {
         validRequestScopeList.add(JAXRSCDIConstants.REQUEST_SCOPE);
         validRequestScopeList.add(JAXRSCDIConstants.DEPENDENT_SCOPE);
@@ -100,7 +100,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         validSingletonScopeList.add(JAXRSCDIConstants.APPLICATION_SCOPE);
     }
 
-    private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
+    private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<>();
 
     private final ConcurrentHashMap<ModuleMetaData, Map<Class<?>, ManagedObjectFactory<?>>> managedObjectFactoryCache = new ConcurrentHashMap<>();
 
@@ -239,7 +239,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         Bean<?> bean = getBeanFromCDI(clazz);
         Object obj = null;
         if (bean != null && manager != null) {
-            CreationalContext cc = manager.createCreationalContext(bean);
+            CreationalContext<?> cc = manager.createCreationalContext(bean);
             obj = manager.getReference(bean, clazz, cc);
             if (cc != null && obj != null) {
                 creationalContextsToRelease.put(obj, cc);
@@ -281,7 +281,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
             }
 
-            return (T) newServiceObject.getObject();
+            return newServiceObject.getObject();
         } else {
             newContext.remove(clazz);
         }
@@ -295,6 +295,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
      * @param clazz
      * @return
      */
+    @SuppressWarnings("unchecked")
     @FFDCIgnore(value = { Exception.class })
     private <T> ManagedObject<T> getClassFromServiceObject(Class<T> clazz, Object serviceObject) {
 
@@ -358,8 +359,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     @Override
     public void afterServiceInvoke(Object serviceObject, boolean isSingleton, Object context) {
         if (creationalContextsToRelease.containsKey(serviceObject)) {
-            CreationalContext cc = creationalContextsToRelease.remove(serviceObject);
-            cc.release();
+            CreationalContext<?> cc = creationalContextsToRelease.remove(serviceObject);
+            if (cc != null)
+                cc.release();
         }
 
         @SuppressWarnings("unchecked")
@@ -425,6 +427,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         Set<ProviderResourceInfo> singletonProviderAndPathInfos = endpointInfo.getSingletonProviderAndPathInfos();
 
         //The resources map may already exist on the context.  If it does we will want to add to it.
+        @SuppressWarnings("unchecked")
         Map<Class<?>, ManagedObject<?>> resourcesManagedbyCDI = (Map<Class<?>, ManagedObject<?>>)context.getContextObject();
         if (resourcesManagedbyCDI == null || !(resourcesManagedbyCDI instanceof ThreadBasedHashMap)) {
             resourcesManagedbyCDI = new ThreadBasedHashMap();//HashMap<Class<?>, ManagedObject<?>>();
