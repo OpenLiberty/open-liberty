@@ -238,11 +238,13 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         BeanManager manager = getBeanManager();
         Bean<?> bean = getBeanFromCDI(clazz);
         Object obj = null;
-        CreationalContext cc = manager.createCreationalContext(bean);
         if (bean != null && manager != null) {
+            CreationalContext cc = manager.createCreationalContext(bean);
             obj = manager.getReference(bean, clazz, cc);
+            if (cc != null && obj != null) {
+                creationalContextsToRelease.put(obj, cc);
+            }
         }
-        creationalContextsToRelease.put(obj, cc);
         return obj;
     }
 
