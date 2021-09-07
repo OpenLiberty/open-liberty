@@ -8,17 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.cdi.fat;
+package concurrent.cdi3.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.Serializable;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConcurrentCDITest.class,
-                ConcurrentCDI2Test.class,
-                ConcurrentCDI3Test.class
-})
-public class FATSuite {
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class ApplicationScopedBean implements Serializable {
+    private static final long serialVersionUID = -2075274815197982538L;
+
+    private char character;
+
+    public char getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(char character) {
+        this.character = character;
+    }
 }

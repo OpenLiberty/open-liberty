@@ -8,17 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.cdi.fat;
+package concurrent.cdi3.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.enterprise.context.Dependent;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConcurrentCDITest.class,
-                ConcurrentCDI2Test.class,
-                ConcurrentCDI3Test.class
-})
-public class FATSuite {
+@Dependent
+public class DependentScopedBean {
+    private boolean value;
+
+    public boolean getBoolean() {
+        return value;
+    }
+
+    public void setBoolean(boolean value) {
+        this.value = value;
+    }
 }
