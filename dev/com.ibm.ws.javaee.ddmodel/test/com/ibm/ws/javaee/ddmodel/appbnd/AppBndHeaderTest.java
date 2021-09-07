@@ -125,6 +125,11 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 appBndContents + "\n" +
             "</application-bnd>";                    
 
+    protected static final String appBndMinimal =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+            "<application-bnd>" + "\n" +
+                appBndContents + "\n" +
+            "</application-bnd>";     
 
     @Test
     public void testXMIGetVersion() throws Exception {
@@ -220,5 +225,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
         parseAppBndXML(appBndBadVersion,
                 UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
                 UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
+    }
+    
+    @Test
+    public void testMinimal() throws Exception {
+        parseAppBndXML(appBndMinimal);
     }
 }

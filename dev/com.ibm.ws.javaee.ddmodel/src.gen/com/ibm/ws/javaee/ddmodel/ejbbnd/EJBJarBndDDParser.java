@@ -14,7 +14,6 @@ package com.ibm.ws.javaee.ddmodel.ejbbnd;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
-import com.ibm.ws.javaee.ddmodel.appbnd.ApplicationBndType;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 

@@ -879,6 +879,7 @@ public abstract class DDParser {
                 xsr.next();
             }
         } catch ( XMLStreamException e ) {
+            e.printStackTrace(System.out);
             throw new ParseException(xmlError(e), e);
         }
     }
