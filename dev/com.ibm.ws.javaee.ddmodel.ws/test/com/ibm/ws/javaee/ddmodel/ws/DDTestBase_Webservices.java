@@ -419,7 +419,7 @@ public class DDTestBase_Webservices {
     public static final String UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE =
             "unsupported.descriptor.namespace";
     public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
-            { "CWWCK27780E" };
+            { "CWWKC2262E" };
     
     public static final String UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE =
             "unsupported.descriptor.version";
