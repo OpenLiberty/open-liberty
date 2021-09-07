@@ -31,10 +31,11 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.monitor.annotation.Monitor;
 import com.ibm.websphere.monitor.annotation.PublishedMetric;
 import com.ibm.websphere.monitor.meters.MeterCollection;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-
 
 /**
  * Monitor Class for RESTful Resource Methods.
@@ -42,6 +43,8 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 @Monitor(group = "REST")
 @Provider
 public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
+	
+    private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
 
     @Context
     ResourceInfo resourceInfo;
@@ -85,8 +88,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     	// in the response filter method.  
         reqCtx.setProperty(START_TIME, System.nanoTime());
         reqCtx.setProperty(CMD, ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData());
-          	
     }
+    
     /**
      * Method : filter(ContainerRequestContext, ContainerResponseContext)
      * 
@@ -101,6 +104,18 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
 	@Override
 	public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
+		
+		// Check that the ComponentMetaData has been set on the request context.  This will happen when 
+		// the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
+		// request filter to not be called and we will therefore not record any statistics.
+		ComponentMetaData cmd = (ComponentMetaData) reqCtx.getProperty(CMD);
+		if (cmd == null) {
+	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            Tr.debug(tc, "ContainerRequestContext.filter() has not been invoked for " + reqCtx.getUriInfo().getPath());
+	        }
+			return;
+		}
+
 		long elapsedTime = 0;
 		// Calculate the response time for the resource method.
 		Long startTime = (Long) reqCtx.getProperty(START_TIME);
@@ -128,7 +143,6 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 			}
 			fullMethodName = fullMethodName + ")";
 
-			ComponentMetaData cmd = (ComponentMetaData) reqCtx.getProperty(CMD);
 			String appName = getAppName(cmd);
 			String modName = getModName(cmd);
 			String keyPrefix = createKeyPrefix(appName, modName);
@@ -271,7 +285,6 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     		return modName;
     	}
     }
-    
     
     static RestMetricInfo getMetricInfo(String appName) {
     	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
