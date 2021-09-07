@@ -27,8 +27,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 @Sharable
 public class AccessListHandler extends ChannelInboundHandlerAdapter {
 
-    private static final TraceComponent tc = Tr.register(AccessListHandler.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, 
-            TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(AccessListHandler.class, TCPMessageConstants.NETTY_TRACE_NAME, 
+            TCPMessageConstants.TCP_BUNDLE);
 
     AccessLists accessLists;
 

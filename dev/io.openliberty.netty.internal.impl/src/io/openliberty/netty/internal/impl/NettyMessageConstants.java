@@ -6,7 +6,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.netty.internal.exception;
+package io.openliberty.netty.internal.impl;
+
+public interface NettyMessageConstants {
+
+    /** RAS trace bundle for NLS */
+    String NETTY_BUNDLE = "io.openliberty.netty.internal.impl.resources.NettyFrameworkMessages";
+    /** RAS trace group name */
+    String NETTY_TRACE_NAME = "Netty";
+
+}

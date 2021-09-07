@@ -10,17 +10,13 @@
  *******************************************************************************/
 package io.openliberty.netty.internal;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.util.AttributeKey;
 
-/**
- * Bootstrap configuration object
- */
-public interface ServerBootstrapConfiguration {
+public interface ConfigConstants {
 
-    /**
-     * Apply this configuration to the given ServerBootstrap
-     * @param bootstrap
-     */
-    void applyConfiguration(ServerBootstrap bootstrap);
+    public AttributeKey<String> NameKey = AttributeKey.valueOf("Name");
+    public AttributeKey<String> HostKey = AttributeKey.valueOf("Host");
+    public AttributeKey<String> ExternalHostKey = AttributeKey.valueOf("ExternalHost");
+    public AttributeKey<Integer> PortKey = AttributeKey.valueOf("Port");
 
 }

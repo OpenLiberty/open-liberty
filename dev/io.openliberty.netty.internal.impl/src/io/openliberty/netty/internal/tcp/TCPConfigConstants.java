@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
-import io.netty.util.AttributeKey;
-
 /**
  * This interface describes the constants used for configuring a TCP Channel.
  * 
@@ -19,10 +17,6 @@ import io.netty.util.AttributeKey;
  * 
  */
 public interface TCPConfigConstants {
-
-    public AttributeKey<String> TCPNameKey = AttributeKey.valueOf("TCPName");
-    public AttributeKey<String> TCPHostKey = AttributeKey.valueOf("TCPHost");
-    public AttributeKey<Integer> TCPPortKey = AttributeKey.valueOf("TCPPort");
 
     /**
      * The external name used for this TCP channel

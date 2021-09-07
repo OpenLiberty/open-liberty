@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.openliberty.netty.internal.ConfigConstants;
 
 /**
  * Channel handler which keeps track of the overall connection count and terminates new 
@@ -26,7 +27,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 @Sharable
 public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
     
-    private static final TraceComponent tc = Tr.register(MaxOpenConnectionsHandler.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(MaxOpenConnectionsHandler.class, TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
 
     private final AtomicInteger connections = new AtomicInteger();
     private final int maxConnections;
@@ -46,8 +47,8 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
             // notify every 10 minutes if max concurrent conns was hit
             long currentTime = System.currentTimeMillis();
             if (currentTime > (lastConnExceededTime + 600000L)) {
-                String channelName = ctx.channel().attr(TCPConfigConstants.TCPNameKey).get();
-                Tr.warning(tc, TCPChannelMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
+                String channelName = ctx.channel().attr(ConfigConstants.NameKey).get();
+                Tr.warning(tc, TCPMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
                 lastConnExceededTime = currentTime;
             }
         }

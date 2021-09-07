@@ -33,7 +33,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  */
 public class FilterListFastStr implements FilterListStr {
 
-    private static final TraceComponent tc = Tr.register(FilterListFastStr.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(FilterListFastStr.class, TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
 
     private byte PERIOD_VALUE = 46;
     private byte WILDCARD_VALUE = 42;

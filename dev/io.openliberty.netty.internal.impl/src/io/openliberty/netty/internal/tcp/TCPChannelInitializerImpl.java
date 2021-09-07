@@ -13,7 +13,7 @@ package io.openliberty.netty.internal.tcp;
 import java.util.concurrent.TimeUnit;
 
 import io.netty.channel.Channel;
-import io.openliberty.netty.internal.ServerBootstrapConfiguration;
+import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 
 /**
@@ -27,7 +27,7 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
 
     TCPConfigurationImpl config;
     
-    public TCPChannelInitializerImpl(ServerBootstrapConfiguration config) {
+    public TCPChannelInitializerImpl(BootstrapConfiguration config) {
         this.config = (TCPConfigurationImpl) config;
     }
 

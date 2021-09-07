@@ -23,11 +23,13 @@ Import-Package: \
 
 Export-Package: \
   io.openliberty.netty.internal.impl, \
-  io.openliberty.netty.internal.tcp
+  io.openliberty.netty.internal.tcp, \
+  io.openliberty.netty.internal.udp
 
 # reuse the existing translated messages from the TCP Channel
 Private-Package: \
-  com.ibm.ws.tcpchannel.internal.resources
+  com.ibm.ws.tcpchannel.internal.resources, \
+  com.ibm.ws.udpchannel.internal.resources
 
 -dsannotations: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl

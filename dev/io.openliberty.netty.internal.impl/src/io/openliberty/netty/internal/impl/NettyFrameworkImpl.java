@@ -38,7 +38,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -47,15 +46,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.Future;
-import io.openliberty.netty.internal.ChannelInitializerWrapper;
+import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
-import io.openliberty.netty.internal.ServerBootstrapConfiguration;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
-import io.openliberty.netty.internal.tcp.TCPChannelMessageConstants;
-import io.openliberty.netty.internal.tcp.TCPConfigConstants;
-import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -66,7 +60,7 @@ import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
     property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyMessageConstants.NETTY_TRACE_NAME, NettyMessageConstants.NETTY_BUNDLE);
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
@@ -78,12 +72,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }; // use brackets/inner class to make lock appear in dumps using class name
     Set<Channel> activeChannels = ConcurrentHashMap.newKeySet();
 
-    private EventLoopGroup parentGroup;
-    private EventLoopGroup childGroup;
+    protected EventLoopGroup parentGroup;
+    protected EventLoopGroup childGroup;
     
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
-    private final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     
     /**
@@ -233,7 +226,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * @return Callable return null if the task was not ran, but queued, else return the task to denote it has ran.
      * @throws Exception
      */
-    public static <T> T runWhenServerStarted(Callable<T> callable) throws Exception {
+    public <T> T runWhenServerStarted(Callable<T> callable) throws Exception {
         synchronized (syncStarted) {
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(callable);
@@ -282,103 +275,23 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     
     @Override
     public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
-        ServerBootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, true);
-        ServerBootstrapExtended bs = new ServerBootstrapExtended();
-        bs.group(parentGroup, childGroup);
-        bs.channel(NioServerSocketChannel.class);
-        // apply the existing user config to the Netty TCP channel
-        bs.applyConfiguration(config);
-        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config);
-        bs.setBaseInitializer(tcpInitializer);
-        return bs;
+        return TCPUtils.createTCPBootstrap(this, tcpOptions);
     }
 
     @Override
-    public Bootstrap createUDPBootstrap(Map<String, Object> options) throws NettyException {
-        Bootstrap bs = new Bootstrap();
-        bs.group(parentGroup);
-        // TODO: parse any UDP options and set them as ChannelOptions
-        bs.channel(NioDatagramChannel.class);
-        return bs;
+    public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
+        return UDPUtils.createUDPBootstrap(this, options);
     }
 
-    private ChannelFuture bindHelper(ServerBootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener, final int retryCount) {
-        ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
-        if (bindListener != null) {
-            bindFuture.addListener(bindListener);
-        }
-        bindFuture.addListener(future -> {
-            if (future.isSuccess()) {
-                activeChannels.add(bindFuture.channel());
-                TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-                String channelName = config.getExternalName();
-                // set common channel attrs
-                bindFuture.channel().attr(TCPConfigConstants.TCPNameKey).set(config.getExternalName());
-                bindFuture.channel().attr(TCPConfigConstants.TCPHostKey).set(inetHost);
-                bindFuture.channel().attr(TCPConfigConstants.TCPPortKey).set(inetPort);
-
-                Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STARTED, new Object[] { channelName, inetHost, String.valueOf(inetPort) });
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "bindHelper failed due to: " + future.cause().getMessage());
-                }
-
-                if (retryCount > 0) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "attempt to bind again after a wait of " +timeBetweenRetriesMsec +"ms; " + retryCount + " attempts remaining");
-                    }
-                    // recurse until we either complete successfully or run out of retries;
-                    try {
-                        Thread.sleep(timeBetweenRetriesMsec);
-                    } catch (InterruptedException x) {
-                        // do nothing but debug
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
-                        }
-                    }
-                    bindHelper(bootstrap, inetHost, inetPort, bindListener, retryCount - 1);
-                }
-                String channelName = bindFuture.channel().attr(TCPConfigConstants.TCPNameKey).get();
-                Tr.error(tc, TCPChannelMessageConstants.BIND_ERROR,
-                        new Object[] { channelName, inetHost, String.valueOf(inetPort), 
-                                bindFuture.cause().getMessage() });
-            }
-        });
-        return bindFuture;
-    }
 
     @Override
     public ChannelFuture start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
-        }
-        try {
-            runWhenServerStarted(new Callable<ChannelFuture>() {
-                @Override
-                public ChannelFuture call() {
-                    TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-                    int bindRetryCount = config.getPortOpenRetries();
-                    return bindHelper(bootstrap, inetHost, inetPort, bindListener, bindRetryCount);
-                }
-            });
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-            }
-        }
-        return null;
+        return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
-    public ChannelFuture start(Bootstrap bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "start (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
-        }
-        ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
-        if (bindListener != null) {
-            bindFuture.addListener(bindListener);
-        }
-        return bindFuture;
+    public ChannelFuture start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
+        return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
@@ -432,14 +345,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // destroy covered by serverStopping
     }
 
-    private void logChannelStopped(String name, String host, Integer port) {
-        Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STOPPED, name, host, String.valueOf(port));
-    }
-
     private void logChannelStopped(Channel channel) {
-        String channelName = channel.attr(TCPConfigConstants.TCPNameKey).get();
-        String host = channel.attr(TCPConfigConstants.TCPHostKey).get();
-        Integer port = channel.attr(TCPConfigConstants.TCPPortKey).get();
-        logChannelStopped(channelName, host, port);
+        if (channel instanceof NioServerSocketChannel) {
+            TCPUtils.logChannelStopped(channel);
+        } else if (channel instanceof NioDatagramChannel) {
+            UDPUtils.logChannelStopped(channel);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "unexpected channel type: " + channel);
+            }
+        }
     }
 }

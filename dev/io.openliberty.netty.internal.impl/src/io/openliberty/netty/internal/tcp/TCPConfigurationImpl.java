@@ -20,9 +20,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
-import io.openliberty.netty.internal.ServerBootstrapConfiguration;
+import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
@@ -31,7 +32,7 @@ import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
  * 
  * Adapted from {@link com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration}
  */
-public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPConfigConstants, FFDCSelfIntrospectable {
+public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigConstants, FFDCSelfIntrospectable {
 
     public static final String NEW_BUFF_SIZE = "newConnectionBufferSize";
     public static final String LINGER = "soLinger";
@@ -53,7 +54,7 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
     protected static final String ZAIO_RESOLVE_FOREIGN_HOSTNAMES_KEY = "zaioResolveForeignHostnames";
     protected static final String ZAIO_FREE_INITIAL_BUFFER_KEY = "zaioFreeInitialBuffers";
 
-    private static final TraceComponent tc = Tr.register(TCPConfigurationImpl.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(TCPConfigurationImpl.class, TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
 
     private ChannelData channelData = null;
     private Map<String, Object> channelProperties = null;
@@ -244,7 +245,7 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                         }
                         result = ValidateUtils.testIsStringIPAddressesValid(this.addressExcludeList);
                         if (result != ValidateUtils.VALIDATE_OK) {
-                            Tr.error(tc, TCPChannelMessageConstants.ADDRESS_EXCLUDE_LIST_INVALID, new Object[] { this.externalName });
+                            Tr.error(tc, TCPMessageConstants.ADDRESS_EXCLUDE_LIST_INVALID, new Object[] { this.externalName });
                             e = new NettyException("An entry in the address exclude list for a TCP Channel was not valid.  Valid values consist of a valid String. Channel Name: "
                                                      + this.externalName);
                             break;
@@ -261,7 +262,7 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                         }
                         result = ValidateUtils.testIsStringIPAddressesValid(this.addressIncludeList);
                         if (result != ValidateUtils.VALIDATE_OK) {
-                            Tr.error(tc, TCPChannelMessageConstants.ADDRESS_INCLUDE_LIST_INVALID, new Object[] { this.externalName });
+                            Tr.error(tc, TCPMessageConstants.ADDRESS_INCLUDE_LIST_INVALID, new Object[] { this.externalName });
                             e = new NettyException("An entry in the address include list for a TCP Channel was not valid.  Valid values consist of a valid String. Channel Name: "
                                                      + this.externalName);
                             break;
@@ -536,14 +537,14 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                 }
 
                 if (value instanceof String) {
-                    Tr.warning(tc, TCPChannelMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, value });
+                    Tr.warning(tc, TCPMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, value });
                 } else {
-                    Tr.warning(tc, TCPChannelMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, "" });
+                    Tr.warning(tc, TCPMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, "" });
                 }
 
             } catch (NumberFormatException x) {
                 // handle error knowing key and value
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NUMBER_EXCEPTION, new Object[] { this.externalName, key, value });
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NUMBER_EXCEPTION, new Object[] { this.externalName, key, value });
                 e = new NettyException("TCP Channel Caught a NumberFormatException processing property, Channel Name: " + this.externalName + " Property name: " + key
                                          + " value: "
                                          + value, x);
@@ -555,21 +556,21 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
         if (result != ValidateUtils.VALIDATE_OK) {
             // handle error knowing key and value
             if (keyType == ValidateUtils.KEY_TYPE_INT) {
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_INT,
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_INT,
                          new Object[] { this.externalName, key, value, String.valueOf(minValue), String.valueOf(maxValue) });
                 e = new NettyException("A TCP Channel has been constructed with incorrect configuration property value, Channel Name: " + this.externalName + " name: " + key
                                          + " value: " + value + " minimum Value: " + minValue + " maximum Value: " + maxValue);
             } else if (keyType == ValidateUtils.KEY_TYPE_BOOLEAN) {
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_BOOLEAN, new Object[] { this.externalName, key, value });
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_BOOLEAN, new Object[] { this.externalName, key, value });
                 e = new NettyException("A TCP Channel has been constructed with incorrect configuration property value, Channel Name: " + this.externalName + " name: " + key
                                          + " value: " + value + " Valid Range: false, true");
             } else if (keyType == ValidateUtils.KEY_TYPE_STRING) {
                 if (value == null) {
-                    Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_NULL_STRING, new Object[] { this.externalName, key });
+                    Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_NULL_STRING, new Object[] { this.externalName, key });
                     e = new NettyException("A TCP Channel has been constructed with incorrect configuration property value, Channel Name: " + this.externalName + " name: " + key
                                              + " value: null");
                 } else {
-                    Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_STRING, new Object[] { this.externalName, key, value });
+                    Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_STRING, new Object[] { this.externalName, key, value });
                     e = new NettyException("A TCP Channel has been constructed with incorrect configuration property value, Channel Name: " + this.externalName + " name: " + key
                                              + " value: " + value);
                 }
@@ -668,7 +669,7 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                         }
                         result = ValidateUtils.testIsStringIPAddressesValid(addressExcludeListNew);
                         if (result != ValidateUtils.VALIDATE_OK) {
-                            Tr.error(tc, TCPChannelMessageConstants.ADDRESS_EXCLUDE_LIST_INVALID, new Object[] { this.externalName });
+                            Tr.error(tc, TCPMessageConstants.ADDRESS_EXCLUDE_LIST_INVALID, new Object[] { this.externalName });
                             break;
                         }
                         continue;
@@ -683,7 +684,7 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                         }
                         result = ValidateUtils.testIsStringIPAddressesValid(addressExcludeListNew);
                         if (result != ValidateUtils.VALIDATE_OK) {
-                            Tr.error(tc, TCPChannelMessageConstants.ADDRESS_INCLUDE_LIST_INVALID, new Object[] { this.externalName });
+                            Tr.error(tc, TCPMessageConstants.ADDRESS_INCLUDE_LIST_INVALID, new Object[] { this.externalName });
                             break;
                         }
                         continue;
@@ -902,15 +903,15 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
                 }
 
                 if (value instanceof String) {
-                    Tr.warning(tc, TCPChannelMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, value });
+                    Tr.warning(tc, TCPMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, value });
                 } else {
-                    Tr.warning(tc, TCPChannelMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, "" });
+                    Tr.warning(tc, TCPMessageConstants.CONFIG_KEY_NOT_VALID, new Object[] { this.externalName, key, "" });
                 }
 
             } catch (NumberFormatException x) {
                 update = false;
                 // handle error knowing key and value
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NUMBER_EXCEPTION, new Object[] { this.externalName, key, value });
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NUMBER_EXCEPTION, new Object[] { this.externalName, key, value });
             }
         }
 
@@ -918,32 +919,32 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
             update = false;
             // handle error knowing key and value
             if (keyType == ValidateUtils.KEY_TYPE_INT) {
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_INT,
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_INT,
                          new Object[] { this.externalName, key, value, String.valueOf(minValue), String.valueOf(maxValue) });
             } else if (keyType == ValidateUtils.KEY_TYPE_BOOLEAN) {
-                Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_BOOLEAN, new Object[] { this.externalName, key, value });
+                Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_BOOLEAN, new Object[] { this.externalName, key, value });
             } else if (keyType == ValidateUtils.KEY_TYPE_STRING) {
                 if (value == null) {
-                    Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_NULL_STRING, new Object[] { this.externalName, key });
+                    Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_NULL_STRING, new Object[] { this.externalName, key });
                 } else {
-                    Tr.error(tc, TCPChannelMessageConstants.CONFIG_VALUE_NOT_VALID_STRING, new Object[] { this.externalName, key, value });
+                    Tr.error(tc, TCPMessageConstants.CONFIG_VALUE_NOT_VALID_STRING, new Object[] { this.externalName, key, value });
                 }
             }
 
-            Tr.error(tc, TCPChannelMessageConstants.UPDATED_CONFIG_NOT_IMPLEMENTED, new Object[] { this.externalName });
+            Tr.error(tc, TCPMessageConstants.UPDATED_CONFIG_NOT_IMPLEMENTED, new Object[] { this.externalName });
         }
 
         if (result == ValidateUtils.VALIDATE_NOT_EQUAL) {
             update = false;
             // handle error knowing key and value
             if (keyType == ValidateUtils.KEY_TYPE_INT) {
-                Tr.error(tc, TCPChannelMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, String.valueOf(oldValue), value });
+                Tr.error(tc, TCPMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, String.valueOf(oldValue), value });
             } else if (keyType == ValidateUtils.KEY_TYPE_STRING) {
-                Tr.error(tc, TCPChannelMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, strOldValue, value });
+                Tr.error(tc, TCPMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, strOldValue, value });
             } else if (keyType == ValidateUtils.KEY_TYPE_BOOLEAN) {
-                Tr.error(tc, TCPChannelMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, Boolean.toString(oldBool), value });
+                Tr.error(tc, TCPMessageConstants.NEW_CONFIG_VALUE_NOT_EQUAL, new Object[] { this.externalName, key, Boolean.toString(oldBool), value });
             }
-            Tr.error(tc, TCPChannelMessageConstants.UPDATED_CONFIG_NOT_IMPLEMENTED, new Object[] { this.externalName });
+            Tr.error(tc, TCPMessageConstants.UPDATED_CONFIG_NOT_IMPLEMENTED, new Object[] { this.externalName });
         }
 
         if (update) {
@@ -1274,6 +1275,11 @@ public class TCPConfigurationImpl implements ServerBootstrapConfiguration, TCPCo
      */
     protected boolean getWaitToAccept() {
         return this.waitToAccept;
+    }
+
+    @Override
+    public void applyConfiguration(Bootstrap bootstrap) {
+        throw new UnsupportedOperationException("invalid for TCP config");
     }
 
 }

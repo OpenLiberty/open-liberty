@@ -27,16 +27,20 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import test.common.SharedOutputManager;
 
 /**
- * Basic unit tests for the grpcServlet feature
+ * Basic unit tests for {@link NettyFrameworkImpl}
  */
 public class NettyFrameworkImplTest {
 
@@ -104,6 +108,37 @@ public class NettyFrameworkImplTest {
     public void testTCPStart() throws Exception {
         ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
+        final CountDownLatch latch = new CountDownLatch(1);
+        framework.start(bootstrap, host, port, future -> {
+            if (future.isSuccess()) {
+                testChannels.add(future.channel());
+                latch.countDown();
+            } else {
+                Assert.fail("framework failed to start");
+                latch.countDown();
+            }
+        });
+        framework.setServerStarted(null);
+        latch.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(testChannels.size() == 1);
+        Assert.assertTrue(testChannels.get(0).isActive());
+        Assert.assertTrue(framework.getActiveChannels().contains(testChannels.get(0)));
+    }
+
+    /**
+     * Start listening on a UDP channel 
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUDPStart() throws Exception {
+        BootstrapExtended bootstrap =  framework.createUDPBootstrap(options);
+        bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
+                // do nothing
+            }
+        });
         final CountDownLatch latch = new CountDownLatch(1);
         framework.start(bootstrap, host, port, future -> {
             if (future.isSuccess()) {

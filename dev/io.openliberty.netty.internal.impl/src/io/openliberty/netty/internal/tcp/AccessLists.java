@@ -30,7 +30,7 @@ public class AccessLists {
 
     private boolean caseInsensitiveHostnames = true; // F184719
 
-    private static final TraceComponent tc = Tr.register(AccessLists.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(AccessLists.class, TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
 
     /**
      * Constructor.

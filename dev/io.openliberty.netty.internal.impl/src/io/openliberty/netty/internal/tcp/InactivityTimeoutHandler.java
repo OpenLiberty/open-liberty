@@ -25,8 +25,8 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class InactivityTimeoutHandler extends IdleStateHandler {
     
-    private static final TraceComponent tc = Tr.register(InactivityTimeoutHandler.class, TCPChannelMessageConstants.NETTY_TRACE_NAME, 
-            TCPChannelMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(InactivityTimeoutHandler.class, TCPMessageConstants.NETTY_TRACE_NAME, 
+            TCPMessageConstants.TCP_BUNDLE);
 
     public InactivityTimeoutHandler(long readerIdleTime, long writerIdleTime, long allIdleTime, TimeUnit unit) {
         super(readerIdleTime, writerIdleTime, allIdleTime, unit);

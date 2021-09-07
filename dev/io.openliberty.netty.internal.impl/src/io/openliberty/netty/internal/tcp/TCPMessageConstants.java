@@ -15,10 +15,10 @@ package io.openliberty.netty.internal.tcp;
  * 
  * Taken from {@link com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants}
  */
-public interface TCPChannelMessageConstants {
+public interface TCPMessageConstants {
 
     /** RAS trace bundle for NLS */
-    String NETTY_BUNDLE = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
+    String TCP_BUNDLE = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
     /** RAS trace group name */
     String NETTY_TRACE_NAME = "Netty";
     // -------------------------------------------------------------------------

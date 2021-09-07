@@ -40,7 +40,7 @@ public interface NettyFramework {
      * @return
      * @throws NettyException
      */
-    Bootstrap createUDPBootstrap(Map<String, Object> options) throws NettyException;
+    BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException;
 
     /**
      * Binds a ServerBootstrap to the given host and port, and registers the ServerChannel with this
@@ -62,7 +62,7 @@ public interface NettyFramework {
      * @param inetPort
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet started
      */
-    ChannelFuture start(Bootstrap bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException;
+    ChannelFuture start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Removes a Channel from the set of active Channels. If the Channel is not already closed, then close 

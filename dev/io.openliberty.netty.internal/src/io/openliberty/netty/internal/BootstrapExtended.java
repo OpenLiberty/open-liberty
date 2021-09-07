@@ -10,18 +10,15 @@
  *******************************************************************************/
 package io.openliberty.netty.internal;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.Bootstrap;
 
-/**
- * Extends {@link ServerBootstrap} to allow configuration via a {@link BootstrapConfiguration} 
- */
-public class ServerBootstrapExtended extends ServerBootstrap {
+public class BootstrapExtended extends Bootstrap {
 
     private BootstrapConfiguration config;
     private ChannelInitializerWrapper initializer;
 
     /**
-     * Apply the given {@link BootstrapConfiguration} to this {@link ServerBootstrap}
+     * Apply the given {@link BootstrapConfiguration} to this {@link Bootstrap}
      * Note that most props are implemented via handlers, see {@link TCPChannelInitializerImpl}
      * 
      * @param config
@@ -32,8 +29,8 @@ public class ServerBootstrapExtended extends ServerBootstrap {
     }
 
     /**
-     * Get the ServerBootstrapConfiguration associated with this bootstrap
-     * @return ServerBootstrapConfiguration
+     * Get the BootstrapConfiguration associated with this bootstrap
+     * @return BootstrapConfiguration
      */
     public BootstrapConfiguration getConfiguration() {
         return config;
@@ -53,4 +50,5 @@ public class ServerBootstrapExtended extends ServerBootstrap {
     public ChannelInitializerWrapper getBaseInitializer() {
         return this.initializer;
     }
+
 }
