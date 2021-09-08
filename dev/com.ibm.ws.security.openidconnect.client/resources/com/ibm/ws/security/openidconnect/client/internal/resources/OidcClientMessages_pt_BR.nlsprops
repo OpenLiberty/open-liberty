@@ -288,4 +288,9 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Uma solicita\u00e7\u
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Foi recebida uma solicita\u00e7\u00e3o que inclui um cookie malformado.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. O cookie malformado pode ser causado pela modifica\u00e7\u00e3o do cookie no agente do usu\u00e1rio com um nome de host diferente do nome de host do redirecionamento que est\u00e1 registrado com o provedor. Se o nome do host for esperado, inclua-o no atributo wasReqURLRedirectDomainNames do elemento webAppSecurity em server.xml.
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: O cliente OpenID Connect {0} n\u00e3o pode extrair as reclama\u00e7\u00f5es JSON Web Token (JWT) da resposta da web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A resposta da web deve ser um JWT no formato JSON Web Encryption (JWE) ou JSON Web Signature (JWS). A resposta pode estar malformada ou o cliente OpenID Connect encontrou outro erro ao processar a resposta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es. Verifique se a resposta est\u00e1 no formato JWT.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
