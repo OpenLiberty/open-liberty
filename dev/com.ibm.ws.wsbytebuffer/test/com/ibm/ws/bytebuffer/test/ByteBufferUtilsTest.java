@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,10 @@ import org.junit.rules.TestRule;
 
 import test.common.SharedOutputManager;
 
+import com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
 /**
  * Test the bytebuffer utils class.
@@ -36,7 +37,7 @@ public class ByteBufferUtilsTest {
     private static final String data2 = "secondary test data";
 
     private WsByteBuffer setupBuffer(int size, String content) {
-        WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(size);
+        WsByteBuffer buffer = getBufferManager().allocate(size);
         buffer.put(content.getBytes());
         buffer.flip();
         return buffer;
@@ -46,7 +47,7 @@ public class ByteBufferUtilsTest {
         WsByteBuffer[] list = new WsByteBuffer[content.length];
         for (int i = 0; i < list.length; i++) {
             if (null != content[i]) {
-                list[i] = ChannelFrameworkFactory.getBufferManager().allocate(size);
+                list[i] = getBufferManager().allocate(size);
                 list[i].put(content[i].getBytes());
                 list[i].flip();
             } else {
@@ -267,7 +268,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertEquals(-1, WsByteBufferUtils.asInt((WsByteBuffer) null));
             // test empty input
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(1024);
+            WsByteBuffer buffer = getBufferManager().allocate(1024);
             buffer.limit(0);
             assertEquals(-1, WsByteBufferUtils.asInt(buffer));
             buffer.release();
@@ -293,7 +294,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertEquals(-1, WsByteBufferUtils.asInt((WsByteBuffer) null, 0, 0));
             // test empty input
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(8192);
+            WsByteBuffer buffer = getBufferManager().allocate(8192);
             buffer.limit(0);
             assertEquals(-1, WsByteBufferUtils.asInt(buffer, 0, 0));
             buffer.release();
@@ -366,7 +367,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertNull(WsByteBufferUtils.asString((WsByteBuffer) null));
             // test empty input
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(1024);
+            WsByteBuffer buffer = getBufferManager().allocate(1024);
             buffer.limit(0);
             assertNull(WsByteBufferUtils.asString(buffer));
             buffer.release();
@@ -392,7 +393,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertNull(WsByteBufferUtils.asString((WsByteBuffer) null, 0, 0));
             // test empty input
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(1024);
+            WsByteBuffer buffer = getBufferManager().allocate(1024);
             buffer.limit(0);
             assertNull(WsByteBufferUtils.asString(buffer, 0, 0));
             buffer.release();
@@ -465,7 +466,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertEquals(0, WsByteBufferUtils.asStringBuffer((WsByteBuffer) null).length());
             // test empty input
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(512);
+            WsByteBuffer buffer = getBufferManager().allocate(512);
             buffer.limit(0);
             assertEquals(0, WsByteBufferUtils.asStringBuffer(buffer).length());
             buffer.release();
@@ -535,7 +536,7 @@ public class ByteBufferUtilsTest {
             // test null input
             assertNull(WsByteBufferUtils.expandBufferArray(null, (WsByteBuffer) null));
             // test null original
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(8192);
+            WsByteBuffer buffer = getBufferManager().allocate(8192);
             buffer.put(data2.getBytes());
             buffer.flip();
             WsByteBuffer[] newlist = WsByteBufferUtils.expandBufferArray(null, buffer);
@@ -625,9 +626,9 @@ public class ByteBufferUtilsTest {
             // test empty list
             assertEquals(0, WsByteBufferUtils.getTotalCapacity(new WsByteBuffer[1]));
             // test valid list
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(1024);
-            WsByteBuffer buffer2 = ChannelFrameworkFactory.getBufferManager().allocate(8192);
-            WsByteBuffer buffer3 = ChannelFrameworkFactory.getBufferManager().allocate(16384);
+            WsByteBuffer buffer = getBufferManager().allocate(1024);
+            WsByteBuffer buffer2 = getBufferManager().allocate(8192);
+            WsByteBuffer buffer3 = getBufferManager().allocate(16384);
             WsByteBuffer[] list = new WsByteBuffer[] { buffer, buffer2, buffer3 };
             assertEquals((1024 + 8192 + 16384), WsByteBufferUtils.getTotalCapacity(list));
             releaseList(list);
@@ -674,7 +675,7 @@ public class ByteBufferUtilsTest {
             }
             // test valid input with a flip()
             WsByteBuffer[] list = new WsByteBuffer[1];
-            list[0] = ChannelFrameworkFactory.getBufferManager().allocate(8192);
+            list[0] = getBufferManager().allocate(8192);
             WsByteBufferUtils.putByteArrayValue(list, data.getBytes(), true);
             assertEquals(0, list[0].position());
             assertEquals(data.length(), list[0].limit());
@@ -686,8 +687,8 @@ public class ByteBufferUtilsTest {
             // test valid input over >1 buffer with a flip()
             releaseList(list);
             list = new WsByteBuffer[] {
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10),
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10)
+                                       getBufferManager().allocate(10),
+                                       getBufferManager().allocate(10)
             };
             WsByteBufferUtils.putByteArrayValue(list, "1234567890abcdeg".getBytes(), true);
             assertEquals(0, list[0].position());
@@ -698,8 +699,8 @@ public class ByteBufferUtilsTest {
             // test valid input over >1 buffer without a flip()
             releaseList(list);
             list = new WsByteBuffer[] {
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10),
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10)
+                                       getBufferManager().allocate(10),
+                                       getBufferManager().allocate(10)
             };
             WsByteBufferUtils.putByteArrayValue(list, "1234567890abcdeg".getBytes(), false);
             assertEquals(0, list[0].position());
@@ -723,7 +724,7 @@ public class ByteBufferUtilsTest {
         try {
             // test null input
             WsByteBufferUtils.putStringValue(null, null, true);
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(32);
+            WsByteBuffer buffer = getBufferManager().allocate(32);
             WsByteBufferUtils.putStringValue(new WsByteBuffer[] { buffer }, null, true);
             buffer.release();
             // test too much data
@@ -735,7 +736,7 @@ public class ByteBufferUtilsTest {
             }
             // test valid data with flip()
             WsByteBuffer[] list = new WsByteBuffer[1];
-            list[0] = ChannelFrameworkFactory.getBufferManager().allocate(8192);
+            list[0] = getBufferManager().allocate(8192);
             WsByteBufferUtils.putStringValue(list, data2, true);
             assertEquals(0, list[0].position());
             assertEquals(data2.length(), list[0].limit());
@@ -747,8 +748,8 @@ public class ByteBufferUtilsTest {
             // test valid input over >1 buffer with a flip()
             releaseList(list);
             list = new WsByteBuffer[] {
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10),
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10)
+                                       getBufferManager().allocate(10),
+                                       getBufferManager().allocate(10)
             };
             WsByteBufferUtils.putStringValue(list, "1234567890abcdeg", true);
             assertEquals(0, list[0].position());
@@ -759,8 +760,8 @@ public class ByteBufferUtilsTest {
             // test valid input over >1 buffer without a flip()
             releaseList(list);
             list = new WsByteBuffer[] {
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10),
-                                       ChannelFrameworkFactory.getBufferManager().allocate(10)
+                                       getBufferManager().allocate(10),
+                                       getBufferManager().allocate(10)
             };
             WsByteBufferUtils.putStringValue(list, "1234567890abcdeg", false);
             assertEquals(0, list[0].position());
@@ -776,7 +777,11 @@ public class ByteBufferUtilsTest {
         }
     }
 
-    /**
+    private WsByteBufferPoolManager getBufferManager() {
+    	 return WsByteBufferPoolManagerImpl.getRef();
+	}
+
+	/**
      * Test WsByteBufferUtils.releaseBufferArray(WsByteBuffer[]).
      */
     @Test

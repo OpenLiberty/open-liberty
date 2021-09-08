@@ -53,20 +53,9 @@ each line in the configuration is <varname>keytype</varname>.<varname>name</varn
 endpoint, channel, chain, group (of chains), or factory.</li>
 </ul></p></section>
 <section><title>Channelfw bundle configuration</title><p>The channelfw
-bundle contains configuration information for the framework, the WsByteBuffer
-pooling code, and the TCP channel factory.</p><p><draft-comment>Need
+bundle contains configuration information for the framework and the TCP channel factory.</p><p><draft-comment>Need
 some introductory content here; what is a "key" and how do the keys
-relate to the configuration?</draft-comment>The <uicontrol>wsbb</uicontrol> key
-is used to mark the byte buffer configuration. For example:<codeblock>wsbb.class=com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl
-wsbb.poolSizes=32, 1024, 8192, 16384, 24576, 32768, 49152, 65536
-wsbb.poolDepths=30, 30, 30, 20, 20, 20, 10, 10</codeblock>This configuration
-specifies the internal class used by the pooling code. You can change
-the configuration to specify another pool manager. <draft-comment>The
-following sentence needs clarification; what is "it" and what does
-"public from the providing bundle" mean?</draft-comment>However, it
-must be public from the providing bundle. The pool size and depth
-values define the various byte buffer pools, and how much information
-they contain per thread.</p><p>The <uicontrol>chfw</uicontrol> key
+relate to the configuration?</draft-comment><p>The <uicontrol>chfw</uicontrol> key
 specifies the channel framework specific configuration values. For
 example:<codeblock>chfw.ChainStartRetryInterval=5000
 chfw.ChainStartRetryAttempts=60<draft-comment>Need more explanation of these values and why the user might want to change them.</draft-comment></codeblock></p><p>The <uicontrol>factory</uicontrol> key

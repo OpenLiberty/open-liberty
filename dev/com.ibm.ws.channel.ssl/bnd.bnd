@@ -22,6 +22,12 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Private-Package: com.ibm.ws.channel.ssl.internal.*
 
+# The bytebuffer 'internal' package below has been refactored with the rest of the buffer code into
+# a seperate bundle but is currently used by channel framework projects in whitebox testing.
+Import-Package: \
+    com.ibm.ws.bytebuffer.internal, \
+    ${defaultPackageImport}
+
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
@@ -67,4 +73,6 @@ instrument.disabled: true
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.wsbytebuffer;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
+	

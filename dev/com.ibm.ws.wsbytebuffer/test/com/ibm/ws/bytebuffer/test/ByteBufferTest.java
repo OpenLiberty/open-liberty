@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ import test.common.SharedOutputManager;
 import com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
 /**
  * Test the WsByteBuffer interface.
@@ -54,11 +53,11 @@ public class ByteBufferTest {
     @Test
     public void testPooledBuffers() {
         try {
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(1024);
+            WsByteBuffer buffer = getBufferManager().allocate(1024);
             runTests(buffer, false, 1024);
             assertEquals(WsByteBuffer.TYPE_WsByteBuffer, buffer.getType());
             buffer.release();
-            buffer = ChannelFrameworkFactory.getBufferManager().allocateDirect(1024);
+            buffer = getBufferManager().allocateDirect(1024);
             runTests(buffer, true, 1024);
             assertEquals(WsByteBuffer.TYPE_WsByteBuffer, buffer.getType());
             buffer.release();
@@ -73,7 +72,7 @@ public class ByteBufferTest {
     @Test
     public void testNonPooledBuffer() {
         try {
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().wrap(new byte[8192]);
+            WsByteBuffer buffer = getBufferManager().wrap(new byte[8192]);
             assertEquals(WsByteBuffer.TYPE_WsByteBuffer, buffer.getType());
             runTests(buffer, false, 8192);
         } catch (Throwable t) {
@@ -87,7 +86,7 @@ public class ByteBufferTest {
     @Test
     public void testRefCountBuffer() {
         try {
-            WsByteBufferPoolManagerImpl mgr = (WsByteBufferPoolManagerImpl) ChannelFrameworkFactory.getBufferManager();
+            WsByteBufferPoolManagerImpl mgr = (WsByteBufferPoolManagerImpl) getBufferManager();
             WsByteBuffer buffer = mgr.wrap(ByteBuffer.allocate(1024), true);
             assertEquals(WsByteBuffer.TYPE_WsByteBuffer, buffer.getType());
             runTests(buffer, false, 1024);
@@ -106,7 +105,7 @@ public class ByteBufferTest {
         try {
             File f = new File("test" + sep + "testdata");
             fc = new RandomAccessFile(f, "r").getChannel();
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocateFileChannelBuffer(fc);
+            WsByteBuffer buffer = getBufferManager().allocateFileChannelBuffer(fc);
             assertEquals(WsByteBuffer.TYPE_FCWsByteBuffer, buffer.getType());
             assertEquals(fc.size(), buffer.capacity());
             assertEquals(0, buffer.position());
@@ -138,7 +137,7 @@ public class ByteBufferTest {
 
             // make a read-write FC and check the conversion again
             fc = new RandomAccessFile(f, "rw").getChannel();
-            buffer = ChannelFrameworkFactory.getBufferManager().allocateFileChannelBuffer(fc);
+            buffer = getBufferManager().allocateFileChannelBuffer(fc);
             buffer.get();
             assertFalse(buffer.isReadOnly());
             assertFalse(buffer.getReadOnly());
@@ -414,7 +413,7 @@ public class ByteBufferTest {
 
         // test put WsByteBuffer
         buffer.clear();
-        buffer2 = ChannelFrameworkFactory.getBufferManager().wrap("pbx".getBytes());
+        buffer2 = getBufferManager().wrap("pbx".getBytes());
         buffer.put(buffer2);
         assertEquals(3, buffer.position());
         assertEquals(size, buffer.limit());
@@ -425,8 +424,8 @@ public class ByteBufferTest {
 
         // test put WsByteBuffer list
         buffer.clear();
-        buffer2 = ChannelFrameworkFactory.getBufferManager().wrap("calico".getBytes());
-        WsByteBuffer buffer3 = ChannelFrameworkFactory.getBufferManager().wrap("quasar".getBytes());
+        buffer2 = getBufferManager().wrap("calico".getBytes());
+        WsByteBuffer buffer3 = getBufferManager().wrap("quasar".getBytes());
         buffer.put(new WsByteBuffer[] { buffer2, buffer3 });
         assertEquals(12, buffer.position());
         assertEquals(size, buffer.limit());
@@ -522,7 +521,7 @@ public class ByteBufferTest {
     @Test
     public void testIndirectSlices() {
         try {
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(8192);
+            WsByteBuffer buffer = getBufferManager().allocate(8192);
             buffer.clear();
             for (int i = 0; i < 8192; i++) {
                 buffer.put(((byte) 'a'));
@@ -555,7 +554,7 @@ public class ByteBufferTest {
     @Test
     public void testEquals() {
         try {
-            WsByteBufferPoolManager mgr = ChannelFrameworkFactory.getBufferManager();
+            WsByteBufferPoolManager mgr = getBufferManager();
             WsByteBuffer bb = mgr.allocateDirect(8192);
             System.out.println("buffer1=" + bb);
             WsByteBuffer bb2 = mgr.allocateDirect(8192);
@@ -583,4 +582,8 @@ public class ByteBufferTest {
             outputMgr.failWithThrowable("testEquals", t);
         }
     }
+
+	private WsByteBufferPoolManager getBufferManager() {
+		 return WsByteBufferPoolManagerImpl.getRef();
+	}
 }
