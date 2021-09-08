@@ -34,8 +34,9 @@ import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
-import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.CheckpointImplTest.TestCheckpointHookFactory.TestCheckpointHook;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
@@ -94,14 +95,13 @@ public class CheckpointImplTest {
         volatile boolean throwIOException = false;
 
         @Override
-        public int dump(File imageDir, String logFileName, File workDir) throws IOException {
+        public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
             this.imageDir = imageDir;
             this.logFilename = logFileName;
             this.workDir = workDir;
             if (throwIOException) {
-                throw new IOException("Test exception thrown from TestCRIU");
+                throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, "Test failure", new IOException("failed"), 22);
             }
-            return 0;
         }
 
         @Override
@@ -186,6 +186,7 @@ public class CheckpointImplTest {
     private RuntimeUpdateNotification createRuntimeUpdateNotification() {
         return (RuntimeUpdateNotification) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { RuntimeUpdateNotification.class }, new InvocationHandler() {
 
+            @SuppressWarnings("unchecked")
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
@@ -202,8 +203,9 @@ public class CheckpointImplTest {
 
     }
 
-    private Future createTestFuture() {
-        return (Future) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { Future.class }, new InvocationHandler() {
+    @SuppressWarnings("unchecked")
+    private Future<Boolean> createTestFuture() {
+        return (Future<Boolean>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { Future.class }, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if ("isDone".equals(method.getName())) {
@@ -215,7 +217,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testNullFactories() throws CheckpointFailed {
+    public void testNullFactories() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test1");
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin);
@@ -225,7 +227,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testNullHook() throws CheckpointFailed {
+    public void testNullHook() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test2");
@@ -234,7 +236,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testPrepareRestore() throws CheckpointFailed {
+    public void testPrepareRestore() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
@@ -253,7 +255,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testPrepareException() throws CheckpointFailed {
+    public void testPrepareException() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         RuntimeException prepareException = new RuntimeException("prepare exception test.");
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
@@ -265,7 +267,7 @@ public class CheckpointImplTest {
         try {
             checkpoint.checkpoint(Phase.APPLICATIONS);
             fail("Expected CheckpointFailed exception.");
-        } catch (CheckpointFailed e) {
+        } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.PREPARE_ABORT, e.getType());
             assertEquals("Wrong cause.", prepareException, e.getCause());
         }
@@ -301,14 +303,14 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
-            assertTrue("Unexpected Prepare Exception.", hook.abortPrepareCause instanceof IOException);
+            assertTrue("Unexpected Prepare Exception: " + hook.abortPrepareCause.getCause(), hook.abortPrepareCause.getCause() instanceof IOException);
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
             assertNull("Unexpected Restore Exception.", hook.abortRestoreCause);
         }
     }
 
     @Test
-    public void testRestoreException() throws CheckpointFailed {
+    public void testRestoreException() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         RuntimeException restoreException = new RuntimeException("restore exception test.");
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
@@ -320,7 +322,7 @@ public class CheckpointImplTest {
         try {
             checkpoint.checkpoint(Phase.APPLICATIONS);
             fail("Expected CheckpointFailed exception.");
-        } catch (CheckpointFailed e) {
+        } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.RESTORE_ABORT, e.getType());
             assertEquals("Wrong cause.", restoreException, e.getCause());
         }
@@ -342,7 +344,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testCheckpointApplications() throws CheckpointFailed {
+    public void testCheckpointApplications() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test7");
@@ -353,7 +355,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testCheckpointFeatures() throws CheckpointFailed {
+    public void testCheckpointFeatures() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test8");
@@ -395,12 +397,12 @@ public class CheckpointImplTest {
         return hooks;
     }
 
-    private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailed {
+    private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu, locAdmin);
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
     }
 
-    private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailed {
+    private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
         checkpoint.checkpoint(phase);
         assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
@@ -410,8 +412,8 @@ public class CheckpointImplTest {
         try {
             checkpoint.checkpoint(phase);
             fail("Expected CheckpointFailed exception.");
-        } catch (CheckpointFailed e) {
-            assertEquals("Wrong type.", Type.SNAPSHOT_FAILED, e.getType());
+        } catch (CheckpointFailedException e) {
+            assertEquals("Wrong type.", Type.SYSTEM_CHECKPOINT_FAILED, e.getType());
             assertTrue("Wrong cause.", e.getCause() instanceof IOException);
         }
         assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));

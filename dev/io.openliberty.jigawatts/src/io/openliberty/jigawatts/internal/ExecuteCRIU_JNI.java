@@ -16,6 +16,8 @@ import java.io.IOException;
 import org.openjdk.jigawatts.Jigawatts;
 import org.osgi.service.component.annotations.Component;
 
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 
 // let other implementations win by using low ranking
@@ -23,8 +25,15 @@ import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 public class ExecuteCRIU_JNI implements ExecuteCRIU {
 
     @Override
-    public int dump(File directory, String logFileName, File workDir) throws IOException {
-        return Jigawatts.saveTheWorld(directory.getAbsolutePath());
+    public void dump(File directory, String logFileName, File workDir) throws CheckpointFailedException {
+    	try {
+    		int result = Jigawatts.saveTheWorld(directory.getAbsolutePath());
+    		if (result != 0) {
+    			throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, "CRIU checkpoint saveTheWorld faild", null, result);
+    		}
+    	} catch (IOException e) {
+    		throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, e.getMessage(), e, 50);
+    	}
     }
     
     @Override

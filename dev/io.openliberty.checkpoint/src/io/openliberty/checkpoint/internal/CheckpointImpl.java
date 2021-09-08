@@ -41,7 +41,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
-import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
@@ -60,8 +61,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     private static final TraceComponent tc = Tr.register(CheckpointImpl.class);
     private final ComponentContext cc;
-    private final boolean checkpointFeatures;
-    private final boolean checkpointApplications;
+    private final Phase checkpointAt;
     private final WsLocationAdmin locAdmin;
 
     private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
@@ -79,25 +79,18 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         this.cc = cc;
         this.criu = criu;
         this.locAdmin = locAdmin;
-        this.checkpointFeatures = "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
-        this.checkpointApplications = "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
+        String phase = cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+        this.checkpointAt = phase == null ? null : Phase.getPhase(phase);
     }
 
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-        if (checkpointFeatures && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
+        if (checkpointAt == Phase.FEATURES && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
             notification.onCompletion(new CompletionListener<Boolean>() {
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
-                        try {
-                            checkpoint(Phase.FEATURES);
-                        } catch (CheckpointFailed e) {
-                            if (e.getType() == Type.SNAPSHOT_FAILED) {
-                                new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint exit.").start();
-                            }
-                            // TODO should we always exit on failure?
-                        }
+                        checkpointOrExitOnFailure(Phase.FEATURES);
                     }
                 }
 
@@ -110,19 +103,30 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void check() {
-        if (checkpointApplications) {
-            try {
-                checkpoint(Phase.APPLICATIONS);
-            } catch (CheckpointFailed e) {
-                if (e.getType() == Type.SNAPSHOT_FAILED) {
-                    new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint exit.").start();
-                }
-                // TODO should we always exit on failure?
-            }
+        if (checkpointAt == Phase.APPLICATIONS) {
+            checkpointOrExitOnFailure(Phase.APPLICATIONS);
         }
     }
 
-    void checkpoint(Phase phase) throws CheckpointFailed {
+    void checkpointOrExitOnFailure(Phase phase) {
+        try {
+            checkpoint(phase);
+        } catch (CheckpointFailedException e) {
+            // TODO log error informing we are exiting
+
+            // TODO is there any type of failure where we would not want to exit?
+
+            /*
+             * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
+             * (which starts a server shutdown and quiesce).
+             * The issue is that if we block the event thread then there is a deadlock that prevents the server
+             * shutdown from happening until a 30 second timeout is reached.
+             */
+            new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint failed, exiting...").start();
+        }
+    }
+
+    void checkpoint(Phase phase) throws CheckpointFailedException {
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
             return;
@@ -135,7 +139,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         try {
             ExecuteCRIU currentCriu = criu;
             if (currentCriu == null) {
-                throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null, 0);
+                throw new CheckpointFailedException(Type.UNSUPPORTED, "The criu command is not available.", null, 0);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "criu attempt dump to '" + imageDir + "' and exit process.");
@@ -143,11 +147,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
                 WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
                 logsCheckpoint.create();
-                int dumpCode = currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
-                                                logsCheckpoint.asFile());
-                if (dumpCode < 0) {
-                    throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
-                }
+                currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
+                                 logsCheckpoint.asFile());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "criu dump to " + imageDir + " in recovery.");
@@ -155,10 +156,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
         } catch (Exception e) {
             abortPrepare(checkpointHooks, e);
-            if (e instanceof CheckpointFailed) {
-                throw (CheckpointFailed) e;
+            if (e instanceof CheckpointFailedException) {
+                throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "Failed to do checkpoint.", e, 0);
+            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
         }
         restore(phase, checkpointHooks);
         createRestoreMarker();
@@ -191,7 +192,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private void callHooks(List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            BiConsumer<CheckpointHook, Exception> abort,
-                           Function<Exception, CheckpointFailed> failed) throws CheckpointFailed {
+                           Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
         List<CheckpointHook> called = new ArrayList<>(checkpointHooks.size());
         for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
@@ -210,15 +211,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailed {
+    private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks(checkpointHooks,
                   CheckpointHook::prepare,
                   CheckpointHook::abortPrepare,
                   CheckpointImpl::failedPrepare);
     }
 
-    private static CheckpointFailed failedPrepare(Exception cause) {
-        return new CheckpointFailed(Type.PREPARE_ABORT, "Failed to prepare for a checkpoint.", cause, 0);
+    private static CheckpointFailedException failedPrepare(Exception cause) {
+        return new CheckpointFailedException(Type.PREPARE_ABORT, "Failed to prepare for a checkpoint.", cause, 0);
     }
 
     private void abortPrepare(List<CheckpointHook> checkpointHooks, Exception cause) {
@@ -231,15 +232,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws CheckpointFailed {
+    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks(checkpointHooks,
                   CheckpointHook::restore,
                   CheckpointHook::abortRestore,
                   CheckpointImpl::failedRestore);
     }
 
-    private static CheckpointFailed failedRestore(Exception cause) {
-        return new CheckpointFailed(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
+    private static CheckpointFailedException failedRestore(Exception cause) {
+        return new CheckpointFailedException(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
     }
 
     boolean checkpointCalledAlready() {

@@ -9,25 +9,28 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.checkpoint.internal;
+package io.openliberty.checkpoint.internal.criu;
 
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
-public class CheckpointFailed extends Exception {
+public class CheckpointFailedException extends Exception {
     private static final long serialVersionUID = -669718085413549145L;
 
     public enum Type {
         UNSUPPORTED,
         PREPARE_ABORT,
-        SNAPSHOT_FAILED,
-        RESTORE_ABORT;
+        JVM_CHECKPOINT_FAILED,
+        SYSTEM_CHECKPOINT_FAILED,
+        JVM_RESTORE_FAILED,
+        RESTORE_ABORT,
+        UNKNOWN;
     }
 
     private final int errorCode;
     private final Type type;
 
-    public CheckpointFailed(Type type, String msg, Exception cause, int errorCode) {
+    public CheckpointFailedException(Type type, String msg, Exception cause, int errorCode) {
         super(msg, cause);
         this.type = type;
         this.errorCode = errorCode;
