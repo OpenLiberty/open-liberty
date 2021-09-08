@@ -1142,22 +1142,28 @@ serverCmd()
   return $rc
 }
 
+# Create workarea checkpoint (a workarea backup) after criu has checkpointed the JVM and halted the server process.
+#  The final layout is
+#    ${SERVER_OUTPUT_DIR}/workarea/checkpoint/image/
+#    ${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea-checkpoint/
+#  where image contains the criu image dump and
+#  workarea-checkpoint contains the backup of workarea contents, less the checkpoint dir
 backupWorkarea()
 {
   if $X_WLP_IN_CONTAINER
   then
     return 0
   fi
-  if [ -d "${SERVER_OUTPUT_DIR}/workarea-checkpoint" ]; then
-    rm -rf "${SERVER_OUTPUT_DIR}/workarea-checkpoint"
+  if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea-checkpoint" ]; then
+    rm -rf "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea-checkpoint"
   fi
-  # copy everything but the checkpoint directory; temporarily move checkpoint while copying
+  #  Temporarily move ${SERVER_OUTPUT_DIR}/workarea/checkpoint while copying rest of workarea. Checkpoint contains new criu image dump
   mv "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
   rc=$?
   if [ $rc -ne 0 ]; then
     return 3
   fi
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/workarea-checkpoint"
+  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea-checkpoint"
   rc=$?
   # mv checkpoint directory back
   mv "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
@@ -1171,11 +1177,8 @@ restoreWorkarea()
   if [ ! -f "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreMarker" ]; then
     return 0
   fi
-  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea-checkpoint" ]; then
+  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea-checkpoint" ]; then
     return 1
-  fi
-  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then
-    return 2
   fi
   # remove everything but the checkpoint directory; temporarily move checkpoint while removing
   mv "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
@@ -1185,10 +1188,9 @@ restoreWorkarea()
   fi
   rm -rf "${SERVER_OUTPUT_DIR}/workarea"
   # copy backup to workarea
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea-checkpoint" "${SERVER_OUTPUT_DIR}/workarea"
+  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/checkpoint/workarea-checkpoint" "${SERVER_OUTPUT_DIR}/workarea"
   rc=$?
   # mv checkpoint directory back
-  mkdirs "${SERVER_OUTPUT_DIR}/workarea/"
   mv "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
   if [ $rc -ne 0 ]; then
     return 4
