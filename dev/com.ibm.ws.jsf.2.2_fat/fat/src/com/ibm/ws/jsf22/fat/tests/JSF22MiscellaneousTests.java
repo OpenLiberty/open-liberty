@@ -11,6 +11,7 @@
 package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
 
@@ -31,6 +32,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
@@ -485,6 +487,32 @@ public class JSF22MiscellaneousTests {
                 Assert.fail("index.xhtml did not render properly.");
             } else if (!page.asText().contains("Test Success")) {
                 Assert.fail("/FacesConfigMissingXmlns/index.xhtml did not contain \"Test Success\":\n" + page.asXml());
+            }
+        }
+    }
+
+    /**
+     *
+     * Check that a ClassNotFoundException is not thrown when a custom tag uses Application.createValueBinding() 
+     * See https://github.com/OpenLiberty/open-liberty/issues/18437
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCustomValueBindingTag() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testCustomValueBindingTag.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            page = page.getElementById("form:submit").click();
+
+            if (page == null) {
+                Assert.fail("testCustomValueBindingTag.xhtml did not render properly.");
+            } else {
+                Log.info(c, "page text:", page.asText());
+                assertFalse("A ClassNotFoundException was thrown", page.asText().contains("java.lang.ClassNotFoundException"));
+                assertTrue("Unexpected output", page.asText().contains("18437"));
             }
         }
     }
