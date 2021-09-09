@@ -19,6 +19,10 @@ Bundle-Description: WebSphere WebServices Global Handler service, version ${bVer
 -nouses: true
 
 jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.webservices.handler.jar
+jakartaFinalBundleName: WebSphere WebServices Global Handler service
+jakartaFinalBundleId: io.openliberty.webservices.handler
+jakartaFinalBundleDescription: WebSphere WebServices Global Handler service; Jakarta Enabled
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 

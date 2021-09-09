@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.api.authData
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.authData.jar
-#JakartaEE-Bundle-Name: Security Auth Data
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.authData
-#JakartaEE-Bundle-Description: Security Auth Data; Jakarta enabled
-#JakartaEE-Bundle-Version: 2.0
+#jakartaFinalJarName: io.openliberty.authData.jar
+jakartaFinalBundleName: Security Auth Data
+jakartaFinalBundleId: io.openliberty.authData
+jakartaFinalBundleDescription: Security Auth Data; Jakarta Enabled
 
 Import-Package: com.ibm.websphere.crypto,com.ibm.websphere.security.auth.data,com.ibm.websphere.security.jca
 
