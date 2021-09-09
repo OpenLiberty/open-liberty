@@ -1,25 +1,19 @@
 <server description="Server for testing Webcontainer">
 
-  <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestPorts.xml"/>
 
-  <featureManager>
-    <feature>servlet-4.0</feature>
-  </featureManager>
-  
-  <application context-root="ServerContextRoot" type="war" id="TestContextRootServerXmlPrecedence" location="TestContextRootServerXmlPrecedence.war" name="TestServerXmlContextRoot"/>
-  
-  <application type="war" id="TestContextRootWebExtPrecedence" location="TestContextRootWebExtPrecedence.war" name="TestWebExtContextRoot"/>
-  
-  <application type="war" id="TestContextRootAppNamePrecedence" location="TestContextRootAppNamePrecedence.war" name="AppNameContextRoot"/>
-  
-  <application type="war" id="TestDefaultContextPathPrecedence" location="TestDefaultContextPathPrecedence.war"/>
-  
-  <application type="war" id="TestContextRootDirOrFileNamePrecedence" location="TestContextRootDirOrFileNamePrecedence.war"/>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+    </featureManager>
 
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HttpTransport=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all:com.ibm.ws.session.*=all:com.ibm.ws.runtime.update.internal*=all:ChannelFramework=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
+    <application context-root="ServerContextRoot" type="war" id="TestContextRootServerXmlPrecedence" location="TestContextRootServerXmlPrecedence.war" name="TestServerXmlContextRoot"/>
+
+    <application type="war" id="TestContextRootWebExtPrecedence" location="TestContextRootWebExtPrecedence.war" name="TestWebExtContextRoot"/>
+
+    <application type="war" id="TestContextRootAppNamePrecedence" location="TestContextRootAppNamePrecedence.war" name="AppNameContextRoot"/>
+
+    <application type="war" id="TestDefaultContextPathPrecedence" location="TestDefaultContextPathPrecedence.war"/>
+
+    <application type="war" id="TestContextRootDirOrFileNamePrecedence" location="TestContextRootDirOrFileNamePrecedence.war"/>
 
 </server>

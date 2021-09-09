@@ -29,10 +29,4 @@
         actions="read"
         codebase="${server.config.dir}dropins/SameSiteTest.war"/>
 
-    <logging
-        traceSpecification="*=info=enabled:HTTPChannel=all:TCPChannel=all:GenericBNF=all"
-        maxFileSize="20"
-        maxFiles="10"
-        traceFormat="BASIC"/>
-
 </server>

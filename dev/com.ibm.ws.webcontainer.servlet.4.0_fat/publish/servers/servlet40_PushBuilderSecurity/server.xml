@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018 IBM Corporation and others.
+    Copyright (c) 2018, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -20,13 +20,13 @@
   
   <!-- Automatically expand WAR files and EAR files -->
   <applicationManager autoExpand="true"/>
-  
+
   <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
-      
+
   <basicRegistry id="basic" realm="WebRealm">
   	<user name="admin" password="adminpass" />
   </basicRegistry>
-  
+
   <application type="war" id="TestPushBuilderSecurity.war" name="TestPushBuilderSecurity" location="${server.config.dir}/apps/TestPushBuilderSecurity.war">
     <application-bnd>
         <security-role name="ADMIN_ROLE">
@@ -37,11 +37,5 @@
         </security-role>
     </application-bnd>
   </application>
-
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HttpTransport=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all:com.ibm.ws.session.*=all:com.ibm.ws.runtime.update.internal*=all:ChannelFramework=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
 
 </server>
