@@ -487,7 +487,7 @@ public class CookieAttributes2ServerTests extends CommonTest {
             expectations = validationTools.add401Responses(finalAction);
             expectations = validationTools.addMessageExpectation(genericTestServer, expectations, finalAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not fail when trying to use an OAuth provider.", MessageConstants.CWWKS1712E_ID_TOKEN_MISSING);
             if (expiredToken && !Constants.NONE.equals(settings.getInboundProp())) {
-                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find message in RS log saying the token was not valid.", MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP);
+                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find message in RS log saying the token was not valid.", MessageConstants.CWWKS1720E_ACCESS_TOKEN_NOT_ACTIVE);
                 expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find message in OP log saying the access token is not valid or expired.", MessageConstants.CWWKS1454E_ACCESS_TOKEN_NOT_VALID);
             }
             setCookieCheckOff();

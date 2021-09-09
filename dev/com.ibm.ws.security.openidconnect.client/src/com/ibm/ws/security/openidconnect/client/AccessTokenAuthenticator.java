@@ -717,11 +717,7 @@ public class AccessTokenAuthenticator {
 
     protected boolean validateJsonResponse(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest req) {
         if (jobj.get("active") != null && ((Boolean) jobj.get("active")) != true) {
-            logError(clientConfig, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-            if (req != null) { // avoid subsequent CWWKS1704W with null cause.
-                req.setRsFailMsg("", Tr.formatMessage(tc, "PROPAGATION_TOKEN_NOT_ACTIVE",
-                        new Object[] { clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl() }));
-            }
+            logError(clientConfig, req, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
             return false;
         }
         // ToDo: check exp, iat
@@ -1037,24 +1033,23 @@ public class AccessTokenAuthenticator {
             // do not show the error in messages.log yet. Since this will fall
             // down to RP.
             // If RP can not handle it. RP will display its own error
-            if (warningWhenSupported) { // But when it's the errors on the
-                                        // access_token, such as: expired, we
-                                        // want to do warning
-                                        // TODO change the error message id to warning message id, such
-                                        // as: CWWKS1732E to CWWKS1732W
+            // But when it's the errors on the access_token, such as: expired, we
+            // want to do warning
+            // TODO change the error message id to warning message id, such
+            // as: CWWKS1732E to CWWKS1732W
+            if (warningWhenSupported || oidcClientRequest == null) {
                 Tr.warning(tc, msgKey, objs);
+            } else {
+                String existingFailMsg = oidcClientRequest.getRsFailMsg();
+                if (existingFailMsg == null) {
+                    String format = Tr.formatMessage(tc, msgKey, objs);
+                    oidcClientRequest.setRsFailMsg(null, format);
+                } else {
+                    Tr.debug(tc, "Not setting new RS fail message since one was already found: " + existingFailMsg);
+                }
             }
         } else {
             Tr.error(tc, msgKey, objs);
-        }
-        if (oidcClientRequest != null) {
-            String existingFailMsg = oidcClientRequest.getRsFailMsg();
-            if (existingFailMsg == null) {
-                String format = Tr.formatMessage(tc, msgKey, objs);
-                oidcClientRequest.setRsFailMsg(null, format);
-            } else {
-                Tr.debug(tc, "Not setting new RS fail message since one was already found: " + existingFailMsg);
-            }
         }
     }
 }

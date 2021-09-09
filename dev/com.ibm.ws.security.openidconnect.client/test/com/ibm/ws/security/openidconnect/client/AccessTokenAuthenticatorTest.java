@@ -573,7 +573,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                exactly(3).of(clientConfig).getValidationMethod();
+                exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue(null));
@@ -1030,8 +1030,6 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
 
-        final String failMsg = "CWWKS1721E: The resource server received an error [] while it was attempting to validate the access token. It is either expired or cannot be recognized by the validation end point ["
-                + HTTPS_URL + "].";
         mockery.checking(new Expectations() {
             {
                 one(httpResponse).getStatusLine();
@@ -1049,10 +1047,6 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 allowing(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
-
-                one(clientRequest).getRsFailMsg();
-                will(returnValue(null));
-                one(clientRequest).setRsFailMsg(null, failMsg);
             }
         });
 
@@ -1085,8 +1079,6 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(entity));
                 one(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
-                one(clientRequest).getRsFailMsg();
-                will(returnValue("doesn't matter"));
             }
         });
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
@@ -1109,8 +1101,6 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(null));
                 one(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
-                one(clientRequest).getRsFailMsg();
-                will(returnValue("doesn't matter"));
             }
         });
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
