@@ -7,6 +7,8 @@
 	<classpathentry kind="src" path="test-applications/EJB31AppExMixWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EJB31AppExXmlBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/EJB31AppExXmlWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/Exception2xBean.jar/src"/>
+	<classpathentry kind="src" path="test-applications/Exception2xWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/ExceptionBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/ExceptionWeb.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
