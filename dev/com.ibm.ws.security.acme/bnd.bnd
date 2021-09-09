@@ -26,11 +26,10 @@ Bundle-Description: ACME 2.0; version=${bVersion}
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.acme.internal.jar
-#JakartaEE-Bundle-Name: ACME 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.acme.internal
-#JakartaEE-Bundle-Description: ACME 2.0; Jakarta enabled
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.acme.internal.jar
+jakartaFinalBundleName: ACME 2.0
+jakartaFinalBundleId: io.openliberty.security.acme.internal
+jakartaFinalBundleDescription: ACME 2.0; Jakarta Enabled
 
 WS-TraceGroup: ACMECA
 

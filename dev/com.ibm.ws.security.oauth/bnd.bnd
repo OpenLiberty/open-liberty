@@ -19,11 +19,10 @@ Bundle-Description: WAS Security OAuth 2.0, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.oauth.internal.2.0.jar
-#JakartaEE-Bundle-Name: Liberty Security OAuth 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.oauth.internal.2.0
-#JakartaEE-Bundle-Description: Liberty Security OAuth 2.0, version=${bVersion}
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.oauth.internal.2.0.jar
+jakartaFinalBundleName: Liberty Security OAuth 2.0
+jakartaFinalBundleId: io.openliberty.security.oauth.internal.2.0
+jakartaFinalBundleDescription: Liberty Security OAuth 2.0; Jakarta Enabled
 
 
 Web-ContextPath: /oauth2

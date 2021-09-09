@@ -34,9 +34,9 @@ public class Krb5Common {
     // Kerberos mechanism OID
     static public Oid KRB5_MECH_OID;
 
-    static public boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule");
+    static public boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule");
 
-    static public boolean OTHER_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isAvailable("com.sun.security.auth.module.Krb5LoginModule");
+    static public boolean OTHER_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable("com.sun.security.auth.module.Krb5LoginModule");
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";

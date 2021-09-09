@@ -196,7 +196,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             try {
                 //If the IBM Krb5LoginModule class is available then try to load the target class
                 //OR, if it isn't available, only try to load the target class if it isn't the IBM Krb5LoginModule
-                if (JavaInfo.isAvailable(IBM_KRB5_LOGIN_MODULE) || !IBM_KRB5_LOGIN_MODULE.equalsIgnoreCase(target)) {
+                if (JavaInfo.isSystemClassAvailable(IBM_KRB5_LOGIN_MODULE) || !IBM_KRB5_LOGIN_MODULE.equalsIgnoreCase(target)) {
                     cl = Class.forName(target, false, loader);
                 }
             } catch (ClassNotFoundException e) {
