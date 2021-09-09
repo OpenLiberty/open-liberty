@@ -33,7 +33,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public static final String COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.sun.security.auth.module.Krb5LoginModule";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
-    public static final boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isAvailable(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
+    public static final boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
 
     public CallbackHandler callbackHandler;
     public Subject subject;

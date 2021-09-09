@@ -252,7 +252,7 @@ public class CpuInfo {
             return new NullCpuInfoAccessor();
         }
         try {
-            if (JavaInfo.isAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
+            if (JavaInfo.isSystemClassAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
                 return new IBMJavaCpuInfoAccessor(mbean);
             }
             return new ModernJavaCpuInfoAccessor(mbean);
