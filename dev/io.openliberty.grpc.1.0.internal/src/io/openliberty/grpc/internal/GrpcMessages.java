@@ -11,7 +11,7 @@
 package io.openliberty.grpc.internal;
 
 public interface GrpcMessages {
-	
+
     /** RAS trace bundle for the GRPC channel */
     String GRPC_BUNDLE = "io.openliberty.grpc.internal.resources.grpcmessages";
     /** RAS trace name for the GRPC channel */

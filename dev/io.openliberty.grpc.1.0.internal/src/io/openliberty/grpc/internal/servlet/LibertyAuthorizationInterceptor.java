@@ -25,21 +25,21 @@ import io.openliberty.grpc.internal.security.GrpcServerSecurity;
  */
 public class LibertyAuthorizationInterceptor implements ServerInterceptor {
 
-	/**
-	 * Grab the LIBERTY_AUTH_KEY from the headers on this call and use that key to
-	 * check the authorization map. If this call is not authorized, set the status
-	 * to UNAUTHENTICATED and stop the call chain
-	 */
-	@Override
-	public <ReqT, RespT> Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
-			ServerCallHandler<ReqT, RespT> next) {
-		String key = headers.get(GrpcServerSecurity.LIBERTY_AUTH_KEY);
-		if (!GrpcServerSecurity.isAuthorized(key)) {
-			call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized"), headers);
-			// return no-op listener
-			return new ServerCall.Listener<ReqT>() {
-			};
-		}
-		return next.startCall(call, headers);
-	}
+    /**
+     * Grab the LIBERTY_AUTH_KEY from the headers on this call and use that key to
+     * check the authorization map. If this call is not authorized, set the status
+     * to UNAUTHENTICATED and stop the call chain
+     */
+    @Override
+    public <ReqT, RespT> Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
+            ServerCallHandler<ReqT, RespT> next) {
+        String key = headers.get(GrpcServerSecurity.LIBERTY_AUTH_KEY);
+        if (!GrpcServerSecurity.isAuthorized(key)) {
+            call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized"), headers);
+            // return no-op listener
+            return new ServerCall.Listener<ReqT>() {
+            };
+        }
+        return next.startCall(call, headers);
+    }
 }

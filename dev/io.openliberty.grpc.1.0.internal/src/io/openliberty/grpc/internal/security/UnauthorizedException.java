@@ -13,12 +13,12 @@ package io.openliberty.grpc.internal.security;
 
 public class UnauthorizedException extends java.lang.SecurityException{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	   /**
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+       /**
      * Constructor for this exception
      *
      * @param msg
