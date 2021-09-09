@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -39,15 +40,19 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
+import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.webcontainer.facade.ServletContextFacade;
+import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
 import io.grpc.BindableService;
 import io.grpc.ServerInterceptor;
@@ -62,14 +67,11 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
     private static final TraceComponent tc = Tr.register(GrpcServerComponent.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
-    private static HashMap<String, GrpcServletApplication> grpcApplications = new HashMap<String, GrpcServletApplication>();
-    private static Object grpcApplicationLock = new Object() {
-    };
+    private static Map<String, GrpcServletApplication> grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
 
     private static boolean useSecurity = false;
 
     private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
-    private final String GRPC_MONITOR_NAME = "GrpcMonitoringServerInterceptorService";
 
     private final AtomicServiceReference<FeatureProvisioner> _featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
             FEATUREPROVISIONER_REFERENCE_NAME);
@@ -99,21 +101,21 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
             cardinality = ReferenceCardinality.OPTIONAL,
             policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
-     protected void setMonitoringService(GrpcMonitoringServerInterceptorService service) {
-         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-             Tr.debug(this, tc, "setMonitoringService");
-         }
-         monitorService = service;
-     }
+    protected void setMonitoringService(GrpcMonitoringServerInterceptorService service) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "setMonitoringService");
+        }
+        monitorService = service;
+    }
 
-     protected void unsetMonitoringService(GrpcMonitoringServerInterceptorService service) {
-         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-             Tr.debug(this, tc, "unsetMonitoringService");
-         }
-         if (monitorService == service) {
-             monitorService = null;
-         }
-     }
+    protected void unsetMonitoringService(GrpcMonitoringServerInterceptorService service) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "unsetMonitoringService");
+        }
+        if (monitorService == service) {
+            monitorService = null;
+        }
+    }
 
     /**
      * Search for all implementors of io.grpc.BindableService and register them with
@@ -121,74 +123,61 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
      */
     @Override
     public void onStartup(Set<Class<?>> ctx, ServletContext sc) throws ServletException {
-        synchronized (grpcApplicationLock) {
-            if (!grpcApplications.isEmpty()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Attempting to load gRPC services for app {0}", sc.getServletContextName());
-                }
-
-                // TODO: optionally load classes with CDI to allow injection in service classes
-                // init all other BindableService classes via reflection
-                GrpcServletApplication currentApp = grpcApplications.get(((WebApp) sc).getApplicationName());
-                if (currentApp != null) {
-                    Set<String> services = currentApp.getServiceClassNames();
-
-                    if (services != null) {
-                        Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
-                        for (String serviceClassName : services) {
-                            BindableService service = newServiceInstanceFromClassName(currentApp, serviceClassName);
-                            if (service != null) {
-                                grpcServiceClasses.put(serviceClassName, service);
-                            }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Attempting to load gRPC services for app {0}", sc.getServletContextName());
+        }
+        IServletContext isc = unwrapServletContext(sc);
+        Container container = isc.getModuleContainer();
+        if (container != null) {
+            GrpcServletApplication currentApp = initGrpcServices(container, isc.getWebAppConfig().getApplicationName());
+            if (currentApp != null) {
+                Set<String> services = currentApp.getServiceClassNames();
+                if (services != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "gRPC services found for app {0}; starting initialization", sc.getServletContextName());
+                    }
+                    Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
+                    for (String serviceClassName : services) {
+                        BindableService service = newServiceInstanceFromClassName(currentApp, serviceClassName);
+                        if (service != null) {
+                            grpcServiceClasses.put(serviceClassName, service);
                         }
-                        if (!grpcServiceClasses.isEmpty()) {
-                            // keep track of the current application so that we can restart it if <grpcService/> is updated
-                            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-                            if (cmd != null) {
-                             currentApp.setAppName(cmd.getJ2EEName().getApplication());
-                            }
-                            // register URL mappings for each gRPC service we've registered
-                            for (BindableService service : grpcServiceClasses.values()) {
-                                String serviceName = service.bindService().getServiceDescriptor().getName();
-
-                                // pass all of our grpc service implementors into a new GrpcServlet
-                                // and register that new Servlet on this context
-                                GrpcServlet grpcServlet = new GrpcServlet(
-                                        new ArrayList<BindableService>(grpcServiceClasses.values()), ((WebApp) sc).getApplicationName());
-                                ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
-                                servletRegistration.setAsyncSupported(true);
-
-                                String urlPattern = "/" + serviceName + "/*";
-                                servletRegistration.addMapping(urlPattern);
-                                
-                                
-                                /*
-                                 * If response needs to be wrapped, enable this code to add wrapper Filter
-                                 * 
-                                FilterRegistration.Dynamic filterRegistration = ((WebApp) sc).addFilter("grpcFilter",
-                                        new GrpcResponseFilter());
-                                if (filterRegistration == null) { 
-                                    // it may be already added if multiple services
-                                    //get from config
-                                    filterRegistration = ((WebApp) sc).getFilterConfig("grpcFilter");	
-                                }
-                                filterRegistration.setAsyncSupported(true);		
-                                filterRegistration.addMappingForUrlPatterns(null, true, urlPattern);
-                                */
-
-                                // keep track of this service name -> application path mapping
-                                currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
-                                
-                                Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
-                            }
-                            return;
+                    }
+                    if (!grpcServiceClasses.isEmpty()) {
+                        // keep track of the current application so that we can restart it if <grpcService/> is updated
+                        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                        if (cmd != null) {
+                            currentApp.setAppName(cmd.getJ2EEName().getApplication());
                         }
+                        // register URL mappings for each gRPC service we've registered
+                        for (BindableService service : grpcServiceClasses.values()) {
+                            String serviceName = service.bindService().getServiceDescriptor().getName();
+
+                            // pass all of our grpc service implementors into a new GrpcServlet
+                            // and register that new Servlet on this context
+                            GrpcServlet grpcServlet = new GrpcServlet(
+                                    new ArrayList<BindableService>(grpcServiceClasses.values()), isc.getWebAppConfig().getApplicationName());
+                            ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
+                            servletRegistration.setAsyncSupported(true);
+
+                            String urlPattern = "/" + serviceName + "/*";
+                            servletRegistration.addMapping(urlPattern);
+
+                            // keep track of this service name -> application path mapping
+                            currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
+
+                            Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
+                        }
+                        return;
                     }
                 }
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No gRPC services have been registered for app {0}", sc.getServletContextName());
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The module container for {0} was null", ((WebApp) sc).getApplicationName());
         }
     }
 
@@ -225,38 +214,41 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
     }
 
     /**
-     * Find all implementors of io.grpc.BindableService and save them off to be
-     * loaded during ServletContainerInitialization
+     * Find implementors of io.grpc.BindableService in the given container, and initialize a 
+     * GrpcServletApplication containing the class names
      * 
-     * @param ApplicationInfo appInfo
+     * @param container
+     * @param appName
+     * @return GrpcServletApplication
      */
-    private void initGrpcServices(ApplicationInfo appInfo) {
+    @FFDCIgnore(UnableToAdaptException.class)
+    private GrpcServletApplication initGrpcServices(Container container, String appName)  {
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(appInfo.getContainer());
+            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(container);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
             Set<String> services = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
-
             if (services != null && !services.isEmpty()) {
                 if (!services.isEmpty()) {
                     GrpcServletApplication currentApplication = new GrpcServletApplication();
-                    synchronized (grpcApplicationLock) {
-                        for (String name : services) {
-                            // only add the class name
-                            currentApplication.addServiceClassName(name);
-                        }
-                        grpcApplications.put(appInfo.getName(), currentApplication);
+                    for (String name : services) {
+                        // only add the class name
+                        currentApplication.addServiceClassName(name);
                     }
+                    grpcApplications.put(appName, currentApplication);
+                    return currentApplication;
                 }
             }
         } catch (UnableToAdaptException e) {
-            // FFDC
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Failed to adapt: container=" + container + " : \n" + e.getMessage());
+            }
         }
+        return null;
     }
 
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         setSecurityEnabled();
-        initGrpcServices(appInfo);
     }
 
     @Override
@@ -265,14 +257,10 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
     @Override
     public void applicationStopping(ApplicationInfo appInfo) {
-        synchronized (grpcApplicationLock) {
-            // clean up any grpc URL mappings
-            if (!grpcApplications.isEmpty()) {
-                GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
-                if (currentApp != null) {
-                    currentApp.destroy();
-                }
-            }
+        // clean up any grpc URL mappings
+        GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
+        if (currentApp != null) {
+            currentApp.destroy();
         }
     }
 
@@ -308,4 +296,23 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
         }
         return null;
     }
+
+    /**
+     * Util to unwrap the ServletContext to get the IServletContext
+     * @param context
+     * @return
+     */
+    private static IServletContext unwrapServletContext(ServletContext context) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "unwrapServletContext", "original context->" + context);
+        }
+        while (context instanceof ServletContextFacade) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "unwrapServletContext", "nested context->" + context);
+            }
+            context = ((ServletContextFacade) context).getIServletContext();
+        }
+        return (IServletContext) context;
+    }
+
 }
