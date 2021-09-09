@@ -42,7 +42,7 @@ public class WCSendRedirectRelativeURLTrue {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.war.listeners");
+        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.listeners");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCSendRedirectRelativeURLTrue.class.getSimpleName() + ".log");

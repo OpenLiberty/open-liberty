@@ -59,7 +59,7 @@ public class WC5JakartaServletTest {
     public static void before() throws Exception {
         LOG.info("Setup : add " + APP_NAME + " war to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servlet5snoop.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servlet5snoop.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WC5JakartaServletTest.class.getSimpleName() + ".log");

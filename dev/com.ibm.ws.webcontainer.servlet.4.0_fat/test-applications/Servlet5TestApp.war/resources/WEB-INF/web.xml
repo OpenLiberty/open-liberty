@@ -19,7 +19,7 @@
 	<servlet>
 		<display-name>Snoop Servlet</display-name>
 		<servlet-name>Snoop Servlet</servlet-name>
-		<servlet-class>servlet5snoop.war.servlets.Snoop5Servlet</servlet-class>
+		<servlet-class>servlet5snoop.servlets.Snoop5Servlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -31,7 +31,7 @@
 	<servlet>
 		<display-name>Query Servlet</display-name>
 		<servlet-name>Query Servlet</servlet-name>
-		<servlet-class>servlet5snoop.war.servlets.QueryServlet</servlet-class>
+		<servlet-class>servlet5snoop.servlets.QueryServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
