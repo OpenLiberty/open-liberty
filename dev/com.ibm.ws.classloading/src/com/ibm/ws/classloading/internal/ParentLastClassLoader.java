@@ -17,6 +17,7 @@ import static com.ibm.ws.classloading.internal.Util.freeze;
 import static com.ibm.ws.classloading.internal.Util.list;
 
 import java.io.IOException;
+import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
@@ -37,8 +38,8 @@ class ParentLastClassLoader extends AppClassLoader {
     static {
         ClassLoader.registerAsParallelCapable();
     }
-    ParentLastClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> urls, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
-        super(parent, config, urls, access, redefiner, generator, globalConfig);
+    ParentLastClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> urls, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
+        super(parent, config, urls, access, redefiner, generator, globalConfig, systemTransformers);
     }
 
     static final List<SearchLocation> PARENT_LAST_SEARCH_ORDER = freeze(list(SELF, DELEGATES, PARENT));

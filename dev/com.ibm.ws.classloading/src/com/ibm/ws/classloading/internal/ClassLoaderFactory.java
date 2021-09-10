@@ -14,6 +14,7 @@ import static com.ibm.ws.classloading.internal.Util.ensure;
 import static com.ibm.ws.classloading.internal.Util.ensureNotNull;
 
 import java.io.File;
+import java.lang.instrument.ClassFileTransformer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,17 +60,19 @@ class ClassLoaderFactory extends GatewayBundleFactory {
     private final ClassRedefiner redefiner;
     private final ClassGenerator generator;
     private final GlobalClassloadingConfiguration globalConfig;
+    private final List<ClassFileTransformer> systemTransformers;
 
     ClassLoaderFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders,
                        CanonicalStore<ClassLoaderIdentity, AppClassLoader> store,
                        CompositeResourceProvider resourceProviders, ClassRedefiner redefiner, ClassGenerator generator,
-                       GlobalClassloadingConfiguration globalConfig) {
+                       GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(bundleContext, digraph, classloaders);
         this.store = store;
         this.resourceProviders = resourceProviders;
         this.redefiner = redefiner;
         this.generator = generator;
         this.globalConfig = globalConfig;
+        this.systemTransformers = systemTransformers;
     }
 
     private <P extends ClassLoader & DeclaredApiAccess> void setParent(P p) {
@@ -129,8 +132,8 @@ class ClassLoaderFactory extends GatewayBundleFactory {
         validate();
         inferParentLoader();
         AppClassLoader result = config.getDelegateToParentAfterCheckingLocalClasspath()
-                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig)
-                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig);
+                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers)
+                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers);
         addSharedLibPaths(result);
         runPostCreateAction(result);
         return result;

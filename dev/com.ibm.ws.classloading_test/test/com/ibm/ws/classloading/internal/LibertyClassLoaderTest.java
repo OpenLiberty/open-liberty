@@ -62,7 +62,7 @@ public class LibertyClassLoaderTest {
     public void testClassFormatError() throws Exception {
         Container c = buildMockContainer("testClasses", getOtherClassesURL(ClassSource.A));
 
-        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
+        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration(), Collections.emptyList()) {
             @Override
             protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findClassBytes(String className, String resourceName,
                                                                                                              ClassLoaderHook hook) throws IOException {
