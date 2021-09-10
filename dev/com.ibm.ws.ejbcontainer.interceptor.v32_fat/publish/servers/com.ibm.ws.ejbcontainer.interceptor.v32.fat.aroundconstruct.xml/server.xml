@@ -1,0 +1,10 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>cdi-1.2</feature>
+    </featureManager>
+</server>
