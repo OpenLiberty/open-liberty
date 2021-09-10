@@ -431,6 +431,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     //BETA
     task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile9Features
@@ -447,9 +448,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             copy {
                 from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
                 into "$packageDir/wlp/templates/clients/defaultClient"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
             }
         }
     }
@@ -475,9 +473,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
                 from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
                 into "$packageDir/wlp/templates/clients/defaultClient"
             }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
-            }
         }
     }
     
@@ -488,7 +483,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
                 this.&removeFeature("${it}")
             }
         }
-
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile4Features
@@ -507,6 +501,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     
     //BETA
     task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile5Features
@@ -518,9 +513,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
             }
         }
     }
