@@ -31,7 +31,8 @@ app-resources= \
 -dsannotations: \
   io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig,\
   io.openliberty.org.jboss.resteasy.common.client.JAXRSAppSecurity,\
-  io.openliberty.restfulWS.client.security.OAuthPropagationHelper
+  io.openliberty.restfulWS.client.security.OAuthPropagationHelper,\
+  io.openliberty.restfulWS.introspector.LibertyResteasyEndpointIntrospector
 
 Service-Component: \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
