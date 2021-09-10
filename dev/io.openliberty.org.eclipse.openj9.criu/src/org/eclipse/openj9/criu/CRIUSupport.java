@@ -19,25 +19,6 @@ import java.io.File;
 
 public final class CRIUSupport {
 
-	public static enum CRIUResultType {
-		SUCCESS,
-		UNSUPPORTED_OPERATION,
-		INVALID_ARGUMENTS,
-		SYSTEM_CHECKPOINT_FAILURE,
-		JVM_CHECKPOINT_FAILURE,
-		JVM_RESTORE_FAILURE;
-	}
-
-	public final static class CRIUResult {
-		public CRIUResultType getType() {
-			return null;
-		}
-
-		public Throwable getThrowable() {
-			return null;
-		}
-	}
-
 	public CRIUSupport(Path imageDir) {
 	}
 
@@ -73,11 +54,22 @@ public final class CRIUSupport {
 		return this;
 	}
 
+	public CRIUSupport setTCPEstablished(boolean tcpEstablished) {
+		return this;
+	}
+
+	public CRIUSupport setAutoDedup(boolean autoDedup) {
+		return this;
+	}
+
+	public CRIUSupport setTrackMemory(boolean trackMemory) {
+		return this;
+	}
+
 	public CRIUSupport setWorkDir(Path workDir) {
 		return this;
 	}
 
-	public CRIUResult checkpointJVM() {
-		return null;
+	public void checkpointJVM() {
 	}
 }

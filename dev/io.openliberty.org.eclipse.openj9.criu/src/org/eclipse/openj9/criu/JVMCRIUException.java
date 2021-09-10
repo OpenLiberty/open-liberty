@@ -8,13 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.internal.criu;
+package org.eclipse.openj9.criu;
 
-import java.io.File;
+public abstract class JVMCRIUException extends RuntimeException {
+    private static final long serialVersionUID = 4486137934620495516L;
+    protected int errorCode;
 
-public interface ExecuteCRIU {
+    protected JVMCRIUException(String message, int errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
 
-    void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException;
+    public int getErrorCode() {
+        return errorCode;
+    }
 
-    boolean isCheckpointSupported();
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
 }
