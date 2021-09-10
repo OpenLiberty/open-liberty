@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 import componenttest.annotation.Server;
@@ -34,17 +35,20 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class HotAddMPConfig extends FATServletClient {
 
+    public static final String SERVER_NAME = "HotAddMPConfig";
     public static final String APP_NAME = "hotAddMPConfigApp";
 
-    @Server("HotAddMPConfig")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("HotAddMPConfig", MicroProfileActions.LATEST, MicroProfileActions.MP20);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config.hotadd.*");
+        DeployOptions[] options = new DeployOptions[1];
+        options[0] = DeployOptions.SERVER_ONLY;
+        ShrinkHelper.defaultApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config.hotadd.*");
         server.copyFileToLibertyServerRoot("HotAddMPConfig/noMPConfig/HotAddMPConfig.xml");
         server.copyFileToLibertyServerRoot("HotAddMPConfig/withApp/HotAddApp.xml");
         server.startServerAndValidate(true, true, false); //don't validate because the app won't have started properly
