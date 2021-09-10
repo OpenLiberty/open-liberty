@@ -78,6 +78,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
@@ -294,6 +295,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     private volatile boolean deactivated;
 
+    private String checkpointPhase;
+
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
@@ -385,6 +388,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         //register the BundleOriginMonitor for tracking bundles installed by non-feature manager bundles
         bundleContext.addBundleListener((bundleOriginsListener = new BundleInstallOriginBundleListener(bundleContext)));
+        checkpointPhase = bundleContext.getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
     }
 
     /**
@@ -766,7 +770,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     // even if no features are loaded
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
-
+                    checkiFCheckpointFeatureMissing(Arrays.asList(featureChange.features));
                     checkServerReady();
 
                     //register a service that can be looked up for server start.
@@ -1891,8 +1895,26 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             resolved.clear();
             Tr.warning(tc, "UPDATE_DISABLED_FEATURES_ON_CONFLICT");
         }
+
         return reportedErrors;
 
+    }
+
+    /**
+     * If server launch was requested with a checkpoint, and checkpoint feature is not enabled, an
+     * error message is issued and the jvm is exited.
+     */
+    private void checkiFCheckpointFeatureMissing(Collection<String> features) {
+
+        //TODO remove beta check on feature release.
+        if (checkpointPhase != null && ProductInfo.getBetaEdition()) {
+            if (!features.contains("checkpoint-1.0")) {
+                Tr.error(tc, "CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING");
+
+                // Exit in thread to avoid blocking the server quiesce.
+                new Thread(() -> System.exit(1), "Checkpoint failed, exiting...").start();
+            }
+        }
     }
 
     private ConflictRecord getConflictRecord(Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {

@@ -916,12 +916,22 @@ javaCmd()
     touchIfNotExist "${CHECKPOINT_CONSOLE_LOG}"
     tail -f "${CHECKPOINT_CONSOLE_LOG}" &
     TAIL_PID=$!
-
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1
     rc=$?
     kill $TAIL_PID
-    backupWorkarea
-    rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+    # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
+    # Check for expected return code of 137 from the KILL.
+    if [ $rc -eq 137 ]; then
+      backupWorkarea
+      #Reset rc. If backupWorkarea returns 0 then overall checkpoint action is successful.
+      rc=$?
+      rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+    else
+      #The CRIU dump likely failed. 
+      #TODO localize error message
+      echo ERROR The criu dump did not return the expected return code. Instead it returned: $rc. \
+      Please consult the logs for more information.
+    fi
     return $rc
   else
     "${JAVA_CMD}" "$@"
