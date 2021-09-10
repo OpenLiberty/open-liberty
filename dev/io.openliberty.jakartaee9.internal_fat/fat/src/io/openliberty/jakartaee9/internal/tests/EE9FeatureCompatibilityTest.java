@@ -51,6 +51,7 @@ import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EERepeatTests.EEVersion;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureSet;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
@@ -280,13 +281,17 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
     @Test
     public void testJsonP20Feature() throws Exception {
+        Map<String, String> specialEE9Conflicts = new HashMap<>();
         // jsonp-2.0 will conflict with itself
-        testCompatibility("jsonp-2.0", Collections.singletonMap("jsonp-2.0", "io.openliberty.jsonp"));
+        specialEE9Conflicts.put("jsonp-2.0", "io.openliberty.jsonp");
+        specialEE9Conflicts.put("jsonp-2.1", "io.openliberty.jsonp");
+        testCompatibility("jsonp-2.0", specialEE9Conflicts);
     }
 
     @Test
     public void testServlet50Feature() throws Exception {
         Map<String, String> specialEE9Conflicts = new HashMap<>();
+        specialEE9Conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-5.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-4.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
@@ -315,6 +320,15 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         specialEE9Conflicts.put("jdbc-4.1", "com.ibm.websphere.appserver.jdbc");
         // the webProfile-9.1 convenience feature conflicts with the 9.0 one
         specialEE9Conflicts.put("webProfile-9.0", "io.openliberty.webProfile");
+
+        // Add EE10 features that are not part of EE9
+        // They will conflict by their long name
+        for (String feature : JakartaEE10Action.EE10_FEATURE_SET) {
+            if (!JakartaEE9Action.EE9_FEATURE_SET.contains(feature)) {
+                specialEE9Conflicts.put(feature,
+                                        feature.startsWith("servlet-") ? "com.ibm.websphere.appserver.servlet" : "io.openliberty." + feature.substring(0, feature.indexOf('-')));
+            }
+        }
 
         testCompatibility("jakartaee-9.1", specialEE9Conflicts);
     }
