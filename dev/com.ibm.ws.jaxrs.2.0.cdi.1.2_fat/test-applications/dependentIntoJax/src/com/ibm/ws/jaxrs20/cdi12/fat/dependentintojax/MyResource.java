@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -27,6 +26,7 @@ public class MyResource {
 	
     @GET
     public String getRequest() {
+        System.out.println("getRequest() - db = " + db);
         return "preDestroy was called " + preDestroyMsgs.size() + " times";
     }
 
