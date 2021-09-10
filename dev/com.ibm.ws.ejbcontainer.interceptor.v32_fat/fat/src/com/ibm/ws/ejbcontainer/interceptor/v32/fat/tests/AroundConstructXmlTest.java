@@ -65,7 +65,7 @@ public class AroundConstructXmlTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0019E", "CNTR0249E", "CNTR4006E", "CNTR4007E", "CNTR5007E");
+            server.stopServer("CNTR0019E");
         }
 
     }
