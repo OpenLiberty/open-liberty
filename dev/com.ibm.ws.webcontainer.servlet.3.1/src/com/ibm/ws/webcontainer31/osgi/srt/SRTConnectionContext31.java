@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@
 package com.ibm.ws.webcontainer31.osgi.srt;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.http.HttpUpgradeHandler;
 
@@ -108,6 +109,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                         connection.setDeviceConnLink(cldevice);  
                         vc.getStateMap().put(TransportConstants.UPGRADED_CONNECTION, "true");
                         vc.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT, connection);
+                        vc.getStateMap().put(TransportConstants.ON_CLOSE_COUNTDOWN_LATCH,  new CountDownLatch(1));
                         connection.setVirtualConnection(vc);
 
                         doInit = true;                            
@@ -135,6 +137,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                             // remove the TransportConstants which if added for Upgrade previously
                             vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, null);
                             vc.getStateMap().put(TransportConstants.UPGRADED_LISTENER, null);
+                            vc.getStateMap().put(TransportConstants.ON_CLOSE_COUNTDOWN_LATCH, null);
                             
                             upgradedCon.setVirtualConnection(vc);
 

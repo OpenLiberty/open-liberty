@@ -18,8 +18,10 @@ import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -249,6 +251,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 this.myChannel.decrementActiveConns();
             }
         }
+
+        if (this.vc != null && this.vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION) != null) {
+            CountDownLatch countDownLatch = (CountDownLatch) (this.vc.getStateMap().get(TransportConstants.ON_CLOSE_COUNTDOWN_LATCH));
+            countDownLatch.countDown();
+        }
     }
 
     /*
@@ -267,6 +274,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (vc != null) {
             String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
             if (upgraded != null) {
+                // Ensure close is called before destroy
+                CountDownLatch countDownLatch = (CountDownLatch) (vc.getStateMap()
+                        .get(TransportConstants.ON_CLOSE_COUNTDOWN_LATCH));
+                if (countDownLatch != null) {
+                    try {
+                        countDownLatch.await(30L, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e1) {
+                        Tr.debug(tc, "InterruptedException occured while awaiting the countDownLatch!");
+                    }
+                }
+                
                 if (upgraded.compareToIgnoreCase("true") == 0) {
                     Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
                     if (webConnectionObject != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,5 +28,8 @@ public class TransportConstants {
     public static final String CLOSE_NON_UPGRADED_STREAMS = "CloseNonUpgradedStreams";
     public static final String UPGRADED_LISTENER = "UpgradedListener";
     public static final String CLOSE_UPGRADED_WEBCONNECTION = "CloseUpgradedWebConnection";
+
+    // for defect 276206
+    public static final String ON_CLOSE_COUNTDOWN_LATCH = "OnCloseCountDownLatch";
 
 }
