@@ -52,7 +52,7 @@ public class UDPUtils {
      * @param bindListener
      * @return
      */
-    private static ChannelFuture bindHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost, int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
+    private static ChannelFuture bind(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost, int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
         ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
         if (bindListener != null) {
             bindFuture.addListener(bindListener);
@@ -88,7 +88,7 @@ public class UDPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    bindHelper(framework, bootstrap, inetHost, inetPort, retryCount - 1, retryDelay, bindListener);
+                    bind(framework, bootstrap, inetHost, inetPort, retryCount - 1, retryDelay, bindListener);
                 } else {
                     Tr.error(tc, UDPMessageConstants.BIND_FAILURE, new Object[] { channelName, inetHost, String.valueOf(inetPort) });
                 }
@@ -129,15 +129,15 @@ public class UDPUtils {
                         final String channelName = ((UDPConfigurationImpl) bootstrap.getConfiguration()).getExternalName();
                         Tr.error(tc, UDPMessageConstants.DNS_LOOKUP_FAILURE, 
                                 new Object[] { channelName, newHost, String.valueOf(inetPort) });
-                        throw new NettyException("local address unresolved");
+                        throw new NettyException("local address unresolved for " + channelName + " - " + newHost + ":" + inetPort);
                     }
 
-                    return bindHelper(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval, bindListener);
+                    return bind(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval, bindListener);
                 }
             });
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
             }
         }
 

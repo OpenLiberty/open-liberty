@@ -17,14 +17,15 @@ Bundle-SymbolicName: io.openliberty.netty.internal.impl
 Bundle-Description: Liberty Netty Transport Implementation ${bVersion}
 WS-TraceGroup: Netty
 
-Import-Package: \
-  io.openliberty.netty.internal,\
-  *
-
 Export-Package: \
   io.openliberty.netty.internal.impl, \
   io.openliberty.netty.internal.tcp, \
   io.openliberty.netty.internal.udp
+
+Import-Package: \
+  io.openliberty.netty.internal, \
+  io.openliberty.netty.internal.exception, \
+  ${defaultPackageImport}
 
 # reuse the existing translated messages from the TCP Channel
 Private-Package: \
@@ -35,7 +36,7 @@ Private-Package: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
 
 -buildpath: \
-    com.ibm.ws.channelfw;version=latest,\
+    com.ibm.ws.channelfw,\
     com.ibm.ws.logging,\
     com.ibm.ws.event,\
     com.ibm.websphere.org.osgi.core,\

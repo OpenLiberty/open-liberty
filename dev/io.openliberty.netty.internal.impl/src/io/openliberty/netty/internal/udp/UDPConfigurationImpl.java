@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,6 @@ import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.exception.NettyException;
 
 /**
- * TODO: as far as I can tell UDP options aren't actually exposed to user config in Liberty, so currently a few props 
- * (notably access lists) aren't implemented.
- * 
  * @see com.ibm.ws.udpchannel.internal.UDPChannelConfiguration
  */
 public class UDPConfigurationImpl implements BootstrapConfiguration {
@@ -81,7 +78,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
      */
     @Override
     public void applyConfiguration(Bootstrap bootstrap) {
-        // TODO: UDPNetworkLayer sets reuseaddr to false, but if we don't do that here we can't bind TCP and UDP to the same port...?
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
 
         if ((getReceiveBufferSize() >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
@@ -172,14 +168,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
                     }
                     continue;
                 }
-
-//                if (key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_DATA_KEY)
-//                    || key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_NAME_KEY)) {
-//                    // these parameters are made available by the channel framework
-//                    // for any channel that needs it. This channel does not need
-//                    // it so ignore and move on.
-//                    continue;
-//                }
 
                 if (value instanceof String) {
                     Tr.warning(tc, "CWUDP0003W", new Object[] { getExternalName(), key, value });
@@ -278,7 +266,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
      */
     public String getExternalName() {
         return this.externalName;
-//        return this.channelData.getExternalName();
     }
 
     /**
@@ -307,19 +294,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
     public ChannelData getChannelData() {
         return this.channelData;
     }
-
-//    /**
-//     * Update the configuration with a new channel framework configuration object.
-//     *
-//     * @param data
-//     * @throws ChannelException
-//     */
-//    public void setChannelData(ChannelData data) throws ChannelException {
-//        this.channelData = data;
-//        setValues(data.getPropertyBag());
-//        if (tc.isDebugEnabled())
-//            outputConfigToTrace();
-//    }
 
     /**
      * Query the port value set in the configuration, only valid for an inbound

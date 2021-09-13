@@ -35,7 +35,6 @@ public class TCPUtils {
     private static final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     public static ServerBootstrapExtended createTCPBootstrap(NettyFrameworkImpl framework, Map<String, Object> tcpOptions) throws NettyException {
-        // TODO: toggle inbound
         BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, true);
         ServerBootstrapExtended bs = new ServerBootstrapExtended();
         bs.group(framework.parentGroup, framework.childGroup);
@@ -47,7 +46,7 @@ public class TCPUtils {
         return bs;
     }
 
-    private static ChannelFuture bindHelper(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener, final int retryCount) {
+    private static ChannelFuture bind(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener, final int retryCount) {
         ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
         if (bindListener != null) {
             bindFuture.addListener(bindListener);
@@ -66,12 +65,12 @@ public class TCPUtils {
                 Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED, new Object[] { channelName, inetHost, String.valueOf(inetPort) });
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "bindHelper failed due to: " + future.cause().getMessage());
+                    Tr.debug(tc, "bindHelper failed for " + channelName +" due to: " + future.cause().getMessage());
                 }
 
                 if (retryCount > 0) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "attempt to bind again after a wait of " +timeBetweenRetriesMsec +"ms; " + retryCount + " attempts remaining");
+                        Tr.debug(tc, "attempt to bind again after a wait of " +timeBetweenRetriesMsec +"ms; " + retryCount + " attempts remaining" +" for " + channelName);
                     }
                     // recurse until we either complete successfully or run out of retries;
                     try {
@@ -82,7 +81,7 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    bindHelper(framework, bootstrap, inetHost, inetPort, bindListener, retryCount - 1);
+                    bind(framework, bootstrap, inetHost, inetPort, bindListener, retryCount - 1);
                 } else {
                     Tr.error(tc, TCPMessageConstants.BIND_ERROR,
                             new Object[] { channelName, inetHost, String.valueOf(inetPort), 
@@ -103,12 +102,12 @@ public class TCPUtils {
                 public ChannelFuture call() {
                     TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
                     int bindRetryCount = config.getPortOpenRetries();
-                    return bindHelper(framework, bootstrap, inetHost, inetPort, bindListener, bindRetryCount);
+                    return bind(framework, bootstrap, inetHost, inetPort, bindListener, bindRetryCount);
                 }
             });
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
             }
         }
         return null;

@@ -47,6 +47,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -54,13 +55,12 @@ import io.openliberty.netty.internal.exception.NettyException;
 /**
  * Liberty NettyFramework implementation bundle
  */
-@Component(configurationPid = "io.openliberty.netty.internal",
-    immediate = true, 
-    service = { NettyFramework.class, ServerQuiesceListener.class }, 
-    property = { "service.vendor=IBM" })
+@Component(configurationPid = "io.openliberty.netty.internal", immediate = true, service = { NettyFramework.class,
+        ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyMessageConstants.NETTY_TRACE_NAME, NettyMessageConstants.NETTY_BUNDLE);
+    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
+            NettyConstants.BASE_BUNDLE);
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
@@ -74,14 +74,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     protected EventLoopGroup parentGroup;
     protected EventLoopGroup childGroup;
-    
+
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
-    
     /**
-     * DS method for setting the required channel framework service.
-     * TODO: for now this reference is needed for access to EndPointMgr. That code will be split out.
+     * DS method for setting the required channel framework service. For now
+     * this reference is needed for access to EndPointMgr. That code will be split
+     * out.
      *
      * @param bundle
      */
@@ -91,17 +91,20 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * This is a required static reference, this won't
-     * be called until the component has been deactivated
+     * This is a required static reference, this won't be called until the component
+     * has been deactivated
      *
      * @param bundle CHFWBundle instance to unset
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {}
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {
         // use the executor service provided by Liberty
         parentGroup = new NioEventLoopGroup(1, executorService);
+        // specify 0 for the "default" number of threads,
+        // (java.lang.Runtime.availableProcessors() * 2)
         childGroup = new NioEventLoopGroup(0, executorService);
     }
 
@@ -115,24 +118,23 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Processing config", config);
         }
-        // TODO: update any framework-specific config
+        // update any framework-specific config
     }
-    
+
     /**
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *                            queue work to.
+     *                        queue work to.
      */
-    @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
     }
 
     /**
-     * DS method for clearing the executor service reference.
-     * This is a required reference, will be called after deactivate.
+     * DS method for clearing the executor service reference. This is a required
+     * reference, will be called after deactivate.
      *
      * @param executorService the service instance to clear
      */
@@ -141,8 +143,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * When notified that the server is going to stop, pre-quiesce all chains in the runtime.
-     * This will be called before services start getting torn down..
+     * When notified that the server is going to stop, pre-quiesce all chains in the
+     * runtime. This will be called before services start getting torn down..
      *
      * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
      */
@@ -150,7 +152,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     public void serverStopping() {
         if (isActive) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "Destroying all endpoints");
+                Tr.event(this, tc, "Destroying all endpoints (closing all channels)");
             }
             isActive = false;
             // If the system is configured to quiesce connections..
@@ -180,22 +182,22 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * Declarative services method that is invoked once the server is started.
-     * Only after this method is invoked is the initial polling for
-     * persistent tasks performed.
+     * Declarative services method that is invoked once the server is started. Only
+     * after this method is invoked is the initial polling for persistent tasks
+     * performed.
      * 
      * {@See CHFWBundle}
      *
      * @param ref reference to the ServerStarted service
      */
-    @Reference(service = ServerStarted.class,
-               policy = ReferencePolicy.DYNAMIC,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServiceReference<ServerStarted> ref) {
-        // set will be called when the ServerStarted service has been registered (by the FeatureManager as of 9/2015).  This is a signal that
-        // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run tasks, mostly likely tasks that will
-        // finish the port listening logic, that need to run at the end of server startup
+        // set will be called when the ServerStarted service has been registered (by the
+        // FeatureManager as of 9/2015). This is a signal that
+        // the server is fully started, but before the "smarter planet" message has been
+        // output. Use this signal to run tasks, mostly likely tasks that will
+        // finish the port listening logic, that need to run at the end of server
+        // startup
 
         Callable<?> task;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -219,11 +221,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * Method is called to run a task if the server has already started, if the server has not started that task is queue to be run when the server start signal
-     * has been received.
+     * Method is called to run a task if the server has already started, if the
+     * server has not started that task is queued to be run when the server start
+     * signal has been received.
      *
      * @param callable - task to run
-     * @return Callable return null if the task was not ran, but queued, else return the task to denote it has ran.
+     * @return Callable return null if the task was not ran, but queued, else return
+     *         the task to denote it has ran.
      * @throws Exception
      */
     public <T> T runWhenServerStarted(Callable<T> callable) throws Exception {
@@ -237,8 +241,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /*
-     * If the server has not completely started, then wait until it has been.
-     * The server will be "completely" stated when the server start signal has been received and any task waiting on that signal before running have now been run.
+     * If the server has not completely started, then wait until it has been. The
+     * server will be "completely" started when the server start signal has been
+     * received and any tasks waiting on that signal before running have now been
+     * run.
      */
     @FFDCIgnore({ InterruptedException.class })
     public static void waitServerCompletelyStarted() {
@@ -247,7 +253,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 try {
                     syncStarted.wait();
                 } catch (InterruptedException x) {
-                    // assume we can go one then
+                    // assume we can go on then
                 }
             }
         }
@@ -255,8 +261,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * non-blocking method to return the state of server startup with respect to the server being completely started.
-     * The server will be "completely" stated when the server start signal has been received and any task waiting on that signal before running have now been run.
+     * non-blocking method to return the state of server startup with respect to the
+     * server being completely started. The server will be "completely" started when
+     * the server start signal has been received and any tasks waiting on that
+     * signal before running have now been run.
      *
      * @return
      */
@@ -271,8 +279,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
         // server is shutting down
+        serverCompletelyStarted.set(false);
     }
-    
+
     @Override
     public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
         return TCPUtils.createTCPBootstrap(this, tcpOptions);
@@ -283,14 +292,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         return UDPUtils.createUDPBootstrap(this, options);
     }
 
-
     @Override
-    public ChannelFuture start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
+    public ChannelFuture start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+            ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
-    public ChannelFuture start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
+    public ChannelFuture start(BootstrapExtended bootstrap, String inetHost, int inetPort,
+            ChannelFutureListener bindListener) throws NettyException {
         return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
@@ -298,11 +308,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     public ChannelFuture stop(Channel channel) {
         if (isActive && channel.isOpen()) {
             ChannelFuture closeFuture = channel.close();
-            // TODO: should we wait until close actually completes to remove?
             activeChannels.remove(closeFuture.channel());
             closeFuture.addListener(future -> {
                 if (!future.isSuccess()) {
-                    // TODO: error/warning?
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        String channelName = channel.attr(ConfigConstants.NameKey).get();
+                        Tr.debug(tc,
+                                "channel " + channelName + " failed to stop due to: " + future.cause().getMessage());
+                    }
                 } else {
                     logChannelStopped(channel);
                 }
@@ -332,7 +345,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        // TODO: move this cfg out of the channelfw 
         if (chfw != null) {
             return chfw.getFramework().getDefaultChainQuiesceTimeout();
         } else {

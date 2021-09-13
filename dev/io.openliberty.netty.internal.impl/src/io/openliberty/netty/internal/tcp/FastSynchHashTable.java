@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import com.ibm.websphere.ras.TraceComponent;
  * hashCode() and equals() methods are used to locate and compare keys to find entries in the table.
  * 
  * Copied from {@link com.ibm.ws.bytebuffer.internal.FastSynchHashTable}
- * TODO: get rid of this when we have a common WsByteBuffer bundle
  * 
  */
 
