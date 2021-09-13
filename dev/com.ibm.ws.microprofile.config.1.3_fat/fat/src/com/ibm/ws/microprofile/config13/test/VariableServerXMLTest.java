@@ -73,8 +73,7 @@ public class VariableServerXMLTest extends FATServletClient {
         // Include the 'app1.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        DeployOptions[] options = new DeployOptions[1];
-        options[0] = DeployOptions.SERVER_ONLY;
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
         ShrinkHelper.defaultApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config13.variableServerXML.*");
         server.copyFileToLibertyServerRoot("original/variableServerXMLApp.xml");
         server.startServer();

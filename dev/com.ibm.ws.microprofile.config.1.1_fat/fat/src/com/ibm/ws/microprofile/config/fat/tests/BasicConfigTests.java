@@ -130,8 +130,7 @@ public class BasicConfigTests extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, types_war, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, cdiConfigWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, convertersWar, DeployOptions.SERVER_ONLY);
-        DeployOptions[] options = new DeployOptions[1];
-        options[0] = DeployOptions.SERVER_ONLY;
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
         ShrinkHelper.defaultDropinApp(server, CONVERTER_PRIORITY_APP_NAME, options, "com.ibm.ws.microprofile.config11.converter.*");
 
         server.startServer();

@@ -69,8 +69,7 @@ public class ServerXMLTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        DeployOptions[] options = new DeployOptions[1];
-        options[0] = DeployOptions.SERVER_ONLY;
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
         ShrinkHelper.defaultApp(server, SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXML.*");
         ShrinkHelper.defaultApp(server, DUPLICATE_IN_SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.duplicateInServerXML.*");
         ShrinkHelper.defaultApp(server, SERVER_XML_WEB_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXMLWebApp.*");
