@@ -75,7 +75,9 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server.stopServer();
+            server.stopServer(
+                    "DSRA0302E", "DSRA0304E" // transaction times out and rolls back, persistent executor will retry
+                    );
         } finally {
             server.updateServerConfiguration(originalConfig);
         }
