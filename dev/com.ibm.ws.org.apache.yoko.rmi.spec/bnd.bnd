@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
--include= jar:${fileuri;${repo;com.ibm.ws.org.apache.yoko:yoko-rmi-spec;1.5.0.3773464700}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.ibm.ws.org.apache.yoko:yoko-rmi-spec;1.5.0.dc410dd7f8}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @${repo;com.ibm.ws.org.apache.yoko:yoko-rmi-spec;1.5.0.3773464700}!/!META-INF/maven/*
+-includeresource: @${repo;com.ibm.ws.org.apache.yoko:yoko-rmi-spec;1.5.0.dc410dd7f8}!/!META-INF/maven/*
 
--buildpath: com.ibm.ws.org.apache.yoko:yoko-rmi-spec;version=1.5.0.3773464700
+-buildpath: com.ibm.ws.org.apache.yoko:yoko-rmi-spec;version=1.5.0.dc410dd7f8
