@@ -10,6 +10,7 @@ Subsystem-Name: Netty Transport Framework 1.0
   io.openliberty.io.netty.ssl, \
   io.openliberty.io.netty
 -bundles=\
+  com.ibm.ws.wsbytebuffer, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl
 kind=noship

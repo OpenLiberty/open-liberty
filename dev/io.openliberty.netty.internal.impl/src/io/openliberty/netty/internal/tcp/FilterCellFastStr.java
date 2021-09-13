@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import com.ibm.ws.bytebuffer.internal.FastSynchHashTable;
+
 /**
  * A Cell (or node) of an address tree. The tree defines a set of
  * string URL addresses. Each cell represents a valid string for one of the

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import com.ibm.ws.bytebuffer.internal.FastSynchHashTable;
+
 /**
  * A Cell (or node) of an address tree. The tree defines a set of
  * IPv6 addresses. Each cell is a valid numerial for one of the positions
