@@ -4,7 +4,7 @@ WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: com.ibm.websphere.endpoint; type="ibm-api"
 IBM-Process-Types: server, \
  client
--bundles=com.ibm.ws.timer, \
+-bundles=\
  com.ibm.ws.channelfw, \
  com.ibm.ws.timer, \
  com.ibm.ws.wsbytebuffer
