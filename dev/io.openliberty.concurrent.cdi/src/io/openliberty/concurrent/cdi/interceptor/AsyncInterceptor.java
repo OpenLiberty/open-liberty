@@ -23,12 +23,12 @@ import javax.naming.NamingException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.annotation.Priority;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
-import jakarta.interceptor.InvocationContext;
+import javax.annotation.Priority;
 import prototype.enterprise.concurrent.Async;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 @Async
 @Interceptor

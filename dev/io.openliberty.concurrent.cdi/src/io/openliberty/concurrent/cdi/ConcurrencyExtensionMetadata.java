@@ -13,7 +13,7 @@ package io.openliberty.concurrent.cdi;
 import java.util.Collections;
 import java.util.Set;
 
-import jakarta.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
