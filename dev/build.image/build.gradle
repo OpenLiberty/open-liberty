@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,6 @@ assemble {
 }
 
 File packageDir = new File(project.buildDir, 'openliberty')
-File mavenDir = new File(project.buildDir, 'maven')
 
 // Set the generated zip version to the product version and the
 // version qualifier to be consistent
@@ -260,6 +259,11 @@ def webProfile8Features() {
     features
 }
 
+def webProfile9Features() {
+    String features = project.file('profiles/webProfile9/features.xml').readLines()
+    features
+}
+
 def javaee8Features() {
     String features = project.file('profiles/javaee8/features.xml').readLines()
     features
@@ -329,6 +333,7 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
 }
 
 if (isAutomatedBuild && !isIFIXBuild) {
+    //NOSHIP
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -337,6 +342,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         outputTo packageDir
     }
 
+    //GA
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -345,6 +351,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         outputTo packageDir
     }
 
+    //BETA
     task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
@@ -359,6 +366,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
+    //GA
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -366,6 +374,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         outputTo packageDir
     }
 
+    //GA
     task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
         doFirst {
             excludedEE7Features.each {
@@ -392,6 +401,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
+    //GA
     task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
         doFirst {
             excludedEE7Features.each {
@@ -419,8 +429,31 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
+    //BETA
+    task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&webProfile9Features
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
+        outputTo packageDir
+        doLast {
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
+            copy {
+                from "$packageDir/wlp/templates/servers/webProfile9/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
+        }
+    }
 
+    //BETA
+    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -436,16 +469,20 @@ if (isAutomatedBuild && !isIFIXBuild) {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
             }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
         }
     }
     
+    //GA
     task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
         doFirst {
             excludedEE7Features.each {
                 this.&removeFeature("${it}")
             }
         }
-
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile4Features
@@ -462,24 +499,20 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     
+    //BETA
     task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedEE7Features.each {
-                this.&removeFeature("${it}")
-            }
-        }
-
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile5Features
         outputTo packageDir
         doLast {
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
             }
         }
     }
@@ -495,7 +528,7 @@ task genChecksums() {
     }
 }
 
-// Includes all features. For use in development.
+//NOSHIP: Includes all features. For use in development.
 task zipOpenLibertyDev(type: Zip) {
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -510,7 +543,8 @@ task zipOpenLibertyDev(type: Zip) {
 publish.dependsOn zipOpenLibertyDev
 
 if (isAutomatedBuild && !isIFIXBuild) {
-    // Includes all features except excluded features.
+
+    // NOSHIP: Includes all features except excluded features.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll
         dependsOn genChecksums
@@ -525,7 +559,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyAll
 
-    // Includes only kind=ga features.
+    // GA: Includes only kind=ga features.
     task zipOpenLiberty(type: Zip) {
         dependsOn packageOpenLiberty
         dependsOn genChecksums
@@ -540,7 +574,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLiberty
 
-    // Includes only kind=ga features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyKernel(type: Zip) {
         dependsOn packageOpenLibertyKernel
         dependsOn genChecksums
@@ -555,7 +589,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyKernel
 
-    // Includes only kind=ga features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyWebProfile8(type: Zip) {
         dependsOn packageOpenLibertyWebProfile8
         dependsOn genChecksums
@@ -570,7 +604,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyWebProfile8
 
-    // Includes only kind=ga features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyJavaee8(type: Zip) {
         dependsOn packageOpenLibertyJavaee8
         dependsOn genChecksums
@@ -585,6 +619,37 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJavaee8
 
+    // BETA: Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyWebProfile9(type: Zip) {
+        dependsOn packageOpenLibertyWebProfile9
+        dependsOn genChecksums
+        baseName 'openliberty-webProfile9'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.webprofile9.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyWebProfile9
+
+    // BETA: Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyJakartaee9(type: Zip) {
+        dependsOn packageOpenLibertyJakartaee9
+        dependsOn genChecksums
+        baseName 'openliberty-jakartaee9'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyJakartaee9
+
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyMicroProfile4(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile4
         dependsOn genChecksums
@@ -599,13 +664,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile4
 
+    //BETA: Includes both kind=ga and kind=beta features.
     task zipOpenLibertyMicroProfile5(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile5
         dependsOn genChecksums
         baseName 'openliberty-microProfile5'
         from packageDir
         destinationDir distsDir
-        version releaseVersion
+        version betaVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
             rootProject.storeProps()
@@ -613,7 +679,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile5
 
-    // Includes both kind=ga and kind=beta features.
+    //BETA: Includes both kind=ga and kind=beta features.
     task zipOpenLibertyBeta(type: Zip) {
         dependsOn packageOpenLibertyBeta
         dependsOn genChecksums
@@ -628,23 +694,9 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyBeta
 
-    task zipOpenLibertyJakartaee9Beta(type: Zip) {
-        dependsOn packageOpenLibertyJakartaee9
-        dependsOn genChecksums
-        baseName 'openliberty-jakartaee9'
-        from packageDir
-        destinationDir distsDir
-        version betaVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyJakartaee9Beta
-
     // Generate checksums
     task genZipChecksums() {
-        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
+        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyJakartaee9, zipOpenLibertyWebProfile9, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta
         doLast {
           generateZipChecksums(ant)
           ant.calcZipChecksums(installRoot:"${distsDir}") {}
@@ -653,8 +705,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     publish.dependsOn genZipChecksums
 
 }
-
-
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -668,183 +718,10 @@ publishing {
             version project.version
             artifact zipOpenLibertyDev
         }
-        if (isAutomatedBuild && !isIFIXBuild) {
-            openLibertyAll(MavenPublication) {
-                artifactId 'openliberty-all'
-                version project.version
-                artifact zipOpenLibertyAll
-            }
-            openLiberty(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-runtime'
-                version project.version
-                artifact zipOpenLiberty
-            }
-            openLibertyKernel(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-kernel'
-                version project.version
-                artifact zipOpenLibertyKernel
-            }
-            openLibertyWebProfile8(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-webProfile8'
-                version project.version
-                artifact zipOpenLibertyWebProfile8
-            }
-            openLibertyJavaee8(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-javaee8'
-                version project.version
-                artifact zipOpenLibertyJavaee8
-            }
-        }
     }
 }
 
 if (isAutomatedBuild && !isIFIXBuild) {
-    task createOLRuntimePoms {
-        dependsOn packageOpenLiberty
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-runtime'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty Runtime Package'
-                description 'Open Liberty Runtime Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-webProfile8'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty JavaEE 8 Web Profile Package'
-                description 'Open Liberty JavaEE 8 Web Profile Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-kernel'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty Kernel Package'
-                description 'Open Liberty Kernel Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-javaee8'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty JavaEE8 Package'
-                description 'Open Liberty JavaEE8 Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
-    }
-
-    if (isRelease) {
-        task zipOpenLibertyMaven(type: Zip) {
-            dependsOn createOLRuntimePoms
-            archiveName "openliberty-runtimes-maven-${releaseVersion}.zip"
-            from mavenDir
-            from distsDir
-            include '*.zip'
-            include '*.pom'
-            exclude 'openliberty-all*.zip'
-            destinationDir project.file('build/temp/mavenArtifact')
-        }
-        publish.dependsOn zipOpenLibertyMaven
-    }
-
     task zipTestReport(type: Zip) {
         baseName 'openliberty_test_report'
         from cnf.file('generated/testReports/allUnitTests')
