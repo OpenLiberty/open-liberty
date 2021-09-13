@@ -24,22 +24,7 @@ task addConfigAPIJars(type: Copy) {
   }   	
 }
 
-task extractConfigExtJar(type: Copy) {
-	FileTree tree = fileTree(dir: buildImage.file('wlp/lib'), include: 'com.ibm.ws.config.ext_*.jar')
-	tree.each {File file ->
-		from(zipTree(file))
-   		exclude 'com/ibm/ws/config/ext/ConfigExtension.class'
-  	    into new File(autoFvtDir, 'extracted')
-  	}
-}
-
-task zipConfigExtJar(type: Zip) {
-  dependsOn extractConfigExtJar
-  destinationDir(new File(autoFvtDir, 'publish/files/validator'))
-  archiveName 'com.ibm.ws.config.ext_1.0.' + bnd('libertyBundleMicroVersion') + '.jar'
-  from new File(autoFvtDir, 'extracted')
-}
 
 addRequiredLibraries {
-  dependsOn zipConfigExtJar, addRestConnector, addConfigAPIJars
+  dependsOn addRestConnector, addConfigAPIJars
 }
