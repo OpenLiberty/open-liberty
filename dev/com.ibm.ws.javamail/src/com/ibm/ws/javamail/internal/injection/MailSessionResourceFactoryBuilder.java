@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2017
+ * Copyright (c) 2015,2017,2021
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,9 +125,9 @@ public class MailSessionResourceFactoryBuilder implements ResourceFactoryBuilder
      * application[MyApp]/module[MyModule]/connectionFactory[java:module/env/jdbc/cf1]
      *
      * @param application application name if data source is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if data source is in java:module or java:comp. Otherwise null.
-     * @param component component name if data source is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param module      module name if data source is in java:module or java:comp. Otherwise null.
+     * @param component   component name if data source is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName    configured JNDI name for the data source. For example, java:module/env/jca/cf1
      * @return the unique identifier
      */
     private static final String getMailSessionID(String application, String module, String component, String jndiName) {
