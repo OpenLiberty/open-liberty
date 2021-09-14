@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -237,10 +237,10 @@ public class HttpRequestInfo implements Serializable {
         String encodedUrl = RequestUtil.getCookieId((IExtendedRequest) request,
                                                     response,
                                                     encodedUrlCookieName);
-// TODO: removal here causes oidc saml fat regression. Looks like we depend on this cookie in the tests, but is that a valid thing to do?
-//        if (encodedUrlCookieName != null) {
-//            RequestUtil.removeCookie(request, response, encodedUrlCookieName); // removing WASSamlReq_* cookie
-//        }
+ 
+        if (encodedUrlCookieName != null) {
+            RequestUtil.removeCookie(request, response, encodedUrlCookieName); // removing WASSamlReq_* cookie
+        }
 
         // encodedURL is encoded since we called encodeURIComponent to get the cookie
         try {
