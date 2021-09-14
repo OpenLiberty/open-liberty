@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2009 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,11 +151,10 @@ public class ListenerHelper {
 	* 
 	*/
     private static void _invokeAsyncErrorHandling(AsyncContext asyncContext, WebContainerRequestState reqState, Throwable th, AsyncListenerEnum asyncEnum,ExecuteNextRunnable executeNextRunnable) {
-    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))
+    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
     		logger.entering(CLASS_NAME,"_invokeAsyncErrorHandling", new Object [] {asyncContext,reqState,th,asyncEnum});
 	    	
 	    	try {
-		    	
 		    	ServletRequest servletRequest = asyncContext.getRequest();
 		        ServletResponse servletResponse = asyncContext.getResponse();
 		        IExtendedRequest wasreq = (IExtendedRequest) ServletUtil.unwrapRequest(servletRequest);
@@ -173,75 +172,81 @@ public class ListenerHelper {
 		    			iServletContext,null);
 		    	
 		    	try {
-		    		collabHelper.preInvokeCollaborators(collabMetaData, CollaboratorHelper.allCollabEnum);
+		    	    if (reqState != null)
+		    	        reqState.setAttribute("_invokeAsyncErrorHandling", true);
 
-		    		List<AsyncListenerEntry> list = asyncContext.getAsyncListenerEntryList();
-			        if (list != null) {
-			            // If there are other listeners: 
-			            // Give weld or other registered listeners the chance to add a listener to the end of the list.
-			            try { 
-			                if (((AsyncContextImpl)asyncContext).registerPostEventAsyncListeners()) {
-			                    // then refresh the list to allow for the added ones.
-			                    list = asyncContext.getAsyncListenerEntryList();
-			                }    
-			            } catch (java.lang.ClassCastException exc) {
-			                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))
-			                    logger.fine("_invokeAsyncErrorHandling cannot cast AsyncContext to an impl class so post event Asynclistenrs will not be registered");
-			            }
-			            for (AsyncListenerEntry entry : list) {
-			            	try {
-				            	if (asyncEnum==AsyncListenerEnum.ERROR)
-				            		entry.invokeOnError(th);
-				            	else
-				            		entry.invokeOnTimeout();
-			            	} catch (Throwable throwable){
-			            		LoggerHelper.logParamsAndException(logger, Level.WARNING,CLASS_NAME,"_invokeAsyncErrorHandling","exception.invoking.async.listener",new Object[] {entry.getAsyncListener()},throwable);
-			            	}
-			            }
-			        }
-		    	
-			        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
-			        	logger.logp(Level.FINEST, CLASS_NAME, "_invokeAsyncErrorHandling", 
-			        		"vals after listeners [asyncContext.isComplete(),asyncContext.isCompletePending(),asyncContext.isDispatchPending()]->["
-			        			+asyncContext.isComplete()+","
-			        			+ asyncContext.isCompletePending()+","
-			        			+ asyncContext.isDispatchPending()+"]");
-			        }
-			        		
-			        //only invoke sendError if we didn't complete or dispatch from the listeners
-			        if (!asyncContext.isComplete()&&!asyncContext.isCompletePending()&&!asyncContext.isDispatchPending()){
-			        	if (th!=null){
-				            ServletErrorReport ser;
-				        	if (!(th instanceof ServletErrorReport))
-				            {
-				        		ser = new ServletErrorReport(th);
-				        		
-				            } else{
-				            	ser = (ServletErrorReport)th;
-				            }
-				        	ser.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				        	asyncContext.getWebApp().sendError(wasreq, httpRes, ser);
-			        	} else {
-			        		//TODO: change this to webApp send error or something else that will prevent IllegalstateException from being thrown
-			        		IExtendedRequest iExtendedRequest = ServletUtil.unwrapRequest(servletRequest, IExtendedRequest.class);
-			        		iExtendedRequest.getWebAppDispatcherContext().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-			        					nls.getFormattedMessage("error.occurred.during.async.servlet.handling", new Object[] {asyncEnum}, asyncEnum + " occurred during async handling"),true);
-			        	}
-			        }
+		    	    collabHelper.preInvokeCollaborators(collabMetaData, CollaboratorHelper.allCollabEnum);
+
+		    	    List<AsyncListenerEntry> list = asyncContext.getAsyncListenerEntryList();
+		    	    if (list != null) {
+		    	        // If there are other listeners: 
+		    	        // Give weld or other registered listeners the chance to add a listener to the end of the list.
+		    	        try { 
+		    	            if (((AsyncContextImpl)asyncContext).registerPostEventAsyncListeners()) {
+		    	                // then refresh the list to allow for the added ones.
+		    	                list = asyncContext.getAsyncListenerEntryList();
+		    	            }    
+		    	        } catch (java.lang.ClassCastException exc) {
+		    	            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))
+		    	                logger.fine("_invokeAsyncErrorHandling cannot cast AsyncContext to an impl class so post event Asynclistenrs will not be registered");
+		    	        }
+		    	        for (AsyncListenerEntry entry : list) {
+		    	            try {
+		    	                if (asyncEnum==AsyncListenerEnum.ERROR)
+		    	                    entry.invokeOnError(th);
+		    	                else
+		    	                    entry.invokeOnTimeout();
+		    	            } catch (Throwable throwable){
+		    	                LoggerHelper.logParamsAndException(logger, Level.WARNING,CLASS_NAME,"_invokeAsyncErrorHandling","exception.invoking.async.listener",new Object[] {entry.getAsyncListener()},throwable);
+		    	            }
+		    	        }
+		    	    }
+
+		    	    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+		    	        logger.logp(Level.FINEST, CLASS_NAME, "_invokeAsyncErrorHandling", 
+		    	                    "vals after listeners [asyncContext.isComplete(),asyncContext.isCompletePending(),asyncContext.isDispatchPending()]->["
+		    	                                    +asyncContext.isComplete()+","
+		    	                                    + asyncContext.isCompletePending()+","
+		    	                                    + asyncContext.isDispatchPending()+"]");
+		    	    }
+
+		    	    //only invoke sendError if we didn't complete or dispatch from the listeners
+		    	    if (!asyncContext.isComplete()&&!asyncContext.isCompletePending()&&!asyncContext.isDispatchPending()){
+		    	        if (th!=null){
+		    	            ServletErrorReport ser;
+		    	            if (!(th instanceof ServletErrorReport))
+		    	            {
+		    	                ser = new ServletErrorReport(th);
+
+		    	            } else{
+		    	                ser = (ServletErrorReport)th;
+		    	            }
+		    	            ser.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		    	            asyncContext.getWebApp().sendError(wasreq, httpRes, ser);
+		    	        } else {
+		    	            //TODO: change this to webApp send error or something else that will prevent IllegalstateException from being thrown
+		    	            IExtendedRequest iExtendedRequest = ServletUtil.unwrapRequest(servletRequest, IExtendedRequest.class);
+		    	            iExtendedRequest.getWebAppDispatcherContext().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    	                                                                    nls.getFormattedMessage("error.occurred.during.async.servlet.handling", new Object[] {asyncEnum}, asyncEnum + " occurred during async handling"),true);
+		    	        }
+		    	    }
 		    	} finally {
-		    		collabHelper.postInvokeCollaborators(collabMetaData, CollaboratorHelper.allCollabEnum);
+		    	    collabHelper.postInvokeCollaborators(collabMetaData, CollaboratorHelper.allCollabEnum);
+
+		    	    if (reqState != null)
+		    	        reqState.removeAttribute("_invokeAsyncErrorHandling");
 		    	}
 	        } catch (Throwable throwable){
 	        	logger.logp(Level.WARNING,CLASS_NAME,"_invokeAsyncErrorHandling","exception.invoking.asnyc.error.mechanism",throwable);
 	        } finally {        	
-	        	//if we still haven't completed or dispatched, complete now
-	        	if (!asyncContext.isComplete()&&!asyncContext.isCompletePending()&&!asyncContext.isDispatchPending())
-	        		asyncContext.complete();
-	        	
-	        	asyncContext.executeNextRunnable();
-	                   
-	        	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))
-	        		logger.exiting(CLASS_NAME,"_invokeAsyncErrorHandling", asyncContext);
+	            //if we still haven't completed or dispatched, complete now
+	            if (!asyncContext.isComplete()&&!asyncContext.isCompletePending()&&!asyncContext.isDispatchPending())
+	                asyncContext.complete();
+
+	            asyncContext.executeNextRunnable();
+
+	            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+	                logger.exiting(CLASS_NAME,"_invokeAsyncErrorHandling", asyncContext);
 	        }
     }
 
