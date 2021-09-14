@@ -50,7 +50,7 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class ServerXMLTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "serverXMLApp";
+    public static final String SERVER_NAME = "ServerXMLServer";
     public static final String SERVER_XML_APP_NAME = "serverXMLApp";
     public static final String DUPLICATE_IN_SERVER_XML_APP_NAME = "duplicateInServerXMLApp";
     public static final String SERVER_XML_WEB_APP_NAME = "serverXMLWebApp";
