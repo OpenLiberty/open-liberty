@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,15 @@ bVersion: 1.0
 Bundle-Name: WebSphere EJB Container API
 Bundle-Description: WebSphere EJB Container API, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.api.ejbcontainer
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.ejbcontainer.2.0.jar
+jakartaFinalBundleName: Jakarta Enterprise Beans Container API
+jakartaFinalBundleId: io.openliberty.ejbcontainer.2.0
+jakartaFinalBundleDescription: Jakarta Enterprise Beans Container API, version 2.0
 
 Import-Package: \
 	com.ibm.websphere.ejbcontainer.mbean,\
