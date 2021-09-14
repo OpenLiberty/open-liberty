@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 
@@ -182,14 +183,23 @@ public class LaunchArguments {
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
                     } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
-                        String phase = argToLower.substring("--internal-checkpoint-at=".length());
-                        if (CheckpointHookFactory.Phase.getPhase(phase) == null) {
-                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
+                        if (isBetaEdition()) {
+                            String phase = argToLower.substring("--internal-checkpoint-at=".length());
+                            if (CheckpointHookFactory.Phase.getPhase(phase) == null) {
+                                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
+                                System.out.println();
+                                returnValue = ReturnCode.BAD_ARGUMENT;
+                            } else {
+                                initProps.put(BootstrapConstants.CHECKPOINT_PROPERTY_NAME, phase);
+                                System.clearProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+                            }
+                        } else {
+                            // we cannot efficiently do beta guard from the server script so we hard code this check here
+                            // for the checkpoint action
+                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownArgument"),
+                                                                    "checkpoint"));
                             System.out.println();
                             returnValue = ReturnCode.BAD_ARGUMENT;
-                        } else {
-                            initProps.put(BootstrapConstants.CHECKPOINT_PROPERTY_NAME, phase);
-                            System.clearProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
                         }
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
@@ -261,6 +271,13 @@ public class LaunchArguments {
         processName = processNameArg;
         returnCode = returnValue;
         actionOption = action;
+    }
+
+    /*
+     * Duplicating ProductInfo logic here to avoid unnecessary calls to ThreadIdentityManager too early
+     */
+    private boolean isBetaEdition() {
+        return Boolean.getBoolean(ProductInfo.BETA_EDITION_JVM_PROPERTY);
     }
 
     private ReturnCode checkPreviousAction(ReturnCode oldRC, ReturnCode newActionRC, String arg) {
