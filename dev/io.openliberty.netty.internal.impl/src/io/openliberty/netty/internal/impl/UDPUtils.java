@@ -140,12 +140,7 @@ public class UDPUtils {
                 Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
             }
         }
-
-        ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
-        if (bindListener != null) {
-            bindFuture.addListener(bindListener);
-        }
-        return bindFuture;
+        return null;
     }
 
     public static void logChannelStopped(Channel channel) {
