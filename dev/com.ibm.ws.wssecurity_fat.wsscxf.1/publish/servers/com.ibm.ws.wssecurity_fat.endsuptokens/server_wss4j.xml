@@ -12,7 +12,7 @@
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
-		<feature>usr:wsseccbh-1.0</feature>
+		<feature>usr:wsseccbh-2.0</feature>
 		<feature>servlet-3.1</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.2</feature>
@@ -81,19 +81,19 @@
 	<!-- basicplcy.wssecfvt.test.CommonPasswordCallback -->
 	<wsSecurityClient
 		id="default"
-		ws-security.encryption.username="x509ServerSecondCert"
-		ws-security.password="security"
-		ws-security.username="user1"
+		security.encryption.username="x509ServerSecondCert"
+		security.password="security"
+		security.username="user1"
 	>
 		<!-- **Do not need the private key password in Symmetric tests ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"> -->
 		<!-- signatureProperties **Do not need Signature properties in Symmetric 
-			org.apache.ws.security.crypto.merlin.keystore.type="jks" org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client" 
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault" org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks"/ -->
+			org.apache.wss4j.crypto.merlin.keystore.type="jks" org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Client" 
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ClientDefault" org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks"/ -->
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.truststore.type="jks"
-			org.apache.ws.security.crypto.merlin.truststore.password="LibertyX509Client2"
-			org.apache.ws.security.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert" />
+			org.apache.wss4j.crypto.merlin.truststore.type="jks"
+			org.apache.wss4j.crypto.merlin.truststore.password="LibertyX509Client2"
+			org.apache.wss4j.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks"
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecondCert" />
 		<!-- / -->
 		<!-- ** This works too, in case ws-security.encryption.username is not 
 			specified chc -->
@@ -102,18 +102,18 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
 	
 		<!-- signatureProperties **Do not need Signature properties in Symmetric 
-			org.apache.ws.security.crypto.merlin.keystore.type="jks" org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server" 
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert" 
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks"/ -->
+			org.apache.wss4j.crypto.merlin.keystore.type="jks" org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Server" 
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ClientDefaultCert" 
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks"/ -->
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Server2"
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecond"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />
