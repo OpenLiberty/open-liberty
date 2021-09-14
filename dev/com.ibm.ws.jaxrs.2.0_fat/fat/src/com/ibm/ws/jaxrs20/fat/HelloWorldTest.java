@@ -73,6 +73,14 @@ public class HelloWorldTest {
         runGetMethod(200, "/helloworld/rest/helloworld", "Hello World");
     }
 
+    /**
+     * Tests with an @ApplicationPath containing a wildcard (*) for issue 18461
+     */
+    @Test
+    public void testAppPathWithWildcard() throws IOException {
+        runGetMethod(200, "/helloworld/rest1/helloworld", "Hello World");
+    }
+
     @Test
     public void testSimpleRegEx() throws IOException {
         // This test was added for issue 11893:  A Path containing a regex encased in parenthese
