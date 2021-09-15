@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jaxrs2x.fat.helloworld;
+package com.ibm.ws.jaxrs2x.fat;
 
 
 import static org.junit.Assert.fail;

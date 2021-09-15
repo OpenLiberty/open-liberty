@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jaxrs2x.fat.multipart;
+package com.ibm.ws.jaxrs2x.fat;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,10 +22,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -121,7 +122,7 @@ public class MultipartTest {
         builder.addPart("my_file", new FileBody(new File(srcPath)));
         HttpPost request = new HttpPost(MULTIPART_URI);
         request.setEntity(builder.build());
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(request);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
@@ -132,10 +133,11 @@ public class MultipartTest {
         String srcPath = server.getServerRoot() + "/upload.jsp";
         builder.addPart("my_file", new FileBody(new File(srcPath)));
         String expected = "Project summary";
-        builder.addPart("comment", new StringBody(expected));
+        builder.addPart("comment", new StringBody(expected, ContentType.TEXT_PLAIN));
+
         HttpPost request = new HttpPost(MULTIPARTBODY_URI);
         request.setEntity(builder.build());
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(request);
         assertEquals(200, response.getStatusLine().getStatusCode());
         String returned = EntityUtils.toString(response.getEntity());
@@ -149,7 +151,7 @@ public class MultipartTest {
         builder.addPart("my_file", new FileBody(new File(srcPath)));
         HttpPost request = new HttpPost(MULTIPART_URI2);
         request.setEntity(builder.build());
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(request);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
