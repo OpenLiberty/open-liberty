@@ -38,6 +38,8 @@ public abstract class FeatureUtilityToolTest {
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
+    static String relativeMinifiedRoot;
+
     protected static List<String> cleanFiles;
     protected static List<String> cleanDirectories;
     private static Logger logger = Logger.getLogger("com.ibm.ws.install.featureUtility_fat");
@@ -69,7 +71,8 @@ public abstract class FeatureUtilityToolTest {
         unzipDestination = installRoot + "/../featureUtility_fat_wlp/";
 
         // zip up installRoot
-        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp");
+        relativeMinifiedRoot = "/../featureUtility_fat_wlp";
+        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + relativeMinifiedRoot);
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
         if(!new File(minifiedRoot).exists()){
