@@ -612,6 +612,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
