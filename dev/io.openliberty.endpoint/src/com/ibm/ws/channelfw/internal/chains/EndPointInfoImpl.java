@@ -25,8 +25,8 @@ import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.endpoint.EndPointInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 
+import io.openliberty.endpoint.EndpointConstants;
 /**
  * EndPointInfo is a dynamically updated MBean.
  * - The host binding and port value can be changed dynamically.
@@ -38,8 +38,8 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 public class EndPointInfoImpl extends StandardEmitterMBean implements EndPointInfo {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(EndPointInfoImpl.class,
-                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                                         ChannelFrameworkConstants.BASE_BUNDLE);
+                                                         EndpointConstants.BASE_TRACE_NAME,
+                                                         EndpointConstants.BASE_BUNDLE);
 
     /** Name of this endpoint */
     private final String name;
@@ -68,7 +68,7 @@ public class EndPointInfoImpl extends StandardEmitterMBean implements EndPointIn
 
     /**
      * Constructor.
-     * Package proteced to avoid expoinsg the constructor in the MBean
+     * Package protected to avoid exposing the constructor in the MBean
      * interface and to enforce creation through {@link EndPointMgrImpl#defineEndPoint(String, String, int)}
      *
      * @param name
