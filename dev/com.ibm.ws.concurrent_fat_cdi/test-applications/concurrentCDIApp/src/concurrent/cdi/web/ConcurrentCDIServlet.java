@@ -31,6 +31,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -420,6 +421,70 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Specify the asynchronous method annotation at both class and method level,
+     * with conflicting values for the executor parameter. Verify that method level
+     * takes precedence.
+     */
+    @Test
+    public void testRequestScopedBeanAsyncMethodAnnotationsConflict() throws Exception {
+        ManagedExecutorService expectedExecutor = InitialContext.doLookup("java:app/env/concurrent/sampleExecutorRef");
+        CompletableFuture<Executor> future = requestScopedBean.getExecutorOfAsyncMethods();
+        try {
+            Executor asyncMethodExecutor = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            assertEquals(expectedExecutor.toString(), asyncMethodExecutor.toString());
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof NoSuchMethodException)
+                ; // skip on Java 8, which lacks a CompletableFuture.defaultExecutor method
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Asynchronous method times out per the configured startTimeout.
+     */
+    @Test
+    public void testRequestScopedBeanAsyncMethodTimesOut() throws Exception {
+        CountDownLatch blocker = new CountDownLatch(1);
+        // Use up the max concurrency of 1
+        CompletionStage<Boolean> await1stage = requestScopedBean.await(blocker, TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        try {
+            // Use up the single queue position
+            CompletionStage<Boolean> await2stage = requestScopedBean.await(new CountDownLatch(0), TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            // Wait for the startTimeout to be exceeded on the above by attempting to queue another,
+            CompletionStage<Boolean> await3stage = requestScopedBean.await(new CountDownLatch(0), TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+            // Allow async methods to run
+            blocker.countDown();
+
+            // Second async method should time out
+            try {
+                Boolean result = await2stage.toCompletableFuture().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+                // TimeoutException from above. It never starts, but it doesn't notice the timeout either.
+                fail("Second async method " + await2stage + " should have timed out per the startTimeout. Instead: " + result);
+            } catch (CancellationException x) {
+                if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E") //
+                    || x.getCause() == null || !x.getCause().getClass().getSimpleName().equals("StartTimeoutException"))
+                    throw x;
+            }
+
+            // First async method should run
+            assertEquals(Boolean.TRUE, await1stage.toCompletableFuture().get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+
+            // Third async method might run or time out depending on how slow the machine running the test is
+            try {
+                await3stage.toCompletableFuture().join();
+            } catch (CancellationException x) {
+                if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E") //
+                    || x.getCause() == null || !x.getCause().getClass().getSimpleName().equals("StartTimeoutException"))
+                    throw x;
+            }
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
      * Try to use an asynchronous method for which the executor parameter points
      * to a JNDI name that is something other than a ManagedExecutorService.
      */
@@ -640,5 +705,23 @@ public class ConcurrentCDIServlet extends HttpServlet {
         } finally {
             future.cancel(true);
         }
+    }
+
+    /**
+     * Verify that one async method can invoke another.
+     * The first async method is on a Singleton bean and
+     * the second async method is on a DependentScoped bean.
+     */
+    @Test
+    public void testSingletonScopedBeanAsyncMethodInvokesAnotherAsyncMethod() throws Exception {
+        CompletionStage<List<String>> stage = taskBean //
+                        .lookupAll("java:comp/env/concurrent/executorRef", //
+                                   "java:app/env/concurrent/sampleExecutorRef", //
+                                   "java:module/env/concurrent/timeoutExecutorRef");
+        List<String> lookupResults = stage.toCompletableFuture().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        assertEquals(lookupResults.toString(), 3, lookupResults.size());
+        assertTrue(lookupResults.toString(), lookupResults.get(0).endsWith("managedExecutorService[DefaultManagedExecutorService]"));
+        assertTrue(lookupResults.toString(), lookupResults.get(1).endsWith("concurrent/sampleExecutor"));
+        assertTrue(lookupResults.toString(), lookupResults.get(2).endsWith("concurrent/timeoutExecutor"));
     }
 }

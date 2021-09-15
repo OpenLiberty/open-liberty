@@ -12,23 +12,29 @@ package io.openliberty.concurrent.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
 import javax.annotation.Priority;
-import prototype.enterprise.concurrent.Async;
+import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
+import prototype.enterprise.concurrent.Async;
 
 @Async
 @Interceptor
@@ -60,14 +66,54 @@ public class AsyncInterceptor implements Serializable {
         } catch (NamingException x) {
             throw new RejectedExecutionException(x);
         }
-        // TODO directly invoke executor.newIncompleteFuture() when v3.0 interface is added
-        CompletableFuture<Object> future = (CompletableFuture<Object>) executor.getClass().getMethod("newIncompleteFuture").invoke(executor);
-        Future<?> policyTaskFuture = executor.submit(() -> {
+
+        AsyncMethod asyncMethod = new AsyncMethod(executor, context);
+        Future<?> policyTaskFuture = executor.submit(asyncMethod, asyncMethod);
+        // If caller cancels the future, cancel the policy executor task that will run it
+        // TODO - should this action be taken whenever completed prematurely?
+        asyncMethod.future.exceptionally(failure -> { // TODO this doesn't need thread context overhead
+            if (failure instanceof CancellationException)
+                policyTaskFuture.cancel(true);
+            return null;
+        });
+        return asyncMethod.future;
+    }
+
+    private static class AsyncMethod implements Runnable, ManagedTask, ManagedTaskListener {
+        private final Map<String, String> execProps;
+        private final CompletableFuture<Object> future;
+        private final InvocationContext invocation;
+
+        @Trivial
+        private AsyncMethod(ManagedExecutorService executor, InvocationContext invocation) throws Exception {
+            execProps = Collections.singletonMap(ManagedTask.IDENTITY_NAME, "@Async " + invocation.getMethod().getName());
+            // TODO directly invoke executor.newIncompleteFuture() when v3.0 interface is added
+            future = (CompletableFuture<Object>) executor.getClass().getMethod("newIncompleteFuture").invoke(executor);
+            this.invocation = invocation;
+        }
+
+        @Trivial
+        public Map<String, String> getExecutionProperties() {
+            return execProps;
+        }
+
+        @Trivial
+        public ManagedTaskListener getManagedTaskListener() {
+            return this;
+        }
+
+        /**
+         * Runs the async method.
+         */
+        @FFDCIgnore(Throwable.class) // application errors are raised directly to the appliaction
+        @Override
+        public void run() {
             Async.Result.setFuture(future);
             try {
-                Object returnVal = context.proceed();
+                Object returnVal = invocation.proceed();
                 if (returnVal != future)
                     if (returnVal instanceof CompletionStage) { // which includes CompletableFuture
+                        @SuppressWarnings("unchecked")
                         CompletionStage<Object> stage = (CompletionStage<Object>) returnVal;
                         stage.whenComplete((result, failure) -> {
                             if (failure == null)
@@ -86,14 +132,27 @@ public class AsyncInterceptor implements Serializable {
             } finally {
                 Async.Result.setFuture(null);
             }
-        });
-        // If caller cancels the future, cancel the policy executor task that will run it
-        // TODO - should this action be taken whenever completed prematurely?
-        future.exceptionally(failure -> {
-            if (failure instanceof CancellationException)
-                policyTaskFuture.cancel(true);
-            return null;
-        });
-        return future;
+        }
+
+        /**
+         * Complete the future exceptionally if the task is aborted.
+         */
+        public void taskAborted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
+            if (exception instanceof AbortedException && exception.getCause() != null)
+                exception = new CancellationException(exception.getMessage()).initCause(exception.getCause());
+            future.completeExceptionally(exception);
+        }
+
+        @Trivial
+        public void taskDone(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
+        }
+
+        @Trivial
+        public void taskStarting(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
+        }
+
+        @Trivial
+        public void taskSubmitted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
+        }
     }
 }
