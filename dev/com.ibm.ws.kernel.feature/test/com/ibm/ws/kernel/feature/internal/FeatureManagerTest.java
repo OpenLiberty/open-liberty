@@ -256,6 +256,9 @@ public class FeatureManagerTest {
                     allowing(mockBundleContext).getDataFile("feature.fix.cache");
                     will(returnValue(File.createTempFile("feature.fix.cache", null)));
 
+                    allowing(mockBundleContext).getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+                    will(returnValue(null));
+
                     allowing(featureBundlesResolved).setProperties(with(any(Map.class)));
                 }
             });
