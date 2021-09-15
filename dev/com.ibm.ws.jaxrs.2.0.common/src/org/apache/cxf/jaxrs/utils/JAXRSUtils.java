@@ -385,6 +385,7 @@ public final class JAXRSUtils {
     }
 
     //CHECKSTYLE:OFF
+    @FFDCIgnore(IllegalArgumentException.class)
     public static OperationResourceInfo findTargetMethod(
                                                          Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources,
                                                          Message message,
@@ -402,7 +403,10 @@ public final class JAXRSUtils {
         try {
             requestType = toMediaType(requestContentType);
         } catch (IllegalArgumentException ex) {
-            throw ExceptionUtils.toNotSupportedException(ex, null);
+            //Liberty change start - throw 400 if content type is invalid rather than 415
+            //throw ExceptionUtils.toNotSupportedException(ex, null);
+            throw ExceptionUtils.toBadRequestException(ex, null);
+            //Liberty change end
         }
 
         SortedMap<OperationResourceInfo, MultivaluedMap<String, String>> candidateList =
