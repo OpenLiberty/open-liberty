@@ -55,6 +55,7 @@ public class UserinfoEndpointServlet extends HttpServlet {
 
         token = req.getParameter("userinfoToken");
 
+        System.out.println("Userinfo Endpoint Saving token: " + token);
         writer.println("token saved: " + token);
 
         writer.flush();
