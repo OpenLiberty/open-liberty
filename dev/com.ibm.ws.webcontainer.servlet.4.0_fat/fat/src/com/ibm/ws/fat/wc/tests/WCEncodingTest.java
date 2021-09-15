@@ -55,7 +55,7 @@ public class WCEncodingTest {
     public static void before() throws Exception {
         LOG.info("Setup : add TestEncoding to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, APP_NAME_ENCODING + ".war", "testencoding.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME_ENCODING + ".war", "testencoding.servlets");
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
@@ -65,8 +65,8 @@ public class WCEncodingTest {
 
         WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, "TestServlet40.war");
         testServlet40War.addAsLibrary(testServlet40Jar);
-        testServlet40War.addPackage("testservlet40.war.servlets");
-        testServlet40War.addPackage("testservlet40.war.listeners");
+        testServlet40War.addPackage("testservlet40.servlets");
+        testServlet40War.addPackage("testservlet40.listeners");
 
         ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 
