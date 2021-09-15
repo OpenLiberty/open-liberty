@@ -22,6 +22,12 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <managedExecutorService jndiName="concurrent/sampleExecutor"/>
+    <managedExecutorService jndiName="concurrent/sampleExecutor">
+        <concurrencyPolicy max="2" maxQueueSize="2"/>
+    </managedExecutorService>
+
+    <managedScheduledExecutorService jndiName="concurrent/timeoutExecutor">
+        <concurrencyPolicy max="1" startTimeout="3s"/>
+    </managedScheduledExecutorService>
 
 </server>
