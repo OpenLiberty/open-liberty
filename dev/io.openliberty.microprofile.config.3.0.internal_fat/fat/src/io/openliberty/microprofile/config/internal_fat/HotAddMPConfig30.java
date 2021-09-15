@@ -8,10 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package io.openliberty.microprofile.config.internal_fat;
 
 import java.util.Collections;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +21,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -27,29 +28,34 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.config.internal_fat.apps.hotadd.HotAddMPConfig30Servlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class HotAddMPConfig extends FATServletClient {
+public class HotAddMPConfig30 extends FATServletClient {
 
-    public static final String SERVER_NAME = "HotAddMPConfig";
-    public static final String APP_NAME = "hotAddMPConfigApp";
+    public static final String SERVER_NAME = "HotAddMPConfig30";
+    public static final String APP_NAME = "hotAddMPConfig30App";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
-        ShrinkHelper.defaultApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config.hotadd.*");
-        server.copyFileToLibertyServerRoot("HotAddMPConfig/noMPConfig/HotAddMPConfig.xml");
-        server.copyFileToLibertyServerRoot("HotAddMPConfig/withApp/HotAddApp.xml");
+        DeployOptions[] deployOptions = { DeployOptions.SERVER_ONLY };
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
+        app.addClasses(HotAddMPConfig30Servlet.class);
+        ShrinkHelper.exportAppToServer(server, app, deployOptions);
+        server.copyFileToLibertyServerRoot(SERVER_NAME + "/noMPConfig/HotAddMPConfig.xml");
+        server.copyFileToLibertyServerRoot(SERVER_NAME + "/withApp/HotAddApp.xml");
         server.startServerAndValidate(true, true, false); //don't validate because the app won't have started properly
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWNEN0047W.*HotAddMPConfigServlet");
+        //CWNEN0047W: Resource annotations on the fields of the io.openliberty.microprofile.config.internal_fat.apps.hotadd.HotAddMPConfig30Servlet class will be ignored.
+        //The annotations could not be obtained because of the exception : java.lang.NoClassDefFoundError: org.eclipse.microprofile.config.Config
+        server.stopServer("CWNEN0047W.*HotAddMPConfig30Servlet");
     }
 
     /**
@@ -67,8 +73,6 @@ public class HotAddMPConfig extends FATServletClient {
         } else {
             server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName), false);
         }
-
-        Thread.sleep(ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
     }
 
 //Not needed when there is just one test and it makes the logs harder to read
@@ -82,8 +86,8 @@ public class HotAddMPConfig extends FATServletClient {
     @Test
     public void testHotAddMPConfig() throws Exception {
         //Add in the mpConfig feature, which should allow the application to start cleanly
-        copyConfigFileToLibertyServerRoot("HotAddMPConfig/withMPConfig/HotAddMPConfig.xml", APP_NAME);
+        copyConfigFileToLibertyServerRoot(SERVER_NAME + "/withMPConfig/HotAddMPConfig.xml", APP_NAME);
 
-        runTest(server, "hotAddMPConfigApp/HotAddMPConfigServlet", "configTest");
+        runTest(server, APP_NAME + "/", "configTest");
     }
 }

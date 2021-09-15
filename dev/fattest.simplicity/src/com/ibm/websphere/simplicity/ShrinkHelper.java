@@ -466,6 +466,22 @@ public class ShrinkHelper {
 
     /**
      * Invokes {@link #buildDefaultApp(String, String...)}
+     * and then exports the resulting application to a Liberty server under the "dropins" directory
+     *
+     * @param server        The server to export the application to
+     * @param appname       The name of the application
+     * @param deployOptions options to configure how the application is deployed
+     * @param packages      A list of java packages to add to the application.
+     */
+    public static WebArchive defaultDropinApp(LibertyServer server, String appName, DeployOptions[] deployOptions, String... packages) throws Exception {
+        WebArchive app = buildDefaultApp(appName, packages);
+        exportDropinAppToServer(server, app, deployOptions);
+
+        return app;
+    }
+
+    /**
+     * Invokes {@link #buildDefaultApp(String, String...)}
      * and then exports the resulting application to a Liberty server under the "apps" directory
      *
      * @param server        The server to export the application to
