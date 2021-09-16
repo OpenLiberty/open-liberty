@@ -24,7 +24,8 @@ import jakarta.interceptor.InterceptorBinding;
 // For experimentation with a possible Async or Asynchronous annotation in Jakarta Concurrency.
 // TODO Delete this class if it goes into the spec. Delete this class if it doesn't.
 /**
- * Annotates a method (or class containing suitable methods) to run asynchronously.
+ * Annotates a CDI managed bean method (or CDI managed bean class containing suitable methods)
+ * to run asynchronously.
  * <p>
  * The Jakarta EE Product Provider runs the method on a {@link ManagedExecutorService}
  * and returns to the caller a {@link java.util.concurrent.CompletableFuture CompletableFuture}
@@ -130,7 +131,7 @@ import jakarta.interceptor.InterceptorBinding;
  * {@link java.util.concurrent.CompletableFuture#completeExceptionally completeExceptionally}
  * to supply the original exception as the cause.
  * <p>
- * The Jakarta EE Product Provider raises
+ * Except where otherwise stated, the Jakarta EE Product Provider raises
  * {@link java.util.concurrent.RejectedExecutionException RejectedExecutionException}
  * upon invocation of the asynchronous method if evident upfront that it cannot
  * be accepted, for example if the JNDI name is not valid or points to something
@@ -139,7 +140,19 @@ import jakarta.interceptor.InterceptorBinding;
  * then the Jakarta EE Product Provider completes the <code>CompletableFuture</code>
  * exceptionally with {@link java.util.concurrent.CancellationException CancellationException},
  * and chains a cause exception if there is any.
+ * <p>
+ * The Jakarta EE Product Provider must assign the interceptor for asynchronous methods
+ * to have priority of <code>Interceptor.Priority.PLATFORM_BEFORE + 5</code>,
+ * so as to enable most other platform interceptors, such as <code>Transactional</code>,
+ * to be applied to the thread upon which the asynchronous method executes.
+ * When an asynchronous method is annotated as <code>Transactional</code>,
+ * the transactional types <code>TxType.REQUIRES_NEW</code> and
+ * <code>TxType.NOT_SUPPORTED</code> can be used. All other transaction attributes must
+ * result in {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
+ * upon invocation of the asynchronous method.
  */
+// TODO the above restrictions on Transactional interceptors could be eliminated
+// if transaction context propagation is later added to the spec.
 @Documented
 @Inherited
 @InterceptorBinding

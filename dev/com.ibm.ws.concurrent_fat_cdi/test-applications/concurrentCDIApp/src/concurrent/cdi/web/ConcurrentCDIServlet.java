@@ -13,6 +13,7 @@ package concurrent.cdi.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -49,6 +50,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
@@ -82,6 +84,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
     private ManagedExecutorService executorWithStartTimeout;
 
     @Inject
+    private MyManagedBean managedBean;
+
+    @Inject
     private RequestScopedBean requestScopedBean;
 
     @Inject
@@ -98,6 +103,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     @Resource
     private UserTransaction tran;
+
+    @Inject
+    private TransactionScopedBean transactionScopedBean;
 
     @Resource(lookup = "java:comp/TransactionSynchronizationRegistry")
     private TransactionSynchronizationRegistry tranSyncRegistry;
@@ -315,6 +323,133 @@ public class ConcurrentCDIServlet extends HttpServlet {
         assertEquals(curThreadName, threadNameRef.get());
     }
 
+    /**
+     * When an asynchronous method is also annotated with Transactional(MANDATORY)
+     * it must be rejected because the transaction cannot be established on the async
+     * method thread in parallel to the caller.
+     */
+    @Test
+    public void testAsyncTxMandatory() throws Exception {
+        tran.begin();
+        try {
+            Object txKeyAsync = bean.runAsyncAsMandatory().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            fail("TxType.MANDATORY permitted on asynchronous method: " + txKeyAsync);
+        } catch (UnsupportedOperationException x) {
+            String message = x.getMessage();
+            if (message == null
+                || !message.contains("Async")
+                || !message.contains("Transactional")
+                || !message.contains("MANDATORY"))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+    }
+
+    /**
+     * When an asynchronous method is also annotated with Transactional(NEVER)
+     * it must be rejected.
+     */
+    @Test
+    public void testAsyncTxNever() throws Exception {
+        tran.begin();
+        try {
+            Object txKeyAsync = bean.runAsyncAsNever().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            fail("TxType.NEVER permitted on asynchronous method: " + txKeyAsync);
+        } catch (UnsupportedOperationException x) {
+            String message = x.getMessage();
+            if (message == null
+                || !message.contains("Async")
+                || !message.contains("Transactional")
+                || !message.contains("NEVER"))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+    }
+
+    /**
+     * When an asynchronous method is also annotated with Transactional(NOT_SUPPORTED),
+     * the Transactional interceptor must be applied second, such that the method runs
+     * under no transaction.
+     */
+    @Test
+    public void testAsyncTxNotSupported() throws Exception {
+        tran.begin();
+        try {
+            Object txKey = tranSyncRegistry.getTransactionKey();
+            assertNotNull(txKey);
+            Object txKeyAsync = bean.runAsyncAsNotSupported().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            assertNull(txKeyAsync);
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * When an asynchronous method is also annotated with Transactional(REQUIRED)
+     * it must be rejected because the transaction cannot be established on the async
+     * method thread in parallel to the caller.
+     */
+    @Test
+    public void testAsyncTxRequired() throws Exception {
+        tran.begin();
+        try {
+            Object txKeyAsync = bean.runAsyncAsRequired().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            fail("TxType.REQUIRED permitted on asynchronous method: " + txKeyAsync);
+        } catch (UnsupportedOperationException x) {
+            String message = x.getMessage();
+            if (message == null
+                || !message.contains("Async")
+                || !message.contains("Transactional")
+                || !message.contains("REQUIRED"))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+    }
+
+    /**
+     * When an asynchronous method is also annotated with Transactional(REQUIRES_NEW),
+     * the Transactional intercept must be applied second, such that the method runs
+     * under a new transaction.
+     */
+    @Test
+    public void testAsyncTxRequiresNew() throws Exception {
+        tran.begin();
+        try {
+            Object txKey = tranSyncRegistry.getTransactionKey();
+            Object txKeyAsync = bean.runAsyncAsRequiresNew().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            assertNotNull(txKeyAsync);
+            assertNotSame(txKey, txKeyAsync);
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * When an asynchronous method is also annotated with Transactional(SUPPORTS)
+     * it must be rejected because the transaction cannot be established on the async
+     * method thread in parallel to the caller.
+     */
+    @Test
+    public void testAsyncTxSupports() throws Exception {
+        tran.begin();
+        try {
+            Object txKeyAsync = bean.runAsyncAsSupports().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            fail("TxType.SUPPORTS permitted on asynchronous method: " + txKeyAsync);
+        } catch (UnsupportedOperationException x) {
+            String message = x.getMessage();
+            if (message == null
+                || !message.contains("Async")
+                || !message.contains("Transactional")
+                || !message.contains("SUPPORTS"))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+    }
+
     @Test
     public void testInjectedManagedExecutorService() {
         System.out.println("@AGG injected executor is: " + injectedExec);
@@ -370,9 +505,41 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 try {
                     bean.runAsNever();
                     throw new Exception("Should not be able to invoke TX_NEVER method when there is a transaction on the thread");
-                } catch (/* Transactional */Exception x) {
-                    if (x.getMessage() == null && !x.getMessage().contains("TX_NEVER"))
+                } catch (TransactionalException x) {
+                    if (x.getMessage() == null || !x.getMessage().contains("TxType.NEVER"))
                         throw x;
+                } finally {
+                    tran.commit();
+                }
+
+                return null;
+            }
+        });
+        try {
+            future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        } finally {
+            future.cancel(true);
+        }
+    }
+
+    /**
+     * Submit a concurrent task to invoke a bean method with transaction attribute REQUIRES_NEW
+     */
+    @Test
+    public void testBeanSubmitsManagedTaskThatInvokesTxRequiresNew() throws Exception {
+        Future<?> future = submitterBean.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                assertNull(tranSyncRegistry.getTransactionKey());
+                Object beanTxKey = bean.runAsRequiresNew();
+                assertNotNull(beanTxKey);
+
+                tran.begin();
+                try {
+                    Object txKey = tranSyncRegistry.getTransactionKey();
+                    beanTxKey = bean.runAsRequiresNew();
+                    assertNotNull(beanTxKey);
+                    assertNotSame(txKey, beanTxKey);
                 } finally {
                     tran.commit();
                 }
@@ -418,6 +585,16 @@ public class ConcurrentCDIServlet extends HttpServlet {
         } finally {
             future.cancel(true);
         }
+    }
+
+    /**
+     * Invoke an asynchronous method on a CDI managed bean that isn't otherwise annotated.
+     */
+    @Test
+    public void testManagedBeanAsyncMethod() throws Exception {
+        ManagedExecutorService expectedExecutor = InitialContext.doLookup("java:app/env/concurrent/sampleExecutorRef");
+        CompletableFuture<Object> future = managedBean.asyncLookup("java:app/env/concurrent/sampleExecutorRef");
+        assertEquals(expectedExecutor, future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
     }
 
     /**
@@ -658,9 +835,41 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 try {
                     bean.runAsNever();
                     throw new Exception("Should not be able to invoke TX_NEVER method when there is a transaction on the thread");
-                } catch (/* Transactional */Exception x) {
-                    if (x.getMessage() == null && !x.getMessage().contains("TX_NEVER"))
+                } catch (TransactionalException x) {
+                    if (x.getMessage() == null || !x.getMessage().contains("TxType.NEVER"))
                         throw x;
+                } finally {
+                    tran.commit();
+                }
+
+                return null;
+            }
+        });
+        try {
+            future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        } finally {
+            future.cancel(true);
+        }
+    }
+
+    /**
+     * Submit a concurrent task to invoke a bean method with transaction attribute REQUIRES_NEW
+     */
+    @Test
+    public void testServletSubmitsManagedTaskThatInvokesTxRequiresNew() throws Exception {
+        Future<?> future = executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                assertNull(tranSyncRegistry.getTransactionKey());
+                Object beanTxKey = bean.runAsRequiresNew();
+                if (beanTxKey == null)
+                    throw new Exception("TxType.REQUIRES_NEW must run in a transaction: " + beanTxKey);
+
+                tran.begin();
+                try {
+                    Object txKey = tranSyncRegistry.getTransactionKey();
+                    beanTxKey = bean.runAsRequiresNew();
+                    assertNotSame(txKey, beanTxKey);
                 } finally {
                     tran.commit();
                 }
@@ -723,5 +932,23 @@ public class ConcurrentCDIServlet extends HttpServlet {
         assertTrue(lookupResults.toString(), lookupResults.get(0).endsWith("managedExecutorService[DefaultManagedExecutorService]"));
         assertTrue(lookupResults.toString(), lookupResults.get(1).endsWith("concurrent/sampleExecutor"));
         assertTrue(lookupResults.toString(), lookupResults.get(2).endsWith("concurrent/timeoutExecutor"));
+    }
+
+    /**
+     * Invoke an asynchronous method on a transaction scoped bean.
+     */
+    @Test
+    public void testTransactionScopedBeanAsyncMethod() throws Exception {
+        tran.begin();
+        try {
+            CompletableFuture<Integer> future = transactionScopedBean.incrementAsync(5);
+            int result1 = transactionScopedBean.increment(10);
+            int result2 = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            // increment can happen in either order, but the sum will always be 15,
+            assertEquals(15, transactionScopedBean.get());
+            assertEquals(result1 == 10 ? 15 : 5, result2);
+        } finally {
+            tran.commit();
+        }
     }
 }

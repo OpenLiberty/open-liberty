@@ -44,11 +44,13 @@ instrument.classesExcludes: io/openliberty/concurrent/cdi/resources/*.class
   com.ibm.websphere.javaee.cdi.2.0,\
   com.ibm.websphere.javaee.concurrent.1.0,\
   com.ibm.websphere.javaee.interceptor.1.2,\
+  com.ibm.websphere.javaee.transaction.1.2,\
   com.ibm.ws.cdi.interfaces,\
   io.openliberty.jakarta.annotation.2.0,\
   io.openliberty.jakarta.cdi.3.0,\
   io.openliberty.jakarta.concurrency.2.0,\
-  io.openliberty.jakarta.interceptor.2.0
+  io.openliberty.jakarta.interceptor.2.0,\
+  io.openliberty.jakarta.transaction.2.0
 #  ../com.ibm.ws.cdi.interfaces/build/libs/com.ibm.ws.cdi.interfaces.jakarta.jar;version=file
 
 # last line above is in place of com.ibm.ws.cdi.interfaces.jakarta;version=latest

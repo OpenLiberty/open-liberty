@@ -30,6 +30,7 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.transaction.Transactional;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -38,7 +39,7 @@ import prototype.enterprise.concurrent.Async;
 
 @Async
 @Interceptor
-@Priority(Interceptor.Priority.PLATFORM_BEFORE + 10)
+@Priority(Interceptor.Priority.PLATFORM_BEFORE + 5)
 public class AsyncInterceptor implements Serializable {
     private static final long serialVersionUID = 7447792334053278336L;
 
@@ -46,6 +47,7 @@ public class AsyncInterceptor implements Serializable {
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
     public Object intercept(InvocationContext context) throws Exception {
         Method method = context.getMethod();
+        validateTransactional(method);
         Async methodAnno = method.getAnnotation(Async.class);
         Async anno = methodAnno == null ? method.getDeclaringClass().getAnnotation(Async.class) : methodAnno;
         Class<?> returnType = method.getReturnType();
@@ -79,6 +81,26 @@ public class AsyncInterceptor implements Serializable {
         return asyncMethod.future;
     }
 
+    /**
+     * Limits the pairing of @Async and @Transactional to NOT_SUPPORTED and REQUIRES_NEW.
+     *
+     * @param method annotated method.
+     * @throws UnsupportedOperationException for unsupported combinations.
+     */
+    private static void validateTransactional(Method method) throws UnsupportedOperationException {
+        Transactional tx = method.getAnnotation(Transactional.class);
+        if (tx == null)
+            tx = method.getDeclaringClass().getAnnotation(Transactional.class);
+        if (tx != null)
+            switch (tx.value()) {
+                case NOT_SUPPORTED:
+                case REQUIRES_NEW:
+                    break;
+                default:
+                    throw new UnsupportedOperationException("@Async @Transactional(" + tx.value().name() + ")");
+            }
+    }
+
     private static class AsyncMethod implements Runnable, ManagedTask, ManagedTaskListener {
         private final Map<String, String> execProps;
         private final CompletableFuture<Object> future;
@@ -92,11 +114,13 @@ public class AsyncInterceptor implements Serializable {
             this.invocation = invocation;
         }
 
+        @Override
         @Trivial
         public Map<String, String> getExecutionProperties() {
             return execProps;
         }
 
+        @Override
         @Trivial
         public ManagedTaskListener getManagedTaskListener() {
             return this;
@@ -137,20 +161,24 @@ public class AsyncInterceptor implements Serializable {
         /**
          * Complete the future exceptionally if the task is aborted.
          */
+        @Override
         public void taskAborted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
             if (exception instanceof AbortedException && exception.getCause() != null)
                 exception = new CancellationException(exception.getMessage()).initCause(exception.getCause());
             future.completeExceptionally(exception);
         }
 
+        @Override
         @Trivial
         public void taskDone(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
         }
 
+        @Override
         @Trivial
         public void taskStarting(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
         }
 
+        @Override
         @Trivial
         public void taskSubmitted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
         }
