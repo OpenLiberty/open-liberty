@@ -289,13 +289,50 @@ invalid.long.value=CWWKC2275E: The {2} value in the {0} deployment descriptor on
 invalid.long.value.explanation=The deployment descriptor specifies a value that is not a number in the range -9223372036854775808 to 9223372036854775807.
 invalid.long.value.useraction=Correct the deployment descriptor to use a valid long number.
 
-module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
-module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
-module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+# ---
 
-module.name.invalid=CWWKC2277E: One or more module names on the {1} element are not valid. The non-valid module name or names are {0}.
-module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
-module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276W: The ''moduleName'' attribute is missing from one or more ''{1}'' bindings and extension configuration elements of the {0} application.
+module.name.not.specified.explanation=Bindings and extension configuration elements must have a ''moduleName'' attribute.
+module.name.not.specified.useraction=Ensure that a ''moduleName'' attribute is present in all bindings and extension configuration elements.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277W: Cannot find the {2} ''moduleName'' attributes specified in the ''{1}'' bindings and extension configuration elements of the {0} application.  The application module names are {3}.
+module.name.not.found.explanation=The ''moduleName' attributes of bindings and extension configuration elements must match application module names.
+module.name.not.found.useraction=Ensure that all ''moduleName' attributes of bindings and extension configuration elements match application module names. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278W: Duplicate {2} ''moduleName'' attributes are specified in the ''{1}'' bindings and extension configuration elements of the {0} application.
+module.name.duplicated.explanation=The ''moduleName' attributes of bindings and extension configuration elements may not be duplicated.
+module.name.duplicated.useraction=Ensure that all ''moduleName' attributes of bindings and extension configuration elements are unique. 
 
 # ADDED:
 # -----------------------------------------------------------------------

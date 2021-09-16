@@ -20,6 +20,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appbnd.ApplicationBnd;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -27,24 +28,77 @@ import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
+/**
+ * Top level processing for application bindings.
+ * 
+ * This uses the same pattern as application extensions.
+ * 
+ * The code has been left separate: Merging the two classes
+ * doesn't seem quite worth the extra effort and complications
+ * that would be introduced.
+ * 
+ * See {@link com.ibm.ws.javaee.ddmodel.common.BndExtAdapter} for
+ * more information.
+ */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
     property = { "service.vendor=IBM",
                  "toType=com.ibm.ws.javaee.dd.appbnd.ApplicationBnd" })
-public class ApplicationBndAdapter implements ContainerAdapter<ApplicationBnd> {
+public class ApplicationBndAdapter
+    extends BndExtAdapter<ApplicationBnd>
+    implements ContainerAdapter<ApplicationBnd> {
+
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
+    volatile List<ApplicationBnd> configurations;    
 
-    volatile List<ApplicationBnd> configurations;
+    //
 
-    private ApplicationBndComponentImpl getConfigOverrides(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {
+    @Override
+    @FFDCIgnore(ParseException.class)
+    public ApplicationBnd adapt(
+        Container ddRoot,
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot,
+        Container ddAdaptRoot) throws UnableToAdaptException {
+
+        Application app = ddAdaptRoot.adapt(Application.class);
+        String appVersion = ((app == null) ? null : app.getVersion());
+        boolean xmi = ( "1.2".equals(appVersion) || "1.3".equals(appVersion) || "1.4".equals(appVersion) );
+        String ddPath = ( xmi ? ApplicationBnd.XMI_BND_NAME : ApplicationBnd.XML_BND_NAME );  
+
+        ApplicationBnd fromConfig = getConfigOverrides(ddOverlay, ddArtifactRoot);
+
+        Entry ddEntry = ddAdaptRoot.getEntry(ddPath);
+        if ( ddEntry == null ) {
+            return fromConfig;
+        }
+
+        ApplicationBnd fromApp;
+        try {
+            ApplicationBndDDParser parser =
+                new ApplicationBndDDParser(ddAdaptRoot, ddEntry, xmi);                
+            fromApp = parser.parse(); 
+        } catch ( ParseException e ) {
+            throw new UnableToAdaptException(e);
+        }
+        
+        if ( fromConfig == null ) {
+            return fromApp;
+        } else {  
+            setDelegate(fromConfig, fromApp);
+            return fromConfig;
+        }
+    }
+
+    private ApplicationBnd getConfigOverrides(OverlayContainer ddOverlay, ArtifactContainer ddArtifactRoot) {
         if ( (configurations == null) || configurations.isEmpty() ) {
              return null;
         }
-        
+
         ApplicationInfo appInfo = (ApplicationInfo)
-            rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
+            ddOverlay.getFromNonPersistentCache(ddArtifactRoot.getPath(), ApplicationInfo.class);
         if ( (appInfo == null) || !(appInfo instanceof ExtendedApplicationInfo) ) {
             return null;
         }
@@ -54,64 +108,37 @@ public class ApplicationBndAdapter implements ContainerAdapter<ApplicationBnd> {
              return null;
          }
     
-        String servicePid = (String) configHelper.get("service.pid");
-        String extendsPid = (String) configHelper.get("ibm.extends.source.pid");
-        for ( ApplicationBnd config : configurations ) {
-             ApplicationBndComponentImpl configImpl = (ApplicationBndComponentImpl) config;
-             String parentPid = (String) configImpl.getConfigAdminProperties().get("config.parentPID");
-             if ( servicePid.equals(parentPid) || parentPid.equals(extendsPid)) {
-                 return configImpl;
+        String appServicePid = (String) configHelper.get("service.pid");
+        String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
+        for ( ApplicationBnd appBnd : configurations ) {
+             String parentPid = getParentPid(appBnd);
+             if ( appServicePid.equals(parentPid) || parentPid.equals(appExtendsPid)) {
+                 return appBnd;
              }
         }
         return null;
-   }    
+    }
+
+    //
+
+    protected String getParentPid(ApplicationBnd appBnd) {
+        ApplicationBndComponentImpl appBndImpl = (ApplicationBndComponentImpl) appBnd;
+        return (String) appBndImpl.getConfigAdminProperties().get("config.parentPID");        
+    }
+
+    protected String getModuleName(ApplicationBnd appBnd) {
+        return null; // Unused
+    }
+
+    protected String getElementTag() {
+        return "application-bnd"; // Unused
+    }
+
+    protected Class<?> getCacheType() {
+        return ApplicationBndAdapter.class; // Unused
+    }
     
-    @Override
-    @FFDCIgnore(ParseException.class)
-    public ApplicationBnd adapt(
-        Container root,
-        OverlayContainer rootOverlay,
-        ArtifactContainer artifactContainer,
-        Container containerToAdapt) throws UnableToAdaptException {
-
-        Application application = containerToAdapt.adapt(Application.class);
-        String appSchemaVersion = ((application == null) ? null : application.getVersion());
-        boolean xmi = ( "1.2".equals(appSchemaVersion) ||
-                        "1.3".equals(appSchemaVersion) ||
-                        "1.4".equals(appSchemaVersion) );
-
-        String ddEntryName;
-        if ( xmi ) {
-            ddEntryName = ApplicationBnd.XMI_BND_NAME;
-        } else {
-            ddEntryName = ApplicationBnd.XML_BND_NAME;
-        }
-
-        Entry ddEntry = containerToAdapt.getEntry(ddEntryName);
-        ApplicationBndComponentImpl fromConfig =
-            getConfigOverrides(rootOverlay, artifactContainer);
-        if ( (ddEntry == null) && (fromConfig == null) ) {
-            return null;
-        }
-
-        if ( ddEntry == null ) {
-            return fromConfig;
-        }
-
-        ApplicationBnd fromApp;
-        try {
-            ApplicationBndDDParser parser =
-                new ApplicationBndDDParser(containerToAdapt, ddEntry, xmi);                
-            fromApp = parser.parse(); 
-        } catch ( ParseException e ) {
-            throw new UnableToAdaptException(e);
-        }
-        
-        if ( fromConfig == null ) {
-            return fromApp;
-        } else {  
-            fromConfig.setDelegate(fromApp);
-            return fromConfig;
-        }
+    protected void setDelegate(ApplicationBnd appBnd, ApplicationBnd appBndDelegate) {
+        ((ApplicationBndComponentImpl) appBnd).setDelegate(appBndDelegate);
     }
 }

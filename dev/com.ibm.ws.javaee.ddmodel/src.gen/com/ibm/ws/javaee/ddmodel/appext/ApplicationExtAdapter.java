@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.appext;
 
 import java.util.List;
@@ -20,6 +19,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appext.ApplicationExt;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -27,24 +27,80 @@ import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
+/**
+ * Top level processing for application extensions.
+ * 
+ * This uses the same pattern as application bindings.
+ * 
+ * The code has been left separate: Merging the two classes
+ * doesn't seem quite worth the extra effort and complications
+ * that would be introduced.
+ * 
+ * See {@link com.ibm.ws.javaee.ddmodel.common.BndExtAdapter} for
+ * more information.
+ */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.javaee.dd.appext.ApplicationExt" })
-public class ApplicationExtAdapter implements ContainerAdapter<ApplicationExt> {
+    property = { "service.vendor=IBM",
+                 "toType=com.ibm.ws.javaee.dd.appext.ApplicationExt" })
+public class ApplicationExtAdapter
+    extends BndExtAdapter<ApplicationExt>
+    implements ContainerAdapter<ApplicationExt> {
+
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
+            policy = ReferencePolicy.DYNAMIC,
+            policyOption = ReferencePolicyOption.GREEDY)
     volatile List<ApplicationExt> configurations;
 
-    private ApplicationExtComponentImpl getConfigOverrides(
-            OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {
+    //
+
+    @Override
+    @FFDCIgnore(ParseException.class)
+    public ApplicationExt adapt(
+        Container ddRoot,
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot,
+        Container ddAdaptRoot) throws UnableToAdaptException {
+
+        Application app = ddAdaptRoot.adapt(Application.class);
+        String appVersion = ( (app == null) ? null : app.getVersion() );
+        boolean xmi = ( "1.2".equals(appVersion) || "1.3".equals(appVersion) || "1.4".equals(appVersion) );
+        String ddPath = ( xmi ? ApplicationExt.XMI_EXT_NAME : ApplicationExt.XML_EXT_NAME );  
+
+        ApplicationExt fromConfig = getConfigOverrides(ddOverlay, ddArtifactRoot);
+
+        Entry ddEntry = ddAdaptRoot.getEntry(ddPath);
+        if ( ddEntry == null ) {
+            return fromConfig;
+        }
+
+        ApplicationExt fromApp;
+        try {
+            fromApp = new ApplicationExtDDParser(ddAdaptRoot, ddEntry, xmi).parse();
+        } catch ( ParseException e ) {
+            throw new UnableToAdaptException(e);
+        }
+
+        if ( fromConfig == null ) {
+            return fromApp;
+        } else {  
+            setDelegate(fromConfig, fromApp);
+            return fromConfig;
+        }
+    }
+
+    //
+
+    private ApplicationExt getConfigOverrides(
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot) {
 
         if ( (configurations == null) || configurations.isEmpty() ) {
             return null;
         }
 
         ApplicationInfo appInfo = (ApplicationInfo)
-            rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
+            ddOverlay.getFromNonPersistentCache(ddArtifactRoot.getPath(), ApplicationInfo.class);
         if ( (appInfo == null) || !(appInfo instanceof ExtendedApplicationInfo ) ) {
             return null;
         }
@@ -53,56 +109,41 @@ public class ApplicationExtAdapter implements ContainerAdapter<ApplicationExt> {
         if ( configHelper == null ) {
             return null;
         }
-            
-        String servicePid = (String) configHelper.get("service.pid");
-        String extendsPid = (String) configHelper.get("ibm.extends.source.pid");
-        for ( ApplicationExt config : configurations ) {
-            ApplicationExtComponentImpl configImpl = (ApplicationExtComponentImpl) config;
-            String parentPid = (String) configImpl.getConfigAdminProperties().get("config.parentPID");
-            if ( servicePid.equals(parentPid) || parentPid.equals(extendsPid)) {
-                return configImpl;
+        String appServicePid = (String) configHelper.get("service.pid");
+        String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
+
+        for ( ApplicationExt appExt : configurations ) {
+            String appParentPid = getParentPid(appExt);
+            if ( appServicePid.equals(appParentPid) || appParentPid.equals(appExtendsPid)) {
+                return appExt;
             }
         }
         return null;
     }
-    
+
+    //
+
+    protected String getParentPid(ApplicationExt appExt) {
+        ApplicationExtComponentImpl appExtImpl = (ApplicationExtComponentImpl) appExt;
+        return (String) appExtImpl.getConfigAdminProperties().get("config.parentPID");        
+    }
+
     @Override
-    @FFDCIgnore(ParseException.class)
-    public ApplicationExt adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
-        Application app = containerToAdapt.adapt(Application.class);
-        String appVersion = ( (app == null) ? null : app.getVersion() );
-        boolean xmi = ( (appVersion != null) &&
-                        ("1.2".equals(appVersion) ||
-                         "1.3".equals(appVersion) ||
-                         "1.4".equals(appVersion)) );
+    protected String getModuleName(ApplicationExt appExt) {
+        return null; // Unused
+    }
 
-        String ddEntryName;
-        if ( xmi ) {
-            ddEntryName = ApplicationExt.XMI_EXT_NAME;
-        } else {
-            ddEntryName = ApplicationExt.XML_EXT_NAME;
-        }
-        Entry ddEntry = containerToAdapt.getEntry(ddEntryName);
+    @Override
+    protected String getElementTag() {
+        return "application-ext"; // Unused
+    }
 
-        ApplicationExtComponentImpl fromConfig =
-            getConfigOverrides(rootOverlay, artifactContainer);
-
-        if ( ddEntry == null ) {
-            return fromConfig;
-        }
-
-        ApplicationExt fromApp;
-        try {
-            fromApp = new ApplicationExtDDParser(containerToAdapt, ddEntry, xmi).parse();
-        } catch ( ParseException e ) {
-            throw new UnableToAdaptException(e);
-        }
-
-        if ( fromConfig == null ) {
-            return fromApp;
-        } else {  
-            fromConfig.setDelegate(fromApp);
-            return fromConfig;
-        }
+    @Override
+    protected Class<?> getCacheType() {
+        return ApplicationExtAdapter.class; // Unused
+    }
+    
+    protected void setDelegate(ApplicationExt appExt, ApplicationExt appExtDelegate) {
+        ((ApplicationExtComponentImpl) appExt).setDelegate(appExtDelegate);
     }
 }
