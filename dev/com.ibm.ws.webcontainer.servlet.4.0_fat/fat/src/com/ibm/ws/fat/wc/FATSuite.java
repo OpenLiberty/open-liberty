@@ -33,6 +33,7 @@ import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
 import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
+import com.ibm.ws.fat.wc.tests.WCServerPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
@@ -91,7 +92,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WC5GetContextPath.class,
                 WCSCIHandlesTypesTest.class,
                 WCResponseHeadersTest.class,
-                WCServerMiscTest.class
+                WCServerMiscTest.class,
+                WCServerPropertyTest.class
 
 })
 
