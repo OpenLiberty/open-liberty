@@ -1,8 +1,13 @@
-//A test service for the RespectBinding feature
-
-//Package does not match the eclipse directory. Needs to be that way
-// so webservice.xml and web.xml can be easily recycled across
-// multiple services.
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 
 package jaxws22.respectbinding.server.annofalse; // don't change this package
 
