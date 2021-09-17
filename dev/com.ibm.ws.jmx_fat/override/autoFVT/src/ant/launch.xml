@@ -14,7 +14,7 @@
 	     When this FAT runs, the junit JVM will have the additional strong encapsulation overrides it needs:
 		 "<dash><dash>add-opens java.base/java.lang=ALL-UNNAMED <dash><dash>add-exports jdk.attach/sun.tools.attach=ALL-UNNAMED" 
 		 The assumption is that at this point, we will only be building using LTS versions of Java or interium versions 15 or higher--> 
-	<condition property="illegal.access.permit.jmx.fat" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-exports jdk.attach/sun.tools.attach=ALL-UNNAMED">
+	<condition property="illegal.access.permit.jmx.fat" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-exports jdk.attach/sun.tools.attach=ALL-UNNAMED --add-exports jdk.attach/com.ibm.tools.attach.attacher=ALL-UNNAMED">
 		<not>
 			<or>
 				<equals arg1="11" arg2="${java.specification.version}"/>
