@@ -10,37 +10,6 @@
 
 <suite name="microprofile-config-3.0-tck" verbose="2" configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config30.tck">
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell">
-                    <![CDATA[
-                    // org.eclipse.microprofile.config.tck.ConverterTest
-                    // org.eclipse.microprofile.config.tck.ArrayConverterTest
-                    if(method.getName().startsWith("testURLConverter") ||
-                       method.getName().startsWith("testGetURLConverter") ||
-                       method.getName().startsWith("testUrlArrayInjection") ||
-                       method.getName().startsWith("testOptionalUrlArrayLookupProgrammatically") ||
-                       method.getName().startsWith("testUrlArrayLookupProgrammatically") ||
-                       method.getName().startsWith("testURLSetInjection") ||
-                       method.getName().startsWith("testOptionalUrlListLookupProgrammatically") ||
-                       method.getName().startsWith("testUrlListLookupProgrammatically") ||
-                       method.getName().startsWith("testURLListInjection") ||
-                       method.getName().startsWith("testGetUrlArrayConverter")){
-                        // Fails due to java.lang.NoClassDefFoundError: org/eclipse/microprofile/config/tck/util/AdditionalAssertions 
-                        return false;
-                    }
-                    // org.eclipse.microprofile.config.tck.ConfigProviderTest
-                    String os = System.getProperty("os.name");
-                    if (os.contains("Windows") && method.getName().startsWith("testEnvironmentConfigSource")){
-                        // Test unreliable in 3.0 TCK on Windows due to inconsistent path variable name. See https://github.com/eclipse/microprofile-config/issues/664
-                        return false;
-                    }
-                    
-                    return true;
-                    ]]>
-                </script>
-            </method-selector>
-        </method-selectors>
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
