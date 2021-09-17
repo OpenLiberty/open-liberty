@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="
+              http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0">
+
+	<!-- Servlets -->
+	<servlet>
+		<display-name>FragmentServlet</display-name>
+		<servlet-name>FragmentServlet</servlet-name>
+		<servlet-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.FragmentServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>FragmentServlet</servlet-name>
+		<url-pattern>/FragmentServlet</url-pattern>
+	</servlet-mapping>
+
+	<ejb-local-ref id="EJBLocalRef_test1">
+		<ejb-ref-name>ejb/test1Local</ejb-ref-name>
+		<ejb-ref-type>Session</ejb-ref-type>
+		<local>com.ibm.ws.ejbcontainer.fat.beaninterfaceholderlib.BasicLocal</local>
+		<ejb-link>BasicStateful</ejb-link>
+		<injection-target>
+			<injection-target-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.FragmentServlet</injection-target-class>
+			<injection-target-name>test1Local</injection-target-name>
+		</injection-target>
+	</ejb-local-ref>
+
+</web-fragment>

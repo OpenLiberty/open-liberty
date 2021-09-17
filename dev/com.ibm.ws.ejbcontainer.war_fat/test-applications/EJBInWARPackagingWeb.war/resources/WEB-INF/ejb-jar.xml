@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	metadata-complete="false" version="3.1">
+
+	<module-name>EJBInWARPackagingWeb</module-name>
+	<display-name>EJBInWARPackagingWeb</display-name>
+
+	<enterprise-beans>
+		<session>
+			<ejb-name>MySingletonBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.fat.beaninterfaceholderlib.EJBInWARPackagingLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.ejb.EJBInWARPackagingSingletonBean</ejb-class>
+			<session-type>Singleton</session-type>
+		</session>
+	</enterprise-beans>
+
+</ejb-jar>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-ext
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_1.xsd"
+  version="1.1">
+
+    <resource-ref name="jdbc/ejbResRefWebIsoDS" isolation-level="TRANSACTION_READ_COMMITTED"/>
+	<resource-ref name="jdbc/dupBindingDS" isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+
+</web-ext>
