@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=A fost detectat\u0103 o excep\u0
 DatabaseHashMap.selectNoUpdateError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: S-a f\u0103cut o \u00eencercare de a scrie mai mult dec\u00e2t 2M \u00eem coloana mare.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: S-a \u00eencercat scrierea \u00een coloana bazei de date mai mult dec\u00e2t este permis de valoarea propriet\u0103\u0163ii rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Datele sesiunii ar putea fi prea mari pentru coloana bazei de date.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduce\u0163i dimensiunea acestui atribut \u00eenainte de a \u00eencerca s\u0103 \u00eel depozita\u0163i \u00een sesiune.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduce\u0163i dimensiunea acestui atribut \u00eenainte de a \u00eencerca stocarea lui \u00een sesiune sau cre\u015fte\u0163i valoarea propriet\u0103\u0163ii rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: serviciul {0} a fost initializat cu succes.

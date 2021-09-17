@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=Prvek DatabaseStore zaprotokoloval tuto chybovou zpr\u00e1vu.
 PROVIDER_ERROR_CWWKD0292E.useraction=Prostudujte si dokumentaci prvku DatabaseStore.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: \u00darove\u0148 izolace nakonfigurovan\u00e9 transakce {0} nen\u00ed podporov\u00e1na.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=P\u0159idru\u017een\u00fd ovlada\u010d datab\u00e1ze nepodporuje po\u017eadovanou \u00farove\u0148 izolace.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=P\u0159ed op\u011btovn\u00fdm pokusem zm\u011b\u0148te \u00farove\u0148 izolace.
+

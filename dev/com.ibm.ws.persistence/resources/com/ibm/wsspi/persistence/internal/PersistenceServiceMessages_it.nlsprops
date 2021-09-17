@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=DatabaseStore ha registrato questo messaggio di errore.
 PROVIDER_ERROR_CWWKD0292E.useraction=Consultare la documentazione DatabaseStore.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: Il livello di isolamento della transazione configurato {0} non \u00e8 supportato.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=Il driver di database associato non supporta il livello di isolamento richiesto.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Modificare il livello di isolamento e riprovare.
+

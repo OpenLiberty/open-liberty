@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Es ist keine Aktion erforderlic
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Die Daten des Tools Tool {0} f\u00fcr den Benutzer {1} wurde unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und in den neuen Dateinamen umbenannt.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Das Produkt hat die Tooldaten f\u00fcr den angegebenen Benutzer und das angegebene Tool unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und eine Kopie unter dem neuen Dateinamen gespeichert. Die Kopie mit dem neuen Dateinamen wird bei nachfolgenden Zugriffen auf den persistenten Speicher geladen.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Es ist keine Aktion erforderlich.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Der Admin Center-Standardkatalog wurde aus der von einer fr\u00fcheren Serverversion erstellten COLLECTIVE-Persistenz geladen. Der Katalog wurde mithilfe einer Kopie aus der aktuellen Serverversion geladen.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Das Produkt hat den Admin Center-Standardkatalog in die aktuelle Serverversion konvertiert. Die Kopie in der COLLECTIVE-Persistenz wird beim nachfolgenden Zugriff auf den persistenten Speicher geladen.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Es ist keine Aktion erforderlich.

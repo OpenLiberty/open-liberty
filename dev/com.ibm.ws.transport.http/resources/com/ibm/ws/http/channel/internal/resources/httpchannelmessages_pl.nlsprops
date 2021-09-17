@@ -192,3 +192,15 @@ config.hsts.invalid.max.age.value.useraction=Upewnij si\u0119, \u017ce skonfigur
 config.hsts.missing.max.age=CWWKT0041W: Podj\u0119to pr\u00f3b\u0119 skonfigurowania elementu [{0}] jako nag\u0142\u00f3wka Strict-Transport-Security. Ta konfiguracja nie zawiera obowi\u0105zkowej dyrektywy max-age. Konfiguracja, kt\u00f3ra nie zawiera dyrektywy max-age, jest niepoprawna i nie mo\u017ce zosta\u0107 u\u017cyta.
 config.hsts.missing.max.age.explanation=Okre\u015blona konfiguracja musi zawiera\u0107 dyrektyw\u0119 max-age z nieujemn\u0105 liczb\u0105 ca\u0142kowit\u0105.
 config.hsts.missing.max.age.useraction=Upewnij si\u0119, \u017ce konfiguracja zawiera dyrektyw\u0119 max-age z nieujemn\u0105 liczb\u0105 ca\u0142kowit\u0105.
+
+headers.emptyName=CWWKT0042W: Podczas analizowania konfiguracji {0} napotkano pust\u0105 nazw\u0119 nag\u0142\u00f3wka. Ta warto\u015b\u0107 zosta\u0142a zignorowana.
+headers.emptyName.explanation=Podana nazwa nag\u0142\u00f3wka jest pustym \u0142a\u0144cuchem. Nazwa nag\u0142\u00f3wka nie mo\u017ce by\u0107 pusta. 
+headers.emptyName.useraction=Dopilnuj, aby \u017cadna z nazw nag\u0142\u00f3wk\u00f3w nie by\u0142a pusta.  
+
+headers.duplicateHeaderName=CWWKT0043W: W nag\u0142\u00f3wku [{0}] korzystaj\u0105cym z konfiguracji {1} napotkano zduplikowan\u0105 nazw\u0119 nag\u0142\u00f3wka. Wszystkie konfiguracje dla nag\u0142\u00f3wka [{0}] zosta\u0142y zignorowane. Wszystkie nag\u0142\u00f3wki definiowane przez konfiguracje remove, add, set lub setIfMissing musz\u0105 by\u0107 unikalne w\u015br\u00f3d wszystkich konfiguracji.
+headers.duplicateHeaderName.explanation=Podana nazwa nag\u0142\u00f3wka zosta\u0142a ju\u017c wcze\u015bniej okre\u015blona przez inn\u0105 konfiguracj\u0119 funkcji Nag\u0142\u00f3wki.
+headers.duplicateHeaderName.useraction=Dopilnuj, aby nag\u0142\u00f3wki definiowane przez konfiguracje remove, add, set lub setIfMissing nie by\u0142y obecne w wi\u0119cej ni\u017c jednej konfiguracji.
+
+headers.knownDuplicateHeader=CWWKT0044W: W konfiguracji {1} napotkano nag\u0142\u00f3wek [{0}] oznaczony jako zduplikowana nazwa nag\u0142\u00f3wka. Nag\u0142\u00f3wek [{0}] zosta\u0142 zignorowany. Wszystkie nag\u0142\u00f3wki definiowane przez konfiguracj\u0119 {1} musz\u0105 mie\u0107 unikalne nazwy.
+headers.knownDuplicateHeader.explanation=Podana nazwa nag\u0142\u00f3wka zosta\u0142a ju\u017c znaleziona przez konfiguracj\u0119 remove, add, set lub setIfMissing.
+headers.knownDuplicateHeader.useraction=Nazwy nag\u0142\u00f3wk\u00f3w definiowane w tej konfiguracji musz\u0105 by\u0107 unikalne w\u015br\u00f3d konfiguracji remove, add, set lub setIfMissing.
