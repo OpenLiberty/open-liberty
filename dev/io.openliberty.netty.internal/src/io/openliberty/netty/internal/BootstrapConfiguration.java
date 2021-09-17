@@ -8,20 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.netty.internal.codec;
+package io.openliberty.netty.internal;
 
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 
 /**
- * Convert WsByteBuffers to ByteBufs 
+ * Bootstrap configuration object
  */
-public class WsByteBufferToByteBufEncoder extends MessageToByteEncoder<WsByteBuffer> {
-    @Override
-    public void encode(ChannelHandlerContext ctx, WsByteBuffer msg, ByteBuf out) throws Exception {
-        out.writeBytes(msg.getWrappedByteBuffer());
-    }
+public interface BootstrapConfiguration {
+
+    /**
+     * Apply this configuration to the given ServerBootstrap
+     * @param bootstrap
+     */
+    void applyConfiguration(ServerBootstrap bootstrap);
+
+    /**
+     * Apply this configuration to the given Bootstrap
+     * @param bootstrap
+     */
+    void applyConfiguration(Bootstrap bootstrap);
+
 }

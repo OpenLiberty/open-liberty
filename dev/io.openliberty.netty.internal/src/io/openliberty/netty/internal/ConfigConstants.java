@@ -8,16 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.netty.internal.codec;
+package io.openliberty.netty.internal;
 
-import io.netty.channel.CombinedChannelDuplexHandler;
+import io.netty.util.AttributeKey;
 
-/**
- * Codec for converting ByteBuf to WsByteBuffer and vice versa
- */
-public class WsByteBufferCodec extends CombinedChannelDuplexHandler<ByteBufToWsByteBufferDecoder, WsByteBufferToByteBufEncoder> {
+public interface ConfigConstants {
 
-    public WsByteBufferCodec() {
-        super(new ByteBufToWsByteBufferDecoder(), new WsByteBufferToByteBufEncoder());
-    }
+    public AttributeKey<String> NameKey = AttributeKey.valueOf("Name");
+    public AttributeKey<String> HostKey = AttributeKey.valueOf("Host");
+    public AttributeKey<String> ExternalHostKey = AttributeKey.valueOf("ExternalHost");
+    public AttributeKey<Integer> PortKey = AttributeKey.valueOf("Port");
+
 }
