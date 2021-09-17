@@ -245,16 +245,8 @@ public class CommonTestHelper {
                 Log.info(thisClass, thisMethod, "Server did NOT detect the update - will continue waiting for additional messages");
             }
 
-            String noUpdateMsg = server.waitForStringInLogUsingMark("CWWKG0018I", 10000);
-            // If we didn't get the msg that no update is needed, go on to check for the update completed msg
-            if (noUpdateMsg == null) {
-                // Wait for msg that server was actually updated
-                Log.info(thisClass, thisMethod, "Server update msg: " + server.waitForStringInLogUsingMark("CWWKG0017I"));
-                waitForMessages(startMessages, true);
-            } else {
-                Log.info(thisClass, thisMethod, "noUpdateMsg: " + noUpdateMsg);
-                Log.info(thisClass, thisMethod, "Server doesn't need to be updated");
-            }
+            server.waitForStringInLogUsingMark("CWWKG001[7-8]I", 10000);
+            waitForMessages(startMessages, true);
 
             Log.info(thisClass, thisMethod, "Completed server.xml update: " + testName);
             System.err.flush();
