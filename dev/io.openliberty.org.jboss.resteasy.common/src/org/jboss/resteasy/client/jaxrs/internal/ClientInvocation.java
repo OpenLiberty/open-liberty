@@ -831,10 +831,11 @@ public class ClientInvocation implements Invocation
           // FIXME: why does this have no context?
          // ensure the future and the callback see the same result
          ClientResponse response = null;
+         T result = null; // Liberty change - expanding scope for result variable
          try
          {
             response = invoke(); // does filtering too
-            T result = extractor.extractResult(response);
+            result = extractor.extractResult(response);
             callCompletedNoThrow(callback, result);
             return result;
          }
@@ -845,8 +846,10 @@ public class ClientInvocation implements Invocation
          }
          finally
          {
-            if (response != null && callback != null)
-               response.close();
+            if (response != null && callback != null) {
+                if (result == null || !Response.class.isAssignableFrom(result.getClass()))// Liberty change - don't close when result is a Response type
+                    response.close();
+            }
          }
       }, executor);
    }
