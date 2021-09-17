@@ -29,7 +29,7 @@ import com.ibm.ws.config.xml.LibertyVariable;
 public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLDefaultVariableConfigSource.class);
-    private String name;
+    private final String name;
 
     @Trivial
     public ServerXMLDefaultVariableConfigSource() {

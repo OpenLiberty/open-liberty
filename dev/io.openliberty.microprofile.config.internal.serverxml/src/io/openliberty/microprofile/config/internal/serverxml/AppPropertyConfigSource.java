@@ -53,9 +53,9 @@ public class AppPropertyConfigSource extends InternalConfigSource {
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
 
     private final PrivilegedAction<String> getApplicationPidAction = new GetApplicationPidAction();
-
+    private final String name;
+    
     private BundleContext bundleContext;
-    private String name;
     private String applicationName;
     private String applicationPID;
 

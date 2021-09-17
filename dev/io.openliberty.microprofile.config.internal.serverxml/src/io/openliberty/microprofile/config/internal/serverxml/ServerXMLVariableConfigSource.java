@@ -36,7 +36,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
 
     private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
     private final GetServerXMLVariablesAction getServerXMLVariablesAction = new GetServerXMLVariablesAction();
-    private String name;
+    private final String name;
     private BundleContext bundleContext;
     private ConfigVariables configVariables;
 
