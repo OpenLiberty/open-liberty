@@ -22,46 +22,33 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.TestMultiModuleClassLoading;
-import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.TestMultiModuleConfigLoad;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIAnnotationsDisabledTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FallbackMethodTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FaultToleranceMainTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncRequestScopedContextTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncReturnNullTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.completionstage.CDICompletionStageTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.ejb.AsyncEJBTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableClient;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableServlet;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.interceptors.InterceptorTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.tests.jaxrs.JaxRsTest;
-import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Core functionality
-                FaultToleranceMainTest.class,
+//                FaultToleranceMainTest.class,
                 CDICompletionStageTest.class,
 //
 //                // FULL mode tests
-                CDIAnnotationsDisabledTest.class,
-                FallbackMethodTest.class,
-                ValidationTest.class,
-                TestMultiModuleConfigLoad.class,
-                TestMultiModuleClassLoading.class,
-                AsyncReturnNullTest.class,
-                AsyncRequestScopedContextTest.class,
-                InterceptorTest.class,
-
-                // Integration with other features
-                AsyncEJBTest.class,
-                JaxRsTest.class,
-                TxRetryTest.class,
-                TxRetryReorderedTest.class,
+//                CDIAnnotationsDisabledTest.class,
+//                FallbackMethodTest.class,
+//                ValidationTest.class,
+//                TestMultiModuleConfigLoad.class,
+//                TestMultiModuleClassLoading.class,
+//                AsyncReturnNullTest.class,
+//                AsyncRequestScopedContextTest.class,
+//                InterceptorTest.class,
+//
+//                // Integration with other features
+//                AsyncEJBTest.class,
+//                JaxRsTest.class,
+//                TxRetryTest.class,
+//                TxRetryReorderedTest.class,
 })
 
 public class FATSuite {
