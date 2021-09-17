@@ -27,7 +27,7 @@
     </managedExecutorService>
 
     <managedScheduledExecutorService jndiName="concurrent/timeoutExecutor">
-        <concurrencyPolicy max="1" startTimeout="3s"/>
+        <concurrencyPolicy max="1" maxQueueSize="1" maxWaitForEnqueue="1m" startTimeout="3s"/>
     </managedScheduledExecutorService>
 
 </server>

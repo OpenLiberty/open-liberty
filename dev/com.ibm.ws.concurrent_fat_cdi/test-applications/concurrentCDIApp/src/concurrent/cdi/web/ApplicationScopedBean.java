@@ -38,9 +38,7 @@ public class ApplicationScopedBean implements Serializable {
      * and its return type of CompletableFuture.
      */
     public CompletableFuture<String> appendThreadNameFuture(String part1) {
-        CompletableFuture<String> future = Async.Result.getFuture(String.class);
-        future.complete(part1 + getCharacter() + Thread.currentThread().getName());
-        return future;
+        return Async.Result.complete(part1 + getCharacter() + Thread.currentThread().getName());
     }
 
     /**

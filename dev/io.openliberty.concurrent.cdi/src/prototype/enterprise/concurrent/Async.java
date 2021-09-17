@@ -24,7 +24,8 @@ import jakarta.interceptor.InterceptorBinding;
 // For experimentation with a possible Async or Asynchronous annotation in Jakarta Concurrency.
 // TODO Delete this class if it goes into the spec. Delete this class if it doesn't.
 /**
- * Annotates a method (or class containing suitable methods) to run asynchronously.
+ * Annotates a CDI managed bean method (or CDI managed bean class containing suitable methods)
+ * to run asynchronously.
  * <p>
  * The Jakarta EE Product Provider runs the method on a {@link ManagedExecutorService}
  * and returns to the caller a {@link java.util.concurrent.CompletableFuture CompletableFuture}
@@ -32,7 +33,8 @@ import jakarta.interceptor.InterceptorBinding;
  * to represent the execution of the method.
  * The Jakarta EE Product Provider makes this <code>CompletableFuture</code> available
  * to the asynchronous method implementation via the
- * {@link Result#getFuture Async.Result.getFuture} method.
+ * {@link Result#getFuture Async.Result.getFuture} and
+ * {@link Result#complete Async.Result.complete} methods.
  * <p>
  * For example,
  *
@@ -43,9 +45,8 @@ import jakarta.interceptor.InterceptorBinding;
  *     try (Connection con = ((DataSource) InitialContext.doLookup(
  *         "java:comp/env/jdbc/salesDB")).getConnection() {
  *         ...
- *         CompletableFuture{@literal <Double>} future = Async.Result.getFuture(Double.class);
- *         future.complete(computedTotal);
- *         return future;
+ *         double total = rs.next() ? rs.getDouble() : 0.0;
+ *         return Async.Result.complete(total);
  *     } catch (NamingException | SQLException x) {
  *         throw new CompletionException(x);
  *     }
@@ -112,6 +113,9 @@ import jakarta.interceptor.InterceptorBinding;
  * <li>{@link java.util.concurrent.CompletionStage CompletionStage}</li>
  * </ul>
  * <p>
+ * If the <code>Async</code> annotation is present at both the method and class
+ * level, the annotation that is specified at the method level takes precedence.
+ * <p>
  * Exceptions that are raised by asynchronous methods are not raised directly
  * to the caller because the method runs asynchronously to the caller.
  * Instead, the <code>CompletableFuture</code> that represents the result
@@ -127,15 +131,28 @@ import jakarta.interceptor.InterceptorBinding;
  * {@link java.util.concurrent.CompletableFuture#completeExceptionally completeExceptionally}
  * to supply the original exception as the cause.
  * <p>
- * The Jakarta EE Product Provider raises
+ * Except where otherwise stated, the Jakarta EE Product Provider raises
  * {@link java.util.concurrent.RejectedExecutionException RejectedExecutionException}
  * upon invocation of the asynchronous method if evident upfront that it cannot
  * be accepted, for example if the JNDI name is not valid or points to something
  * other than a managed executor resource. If determined at a later point that the
- * asynchronous method cannot be accepted for execution (for example, inability to
- * apply thread context), then the Jakarta EE Product Provider completes the
- * <code>CompletableFuture</code> exceptionally.
+ * asynchronous method cannot run (for example, if unable to establish thread context),
+ * then the Jakarta EE Product Provider completes the <code>CompletableFuture</code>
+ * exceptionally with {@link java.util.concurrent.CancellationException CancellationException},
+ * and chains a cause exception if there is any.
+ * <p>
+ * The Jakarta EE Product Provider must assign the interceptor for asynchronous methods
+ * to have priority of <code>Interceptor.Priority.PLATFORM_BEFORE + 5</code>,
+ * so as to enable most other platform interceptors, such as <code>Transactional</code>,
+ * to be applied to the thread upon which the asynchronous method executes.
+ * When an asynchronous method is annotated as <code>Transactional</code>,
+ * the transactional types <code>TxType.REQUIRES_NEW</code> and
+ * <code>TxType.NOT_SUPPORTED</code> can be used. All other transaction attributes must
+ * result in {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
+ * upon invocation of the asynchronous method.
  */
+// TODO the above restrictions on Transactional interceptors could be eliminated
+// if transaction context propagation is later added to the spec.
 @Documented
 @Inherited
 @InterceptorBinding
@@ -210,6 +227,28 @@ public @interface Async {
         private static final ThreadLocal<CompletableFuture<?>> futures = new ThreadLocal<CompletableFuture<?>>();
 
         /**
+         * Completes the {@link java.util.concurrent.CompletableFuture CompletableFuture}
+         * instance that the Jakarta EE Product Provider supplies to the caller of the
+         * asynchronous method.
+         * <p>
+         * This method must only be invoked by the asynchronous method implementation.
+         *
+         * @param <T>  type of result returned by the asynchronous method's <code>CompletableFuture</code>.
+         * @param type type of result returned by the asynchronous method's <code>CompletableFuture</code>.
+         * @return the same <code>CompletableFuture</code> that the container returns to the caller.
+         * @throws IllegalStateException if the <code>CompletableFuture</code> for an asynchronous
+         *                                   method is not present on the thread.
+         */
+        public static <T> CompletableFuture<T> complete(T result) {
+            @SuppressWarnings("unchecked")
+            CompletableFuture<T> future = (CompletableFuture<T>) futures.get();
+            if (future == null)
+                throw new IllegalStateException();
+            future.complete(result);
+            return future;
+        }
+
+        /**
          * Obtains the same {@link java.util.concurrent.CompletableFuture CompletableFuture}
          * instance that the Jakarta EE Product Provider supplies to the caller of the
          * asynchronous method.
@@ -219,10 +258,15 @@ public @interface Async {
          * @param <T>  type of result returned by the asynchronous method's <code>CompletableFuture</code>.
          * @param type type of result returned by the asynchronous method's <code>CompletableFuture</code>.
          * @return the same <code>CompletableFuture</code> that the container returns to the caller.
+         * @throws IllegalStateException if the <code>CompletableFuture</code> for an asynchronous
+         *                                   method is not present on the thread.
          */
-        @SuppressWarnings("unchecked")
         public static <T> CompletableFuture<T> getFuture(Class<T> type) {
-            return (CompletableFuture<T>) futures.get();
+            @SuppressWarnings("unchecked")
+            CompletableFuture<T> future = (CompletableFuture<T>) futures.get();
+            if (future == null)
+                throw new IllegalStateException();
+            return future;
         }
 
         /**
