@@ -1,0 +1,7 @@
+<server>
+  <featureManager>
+    <feature>jaxrs-2.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+</server>

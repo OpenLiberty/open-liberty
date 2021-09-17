@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jaxrs2x.fat.jsonp;
+package com.ibm.ws.jaxrs2x.fat;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jaxrs2x.fat.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -45,7 +43,7 @@ public class JaxRsJsonPTest {
     @BeforeClass
     public static void setup() throws Exception {
 
-        WebArchive archive = ShrinkHelper.defaultDropinApp(server, jsonpwar, "com.ibm.ws.jaxrs2x.fat.jsonp.service");
+        ShrinkHelper.defaultDropinApp(server, jsonpwar, "com.ibm.ws.jaxrs2x.fat.jsonp.service");
 
         if (JakartaEE9Action.isActive()) {
             Path someArchive = Paths.get("publish/servers/" + server.getServerName() + "/dropins/jsonp.war");

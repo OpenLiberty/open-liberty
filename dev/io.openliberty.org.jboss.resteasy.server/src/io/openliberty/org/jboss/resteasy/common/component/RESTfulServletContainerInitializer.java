@@ -73,7 +73,11 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 providers.add(clazz);
             }
             if (Application.class.isAssignableFrom(clazz)){
-                appClasses.add(clazz);
+                if (!getServletsForApplication(clazz, servletContext, false).isEmpty() || clazz.isAnnotationPresent(ApplicationPath.class)) {
+                    appClasses.add(clazz);
+                } else {
+                    Tr.warning(tc, "UNMAPPED_APPLICATION_CWWKW1302W", new Object[] {servletContext.getServletContextName(), clazz.getName()});
+                }
             }
         }
         if (appClasses.size() == 0 && resources.size() == 0) {
@@ -90,12 +94,12 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         }
     }
 
-    private Set<ServletRegistration> getServletsForApplication(Class<?> applicationClass, ServletContext servletContext) {
+    private Set<ServletRegistration> getServletsForApplication(Class<?> applicationClass, ServletContext servletContext, boolean includeAppClass) {
         Set<ServletRegistration> set = new HashSet<>();
         ServletRegistration reg = servletContext.getServletRegistration(applicationClass.getName());
         if (reg != null) {
             set.add(reg);
-        } else if (Application.class.equals(applicationClass)) {
+        } else if (includeAppClass && Application.class.equals(applicationClass)) {
             // try EE8 class name in case the app's web.xml hasn't been properly transformed
             reg = servletContext.getServletRegistration(EE8_APP_CLASS_NAME);
             if (reg != null) {
@@ -117,7 +121,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     @Override
     protected void register(Class<?> applicationClass, Set<Class<?>> providers, Set<Class<?>> resources, ServletContext servletContext) {
         
-        Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext);
+        Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext, true);
         // ignore @ApplicationPath if application is already mapped in web.xml
         if (!servletsForApp.isEmpty()) {
             for (ServletRegistration servletReg : servletsForApp) {

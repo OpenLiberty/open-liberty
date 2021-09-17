@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jaxrs2x.fat.helloworld.HelloWorldTest;
-import com.ibm.ws.jaxrs2x.fat.jsonp.JaxRsJsonPTest;
-import com.ibm.ws.jaxrs2x.fat.multipart.MultipartTest;
-
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -28,7 +24,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                HelloWorldTest.class,
                MultipartTest.class,
-               JaxRsJsonPTest.class
+               JaxRsJsonPTest.class,
+               UnmappedAppTest.class
 })
 public class FATSuite {
     @ClassRule
