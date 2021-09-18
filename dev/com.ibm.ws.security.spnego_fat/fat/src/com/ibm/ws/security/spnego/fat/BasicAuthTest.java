@@ -30,8 +30,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Spnego;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCCommonTest;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCforSPNEGO;
 import com.ibm.ws.security.spnego.fat.config.CommonTest;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
 import com.ibm.ws.security.spnego.fat.config.Krb5Helper;

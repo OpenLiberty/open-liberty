@@ -22,8 +22,6 @@ test.project: true
     fattest.simplicity;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
-    org.apache.directory.server:apacheds-all;version=latest, \
-    org.apache.directory.server:kerberos-client;version=latest, \
     org.slf4j:slf4j-jdk14;version=latest, \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.security;version=latest,\
@@ -36,7 +34,6 @@ test.project: true
     com.ibm.ws.security.kerberos.java8;version=latest,\
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.security.token.s4u2;version=latest,\
-    com.ibm.ws.security.wim.adapter.ldap_fat.krb5;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     org.apache.httpcomponents:httpcore;version=4.1.2,\

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.spnego.fat.config;
+package com.ibm.ws.security.spnego.fat;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -38,6 +38,14 @@ import org.junit.rules.TestName;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Spnego;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.spnego.fat.config.CommonTestHelper;
+import com.ibm.ws.security.spnego.fat.config.InitClass;
+import com.ibm.ws.security.spnego.fat.config.JDK11Expectations;
+import com.ibm.ws.security.spnego.fat.config.JDK8Expectations;
+import com.ibm.ws.security.spnego.fat.config.JDKExpectationTestClass;
+import com.ibm.ws.security.spnego.fat.config.KdcHelper;
+import com.ibm.ws.security.spnego.fat.config.Krb5Helper;
+import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
 
