@@ -284,17 +284,20 @@ public class HandlerChainTest {
 //        }
 
         try {
-            warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_LOCATION_DROPINS);
-            warFile.delete();
-            assertNotNull("Application testHandlerClient does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClient"));
+            //warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_LOCATION_DROPINS);
+            //warFile.delete();
+
+            server.removeDropinsApplications("testHandlerClient.war");
+            //assertNotNull("Application testHandlerClient does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClient"));
         } catch (FileNotFoundException e) {
             Log.warning(this.getClass(), e.getMessage());
         }
 
         try {
-            warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_WITHOUTXML_LOCATION_DROPINS);
-            warFile.delete();
-            assertNotNull("Application testHandlerClientWithoutXML does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClientWithoutXML"));
+            //warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_WITHOUTXML_LOCATION_DROPINS);
+            //warFile.delete();
+            server.removeDropinsApplications("testHandlerClientWithoutXML.war");
+            //assertNotNull("Application testHandlerClientWithoutXML does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClientWithoutXML"));
         } catch (FileNotFoundException e) {
             Log.warning(this.getClass(), e.getMessage());
         }
