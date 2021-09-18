@@ -104,7 +104,7 @@ public class InitClass {
 
         try {
             //obtaining kdcp and kdc_r information
-            services = CommonTest.getKDCServices(1, SPNEGOConstants.KDC_HOST_FROM_CONSUL);
+            services = CommonTest.getKDCServices(2, SPNEGOConstants.KDC_HOST_FROM_CONSUL);
             KDC_HOSTNAME = services.get(0).getAddress();
             KDC_USER = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_CONSUL);
             KDC_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
@@ -116,6 +116,29 @@ public class InitClass {
             SECOND_USER = services.get(0).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
             USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.USER_PWD_FROM_CONSUL);
             Z_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
+
+            ConnectionInfo connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
+            Machine kdcMachine = Machine.getMachine(connInfo);
+
+            try{
+                Log.info(c, thisMethod, "Testing connection to KDC: " + KDC_HOST_SHORTNAME);
+                establishConnectionToKDC(thisMethod, kdcMachine);
+            }catch(Exception e){
+                String failedKdcShortName = KDC_HOST_SHORTNAME;
+                KDC_HOSTNAME = services.get(1).getAddress();
+                KDC_USER = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_CONSUL);
+                KDC_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
+                KDC_REALM = services.get(1).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
+                KDC_HOST_SHORTNAME = services.get(1).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
+                KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                Z_USER = services.get(1).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
+                FIRST_USER = services.get(1).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
+                SECOND_USER = services.get(1).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
+                USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER_PWD_FROM_CONSUL);
+                Z_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
+                Log.info(c, thisMethod, "connection to " + failedKdcShortName + " failed. Attempting failover KDC: " + KDC_HOST_SHORTNAME);
+            }
+            
 
             KDCP_VAR = getKDCHostnameMask(KDC_HOSTNAME);
 
@@ -137,10 +160,6 @@ public class InitClass {
             SECOND_USER_KRB5_FQN = SECOND_USER + FQN;
             COMMON_TOKEN_USER = FIRST_USER;
             COMMON_TOKEN_USER_PWD = FIRST_USER_PWD;
-            ConnectionInfo connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
-            Machine kdcMachine = Machine.getMachine(connInfo);
-
-            establishConnectionToKDC(thisMethod, kdcMachine);
 
             // get canonical and short host name
             getServerCanonicalHostName();
