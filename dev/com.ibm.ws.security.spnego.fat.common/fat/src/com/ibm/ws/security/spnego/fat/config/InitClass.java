@@ -120,10 +120,10 @@ public class InitClass {
             ConnectionInfo connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
             Machine kdcMachine = Machine.getMachine(connInfo);
 
-            try{
+            try {
                 Log.info(c, thisMethod, "Testing connection to KDC: " + KDC_HOST_SHORTNAME);
                 establishConnectionToKDC(thisMethod, kdcMachine);
-            }catch(Exception e){
+            } catch (Exception e) {
                 String failedKdcShortName = KDC_HOST_SHORTNAME;
                 KDC_HOSTNAME = services.get(1).getAddress();
                 KDC_USER = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_CONSUL);
@@ -136,9 +136,13 @@ public class InitClass {
                 SECOND_USER = services.get(1).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
                 USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER_PWD_FROM_CONSUL);
                 Z_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
+
                 Log.info(c, thisMethod, "connection to " + failedKdcShortName + " failed. Attempting failover KDC: " + KDC_HOST_SHORTNAME);
+
+                connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
+                kdcMachine = Machine.getMachine(connInfo);
+                establishConnectionToKDC(thisMethod, kdcMachine);
             }
-            
 
             KDCP_VAR = getKDCHostnameMask(KDC_HOSTNAME);
 
