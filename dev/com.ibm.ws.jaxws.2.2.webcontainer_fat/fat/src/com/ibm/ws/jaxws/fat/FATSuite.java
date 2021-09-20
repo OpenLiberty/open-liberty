@@ -37,7 +37,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WebServiceContextTest.class,
                 WebServiceMonitorTest.class,
                 WebServiceRefFeaturesTest.class,
-                RespectBindingTest.class,
                 WebServiceRefTest.class
 })
 public class FATSuite {
