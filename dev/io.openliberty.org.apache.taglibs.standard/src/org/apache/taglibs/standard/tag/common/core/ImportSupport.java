@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 1997-2020 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2004 The Apache Software Foundation
- *
+ * Copyright (c) 2021-2021 Contributors to the Eclipse Foundation
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -462,7 +463,7 @@ public abstract class ImportSupport extends BodyTagSupport
 		throw new IllegalStateException(
 		    Resources.getMessage("IMPORT_ILLEGAL_STREAM"));
 	    isWriterUsed = true;
-	    return new PrintWriterWrapper(sw, pageContext.getOut());
+	    return new PrintWriter(sw);
 	}
 	
 	/** Returns a ServletOutputStream designed to buffer the output. */
@@ -511,27 +512,6 @@ public abstract class ImportSupport extends BodyTagSupport
 		return "";		// target didn't write anything
 	}
     }
-
-    private static class PrintWriterWrapper extends PrintWriter {
-
-        private StringWriter out;
-        private Writer parentWriter;
-
-        public PrintWriterWrapper(StringWriter out, Writer parentWriter) {
-            super(out);
-            this.out = out;
-            this.parentWriter = parentWriter;
-        }
-
-        public void flush() {
-            try {
-                parentWriter.write(out.toString());
-                StringBuffer sb = out.getBuffer();
-                sb.delete(0, sb.length());
-            } catch (IOException ex) {
-            }
-        }
-     }
 
     //*********************************************************************
     // Some private utility methods
