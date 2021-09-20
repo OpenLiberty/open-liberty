@@ -33,14 +33,11 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class CDICompletionStageTest extends FATServletClient {
 
-//    @ClassRule
-//    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.FULL, MicroProfileActions.LATEST, MicroProfileActions.MP22);
-
     private static final String SERVER_NAME = "FaultToleranceMultiModule";
     private static final String APP_NAME = "ftCompletionStage";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.MP50, MicroProfileActions.MP22);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP22);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = CDICompletionStageServlet.class, contextRoot = APP_NAME)

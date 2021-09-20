@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.microprofile.faulttolerance_fat.suite.AnnotationFilter;
 import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableServlet;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
@@ -94,6 +95,9 @@ public class FaultToleranceMainTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.setUpCDIFaultTolerance(server);
+        FATSuite.setUpDisableEnable(server);
+
         server.addEnvVar("FAULT_TOLERANCE_VERSION", getFaultToleranceVersion());
         server.startServer();
     }
