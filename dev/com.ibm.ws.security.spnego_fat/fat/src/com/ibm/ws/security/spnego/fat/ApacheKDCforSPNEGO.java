@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.spnego.fat.config;
+package com.ibm.ws.security.spnego.fat;
 
 import java.io.File;
 import java.util.List;
@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.spnego.fat.config.InitClass;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.ApacheDSandKDC;
 
 import componenttest.custom.junit.runner.FATRunner;

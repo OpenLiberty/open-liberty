@@ -13,6 +13,7 @@ dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
                'org.slf4j:slf4j-jdk14:1.7.7',
+               project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5'),
                project(':com.ibm.ws.security.spnego.fat.common'),
                project(':io.openliberty.org.apache.commons.codec'),
                project(':io.openliberty.org.apache.commons.logging')          
