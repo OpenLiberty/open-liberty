@@ -27,11 +27,6 @@ Export-Package: \
   com.ibm.ws.channelfw.internal.chains; -split-package:=merge-last; provide=true, \
   com.ibm.websphere.channelfw; -split-package:=merge-last; provide=true
 
-Private-Package: 
-
-Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
-
 -buildpath: \
 	com.ibm.ws.logging, \
 	com.ibm.ws.event, \
