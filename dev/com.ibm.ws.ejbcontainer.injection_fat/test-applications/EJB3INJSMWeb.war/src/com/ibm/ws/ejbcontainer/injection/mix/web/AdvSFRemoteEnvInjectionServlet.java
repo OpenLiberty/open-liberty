@@ -343,8 +343,8 @@ public class AdvSFRemoteEnvInjectionServlet extends FATServlet {
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteBinding(ivJNDI_SFREnvInjectObjFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SFREnvInjectObjFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = sfHome.create();
         assertNotNull("1 ---> SFRSB created successfully.", bean);
 
@@ -397,8 +397,8 @@ public class AdvSFRemoteEnvInjectionServlet extends FATServlet {
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteBinding(ivJNDI_SFREnvInjectPrimFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SFREnvInjectPrimFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = sfHome.create();
         assertNotNull("1 ---> SFRSB created successfully.", bean);
 
@@ -453,8 +453,8 @@ public class AdvSFRemoteEnvInjectionServlet extends FATServlet {
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 update lookup for new bindings
-        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteBinding(ivJNDI_SFREnvInjectObjMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SFREnvInjectObjMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
 
         EnvInjectionEJBRemote bean = sfHome.create();
         assertNotNull("1 ---> SFRSB created successfully.", bean);
@@ -508,8 +508,8 @@ public class AdvSFRemoteEnvInjectionServlet extends FATServlet {
         // --------------------------------------------------------------------
         // Locate SF Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
-        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteBinding(ivJNDI_SFREnvInjectPrimMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome sfHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SFREnvInjectPrimMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = sfHome.create();
         assertNotNull("1 ---> SFRSB created successfully.", bean);
 

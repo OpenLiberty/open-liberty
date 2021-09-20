@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
 
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.UserTransaction;
 
@@ -103,9 +102,9 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
             // --------------------------------------------------------------------
             // Locate SL Remote Home/Factory and execute the test
             // --------------------------------------------------------------------
-            AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) PortableRemoteObject.narrow(FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
-                                                                                                                                          AdvCompBean),
-                                                                                                 AdvCMTStatelessEJBHome.class);
+            AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
+                                                                                                              AdvCompBean);
+
             AdvCMTStatelessEJB bean = slHome.create();
             assertNotNull("1 ---> SLRSB created successfully.", bean);
 
@@ -229,9 +228,9 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
-        AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) PortableRemoteObject.narrow(FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
-                                                                                                                                      AdvCompBean),
-                                                                                             AdvCMTStatelessEJBHome.class);
+        AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
+                                                                                                          AdvCompBean);
+
         AdvCMTStatelessEJB bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
 
@@ -284,9 +283,9 @@ public class AdvCompCMTStatelessRemoteServlet extends FATServlet {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
-        AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) PortableRemoteObject.narrow(FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
-                                                                                                                                      AdvCompBean),
-                                                                                             AdvCMTStatelessEJBHome.class);
+        AdvCMTStatelessEJBHome slHome = (AdvCMTStatelessEJBHome) FATHelper.lookupDefaultBindingEJBJavaApp(AdvCMTStatelessEJBHomeInterface, Module,
+                                                                                                          AdvCompBean);
+
         AdvCMTStatelessEJB bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
 
