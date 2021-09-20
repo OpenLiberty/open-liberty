@@ -423,8 +423,9 @@ public class AcmeRevocationTest {
 			/*
 			 * Wait for the cert checker to run and update
 			 */
+			// account for possible delay time from Boulder: welcome-to-the-purge, purge expected in: 153s
 			assertNotNull("Should log message that the certificate was revoked",
-					server.waitForStringInLogUsingMark("CWPKI2067I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2067I", (153 * 1000) +2000 ));
 
 			assertNotNull("Should log message that the certificate was renewed",
 					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );

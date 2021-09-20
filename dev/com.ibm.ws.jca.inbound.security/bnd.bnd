@@ -19,11 +19,10 @@ Bundle-Description: JCA inbound security; version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.connectors.security.internal.inbound.jar
-#JakartaEE-Bundle-Name: Jakarta connectors inbound security 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.connectors.security.internal.inbound
-#JakartaEE-Bundle-Description: Jakarta connectors inbound security 
-#JakartaEE-Bundle-Version: 1.0
+jakartaFinalJarName: io.openliberty.connectors.security.internal.inbound.jar
+jakartaFinalBundleName: Jakarta connectors inbound security
+jakartaFinalBundleId: io.openliberty.connectors.security.internal.inbound
+jakartaFinalBundleDescription: Jakarta connectors inbound security
 
 WS-TraceGroup: WAS.j2c.security
 

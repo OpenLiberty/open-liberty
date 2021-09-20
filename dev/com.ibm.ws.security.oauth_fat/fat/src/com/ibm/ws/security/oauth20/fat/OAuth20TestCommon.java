@@ -215,14 +215,18 @@ public class OAuth20TestCommon {
 
         // TODO see why we're getting CWWKE0700W and CWWKE0701E: Circular reference detected trying to get service
         if (expectedMsgs != null) {
-            expectedMessages = new String[2 + expectedMsgs.length];
+            expectedMessages = new String[4 + expectedMsgs.length];
             expectedMessages[0] = "CWWKE0701E";
             expectedMessages[1] = "CWWKE0700W";
-            System.arraycopy(expectedMsgs, 0, expectedMessages, 2, expectedMsgs.length);
+            expectedMessages[2] = "CWWKE1102W";
+            expectedMessages[3] = "CWWKE1106W";
+            System.arraycopy(expectedMsgs, 0, expectedMessages, 4, expectedMsgs.length);
         } else {
-            expectedMessages = new String[2];
+            expectedMessages = new String[4];
             expectedMessages[0] = "CWWKE0701E";
             expectedMessages[1] = "CWWKE0700W";
+            expectedMessages[2] = "CWWKE1102W";
+            expectedMessages[3] = "CWWKE1106W";
         }
 
         LDAPUtils.addLDAPVariables(server);

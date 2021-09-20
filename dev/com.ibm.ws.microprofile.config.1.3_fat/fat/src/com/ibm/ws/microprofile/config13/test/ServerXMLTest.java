@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config13.duplicateInServerXML.web.DuplicateInServerXMLServlet;
 import com.ibm.ws.microprofile.config13.mapEnvVar.web.MapEnvVarServlet;
 import com.ibm.ws.microprofile.config13.serverXML.web.ServerXMLServlet;
@@ -49,12 +50,13 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class ServerXMLTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "ServerXMLServer";
     public static final String SERVER_XML_APP_NAME = "serverXMLApp";
     public static final String DUPLICATE_IN_SERVER_XML_APP_NAME = "duplicateInServerXMLApp";
     public static final String SERVER_XML_WEB_APP_NAME = "serverXMLWebApp";
     public static final String MAP_ENV_VAR_APP_NAME = "mapEnvVarApp";
 
-    @Server("ServerXMLServer")
+    @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = DuplicateInServerXMLServlet.class, contextRoot = DUPLICATE_IN_SERVER_XML_APP_NAME),
                     @TestServlet(servlet = ServerXMLServlet.class, contextRoot = SERVER_XML_APP_NAME),
@@ -63,14 +65,15 @@ public class ServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("ServerXMLServer", MicroProfileActions.LATEST, MicroProfileActions.MP14);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP14);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, SERVER_XML_APP_NAME, "com.ibm.ws.microprofile.config13.serverXML.*");
-        ShrinkHelper.defaultApp(server, DUPLICATE_IN_SERVER_XML_APP_NAME, "com.ibm.ws.microprofile.config13.duplicateInServerXML.*");
-        ShrinkHelper.defaultApp(server, SERVER_XML_WEB_APP_NAME, "com.ibm.ws.microprofile.config13.serverXMLWebApp.*");
-        ShrinkHelper.defaultApp(server, MAP_ENV_VAR_APP_NAME, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
+        ShrinkHelper.defaultApp(server, SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXML.*");
+        ShrinkHelper.defaultApp(server, DUPLICATE_IN_SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.duplicateInServerXML.*");
+        ShrinkHelper.defaultApp(server, SERVER_XML_WEB_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXMLWebApp.*");
+        ShrinkHelper.defaultApp(server, MAP_ENV_VAR_APP_NAME, options, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
 
         server.startServer();
     }

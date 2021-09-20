@@ -247,27 +247,25 @@ if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
             }
         }
 
-        def initialBundleId = bnd('jakartaInitialBundleId')
-        if ( (initialBundleId != null) && !initialBundleId.isEmpty() ) {
-          println 'BND jakartaInitialBundleId [ ' + initialBundleId + ' ]'
+        def finalBundleId = bnd('jakartaFinalBundleId')
+        if ( (finalBundleId != null) && !finalBundleId.isEmpty() ) {
+          println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
 
-          def finalBundleId = bnd('jakartaFinalBundleId')
-          if ( (finalBundleId == null) || finalBundleId.isEmpty() ) {
-            logger.error( 'ERROR: BND Final bundle id property [ jakartaFinalBundleId ] is not set' )
-          } else {
-            println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
+          def initialBundleId = bnd('Bundle-SymbolicName', project.name)
+          int index = initialBundleId.indexOf(";")
+          if (index != -1) {
+            initialBundleId = initialBundleId.substring(0, index)
           }
 
           def finalBundleVersion = bnd('jakartaFinalBundleVersion')
-          if ( (finalBundleVersion == null) || finalBundleVersion.isEmpty() ) {
-            logger.error( 'ERROR: BND Final bundle version property [ jakartaFinalBundleVersion ] is not set' )
-          } else {
-            println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
+          if (finalBundleVersion == null) {
+            finalBundleVersion = ''
           }
+          println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
 
-          def finalBundleShortName = bnd('jakartaFinalBundleShortName')
+          def finalBundleShortName = bnd('jakartaFinalBundleName')
           if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
-            logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleShortName ] is not set' )
+            logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleName ] is not set' )
           } else {
             println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
           }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -80,9 +81,13 @@ public class DeliveryDelayServlet extends HttpServlet {
     
     private final class TestException extends Exception {
         TestException(String message) {
-            super(new Date() +" "+message);
+            super(timeStamp() +" "+message);
         }
     }
+    
+    // The current time, formatted with millisecond resolution.
+    private static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
+    private static final String timeStamp() { return timeStampFormat.format(new Date());}
     
     public QueueConnectionFactory getQCF(String name) {
         QueueConnectionFactory qcf;
@@ -323,7 +328,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = System.currentTimeMillis();
             jmsProducer.send(destination, sentMessage);
             long afterSend = System.currentTimeMillis();
@@ -361,7 +366,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             JMSProducer jmsProducer = jmsContext.createProducer();
             jmsProducer.setDeliveryDelay(deliveryDelay);
 
-            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = System.currentTimeMillis();
             jmsProducer.send(jmsTopic, sentMessage);
             long afterSend = System.currentTimeMillis();
@@ -580,7 +585,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             TextMessage[] sentMessages = new TextMessage[destinations.length];
             long beforeSend = System.currentTimeMillis();
             for (int i = 0; i < destinations.length; i++) {
-                sentMessages[i] = jmsContext.createTextMessage(methodName() + " to" + destinations[i] + " at " + new Date());
+                sentMessages[i] = jmsContext.createTextMessage(methodName() + " to" + destinations[i] + " at " + timeStamp());
                 jmsProducer.send(destinations[i], sentMessages[i]);
             }
             long afterSend = System.currentTimeMillis();
@@ -629,17 +634,24 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-            String sentMessageBody = methodName() + " at " + new Date();
+            String sentMessageBody = methodName() + " at " + timeStamp();
             jmsProducer.send(destination, sentMessageBody);
             jmsContext.commit();
 
-            // Even though we are testing that there is no delay we allow 10 milliseconds for the
+            // Even though we are testing that there is no delay we allow 100 milliseconds for the
             // message to appear on the queue, due to network transmission delays and server side processing.
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(10);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(100);
             jmsContext.commit();
 
-            if (receivedMessage == null)
-                throw new TestException("No message received, sent:" + sentMessageBody);
+            if (receivedMessage == null) {
+                // Wait a little longer to see if the message arrives late.
+                TextMessage receivedMessageLate = (TextMessage) jmsConsumer.receive(10*1000);
+                jmsContext.commit();
+                if (receivedMessageLate == null)
+                    throw new TestException("No message received, sent:" + sentMessageBody + " time now:"+timeStamp());
+                else 
+                    throw new TestException("Message received late, sent:" + sentMessageBody + "\nreceived:"+ receivedMessageLate + "\ntime now:"+timeStamp());
+            }
             if (!receivedMessage.getText().equals(sentMessageBody))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessageBody);
 
@@ -680,7 +692,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-            String sentMessageBody = methodName() + " at " + new Date();
+            String sentMessageBody = methodName() + " at " + timeStamp();
             jmsProducer.send(destination, sentMessageBody);
             TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
 
@@ -727,7 +739,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             JMSProducer jmsProducer = jmsContext.createProducer();
             jmsProducer.setDeliveryDelay(deliveryDelay);
 
-            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = System.currentTimeMillis();
             jmsProducer.send(destination, sentMessage);
             long afterSend = System.currentTimeMillis();
@@ -759,7 +771,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
             if (afterReceive - beforeSend < deliveryDelay)
-                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
             
             // The JMS Specification does not put an upper limit on how long it can take to deliver a message. Sib takes advantage of this 
@@ -3405,194 +3417,136 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
-    // testTransactedSend_B
+    public void testTransactedSendClassicApi_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testTransactedSendClassicApi(jmsQCFBindings);
+    }
 
-    public void testTransactedSendClassicApi_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testTransactedSendClassicApi_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testTransactedSendClassicApi(jmsQCFTCP);
+    }
+    
+    /**
+     * For transacted sends, the delay time starts when the client sends the message, not when the transaction is committed.
+     * 
+     * @see https://docs.oracle.com/javaee/7/api/index.html?javax/jms/MessageProducer.html
+     */
+    public void testTransactedSendClassicApi(QueueConnectionFactory queueConnectionFactory) throws JMSException, TestException, InterruptedException {
+        
+        emptyQueue(queueConnectionFactory, jmsQueue1);
+        
+        try ( QueueConnection queueConnection = queueConnectionFactory.createQueueConnection() ){
+            queueConnection.start();
 
-        boolean testFailed = false;
+            QueueSession queueSession = queueConnection.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+            
+            QueueReceiver queueReceiver = queueSession.createReceiver(jmsQueue1);
+            QueueSender queueSender = queueSession.createSender(jmsQueue1);
+            queueSender.setDeliveryDelay(deliveryDelay);
+            
+            TextMessage sentMessage = queueSession.createTextMessage(methodName() + " at " + timeStamp());
+            long beforeSend = System.currentTimeMillis();
+            queueSender.send(sentMessage);
+            long afterSend = System.currentTimeMillis();
+            if (afterSend - beforeSend > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:" + beforeSend + " afterSend:" + afterSend
+                        + " deliveryDelay:" + deliveryDelay);
+            
+            final long commitDelay = 1000;
+            Thread.sleep(commitDelay);
+            queueSession.commit();
 
-        QueueConnection con = jmsQCFBindings.createQueueConnection();
-        con.start();
-
-        QueueSession sessionSender = con.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
-        emptyQueue(jmsQCFBindings, jmsQueue1);
-
-        QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
-        QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(DELIVERY_DELAY);
-        send.send( sessionSender.createTextMessage("testTransactedSendClassicApi_B") );
-
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-        Thread.sleep(1000);
-        sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) rec.receive(40000);
-        sessionSender.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSendClassicApi_B") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                  (Math.abs(rec_time - time_after_commit) < 1000)) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        send.close();
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendClassicApi_B failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
+            TextMessage receivedMessage = (TextMessage) queueReceiver.receive(30000);
+            long afterReceive = System.currentTimeMillis();
+            queueSession.commit();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            
+            long receiveLatency = afterReceive - receivedMessage.getJMSDeliveryTime();
+            if (receiveLatency < 0 )
+                throw new TestException("JMSDeliveryTime too soon, afterReceive:" + afterReceive + " JMSDeliveryTime:" + receivedMessage.getJMSDeliveryTime()
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            if (afterReceive - beforeSend < deliveryDelay)
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
+            if (afterReceive - afterSend > deliveryDelay + commitDelay + 500)
+                throw new TestException("Message received to late, afterSend:" + afterSend + " afterReceive" + afterReceive 
+                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
+                        + "\nreceivedMessage:" + receivedMessage);
+ 
         }
     }
 
-    public void testTransactedSendClassicApi_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        QueueConnection con = jmsQCFTCP.createQueueConnection();
-        con.start();
-
-        QueueSession sessionSender = con.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
-        emptyQueue(jmsQCFTCP, jmsQueue1);
-
-        QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
-
-        QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(DELIVERY_DELAY);
-        send.send( sessionSender.createTextMessage("testTransactedSendClassicApi_Tcp") );
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        Thread.sleep(1000);
-        sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) rec.receive(40000);
-        sessionSender.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSendClassicApi_Tcp") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        send.close();
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendClassicApi_Tcp failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
-        }
+    public void testTransactedSendTopicClassicApi_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testTransactedSendTopicClassicApi(jmsTCFBindings);
     }
-
-    public void testTransactedSendTopicClassicApi_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        TopicConnection con = jmsTCFBindings.createTopicConnection();
-        con.start();
-
-        TopicSession sessionSender = con.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber rec = sessionSender.createSubscriber(jmsTopic);
-
-        TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(DELIVERY_DELAY);
-        send.publish( sessionSender.createTextMessage("testTransactedSendTopicClassicApi_B") );
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        Thread.sleep(1000);
-        sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) rec.receive(40000);
-        sessionSender.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSendTopicClassicApi_B") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        if ( rec != null ) {
-            rec.close();
-        }
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendTopicClassicApi_B failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
-        }
+    
+    public void testTransactedSendTopicClassicApi_Tcp(HttpServletRequest request, HttpServletResponse response)  throws JMSException, TestException, InterruptedException {
+        testTransactedSendTopicClassicApi(jmsTCFTCP);
     }
+    
+    /**
+     * For transacted sends, the delay time starts when the client sends the message, not when the transaction is committed.
+     * 
+     * @see https://docs.oracle.com/javaee/7/api/index.html?javax/jms/MessageProducer.html
+     */
+    private void testTransactedSendTopicClassicApi(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException, InterruptedException {
 
-    public void testTransactedSendTopicClassicApi_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try (TopicConnection topicConnection = topicConnectionFactory.createTopicConnection()) {
+            topicConnection.start();
 
-        boolean testFailed = false;
+            TopicSession topicSession = topicConnection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
 
-        TopicConnection con = jmsTCFTCP.createTopicConnection();
-        con.start();
+            TopicSubscriber topicSubscriber = topicSession.createSubscriber(jmsTopic);
+            TopicPublisher topicPublisher = topicSession.createPublisher(jmsTopic);
+            topicPublisher.setDeliveryDelay(deliveryDelay);
+            
+            TextMessage sentMessage = topicSession.createTextMessage(methodName() + " at " + timeStamp());
+            long beforePublish = System.currentTimeMillis();
+            topicPublisher.publish(sentMessage);
+            long afterPublish = System.currentTimeMillis();
+            if (afterPublish - beforePublish > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforePublish:" + beforePublish + " afterPublish:" + afterPublish
+                        + " deliveryDelay:" + deliveryDelay);
+            
+            final long commitDelay = 1000;
+            Thread.sleep(commitDelay);
+            topicSession.commit();
 
-        TopicSession sessionSender = con.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber rec = sessionSender.createSubscriber(jmsTopic);
-
-        TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(DELIVERY_DELAY);
-        send.publish( sessionSender.createTextMessage("testTransactedSendTopicClassicApi_Tcp") );
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        Thread.sleep(1000);
-        sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) rec.receive(40000);
-        sessionSender.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-              (recMsg.getText() != null) &&
-              recMsg.getText().equals("testTransactedSendTopicClassicApi_Tcp") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        if ( rec != null ) {
-            rec.close();
-        }
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendTopicClassicApi_Tcp failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
+            TextMessage receivedMessage = (TextMessage) topicSubscriber.receive(30000);
+            long afterReceive = System.currentTimeMillis();
+            topicSession.commit();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            
+            // For PubSub messages in Sib, the delivery delay time starts when the message is committed, later than what the JMS spec says. 
+            // For point to point messages, the delivery delay starts when the message is sent.
+            // JMSDeliveryTime is computed from the time the message is sent, even though a published message is actually received
+            // after deliverydelay+commitDelay. The JMS specification says the earliest time a message can be received is after deliveryDelay
+            // so this is within the specification. 
+            
+            long receiveLatency = afterReceive - receivedMessage.getJMSDeliveryTime();
+            if (receiveLatency < 0 )
+                throw new TestException("JMSDeliveryTime too soon, afterReceive:" + afterReceive + " JMSDeliveryTime:" + receivedMessage.getJMSDeliveryTime()
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            if (afterReceive - beforePublish < deliveryDelay)
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforePublish:" + beforePublish + " deliveryDelay:" + deliveryDelay
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            // The JMS Specification does not put an upper limit on how long it can take to deliver a message. Sib takes advantage of this 
+            // by not starting the delay timer for a PubSub message until it is committed.
+            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
+            if (afterReceive - afterPublish > deliveryDelay + commitDelay + 500)
+                throw new TestException("Message received to late, afterPublish:" + afterPublish + " afterReceive" + afterReceive 
+                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
+                        + "\nreceivedMessage:" + receivedMessage);
         }
     }
 
@@ -4513,7 +4467,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             long delayMilliseconds = deliveryDelay * 12;
             jmsProducer.setDeliveryDelay(delayMilliseconds);
-            TextMessage sendMsg = jmsContext.createTextMessage(this.getClass().getName()+".testSendMessage() deliveryDelay="+delayMilliseconds+" milliseconds, sentAt:"+new Date());
+            TextMessage sendMsg = jmsContext.createTextMessage(this.getClass().getName()+".testSendMessage() deliveryDelay="+delayMilliseconds+" milliseconds, sentAt:"+timeStamp());
             sendMsg.setLongProperty("MustArriveAfter",System.currentTimeMillis()+delayMilliseconds);
             sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
         }

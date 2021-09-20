@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/commonLibraryCrossInjectionTestJarOne.jar/src"/>
+	<classpathentry kind="src" path="test-applications/commonLibraryCrossInjectionTestJarTwo.jar/src"/>
+	<classpathentry kind="src" path="test-applications/commonLibraryCrossInjectionTest.war/src"/>
 	<classpathentry kind="src" path="test-applications/jarInRarEjb.jar/src"/>
 	<classpathentry kind="src" path="test-applications/multiModuleAppLib1.jar/src"/>
 	<classpathentry kind="src" path="test-applications/jarInRar.jar/src"/>

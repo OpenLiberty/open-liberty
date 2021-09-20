@@ -3843,7 +3843,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (0 == getDataLength()) {
             // found the zero chunk
-            setBodyComplete();
             boolean bTrailers = doTrailersFollow();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Slicing body up to zero chunk, trailers=" + bTrailers);
@@ -3865,6 +3864,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Post-slice: " + getReadBuffer());
             }
+            setBodyComplete();
             if (bTrailers) {
                 // parse the trailer headers now that we've saved all of the
                 // body information
@@ -4097,10 +4097,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Unparsed data remaining: " + getDataLength());
         }
-        if (isContentLength() && 0 == getDataLength()) {
-            // we've fully read the content-length body, set the complete flag
-            setBodyComplete();
-        }
         if (amountAvail == getReadBuffer().capacity()) {
             // this is a full buff we can send
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -4128,6 +4124,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (isChunkedEncoding() && 0 < excess) {
                 parseChunkCRLF((int) excess);
             }
+        }
+        if (isContentLength() && 0 == getDataLength()) {
+            // we've fully read the content-length body, set the complete flag
+            setBodyComplete();
         }
         return false;
     }

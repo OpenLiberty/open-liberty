@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -81,6 +82,7 @@ public class ClientAuthenticationTest {
     private final MockInterface mockInterface = mock.mock(MockInterface.class);
     private final UserRegistry ur = mock.mock(UserRegistry.class);
     private final PrintWriter writer = mock.mock(PrintWriter.class);
+    private final Principal principal = mock.mock(Principal.class);
 
     private final static String AUTH_HEADER_NAME = "Authorization";
     private final static String AUTH_HEADER_ENCODING = "Authorization-Encoding";
@@ -1165,8 +1167,8 @@ public class ClientAuthenticationTest {
      * token(s) will be built with the correct id.
      */
     @Test
-    public void verify_validateResourceOwnerCredentialSetsUserNameAttribute() {
-        final String methodName = "verify_validateResourceOwnerCredentialSetsUserNameAttribute";
+    public void verify_validateResourceOwnerCredentialSetsUserNameAttributeToSecurityName() {
+        final String methodName = "verify_validateResourceOwnerCredentialSetsUserNameAttributeToSecurityName";
         ClientAuthentication testClientAuth = new ClientAuthentication() {
             @Override
             protected UserRegistry getUserRegistry() {
@@ -1178,6 +1180,8 @@ public class ClientAuthenticationTest {
 
             mock.checking(new Expectations() {
                 {
+                    allowing(provider).isROPCPreferUserPrincipalName();
+                    will(returnValue(false));
                     allowing(provider).isROPCPreferUserSecurityName();
                     will(returnValue(true));
                     allowing(request).getParameterValues(OAuth20Constants.RESOURCE_OWNER_USERNAME);
@@ -1190,6 +1194,52 @@ public class ClientAuthenticationTest {
                     allowing(mockInterface).mockGetUserRegistry();
                     will(returnValue(ur));
                     allowing(ur).getUserSecurityName("user");
+                    will(returnValue("newuser")); // switch
+                    // check that switched value is set as attrib.
+                    one(request).setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, "newuser");
+
+                }
+            });
+
+            testClientAuth.validateResourceOwnerCredential(provider, request, response, EndpointType.token);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    /**
+     * verify that when this method detects a mismatch between the supplied username and
+     * the principal name with ropcPreferUserPrincipalName enabled, it sets a
+     * request attribute to the principal name so the token(s) will be built with the correct name.
+     */
+    @Test
+    public void verify_validateResourceOwnerCredentialSetsUserNameAttributeToPrincipalName() {
+        final String methodName = "verify_validateResourceOwnerCredentialSetsUserNameAttributeToPrincipalName";
+        ClientAuthentication testClientAuth = new ClientAuthentication() {
+            @Override
+            protected UserRegistry getUserRegistry() {
+                return mockInterface.mockGetUserRegistry();
+            }
+        };
+
+        try {
+
+            mock.checking(new Expectations() {
+                {
+                    allowing(provider).isROPCPreferUserPrincipalName();
+                    will(returnValue(true));
+                    allowing(request).getParameterValues(OAuth20Constants.RESOURCE_OWNER_USERNAME);
+                    will(returnValue(new String[] { "user" }));
+                    allowing(request).getParameterValues(OAuth20Constants.RESOURCE_OWNER_PASSWORD);
+                    will(returnValue(new String[] { "password" }));
+
+                    allowing(ur).checkPassword("user", "password");
+                    will(returnValue("ok"));
+                    allowing(mockInterface).mockGetUserRegistry();
+                    will(returnValue(ur));
+                    allowing(request).getUserPrincipal();
+                    will(returnValue(principal));
+                    allowing(principal).getName();
                     will(returnValue("newuser")); // switch
                     // check that switched value is set as attrib.
                     one(request).setAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME, "newuser");
@@ -1251,6 +1301,8 @@ public class ClientAuthenticationTest {
             expectTokenData(uid);
             mock.checking(new Expectations() {
                 {
+                    allowing(provider).isROPCPreferUserPrincipalName();
+                    will(returnValue(false));
                     allowing(provider).isROPCPreferUserSecurityName();
                     will(returnValue(false));
                 }

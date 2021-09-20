@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=V\u00fdchoz\u00ed tunel
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Definujte v\u00fdchoz\u00ed tunelovan\u00fd zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v pro tento aplika\u010dn\u00ed server.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Nelze naj\u00edt soubor vlastnost\u00ed ''{0}'' pou\u017eit\u00fd k ur\u010den\u00ed po\u010d\u00e1te\u010dn\u00ed \u00farovn\u011b zabezpe\u010den\u00ed p\u0159enosu zpr\u00e1v pro klienta.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Nelze naj\u00edt soubor vlastnost\u00ed obsahuj\u00edc\u00ed informace pou\u017eit\u00e9 p\u0159i nav\u00e1z\u00e1n\u00ed zabezpe\u010den\u00e9ho p\u0159ipojen\u00ed pro p\u0159enos zpr\u00e1v na klienta. Budou pou\u017eity v\u00fdchoz\u00ed hodnoty. Nemus\u00ed b\u00fdt mo\u017en\u00e9 nav\u00e1zat zabezpe\u010den\u00e9 p\u0159ipojen\u00ed pro syst\u00e9m zpr\u00e1v klienta.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Konfigurujte vlastnosti souboru pro \u00farove\u0148 zabezpe\u010den\u00ed p\u0159enosu zpr\u00e1v pro klienta.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
@@ -454,18 +448,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Do\u0161lo k intern\u00ed chyb\u011b.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nelze naj\u00edt transportn\u00ed \u0159et\u011bzec s n\u00e1zvem {0}, z n\u011bho\u017e lze z\u00edskat konfiguraci SSL, kter\u00e1 m\u016f\u017ee b\u00fdt po\u017eadov\u00e1na k nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed se vzd\u00e1len\u00fdm hostitelem s n\u00e1zvem {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Informace, kter\u00e9 jsou po\u017eadov\u00e1ny k p\u0159ipojen\u00ed zalo\u017een\u00e9mu na protokolu SSL k rovnocenn\u00e9mu partnerovi, nejsou v aktu\u00e1ln\u00ed konfiguraci k dispozici. Tyto informace se obvykle z\u00edsk\u00e1vaj\u00ed z vhodn\u00e9 definice transportn\u00edho \u0159et\u011bzce. Tato definice \u0159et\u011bzce m\u00e1 n\u00e1zev, kter\u00fd odpov\u00edd\u00e1 \u0159et\u011bzci p\u0159\u00edtomn\u00e9mu na vzd\u00e1len\u00e9m serveru typu peer. Takov\u00fd transportn\u00ed \u0159et\u011bzec nelze naj\u00edt. Pravd\u011bpodobn\u011b nebude mo\u017en\u00e9 nav\u00e1zat p\u0159ipojen\u00ed.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Definujte dal\u0161\u00ed transportn\u00ed \u0159et\u011bzce.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Transportn\u00ed \u0159et\u011bzec s n\u00e1zvem {0} neobsahuje konfiguraci SSL, kter\u00e1 m\u016f\u017ee b\u00fdt po\u017eadov\u00e1na k nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed se vzd\u00e1len\u00fdm hostitelem s n\u00e1zvem {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Informace, kter\u00e9 jsou po\u017eadov\u00e1ny k p\u0159ipojen\u00ed zalo\u017een\u00e9mu na protokolu SSL k rovnocenn\u00e9mu partnerovi, nejsou v aktu\u00e1ln\u00ed konfiguraci k dispozici. Tyto informace se obvykle z\u00edsk\u00e1vaj\u00ed z vhodn\u00e9 definice transportn\u00edho \u0159et\u011bzce. Tato definice \u0159et\u011bzce m\u00e1 n\u00e1zev, kter\u00fd odpov\u00edd\u00e1 \u0159et\u011bzci p\u0159\u00edtomn\u00e9mu na vzd\u00e1len\u00e9m serveru typu peer. Takov\u00fd transportn\u00ed \u0159et\u011bzec nelze naj\u00edt. Pravd\u011bpodobn\u011b nebude mo\u017en\u00e9 nav\u00e1zat p\u0159ipojen\u00ed.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Konfigurujte dal\u0161\u00ed transportn\u00ed \u0159et\u011bz SSL pro ur\u010den\u00fd transportn\u00ed \u0159et\u011bz.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

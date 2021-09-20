@@ -239,9 +239,9 @@ public class CxfEndSupTokensSvcClient extends HttpServlet {
             Map<String, Object> requestContext = dispSOAPMsg.getRequestContext();
             if (id != null) {
                 System.out.println("Setting id: " + id + " with password: "
-                                   + pw);
-                requestContext.put("ws-security.username", id);
-                requestContext.put("ws-security.password", pw);
+                                   + pw + " with the new configuration names security.username and security.password");
+                requestContext.put("security.username", id); //v3 change
+                requestContext.put("security.password", pw); //v3 change
             }
 
             // may want to make this set the properties some times, and other

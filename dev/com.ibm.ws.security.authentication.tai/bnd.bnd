@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.security.authentication.tai
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.authentication.internal.tai.jar
-#JakartaEE-Bundle-Name: Jakarta TAI Authentication
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authentication.internal.tai
-#JakartaEE-Bundle-Description: Jakarta TAI Authentication
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.authentication.internal.tai.jar
+jakartaFinalBundleName: Security TAI Authentication
+jakartaFinalBundleId: io.openliberty.security.authentication.internal.tai
+jakartaFinalBundleDescription: Security TAI Authentication; Jakarta Enabled
 
 WS-TraceGroup: \
   Authentication

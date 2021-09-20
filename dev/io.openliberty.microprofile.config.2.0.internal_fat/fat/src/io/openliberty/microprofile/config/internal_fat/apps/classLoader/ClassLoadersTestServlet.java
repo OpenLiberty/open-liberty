@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal_fat.apps.classLoader;
 
-import java.net.URL;
 import java.util.ServiceConfigurationError;
 
 import javax.servlet.annotation.WebServlet;
@@ -31,10 +30,7 @@ public class ClassLoadersTestServlet extends FATServlet {
         ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
         b.addDiscoveredConverters();
 
-        URL[] urls = new URL[1];
-        urls[0] = (new java.io.File("/")).toURI().toURL();
-
-        ClassLoader cl = new CustomClassLoaderError(urls);
+        ClassLoader cl = new CustomClassLoaderError();
         b.forClassLoader(cl);
         try {
             b.build();

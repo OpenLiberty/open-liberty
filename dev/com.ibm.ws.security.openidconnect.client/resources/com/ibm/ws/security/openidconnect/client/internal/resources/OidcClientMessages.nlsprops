@@ -293,4 +293,6 @@ OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: The {0} Op
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=The web response must be a JWT in either JSON Web Encryption (JWE) or JSON Web Signature (JWS) format. The response might be malformed, or the OpenID Connect client encountered another error processing the response.
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=See the error in the message for more information. Verify that the response is in JWT format.
 
+#1534, 1535 used in clients.common bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

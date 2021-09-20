@@ -5,4 +5,5 @@
     <featureManager>
         <feature>microProfile-1.0</feature>
     </featureManager>
+    <!--<logging traceSpecification="APPCONFIG=all:RESTfulWS=all:org.jboss.resteasy.*=all"></logging>-->
 </server>

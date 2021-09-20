@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/appclient/src"/>
 	<classpathentry kind="src" path="test-applications/jpabootstrap/src"/>
-	<classpathentry kind="src" path="test-applications/jpa22/bval/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/cdi/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/jpa22query/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/jpa22timeapi/src"/>

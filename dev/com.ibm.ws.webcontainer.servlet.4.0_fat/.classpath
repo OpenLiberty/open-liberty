@@ -15,6 +15,7 @@
     <classpathentry kind="src" path="test-applications/SameSiteSecurityTest.war/src"/>
     <classpathentry kind="src" path="test-applications/TestBadServletContextListener.war/src"/>
     <classpathentry kind="src" path="test-applications/Servlet5TestApp.war/src"/>
+    <classpathentry kind="src" path="test-applications/ResponseHeadersTest.war/src"/>
     <classpathentry kind="src" path="test-applications/TestHandlesTypesClasses.war/src"/>
     <classpathentry kind="src" path="test-applications/TrailersTest.war/src"/>
     <classpathentry kind="src" path="test-applications/TestServlet40Clarifications.war/src"/>

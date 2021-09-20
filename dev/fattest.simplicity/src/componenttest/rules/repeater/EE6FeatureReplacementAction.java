@@ -45,6 +45,7 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

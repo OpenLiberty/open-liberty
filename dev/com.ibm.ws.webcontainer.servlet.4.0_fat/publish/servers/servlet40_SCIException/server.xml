@@ -6,10 +6,4 @@
     <feature>servlet-4.0</feature>
   </featureManager>
 
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
-
 </server>

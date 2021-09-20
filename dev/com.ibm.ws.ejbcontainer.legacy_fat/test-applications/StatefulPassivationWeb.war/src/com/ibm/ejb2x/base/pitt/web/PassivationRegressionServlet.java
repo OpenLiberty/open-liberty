@@ -46,7 +46,6 @@ import com.ibm.ejb2x.base.pitt.ejb.StatelessSessionHome;
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -223,8 +222,6 @@ public class PassivationRegressionServlet extends FATServlet {
      * </ul>
      */
     @Test
-    // TODO: Remove Skip when #17742 is fixed
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({ "org.omg.CORBA.OBJECT_NOT_EXIST", "java.lang.RuntimeException", "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testTXRequiredExceptionCommit() throws Exception {
         CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
@@ -282,8 +279,6 @@ public class PassivationRegressionServlet extends FATServlet {
      * </ul>
      */
     @Test
-    // TODO: Remove Skip when #17742 is fixed
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({ "org.omg.CORBA.OBJECT_NOT_EXIST", "java.lang.RuntimeException", "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testTXRequiredException() throws Exception {
         CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
@@ -618,8 +613,6 @@ public class PassivationRegressionServlet extends FATServlet {
      * </ul>
      */
     @Test
-    // TODO: Remove Skip when #17742 is fixed
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testBMTLeftOpenCausesRollback() throws Exception {
         CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);

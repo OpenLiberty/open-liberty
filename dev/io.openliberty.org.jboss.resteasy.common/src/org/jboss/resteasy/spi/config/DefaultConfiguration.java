@@ -52,18 +52,19 @@ public class DefaultConfiguration implements Configuration {
         Method getConfig;
         Method getOptionalValue;
         Method getValue;
-        try {
-            final ClassLoader classLoader = getClassLoader();
-            final Class<?> configProvider = Class.forName("org.eclipse.microprofile.config.ConfigProvider", false, classLoader);
-            getConfig = configProvider.getDeclaredMethod("getConfig", ClassLoader.class);
-            final Class<?> config = Class.forName("org.eclipse.microprofile.config.Config", false, classLoader);
-            getOptionalValue = config.getDeclaredMethod("getOptionalValue", String.class, Class.class);
-            getValue = config.getDeclaredMethod("getValue", String.class, Class.class);
-        } catch (Throwable ignore) {
+        //Using MP Config 3.0 does not currently work
+//        try {
+//            final ClassLoader classLoader = getClassLoader();
+//            final Class<?> configProvider = Class.forName("org.eclipse.microprofile.config.ConfigProvider", false, classLoader);
+//            getConfig = configProvider.getDeclaredMethod("getConfig", ClassLoader.class);
+//            final Class<?> config = Class.forName("org.eclipse.microprofile.config.Config", false, classLoader);
+//            getOptionalValue = config.getDeclaredMethod("getOptionalValue", String.class, Class.class);
+//            getValue = config.getDeclaredMethod("getValue", String.class, Class.class);
+//        } catch (Throwable ignore) {
             getConfig = null;
             getOptionalValue = null;
             getValue = null;
-        }
+//        }
         GET_CONFIG = getConfig;
         GET_OPTIONAL_VALUE = getOptionalValue;
         GET_VALUE = getValue;

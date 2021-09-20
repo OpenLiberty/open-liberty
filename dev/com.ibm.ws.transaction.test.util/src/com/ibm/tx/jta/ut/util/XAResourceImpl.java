@@ -185,7 +185,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     public XAResourceImpl setExpectedDirection(int expectedDirection) {
-        self().setExpectedDirection(expectedDirection);
+//        self().setExpectedDirection(expectedDirection);
 
         return this;
     }

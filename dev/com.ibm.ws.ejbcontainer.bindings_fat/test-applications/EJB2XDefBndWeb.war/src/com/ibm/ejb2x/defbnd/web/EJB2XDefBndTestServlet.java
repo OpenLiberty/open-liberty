@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import com.ibm.ejb2x.defbnd.ejb.EJB2XDefBnd;
 import com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndHome;
 import com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndRemote;
 import com.ibm.ejb2x.defbnd.ejb.EJB2XDefBndRemoteHome;
+import com.ibm.websphere.ejbcontainer.LocalHomeAccessor;
 
 import componenttest.app.FATServlet;
 
@@ -48,6 +49,22 @@ public class EJB2XDefBndTestServlet extends FATServlet {
         System.out.println("Got bean, calling method");
         if (bean.foo() == null) {
             fail("bean.method() for lookup local:ejb/Test2XDefBndBean should have worked");
+        }
+    }
+
+    @Test
+    public void test2XLocalDefaultLocalHomeAccessor() throws Exception {
+        EJB2XDefBndHome beanHome = (EJB2XDefBndHome) LocalHomeAccessor.lookup("Test2XDefBndBean");
+        if (beanHome == null) {
+            fail("LocalHomeAccessor lookup Test2XDefBndBean should have worked");
+        }
+        EJB2XDefBnd bean = beanHome.create();
+        if (beanHome.create() == null) {
+            fail("home.create() for LocalHomeAccessor lookup Test2XDefBndBean should have worked");
+        }
+        System.out.println("Got bean, calling method");
+        if (bean.foo() == null) {
+            fail("bean.method() for LocalHomeAccessor lookup Test2XDefBndBean should have worked");
         }
     }
 

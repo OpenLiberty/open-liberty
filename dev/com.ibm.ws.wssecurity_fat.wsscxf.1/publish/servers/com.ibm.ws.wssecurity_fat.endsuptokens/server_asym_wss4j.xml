@@ -81,21 +81,21 @@
 	<!-- basicplcy.wssecfvt.test.CommonPasswordCallback -->
 	<wsSecurityClient
 		id="default"
-		ws-security.password="{xor}LDo8Ki02KyY="
-		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		security.password="{xor}LDo8Ki02KyY="
+		security.username="user1"
+		security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
 	
 		<signatureProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YcMzY6MSs="
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YcMzY6MSs="
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ClientDefault"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YcMzY6MStt"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientSecond.jks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YcMzY6MStt"
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecondCert"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ClientSecond.jks" />
 	</wsSecurityClient>
 
 	<wsSecurityProvider
@@ -104,15 +104,15 @@
 	>
 	
 		<signatureProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YMOi0pOi1t"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YMOi0pOi1t"
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecond"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YMOi0pOi0="
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="{xor}EzY9Oi0rJgdqb2YMOi0pOi0="
+			org.apache.wss4j.crypto.merlin.keystore.alias="x509ClientDefaultCert"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />

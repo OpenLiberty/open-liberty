@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.oneexec;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,5 +37,13 @@ public class FATSuite {
         assertTrue("Helper feature should have been copied to lib/features.",
                    server.fileExistsInLibertyInstallRoot("lib/features/singletonTestFeature-1.0.mf"));
         server.copyFileToLibertyInstallRoot("lib/", "bundles/test.feature.ejb.singleton.jar");
+    }
+
+    @AfterClass
+    public static void afterSuite() throws Exception {
+        server.deleteFileFromLibertyInstallRoot("lib/features/singletonTestFeature-1.0.mf");
+        assertFalse("Helper feature should have been deleted from lib/features.",
+                   server.fileExistsInLibertyInstallRoot("lib/features/singletonTestFeature-1.0.mf"));
+        server.deleteFileFromLibertyInstallRoot("lib/test.feature.ejb.singleton.jar");
     }
 }

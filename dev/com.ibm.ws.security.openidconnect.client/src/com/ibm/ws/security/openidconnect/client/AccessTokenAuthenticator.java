@@ -135,11 +135,15 @@ public class AccessTokenAuthenticator {
         }
 
         String validationMethod = clientConfig.getValidationMethod();
+        String jwtRemoteValidation = ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_NONE;
 
         if (accessTokenIsJWT) {
             // accessToken is a JWT Token
-            validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
+            jwtRemoteValidation = clientConfig.getJwtAccessTokenRemoteValidation();
+            if (!ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_REQUIRE.equals(jwtRemoteValidation)) {
+                validationMethod = ClientConstants.VALIDATION_LOCAL;
+            }
         }
         SSLSocketFactory sslSocketFactory = null;
         try {
@@ -153,23 +157,11 @@ public class AccessTokenAuthenticator {
 
         if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_LOCAL)) {
             oidcResult = parseJwtToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-        } else {
-            String validationEndpointURL = clientConfig.getValidationEndpointUrl();
-            if (validationEndpointURL != null && !validationEndpointURL.isEmpty()) {
-                if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, validationEndpointURL)) {
-                    logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", validationEndpointURL);
-                    return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-                }
-                if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
-                    oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                    // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                    (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
-                } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
-                    oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                }
-            } else {
-                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
+            if (!isAuthenticationResultSuccessful(oidcResult) && ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_ALLOW.equals(jwtRemoteValidation)) {
+                oidcResult = doRemoteAccessTokenValidation(clientConfig, oidcClientRequest, accessToken, sslSocketFactory);
             }
+        } else {
+            oidcResult = doRemoteAccessTokenValidation(clientConfig, oidcClientRequest, accessToken, sslSocketFactory);
         }
 
         if (AuthResult.SUCCESS == oidcResult.getStatus()) {
@@ -186,6 +178,33 @@ public class AccessTokenAuthenticator {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "oidcResult httpStatusCode:" + oidcResult.getHttpStatusCode() + " status:" + oidcResult.getStatus() + " result:" + oidcResult);
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
+        }
+        return oidcResult;
+    }
+
+    boolean isAuthenticationResultSuccessful(ProviderAuthenticationResult result) {
+        return (result != null && result.getStatus() == AuthResult.SUCCESS);
+    }
+
+    ProviderAuthenticationResult doRemoteAccessTokenValidation(OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest, String accessToken, SSLSocketFactory sslSocketFactory) {
+        ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
+        String validationMethod = clientConfig.getValidationMethod();
+
+        String validationEndpointURL = clientConfig.getValidationEndpointUrl();
+        if (validationEndpointURL != null && !validationEndpointURL.isEmpty()) {
+            if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, validationEndpointURL)) {
+                logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", validationEndpointURL);
+                return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+            }
+            if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
+                oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+                // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
+                (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
+            } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
+                oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+            }
+        } else {
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
         }
         return oidcResult;
     }

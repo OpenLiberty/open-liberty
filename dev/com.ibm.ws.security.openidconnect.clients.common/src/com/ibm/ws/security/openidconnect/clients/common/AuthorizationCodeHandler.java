@@ -108,7 +108,8 @@ public class AuthorizationCodeHandler {
 
             String url = clientConfig.getTokenEndpointUrl();
             if (url == null || url.length() == 0) {
-                throw new MalformedURLException("MalformedURLException");
+                String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientConfig.getClientId());
+                throw new MalformedURLException(message);
             }
             HashMap<String, String> tokens = oidcClientUtil.getTokensFromAuthzCode(url,
                     clientId,

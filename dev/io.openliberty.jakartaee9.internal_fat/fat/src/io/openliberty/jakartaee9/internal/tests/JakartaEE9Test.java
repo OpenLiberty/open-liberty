@@ -37,29 +37,11 @@ public class JakartaEE9Test extends FATServletClient {
     @ClassRule
     public static RepeatTests repeat = RepeatTests
                     .with(new FeatureReplacementAction()
-                                    .removeFeature("jakartaee-9.1")
-                                    .removeFeature("webProfile-9.0")
-                                    .removeFeature("webProfile-9.1")
-                                    .addFeature("jakartaee-9.0")
-                                    .withID("jakartaee90")) //LITE
-                    .andWith(new FeatureReplacementAction()
-                                    .removeFeature("jakartaee-9.0")
-                                    .removeFeature("jakartaee-9.1")
-                                    .removeFeature("webProfile-9.1")
-                                    .addFeature("webProfile-9.0")
-                                    .withID("webProfile90")
-                                    .fullFATOnly())
-                    .andWith(new FeatureReplacementAction()
-                                    .removeFeature("jakartaee-9.0")
-                                    .removeFeature("webProfile-9.0")
                                     .removeFeature("webProfile-9.1")
                                     .addFeature("jakartaee-9.1")
-                                    .withID("jakartaee91")
-                                    .fullFATOnly())
+                                    .withID("jakartaee91")) //LITE
                     .andWith(new FeatureReplacementAction()
-                                    .removeFeature("jakartaee-9.0")
                                     .removeFeature("jakartaee-9.1")
-                                    .removeFeature("webProfile-9.0")
                                     .addFeature("webProfile-9.1")
                                     .withID("webProfile91")
                                     .fullFATOnly());

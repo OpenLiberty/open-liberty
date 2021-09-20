@@ -19,11 +19,11 @@ Bundle-Description: JASPI Provider User Defined Feature, version ${bVersion}.
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=com.ibm.ws.security.jaspic.test.jar
-#JakartaEE-Bundle-Name: JASPI Provider User Defined Feature 
-#JakartaEE-Bundle-Symbolic-Name: com.ibm.ws.security.jaspic.test
-#JakartaEE-Bundle-Description: JASPI Provider User Defined Feature, version ${bVersion}. 
-#JakartaEE-Bundle-Version: 2.0
+#jakartaFinalJarName: com.ibm.ws.security.jaspic.test.jar
+#jakartaFinalBundleName: JASPI Provider User Defined Feature 
+#jakartaFinalBundleId: com.ibm.ws.security.jaspic.test
+#jakartaFinalBundleDescription: JASPI Provider User Defined Feature, version ${bVersion}. 
+#jakartaFinalBundleVersion: 2.0
 
 test.project: true
 

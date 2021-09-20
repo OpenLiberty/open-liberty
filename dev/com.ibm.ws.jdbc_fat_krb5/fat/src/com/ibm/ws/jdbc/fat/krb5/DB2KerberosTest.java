@@ -61,12 +61,15 @@ public class DB2KerberosTest extends FATServletClient {
     @TestServlet(servlet = DB2KerberosTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    private static Path krbConfPath;
+
     @ClassRule
     public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
+        krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
+
         FATSuite.krb5.generateConf(krbConfPath);
 
         db2.start();
@@ -216,11 +219,13 @@ public class DB2KerberosTest extends FATServletClient {
         final String m = "generateTicketCache";
         String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
 
-        ProcessBuilder pb = new ProcessBuilder("kinit", "-k", "-t", keytabPath, //
-                        "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
-                        "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
-                        KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
-        pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.environment().put("KRB5_CONFIG", krbConfPath.toAbsolutePath().toString());
+        pb.command("kinit", "-k", "-t", keytabPath, //
+                   "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
+                   "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
+                   KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+
         pb.redirectErrorStream(true);
         Process p = null;
         try {
@@ -233,12 +238,18 @@ public class DB2KerberosTest extends FATServletClient {
         boolean success = p.waitFor(2, TimeUnit.MINUTES);
         String kinitResult = readInputStream(p.getInputStream());
         Log.info(c, m, "Output from creating ccache with kinit:\n" + kinitResult);
+
         if (success && kinitResult.length() == 0) { //kinit should return silently if successful
             Log.info(c, m, "Successfully generated a ccache at: " + ccPath);
             if (expired)
                 TimeUnit.SECONDS.sleep(1); //Wait 1s to ensure ccache credentials are expired
+            return;
+        }
+
+        Log.info(c, m, "FAILED to create ccache");
+        if (kinitResult.contains("Bad principal name: -l")) {
+            throw new UnsupportedOperationException("Unable to run kinit due to lack of the lifetime (-l) parameter.");
         } else {
-            Log.info(c, m, "FAILED to create ccache");
             throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);
         }
     }

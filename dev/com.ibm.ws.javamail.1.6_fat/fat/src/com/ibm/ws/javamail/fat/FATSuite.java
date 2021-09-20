@@ -11,12 +11,15 @@
 package com.ibm.ws.javamail.fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -36,4 +39,8 @@ public class FATSuite {
         ShrinkHelper.defaultApp(mailSesionServer, "TestingApp", "TestingApp.*");
 
     }
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().withID("javaMail-1.6"));
+
 }

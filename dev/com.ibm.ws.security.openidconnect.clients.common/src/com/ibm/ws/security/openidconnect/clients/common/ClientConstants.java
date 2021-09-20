@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,10 @@ public class ClientConstants {
     public final static String VALIDATION_INTROSPECT = "introspect";
     public final static String VALIDATION_USERINFO = "userinfo";
     public final static String VALIDATION_LOCAL = "local";
+
+    public final static String JWT_ACCESS_TOKEN_REMOTE_VALIDATION_NONE = "none";
+    public final static String JWT_ACCESS_TOKEN_REMOTE_VALIDATION_ALLOW = "allow";
+    public final static String JWT_ACCESS_TOKEN_REMOTE_VALIDATION_REQUIRE = "require";
 
     public final static String ATTRIB_OIDC_CLIENT_REQUEST = "com.ibm.wsspi.security.oidc.client.request";
     public static final String WLP_USER_DIR = "${wlp.user.dir}";

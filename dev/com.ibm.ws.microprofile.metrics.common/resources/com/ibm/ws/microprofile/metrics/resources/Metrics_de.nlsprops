@@ -100,7 +100,6 @@ cpu.processCpuLoad.description=Zeigt die k\u00fcrzliche CPU-Auslastung f\u00fcr 
 
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Zeigt die CPU-Zeit an, die von dem Prozess verwendet wird, in dem die Java Virtual Machine ausgef\u00fchrt wird. 
-
 #Garbage collection count message
 garbageCollectionCount.description=Zeigt die Gesamtzahl der Erfassungen an, die erstellt wurden. Dieses Attribut gibt -1 an, wenn der Zahl der Erfassungen f\u00fcr diesen Collector nicht definiert ist.
 
@@ -121,11 +120,10 @@ connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen
 connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.
 connectionpool.connectionHandles.description=Die Anzahl der Verbindungen, die im Gebrauch sind. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
 connectionpool.freeConnections.description=Die Anzahl verwalteter Verbindungen im freien Pool.
-connectionpool.waitTime.total.description=Die Gesamtwartezeit bei allen Verbindungsanforderungen seit dem Start des Servers.
-connectionpool.inUseTime.total.description=Die Gesamtzeit, in der alle Verbindungen seit dem Start des Servers im Gebrauch sind.
-connectionpool.usedConnections.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers gewartet haben, oder die seit dem Start des Servers nicht gewartet haben. Alle Verbindungen, die momentan im Gebrauch sind, werden in dieser Gesamtzahl nicht erfasst.
-connectionpool.queuedRequests.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers auf eine Verbindung warten mussten.
-
+connectionpool.waitTime.total.description=Die Gesamtwartezeit f\u00fcr alle Verbindungsanforderungen seit dem Start des Servers.
+connectionpool.inUseTime.total.description=Die Gesamtnutzungsdauer aller Verbindungen seit dem Start des Servers.
+connectionpool.usedConnections.total.description=Die Gesamtanzahl der Verbindungsanforderungen seit dem Start des Servers, die warten mussten, weil der Verbindungspool ausgesch\u00f6pft war, oder nicht warten mussten. Alle momentan genutzten Verbindungen sind in dieser Summe nicht enthalten.
+connectionpool.queuedRequests.total.description=Die Gesamtanzahl der Verbindungsanforderungen seit dem Start des Servers, die auf eine Verbindung warten mussten, weil der Verbindungspool ausgesch\u00f6pft war. 
 session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
 session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
 session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)
@@ -152,12 +150,12 @@ requestTiming.activeRequestCount.description=Die Anzahl der Servletanforderungen
 requestTiming.slowRequestCount.description=Die Anzahl der Servletanforderungen, die momentan zwar ausgef\u00fchrt werden, deren Ausf\u00fchrung jedoch langsam ist.
 requestTiming.hungRequestCount.description=Die Anzahl der Servletanforderungen, die zwar momentan ausgef\u00fchrt werden, jedoch blockiert sind.
 
-jaxws.invocations.total.description=Die Anzahl der Aufrufe an diesen Endpunkt bzw. diese Operation.
+jaxws.invocations.total.description=Die Anzahl der Aufrufe an diesen Endpunkt oder diese Operation.
 jaxws.checkedApplicationFaults.total.description=Die Anzahl gepr\u00fcfter Anwendungsfehler.
 jaxws.logicalRuntimeFaults.total.description=Die Anzahl logischer Laufzeitfehler.
 jaxws.runtimeFaults.total.description=Die Anzahl der Laufzeitfehler.
 jaxws.uncheckedApplicationFaults.total.description=Die Anzahl nicht gepr\u00fcfter Anwendungsfehler.
-jaxws.responseTime.total.description=Die Gesamtantwortverarbeitungszeit seit dem Start des Servers.
+jaxws.responseTime.total.description=Die Antwortverarbeitungszeit seit dem Start des Servers insgesamt.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

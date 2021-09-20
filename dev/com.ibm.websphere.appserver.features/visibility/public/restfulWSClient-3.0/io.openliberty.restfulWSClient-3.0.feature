@@ -45,8 +45,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jboss.logging, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
-  io.openliberty.restfulWS.internal.globalhandler.jakarta, \
-  com.ibm.websphere.org.eclipse.microprofile.config.1.4; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.config:microprofile-config-api:1.4"
+  io.openliberty.restfulWS.internal.globalhandler.jakarta
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

@@ -146,7 +146,6 @@ grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\
 
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera. Metryka nie b\u0119dzie rejestrowa\u0142a czasu obs\u0142ugi ani liczby \u017c\u0105da\u0144 REST powoduj\u0105cych nieodwzorowany wyj\u0105tek. S\u0142u\u017cy r\u00f3wnie\u017c do rejestrowania najd\u0142u\u017cszego czasu trwania w poprzedniej pe\u0142nej minucie i najkr\u00f3tszego czasu trwania w poprzedniej pe\u0142nej minucie.
 REST.request.unmappedException.description=\u0141\u0105czna liczba nieodwzorowanych wyj\u0105tk\u00f3w, kt\u00f3re wywo\u0142a\u0142a ta metoda zasobu RESTful od momentu uruchomienia serwera.
-
 requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
 requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.
 requestTiming.slowRequestCount.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.
@@ -157,7 +156,7 @@ jaxws.checkedApplicationFaults.total.description=Liczba sprawdzonych b\u0142\u01
 jaxws.logicalRuntimeFaults.total.description=Liczba logicznych b\u0142\u0119d\u00f3w wykonawczych.
 jaxws.runtimeFaults.total.description=Liczba b\u0142\u0119d\u00f3w wykonawczych.
 jaxws.uncheckedApplicationFaults.total.description=Liczba niesprawdzonych b\u0142\u0119d\u00f3w aplikacji.
-jaxws.responseTime.total.description=\u0141\u0105czny czas obss\u0142ugi odpowiedzi od momentu uruchomienia serwera.
+jaxws.responseTime.total.description=\u0141\u0105czny czas obs\u0142ugi odpowiedzi od momentu uruchomienia serwera.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

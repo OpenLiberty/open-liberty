@@ -64,6 +64,7 @@ Include-Resource: \
   com.ibm.ws.ui.internal.v1.utils.FeatureToolService
 
 -buildpath: \
+  com.ibm.websphere.appserver.api.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\

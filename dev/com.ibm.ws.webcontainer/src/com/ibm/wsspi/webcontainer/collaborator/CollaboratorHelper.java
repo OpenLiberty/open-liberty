@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -329,7 +329,7 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
             IOException, Exception {
         
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-            logger.logp(Level.FINE, CLASS_NAME, "preInvokeCollaborators", "ENTRY");
+            logger.entering(CLASS_NAME, "preInvokeCollaborators");
 
         com.ibm.ejs.j2c.HandleList _connectionHandleList = new HandleList();
         collabMetaData.setConnectionHandleList(_connectionHandleList);
@@ -489,22 +489,34 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
             //HttpServletRequest javadocs describe it as:
             //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
             if (servletRequestListenersNotificationNeeded) { 
-                collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+                //Async error handling goes through this path and can set the setServletRequestCreated to false. That can stop the request listener destroy notification in the postInvoke.
+                //Set it manually so it won't trigger the notification for listeners' request created.
+                WebContainerRequestState reqState = com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(false);
+                if (DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR && reqState != null && reqState.getAttribute("_invokeAsyncErrorHandling") != null ) {
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+                        logger.logp(Level.FINE, CLASS_NAME, "preInvokeCollaborators", "Async error handling, setting servlet request created manually"); 
+
+                    collabMetaData.setServletRequestCreated(true);      //set manually; this won't trigger the servlet request created listener
+                }
+                else
+                    collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
             }
             
         } finally {
             if (sessionSecurityIntegrationEnabled) {
                 ((IExtendedRequest) wasreq).setRunningCollaborators(false); // PK01801
             }
+            
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+                logger.exiting(CLASS_NAME,"preInvokeCollaborators");
         }
-
     }
 
     public void postInvokeCollaborators(ICollaboratorMetaData collabMetaData, EnumSet<CollaboratorInvocationEnum> colEnum) throws ServletException,
             IOException, Exception {
         
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-            logger.logp(Level.FINE, CLASS_NAME, "postInvokeCollaborators", "ENTRY");
+            logger.entering(CLASS_NAME, "postInvokeCollaborators");
 
         WebComponentMetaData cmd = collabMetaData.getComponentMetaData();
         HttpServletRequest httpRequest = collabMetaData.getHttpServletRequest();
@@ -526,6 +538,7 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
         //HttpServletRequest javadocs describe it as:
         //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
         WebContainerRequestState reqState = com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(false); // start PI26908
+        
         if (collabMetaData.isServletRequestCreated())          
         {
             if(DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR){
@@ -606,7 +619,9 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.NAMESPACE)) {
             this.nameSpaceCollaborator.postInvoke();
         }
-
+        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+            logger.exiting(CLASS_NAME,"postInvokeCollaborators");
     }
 
     protected abstract Object getTransaction() throws Exception;
