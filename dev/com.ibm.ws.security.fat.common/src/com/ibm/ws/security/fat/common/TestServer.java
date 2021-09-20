@@ -714,6 +714,9 @@ public class TestServer extends ExternalResource {
             addIgnoredServerExceptions(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING);
             // ignore ssl restart warnings - if they caused problems, tests would also be failing
             addIgnoredServerExceptions(MessageConstants.SSL_NOT_RESTARTED_PROPERLY);
+            // ignore ssl message - runtime retries and can proceed (sometimes) when it can't tests will fail when they don't get the correct response
+            server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
+
             server.stopServer(ignoredServerExceptions);
         }
         unInstallCallbackHandler(callback, callbackFeature);
