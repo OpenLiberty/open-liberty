@@ -37,8 +37,8 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "name..."),
-    installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "name..."),
+	installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom", "--to", "name..."),
+	installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "--featuresBom", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
     help(new FeatureHelpAction(),"", 0);
@@ -54,26 +54,6 @@ public enum FeatureAction implements ActionDefinition {
         positionalOptions = count;
         abbreviation = abbreviationString;
         commandOptions = Collections.unmodifiableList(Arrays.asList(args));
-        //For userFeature FAT test
-        if(abbreviationString.equals("if") || abbreviationString.equals("isf")) {
-        	File f = new File(Utils.getInstallDir() + "/etc/featureUtility.properties");
-            if(f.exists()) {
-            	try (InputStream input = new FileInputStream(f)){
-                	Properties prop = new Properties();
-                	prop.load(input);
-                	String enableOptionsForFAT = prop.getProperty("enable.options");
-                	if(enableOptionsForFAT != null && enableOptionsForFAT.toString().equals("true")) {
-                		if(abbreviationString.equals("if")) {
-                			commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose", "--acceptLicense", "--featuresBom", "--to", "name..."));
-                		}else if (abbreviationString.equals("isf")) {
-                			commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose","--acceptLicense", "--featuresBom", "name..."));
-                		}
-                	}	
-                } catch (IOException e) {
-        			e.printStackTrace();
-        		} 
-            }
-        }
     }
 
     @Override

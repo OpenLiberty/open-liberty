@@ -146,6 +146,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_CREATE_SESSION = "createSession";
     public static final String CFG_KEY_INBOUND_PROPAGATION = "inboundPropagation";
     public static final String CFG_KEY_VALIDATION_METHOD = "validationMethod";
+    public static final String CFG_KEY_JWT_ACCESS_TOKEN_REMOTE_VALIDATION = "jwtAccessTokenRemoteValidation";
     public static final String CFG_KEY_HEADER_NAME = "headerName";
     public static final String CFG_KEY_propagation_authnSessionDisabled = "authnSessionDisabled";
     public static final String CFG_KEY_reAuthnOnAccessTokenExpire = "reAuthnOnAccessTokenExpire";
@@ -253,6 +254,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean createSession;
     private String inboundPropagation;
     private String validationMethod;
+    private String jwtAccessTokenRemoteValidation;
     private String headerName;
     private boolean disableIssChecking;
     private String[] audiences;
@@ -450,6 +452,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         clockSkewInSeconds = clockSkew / 1000; // Duration types are always in milliseconds, convert to seconds.
         authenticationTimeLimitInSeconds = (Long) props.get(CFG_KEY_AUTHENTICATION_TIME_LIMIT) / 1000;
         validationMethod = trimIt((String) props.get(CFG_KEY_VALIDATION_METHOD));
+        jwtAccessTokenRemoteValidation = configUtils.getConfigAttribute(props, CFG_KEY_JWT_ACCESS_TOKEN_REMOTE_VALIDATION);
         userInfoEndpointEnabled = (Boolean) props.get(CFG_KEY_USERINFO_ENDPOINT_ENABLED);
         discoveryEndpointUrl = trimIt((String) props.get(CFG_KEY_DISCOVERY_ENDPOINT_URL));
         discoveryPollingRate = (Long) props.get(CFG_KEY_DISCOVERY_POLLING_RATE);
@@ -604,6 +607,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "createSession: " + createSession);
             Tr.debug(tc, "inboundPropagation: " + inboundPropagation);
             Tr.debug(tc, "validationMethod: " + validationMethod);
+            Tr.debug(tc, "jwtAccessTokenRemoteValidation: " + jwtAccessTokenRemoteValidation);
             Tr.debug(tc, "headerName: " + headerName);
             Tr.debug(tc, "authnSessionDisabled:" + authnSessionDisabled);
             Tr.debug(tc, "disableIssChecking:" + disableIssChecking);
@@ -1587,6 +1591,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getValidationMethod() {
         return this.validationMethod;
+    }
+
+    @Override
+    public String getJwtAccessTokenRemoteValidation() {
+        return this.jwtAccessTokenRemoteValidation;
     }
 
     // This is either null or not_empty_string

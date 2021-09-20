@@ -33,8 +33,7 @@ src: \
   test-applications/testMTOMClient_withDD/src,\
   test-applications/testWebServiceMonitor/src,\
   test-applications/virtualhost/src,\
-  test-applications/webServiceRefFeatures/src,\
-  test-applications/respectBindingService/src
+  test-applications/webServiceRefFeatures/src
   
 
 fat.project: true
