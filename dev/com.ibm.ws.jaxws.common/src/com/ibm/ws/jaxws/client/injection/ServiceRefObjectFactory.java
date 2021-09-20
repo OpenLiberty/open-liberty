@@ -84,8 +84,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(ServiceRefObjectFactory.class);
 
-    private final AtomicServiceReference<JaxWsSecurityConfigurationService> securityConfigSR =
-                    new AtomicServiceReference<JaxWsSecurityConfigurationService>("securityConfigurationService");
+    private final AtomicServiceReference<JaxWsSecurityConfigurationService> securityConfigSR = new AtomicServiceReference<JaxWsSecurityConfigurationService>("securityConfigurationService");
 
     /**
      * For getting the https host+port
@@ -110,9 +109,40 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
                                                       cardinality = ReferenceCardinality.OPTIONAL,
                                                       policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
-        securityConfigSR.setReference(serviceRef);
-        LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
-        LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
+
+        ClassLoader cl = null;
+        try {
+            //Liberty code change start
+            //TODO: look into why we are not finding this provider
+            ClassLoader libertyProviderCL = null;
+            try {
+                libertyProviderCL = LibertyProviderImpl.class.getClassLoader();
+            } catch (Throwable t) {
+            }
+            if (libertyProviderCL != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setting LibertyProviderImpl classloader!");
+
+                }
+                cl = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(libertyProviderCL);
+            }
+            securityConfigSR.setReference(serviceRef);
+            LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
+            LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
+
+        } catch (Throwable t) {
+            throw new RuntimeException(t.getMessage(), t);
+        } finally { //Liberty code change start
+            if (cl != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setting LibertyProviderImpl classloader!");
+
+                }
+                Thread.currentThread().setContextClassLoader(cl);
+            }
+        }
+
     }
 
     protected void unsetSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
@@ -214,7 +244,8 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         }
     }
 
-    public ServiceRefObjectFactory() {}
+    public ServiceRefObjectFactory() {
+    }
 
     /**
      * This method will create an instance of either a javax.xml.ws.Service subclass, or it will create an SEI type.
@@ -299,8 +330,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         try {
             //Check @MTOM @RespectBinding @Addressing 
             //set web service features to ThreadLocal
-            final List<WebServiceFeature> wsFeatureList =
-                            wsrInfo.getWSFeatureForSEIClass(wsrInfo.getServiceRefTypeClassName());
+            final List<WebServiceFeature> wsFeatureList = wsrInfo.getWSFeatureForSEIClass(wsrInfo.getServiceRefTypeClassName());
 
             LibertyProviderImpl.setWebServiceRefInfo(wsrInfo);
             LibertyProviderImpl.setWebServiceFeatures(wsFeatureList);
@@ -396,8 +426,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 //        need to consider in the ear level
 //        need to consider virtual host
 
-        if (url == null)
-        {
+        if (url == null) {
             JaxWsModuleMetaData jaxwsModuleMetaData = tInfo.getClientMetaData().getModuleMetaData();
             String applicationName = jaxwsModuleMetaData.getJ2EEName().getApplication();
             String contextRoot = jaxwsModuleMetaData.getContextRoot();
@@ -411,8 +440,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
                     for (EndpointInfo endpointInfo : jaxWsModuleInfo.getEndpointInfos()) {
                         String address = endpointInfo.getAddress(0).substring(1);
                         String serviceName = wsrInfo.getServiceQName().getLocalPart();
-                        if (serviceName.equals(address))
-                        {
+                        if (serviceName.equals(address)) {
                             String wsdlLocation = null;
                             if ((appNameURLMap != null) && (!appNameURLMap.isEmpty())) {
                                 String applicationURL = appNameURLMap.get(applicationName);
@@ -451,8 +479,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
 
             }
         }
-        if (instance != null)
-        {
+        if (instance != null) {
             return instance;
         }
 
