@@ -19,17 +19,12 @@ WS-TraceGroup: com.ibm.ws.jmx.connector.local
 
 Private-Package: com.ibm.ws.jmx.connector.local
 
-Service-Component: \
-  com.ibm.ws.jmx.localConnectorActivator;\
-    implementation:=com.ibm.ws.jmx.connector.local.LocalConnectorActivator;\
-    locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
-    dynamic:="locationService";\
-    configuration-policy:=ignore;\
-    immediate:=true;\
-    properties:="service.vendor=IBM"
+-dsannotations: com.ibm.ws.jmx.connector.local.LocalConnectorActivator
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.ws.kernel.service
+	com.ibm.ws.kernel.service,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.feature.core
