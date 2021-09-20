@@ -34,6 +34,8 @@ public interface OidcClientConfig extends ConvergedClientConfig {
 
     public String getValidationMethod();
 
+    public String getJwtAccessTokenRemoteValidation();
+
     public String getHeaderName();
 
     public boolean isValidConfig(); // when the inboundPropagation is required
