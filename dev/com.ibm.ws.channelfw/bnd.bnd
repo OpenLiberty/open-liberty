@@ -41,7 +41,6 @@ Import-Package: \
 	${defaultPackageImport}
 
 Private-Package: com.ibm.io.async, \
-    com.ibm.ws.channelfw.internal.chains;-split-package:=merge-first, \
 	com.ibm.ws.channelfw*, \
 	com.ibm.ws.tcpchannel.internal, \
 	com.ibm.ws.tcpchannel.internal.resources, \
