@@ -49,7 +49,7 @@ public class WC5GetContextPath {
     public static void before() throws Exception {
         LOG.info("Setup : add " + APP_NAME + " war to the server's apps folder if not already present.");
 
-        ShrinkHelper.defaultApp(server, APP_NAME + ".war", "servlet5snoop.war.servlets");
+        ShrinkHelper.defaultApp(server, APP_NAME + ".war", "servlet5snoop.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WC5GetContextPath.class.getSimpleName() + ".log");

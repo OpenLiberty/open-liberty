@@ -55,9 +55,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     static final String[] EE9_FEATURES_ARRAY = {
                                                  "appClientSupport-2.0",
-                                                 "jakartaee-9.0",
-                                                 "webProfile-9.0",
-                                                 "jakartaeeClient-9.0",
+                                                 "jakartaee-9.1",
+                                                 "webProfile-9.1",
+                                                 "jakartaeeClient-9.1",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
                                                  "txtest-2.0",
                                                  "appAuthentication-2.0",
@@ -114,7 +114,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     @Override
     public String toString() {
-        return "JakartaEE9 FAT repeat action";
+        return "JakartaEE9 FAT repeat action (" + getID() + ")";
     }
 
     //

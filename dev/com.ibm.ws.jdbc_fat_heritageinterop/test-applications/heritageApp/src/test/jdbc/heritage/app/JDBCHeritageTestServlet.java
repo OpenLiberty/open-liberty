@@ -70,6 +70,9 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Resource
     private DataSource defaultDataSource;
 
+    @Resource(authenticationType = AuthenticationType.APPLICATION)
+    private DataSource defaultDataSource_appAuth;
+
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
     private DataSource defaultDataSource_unsharable_loosely_coupled;
 
@@ -1042,6 +1045,23 @@ public class JDBCHeritageTestServlet extends FATServlet {
             fail("Connection should be closed.");
         } catch (ObjectClosedException x) {
             // expected
+        }
+    }
+
+    /**
+     * Cause a stale connection error upon the initial attempt to connect.
+     */
+    @AllowedFFDC({ // caused by test to cover exception path:
+                   "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                   "javax.resource.spi.ResourceAllocationException"
+    })
+    @Test
+    public void testStaleConnectionUponConnect() throws Exception {
+        try (Connection con = defaultDataSource_appAuth.getConnection("ConnectionRefused", "password")) {
+            fail("Fake JDBC driver should have raised an error.");
+        } catch (HeritageDBStaleConnectionException x) {
+            assertEquals("08001", x.getSQLState());
+            assertEquals(40000, x.getErrorCode());
         }
     }
 

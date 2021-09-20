@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.2.6.1
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.org.opensaml.opensaml.2.6.1.jar
-#JakartaEE-Bundle-Name: org.opensaml.opensaml
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.org.opensaml.opensaml.2.6.1
-#JakartaEE-Bundle-Description: org.opensaml opensaml; Jakarta Enabled
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName=io.openliberty.org.opensaml.opensaml.2.6.1.jar
+jakartaFinalBundleName: org.opensaml.opensaml
+jakartaFinalBundleId: io.openliberty.org.opensaml.opensaml.2.6.1
+jakartaFinalBundleDescription: org.opensaml.opensaml; Jakarta Enabled
 
 
 WS-TraceGroup: SAML20

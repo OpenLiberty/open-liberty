@@ -1269,7 +1269,7 @@ public class LibertyServer implements LogMonitorClient {
         // running Oracle/Sun JVMs - this results in buckets timing out as they wait for the entropy pool to be repopulated. Additionally,
         // from Java 9 onwards, IBM JDKs will also exhibit the same behaviour as it will start to use /dev/random by default.
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
-        JVM_ARGS += " -Djava.security.egd=file:///dev/urandom";
+        JVM_ARGS += " -Djava.security.egd=file:/dev/urandom";
 
         JavaInfo info = JavaInfo.forServer(this);
         // Debug for a highly intermittent problem on IBM JVMs.

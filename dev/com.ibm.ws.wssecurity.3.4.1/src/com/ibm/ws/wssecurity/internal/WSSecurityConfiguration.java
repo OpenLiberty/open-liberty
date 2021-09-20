@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -297,128 +297,6 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         return samlTokenConfigMap;
     }
 
-    ///**
-    // * @param properties
-    // * @throws Exception
-    // */
-    //private void processSamlTrustEngine() throws Exception {
-    //    // reset stored saml data
-    //    samlX509List = Collections.synchronizedList(new ArrayList<String>());
-    //    samlCrlList = Collections.synchronizedList(new ArrayList<String>());
-    //    isSamlTrustEngineEnabled = false;
-    //
-    //    String samlTrustEngine = (String) properties.get(KEY_samlTrustEngine);
-    //    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //        Tr.debug(tc, "samlTrustEngine pid:", samlTrustEngine);
-    //    }
-    //    if (samlTrustEngine == null || samlTrustEngine.isEmpty())
-    //        return;
-    //
-    //    isSamlTrustEngineEnabled = true;
-    //
-    //    processSamlTrustEngineData(samlTrustEngine);
-    //}
-
-    ///**
-    // * @param string
-    // * @throws Exception
-    // */
-    //private void processSamlTrustEngineData(String trustEngine) throws Exception {
-    //    Configuration config = null;
-    //    try {
-    //        config = configAdmin.getConfiguration(trustEngine);
-    //    } catch (IOException e) {
-    //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //            Tr.debug(tc, "Invalid saml websso trust engine configuration", trustEngine);
-    //        }
-    //        return;
-    //    }
-    //    Dictionary<String, Object> trustEngineProps = config.getProperties();
-    //    trustAnchorName = (String) trustEngineProps.get(KEY_trustEngine_trustAnchor);
-    //    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //        Tr.debug(tc, "trustAnchor = " + trustAnchorName);
-    //    }
-    //
-    //    trustedIssuers = trim((String[]) trustEngineProps.get(KEY_trustedIssuers));
-    //    if (trustedIssuers != null) {
-    //        for (int iI = 0; iI < trustedIssuers.length; iI++) {
-    //            try {
-    //                trustedIssuers[iI] = URLDecoder.decode(trustedIssuers[iI], "UTF-8");
-    //                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "trustedIssuer[" + iI + "] = " + trustedIssuers[iI]);
-    //                }
-    //            } catch (UnsupportedEncodingException e) {
-    //                throw new Exception(e); // handle the unexpected Exception
-    //            }
-    //        }
-    //    }
-    //
-    //    String[] certs = (String[]) trustEngineProps.get(KEY_trustEngine_x509cert);
-    //    if (certs == null || certs.length == 0) {
-    //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //            Tr.debug(tc, "No X509Certificates were defined in the trust engine configuration. ");
-    //        }
-    //    }
-    //    else {
-    //        for (String certPid : certs) {
-    //            //pids.add(certPid); //TODO
-    //            Configuration certConfig = null;
-    //            try {
-    //                certConfig = configAdmin.getConfiguration(certPid);
-    //            } catch (IOException ioe) {
-    //                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "Invalid X509 Certificate configuration", certPid);
-    //                }
-    //                continue;
-    //            }
-    //            if (certConfig == null || certConfig.getProperties() == null) {
-    //                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "NULL X509 Certificate configuration", certPid);
-    //                }
-    //                continue;
-    //            }
-    //            String certPath = (String) certConfig.getProperties().get(KEY_trustEngine_path);
-    //            samlX509List.add(certPath);
-    //
-    //            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                Tr.debug(tc, "Added x509 cert path: " + certPath);
-    //            }
-    //        }
-    //    }
-    //
-    //    String[] crls = (String[]) trustEngineProps.get(KEY_trustEngine_crl);
-    //    if (crls == null || crls.length == 0) {
-    //        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //            Tr.debug(tc, "No CRLs were defined in the trust engine configuration. ");
-    //        }
-    //    }
-    //    else {
-    //        for (String crlPid : crls) {
-    //            //pids.add(crlPid); //TODO
-    //            Configuration crlConfig = null;
-    //            try {
-    //                crlConfig = configAdmin.getConfiguration(crlPid);
-    //            } catch (IOException ioe) {
-    //                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "Invalid CRL configuration", crlPid);
-    //                }
-    //                continue;
-    //            }
-    //            if (crlConfig == null || crlConfig.getProperties() == null) {
-    //                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                    Tr.debug(tc, "NULL CRL configuration", crlPid);
-    //                }
-    //                continue;
-    //            }
-    //            String crlPath = (String) crlConfig.getProperties().get(KEY_trustEngine_path);
-    //            samlCrlList.add(crlPath);
-    //
-    //            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    //                Tr.debug(tc, "Added crl path: " + crlPath);
-    //            }
-    //        }
-    //    }
-    //}
 
     /**
      */
@@ -448,14 +326,30 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                         for (String key : SPECIAL_CFG_KEYS) {
                             signaturePropertyMap.remove(key);
                         }
+                        if (newConfigSpecified(signaturePropertyMap)) {
+                            signaturePropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER); 
+                            signaturePropertyMap.putIfAbsent(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER, WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER_NAME);
+                            defaultConfigMap.put(WSSecurityConstants.SEC_SIG_PROPS, signaturePropertyMap);  //v3
+                        } else {
+                            defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap);  //v3 - backward compatibility
+                        }
 
-                        defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "signature configuration type = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE));
-                            Tr.debug(tc, "signature configuration alias = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS));
-                            Tr.debug(tc, "signature configuration ks file = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE));
-                            Tr.debug(tc, "signature configuration password = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD));
-                            Tr.debug(tc, "signature configuration provider = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER));
+                            Object sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
+                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
+                            Tr.debug(tc, "signature configuration type = ", sigProp );
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ? 
+                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
+                            Tr.debug(tc, "signature configuration alias = ", sigProp);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ?
+                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
+                            Tr.debug(tc, "signature configuration ks file = ", sigProp);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ? 
+                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
+                            Tr.debug(tc, "signature configuration password = ", sigProp);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? 
+                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
+                            Tr.debug(tc, "signature configuration provider = ", sigProp);
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -479,13 +373,30 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                         for (String key : SPECIAL_CFG_KEYS) {
                             encryptionPropertyMap.remove(key);
                         }
-                        defaultConfigMap.put(WSSecurityConstants.CXF_ENC_PROPS, encryptionPropertyMap);
+                        if (newConfigSpecified(encryptionPropertyMap)) {
+                            encryptionPropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER); 
+                            encryptionPropertyMap.putIfAbsent(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER, WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER_NAME);
+                            defaultConfigMap.put(WSSecurityConstants.SEC_ENC_PROPS, encryptionPropertyMap);  //v3
+                        } else {
+                            defaultConfigMap.put(WSSecurityConstants.CXF_ENC_PROPS, encryptionPropertyMap);  //v3 - backward compatibility
+                        }
+
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "encryption configuration type = ", encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE));
-                            Tr.debug(tc, "encryption configuration alias = ", encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS));
-                            Tr.debug(tc, "encryption configuration ks file = ", encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE));
-                            Tr.debug(tc, "encryption configuration password = ", encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD));
-                            Tr.debug(tc, "encryption configuration provider = ", encryptionPropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER));
+                            Object encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
+                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE): encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
+                            Tr.debug(tc, "encryption configuration type = ", encProp);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ?
+                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
+                            Tr.debug(tc, "encryption configuration alias = ", encProp);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ? 
+                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
+                            Tr.debug(tc, "encryption configuration ks file = ", encProp);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ?
+                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
+                            Tr.debug(tc, "encryption configuration password = ", encProp);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ?
+                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
+                            Tr.debug(tc, "encryption configuration provider = ", encProp);
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -563,7 +474,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                 }
                 if (entry_value != null) {
                     //handle ws-security.cache.config.file property
-                    if (WSSecurityConstants.CXF_NONCE_CACHE_CONFIG_FILE.equals(entry_key)) {
+                    if (WSSecurityConstants.CXF_NONCE_CACHE_CONFIG_FILE.equals(entry_key) || WSSecurityConstants.SEC_NONCE_CACHE_CONFIG_FILE.equals(entry_key)) {
                         String cache_file = (String) entry.getValue();
                         if (cache_file != null && !cache_file.isEmpty()) {
                             //Make sure that cache_file exists before prepending file:
@@ -600,6 +511,21 @@ public class WSSecurityConfiguration implements ConfigurationListener {
     }
 
     //}
+    
+    /**
+     * @param signature or encryption propertyMap
+     * @return
+     */
+    private boolean newConfigSpecified(Map<String, Object> propertyMap) {
+        Set <String> keys = propertyMap.keySet();
+        for (String key : keys) {
+            if (key.contains(WSSecurityConstants.WSS4J_2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * @return callback class name for this configuration.

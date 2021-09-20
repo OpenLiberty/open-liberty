@@ -150,7 +150,7 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
 
         // Customize WSDL Get Interceptor.
         customizeWSDLGetInterceptor(implBeanClass);
-        customizeLoggingInOutIntercetptor(endpointInfo);
+        enableLogging(endpointInfo);
 
         server.start();
 

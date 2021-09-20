@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -51,7 +52,8 @@ import com.ibm.wsspi.security.wim.exception.NoUserRepositoriesFoundException;
 
 @ObjectClassDefinition(pid = "com.ibm.ws.security.wim.registry.WIMUserRegistry", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @Ext.ObjectClassClass(FederationRegistry.class)
-interface WIMUserRegistryConfig {}
+interface WIMUserRegistryConfig {
+}
 
 /*
  *
@@ -96,6 +98,8 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     private SearchBridge searchBridge;
 
     private MembershipBridge membershipBridge;
+
+    private final Random failResponseRandom = new Random();
 
     @Activate
     protected void activate() {
@@ -147,8 +151,10 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
             return null;
         }
 
+        String methodName = "checkPassword";
+        String returnValue = null;
         try {
-            String returnValue = loginBridge.checkPassword(inputUser, inputPassword);
+            returnValue = loginBridge.checkPassword(inputUser, inputPassword);
             return returnValue;
         } catch (Exception excp) {
             if (excp instanceof RegistryException) {
@@ -166,6 +172,37 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
                 return null;
             } else
                 throw new RegistryException(excp.getMessage(), excp);
+        } finally {
+            if (returnValue == null) {
+                try {
+                    /*
+                     * Pad return time on a failed user, if enabled.
+                     */
+                    int failResponseDelayMax = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMax();
+                    int failResponseDelayMin = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMin();
+
+                    if (failResponseDelayMax > 0) {
+                        int random = failResponseRandom.nextInt(failResponseDelayMax + 1 - failResponseDelayMin) + failResponseDelayMin;
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                     methodName + " " + "failed response login delay is " + random + " ms. The minimum and maximum delay for failed logons are "
+                                         + failResponseDelayMin
+                                         + " ms and " + failResponseDelayMax + " ms.");
+                        }
+                        Thread.sleep(random);
+                    }
+                } catch (InterruptedException ie) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc,
+                                 methodName + " " + "failed response login delay sleep was interrupted.");
+                    }
+                } catch (Exception e) {
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc,
+                                 methodName + " " + "failed response login delay processing hit an exception. Ignore so we return the failed login.", e);
+                    }
+                }
+            }
         }
 
     }

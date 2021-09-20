@@ -44,7 +44,7 @@ tested.features: needsNewEe-1.0, newEe-1.0, \
 	servlet-5.0, ssl-1.0, \
 	wasJmsClient-2.0, wasJmsSecurity-1.0, wasJmsServer-1.0, webProfile-8.0, websocket-1.1, \
 	featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0, productauto:pfeaturel-1.0, featureg-1.0, productauto:pfeaturef-1.0, productauto:pfeatureg-1.0, productauto:pfeaturee-1.0, capabilityc-1.0, badpathtool-1.0, emptyiconheader-1.0, goldenpathtool-1.0, icondirectivestool-1.0, noheadertool-1.0, missingiconstool-1.0, jwt-1.0, servlet-3.1, \
-	appclientsupport-2.0, appsecurity-4.0, enterprisebeansremote-4.0, jakartaee-9.0, enterprisebeanshome-4.0, cdi-3.0, enterprisebeanslite-4.0, appAuthorization-2.0, \
+	appclientsupport-2.0, appsecurity-4.0, enterprisebeansremote-4.0, jakartaee-9.1, enterprisebeanshome-4.0, cdi-3.0, enterprisebeanslite-4.0, appAuthorization-2.0, \
 	falseb-1.0, falsea-1.0, falsec-1.0, falsed-1.0, falsee-1.0, \
 	trueA-1.0, trueB-1.0, trueC-1.0, trueConflict-1.0, \
 	messaging-3.0, messagingClient-3.0, messagingSecurity-3.0, messagingServer-3.0

@@ -33,6 +33,7 @@ src: \
   test-applications/jacksonJsonIgnore/src,\
   test-applications/json/src,\
   test-applications/linkheader/src,\
+  test-applications/mediatype/src,\
   test-applications/multipart/src,\
   test-applications/paramconverter/src,\
   test-applications/options/src,\

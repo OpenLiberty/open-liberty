@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
@@ -251,6 +252,8 @@ public class ShrinkHelper {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
             if (JakartaEE9Action.isActive()) {
                 JakartaEE9Action.transformApp(outputFile.toPath());
+            } else if (JakartaEE10Action.isActive()) {
+                JakartaEE10Action.transformApp(outputFile.toPath());
             }
             return a;
         }
@@ -264,6 +267,8 @@ public class ShrinkHelper {
             Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(outputFile.toPath());
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(outputFile.toPath());
         }
         return a;
     }
@@ -455,6 +460,22 @@ public class ShrinkHelper {
     public static WebArchive defaultDropinApp(LibertyServer server, String appName, String... packages) throws Exception {
         WebArchive app = buildDefaultApp(appName, packages);
         exportDropinAppToServer(server, app);
+
+        return app;
+    }
+
+    /**
+     * Invokes {@link #buildDefaultApp(String, String...)}
+     * and then exports the resulting application to a Liberty server under the "dropins" directory
+     *
+     * @param server        The server to export the application to
+     * @param appname       The name of the application
+     * @param deployOptions options to configure how the application is deployed
+     * @param packages      A list of java packages to add to the application.
+     */
+    public static WebArchive defaultDropinApp(LibertyServer server, String appName, DeployOptions[] deployOptions, String... packages) throws Exception {
+        WebArchive app = buildDefaultApp(appName, packages);
+        exportDropinAppToServer(server, app, deployOptions);
 
         return app;
     }

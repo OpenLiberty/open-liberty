@@ -26,7 +26,9 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -196,8 +198,10 @@ public class EndpointPropertiesTest {
      * Result:
      * - incoming/outcoming messages will be dumped into message.log. Caution: if user enabled this setting for
      * their applicaion, any credential in the messages will be output in the log files.
+     * - LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
      */
     @Test
+    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
     public void testDefaultLoggingInOutInterceptorProperty() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "EndpointPropertiesTest", "ibm-ws-bnd_testDefaultLoggingInOutInterceptorProperty.xml",
@@ -287,8 +291,10 @@ public class EndpointPropertiesTest {
      * Result:
      * - incoming/outcoming messages will be dumped into message.log. Caution: if user enabled this setting for
      * their applicaion, any credential in the messages will be output in the log files.
+     * - LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
      */
     @Test
+    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
     public void testOverrideLogginInOutInterceptorProperty() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "EndpointPropertiesTest", "ibm-ws-bnd_testOverrideLogginInOutInterceptorProperty.xml",

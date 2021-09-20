@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,8 +112,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * not get container managed authentication applied and therefore should not succeed.
      */
     @Test
-    @ExpectedFFDC({ "java.sql.SQLNonTransientConnectionException",
-                    "java.sql.SQLNonTransientException",
+    @ExpectedFFDC({ "java.sql.SQLNonTransientException",
                     "javax.resource.spi.SecurityException",
                     "javax.resource.spi.ResourceAllocationException" })
     public void testCustomLoginModuleDirectLookupInvalid() throws Exception {

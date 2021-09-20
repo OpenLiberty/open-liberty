@@ -1,9 +1,9 @@
 <server>
   <featureManager>
     <feature>componentTest-1.0</feature>
-    <feature>servlet-4.0</feature>
+    <feature>servlet-3.1</feature>
     <feature>jndi-1.0</feature>
-    <feature>javaMail-1.6</feature>
+    <feature>javaMail-1.5</feature>
   </featureManager>
 
   <mailSession>

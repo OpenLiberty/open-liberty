@@ -890,9 +890,9 @@ public class PluginGenerator {
 
         //The IBM XLTXEJ Compiled Transformer (some versions of IBM Java 8) does not work properly
         //If it is present then try to use the Apache Xalan Interpretive processor instead
-        boolean useApacheXalanTransformer = JavaInfo.isAvailable(IBM_XLTXEJ_COMPILED_TRANSFORMER_FACTORY_CLASS_NAME) &&
-                                    JavaInfo.isAvailable(XALAN_TRANSFORMER_FACTORY_CLASS_NAME) &&
-                                    JavaInfo.isAvailable(SAX_LEXICAL_HANDLER_CLASS_NAME);
+        boolean useApacheXalanTransformer = JavaInfo.isSystemClassAvailable(IBM_XLTXEJ_COMPILED_TRANSFORMER_FACTORY_CLASS_NAME) &&
+                                    JavaInfo.isSystemClassAvailable(XALAN_TRANSFORMER_FACTORY_CLASS_NAME) &&
+                                    JavaInfo.isSystemClassAvailable(SAX_LEXICAL_HANDLER_CLASS_NAME);
 
         if (useApacheXalanTransformer) {
 

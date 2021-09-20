@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -232,7 +231,7 @@ public class OIDCClientAuthenticatorUtilTest {
 
         // digest with the client_secret value
         String tmpStr = new String(localEncoded);
-        tmpStr = tmpStr.concat("_").concat(convClientConfig.toString() + clientSecret);
+        tmpStr = tmpStr.concat("_").concat(clientSecret);
 
         encodedReqParams = new String(localEncoded).concat("_").concat(HashUtils.digest(tmpStr));
         reqParameterCookie = new Cookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams);
@@ -289,15 +288,15 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testGetReqUrlQuery_encoded() {
+    public void testGetReqUrlQuery_withSpecialCharacters() {
         try {
             String value = "code>\"><script>alert(100)</script>";
             final String query = "response_type=" + value;
             createReqUrlExpectations(query);
             String strUrl = oidcCAUtil.getReqURL(req);
-            String expect = TEST_URL + "?response_type=" + URLEncoder.encode(value, "UTF-8");
+            String expect = TEST_URL + "?response_type=" + value;
 
-            assertEquals("The URL must contain the query string.", expect, strUrl);
+            assertEquals("The URL must contain the unencoded query string.", expect, strUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -638,6 +637,26 @@ public class OIDCClientAuthenticatorUtilTest {
             final String originalState = TEST_ORIGINAL_STATE;
             Cache requestStates = new Cache(0, 0);
             requestStates.put(myStateKey, originalState);
+
+            ProviderAuthenticationResult result = oidcCAUtil.authenticate(req, res, convClientConfig);
+            assertEquals("The authentication result status must be SEND_401.", AuthResult.SEND_401, result.getStatus());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_missingAuthEndpoint() {
+        try {
+            mock.checking(new Expectations() {
+                {
+                    one(convClientConfig).getAuthorizationEndpointUrl();
+                    will(returnValue(null));
+                    one(convClientConfig).getClientId();
+                    will(returnValue(CLIENTID));
+                }
+            });
 
             ProviderAuthenticationResult result = oidcCAUtil.authenticate(req, res, convClientConfig);
             assertEquals("The authentication result status must be SEND_401.", AuthResult.SEND_401, result.getStatus());

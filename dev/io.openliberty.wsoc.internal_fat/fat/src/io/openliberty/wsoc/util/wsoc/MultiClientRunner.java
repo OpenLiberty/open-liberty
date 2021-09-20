@@ -142,6 +142,9 @@ public class MultiClientRunner {
                 }
             }
 
+            // Wait for onOpen call to complete on the other endpoint (_uri side)
+            java.lang.Thread.sleep(50);
+
             if (_publishTask != null) {
                 _publishTask.setMultiTestContext(mctr);
                 publishExecutor = Executors.newSingleThreadExecutor();

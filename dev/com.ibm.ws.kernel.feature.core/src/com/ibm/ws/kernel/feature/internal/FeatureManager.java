@@ -265,7 +265,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     protected OnError onError;
 
     private final String CONFIG_PACKAGE_SERVER_CONFLICT = "package.server.conflict";
-    private Boolean packageServerConflict = Boolean.FALSE;
+    private Set<String> packageServerConflict = null;
 
     /** Cache for currently installed features (and for all information we know about features) */
     protected FeatureRepository featureRepository;
@@ -638,9 +638,21 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         onError = (OnError) configuration.get(OnErrorUtil.CFG_KEY_ON_ERROR);
-        packageServerConflict = (Boolean) configuration.get(CONFIG_PACKAGE_SERVER_CONFLICT);
-        if (packageServerConflict == null) {
-            packageServerConflict = Boolean.FALSE;
+        String packageServerConflictString = (String) configuration.get(CONFIG_PACKAGE_SERVER_CONFLICT);
+        if (packageServerConflictString != null) {
+            if (!packageServerConflictString.equalsIgnoreCase("false") && packageServerConflictString.length() != 0) {
+                packageServerConflict = new HashSet<>();
+                if (!packageServerConflictString.equalsIgnoreCase("true")) {
+                    int startingIndex = 0;
+                    int index = packageServerConflictString.indexOf(",");
+                    while (index != -1) {
+                        packageServerConflict.add(packageServerConflictString.substring(startingIndex, index).trim());
+                        startingIndex = index + 1;
+                        index = packageServerConflictString.indexOf(",", startingIndex);
+                    }
+                    packageServerConflict.add(packageServerConflictString.substring(startingIndex).trim());
+                }
+            }
         }
 
         String[] features = (String[]) configuration.get(CFG_KEY_ACTIVE_FEATURES);
@@ -1240,7 +1252,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
         boolean featureListIsComplete = false;
-        boolean currentPackageServerConflict = false;
+        Set<String> currentPackageServerConflict = null;
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
@@ -1286,11 +1298,11 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
-                                       boolean allowMultipleVersions, boolean currentPackageServerConflict) {
+                                       boolean allowMultipleVersions, Set<String> currentPackageServerConflict) {
 
         // short circuit if package server is expecting conflicts
-        if (currentPackageServerConflict) {
-            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
+        if (currentPackageServerConflict != null) {
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict, EnumSet.allOf(ProcessType.class));
         }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type

@@ -21,17 +21,16 @@ src: \
 	test-applications/deltaspikeTest.war/src
 	
 tested.features:\
-	cdi-2.0,\
-	servlet-4.0,\
-	jdbc-4.2,\
-	jpa-2.2,\
-	cdi-3.0,\
-	connectors-2.0,\
-	expressionLanguage-4.0,\
-	pages-3.0,\
-	servlet-5.0,\
-	persistencecontainer-3.0,\
-	persistence-3.0
+        cdi-2.0,\
+        servlet-4.0,\
+        jdbc-4.2,\
+        jpa-2.2,\
+        cdi-3.0,\
+        expressionLanguage-4.0,\
+        pages-3.0,\
+        servlet-5.0,\
+        persistencecontainer-3.0,\
+        persistence-3.0
 	
 test.project: true
 
@@ -56,7 +55,7 @@ test.project: true
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	org.quartz-scheduler:quartz;version=2.2.1,\
+	org.quartz-scheduler:quartz;version=2.3.2,\
 	org.apache.deltaspike.core:deltaspike-core-api;version=1.5.0,\
 	org.apache.deltaspike.core:deltaspike-core-impl;version=1.5.0,\
 	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api;version=1.5.0,\

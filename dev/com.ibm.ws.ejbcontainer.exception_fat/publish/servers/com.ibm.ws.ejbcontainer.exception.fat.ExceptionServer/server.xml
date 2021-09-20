@@ -11,9 +11,8 @@
 
     <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
 
-    <!-- Yoko ORB bug; org.apache.yoko.rmispec.util.UtilLoader.loadServiceClass needs doPriv around getClassLoader -->	
     <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
 </server>

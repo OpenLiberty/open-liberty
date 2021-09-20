@@ -60,10 +60,10 @@ public class WCApplicationMBeanStatusTest {
     @ExpectedFFDC({ "java.lang.Exception", "java.lang.RuntimeException" })
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestBadServletContextListener.war to the server if not already present.");
-        ShrinkHelper.defaultDropinApp(server, "TestBadServletContextListener.war", "testbadscl.war.listener");
+        ShrinkHelper.defaultDropinApp(server, "TestBadServletContextListener.war", "testbadscl.listener");
 
         LOG.info("Setup : add TestServlet40.war to the server if not already present.");
-        ShrinkHelper.defaultDropinApp(server, "TestServlet40.war", "testservlet40.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TestServlet40.war", "testservlet40.servlets");
 
         // We can't start the server like normal as there are application startup errors.
         // Instead we'll set the log name, start the server and won't validate the applications.

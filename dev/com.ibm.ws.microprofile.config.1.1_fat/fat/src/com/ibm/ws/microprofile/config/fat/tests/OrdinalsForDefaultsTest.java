@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2020 IBM Corporation and others.
+* Copyright (c) 2016, 2021 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.appConfig.ordForDefaults.test.OrdinalsForDefaultsTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -41,14 +42,15 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class OrdinalsForDefaultsTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "OrdForDefaultsServer";
     public static final String APP_NAME = "ordForDefaults";
 
-    @Server("OrdForDefaultsServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = OrdinalsForDefaultsTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("OrdForDefaultsServer", MicroProfileActions.MP20, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP20, MicroProfileActions.MP41);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -59,7 +61,7 @@ public class OrdinalsForDefaultsTest extends FATServletClient {
                                                   .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
                                                                          "microprofile-config.properties");
 
-        ShrinkHelper.exportDropinAppToServer(server, ordForDefaults_war);
+        ShrinkHelper.exportDropinAppToServer(server, ordForDefaults_war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

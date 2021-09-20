@@ -577,7 +577,7 @@ public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements 
     @Override
     public ResourceFactoryBuilder getResourceFactoryBuilder(String type) throws InjectionException {
         Iterator<ResourceFactoryBuilder> builderIter = resourceFactoryBuilders.getServices(type);
-        ResourceFactoryBuilder builder = builderIter.hasNext() ? builderIter.next() : null;
+        ResourceFactoryBuilder builder = builderIter != null && builderIter.hasNext() ? builderIter.next() : null;
         if (builder == null) {
             throw new InjectionException(type + " definitions are not supported in this server configuration");
         }
