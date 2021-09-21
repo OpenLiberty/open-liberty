@@ -3302,7 +3302,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
         return homeRecord;
     }
 
-    private final ReentrantLock createSingletonLock = new ReentrantLock();
+    private transient final ReentrantLock createSingletonLock = new ReentrantLock();
 
     /**
      * Create the Singleton bean instance if it doesn't
