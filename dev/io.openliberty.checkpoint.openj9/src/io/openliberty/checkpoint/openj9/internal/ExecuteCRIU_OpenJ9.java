@@ -17,8 +17,6 @@ import org.eclipse.openj9.criu.JVMCRIUException;
 import org.eclipse.openj9.criu.JVMCheckpointException;
 import org.eclipse.openj9.criu.RestoreException;
 import org.eclipse.openj9.criu.SystemCheckpointException;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -26,23 +24,7 @@ import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 
-public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
-
-    @Override
-    @FFDCIgnore(ClassNotFoundException.class)
-    public void start(BundleContext bc) {
-        try {
-            Class.forName("org.eclipse.openj9.criu.CRIUSupport");
-            bc.registerService(ExecuteCRIU.class, this, null);
-        } catch (ClassNotFoundException e) {
-            // do nothing; not on open j9 that supports CRIU
-        }
-    }
-
-    @Override
-    public void stop(BundleContext bc) {
-
-    }
+public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
 
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
@@ -77,5 +59,4 @@ public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
     public boolean isCheckpointSupported() {
         return CRIUSupport.isCRIUSupportEnabled();
     }
-
 }
