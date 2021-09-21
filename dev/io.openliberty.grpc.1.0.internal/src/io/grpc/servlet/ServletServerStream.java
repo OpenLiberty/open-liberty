@@ -218,8 +218,10 @@ final class ServletServerStream extends AbstractServerStream {
       if (!resp.isCommitted()) {
         cancel(Status.fromThrowable(t));
       } else {
-        transportState.runOnTransportThread(
-            () -> transportState.transportReportStatus(Status.fromThrowable(t)));
+        transportState.runOnTransportThread(() -> {
+            transportState.transportReportStatus(Status.fromThrowable(t));
+            asyncCtx.complete();
+        });
       }
     }
 
@@ -309,18 +311,7 @@ final class ServletServerStream extends AbstractServerStream {
 
       // Liberty change: pass the actual status and skip countdown timer
       close(status.withCause(status.asRuntimeException()), new Metadata());
-      // There is no way to RST_STREAM with CANCEL code, so write trailers instead
-      //close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
-//      CountDownLatch countDownLatch = new CountDownLatch(1);
-      transportState.runOnTransportThread(() -> {
-        asyncCtx.complete();
-//        countDownLatch.countDown();
-      });
-//      try {
-//        countDownLatch.await(5, TimeUnit.SECONDS);
-//      } catch (InterruptedException e) {
-//        Thread.currentThread().interrupt();
-//      }
+      transportState.runOnTransportThread(() -> asyncCtx.complete());
     }
   }
 
