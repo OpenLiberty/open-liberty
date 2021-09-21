@@ -17,7 +17,7 @@ Bundle-Description: Open Liberty Checkoint Support for Open J9, version ${bVersi
 Bundle-SymbolicName: io.openliberty.checkpoint.openj9
 Private-Package: io.openliberty.checkpoint.openj9.internal
 Import-Package: org.eclipse.openj9.criu; resolution:=optional, *
-Bundle-Activator: io.openliberty.checkpoint.openj9.internal.ExecuteCRIU_OpenJ9
+Bundle-Activator: io.openliberty.checkpoint.openj9.internal.J9CRIUSupportActivator
 
 -buildpath: \
 	io.openliberty.checkpoint;version=latest,\
