@@ -15,6 +15,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>TestEDR</title>
+<%@ taglib prefix="test" uri="/WEB-INF/tags/sampleTag.tld" %>
 </head>
 <body>
 <p>This tests a JSP in the Extended Document Root.</p>
