@@ -15,13 +15,12 @@
         recoverOnStartup="true"
         waitForRecovery="false"
         heuristicRetryInterval="5"
-        heuristicRetryWait="0"
         acceptHeuristicHazard="false"
         totalTranLifetimeTimeout="30s"
     />
 	
     <logging
-      traceSpecification="Transaction=all:wsat=all:ClassLoadingService=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all:com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor=all"
+      traceSpecification="Transaction=all:WSAT=all:ClassLoadingService=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all:com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor=all"
       traceFileName="trace.log"
       maxFileSize="2000"
       maxFiles="20"

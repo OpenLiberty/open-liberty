@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 
 import org.junit.AfterClass;
@@ -19,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
@@ -76,13 +73,7 @@ public class RecoveryDBTranlogTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        AccessController.doPrivileged(new PrivilegedExceptionAction<ProgramOutput>() {
-
-            @Override
-            public ProgramOutput run() throws Exception {
-                return server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
-            }
-        });
+        TestUtils.stopServer(server);
     }
 
     @Test
