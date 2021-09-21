@@ -25,7 +25,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
-Export-Package: com.ibm.websphere.channelfw*;provide:=true, \
+Export-Package: com.ibm.websphere.channelfw*;-split-package:=merge-last; provide:=true, \
 	com.ibm.wsspi.channelfw*;provide:=true, \
 	com.ibm.wsspi.connmgmt;provide:=true, \
 	com.ibm.wsspi.tcpchannel;provide:=true, \
@@ -85,7 +85,8 @@ instrument.disabled: true
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.wsbytebuffer
+	com.ibm.ws.wsbytebuffer, \
+	io.openliberty.endpoint
 
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties

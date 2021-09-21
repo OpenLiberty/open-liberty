@@ -31,7 +31,8 @@ import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
+
+import io.openliberty.endpoint.EndpointConstants;
 
 /**
  * Temporary version of the WAS runtimefw EndPointMgr.
@@ -39,8 +40,8 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 public class EndPointMgrImpl implements EndPointMgr {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(EndPointMgrImpl.class,
-                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                                         ChannelFrameworkConstants.BASE_BUNDLE);
+                                                         EndpointConstants.BASE_TRACE_NAME,
+                                                         EndpointConstants.BASE_BUNDLE);
     /**
      * Name key to be used in the jmx.objectname
      */
