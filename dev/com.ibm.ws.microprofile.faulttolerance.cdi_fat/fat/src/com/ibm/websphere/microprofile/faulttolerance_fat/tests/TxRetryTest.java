@@ -46,7 +46,7 @@ public class TxRetryTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.setUpTxFaultTolerance(server);
+        FATSuite.exportTxFaultToleranceAppToServer(server);
         server.startServer();
     }
 

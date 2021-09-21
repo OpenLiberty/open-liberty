@@ -95,8 +95,8 @@ public class FaultToleranceMainTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.setUpCDIFaultTolerance(server);
-        FATSuite.setUpDisableEnable(server);
+        FATSuite.exportCDIFaultToleranceAppToServer(server);
+        FATSuite.exportDisableEnableAppToServer(server);
 
         server.addEnvVar("FAULT_TOLERANCE_VERSION", getFaultToleranceVersion());
         server.startServer();

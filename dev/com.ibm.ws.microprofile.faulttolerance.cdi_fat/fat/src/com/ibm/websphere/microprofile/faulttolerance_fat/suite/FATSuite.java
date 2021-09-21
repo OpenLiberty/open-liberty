@@ -48,8 +48,8 @@ import componenttest.topology.impl.LibertyServer;
                 // Core functionality
                 FaultToleranceMainTest.class,
                 CDICompletionStageTest.class,
-//
-//                // FULL mode tests
+
+                // FULL mode tests
                 CDIAnnotationsDisabledTest.class,
                 FallbackMethodTest.class,
                 ValidationTest.class,
@@ -58,8 +58,8 @@ import componenttest.topology.impl.LibertyServer;
                 AsyncReturnNullTest.class,
                 AsyncRequestScopedContextTest.class,
                 InterceptorTest.class,
-//
-//                // Integration with other features
+
+                // Integration with other features
                 AsyncEJBTest.class,
                 JaxRsTest.class,
                 TxRetryTest.class,
@@ -68,7 +68,13 @@ import componenttest.topology.impl.LibertyServer;
 
 public class FATSuite {
 
-    public static void setUpCDIFaultTolerance(LibertyServer server) throws Exception {
+    /**
+     * Export the CDIFaultTolerance app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportCDIFaultToleranceAppToServer(LibertyServer server) throws Exception {
         String APP_NAME = "CDIFaultTolerance";
 
         JavaArchive faulttolerance_jar = ShrinkWrap.create(JavaArchive.class, "faulttolerance.jar")
@@ -83,7 +89,13 @@ public class FATSuite {
         ShrinkHelper.exportDropinAppToServer(server, CDIFaultTolerance_war, DeployOptions.SERVER_ONLY);
     }
 
-    public static void setUpTxFaultTolerance(LibertyServer server) throws Exception {
+    /**
+     * Export the TxFaultTolerance app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportTxFaultToleranceAppToServer(LibertyServer server) throws Exception {
         JavaArchive faulttolerance_jar = ShrinkWrap.create(JavaArchive.class, "faulttolerance.jar")
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.util");
 
@@ -96,7 +108,13 @@ public class FATSuite {
         ShrinkHelper.exportDropinAppToServer(server, txFaultTolerance_war, DeployOptions.SERVER_ONLY);
     }
 
-    public static void setUpDisableEnable(LibertyServer server) throws Exception {
+    /**
+     * Export the DisableEnable app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportDisableEnableAppToServer(LibertyServer server) throws Exception {
         String ENABLE_DISABLE_APP_NAME = "DisableEnable";
 
         StringBuilder config = new StringBuilder();

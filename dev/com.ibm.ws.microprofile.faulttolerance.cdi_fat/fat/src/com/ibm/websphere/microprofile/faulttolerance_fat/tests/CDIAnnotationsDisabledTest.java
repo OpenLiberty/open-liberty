@@ -58,7 +58,7 @@ public class CDIAnnotationsDisabledTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        FATSuite.setUpCDIFaultTolerance(server);
+        FATSuite.exportCDIFaultToleranceAppToServer(server);
 
         Map<String, String> envVars = new HashMap<>();
         envVars.put("MP_Fault_Tolerance_NonFallback_Enabled", "false");
