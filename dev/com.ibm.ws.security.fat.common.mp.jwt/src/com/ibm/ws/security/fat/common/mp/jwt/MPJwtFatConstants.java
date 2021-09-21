@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -156,5 +156,6 @@ public class MPJwtFatConstants extends JwtConstants {
 
     public static final String MP_JWT_11 = "mpJwt11";
     public static final String MP_JWT_12 = "mpJwt12";
+    public static final String MP_JWT_20 = "mpJwt20";
 
 }
