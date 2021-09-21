@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=El almac\u00e9n de base de datos ha registrado este mensaje de error.
 PROVIDER_ERROR_CWWKD0292E.useraction=Consulte la documentaci\u00f3n del almac\u00e9n de base de datos.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: El nivel de aislamiento de transacci\u00f3n configurado {0} no recibe soporte.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=El controlador de base de datos asociado no da soporte al nivel de aislamiento solicitado.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Cambie el nivel de aislamiento antes de volver a intentarlo.
+

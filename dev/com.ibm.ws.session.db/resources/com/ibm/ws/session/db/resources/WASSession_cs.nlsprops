@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Byla zji\u0161t\u011bna v\u00fdj
 DatabaseHashMap.selectNoUpdateError.useraction=Do\u0161lo-li k v\u00fdjimce SQLException, naleznete informace v dokumentaci k p\u0159\u00edslu\u0161n\u00e9 datab\u00e1zi pro dan\u00e9 prost\u0159ed\u00ed. Ov\u011b\u0159te tak\u00e9, \u017ee jste spr\u00e1vn\u011b konfigurovali zdroj dat pro spr\u00e1vce relac\u00ed.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Do\u0161lo k pokusu o z\u00e1pis v\u00edce ne\u017e 2 MB dat do sloupce typu Large.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Byl proveden pokus o zaps\u00e1n\u00ed v\u00edce dat do sloupce datab\u00e1ze ne\u017e je povoleno hodnotou vlastnosti rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Je mo\u017en\u00e9, \u017ee jsou data relace pro datab\u00e1zov\u00fd sloupec p\u0159\u00edli\u0161 velk\u00e1.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=P\u0159ed pokusem o ulo\u017een\u00ed tohoto atributu v relaci zmen\u0161ete jeho velikost.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=P\u0159ed pokusem o ulo\u017een\u00ed tohoto atributu v relaci zmen\u0161ete jeho velikost, nebo zvy\u0161te hodnotu vlastnosti rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: Slu\u017eba {0} byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.

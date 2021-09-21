@@ -95,7 +95,8 @@ ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Zbierz pliki dziennika FFDC 
 #Do not translate: Datasource
 IMPLICIT_TRANSACTION_FOUND=DSRA0095I: Znaleziono transakcj\u0119 bazy danych, kt\u00f3ra nie jest \u015bledzona przez produkt Liberty. Nast\u0119puje pr\u00f3ba wycofania zmian przed przyst\u0105pieniem do czyszczenia po\u0142\u0105czenia. Ten komunikat jest rejestrowany jednokrotnie dla ka\u017cdego \u017ar\u00f3d\u0142a danych. Kolejne transakcje niejawne s\u0105 rozstrzygane automatycznie.
 IMPLICIT_TRANSACTION_FOUND.explanation=Baza danych rozpocz\u0119\u0142a wykonywanie transakcji za pomoc\u0105 tego po\u0142\u0105czenia. Serwer aplikacji wycofuje zmiany transakcji przed zwr\u00f3ceniem po\u0142\u0105czenia do puli.
-IMPLICIT_TRANSACTION_FOUND.useraction=Sprawd\u017a kod aplikacji, aby okre\u015bli\u0107, co mog\u0142o spowodowa\u0107 t\u0119 transakcj\u0119 niejawn\u0105. Kod aplikacji mo\u017ce jawnie zapobiega\u0107 dalszym transakcjom niejawnym, mo\u017cna tak\u017ce skonfigurowa\u0107 jawne dzia\u0142anie dla \u017ar\u00f3d\u0142a danych. 
+IMPLICIT_TRANSACTION_FOUND.useraction=Sprawd\u017a kod aplikacji, aby okre\u015bli\u0107, co mog\u0142o spowodowa\u0107 t\u0119 transakcj\u0119 niejawn\u0105. Kod aplikacji mo\u017ce jawnie zapobiega\u0107 dalszym transakcjom niejawnym, mo\u017cna tak\u017ce skonfigurowa\u0107 jawne dzia\u0142anie dla \u017ar\u00f3d\u0142a danych.
+
 # 0096-0101 deleted
 # 0110 deleted
 # 0174 deleted
@@ -336,16 +337,20 @@ PROP_SET_ERROR.useraction=Sprawd\u017a, czy okre\u015blona warto\u015b\u0107 jes
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Zalecane warto\u015bci to: {1}
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Podano niepoprawn\u0105 warto\u015b\u0107 elementu konfiguracji identifyException.
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Zmie\u0144 konfiguracj\u0119, okre\u015blaj\u0105c jedn\u0105 z zalecanych warto\u015bci.
+
 # Do not translate: errorCode, sqlState, identifyException
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: W elemencie identifyException musi by\u0107 okre\u015blony co najmniej jeden z atrybut\u00f3w 'errorCode' lub 'sqlState'.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Musi by\u0107 okre\u015blony jeden z atrybut\u00f3w errorCode lub sqlState.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Zmodyfikuj konfiguracj\u0119, podaj\u0105c co najmniej jeden z atrybut\u00f3w errorCode lub sqlState w elemencie identifyException.
-8068_EXC_REPLACE_CONFLICT=DSRA8068E: Obiekt DataSource {0} nie mo\u017ce okre\u015bla\u0107 zar\u00f3wno atrybutu sqlState, jak i atrybutu errorCode w tym samym elemencie identifyException, gdy atrybut replaceExceptions jest ustawiony na "true".
+
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: Obiekt DataSource {0} nie mo\u017ce okre\u015bla\u0107 zar\u00f3wno atrybutu sqlState, jak i atrybutu errorCode w tym samym elemencie identifyException, gdy atrybut replaceExceptions jest ustawiony na ''true''.
 8068_EXC_REPLACE_CONFLICT.explanation=Przy zast\u0119powaniu wyj\u0105tk\u00f3w mo\u017cna je identyfikowa\u0107 przez stan SQL albo przez kod b\u0142\u0119du, ale nie przez oba te atrybuty.
 8068_EXC_REPLACE_CONFLICT.useraction=Okre\u015bl osobne elementy konfiguracji identifyException dla atrybut\u00f3w sqlState i errorCode.
+
 8069_HELPER_INIT_ERR=DSRA8069E: Obiekt DataSource {0} nie mo\u017ce zainicjowa\u0107 implementacji DataStoreHelper {1} z powodu b\u0142\u0119du: {2}
 8069_HELPER_INIT_ERR.explanation=Skonfigurowana klasa DataStoreHelper by\u0142a niedost\u0119pna, nie mia\u0142a konstruktora publicznego z jednym parametrem java.util.Properties lub zg\u0142osi\u0142a b\u0142\u0105d po wywo\u0142aniu.
 8069_HELPER_INIT_ERR.useraction=Sprawd\u017a po\u0142\u0105czony wyj\u0105tek, aby ustali\u0107 przyczyn\u0119.
+
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Nie mo\u017cna uzyska\u0107 po\u0142\u0105czenia typu {0} z klasy DataSource.
 JAVAX_CONN_ERR.explanation=Wi\u0119cej informacji zawiera wyj\u0105tek linkedException.
@@ -518,6 +523,7 @@ OP_NOT_SHAREABLE.useraction=Nie wywo\u0142uj metod setTypeMap, setReadOnly lub s
 OP_NOT_VALID_IN_GT=DSRA9350E: Operacja {0} nie jest dozwolona podczas transakcji globalnej.
 OP_NOT_VALID_IN_GT.explanation=Serwer aplikacji nie zezwala na wywo\u0142ywanie metod commit, rollback, setSavepoint ani releaseSavepoint na po\u0142\u0105czeniu Connection, gdy transakcja globalna jest aktywna.
 OP_NOT_VALID_IN_GT.useraction=Nie wywo\u0142uj metod commit, rollback, setSavepoint ani releaseSavepoint na po\u0142\u0105czeniu connection w ramach transakcji globalnej. Je\u015bli u\u017cywane jest nietransakcyjne \u017ar\u00f3d\u0142o danych (na przyk\u0142ad non-jta-data-source dla interfejsu API Java Persistence), skonfiguruj element non-jta-data-source w pliku persistence.xml i ustaw atrybut dataSource 'transactional' w pliku server.xml na warto\u015b\u0107 'false'.
+
 # {0}        String representing the current ManagedConnection transaction state.
 # Do not translate: Connection.
 INVALID_TRAN_STATE=DSRA9360E: Nie mo\u017cna wykona\u0107 \u017c\u0105danej operacji w nast\u0119puj\u0105cym stanie transakcji: {0}.

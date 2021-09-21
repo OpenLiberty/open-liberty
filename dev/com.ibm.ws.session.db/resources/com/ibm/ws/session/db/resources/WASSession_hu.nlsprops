@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=A rendszer kiv\u00e9telt \u00e9s
 DatabaseHashMap.selectNoUpdateError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 2 M-n\u00e1l t\u00f6bb \u00edr\u00e1s\u00e1ra nagy oszlopba.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: A rowSizeLimit tulajdons\u00e1g \u00e1ltal megengedettn\u00e9l nagyobb m\u00e9ret \u00edr\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet az adatb\u00e1zis oszlopba.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Lehet, hogy a munkamenet-adatok t\u00fal nagyok az adatb\u00e1zisoszlophoz.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Cs\u00f6kkentse az attrib\u00fatum m\u00e9ret\u00e9t, miel\u0151tt megk\u00eds\u00e9rli t\u00e1rolni azt a munkamenetben.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Cs\u00f6kkentse az attrib\u00fatum m\u00e9ret\u00e9t, miel\u0151tt megpr\u00f3b\u00e1lja azt t\u00e1rolni a munkamenetben, illetve n\u00f6velje meg a rowSizeLimit tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t.
 
 
 ControllerSession.Initialized=SESN0126I: {0} szolg\u00e1ltat\u00e1s sikeresen inicializ\u00e1lva lett.

@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nessuna azione richiesta.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: I dati dello strumento {0} per l''utente {1} sono stati caricati dallo storage persistente utilizzando il relativo nome file precedente ed \u00e8 stata convertita al nuovo nome file.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Il prodotto ha caricato i dati dello strumento dallo storage persistente utilizzando il relativo nome file precedente ed ha memorizzato una copia nel nuovo nome file. La copia nel nuovo nome file verr\u00e0 caricata dall'accesso successivo allo storage persistente.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nessuna azione richiesta.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Il catalogo predefinito del centro di gestione \u00e8 stato caricato dalla persistenza COLLECTIVE che \u00e8 stata creata da una versione precedente del server. Il catalogo viene ricaricato utilizzando una copia dalla versione corrente del server.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Il prodotto ha convertito il catalogo predefinito del centro di gestione alla versione corrente del server. La copia nella persistenza COLLECTIVE viene caricata da un accesso successivo allo storage persistente.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nessuna azione richiesta.
