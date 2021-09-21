@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.tests.anno.caching;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -19,8 +23,66 @@ import org.junit.Test;
 
 public class LooseConfigTest extends AnnoCachingTest {
     private static final Logger LOG = Logger.getLogger(LooseConfigTest.class.getName());
-    
+
+    /**
+     * File utility.  Display information about a file.
+     *
+     * @param file The file which is to be displayed.
+     */
+    public static void displayStamp(File file) {
+        LOG.info("      Name [ " + file.getName() + " ]");
+        LOG.info("      Path [ " + file.getPath() + " ]");
+        LOG.info("  Abs Path [ " + file.getAbsolutePath() + " ]");
+        LOG.info("    Exists [ " + file.exists() + " ]");
+        LOG.info("     IsDir [ " + file.isDirectory() + " ]");
+        LOG.info("   Updated [ " + file.lastModified() + " ]");
+    }
+
+    /**
+     * Utility to copy and then update the last modified time of a file.
+     *
+     * The update of the last modified time is necessary for file notification
+     * to detech that the file was changed.
+     *
+     * @param sourcePath The source file which is being copied.
+     * @param targetPath The target file which is receiving the copy.
+     *
+     * @throws IOException Thrown in case of an error.
+     */
+    public static void copyAndTouch(String sourcePath, String targetPath) throws IOException {
+        File targetFile = new File(targetPath);
+
+        displayStamp(targetFile);
+
+        copyFile(sourcePath, targetPath); // throws IOException
+        touch(targetFile); // throws IOException
+
+        displayStamp(targetFile);
+    }
+
+    /**
+     * Update the last modified time of a target file to now.
+     *
+     * @param file The target file.
+     *
+     * @return The current time.
+     *
+     * @throws IOException Thrown in case of an error.
+     */
+    public static FileTime touch(File file) throws IOException {
+        Path path = file.toPath();
+        FileTime now = FileTime.fromMillis( System.currentTimeMillis() );
+        Files.setLastModifiedTime(path, now); // throws IOException
+        return now;
+    }
+
     private static final String APP_SOURCE = "test-applications/LooseConfig/";
+
+    private static final String LOOSE_APP_DIR = "apps/looseConfig";
+
+    private static String getLooseAppDir() {
+        return getLibertyServer().getServerRoot() + '/' + LOOSE_APP_DIR;
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -36,8 +98,6 @@ public class LooseConfigTest extends AnnoCachingTest {
 
         // First Clean up from any prior tests that used this app
         deleteApplication();
-        //deleteExpandedApplication();
-
         deployLooseApplication();
 
         startServerScrub();
@@ -55,12 +115,12 @@ public class LooseConfigTest extends AnnoCachingTest {
     }
 
     /**
-     * Deploy Loose App to wlp/usr/server/<SERVER_NAME>/apps/looseConfig directory
+     * Deploy loose app to wlp/usr/server/<SERVER_NAME>/apps/looseConfig directory
      * 
      * Deploy LooseConfigApp.ear.xml  to wlp/usr/server/<SERVER_NAME>/apps  (maps the loose config app to the virtual EAR)
-     * 
-     *                         SOURCE LOCATION (Build tree)
-     *                         ============================
+     * <code>
+     *        SOURCE LOCATION (Build tree)
+     *        ============================
      *        test-applications/looseConfig/earContent              -- META-INF/application.xml for EAR
      *        test-applications/looseConfig/LooseWeb1/WebContent    -- META-INF and index.jsp for LooseWeb1.war
      *        test-applications/looseConfig/LooseWeb2/WebContent    -- META-INF and index.jsp for LooseWeb2.war
@@ -79,8 +139,7 @@ public class LooseConfigTest extends AnnoCachingTest {
      *                     /LooseWeb2                       LooseWeb2.war
      *                     /LooseWeb2/classes                     WEB-INF/classes
      *                     /LooseServlet2.jar                     WEB-INF/lib/LooseServlet2.jar
-     *  
-     *  
+     *
      *    Application URLs
      *    ================
      *     http://localhost:<Port#>/MyLooseWeb1
@@ -88,11 +147,10 @@ public class LooseConfigTest extends AnnoCachingTest {
      *     http://localhost:<Port#>/MyLooseWeb1/Servlet1
      *     http://localhost:<Port#>/MyLooseWeb2
      *     http://localhost:<Port#>/MyLooseWeb1/Servlet2
-     *
-     * @throws IOException
+     * </code>
      */
-    public static void deployLooseApplication() throws IOException {
-        String looseAppDir = getLibertyServer().getServerRoot() + "/apps/looseConfig/";
+    public static void deployLooseApplication() throws Exception {
+        String looseAppDir = getLooseAppDir() + '/';
 
         mkDir(looseAppDir + "earContent", DELETE_IF_EXISTS);
         mkDir(looseAppDir + "LooseWeb1/WebContent", DELETE_IF_EXISTS);
@@ -114,8 +172,7 @@ public class LooseConfigTest extends AnnoCachingTest {
         copyFolder(APP_SOURCE + "LooseServlet1.jar/resources", looseAppDir + "LooseServlet1.jar"); // META-INF for LooseServlet1.jar
         copyFolder(APP_SOURCE + "LooseServlet2.jar/resources", looseAppDir + "LooseServlet2.jar"); // META-INF for LooseServlet2.jar
 
-        // Copy the loose config XML file to server apps directory.
-        copyFile(APP_SOURCE + "" + earFileName,   SHARED_SERVER.getLibertyServer().getServerRoot() + "/apps/");
+        copyAndTouch(APP_SOURCE + earFileName, getApplicationPath());
     }
 
     /**
@@ -129,40 +186,39 @@ public class LooseConfigTest extends AnnoCachingTest {
         verifyBadUrl("/MyLooseWeb1");
         verifyBadUrl("/MyLooseWeb1/Wobbly");
         verifyBadUrl("/MyLooseWeb1/Servlet1"); 
-        verifyResponse("/MyLooseWeb2",          "Hi, this is loose web2.");
+        verifyResponse("/MyLooseWeb2", "Hi, this is loose web2.");
         verifyResponse("/MyLooseWeb2/Servlet2", "Hello From Servlet 2.");        
         verifyBadUrl("/MyLooseWeb2/AddedServlet");  // AddedServlet not added at this point.
 
-        // Copy the second loose config XML file to server apps directory.
-        copyFile(APP_SOURCE + "LooseConfig2.ear.xml" ,   SHARED_SERVER.getLibertyServer().getServerRoot() + "/apps/"  + earFileName);
+        copyAndTouch(APP_SOURCE + "LooseConfig2.ear.xml", getApplicationPath());
         waitForAppUpdate();
 
         // The second Loose XML un-comments WAR1 and comments WAR2.  Testing removing something
         // and adding something to the loose xml.
-        verifyResponse("/MyLooseWeb1",          "Hi, this is loose web1.");
-        verifyResponse("/MyLooseWeb1/Wobbly",   "They call me Wobbly, cause I'm a little loose.");
+        verifyResponse("/MyLooseWeb1", "Hi, this is loose web1.");
+        verifyResponse("/MyLooseWeb1/Wobbly", "They call me Wobbly, cause I'm a little loose.");
         verifyResponse("/MyLooseWeb1/Servlet1", "Hello From Servlet 1.");
         verifyBadUrl("/MyLooseWeb2");
         verifyBadUrl("/MyLooseWeb2/Servlet2");
         verifyBadUrl("/MyLooseWeb2/AddedServlet");
 
-        // Copy the third loose config XML file to server apps directory.
-        copyFile(APP_SOURCE + "LooseConfig3.ear.xml" ,   SHARED_SERVER.getLibertyServer().getServerRoot() + "/apps/"  + earFileName);
+        copyAndTouch(APP_SOURCE + "LooseConfig3.ear.xml" , getApplicationPath());
         waitForAppUpdate();
 
         // The third Loose XML un-comments WAR1 and WAR2
-        verifyResponse("/MyLooseWeb1",          "Hi, this is loose web1.");
-        verifyResponse("/MyLooseWeb1/Wobbly",   "They call me Wobbly, cause I'm a little loose.");
+        verifyResponse("/MyLooseWeb1", "Hi, this is loose web1.");
+        verifyResponse("/MyLooseWeb1/Wobbly", "They call me Wobbly, cause I'm a little loose.");
         verifyResponse("/MyLooseWeb1/Servlet1", "Hello From Servlet 1.");        
-        verifyResponse("/MyLooseWeb2",          "Hi, this is loose web2.");
+        verifyResponse("/MyLooseWeb2", "Hi, this is loose web2.");
         verifyResponse("/MyLooseWeb2/Servlet2", "Hello From Servlet 2.");
         verifyBadUrl("/MyLooseWeb2/AddedServlet");  // AddedServlet still not added at this point.
 
         // To this point, we have only changed the loose xml.  Now add a servlet to a
         // location already configured in the loose XML.   Copy the "AddedServlet" into WAR2.
-        String looseAppDir = getServerRoot() + "/apps/looseConfig/";
-        mkDir(looseAppDir + "LooseWeb2/classes/looseweb2", DELETE_IF_EXISTS);
-        copyFolder("build/classes/looseweb2", looseAppDir + "LooseWeb2/classes/looseweb2");
+        String looseAppPath = getLooseAppDir() + '/' + "LooseWeb2/classes/looseweb2";
+        mkDir(looseAppPath, DELETE_IF_EXISTS);
+        copyFolder("build/classes/looseweb2", looseAppPath);
+        // Don't need to touch the folder ... the file should be noticed as a new file.
         waitForAppUpdate();
 
         // All servlets should be available now.
