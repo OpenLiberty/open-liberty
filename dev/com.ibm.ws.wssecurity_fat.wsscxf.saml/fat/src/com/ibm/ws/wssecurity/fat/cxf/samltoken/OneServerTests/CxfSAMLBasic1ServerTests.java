@@ -206,7 +206,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     }
 
     @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException","org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignatureEE8Only() throws Exception {
 

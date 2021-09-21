@@ -127,7 +127,8 @@ class DiscoveredBdas {
         wireBdas(ejbModules, allAccessibleBdas);
         wireBdas(warModules, allAccessibleBdas);
         wireBdas(clientModules, allAccessibleBdas);
-        wireBdasBasedOnClassLoader(earLibs, warModules);
+        wireBdasBasedOnClassLoader(earLibs, warModules); // This line was originally added for twas when running in single classloader mode.
+        wireBdasBasedOnClassLoader(sharedLibs, allAccessibleBdas); //This line is to cover situations where you have a <library> tag in server.xml containing multiple archives.
     }
 
     /**

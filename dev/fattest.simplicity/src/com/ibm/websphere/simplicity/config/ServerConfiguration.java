@@ -275,6 +275,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "samesite")
     private ConfigElementList<SameSite> samesites;
+    
+    @XmlElement(name = "headers")
+    private ConfigElementList<Headers> headers;
 
     @XmlElement(name = "javaPermission")
     private ConfigElementList<JavaPermission> javaPermissions;
@@ -1290,5 +1293,32 @@ public class ServerConfiguration implements Cloneable {
             this.javaPermissions = new ConfigElementList<JavaPermission>();
         }
         return this.javaPermissions;
+    }
+    
+    /**
+     * Add a Headers configuration to this server
+     * @param headers The headers element to be added to this server
+     */
+    public void addHeaders(Headers headers) {
+        
+        ConfigElementList<Headers> headersCfgs = getHeaders();
+        
+        for(Headers headersEntry: headersCfgs) {
+            if(headersEntry.getId().equals(headers.getId())) {
+                headersCfgs.remove(headersEntry);
+            }
+        }
+        headersCfgs.add(headers);
+    }
+    
+    /**
+     * @return the headers configuration for this server
+     */
+    public ConfigElementList<Headers> getHeaders(){
+        if(this.headers == null) {
+            this.headers = new ConfigElementList<Headers>();
+        }
+        return this.headers;
+        
     }
 }

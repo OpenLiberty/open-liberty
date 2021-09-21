@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -27,6 +28,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * and invalid documents are encountered.
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 15)
 public class ConfigValidatorTest {
 
     // Since we have tracing enabled give server longer timeout to start up.

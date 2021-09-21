@@ -23,5 +23,5 @@ tested.features: microProfile-5.0
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
         io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.cdi.3.0;version=latest
-###	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest

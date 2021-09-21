@@ -19,6 +19,12 @@ src: \
 
 fat.project: true
 
+tested.features: javaMail-1.5, \
+  servlet-3.1, \
+  javaMail-1.6, \
+  servlet-4.0
+  
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\

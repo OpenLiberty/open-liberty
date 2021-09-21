@@ -19,11 +19,10 @@ Bundle-Description: WAS Security SPNEGO 1.0, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.spnego.internal.jar
-#JakartaEE-Bundle-Name: SPNEGO 1.0 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.spnego.internal
-#JakartaEE-Bundle-Description: SPNEGO 1.0., version=${bVersion} 
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.spnego.internal.jar
+jakartaFinalBundleName: SPNEGO 1.0
+jakartaFinalBundleId: io.openliberty.security.spnego.internal
+jakartaFinalBundleDescription: SPNEGO 1.0; Jakarta Enabled
 
 
 WS-TraceGroup: SPNEGO

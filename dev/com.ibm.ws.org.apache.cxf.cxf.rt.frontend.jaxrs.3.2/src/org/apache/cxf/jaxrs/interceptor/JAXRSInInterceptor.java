@@ -81,6 +81,12 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
     @FFDCIgnore(value = { Fault.class, RuntimeException.class, IOException.class })
     @Override
     public void handleMessage(Message message) {
+        // Liberty change start - set strict mode for media types unless already set by user
+        if (null == message.getContextualProperty("org.apache.cxf.jaxrs.mediaTypeCheck.strict")) {
+            message.put("org.apache.cxf.jaxrs.mediaTypeCheck.strict", "true");
+        }
+        // Liberty change end
+
         final Exchange exchange = message.getExchange();
 
         exchange.put(Message.REST_MESSAGE, Boolean.TRUE);
@@ -108,7 +114,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         }
     }
 
-    @FFDCIgnore(value = { WebApplicationException.class })
+    @FFDCIgnore(value = { IllegalArgumentException.class, WebApplicationException.class })
     private void processRequest(Message message, Exchange exchange) throws IOException {
 
         ServerProviderFactory providerFactory = ServerProviderFactory.getInstance(message);
@@ -167,7 +173,10 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         try {
             acceptContentTypes = JAXRSUtils.sortMediaTypes(acceptTypes, JAXRSUtils.MEDIA_TYPE_Q_PARAM);
         } catch (IllegalArgumentException ex) {
-            throw ExceptionUtils.toNotAcceptableException(null, null);
+            // Liberty change start - throw 400 instead of 406 on invalid Accept header
+            //throw ExceptionUtils.toNotAcceptableException(null, null);
+            throw ExceptionUtils.toBadRequestException(ex, null);
+            // Liberty change end
         }
         exchange.put(Message.ACCEPT_CONTENT_TYPE, acceptContentTypes);
 

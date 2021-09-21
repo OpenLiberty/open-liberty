@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2020 IBM Corporation and others.
+* Copyright (c) 2016, 2021 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.appConfig.defaultSources.tests.DefaultSourcesTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -43,14 +44,15 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class DefaultSourcesTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "SimpleConfigSourcesServer";
     public static final String APP_NAME = "defaultSources";
 
-    @Server("SimpleConfigSourcesServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = DefaultSourcesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("SimpleConfigSourcesServer", MicroProfileActions.MP33, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP33, MicroProfileActions.MP41);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -109,7 +111,7 @@ public class DefaultSourcesTest extends FATServletClient {
                                                          .addAsModule(warVisibility_war)
                                                          .addAsLibrary(earlib_jar);
 
-        ShrinkHelper.exportDropinAppToServer(server, defaultSources_ear);
+        ShrinkHelper.exportDropinAppToServer(server, defaultSources_ear, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

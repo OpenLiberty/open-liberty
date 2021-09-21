@@ -43,7 +43,7 @@ public class WCServletPathForDefaultMappingDefault {
     public static void setUp() throws Exception {
         LOG.info("Setup : add ServletPathDefaultMapping.war to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servletpathdefaultmapping.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servletpathdefaultmapping.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCServletPathForDefaultMappingDefault.class.getSimpleName() + ".log");

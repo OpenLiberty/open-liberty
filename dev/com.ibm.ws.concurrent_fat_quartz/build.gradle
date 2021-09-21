@@ -15,12 +15,12 @@ configurations {
 
 dependencies {
   // third-party libraries needed by the test application
-  quartzLibs 'org.quartz-scheduler:quartz:2.2.1',
+  quartzLibs 'org.quartz-scheduler:quartz:2.3.2',
     'org.slf4j:slf4j-api:1.7.30',
     'org.slf4j:slf4j-simple:1.7.30'
 
   // test runtime
-  requiredLibs 'org.quartz-scheduler:quartz:2.2.1',
+  requiredLibs 'org.quartz-scheduler:quartz:2.3.2',
     'org.slf4j:slf4j-api:1.7.30',
     'org.slf4j:slf4j-simple:1.7.30',
     'jakarta.annotation:jakarta.annotation-api:2.0.0',

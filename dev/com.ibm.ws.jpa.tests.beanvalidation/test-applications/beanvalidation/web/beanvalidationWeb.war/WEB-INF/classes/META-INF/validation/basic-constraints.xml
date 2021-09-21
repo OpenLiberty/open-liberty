@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<!-- This file name is included in jakarta-xml-master.properties for jakarta transformation -->
+<constraint-mappings
+    xmlns="http://jboss.org/xml/ns/javax/validation/mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd">
+    <default-package>
+        com.ibm.ws.jpa.beanvalidation.model
+    </default-package>
+
+    <bean class="SimpleBeanValXMLEntity" >
+        <field name="name">
+            <constraint annotation="javax.validation.constraints.NotNull">
+                <message>SimpleBeanValXMLEntity.name is null</message>
+            </constraint>
+        </field>
+    </bean>
+</constraint-mappings>

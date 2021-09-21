@@ -9,4 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries.dependsOn addDerby
+configurations {
+  kernel
+}
+
+dependencies {
+  kernel project(':com.ibm.ws.kernel.feature'),
+    project(':com.ibm.ws.kernel.boot')
+}
+
+task addJunitdependencies(type: Copy) {
+  from configurations.kernel
+  into "${buildDir}/autoFVT/lib/"
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addJunitdependencies
+}
+

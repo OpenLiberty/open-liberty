@@ -110,7 +110,9 @@ public class WebContainerRequestState {
         if (_attributes==null) {
             _attributes=new HashMap();
         }
-        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+            logger.logp(Level.FINE, CLASS_NAME,"setAttribute", " name --> " + string);
+        } 
         _attributes.put(string, obj);
     }
 	

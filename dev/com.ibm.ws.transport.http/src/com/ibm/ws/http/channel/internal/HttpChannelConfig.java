@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -185,6 +186,19 @@ public class HttpChannelConfig {
     private Map<String, String> sameSiteStringPatterns = null;
     private Map<Pattern, String> sameSitePatterns = null;
     private boolean onlySameSiteStar = false;
+
+    /** Identifies if the channel has been configured to use <headers> configuration */
+    private boolean isHeadersConfigEnabled = false;
+
+    /** Maps containing all configured header values to be added in each response */
+    private Map<Integer, List<Map.Entry<String, String>>> configuredHeadersToAdd = null;
+    private Map<Integer, Map.Entry<String, String>> configuredHeadersToSet = null;
+    private Map<Integer, Map.Entry<String, String>> configuredHeadersToSetIfMissing = null;
+    /** Tracks header names that will be removed from each response if present */
+    private Map<Integer, String> configuredHeadersToRemove = null;
+
+    /** Tracks headers that have been configured erroneously **/
+    private HashSet<String> configuredHeadersErrorSet = null;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -467,6 +481,26 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, value);
             }
 
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS)) {
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD)) {
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET)) {
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING)) {
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE)) {
+                props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, value);
+            }
+
             props.put(key, value);
         }
 
@@ -524,6 +558,8 @@ public class HttpChannelConfig {
         parseCookiesSameSiteNone(props);
         parseCookiesSameSiteStrict(props);
         initSameSiteCookiesPatterns();
+        parseHeaders(props);
+        
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1509,6 +1545,249 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the configuration to see if the headers element has been configured
+     * to consider response header values to be added to each response.
+     *
+     * @param props
+     */
+    private void parseHeaders(Map<Object, Object> props) {
+
+        Object value = props.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS);
+        if (null != value) {
+            this.isHeadersConfigEnabled = convertBoolean(value);
+
+            if (this.isHeadersConfigEnabled) {
+                this.configuredHeadersToAdd = new HashMap<Integer, List<Map.Entry<String, String>>>();
+                this.configuredHeadersToSet = new HashMap<Integer, Map.Entry<String, String>>();
+                this.configuredHeadersToSetIfMissing = new HashMap<Integer, Map.Entry<String, String>>();
+                this.configuredHeadersToRemove = new HashMap<Integer, String>();
+                this.configuredHeadersErrorSet = new HashSet<String>();
+
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                    Tr.event(tc, "Http Channel Config: <headers> config has been enabled");
+                }
+
+                parseHeadersToRemove(props);
+                parseHeadersToAdd(props);
+                parseHeadersToSet(props);
+                parseHeadersToSetIfMissing(props);
+                logHeadersConfig();
+            }           
+        }
+    }
+
+    /**
+     * Parse the configuration to map all defined response headers to be removed from responses if
+     * present.
+     *
+     * @param props
+     */
+    private void parseHeadersToRemove(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE);
+        if (null != value && this.isHeadersConfigEnabled) {
+
+            if (value instanceof String[]) {
+                String[] headers = (String[]) value;
+                //Parse all headers
+                for (String headerName : headers) {
+                    if (headerName.isEmpty()) {
+                        Tr.warning(tc, "headers.emptyName", "remove");
+                    } else {
+
+                        int hashcode = headerName.trim().toLowerCase().hashCode();
+                        if (!this.configuredHeadersToRemove.containsKey(hashcode)) {
+                            this.configuredHeadersToRemove.put(hashcode, headerName);
+                            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                                Tr.event(tc, "Headers remove configuration: parsed name [" + headerName + "]");
+                            }
+                        }
+                    }
+                }
+            }
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Headers Config: <headers> remove configuration finished parsing.");
+            }
+        }
+    }
+
+    /**
+     * Parse the configuration to map all defined response headers to be added with the appendHeader
+     * method during responses.
+     *
+     * @param props
+     */
+    private void parseHeadersToAdd(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD);
+        if (null != value && this.isHeadersConfigEnabled) {
+
+            if (value instanceof String[]) {
+                String[] headers = (String[]) value;
+
+                //Parse all headers as a key value pair and add them to the map
+                for (String headerEntry : headers) {
+                    this.setHeaderToCollection(headerEntry, HttpConfigConstants.Headers.ADD);
+                }
+            }
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Headers Config: <headers> add configuration finished parsing.");
+            }
+        }
+
+    }
+
+    /**
+     * Parse the configuration to map all defined headers to be set on responses using the setHeader
+     * method. This will overwrite the header value if already set on the response.
+     *
+     * @param props
+     */
+    private void parseHeadersToSet(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET);
+        if (null != value && this.isHeadersConfigEnabled) {
+
+            if (value instanceof String[]) {
+                String[] headers = (String[]) value;
+                //Parse all headers as a key value pair and add them to the map
+                for (String headerEntry : headers) {
+
+                    this.setHeaderToCollection(headerEntry, HttpConfigConstants.Headers.SET);
+                }
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                    Tr.event(tc, "Http Headers Config: <headers> set configuration finished parsing.");
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse the configuration to map all defined headers to be set on responses using the setHeader
+     * method. This will only be done if the header is not already present in the response.
+     *
+     * @param props
+     */
+    private void parseHeadersToSetIfMissing(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING);
+        if (null != value && this.isHeadersConfigEnabled) {
+
+            if (value instanceof String[]) {
+                String[] headers = (String[]) value;
+                //Parse all headers as a key value pair and add them to the map
+                for (String headerEntry : headers) {
+
+                    this.setHeaderToCollection(headerEntry, HttpConfigConstants.Headers.SET_IF_MISSING);
+                }
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                    Tr.event(tc, "Http Headers Config: <headers> setIfMissing configuration finished parsing.");
+                }
+            }
+        }
+    }
+
+    private void logHeadersConfig() {
+
+        //If tracing is enabled, print out the state of these maps.
+        if (this.isHeadersConfigEnabled && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+
+            List<String> addHeaders = new LinkedList<String>();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Http Channel Config: Headers configuration complete. The following values are set:\n");
+            for (List<Entry<String, String>> headerList : this.configuredHeadersToAdd.values()) {
+                for (Entry<String, String> header : headerList) {
+                    addHeaders.add(header.getKey() + ":" + header.getValue());
+                }
+            }
+
+            //Construct the lax names
+            sb.append("Headers Remove ").append(this.configuredHeadersToRemove.values()).append("\n");
+            sb.append("Headers Add ").append(addHeaders).append("\n");
+            sb.append("Headers Set ").append(this.configuredHeadersToSet.values()).append("\n");
+            sb.append("Headers SetIfMissing ").append(this.configuredHeadersToSetIfMissing.values());
+            if (!this.configuredHeadersErrorSet.isEmpty()) {
+                sb.append("\n").append("Misconfigured headers ").append(this.configuredHeadersErrorSet);
+            }
+            Tr.event(tc, sb.toString());
+        }
+    }
+
+    private void setHeaderToCollection(String header, HttpConfigConstants.Headers collectionType) {
+
+        int delimiterIndex = -1;
+        String headerName, headerValue = null;
+
+        //Find the first occurrence of the delimiter and obtain
+        //the name and value from the configured header
+        delimiterIndex = header.indexOf(":");
+        if (delimiterIndex == -1) {
+            headerName = header.trim();
+            headerValue = "";
+        } else {
+            headerName = header.substring(0, delimiterIndex).trim();
+            headerValue = header.substring(delimiterIndex + 1).trim();
+        }
+
+        if (headerName.isEmpty()) {
+            Tr.warning(tc, "headers.emptyName", collectionType.getName());
+
+        } else {
+            //No configuration error so far, check that no other list defines this, as
+            //that would create ambiguity. If found elsewhere, warn the user and take it
+            //out of all lists.
+            String normalizedHeaderName = headerName.trim().toLowerCase();
+            int headerNameHashCode = normalizedHeaderName.hashCode();
+
+            if (this.configuredHeadersErrorSet.contains(normalizedHeaderName)) {
+
+                Tr.warning(tc, "headers.knownDuplicateHeader", header, collectionType.getName());
+            }
+            //If this header has already been parsed on the 'remove', 'add', 'overwrite' or 'setIfMissing' collections, then this is an
+            //erroneous configuration. Remove from all collections and put on the error set. Log a configuration warning message.
+            //The only exception to this is on the 'add' list, where multiple headers with the same name can be appended. So if the
+            //header is not unique AND we are entering this logic from the Headers.ADD enum, allow it.
+            else if (this.configuredHeadersToRemove.containsKey(headerNameHashCode) ||
+                     (this.configuredHeadersToAdd.containsKey(headerNameHashCode) && (collectionType != HttpConfigConstants.Headers.ADD)) ||
+                     this.configuredHeadersToSet.containsKey(headerNameHashCode) ||
+                     this.configuredHeadersToSetIfMissing.containsKey(headerNameHashCode)) {
+
+                this.configuredHeadersToRemove.remove(headerNameHashCode);
+                this.configuredHeadersToAdd.remove(headerNameHashCode);
+                this.configuredHeadersToSet.remove(headerNameHashCode);
+                this.configuredHeadersToSetIfMissing.remove(headerNameHashCode);
+
+                this.configuredHeadersErrorSet.add(normalizedHeaderName);
+                Tr.warning(tc, "headers.duplicateHeaderName", header, collectionType.getName());
+
+            }
+
+            else {
+                //The ADD configuration can have multiple header names with the same name, so
+                //add all occurrences into lists for the ADD collection
+                if (collectionType == HttpConfigConstants.Headers.ADD) {
+                    if (!this.configuredHeadersToAdd.containsKey(headerNameHashCode)) {
+                        this.configuredHeadersToAdd.put(headerNameHashCode, new LinkedList<Map.Entry<String, String>>());
+                    }
+                    this.configuredHeadersToAdd.get(headerNameHashCode).add(new AbstractMap.SimpleEntry<String, String>(headerName, headerValue));
+                }
+
+                else if (collectionType == HttpConfigConstants.Headers.SET) {
+
+                    this.configuredHeadersToSet.put(headerNameHashCode, new AbstractMap.SimpleEntry<String, String>(headerName, headerValue));
+
+                }
+
+                else if (collectionType == HttpConfigConstants.Headers.SET_IF_MISSING) {
+                    this.configuredHeadersToSetIfMissing.put(headerNameHashCode, new AbstractMap.SimpleEntry<String, String>(headerName, headerValue));
+                }
+
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                    Tr.event(tc, "Header " + collectionType.getName() + " configuration: parsed name [" + headerName + "] and value [" + headerValue + "]");
+                }
+            }
+
+        }
+    }
+
+    /**
      * Check the input configuration for the access/error logging configuration.
      *
      * @param props
@@ -1786,7 +2065,7 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    private void parseWaitForEndOfMessage(Map props) {
+    private void parseWaitForEndOfMessage(Map<Object, Object> props) {
         //PI11176
         String value = (String) props.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE);
         if (null != value) {
@@ -1802,7 +2081,7 @@ public class HttpChannelConfig {
      *
      * @ param props
      */
-    private void parseRemoveCLHeaderInTempStatusRespRFC7230compat(Map props) {
+    private void parseRemoveCLHeaderInTempStatusRespRFC7230compat(Map<Object, Object> props) {
         //PI35277
         String value = (String) props.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT);
         if (null != value) {
@@ -1835,7 +2114,7 @@ public class HttpChannelConfig {
      *
      * @ param props
      */
-    private void parseAttemptPurgeData(Map props) {
+    private void parseAttemptPurgeData(Map<Object, Object> props) {
         //PI11176
         String value = (String) props.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE);
         if (null != value) {
@@ -2624,6 +2903,46 @@ public class HttpChannelConfig {
      */
     public int getDecompressionTolerance() {
         return this.decompressionTolerance;
+    }
+
+    /**
+     * Specifies whether the <httpEndpoint> is configured to use the <headers> sub element configurations.
+     */
+    public boolean useHeadersConfiguration() {
+        return this.isHeadersConfigEnabled;
+    }
+
+    /**
+     * Returns a List of all configured header names and corresponding values that will be added using
+     * the appendHeader method.
+     */
+    public Map<Integer, List<Map.Entry<String, String>>> getConfiguredHeadersToAdd() {
+        return this.configuredHeadersToAdd;
+    }
+
+    /**
+     * Returns a Map of all configured header names and corresponding values that will be set using
+     * the setHeader method. Headers in this list will overwrite existing values if already present.
+     */
+    public Map<Integer, Map.Entry<String, String>> getConfiguredHeadersToSet() {
+        return this.configuredHeadersToSet;
+    }
+
+    /**
+     * Returns a Map of all configured header names and corresponding values that will be set using
+     * the setHeader method. Headers in this list will only be set if missing from the response.
+     */
+    public Map<Integer, Map.Entry<String, String>> getConfiguredHeadersToSetIfMissing() {
+        return this.configuredHeadersToSetIfMissing;
+    }
+
+    /**
+     * Returns a Set of all configured header names that will be removed from responses.
+     *
+     * @return
+     */
+    public Map<Integer, String> getConfiguredHeadersToRemove() {
+        return this.configuredHeadersToRemove;
     }
 
 }

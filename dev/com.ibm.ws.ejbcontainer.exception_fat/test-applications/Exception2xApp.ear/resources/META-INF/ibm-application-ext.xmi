@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applicationext:ApplicationExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:applicationext="applicationext.xmi" xmlns:application="application.xmi" xmi:id="Application_ID_Ext">
+  <application href="META-INF/application.xml#Application_ID"/>
+</applicationext:ApplicationExtension>

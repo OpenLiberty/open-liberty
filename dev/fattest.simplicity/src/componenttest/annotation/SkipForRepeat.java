@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
@@ -28,6 +29,7 @@ public @interface SkipForRepeat {
     public static final String EE7_FEATURES = EE7FeatureReplacementAction.ID;
     public static final String EE8_FEATURES = EE8FeatureReplacementAction.ID;
     public static final String EE9_FEATURES = JakartaEE9Action.ID;
+    public static final String EE10_FEATURES = JakartaEE10Action.ID;
 
     String[] value();
 

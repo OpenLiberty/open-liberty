@@ -14,7 +14,7 @@
 
     <groupId>com.ibm.ws.microprofile.mpjwt12</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MicroProfile MpJwt 1.2 TCK Runner</name>
 

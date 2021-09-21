@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
@@ -56,14 +57,15 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class VariableServerXMLTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "ServerXMLVariableServer";
     public static final String APP_NAME = "variableServerXMLApp";
 
-    @Server("ServerXMLVariableServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = VariableServerXMLServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("ServerXMLVariableServer", MicroProfileActions.LATEST, MicroProfileActions.MP20);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -71,7 +73,8 @@ public class VariableServerXMLTest extends FATServletClient {
         // Include the 'app1.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.variableServerXML.*");
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
+        ShrinkHelper.defaultApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config13.variableServerXML.*");
         server.copyFileToLibertyServerRoot("original/variableServerXMLApp.xml");
         server.startServer();
     }

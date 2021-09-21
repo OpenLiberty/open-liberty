@@ -143,8 +143,8 @@ public class MPCompatibleTest {
     }
 
     /**
-     * microProfile-4.0 plus jakartaee-9.0
-     * Should fail because microProfile-4.0 is not compatible with jakartaee-9.0
+     * microProfile-4.0 plus jakartaee-9.1
+     * Should fail because microProfile-4.0 is not compatible with jakartaee-9.1
      *
      * @throws Exception
      */

@@ -17,9 +17,18 @@
     <application type="war" location="sharedLibraryNoInjectionApp.war" >
     	<classloader commonLibraryRef="InjectionSharedLibrary" />
     </application>
+
+    <application type="war" location="commonLibraryCrossInjectionTest.war" >
+    	<classloader commonLibraryRef="CrossInjectSharedLibrary" />
+    </application>
        
     <library id="InjectionSharedLibrary">
         <fileset dir="${server.config.dir}/InjectionSharedLibrary" includes="sharedLibrary.jar" />
+    </library>
+
+    <library id="CrossInjectSharedLibrary">
+        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="commonLibraryCrossInjectionTestJarOne.jar" />
+        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="commonLibraryCrossInjectionTestJarTwo.jar" />
     </library>
     
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>

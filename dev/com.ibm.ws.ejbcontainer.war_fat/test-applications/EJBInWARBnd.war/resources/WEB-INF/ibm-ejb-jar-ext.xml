@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-ext
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd"
+  version="1.1">
+
+  <session name="EJBInWARStatelessBean">
+    <resource-ref name="jdbc/ejbResRefEjbIsoDS" isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+    <resource-ref name="jdbc/webResRefEjbIsoDS" isolation-level="TRANSACTION_SERIALIZABLE"/>
+    <resource-ref name="jdbc/dupBindingDS" isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+  </session>
+</ejb-jar-ext>
+

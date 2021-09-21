@@ -64,8 +64,8 @@ public class WCServerTest {
 
         WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, SERVLET_40_APP_JAR_NAME + ".war");
         testServlet40War.addAsLibrary(testServlet40Jar);
-        testServlet40War.addPackage("testservlet40.war.servlets");
-        testServlet40War.addPackage("testservlet40.war.listeners");
+        testServlet40War.addPackage("testservlet40.servlets");
+        testServlet40War.addPackage("testservlet40.listeners");
 
         ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 

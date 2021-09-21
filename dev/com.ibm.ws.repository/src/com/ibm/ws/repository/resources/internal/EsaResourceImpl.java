@@ -232,8 +232,9 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava11 = "Java SE 11, Java SE 15";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 15";
+        String minJava17 = "Java SE 17";
+        String minJava11 = "Java SE 11, Java SE 17";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 17";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
@@ -247,6 +248,18 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             // If a feature requires a min of Java 9/10/11, state Java 11 is required because
             // Liberty does not officially support Java 9 or 10
             reqs.setVersionDisplayString(minJava11);
+            return;
+        }
+
+        if (minVersion.startsWith("12.") ||
+            minVersion.startsWith("13.") ||
+            minVersion.startsWith("14.") ||
+            minVersion.startsWith("15.") ||
+            minVersion.startsWith("16.") ||
+            minVersion.startsWith("17.")) {
+            // If a feature requires a min of Java 12/13/14/15/16/17, state Java 17 is required because
+            // Liberty does not officially support Java 12-16
+            reqs.setVersionDisplayString(minJava17);
             return;
         }
 

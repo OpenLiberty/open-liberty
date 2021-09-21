@@ -262,6 +262,35 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
             }
             // When the collective does not have a persisted catalog, always persist it
             catalog.storeCatalog();
+        } else {
+            // check if it is a default catalog created from a different server version. 
+            // If so, delete the default persisted catalog and create the default catalog for the current version.
+            Map<String, Object> catalogMetadata = catalog.get_metadata();
+            Object isDefault = catalogMetadata.get(Catalog.METADATA_IS_DEFAULT);
+            String catalogServerVersion = (String) catalogMetadata.get(Catalog.METADATA_SERVER_VERSION);
+            String currentServerVersion = catalog.getServerVersion();
+
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "persisted catalog in collective environment is detected with default set to " + isDefault + " and version set to " + catalogServerVersion);
+            }
+
+            if ((isDefault != null && Boolean.parseBoolean(isDefault.toString())) &&
+                (currentServerVersion != null && !currentServerVersion.equals(catalogServerVersion))) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "deleting the persisted default catalog which was not created from the current server version " + currentServerVersion + ", and recreating the default catalog.");
+                }
+                try {
+                    persistenceProviderCollective.delete(Catalog.PERSIST_NAME);
+                    catalog = createDefaultCatalog();
+                    catalog.storeCatalog();
+                    Tr.info(tc, "CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION");
+                } catch (IOException ioex) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "not able to reset the default catalog, use existing persisted catalog as is");
+                    }
+                }
+            }
+
         }
         return catalog;
     }

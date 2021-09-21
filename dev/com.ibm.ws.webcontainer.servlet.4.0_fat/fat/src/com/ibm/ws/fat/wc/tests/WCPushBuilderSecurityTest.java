@@ -41,7 +41,7 @@ public class WCPushBuilderSecurityTest {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestPushBuilderSecurity to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, "TestPushBuilderSecurity.war", "testpushbuildersecurity.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TestPushBuilderSecurity.war", "testpushbuildersecurity.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCPushBuilderSecurityTest.class.getSimpleName() + ".log");

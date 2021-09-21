@@ -1,0 +1,24 @@
+<server>
+    <featureManager>
+        <feature>ejblite-3.2</feature>
+        <feature>servlet-4.0</feature>
+        <feature>beanValidation-2.0</feature>
+        <feature>jpaContainer-2.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
+
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/jpa22_hibernate" includes="*.jar"/>
+    </library>
+
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/antlr-2.7.7.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/byte-buddy-1.11.12.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/classmate-1.5.1.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/hibernate-commons-annotations-5.1.2.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/hibernate-core-5.5.7.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/jandex-2.2.3.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/javassist-3.27.0-GA.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/jboss-logging-3.4.2.Final.jar" className="java.security.AllPermission"/>
+</server>

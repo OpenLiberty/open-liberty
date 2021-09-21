@@ -49,7 +49,7 @@ public class Config20ExceptionTests extends FATServletClient {
     public static final String SERVER_NAME = "Config20ExceptionServer";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.cxf.Bus;
@@ -27,13 +28,13 @@ import org.apache.cxf.bus.extension.ExtensionManager;
 import org.apache.cxf.bus.extension.ExtensionManagerImpl;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleManager;
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -92,7 +93,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         return createBus(e, properties, THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread()));
     }
 
-    public LibertyApplicationBus createBus(final Map<Class<?>, Object> e,final Map<String, Object> properties,final ClassLoader classLoader) {
+    public LibertyApplicationBus createBus(final Map<Class<?>, Object> e, final Map<String, Object> properties, final ClassLoader classLoader) {
 
         Bus originalBus = getThreadDefaultBus(false);
 
@@ -121,14 +122,18 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
             bus.initialize();
 
-            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
-            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
-            in.setPrettyLogging(true);
-            bus.getInInterceptors().add(in);
+            // Add Logging Feature here if tracing is enabled
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                LoggingFeature loggingFeature = new LoggingFeature();
 
-            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
-            out.setPrettyLogging(true);
-            bus.getOutInterceptors().add(out);
+                Collection<Feature> featureList = bus.getFeatures();
+                if (!featureList.contains(loggingFeature)) {
+                    loggingFeature.setPrettyLogging(true);
+                    loggingFeature.initialize(bus);
+                    featureList.add(loggingFeature);
+                    bus.setFeatures(featureList);
+                }
+            }
 
             return bus;
 

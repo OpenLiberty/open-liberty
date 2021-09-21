@@ -1,3 +1,7 @@
+com.ibm.ws.jpa.tests.beanvalidation_jpa_2.0_fat
+com.ibm.ws.jpa.tests.beanvalidation_jpa_2.1_fat
+com.ibm.ws.jpa.tests.beanvalidation_jpa_2.2_fat
+com.ibm.ws.jpa.tests.beanvalidation_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.injection.dfi_fat
 com.ibm.ws.jpa.tests.spec10.injection.dmi_fat
 com.ibm.ws.jpa.tests.spec10.injection.jndi_fat
