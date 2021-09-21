@@ -7,3 +7,5 @@
 <feature>transportSecurity-1.0</feature>
 <feature>sessionCache-1.0</feature>
 <feature>sessionDatabase-1.0</feature>
+<feature>webCache-1.0</feature>
+<feature>requestTiming-1.0</feature>
