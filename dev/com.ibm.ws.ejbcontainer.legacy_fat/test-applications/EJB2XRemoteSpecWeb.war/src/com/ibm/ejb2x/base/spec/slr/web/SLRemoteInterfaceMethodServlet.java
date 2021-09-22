@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,10 +96,8 @@ public class SLRemoteInterfaceMethodServlet extends FATServlet {
     @PostConstruct
     private void initializeBeans() {
         try {
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SLRaHome.class);
-            rhome1 = FATHelper.lookupRemoteBinding(ejbJndiName2, SLRTestReentranceHome.class);
-            //fhome1 = (SLRaHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/EJB2XSLRemoteSpecEJB/SLRaBMT"), SLRaHome.class);
-            //rhome1 = (SLRTestReentranceHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/EJB2XSLRemoteSpecEJB/SLRNonReentranceEJB"), SLRTestReentranceHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SLRaHome.class);
+            rhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName2, SLRTestReentranceHome.class);
 
             fejb1 = fhome1.create();
         } catch (Exception e) {

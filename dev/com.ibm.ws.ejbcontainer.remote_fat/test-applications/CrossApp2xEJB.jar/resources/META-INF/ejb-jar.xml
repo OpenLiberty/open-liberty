@@ -1,0 +1,24 @@
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd"
+  version="2.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>CrossAppEJBHome2xBean</ejb-name>
+      <home>com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.CrossAppEJBHome2x</home>
+      <remote>com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.CrossAppEJBObject2x</remote>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.crossapp.home2x.ejb.CrossAppEJBHome2xBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+
+      <ejb-ref>
+        <ejb-ref-name>ejb2x/home</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.CrossAppEJBHome2x</home>
+        <remote>com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.CrossAppEJBObject2x</remote>
+      </ejb-ref>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

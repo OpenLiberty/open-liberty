@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2016 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -917,6 +917,58 @@ public final class EJSWrapperCommon extends Element // d195605
             return getLocalBeanWrapperBase((LocalBeanWrapper) ivBusinessLocal[0]);
         }
         return (EJSWrapperBase) ivBusinessLocal[0];
+    }
+    
+    public Object getRemoteHomeObject(Object stub, Class<?> homeInterfaceClass) throws RemoteException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "getRemoteHomeObject : " + homeInterfaceClass);
+        
+        
+        ClassLoader moduleContextClassLoader = ivBMD.ivContextClassLoader;
+        ClassLoader contextClassLoader = svThreadContextAccessor.getContextClassLoaderForUnprivileged(Thread.currentThread());
+
+        try {
+            Class<?> contextHomeInterfaceClass;
+            if (contextClassLoader == moduleContextClassLoader) {
+                contextHomeInterfaceClass = homeInterfaceClass;
+            } else {
+                contextHomeInterfaceClass = contextClassLoader.loadClass(homeInterfaceClass.getName());
+            }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getRemoteHomeObject : Performing narrow with contextClassLoader and interface " + contextHomeInterfaceClass);
+            return PortableRemoteObject.narrow(stub, contextHomeInterfaceClass);
+        } catch (Exception ex) {
+            // If the context class loader cannot be used to narrow the stub and
+            // is not the module classloader, then this is probably a pure remote
+            // client lookup.  In that case, the context class loader is the WAS
+            // server class loader, which will not have application stubs.
+            // Attempt the narrow again using the module ClassLoader; if that
+            // still fails then return the servant stub directly and hope the ORB
+            // does the right thing on the client.
+            if (contextClassLoader != moduleContextClassLoader) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "ignoring loadClass/narrow exception, attempting again with bean ClassLoader", ex);
+
+                Object origCL = svThreadContextAccessor.pushContextClassLoaderForUnprivileged(moduleContextClassLoader);
+                try {
+                    return PortableRemoteObject.narrow(stub, homeInterfaceClass);
+                } catch (Exception ex2) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "ignoring loadClass/narrow exception", ex2);
+                } finally {
+                    svThreadContextAccessor.popContextClassLoaderForUnprivileged(origCL);
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "ignoring loadClass/narrow exception", ex);
+            }
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "getRemoteHomeObject : Could not narrow, returning stub");
+        return stub;
+        
     }
 
     /**

@@ -14,7 +14,6 @@ import static org.junit.Assert.fail;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -86,8 +85,7 @@ public class EJB2XDefBndTestServlet extends FATServlet {
 
     @Test
     public void test2XRemoteDefault() throws Exception {
-        Object lookup = new InitialContext().lookup("ejb/Test2XDefBndBean");
-        EJB2XDefBndRemoteHome beanHome = (EJB2XDefBndRemoteHome) PortableRemoteObject.narrow(lookup, EJB2XDefBndRemoteHome.class);
+        EJB2XDefBndRemoteHome beanHome = (EJB2XDefBndRemoteHome) new InitialContext().lookup("ejb/Test2XDefBndBean");
         if (beanHome == null) {
             fail("lookup ejb/Test2XDefBndBean should have worked");
         }
