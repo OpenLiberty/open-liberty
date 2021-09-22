@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ import com.ibm.ws.ui.internal.v1.ITool;
 import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
 import com.ibm.ws.ui.internal.v1.pojo.DuplicateException;
 import com.ibm.ws.ui.internal.v1.pojo.Message;
-import com.ibm.ws.ui.internal.v1.utils.Utils;
 import com.ibm.ws.ui.internal.validation.InvalidToolException;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -94,7 +93,7 @@ public class CatalogAPI extends CommonJSONRESTHandler implements V1Constants {
     /** {@inheritDoc} */
     @Override
     public boolean isKnownGrandchildResource(String child, String grandchild, RESTRequest request) {
-        final String toolId = Utils.urlEncode(grandchild);
+        final String toolId = grandchild;
         if (CHILD_RESOURCE_BOOKMARKS.equals(child)) {
             return getCatalog().getBookmark(toolId) != null;
         } else if (CHILD_RESOURCE_FEATURE_TOOLS.equals(child)) {
@@ -174,8 +173,8 @@ public class CatalogAPI extends CommonJSONRESTHandler implements V1Constants {
         if (!isAuthorizedDefault(request, response)) {
             throw new UserNotAuthorizedException();
         }
-        // The inbound grandchild resource name is not URL encoded, need to encode it
-        final String toolId = Utils.urlEncode(grandchild);
+
+        final String toolId = grandchild;
         if (CHILD_RESOURCE_BOOKMARKS.equals(child)) {
             return handleToolResponse(request, toolId, getCatalog().getBookmark(toolId));
         } else if (CHILD_RESOURCE_FEATURE_TOOLS.equals(child)) {
@@ -252,8 +251,8 @@ public class CatalogAPI extends CommonJSONRESTHandler implements V1Constants {
         if (!isAuthorizedDefault(request, response)) {
             throw new UserNotAuthorizedException();
         }
-        // The inbound child resource name is not URL encoded, need to encode it
-        String toolId = Utils.urlEncode(grandchild);
+
+        String toolId = grandchild;
         if (CHILD_RESOURCE_BOOKMARKS.equals(child)) {
             ITool deletedTool = getCatalog().deleteBookmark(toolId);
             return handleToolResponse(request, toolId, deletedTool);
