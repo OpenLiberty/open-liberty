@@ -158,7 +158,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
                 ProgramOutput po = null;
                 try {
                     setUp(server);
-                    po = server.startServerAndValidate(false, false, true);
+                    po = server.startServerAndValidate(true, false, true);
                 } catch (Exception e) {
                     Log.error(getClass(), method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
                 }

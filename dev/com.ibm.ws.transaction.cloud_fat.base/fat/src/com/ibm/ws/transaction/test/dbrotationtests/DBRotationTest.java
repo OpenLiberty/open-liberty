@@ -352,7 +352,7 @@ public class DBRotationTest extends FATServletClient {
             ProgramOutput po = null;
             try {
                 setUp(server);
-                po = server.startServerAndValidate(false, false, false);
+                po = server.startServerAndValidate(true, false, false);
                 if (po.getReturnCode() != 0) {
                     Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
                     Log.info(getClass(), method, "Stdout: " + po.getStdout());

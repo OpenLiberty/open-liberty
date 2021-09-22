@@ -129,7 +129,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         server1.waitForStringInLog("Dump State:");
 
         // Now re-start cloud1
-        ProgramOutput po = server1.startServerAndValidate(false, true, true);
+        ProgramOutput po = server1.startServerAndValidate(true, true, true);
         if (po.getReturnCode() != 0) {
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
             Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
@@ -179,7 +179,7 @@ public class Simple2PCCloudTest extends FATServletClient {
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
+        ProgramOutput po = server2.startServerAndValidate(true, true, true);
         if (po.getReturnCode() != 0) {
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
             Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
@@ -257,7 +257,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
+        ProgramOutput po = server2.startServerAndValidate(true, true, true);
         if (po.getReturnCode() != 0) {
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
             Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
