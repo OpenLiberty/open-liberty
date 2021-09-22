@@ -1222,6 +1222,12 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          * @return whether the Class was found in the shared class cache or not.
          */
         public boolean foundInClassCache();
+
+        /**
+         * Returns the actual class bytes even if the class was found in the shared class cache.
+         * @return the actual bytes of the class.
+         */
+        public byte[] getActualBytes() throws IOException;
     }
 
     /**
@@ -1258,6 +1264,18 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         @Override
         public byte[] getBytes() {
             return this.bytes;
+        }
+
+        @Override
+        @FFDCIgnore(UnableToAdaptException.class)
+        public byte[] getActualBytes() throws IOException {
+            InputStream is;
+            try {
+                is = resourceEntry.adapt(InputStream.class);
+            } catch (UnableToAdaptException e) {
+                throw new IOException(e);
+            }
+            return ContainerClassLoader.getBytes(is, (int) resourceEntry.getSize());
         }
 
         /**
@@ -1361,6 +1379,12 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         @Override
         public byte[] getBytes() {
             return this.bytes;
+        }
+
+        @Override
+        public byte[] getActualBytes() throws IOException {
+            InputStream is = resourceEntry.getInputStream();
+            return ContainerClassLoader.getBytes(is, (int) resourceEntry.getSize());
         }
 
         /**

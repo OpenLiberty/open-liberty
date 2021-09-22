@@ -8,10 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- *
- */
-@TraceOptions(traceGroup = "checkpoint", messageBundle = "io.openliberty.checkpoint.resources.CheckpointMessages")
-package io.openliberty.checkpoint.internal;
+package io.openliberty.checkpoint.internal.criu;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import io.openliberty.checkpoint.internal.CheckpointImpl;
+
+public class DeployCheckpoint {
+    public static void checkpoint() {
+        CheckpointImpl.deployCheckpoint();
+    }
+}

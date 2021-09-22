@@ -57,6 +57,7 @@ import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -75,6 +76,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         ClassLoader.registerAsParallelCapable();
     }
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
+
+    static final boolean IS_BETA = ProductInfo.getBetaEdition();
 
     enum SearchLocation {
         PARENT, SELF, DELEGATES
@@ -106,14 +109,17 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final Iterable<LibertyLoader> delegateLoaders;
     private final List<File> nativeLibraryFiles = new ArrayList<File>();
     private final List<ClassFileTransformer> transformers = new ArrayList<ClassFileTransformer>();
+    private final List<ClassFileTransformer> systemTransformers;
     private final DeclaredApiAccess apiAccess;
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     protected final ClassLoader parent;
     private final ClassLoaderHook hook;
 
-    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
+    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
+        // only use system transformers if IS_BETA (part of checkpoint feature)
+        this.systemTransformers = IS_BETA ? systemTransformers : Collections.emptyList();
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
@@ -270,7 +276,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      */
     @Override
     protected final Class<?> findClass(String name) throws ClassNotFoundException {
-        if (transformers.isEmpty()) {
+        if (transformers.isEmpty() && systemTransformers.isEmpty()) {
             Class<?> clazz = null;
             Object token = ThreadIdentityManager.runAsServer();
             try {
@@ -315,40 +321,60 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         // transformed anyway.
         byte[] bytes;
         if (byteResourceInformation.foundInClassCache()) {
-            bytes = byteResourceInformation.getBytes(); 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
+            if (systemTransformers.isEmpty()) {
+                bytes = byteResourceInformation.getBytes(); 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have global tranformers");
+                }
+                try {
+                    bytes = byteResourceInformation.getActualBytes();
+                    bytes = transformClassBytes(bytes, name, systemTransformers);
+                } catch (IOException e) {
+                    // auto FFDC
+                    // fallback to the cached class
+                    bytes = byteResourceInformation.getBytes();
+                }
             }
         } else {
-            bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
+            bytes = transformClassBytes(byteResourceInformation.getBytes(), name, transformers);
+            bytes = transformClassBytes(bytes, name, systemTransformers);
         }
 
         return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
     }
 
-    byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
+    byte[] transformClassBytes(final byte[] originalBytes, String name, List<ClassFileTransformer> cfts) throws ClassNotFoundException {
         byte[] bytes = originalBytes;
-        for (ClassFileTransformer transformer : transformers) {
-            try {
-                byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
-                if (newBytes != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        if (bytes == newBytes)
-                            Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
-                        else
-                            Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
-                    }
-                    bytes = newBytes;
-                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
-                }
-            } catch (IllegalClassFormatException ex) {
-                // FFDC
+        for (ClassFileTransformer transformer : cfts) {
+            bytes = doTransformation(name, bytes, transformer);
+        }
+        return bytes;
+    }
+
+    private byte[] doTransformation(String name, byte[] bytes, ClassFileTransformer transformer) throws ClassNotFoundException {
+        try {
+            byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+            if (newBytes != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "bad transform - transformer: " + transformer + " attempting to transform class: " + name, ex);
+                    if (bytes == newBytes)
+                        Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
+                    else
+                        Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
                 }
-                throw new ClassNotFoundException(name, ex);
+                bytes = newBytes;
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
             }
+        } catch (IllegalClassFormatException ex) {
+            // FFDC
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "bad transform - transformer: " + transformer + " attempting to transform class: " + name, ex);
+            }
+            throw new ClassNotFoundException(name, ex);
         }
         return bytes;
     }

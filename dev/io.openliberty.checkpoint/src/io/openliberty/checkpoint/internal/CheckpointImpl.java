@@ -11,6 +11,7 @@
 package io.openliberty.checkpoint.internal;
 
 import java.io.File;
+import java.lang.instrument.ClassFileTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +20,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -31,6 +36,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
@@ -65,9 +72,12 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final WsLocationAdmin locAdmin;
 
     private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
+    private final ServiceRegistration<ClassFileTransformer> transformerReg;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     private volatile ExecuteCRIU criu;
+
+    private static volatile CheckpointImpl INSTANCE = null;
 
     @Activate
     public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin) {
@@ -81,6 +91,22 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         this.locAdmin = locAdmin;
         String phase = cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
         this.checkpointAt = phase == null ? null : Phase.getPhase(phase);
+        if (this.checkpointAt == Phase.DEPLOYMENT) {
+            this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
+                                                                        FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
+                                                                                                                            true)));
+            INSTANCE = this;
+        } else {
+            this.transformerReg = null;
+            INSTANCE = null;
+        }
+    }
+
+    @Deactivate
+    void deactivate() {
+        if (INSTANCE == this) {
+            INSTANCE = null;
+        }
     }
 
     @Override
@@ -103,8 +129,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void check() {
-        if (checkpointAt == Phase.APPLICATIONS) {
-            checkpointOrExitOnFailure(Phase.APPLICATIONS);
+        // This gets called once once the server is "ready" before the ports will be opened.
+        // This is typically used for the "applications" checkpoint phase.  But if any other
+        // phase is specified and they haven't caused a checkpoint yet this is the catch all.
+        // This catch all is necessary because it is possible that "features" and "deployment"
+        // tiggers may not fire for certain applications/configuration.  For example,
+        // if while deploying an application no application classes are initialized.
+        if (checkpointAt != null) {
+            checkpointOrExitOnFailure(checkpointAt);
         }
     }
 
@@ -112,6 +144,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         try {
             checkpoint(phase);
         } catch (CheckpointFailedException e) {
+            // Allow auto FFDC here
             // TODO log error informing we are exiting
 
             // TODO is there any type of failure where we would not want to exit?
@@ -126,10 +159,21 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
+    @FFDCIgnore({ IllegalStateException.class, Exception.class })
     void checkpoint(Phase phase) throws CheckpointFailedException {
+        debug(tc, () -> "Checkpoint for : " + phase);
+
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
+            debug(tc, () -> "Trying to checkpoint a second time" + phase);
             return;
+        }
+        if (transformerReg != null) {
+            try {
+                transformerReg.unregister();
+            } catch (IllegalStateException e) {
+                // do nothing
+            }
         }
         File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + DIR_CHECKPOINT_IMAGE).asFile();
         imageDir.mkdirs();
@@ -139,20 +183,17 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         try {
             ExecuteCRIU currentCriu = criu;
             if (currentCriu == null) {
+                debug(tc, () -> "No ExecuteCRIU service available.");
                 throw new CheckpointFailedException(Type.UNSUPPORTED, "The criu command is not available.", null, 0);
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "criu attempt dump to '" + imageDir + "' and exit process.");
-                }
+                debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
                 WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
                 logsCheckpoint.create();
                 currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
                                  logsCheckpoint.asFile());
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "criu dump to " + imageDir + " in recovery.");
-                }
+                debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
             }
         } catch (Exception e) {
             abortPrepare(checkpointHooks, e);
@@ -175,8 +216,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     List<CheckpointHook> getHooks(Object[] factories, Phase phase) {
         if (factories == null) {
+            debug(tc, () -> "No checkpoint hook factories.");
             return Collections.emptyList();
         }
+        debug(tc, () -> "Found checkpoint hook factories: " + factories);
         List<CheckpointHook> hooks = new ArrayList<>(factories.length);
         for (Object o : factories) {
             // if o is anything other than a CheckpointHookFactory then
@@ -186,24 +229,28 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 hooks.add(hook);
             }
         }
+        debug(tc, () -> "Created checkpoint hooks: " + factories);
         return hooks;
     }
 
-    private void callHooks(List<CheckpointHook> checkpointHooks,
+    @FFDCIgnore(Exception.class)
+    private void callHooks(String operation, List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            BiConsumer<CheckpointHook, Exception> abort,
                            Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
         List<CheckpointHook> called = new ArrayList<>(checkpointHooks.size());
         for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
+                debug(tc, () -> operation + " operation on hook: " + checkpointHook);
                 perform.accept(checkpointHook);
                 called.add(checkpointHook);
             } catch (Exception abortCause) {
                 for (CheckpointHook abortHook : called) {
                     try {
+                        debug(tc, () -> operation + " aborted with hook: " + abortHook);
                         abort.accept(abortHook, abortCause);
                     } catch (Exception unexpected) {
-                        // auto FFDC is fine here
+                        FFDCFilter.processException(abortCause, abortHook.getClass().getName(), "abort-" + operation, abortHook);
                     }
                 }
                 throw failed.apply(abortCause);
@@ -212,7 +259,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
-        callHooks(checkpointHooks,
+        callHooks("prepare",
+                  checkpointHooks,
                   CheckpointHook::prepare,
                   CheckpointHook::abortPrepare,
                   CheckpointImpl::failedPrepare);
@@ -227,13 +275,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             try {
                 hook.abortPrepare(cause);
             } catch (Exception e) {
-                // ignore
+                // Auto FFDC is fine here
             }
         }
     }
 
     private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
-        callHooks(checkpointHooks,
+        callHooks("restore",
+                  checkpointHooks,
                   CheckpointHook::restore,
                   CheckpointHook::abortRestore,
                   CheckpointImpl::failedRestore);
@@ -250,5 +299,18 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     // used by tests only
     void resetCheckpointCalled() {
         checkpointCalled.set(false);
+    }
+
+    public static void deployCheckpoint() {
+        CheckpointImpl current = INSTANCE;
+        if (current != null && current.checkpointAt == Phase.DEPLOYMENT) {
+            current.checkpointOrExitOnFailure(Phase.DEPLOYMENT);
+        }
+    }
+
+    static void debug(TraceComponent trace, Supplier<String> message) {
+        if (TraceComponent.isAnyTracingEnabled() && trace.isDebugEnabled()) {
+            Tr.debug(trace, message.get());
+        }
     }
 }

@@ -86,7 +86,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration(), Collections.emptyList());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();
@@ -125,7 +125,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration(), Collections.emptyList());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();

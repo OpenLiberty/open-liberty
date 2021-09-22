@@ -35,7 +35,12 @@ public interface CheckpointHookFactory {
          * Phase of startup after all configured applications have been started
          * or have timed out starting. No ports are opened yet
          */
-        APPLICATIONS;
+        APPLICATIONS,
+        /**
+         * Phase of startup after the applications have been discovered but no
+         * code from the application has been executed.
+         */
+        DEPLOYMENT;
 
         static Map<String, Phase> phases;
         static {
