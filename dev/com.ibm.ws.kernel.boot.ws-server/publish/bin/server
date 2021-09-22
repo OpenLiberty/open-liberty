@@ -822,6 +822,14 @@ serverUmask()
   fi
 }
 
+##  kill process associated with pid passed in as argument.
+##
+##
+killIfRunning() {
+    if ps --pid ${1} > /dev/null 2>&1 ; then
+        kill ${1}
+    fi        
+}
 ##
 ## javaCmd: Execute a java-based command.  Arguments are:
 ##
@@ -899,13 +907,8 @@ javaCmd()
   elif [ $ACTION = "run" ] || [ $ACTION = "debug" ]; then
     exec "${JAVA_CMD}" "$@"
   elif [ $ACTION = "checkpoint" ]; then
-    # trap on the signals here to ensure the background tail process always ends below
-    trap "exit" INT TERM
-    trap "kill 0" EXIT
-
-    # Tail is used to print the content of the log file to
-    # the console output.
-    # This is done so we can restore in the foreground (run)
+    # Tail is used to print the content of the log file to the console
+    # output. This is done so we can restore in the foreground (run)
     # and in the background (start)
     CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
     # remove existing console log and the possible backup for checkpoint
@@ -916,6 +919,9 @@ javaCmd()
     touchIfNotExist "${CHECKPOINT_CONSOLE_LOG}"
     tail -f "${CHECKPOINT_CONSOLE_LOG}" &
     TAIL_PID=$!
+    # trap on the signals here to ensure the background tail process ends.
+    trap "exit" INT TERM
+    trap "killIfRunning $TAIL_PID" EXIT
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1
     rc=$?
     kill $TAIL_PID
@@ -1254,13 +1260,13 @@ criuRestore()
       fi
     fi        
   else
-    # trap on the signals here to ensure the background tail process always ends below
-    trap "exit" INT TERM
-    trap "kill 0" EXIT
     # For checkpoint we always write to the log file.
     # Use tail to bring the content to the console output
     tail -s0.1 -f "${RESTORE_CONSOLE_LOG}" &
     TAIL_PID=$!
+    # trap on the signals here to ensure the background tail process ends
+    trap "exit" INT TERM
+    trap "killIfRunning $TAIL_PID" EXIT
 
     criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log
