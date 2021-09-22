@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpHealth-4.0
+symbolicName=io.openliberty.mpHealth-4.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
