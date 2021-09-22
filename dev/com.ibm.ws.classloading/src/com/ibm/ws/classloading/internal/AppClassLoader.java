@@ -57,6 +57,7 @@ import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -75,6 +76,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         ClassLoader.registerAsParallelCapable();
     }
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
+
+    static final boolean IS_BETA = ProductInfo.getBetaEdition();
 
     enum SearchLocation {
         PARENT, SELF, DELEGATES
@@ -115,7 +118,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
-        this.systemTransformers = systemTransformers;
+        // only use system transformers if IS_BETA (part of checkpoint feature)
+        this.systemTransformers = IS_BETA ? systemTransformers : Collections.emptyList();
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
