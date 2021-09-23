@@ -16,9 +16,11 @@ import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.jws.WebService;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 
 @WebService(serviceName = "MTOMService", endpointInterface = "com.ibm.jaxws.MTOM.MTOMInter", targetNamespace = "http://MTOMService/")
@@ -30,6 +32,12 @@ public class MTOMService implements MTOMInter {
 
     @Override
     public byte[] getAttachment() {
+
+        // Use existing test to verify that we can properly cast a the MessageContext to the SOAPMessageContext
+        SOAPMessageContext smc = (SOAPMessageContext) wsc.getMessageContext();
+        SOAPMessage message = smc.getMessage();
+        System.out.println(message.getContentDescription());
+
         byte[] barr = new byte[10000];
         Random r = new Random();
         r.nextBytes(barr);

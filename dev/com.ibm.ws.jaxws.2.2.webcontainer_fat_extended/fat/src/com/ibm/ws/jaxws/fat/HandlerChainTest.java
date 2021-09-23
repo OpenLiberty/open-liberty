@@ -26,7 +26,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -274,30 +273,14 @@ public class HandlerChainTest {
     }
 
     private void uninstallApplications(LibertyServer server) throws Exception {
-        RemoteFile warFile;
-//        try {
-//            warFile = server.getFileFromLibertyServerRoot(PROVIDER_APP_LOCATION_DROPINS);
-//            warFile.delete();
-//            assertNotNull("Application testHandlerProvider does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerProvider"));
-//        } catch (FileNotFoundException e) {
-//            Log.warning(this.getClass(), e.getMessage());
-//        }
-
         try {
-            //warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_LOCATION_DROPINS);
-            //warFile.delete();
-
             server.removeDropinsApplications("testHandlerClient.war");
-            //assertNotNull("Application testHandlerClient does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClient"));
         } catch (FileNotFoundException e) {
             Log.warning(this.getClass(), e.getMessage());
         }
 
         try {
-            //warFile = server.getFileFromLibertyServerRoot(CLIENT_APP_WITHOUTXML_LOCATION_DROPINS);
-            //warFile.delete();
             server.removeDropinsApplications("testHandlerClientWithoutXML.war");
-            //assertNotNull("Application testHandlerClientWithoutXML does not appear to have removed.", server.waitForStringInLog(" CWWKT0017I:.*testHandlerClientWithoutXML"));
         } catch (FileNotFoundException e) {
             Log.warning(this.getClass(), e.getMessage());
         }
