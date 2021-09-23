@@ -1,4 +1,13 @@
-/*******************************************************************************n * Copyright (c) 2020 IBM Corporation and others.n * All rights reserved. This program and the accompanying materialsn * are made available under the terms of the Eclipse Public License v1.0n * which accompanies this distribution, and is available atn * http://www.eclipse.org/legal/epl-v10.htmln *n * Contributors:n *     IBM Corporation - initial API and implementationn *******************************************************************************/
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.ejbcontainer.bindings.configtests.web;
 
 import static org.junit.Assert.assertEquals;
@@ -10,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import com.ibm.ws.ejbcontainer.bindings.configtests.ejb.ConfigTestsLocalEJB;
@@ -92,7 +100,7 @@ public class BindToServerRootServlet extends FATServlet {
         try {
             Object lookup = ctx.lookup("com.ibm.ws.ejbcontainer.bindings.configtests.ejb.ConfigTestsRemoteHome");
             if (bindToServerRoot) {
-                ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) PortableRemoteObject.narrow(lookup, ConfigTestsRemoteHome.class);
+                ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) lookup;
                 ConfigTestsRemoteEJB bean = home.create();
                 assertNotNull("ConfigTestsRemoteEJB short default lookup did not succeed.", bean);
                 String str = bean.getString();
@@ -133,7 +141,7 @@ public class BindToServerRootServlet extends FATServlet {
         try {
             Object lookup = ctx.lookup("ejb/ConfigTestsTestApp/ConfigTestsEJB.jar/ConfigTestsTestBean#com.ibm.ws.ejbcontainer.bindings.configtests.ejb.ConfigTestsRemoteHome");
             if (bindToServerRoot) {
-                ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) PortableRemoteObject.narrow(lookup, ConfigTestsRemoteHome.class);
+                ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) lookup;
                 ConfigTestsRemoteEJB bean = home.create();
                 assertNotNull("ConfigTestsRemoteEJB long default lookup did not succeed.", bean);
                 String str = bean.getString();

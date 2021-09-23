@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -398,8 +397,7 @@ public class ComponentIDBndTestServlet extends FATServlet {
         try {
             lookupName = lookupName + "#com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome";
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + componentIDName);
-            Object lookup = context.lookup(lookupName);
-            RemoteComponentIDBndHome beanHome = (RemoteComponentIDBndHome) PortableRemoteObject.narrow(lookup, RemoteComponentIDBndHome.class);
+            RemoteComponentIDBndHome beanHome = (RemoteComponentIDBndHome) context.lookup(lookupName);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
                     fail("lookup " + lookupName + " should have worked for " + componentIDName + " and context " + contextString);

@@ -2991,6 +2991,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 Tr.entry(tc, "RetryAlarm.alarm");
             if (!_finished) {
                 try {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Retry attempt {0}", _count + 1);
+
                     boolean retryRequired = getResources().distributeOutcome();
                     retryRequired |= getResources().distributeForget();
                     if (retryRequired) {
@@ -3019,7 +3022,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                             _alarm = _alarmManager.scheduleDeferrableAlarm(0L, this);
                         } else {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Retrying in " + _wait + " seconds");
+                                Tr.debug(tc, "Retrying in {0} seconds", _wait);
                             _alarm = _alarmManager.scheduleDeferrableAlarm(_wait * 1000L, this);
                         }
                     } else // finished!

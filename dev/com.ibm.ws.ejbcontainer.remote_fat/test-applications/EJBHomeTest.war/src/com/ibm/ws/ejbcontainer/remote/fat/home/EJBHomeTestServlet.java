@@ -74,7 +74,7 @@ public class EJBHomeTestServlet extends FATServlet {
 
     @Test
     public void testEJBHomeLookup_EJBHomeTest() throws Exception {
-        assertEquals("abcd", narrow(new InitialContext().lookup("java:module/TestEJBHomeBean"), TestEJBHome.class).create().echo("abcd"));
+        assertEquals("abcd", ((TestEJBHome) new InitialContext().lookup("java:module/TestEJBHomeBean")).create().echo("abcd"));
     }
 
     private Object cosNamingResolve(String... names) throws Exception {

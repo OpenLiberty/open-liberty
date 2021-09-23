@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,12 +95,10 @@ public class SLRemoteInterfaceMethodServlet extends FATServlet {
     @PostConstruct
     public void initializeHomes() {
         try {
-            
 
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SLRaHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SLRaHome.class);
             fejb1 = fhome1.create();
 
-            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -109,12 +107,10 @@ public class SLRemoteInterfaceMethodServlet extends FATServlet {
     @PreDestroy
     public void destroyBeans() {
         try {
-            
 
             if (fejb1 != null)
                 fejb1.remove();
 
-            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -271,7 +267,7 @@ public class SLRemoteInterfaceMethodServlet extends FATServlet {
     public void testInterfaceMethod_NonReentrantRecursive() throws Exception {
         SLRTestReentrance ejb1 = null;
         try {
-            SLRTestReentranceHome home1 = FATHelper.lookupRemoteBinding("com/ibm/ejb1x/base/spec/slr/ejb/SLRNonReentranceHome", SLRTestReentranceHome.class);
+            SLRTestReentranceHome home1 = FATHelper.lookupRemoteHomeBinding("com/ibm/ejb1x/base/spec/slr/ejb/SLRNonReentranceHome", SLRTestReentranceHome.class);
             ejb1 = home1.create();
             ejb1.callNonRecursiveSelf(5, ejb1);
             assertNotNull("Stateless Session always uses a new instance for method call, therefore should never callback, but was null.", ejb1);

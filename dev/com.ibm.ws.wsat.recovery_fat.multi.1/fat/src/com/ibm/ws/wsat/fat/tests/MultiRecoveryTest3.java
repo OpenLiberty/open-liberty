@@ -60,8 +60,8 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException"})
 	//Caused by: javax.transaction.xa.XAException
-		//at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
-		//Perhaps this can be ignored
+	//at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
+	//Perhaps this can be ignored
 	public void WSTXMPR009BFVT() throws Exception {
 		recoveryTest(server, server2, "902","server2");
 	}
@@ -125,7 +125,7 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException", "java.net.SocketException" })
 	public void WSTXMPR012AFVT() throws Exception {
 		recoveryTest(server, server2, "1201","server1");
 	}
@@ -139,7 +139,7 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXMPR012CFVT() throws Exception {
 		recoveryTest(server, server2, "1203","both");
 	}

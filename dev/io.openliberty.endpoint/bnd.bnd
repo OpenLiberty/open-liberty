@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: EndPoint classes such as EndPointInfoBean
+Bundle-SymbolicName: io.openliberty.endpoint; singleton:=true
+Bundle-Description: Provides the EndPointInfoMBean that represents a defined endpoint. \
+The Java MBean interface can be used to access the host, name, and port information.
+
+WS-TraceGroup: ChannelFramework
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+  com.ibm.websphere.endpoint; provide:=true, \
+  com.ibm.ws.channelfw.internal.chains; -split-package:=merge-last; provide=true, \
+  com.ibm.websphere.channelfw; -split-package:=merge-last; provide=true
+
+-buildpath: \
+	com.ibm.ws.logging, \
+	com.ibm.ws.event, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.websphere.org.osgi.service.component, \
+	com.ibm.wsspi.org.osgi.service.component.annotations, \
+	com.ibm.ws.kernel.feature, \
+	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.timer;version=latest, \
+	com.ibm.ws.kernel.security.thread, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.wsbytebuffer
+#  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
+
+-testpath: \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest

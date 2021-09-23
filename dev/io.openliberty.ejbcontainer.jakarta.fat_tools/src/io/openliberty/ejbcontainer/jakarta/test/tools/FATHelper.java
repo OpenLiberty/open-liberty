@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -379,6 +379,27 @@ public abstract class FATHelper {
         svLogger.info("Found : " + ((o == null) ? "null" : o.getClass().getName()));
 
         return interfaceClass.cast(PortableRemoteObject.narrow(o, interfaceClass));
+    }
+    
+    /**
+     * Returns the remote home from JNDI lookup
+     * of "jndiName". This method is intended for non default remote bindings.
+     *
+     * DOES NOT PRO.NARROW()
+     *
+     * @param jndiName JNDI name to lookup.
+     * @return Remote interface object found.
+     */
+    public static <T> T lookupRemoteHomeBinding(String jndiName,
+                                                Class<T> interfaceClass) throws NamingException {
+        svLogger.info("Lookup Remote JNDI : " + jndiName +
+                      ", interface = " + interfaceClass.getName());
+
+        Object o = getContext().lookup(jndiName);
+
+        svLogger.info("Found : " + ((o == null) ? "null" : o.getClass().getName()));
+
+        return interfaceClass.cast(o);
     }
 
     public static UserTransaction lookupUserTransaction() throws NamingException {

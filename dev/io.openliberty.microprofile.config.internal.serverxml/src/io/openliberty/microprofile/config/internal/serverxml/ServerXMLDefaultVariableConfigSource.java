@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,12 @@ import com.ibm.ws.config.xml.LibertyVariable;
 public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLDefaultVariableConfigSource.class);
+    private final String name;
+
+    @Trivial
+    public ServerXMLDefaultVariableConfigSource() {
+        name = Tr.formatMessage(tc, "server.xml.default.variables.config.source");
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -41,7 +47,7 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
     @Override
     @Trivial
     public String getName() {
-        return Tr.formatMessage(tc, "server.xml.default.variables.config.source");
+        return name;
     }
 
     @Override

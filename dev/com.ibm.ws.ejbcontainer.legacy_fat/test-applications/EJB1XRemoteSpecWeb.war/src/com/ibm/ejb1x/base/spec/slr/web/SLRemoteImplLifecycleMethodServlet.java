@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,14 +101,12 @@ public class SLRemoteImplLifecycleMethodServlet extends FATServlet {
     @PostConstruct
     public void initializeHomes() {
         try {
-            
 
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SLRaHome.class);
-            fhome2 = FATHelper.lookupRemoteBinding(ejbJndiName2, SLRaHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SLRaHome.class);
+            fhome2 = FATHelper.lookupRemoteHomeBinding(ejbJndiName2, SLRaHome.class);
             fejb1 = fhome1.create();
             fejb2 = fhome2.create();
 
-            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -117,14 +115,12 @@ public class SLRemoteImplLifecycleMethodServlet extends FATServlet {
     @PreDestroy
     public void destroyBeans() {
         try {
-            
 
             if (fejb1 != null)
                 fejb1.remove();
             if (fejb2 != null)
                 fejb2.remove();
 
-            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

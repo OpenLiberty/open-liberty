@@ -41,7 +41,7 @@
             id="heuristicRetryWait" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
         <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
-            id="heuristicRetryLimit" required="false" type="Integer" default="5" />
+            id="heuristicRetryLimit" required="false" type="Integer" default="0" />
 
         <AD name="%max.transaction.timeout" description="%max.transaction.timeout.desc"
             id="propogatedOrBMTTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
