@@ -31,6 +31,7 @@
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 
 	<include location="${server.config.dir}/imports/signingBuilders.xml" />
+	<include location="${server.config.dir}/imports/signingEncryptingBuilders.xml" />
 	
 	<include location="${server.config.dir}/imports/userinfoEndpointApplication.xml" />
 	

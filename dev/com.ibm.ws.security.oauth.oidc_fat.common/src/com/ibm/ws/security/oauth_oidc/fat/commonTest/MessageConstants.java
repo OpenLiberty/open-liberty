@@ -84,6 +84,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1520E_MISSING_SAMESITE_COOKIE = "CWWKS1520E";
     public static final String CWWKS1532E_MALFORMED_URL_IN_COOKIE = "CWWKS1532E";
+    public static final String CWWKS1533E_SIGNATURE_MISMATCH = "CWWKS1533E";
+    public static final String CWWKS1534E_MISSING_AUTH_ENDPOINT = "CWWKS1534E";
     public static final String CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT = "CWWKS1524E";
     public static final String CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED = "CWWKS1525E";
 

@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -20,8 +19,9 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -33,6 +33,7 @@ import com.ibm.ws.security.openidconnect.client.fat.utils.SignatureEncryptionUse
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,31 +41,36 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 /**
  * This is the test class that will run tests to verify the correct behavior when
  * the userinfo endpoint returns data in the form of
- * json
+ * json (we won't bother adding tests for this type as ALL other existing tests use responses in json format as the Liberty OP can
+ * only create this type of response)
  * JWS
  * JWE
  *
  * The Liberty OP's userinfo endpoint only creates JSON responses. We'll create a
- * test tool userinfo endpoint. When called with POST or GET, it will return whatever
- * response it has. The test cases will use PUT to save the response that it wants userinfo to return.
+ * test tool userinfo endpoint. The test cases will use PUT to save a userinfo response (in the form
+ * of json, jws or jwe) When called with POST or GET, the test userinfo endpoint will return whatever
+ * response was previously saved.
  *
- * This allows us to test that the RP can handle userinfo responses that our OP can't create
+ * This allows us to test that the RP can handle userinfo responses that our OP can't create (but that
+ * other providers OPs userinfo endpoint can and do return)
  *
- * We'll test that we can create an opaque token (using a normal flow between RP and OP). We'll pass
- * that to the RS, but the RS will have a config that validates with introspect, but has userinfo enabled.
- * This means that it will validate with introspect, but call userinfo to gather extra claims. In cases
- * where the signature algorithms are the same, we'll validate that extra claims from userinfo will show
- * up in the subject printed by the test app. If the signature algorithm in the token returned from
+ * We'll test that we can create an opaque or jwt(jws) token (using a normal flow between RP and OP for RS256 and HS256).
+ * For all other signature algorithms and encryption, we'll use a jwt build to create a jwt access_token. We'll pass
+ * that access token to the RS.
+ * The RS will have configs that validates with introspect (and userinfo) or just userinfo.
+ * Only the setups where we can use the OP to create the access_token will use introspect (The builder created
+ * tokens can't be validated with introspect as the OP does not know of that token)
+ * In the cases that can validate with introspect, we'll also call userinfo to gather extra claims. In cases
+ * where the signature algorithms in the userinfo response are the same as the config, we'll validate that extra claims
+ * from userinfo will show up in the subject printed by the test app. If the signature algorithm in the token returned from
  * userinfo does not match, we'll make sure that we do NOT get a 401 (since we go down the "getUserInfoIfPossible"
  * path and that we do NOT get the extra claims.
  *
  * For signature algorithms and encryption that our OP does not currently support, we'll bypass the OP and RP
- * and create a JWS or JWE with the JWT builder. We'll use userinfo for validation (introspect won't work in
+ * and create a JWS or JWE with the JWT builder. We'll use userinfo only for validation (introspect won't work in
  * this case). We'll need to use new flags requireJwtAccessTokenRemoteValidation and/or allowJwtAccessTokenRemoteValidation
- * to allow use of the validation endpoints (the current runtime only does local only validation if the
- * Bearer token is JWT)
- *
- * The tests
+ * to allow use of the validation endpoints (the runtime only does local only validation if the
+ * Bearer token is JWT if we don't use requireJwtAccessTokenRemoteValidation)
  *
  **/
 
@@ -73,17 +79,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class OidcPropagationConsumeUserinfoTests extends CommonTest {
 
     public static Class<?> thisClass = OidcPropagationConsumeUserinfoTests.class;
-    public static HashMap<String, Integer> defRespStatusMap = null;
 
-    public static String[] test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-    public static String[] test_LOGIN_PAGE_ONLY = Constants.GET_LOGIN_PAGE_ONLY;
-    public static String test_FinalAction = Constants.LOGIN_USER;
-    protected static String hostName = "localhost";
-    public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
-    public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
-    public static final String badTokenSegment = "1234567890123456789";
     private static final JwtTokenActions actions = new JwtTokenActions();
     private static final SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
 
@@ -97,6 +93,14 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
             }
         };
 
+        // apps are taking too long to start up for the normal app check, but, we need to be sure that they're ready before we try to use them.
+        List<String> extraMsgs = new ArrayList<String>() {
+            {
+                add("CWWKZ0001I.*" + JwtConstants.JWT_SIMPLE_BUILDER_SERVLET);
+                add("CWWKZ0001I.*" + Constants.USERINFO_ENDPOINT_SERVLET);
+            }
+        };
+
         List<String> rs_apps = new ArrayList<String>() {
             {
                 add(Constants.HELLOWORLD_APP);
@@ -105,27 +109,16 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
 
         testSettings = new TestSettings();
 
-        // Set config parameters for Access token with X509 Certificate in OP config files
-        String tokenType = Constants.ACCESS_TOKEN_KEY;
-        String certType = Constants.X509_CERT;
-
         // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
         SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         //Start the OIDC RP server and setup default values
-        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_consumeUserinfo.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_consumeUserinfo.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
 
         //Start the OIDC RS server and setup default values
-        genericTestServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rs", "rs_server_withOpStub_consumeUserinfo.xml", Constants.GENERIC_SERVER, rs_apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        genericTestServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rs", "rs_server_withOpStub_consumeUserinfo.xml", Constants.GENERIC_SERVER, rs_apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
 
-        // override actions that generic tests should use - Need to skip consent form as httpunit
-        // cannot process the form because of embedded javascript
-
-        test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-        test_FinalAction = Constants.LOGIN_USER;
         testSettings.setFlowType(Constants.RP_FLOW);
 
         testSettings.setUserinfoEndpt(testSettings.getUserinfoEndpt().replace("oidc/endpoint/OidcConfigSample/userinfo", "UserinfoEndpointServlet").replace("oidc/providers/OidcConfigSample/userinfo", "UserinfoEndpointServlet") + "/saveToken");
@@ -134,79 +127,58 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
     }
 
     /**
-     * Invoke common steps to test userinfo returning a JWS token as it's response.
-     * This method is used to test cases where the OP, RP and userinfo response are
-     * all configured to match (same sig alg, client id, ...)
+     * NOTE: use of this method should be replaced with calls to genericUseOPToken_ConsumeJWTUserinfoTest if/when we add support
+     * to our OP
+     * for additional signatures algorithms and encryption. This is a workaround to allow us to test userinfo
      *
-     * @param alg
-     *            - the signature alg that will be used (used as the id to use with the jwt builder, it's also used to specify
-     *            which app to invoke (which in turn selects the correct RP config)
-     * @throws Exception
-     */
-    public void genericUseOpaqueToken_ConsumeJWSUserinfoTest(String alg) throws Exception {
-        genericUseOpaqueToken_ConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), alg);
-    }
-
-    /**
-     * Invoke common steps to test userinfo returning a JWE token as it's response.
-     * This method is used to test cases where the OP, RP and userinfo response are
-     * all configured to match (same sig alg, same encryption alg, client id, ...)
-     *
-     * @param alg
-     *            - the signature alg that will be used (used as the id to use with the jwt builder, it's also used to specify
-     *            which app to invoke (which in turn selects the correct RP config)
-     * @throws Exception
-     */
-    public void genericUseOpaqueToken_ConsumeJWEUserinfoTest(String alg) throws Exception {
-        genericUseOpaqueToken_ConsumeJWTUserinfoTest(alg, setJWEBuilderName(alg, alg), setJWEBuilderName(alg, alg), setJWEAppName(alg, alg));
-    }
-
-    /**
-     * The common method that will:
-     * 1) build a JWS or JWE token using the builder specified to be returned by the token endpoint
-     * 2) build a JWS or JWE token using the builder specified adding extra claims to be returned by the userinfo endpoint
+     * The common method that allows us to test with signature algorithms and encryption that our OP does NOT support.
+     * This method will:
+     * 1) build a JWS or JWE token using the builder specified (using builderId)
+     * 2) build a JWS or JWE token using the builder specified adding extra claims to be returned by the userinfo endpoint (using
+     * userinfoBuilderId)
      * 3) Create expectations to validate that the claims from the token returned by userinfo are found in the subject printed by
      * the test app (when the token is valid for the request - and validate that those claims are NOT found in the subject when
-     * the token is NOT valid)
-     * 4) attempt to access the protected app with a config that will use the test token and userinfo endpoints (that return our
-     * created tokens)
+     * the token is NOT valid) (will also add expectations for error messages being logged in the case that the userinfo token is
+     * NOT valid)
+     * 4) attempt to access the protected app with a config that will use the userinfo endpoint (that return our created token)
      * 5) validate the expectations that we've created
      *
      * @param alg
-     *            - the signature algorithm used by the OP
-     * @param tokenEndpointBuilderId
-     *            - the builderId to use when creating the JWT used/returned by the token endpoint
+     *            - the signature algorithm used by the RS
+     * @param builderId
+     *            - the builderId to use when creating the JWT to be passed on the app request in the RS
      * @param userinfoBuilderId
      *            - the builderId to use when creating the JWT used/returned by the userinfo endpoint
      * @param appName
-     *            - the name of the app to invoke to test access
+     *            - the name of the app to invoke (in the RS) to test access
      * @throws Exception
      */
-    public void genericUseJwToken_ConsumeJWTUserinfoTest(String alg, String builderId, String userinfoBuilderId, String appName) throws Exception {
+    public void genericUseStubbedToken_ConsumeJWTUserinfoTest(String alg, String builderId, String userinfoBuilderId, String appName) throws Exception {
 
+        boolean isJws = !appName.contains("Encrypt");
+        String exactTokenType = (isJws) ? "JWS" : "JWE";
         Log.info(thisClass, _testName, "********************************************************************************************************************");
-        Log.info(thisClass, _testName, "******** Testing with a JWT userinfo response - token endpoint using builder: " + builderId + " and userinfo using builder: " + userinfoBuilderId + "********");
+        Log.info(thisClass, _testName, "******** Testing with a JWT (" + exactTokenType + ") userinfo response - base token created using builder: " + builderId + " and userinfo using builder: " + userinfoBuilderId + "********");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
 
-        //        WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
-        updatedTestSettings.setRSProtectedResource(genericTestServer.getHttpsString() + Constants.HELLOWORLD_PROTECTED_RESOURCE + appName);
+        updatedTestSettings.setRSProtectedResource(genericTestServer.getHttpsString() + appName);
         Log.info(thisClass, _testName, "RS Protected App: " + updatedTestSettings.getRSProtectedResource());
         updatedTestSettings.setSignatureAlg(alg);
-
-        //        ArrayList<NameValuePair> parms = new ArrayList<NameValuePair>();
-        //        parms.add(new NameValuePair("sub", "testuser"));
 
         // Create a token to use for access
         String access_token = createTokenWithSubject(builderId);
 
         // create and save an updated token to be used as the response from the userinfo endpoint
         List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings);
-        String token = createTokenWithSubjectAndExpectations(userinfoBuilderId, expectations, builderId.equals(userinfoBuilderId), appName.equals(alg));
-        //        // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
+        List<NameValuePair> userinfoParms = createExtraParms(null, userinfoBuilderId);
+        String token = createTokenWithSubjectPlus(userinfoBuilderId, userinfoParms);
+        expectations = createRSExpectations(expectations, userinfoParms, builderId.equals(userinfoBuilderId), isJws, appName.contains(Constants.USERINFO_ENDPOINT));
+
+        // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
         List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", token);
-        //        //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
+        //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
         genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
 
         // use the original token and and RS config that will include the
@@ -214,60 +186,60 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
 
     }
 
-    public void genericUseOpaqueToken_ConsumeJWTUserinfoTest(String alg, String tokenEndpointBuilderId, String userinfoBuilderId, String appName) throws Exception {
+    /**
+     * The common method that allows us to test with signature algorithms that our OP does support.
+     * This method will:
+     * 1) invoke a protected app on an RP - thus creating an access token (either opaque or jwt)
+     * 2) build a JWS or JWE token using the builder specified adding extra claims to be returned by the userinfo endpoint (using
+     * userinfoBuilderId)
+     * 3) Create expectations to validate that the claims from the token returned by userinfo are found in the subject printed by
+     * the test app (when the token is valid for the request - and validate that those claims are NOT found in the subject when
+     * the token is NOT valid) (will also add expectations for error messages being logged in the case that the userinfo token is
+     * NOT valid)
+     * 4) attempt to access the protected app with a config that will use the userinfo endpoint (that return our created token)
+     * 5) validate the expectations that we've created
+     *
+     * @param alg
+     *            - the signature algorithm used by the RS
+     * @param userinfoBuilderId
+     *            - the builderId to use when creating the JWT used/returned by the userinfo endpoint
+     * @param rpAppName
+     *            - the name of the app to invoke (in the RP) to test
+     * @param rsAppName
+     *            - the name of the app to invoke (in the RS) to test access
+     * @throws Exception
+     */
+    public void genericUseOPToken_ConsumeJWTUserinfoTest(String alg, String userinfoBuilderId, String rpAppName, String rsAppName) throws Exception {
 
+        boolean isJws = !rsAppName.contains("Encrypt");
+        String exactTokenType = (isJws) ? "JWS" : "JWE";
         Log.info(thisClass, _testName, "********************************************************************************************************************");
-        Log.info(thisClass, _testName, "******** Testing with a JWT userinfo response - token endpoint using builder: " + tokenEndpointBuilderId + " and userinfo using builder: " + userinfoBuilderId + "********");
+        Log.info(thisClass, _testName, "******************* Testing with a JWT (" + exactTokenType + ") userinfo response - userinfo using builder: " + userinfoBuilderId + "******************");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
 
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
-        //updatedTestSettings.addRequestParms();
-        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
-        //                updatedTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/" + Constants.HELLOWORLD_SERVLET + "/rest/" + appName);
-        //        updatedTestSettings.setRSProtectedResource(genericTestServer.getHttpsString() + Constants.HELLOWORLD_PROTECTED_RESOURCE);
-        //        Log.info(thisClass, _testName, "RS Protected App: " + updatedTestSettings.getRSProtectedResource());
-        //        updatedTestSettings.setRSProtectedResource(genericTestServer.getServerHttpsString() + "/" + Constants.HELLOWORLD_SERVLET + "/rest/" + appName);
-        //        updatedTestSettings.setRSProtectedResource(genericTestServer.getServerHttpsString() + "/" + Constants.HELLOWORLD_SERVLET + "/rest/foo");
-        updatedTestSettings.setRSProtectedResource(genericTestServer.getHttpsString() + Constants.HELLOWORLD_PROTECTED_RESOURCE + appName);
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + rpAppName));
+        updatedTestSettings.setRSProtectedResource(genericTestServer.getHttpsString() + rsAppName);
         Log.info(thisClass, _testName, "RS Protected App: " + updatedTestSettings.getRSProtectedResource());
         updatedTestSettings.setSignatureAlg(alg);
-        // TODO will we need sign and encrypt with different algs?
-        //chc updatedTestSettings.setDecryptKey(JwtKeyTools.getComplexPrivateKeyForSigAlg(testOPServer.getServer(), alg));
 
         List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings);
 
-        //        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", tokenEndpointBuilderId);
-
-        WebResponse response = genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        WebResponse response = genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
         String access_token = validationTools.getTokenFromOutput("access_token=", response);
 
-        //        // Invoke the test TokenEndpoint stub.  It will invoke the Jwt Builder to create a JWT Token (using the builder specified in the builderId passed in via parms
-        //        // The TokenEndpoint stub will save that token and it will be returned when the RP uses it's TokenEnpdointUrl specified in it's config
-        //        //  (That url is:  http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken)
-        //        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
-        //        // let's create a similar JWT token, but make sure that it has an additional claim - we'll check to make sure that the extra claim
-        //        // shows up in the subject that our protected test app sees
-        //        // 3rd parm tells createTokenWithSubjectAndExpectations whether the userinfo token will or will not match the config so it can determine whether to set
-        //        //  expectations for things that should be found, or things that should NOT be found
-        //        // 4th parm tells createTokenWithSubjectAndExpectations whether we're using JWS or JWE tokens (messages we're searching for will be different) - the check
-        //        //  in the call determines token type because the test app names match the signature alg for JWS tests - for JWE, the appNames are more complex.
-        String token = createTokenWithSubjectAndExpectations(userinfoBuilderId, expectations, tokenEndpointBuilderId.equals(userinfoBuilderId), appName.equals(alg));
-        //        // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
-        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", token);
-        //        //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
-        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
-        //
-        //        Log.info(thisClass, "genericConsumeJWSUserinfoTest", String.valueOf(expectations.size()));
-        //
-        //        // we created and saved a jwt for our test tooling token endpoint to return to the RP - let's invoke
-        //        // the protected resource.  The RP will get the auth token, but, instead of getting a jwt from the OP, it will use a
-        //        // token endpoint pointing to the test tooling app that will return the jwt previously obtained using a builder
-        //        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        List<NameValuePair> userinfoParms = createExtraParms(null, userinfoBuilderId);
+        String token = createTokenWithSubjectPlus(userinfoBuilderId, userinfoParms);
+        List<validationData> expectations2 = createRSExpectations(expectations, userinfoParms, userinfoBuilderId.startsWith(alg), isJws, rsAppName.contains(Constants.USERINFO_ENDPOINT));
 
-        //        helpers.invokeProtectedResource(_testName, new WebConversation(), access_token, Constants.HEADER, updatedTestSettings, expectations, Constants.INVOKE_PROTECTED_RESOURCE);
-        helpers.invokeRsProtectedResource(_testName, new WebConversation(), access_token, updatedTestSettings, expectations);
+        // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
+        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", token);
+        //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations2);
+
+        helpers.invokeRsProtectedResource(_testName, new WebConversation(), access_token, updatedTestSettings, expectations2);
     }
 
     /**
@@ -278,6 +250,17 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     public String setJWSBuilderName(String alg) {
         return alg + "Builder";
+    }
+
+    /**
+     * Create builder name for a JWE builder
+     *
+     * @param alg
+     *            - signature and encryption alg
+     * @return the builder name to use
+     */
+    public String setJWEBuilderName(String alg) {
+        return setJWEBuilderName(alg, alg);
     }
 
     /**
@@ -294,40 +277,76 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
     }
 
     /**
-     * Create app name to use with JWE tokens
+     * Build the name of the app to use on the RP server.
+     * The name of the app will result in the proper oidc config to be chosen
      *
-     * @param sigAlg
-     *            - the sig alg to use to build the appname to call (this will in turn result in the appropriate RP config to be
-     *            used to verify and decrypt the token)
-     * @param decryptAlg
-     *            - the decrypt alg to use to build the appname to call (this will in turn result in the appropriate RP config to
-     *            be used to verify and decrypt the token)
-     * @return - the appname to call
+     * @param alg
+     *            - the signature algorithm to use for signing
+     * @param tokenFormat
+     *            - the type of access_token to use (opaque/jwt)
+     * @return
      */
-    public String setJWEAppName(String sigAlg, String decryptAlg) {
+    public String setRP_JWSAppName(String alg, String tokenFormat) {
         Log.info(thisClass, _testName, "********************************************************************************************************************");
-        Log.info(thisClass, _testName, "************************ Testing with RP - Verifying with " + sigAlg + " and decrypting using: " + decryptAlg + " ************************");
+        Log.info(thisClass, _testName, "********************************** Testing with RP - Verifying with " + alg + " **********************************");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
-        return "Sign" + sigAlg + "Encrypt" + decryptAlg;
+        return "simple/" + alg + tokenFormat;
     }
 
     /**
-     * Calls createTokenWithSubjectAndExpectations and include a null list of extra parms to add
+     * Build the name of the app to use on the RS server when using a JWS token
+     * The name of the app will result in the proper oidc config to be chosen
      *
-     * @param builderId
-     *            - the builder id to use to create the token
-     * @param expectations
-     *            - alrady set expectations - we'll add to these
-     * @param userinfoWillBeUsed
-     *            - flag indicating if we should set expectations that make sure the claims are in or are not in the subject
-     * @param isJWS
-     *            - flag indicating if the test usins JWS token (false indicates JWE)
-     * @return the created token
-     * @throws Exception
+     * @param alg
+     *            - the algorithm to use for signing
+     * @param validationType
+     *            - the validation type (introspect/userinfo)
+     * @param tokenFormat
+     *            - the type of access_token to use (opaque/jwt)
+     * @return
      */
-    private String createTokenWithSubjectAndExpectations(String builderId, List<validationData> expectations, boolean userinfoWillBeUsed, boolean isJWS) throws Exception {
-        return createTokenWithSubjectAndExpectations(builderId, null, expectations, userinfoWillBeUsed, isJWS);
+    public String setRS_JWSAppName(String alg, String validationType, String tokenFormat) {
+        Log.info(thisClass, _testName, "********************************************************************************************************************");
+        Log.info(thisClass, _testName, "********************************** Testing with RS - Verifying with " + alg + " **********************************");
+        Log.info(thisClass, _testName, "********************************************************************************************************************");
+        return Constants.HELLOWORLD_PROTECTED_RESOURCE + alg + validationType + "_" + tokenFormat;
+    }
 
+    /**
+     * Build the name of the app to use on the RS server when using a JWE token
+     * The name of the app will result in the proper oidc config to be chosen
+     *
+     * @param alg
+     *            - the algorithm to use for signing and encryption
+     * @param validationType
+     *            - the validation type (introspect/userinfo)
+     * @param tokenFormat
+     *            - the type of access_token to use (opaque/jwt)
+     * @return - the appname to call
+     */
+    public String setRS_JWEAppName(String alg, String validationType, String tokenFormat) {
+        return setRS_JWEAppName(alg, alg, validationType, tokenFormat);
+    }
+
+    /**
+     * Build the name of the app to use on the RS server when using a JWE token
+     * The name of the app will result in the proper oidc config to be chosen
+     *
+     * @param sigAlg
+     *            - the algorithm to use for signing
+     * @param decryptAlg
+     *            - the algorithm to use for encrypting
+     * @param validationType
+     *            - the validation type (introspect/userinfo)
+     * @param tokenFormat
+     *            - the type of access_token to use (opaque/jwt)
+     * @return
+     */
+    public String setRS_JWEAppName(String sigAlg, String decryptAlg, String validationType, String tokenFormat) {
+        Log.info(thisClass, _testName, "********************************************************************************************************************");
+        Log.info(thisClass, _testName, "************************ Testing with RS - Verifying with " + sigAlg + " and decrypting using: " + decryptAlg + " ************************");
+        Log.info(thisClass, _testName, "********************************************************************************************************************");
+        return Constants.HELLOWORLD_PROTECTED_RESOURCE + "Sign" + sigAlg + "Encrypt" + decryptAlg + validationType + "_" + tokenFormat;
     }
 
     /**
@@ -349,326 +368,846 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      * @return the created token
      * @throws Exception
      */
-    private String createTokenWithSubjectAndExpectations(String builderId, List<NameValuePair> parms, List<validationData> expectations, boolean userinfoWillBeUsed, boolean isJWS) throws Exception {
+    protected List<validationData> createRSExpectations(List<validationData> expectations, List<NameValuePair> parms, boolean userinfoWillBeUsed, boolean isJWS, boolean usesUserinfoOnly) throws Exception {
 
+        if (usesUserinfoOnly && !userinfoWillBeUsed) {
+            Log.info(thisClass, "createRSExpectations", "Expecting failure validating using just userinfo endpoint");
+            expectations = vData.addSuccessStatusCodes(null, Constants.INVOKE_RS_PROTECTED_RESOURCE);
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.UNAUTHORIZED_STATUS);
+            expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Can not extract the JSON token from the response", MessageConstants.CWWKS1533E_SIGNATURE_MISMATCH);
+            expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the auth endpoint is not set.", MessageConstants.CWWKS1534E_MISSING_AUTH_ENDPOINT);
+            if (isJWS) {
+                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch.", MessageConstants.CWWKS1777E_SIG_ALG_MISMATCH);
+            } else {
+                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there a problem validating the access token.", MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP);
+                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there a problem extracting JWS from JWE.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+            }
+        } else {
+            if (expectations == null) {
+                expectations = vData.addSuccessStatusCodes(null);
+            }
+            for (NameValuePair parm : parms) {
+                if (parm.getName().equals("sub") || userinfoWillBeUsed) {
+                    if (parm.getName().equals(JwtConstants.PARAM_KEY_MGMT_ALG) || parm.getName().equals((JwtConstants.PARAM_ENCRYPT_KEY))) {
+                        Log.info(thisClass, "createRSExpectations", "Not adding a check for parm: " + parm + " - attr is in the JWE header and not part of the payload.");
+                    } else {
+                        Log.info(thisClass, "createRSExpectations", "adding extra claim check");
+                        expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
+                    }
+                } else {
+                    expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
+                }
+            }
+
+            if (!userinfoWillBeUsed) {
+                if (isJWS) {
+                    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client trace.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1777E_SIG_ALG_MISMATCH);
+                } else {
+                    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+                }
+            }
+
+        }
+
+        return expectations;
+    }
+
+    /**
+     * Create a jwt token with extra parms - this will be used to generate the the token saved and used by the test "userinfo"
+     * endpoint.
+     * The extra parm "defaultExtraClaim" will be used to show that the runtime is picking up info from userinfo.
+     *
+     * @param parms
+     *            - current list of parms to add values to
+     * @param builderId
+     *            - the builderId that will be used (passed to method for use in determining if extra EC parms are needed)
+     * @return - updated list of parms to add to token
+     * @throws Exception
+     */
+    protected List<NameValuePair> createExtraParms(List<NameValuePair> parms, String builderId) throws Exception {
         if (parms == null) {
             parms = new ArrayList<NameValuePair>();
         }
         parms.add(new NameValuePair("sub", "testuser"));
         parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+        parms = setParmsForECWorkaround(parms, builderId);
+        return parms;
+
+    }
+
+    /**
+     * Creates a token using the passed builder along with any parms passed
+     *
+     * @param builderId
+     *            - the builder id to use to build the token
+     * @param parms
+     *            - extra parms if any
+     * @return - a token built using the builder id and extra parms passed
+     * @throws Exception
+     */
+    protected String createTokenWithSubjectPlus(String builderId, List<NameValuePair> parms) throws Exception {
+
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
         Log.info(thisClass, _testName, jwtToken);
-        if (expectations != null) {
-            for (NameValuePair parm : parms) {
-                if (parm.getName().equals("sub") || userinfoWillBeUsed) {
-                    expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
-                } else {
-                    expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
-                }
-            }
-        }
-        if (!userinfoWillBeUsed) {
-            if (isJWS) {
-                // TODO - update message checked once (issue 18256) is resolved
-                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client trace.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1777E_SIG_ALG_MISMATCH);
-            } else {
-                // TODO - update log checked once (issue 18256) is resolved
-                expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
-            }
-        }
 
         return jwtToken;
     }
 
-    private String createTokenWithSubject(String builderId) throws Exception {
+    /**
+     * Creates a token using the passed builder along with the sub claim
+     *
+     * @param builderId
+     *            - the builder id to use to build the token
+     * @return - a token built using the builder id and sub claim
+     * @throws Exception
+     */
+    protected String createTokenWithSubject(String builderId) throws Exception {
 
-        ArrayList<NameValuePair> parms = new ArrayList<NameValuePair>();
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
 
         parms.add(new NameValuePair("sub", "testuser"));
+        parms = setParmsForECWorkaround(parms, builderId);
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
         Log.info(thisClass, _testName, jwtToken);
 
         return jwtToken;
     }
+
+    /**
+     * Create extra parms to work around issue 17485 (where we can't just use the jwt builder to create a token encrypted with an
+     * EC alg)
+     *
+     * @param parms
+     *            - current list of parms (ad EC parms to this list)
+     * @param builderId
+     *            - the builder that we'll be using (for the tests in this class, we can create the alg name based on the builder
+     *            name)
+     * @return - an updated list of parms
+     * @throws Exception
+     */
+    public List<NameValuePair> setParmsForECWorkaround(List<NameValuePair> parms, String builderId) throws Exception {
+
+        if (builderId.contains("EncryptES")) {
+            String alg = builderId.split("Encrypt")[1].replace("Builder", "");
+            testOPServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE);
+            parms.add(new NameValuePair(JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES));
+            parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg)));
+        }
+        return parms;
+    }
+
     /******************************* tests *******************************/
 
-    /************************** JSON Response ***************************/
+    /********************** Userinfo JSON Response ***********************/
     // All of the other oidc fat tests run with userinfo returning json
     //  responses, no need to add any additional tests here
     /*********************************************************************/
 
-    /************************** JWS Response ****************************/
-    /****** userinfo returns responses that match the RP config **********/
+    /********************** Userinfo JWS Response ************************/
+    /******************* userinfo returns JWS responses ******************/
+
     /**
-     * Test with an opaque token signed with RS256. The config specifies validation using introspect. userInfoEndpointEnabled is
-     * set to true, so we'll use introspect, but also try to add any additional info by using the userinfo endpoint. In this case,
+     * Test with an opaque token signed with RS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
      * userinfo will return a JWS Token signed with RS256. The userinfo response will have an extra claim - the test will validate
      * that the extra claim is in the subject printed by the test app.
      *
      * @throws Exception
      */
     @Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_introspectWithUserinfo() throws Exception {
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedRS256_validateInstropectWithUserinfo() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_RS256);
-        //        genericUseJwtToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS384), Constants.SIGALG_RS384);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.INTROSPECTION_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test with an opaque token signed with RS256. The config specifies validation using introspect. userInfoEndpointEnabled is
-     * set to true, so we'll use introspect, but also try to add any additional info by using the userinfo endpoint. In this case,
-     * userinfo will return a JWS Token signed with RS384. The runtime won't be able to parse the token. An error will be
-     * encountered, but ignored.
+     * Test with an opaque token signed with RS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with RS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
      *
      * @throws Exception
      */
     @Test
-    public void OidcClientConsumeUserinfoTests_RS384JWSResponse_signedRS256_introspectWithUserinfo() throws Exception {
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedRS256_validateUserinfoOnly() throws Exception {
 
-        //        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_RS256);
-        genericUseOpaqueToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS384), Constants.SIGALG_RS256);
-
-    }
-
-    /**
-     * Test shows that the RP can handle a JWS response signed with RS384 from the userinfo endpoint
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS384() throws Exception {
-
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_RS384);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test shows that the RP can handle a JWS response signed with RS512 from the userinfo endpoint
-     *
-     * @throws Exception
-     */
-    @Mode(TestMode.LITE)
-    //@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS512() throws Exception {
-
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_RS512);
-
-    }
-
-    /**
-     * Test shows that the RP can handle a JWS response signed with HS256 from the userinfo endpoint
+     * Test with a jwt token signed with RS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with RS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
      *
      * @throws Exception
      */
     @Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256_introspectWithUserinfo() throws Exception {
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS256_validateInstropectWithUserinfo() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_HS256);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.INTROSPECTION_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test with an opaque token signed with HS256. The config specifies validation using introspect. userInfoEndpointEnabled is
-     * set to true, so we'll use introspect, but also try to add any additional info by using the userinfo endpoint. In this case,
-     * userinfo will return a JWS Token signed with RS512. The runtime won't be able to parse the token. An error will be
-     * encountered, but ignored.
+     * Test with a jwt token signed with RS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with RS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
      *
      * @throws Exception
      */
     @Test
-    public void OidcClientConsumeUserinfoTests_RS512JWSResponse_signedHS256_introspectWithUserinfo() throws Exception {
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS256_validateUserinfoOnly() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setJWSBuilderName(Constants.SIGALG_RS512), Constants.SIGALG_HS256);
-
-    }
-
-    /**
-     * Test shows that the RP can handle a JWS response signed with HS384 from the userinfo endpoint
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS384() throws Exception {
-
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_HS384);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test shows that the RP can handle a JWS response signed with HS512 from the userinfo endpoint
+     * Test with an opaque token signed with RS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with RS384. Instrospect will succeed, but userinfo will fail because of the alg
+     * mismatch. We will validate that the extra claim is NOT in the subject and that we get a warning message in the server log.
      *
      * @throws Exception
      */
-    //@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS512() throws Exception {
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedRS256_validateInstropectWithUserinfo_userinfoMismatchRS384() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_HS512);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS384), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.INTROSPECTION_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test shows that the RP can handle a JWS response signed with ES256 from the userinfo endpoint
+     * Test with a opaque token signed with RS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with RS384. Validation of the userinfo response will fail because of the alg
+     * mistmatch. This will result in the access_token being seen as invalid and we will receive a 401 as well as error messages
+     * in the server log.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedES256() throws Exception {
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedRS256_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_ES256);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS384), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test shows that the RP can handle a JWS response signed with ES384 from the userinfo endpoint
+     * Test with a jwt token signed with RS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with RS384. Instrospect will succeed, but userinfo will fail because of the alg
+     * mismatch. We will validate that the extra claim is NOT in the subject and that we get a warning message in the server log.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedES384() throws Exception {
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS256_validateInstropectWithUserinfo_userinfoMismatchRS384() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_ES384);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS384), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.INTROSPECTION_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
     /**
-     * Test shows that the RP can handle a JWS response signed with ES512 from the userinfo endpoint
+     * Test with a opaque token signed with RS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with RS384. Validation of the userinfo response will fail because of the alg
+     * mistmatch. This will result in the access_token being seen as invalid and we will receive a 401 as well as error messages
+     * in the server log.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedES512() throws Exception {
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS256_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWSUserinfoTest(Constants.SIGALG_ES512);
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS384), setRP_JWSAppName(Constants.SIGALG_RS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
-    /****** userinfo returns responses that do NOT match the RP config **********/
+    // NOTE: tests that use signature algorithms other than RS256 and HS256 can use only use userinfo as a validation endpoint.  Our OP can NOT produce an access token (opaque or jws) using any other signature.
+    //         Our OP can not produce an access token in JWE format for any alg.  Therefore, we have to use the jwt builder to create an access_token to pass on the request - since the token is not created by the
+    //         OP, we can't use introspect to validate it - we can only test using userinfo to validate - that means for any mismatch cases, we'll need to expect a failure, not just missing extra info.
     /**
-     * Test shows that the RP will fail to be able to consume the JWS token returned by the userinfo
-     * endpoint. This will result in an error message being logged to the RP server logs. Processing will
-     * continue and we will be granted access to the test app. The JWS returned from the userinfo endpoint
-     * contained extra claims that were not in the token returned from the token endpoint. We will verify
-     * that none of those extra claims show up in the subject that the protected test app logs. This shows
-     * that the userinfo JWS claims were not applied to the subject.
+     * Test with a jwt token signed with RS384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with RS384.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_userinfoMismatch() throws Exception {
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS384_validateUserinfoOnly() throws Exception {
 
-        for (String alg : Constants.ALL_TEST_SIGALGS) {
-            if (!alg.equals(Constants.SIGALG_RS256)) {
-                genericUseOpaqueToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), Constants.SIGALG_RS256);
-            }
-        }
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWSBuilderName(Constants.SIGALG_RS384), setJWSBuilderName(Constants.SIGALG_RS384), setRS_JWSAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
     }
-    // TODO - do we really need to test all variations
 
-    /************************** JWE Response ****************************/
+    /**
+     * Test with a jwt token signed with RS384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES256.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS384_validateUserinfoOnly_userinfoMismatchES256() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWSBuilderName(Constants.SIGALG_RS384), setJWSBuilderName(Constants.SIGALG_ES256), setRS_JWSAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with RS512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with RS512.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS512_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWSBuilderName(Constants.SIGALG_RS512), setJWSBuilderName(Constants.SIGALG_RS512), setRS_JWSAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with RS512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedRS512_validateUserinfoOnly_userinfoMismatchES512() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWSBuilderName(Constants.SIGALG_RS512), setJWSBuilderName(Constants.SIGALG_ES512), setRS_JWSAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES256 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES256.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES256_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWSBuilderName(Constants.SIGALG_ES256), setJWSBuilderName(Constants.SIGALG_ES256), setRS_JWSAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES256 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with RS512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES256_validateUserinfoOnly_userinfoMismatchRS512() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWSBuilderName(Constants.SIGALG_ES256), setJWSBuilderName(Constants.SIGALG_RS512), setRS_JWSAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES384.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES384_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWSBuilderName(Constants.SIGALG_ES384), setJWSBuilderName(Constants.SIGALG_ES384), setRS_JWSAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with RS256.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES384_validateUserinfoOnly_userinfoMismatchRS256() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWSBuilderName(Constants.SIGALG_ES384), setJWSBuilderName(Constants.SIGALG_RS256), setRS_JWSAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES512.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES512_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWSBuilderName(Constants.SIGALG_ES512), setJWSBuilderName(Constants.SIGALG_ES512), setRS_JWSAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with ES512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with RS384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedES512_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWSBuilderName(Constants.SIGALG_ES512), setJWSBuilderName(Constants.SIGALG_RS384), setRS_JWSAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an opaque token signed with HS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with HS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedHS256_validateInstropectWithUserinfo() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.INTROSPECTION_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an opaque token signed with HS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with HS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedHS256_validateUserinfoOnly() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.USERINFO_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an jwt token signed with HS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with HS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS256_validateInstropectWithUserinfo() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.INTROSPECTION_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an jwt token signed with HS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with HS256. The userinfo response will have an extra claim - the test will validate
+     * that the extra claim is in the subject printed by the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS256_validateUserinfoOnly() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an opaque token signed with HS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with HS384. Instrospect will succeed, but userinfo will fail because of the alg
+     * mismatch. We will validate that the extra claim is NOT in the subject and that we get a warning message in the server log.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedHS256_validateInstropectWithUserinfo_userinfoMismatchHS384() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS384), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.INTROSPECTION_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a opaque token signed with HS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with HS384. Validation of the userinfo response will fail because of the alg
+     * mistmatch. This will result in the access_token being seen as invalid and we will receive a 401 as well as error messages
+     * in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_opaqueToken_SignedHS256_validateUserinfoOnly_userinfoMismatchHS384() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS384), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.OPAQUE_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.USERINFO_ENDPOINT, Constants.OPAQUE_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with an jwt token signed with HS256.
+     * The RS config specifies validation using introspect. userInfoEndpointEnabled is set to true, so we'll use introspect, but
+     * also try to add any additional info by using the userinfo endpoint. In this case,
+     * userinfo will return a JWS Token signed with HS384. Instrospect will succeed, but userinfo will fail because of the alg
+     * mismatch. We will validate that the extra claim is NOT in the subject and that we get a warning message in the server log.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS256_validateInstropectWithUserinfo_userinfoMismatchHS384() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS384), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.INTROSPECTION_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with HS256.
+     * The RS config specifies validation using userinfo. In this case,
+     * userinfo will return a JWS Token signed with HS384. Validation of the userinfo response will fail because of the alg
+     * mistmatch. This will result in the access_token being seen as invalid and we will receive a 401 as well as error messages
+     * in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS256_validateUserinfoOnly_userinfoMismatchHS384() throws Exception {
+
+        genericUseOPToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS384), setRP_JWSAppName(Constants.SIGALG_HS256, Constants.JWT_TOKEN_FORMAT), setRS_JWSAppName(Constants.SIGALG_HS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    // NOTE: tests that use signature algorithms other than RS256 and HS256 can use introspect as a validation endpoint.  Our OP can NOT produce an access token (opaque or jws) using any other signature.
+    //         Our OP can not produce an access token in JWE format for any alg.  Therefore, we have to hack together the original access token (and can not test with introspect and fill in data with userinfo)
+    /**
+     * Test with a jwt token signed with HS384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with HS384.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS384_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS384, setJWSBuilderName(Constants.SIGALG_HS384), setJWSBuilderName(Constants.SIGALG_HS384), setRS_JWSAppName(Constants.SIGALG_HS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with HS384 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES256.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS384_validateUserinfoOnly_userinfoMismatchES256() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS384, setJWSBuilderName(Constants.SIGALG_HS384), setJWSBuilderName(Constants.SIGALG_ES256), setRS_JWSAppName(Constants.SIGALG_HS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with HS512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with HS512.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS512_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS512, setJWSBuilderName(Constants.SIGALG_HS512), setJWSBuilderName(Constants.SIGALG_HS512), setRS_JWSAppName(Constants.SIGALG_HS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed with HS512 (created using the jwt builder as opposed to the RP requesting the token from the
+     * OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed with ES512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jwsToken_SignedHS512_validateUserinfoOnly_userinfoMismatchES512() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_HS512, setJWSBuilderName(Constants.SIGALG_HS512), setJWSBuilderName(Constants.SIGALG_ES512), setRS_JWSAppName(Constants.SIGALG_HS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /********************** Userinfo JWE Response ************************/
 
     /************** jwt builder/rp using the same encryption algorithm **************/
     /**
-     * Test shows that the RP can handle a JWE response signed and encrypted with RS256 from the userinfo endpoint
+     * Test with a jwt token signed and encrypted with RS256 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS256.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS256() throws Exception {
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS256_validateUserinfoOnly() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWEUserinfoTest(Constants.SIGALG_RS256);
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256), setRS_JWEAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
-    /************** jwt builder/rp using the same encryption algorithm **************/
     /**
-     * Test shows that the RP can handle a JWE response signed and encrypted with RS384 from the userinfo endpoint
+     * Test with a jwt token signed and encrypted with RS256 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
      *
      * @throws Exception
      */
-    @Mode(TestMode.LITE)
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS384() throws Exception {
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS256_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWEUserinfoTest(Constants.SIGALG_RS384);
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
-    /************** jwt builder/rp using the same encryption algorithm **************/
     /**
-     * Test shows that the RP can handle a JWE response signed and encrypted with RS512 from the userinfo endpoint
+     * Test with a jwt token signed and encrypted with RS384 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS384.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS512() throws Exception {
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS384_validateUserinfoOnly() throws Exception {
 
-        genericUseOpaqueToken_ConsumeJWEUserinfoTest(Constants.SIGALG_RS512);
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWEBuilderName(Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
 
     }
 
-    // TODO - ES encryption not working properly in the builder
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES256 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    //chc@Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES256() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES256);
-    //
-    //    }
-    //
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES384 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    //chc@Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES384() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setBuilderName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), Constants.SIGALG_ES384, setBuilderName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), setAppName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES384);
-    //
-    //    }
-    //
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES512 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    //chc@Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES512() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setBuilderName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), Constants.SIGALG_ES512, setBuilderName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), setAppName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES512);
-    //
-    //    }
-
-    /****** userinfo returns responses that do NOT match the RP config **********/
     /**
-     * Test shows that the RP will fail to be able to consume the JWS token returned by the userinfo
-     * endpoint. This will result in an error message being logged to the RP server logs. Processing will
-     * continue and we will be granted access to the test app. The JWS returned from the userinfo endpoint
-     * contained extra claims that were not in the token returned from the token endpoint. We will verify
-     * that none of those extra claims show up in the subject that the protected test app logs. This shows
-     * that the userinfo JWS claims were not applied to the subject.
+     * Test with a jwt token signed and encrypted with RS384 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
      *
      * @throws Exception
      */
-    //chc@Test
-    public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_userinfoMismatch() throws Exception {
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS384_validateUserinfoOnly_userinfoMismatchRS512() throws Exception {
 
-        for (String alg : Constants.ALL_TEST_ENCRYPTALGS) {
-            // TODO skip ES Algs for encryption until (issue 17485) is resolved
-            if (!(alg.equals(Constants.SIGALG_RS256) || alg.startsWith("ES"))) {
-                genericUseOpaqueToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(alg, alg), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256));
-            }
-        }
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWEBuilderName(Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with RS512 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS512.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS512_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWEBuilderName(Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with RS512 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedRS512_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWEBuilderName(Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES256 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES256.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES256_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_ES256), setRS_JWEAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES256 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES256_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES384 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES384.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES384_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWEBuilderName(Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES384 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES384_validateUserinfoOnly_userinfoMismatchRS512() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWEBuilderName(Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES512 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES512.
+     * The userinfo response will have an extra claim - the test will validate that the extra claim is in the subject printed by
+     * the test app.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES512_validateUserinfoOnly() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWEBuilderName(Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_ES512), setRS_JWEAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES512 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * RS384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "java.lang.Exception" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_jweToken_EncryptedES512_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWEBuilderName(Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT));
+
     }
 }
