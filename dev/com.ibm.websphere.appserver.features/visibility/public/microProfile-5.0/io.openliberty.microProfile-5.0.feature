@@ -15,9 +15,9 @@ Subsystem-Name: MicroProfile 5.0
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.mpCompatible-5.0, \
   io.openliberty.mpConfig-3.0, \
+  io.openliberty.mpFaultTolerance-4.0, \
+  io.openliberty.mpHealth-4.0, \
   io.openliberty.mpJwt-2.0
-  #io.openliberty.mpFaultTolerance-4.0, \
-  #io.openliberty.mpHealth-4.0, \
   #io.openliberty.mpMetrics-4.0, \
   #io.openliberty.mpOpenAPI-3.0, \
   #io.openliberty.mpOpenTracing-3.0, \
