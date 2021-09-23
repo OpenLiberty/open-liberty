@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.fat.config;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.session.ClientSession;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -190,17 +195,22 @@ public class InitClass {
      * @throws InterruptedException
      */
     private static void establishConnectionToKDC(String thisMethod, Machine kdcMachine) throws Exception, InterruptedException {
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 3; i++) {
             try {
-                kdcMachine.connect();
+                SshClient sshClient = getSshClient();
+                try {
+                    getSshSession(sshClient, kdcMachine);
+                } finally {
+                    sshClient.stop();
+                }
                 Log.info(c, thisMethod, "KDC connection succeeded after " + i + " attempt(s)");
                 break;
             } catch (Exception e) {
-                if (i == 6) {
+                if (i == 3) {
                     Log.info(c, thisMethod, "KDC connection still failed after retrying " + i + " attempts");
                     throw e;
                 }
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
         }
     }
@@ -367,5 +377,31 @@ public class InitClass {
      */
     public static String getServerShortHostName() throws UnknownHostException {
         return getShortHostName(serverCanonicalHostName, true);
+    }
+
+    /**
+     * Get a (started) SshClient.
+     *
+     * @return The SshClient.
+     */
+    protected static SshClient getSshClient() {
+        SshClient sshClient = SshClient.setUpDefaultClient();
+        sshClient.start();
+        return sshClient;
+    }
+
+    /**
+     * Get an SSH ClientSession to the specified machine.
+     *
+     * @param sshClient The SSH client.
+     * @param machine The machine to connect to.
+     * @return The session.
+     * @throws IOException If there was an error getting an SSH session to the machine.
+     */
+    protected static ClientSession getSshSession(SshClient sshClient, Machine machine) throws IOException {
+        ClientSession session = sshClient.connect(machine.getUsername(), machine.getHostname(), 22).verify(30, TimeUnit.SECONDS).getSession();
+        session.addPasswordIdentity(machine.getPassword());
+        session.auth().verify(30, TimeUnit.SECONDS).isSuccess();
+        return session;
     }
 }
