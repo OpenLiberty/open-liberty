@@ -303,7 +303,7 @@ org.apache.myfaces.core:myfaces-impl:2.3.9
 org.apache.myfaces.core:myfaces-impl:3.0.1
 org.apache.neethi:neethi:3.1.1
 org.apache.openjpa:openjpa:3.1.2
-org.apache.santuario:xmlsec:2.2.0
+org.apache.santuario:xmlsec:2.2.3
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.sshd:sshd-common:2.5.1
 org.apache.sshd:sshd-core:2.5.1
