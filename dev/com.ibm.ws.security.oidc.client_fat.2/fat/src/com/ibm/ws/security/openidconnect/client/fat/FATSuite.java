@@ -11,35 +11,48 @@
 
 package com.ibm.ws.security.openidconnect.client.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsumeUserinfoTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientLTPACookieTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSameSiteTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientWasReqURLTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationConsumeUserinfoTests;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        //        AlwaysPassesTest.class,
-        //        OidcClientCookieNameTests.class,
-        //        OidcClientLTPACookieTests.class,
-        //        OidcClientSameSiteTests.class,
-        //        OidcClientWasReqURLTests.class,
-        //        OidcClientSignatureAlgTests.class,
-        //        OidcClientEncryptionTests.class,
-        //        OidcClientConsumeUserinfoTests.class,
+        AlwaysPassesTest.class,
+        OidcClientCookieNameTests.class,
+        OidcClientLTPACookieTests.class,
+        OidcClientSameSiteTests.class,
+        OidcClientWasReqURLTests.class,
+        OidcClientSignatureAlgTests.class,
+        OidcClientEncryptionTests.class,
+        OidcClientConsumeUserinfoTests.class,
         OidcPropagationConsumeUserinfoTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite extends CommonLocalLDAPServerSuite {
-    //    /*
-    //     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
-    //     *
-    //     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
-    //     */
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new JakartaEE9Action().fullFATOnly());
+    /*
+     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     *
+     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+            .andWith(new JakartaEE9Action().fullFATOnly());
 }
