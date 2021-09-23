@@ -21,7 +21,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.matchers.Matchers;
 import componenttest.topology.impl.LibertyServer;
@@ -58,13 +57,6 @@ public class AppValidator {
      */
     public static AppValidator validateAppOn(LibertyServer server) {
         return new AppValidator(server);
-    }
-
-    /**
-     * Begin setting up an app validation to run on the given liberty server
-     */
-    public static AppValidator validateAppOn(SharedServer sharedServer) {
-        return new AppValidator(sharedServer.getLibertyServer());
     }
 
     private AppValidator(LibertyServer server) {

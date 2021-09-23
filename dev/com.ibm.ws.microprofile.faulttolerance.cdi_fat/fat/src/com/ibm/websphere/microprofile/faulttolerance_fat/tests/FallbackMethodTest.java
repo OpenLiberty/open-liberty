@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SimpleSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
@@ -54,7 +55,7 @@ public class FallbackMethodTest extends FATServletClient {
                         .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                         .addClass(FallbackMethodServlet.class)
                         .addPackage(SimpleSearch.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
