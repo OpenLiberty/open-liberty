@@ -1,10 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2021 IBM Corporation and others.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0n * which accompanies this distribution, and is available at 
-* http://www.eclipse.org/legal/epl-v10.htmln *n * Contributors: 
-*     IBM Corporation - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package headers.servlets;
 
 import java.io.IOException;
@@ -36,21 +39,15 @@ public class ResponseHeadersServlet extends HttpServlet {
         String testCondition = request.getParameter("testCondition");
 
         if (testCondition != null) {
-            if("singleHeader".equals(testCondition)){
-                response.addHeader("customHeader", "appValue");  
-            }
-            else if ("multipleHeaders".equals(testCondition)) {
+            if ("singleHeader".equals(testCondition)) {
+                response.addHeader("customHeader", "appValue");
+            } else if ("multipleHeaders".equals(testCondition)) {
                 response.addHeader("customHeader", "appValue");
                 response.addHeader("customHeader", "appValue2");
-            }
-            else if ("testCookies".equals(testCondition)){
+            } else if ("testCookies".equals(testCondition)) {
                 response.addHeader("set-cookie", "chocolate=chip; SameSite=None");
-                response.addCookie(new Cookie("vanilla","sugar")); 
-            }   
-
-            
+                response.addCookie(new Cookie("vanilla", "sugar"));
+            }
         }
-        
     }
-
 }
