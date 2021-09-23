@@ -196,10 +196,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     /**
      * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
-    public ManagedExecutorServiceImpl(String name, int hash, PolicyExecutor policyExecutor, ThreadContextImpl mpThreadContext,
+    public ManagedExecutorServiceImpl(String name, int hash, int eeVersion,
+                                      PolicyExecutor policyExecutor, ContextServiceImpl mpThreadContext,
                                       AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         this.name.set(name);
         this.hash = hash;
+        this.eeVersion = eeVersion;
         this.policyExecutor = policyExecutor;
         this.longRunningPolicyExecutorRef.set(policyExecutor);
         this.mpContextService = mpThreadContext;
