@@ -736,22 +736,18 @@ public class AccessTokenAuthenticator {
 
     protected boolean validateJsonResponse(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest req) {
         if (jobj.get("active") != null && ((Boolean) jobj.get("active")) != true) {
-            logError(clientConfig, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-            if (req != null) { // avoid subsequent CWWKS1704W with null cause.
-                req.setRsFailMsg("", Tr.formatMessage(tc, "PROPAGATION_TOKEN_NOT_ACTIVE",
-                        new Object[] { clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl() }));
-            }
+            logError(clientConfig, req, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
             return false;
         }
         // ToDo: check exp, iat
 
-        if (!isExpValid(jobj, clientConfig)) {
+        if (!isExpValid(jobj, clientConfig, req)) {
             return false;
         }
-        if (!isIatValid(jobj, clientConfig)) {
+        if (!isIatValid(jobj, clientConfig, req)) {
             return false;
         }
-        if (!isIssuerValid(jobj, clientConfig)) {
+        if (!isIssuerValid(jobj, clientConfig, req)) {
             return false;
         }
 
@@ -760,51 +756,51 @@ public class AccessTokenAuthenticator {
         return true;
     }
 
-    private boolean isExpValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isExpValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
         Long exp = 0L;
         if (jobj.get("exp") != null && (exp = getLong(jobj.get("exp"))) != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "exp = ", exp);
             }
-            if (!verifyExpirationTime(exp, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+            if (!verifyExpirationTime(exp, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                 return false;
             }
         } else if (clientConfig.requireExpClaimForIntrospection()) {
             // required field
-            logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "exp", "iss, iat, exp");
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "exp", "iss, iat, exp");
             return false;
         }
         return true;
     }
 
-    private boolean isIatValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isIatValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
         Long iat = 0L;
         if (jobj.get("iat") != null && (iat = getLong(jobj.get("iat"))) != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "iat = ", iat);
             }
-            if (!checkIssueatTime(iat, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+            if (!checkIssueatTime(iat, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                 return false;
             }
         } else if (clientConfig.requireIatClaimForIntrospection()) {
             // required field
-            logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iat", "iss, iat, exp");
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iat", "iss, iat, exp");
             return false;
         }
         return true;
     }
 
-    private boolean isIssuerValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isIssuerValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
-        if (issuerChecking(jobj, clientConfig)) {
+        if (issuerChecking(jobj, clientConfig, oidcClientRequest)) {
             Long nbf = 0L;
             if (jobj.get("nbf") != null && (nbf = getLong(jobj.get("nbf"))) != null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "nbf = ", nbf);
                 }
-                if (!checkNotBeforeTime(nbf, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+                if (!checkNotBeforeTime(nbf, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                     return false;
                 }
             }
@@ -814,12 +810,12 @@ public class AccessTokenAuthenticator {
         return true;
     }
 
-    boolean issuerChecking(JSONObject jobj, OidcClientConfig clientConfig) {
+    boolean issuerChecking(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         String issuer = (String) jobj.get("iss");
         String issuers = null;
         if (clientConfig.disableIssChecking()) {
             if (issuer != null) {
-                logError(clientConfig, "PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR", clientConfig.getValidationEndpointUrl(), "iss", "disableIssChecking");
+                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR", clientConfig.getValidationEndpointUrl(), "iss", "disableIssChecking");
                 return false;
             }
             return true;
@@ -828,12 +824,12 @@ public class AccessTokenAuthenticator {
                 if (issuer.isEmpty()
                         || ((issuers = getIssuerIdentifier(clientConfig)) == null)
                         || notContains(issuers, issuer)) {
-                    logError(clientConfig, "PROPAGATION_TOKEN_ISS_ERROR", issuers, issuer);
+                    logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_ISS_ERROR", issuers, issuer);
                     return false;
                 }
             } else {
                 // required field
-                logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iss", "iss, iat, exp");
+                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iss", "iss, iat, exp");
                 return false;
             }
         }
@@ -884,7 +880,7 @@ public class AccessTokenAuthenticator {
      * @param clockSkewInSeconds
      * @return
      */
-    private boolean checkNotBeforeTime(Long nbfInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    private boolean checkNotBeforeTime(Long nbfInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         long nbf = nbfInSeconds.longValue() * 1000; // MilliSeconds
         Date nbfDate = new Date(nbf);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -893,13 +889,13 @@ public class AccessTokenAuthenticator {
         // nbf should not be in future
         Date currentDatePlusClockSkew = new Date(currentDate.getTime() + (clockSkewInSeconds * 1000));
         if (nbfDate.after(currentDatePlusClockSkew)) {// nbf is future time
-            logError(clientConfig, true, "PROPAGATION_TOKEN_NBF_ERR", nbfDate.toString(), currentDatePlusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_NBF_ERR", nbfDate.toString(), currentDatePlusClockSkew.toString());
             return false;
         }
         return true;
     }
 
-    protected boolean verifyExpirationTime(Long expInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    protected boolean verifyExpirationTime(Long expInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
 
         long exp = expInSeconds.longValue() * 1000; // MilliSeconds
         Date expDate = new Date(exp);
@@ -911,13 +907,13 @@ public class AccessTokenAuthenticator {
         if (expDate.before(currentDateMinusClockSkew)) { // if expiration time
                                                          // is before current
                                                          // time... expired
-            logError(clientConfig, true, "PROPAGATION_TOKEN_EXPIRED_ERR", expDate.toString(), currentDateMinusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_EXPIRED_ERR", expDate.toString(), currentDateMinusClockSkew.toString());
             return false;
         }
         return true;
     }
 
-    protected boolean checkIssueatTime(Long iatInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    protected boolean checkIssueatTime(Long iatInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
 
         long iat = iatInSeconds.longValue() * 1000; // MilliSeconds
         Date iatDate = new Date(iat);
@@ -927,7 +923,7 @@ public class AccessTokenAuthenticator {
         // Let's check if the token is issued in a future time(iat)
         Date currentDatePlusClockSkew = new Date(currentDate.getTime() + (clockSkewInSeconds * 1000));
         if (iatDate.after(currentDatePlusClockSkew)) {// iat is future time
-            logError(clientConfig, true, "PROPAGATION_TOKEN_FUTURE_TOKEN_ERR", iatDate.toString(), currentDatePlusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_FUTURE_TOKEN_ERR", iatDate.toString(), currentDatePlusClockSkew.toString());
             return false;
         }
         return true;
@@ -1032,16 +1028,8 @@ public class AccessTokenAuthenticator {
     // do not show the error in messages.log yet. Since this will fall down to
     // RP.
     // If RP can not handle it. RP will display its own error 212457
-    void logError(OidcClientConfig oidcClientConfig, String msgKey, Object... objs) {
-        logError(oidcClientConfig, false, msgKey, objs);
-    }
-
     void logError(OidcClientConfig oidcClientConfig, OidcClientRequest oidcClientRequest, String msgKey, Object... objs) {
         logError(oidcClientConfig, false, oidcClientRequest, msgKey, objs);
-    }
-
-    void logError(OidcClientConfig oidcClientConfig, boolean warningWhenSupported, String msgKey, Object... objs) {
-        logError(oidcClientConfig, warningWhenSupported, null, msgKey, objs);
     }
 
     // do not show the error in messages.log yet. Since this will fall down to
