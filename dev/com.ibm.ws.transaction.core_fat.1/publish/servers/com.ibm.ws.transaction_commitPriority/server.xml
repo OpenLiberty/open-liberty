@@ -12,6 +12,9 @@
       <feature>ejb-3.2</feature>
     </featureManager>
 
+    <!-- microprofile includes appsecurity, and ejb includes iiop, so CSI will expect a user registry -->
+    <quickStartSecurity userName="admin" userPassword="passw0rd" />
+
     <sslDefault outboundSSLRef="mySSLConfig" />
      
     <!-- Server SSL configuration -->
