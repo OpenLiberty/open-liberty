@@ -203,8 +203,8 @@ public class MicroProfileActions {
                                                           "jsonp-2.0",
                                                           "mpConfig-3.0",
                                                           "mpFaultTolerance-4.0",
+                                                          "mpHealth-4.0",
                                                           "mpJwt-2.0" };
-//                                                          "mpHealth-4.0",
 //                                                          "mpMetrics-4.0",
 //                                                          "mpOpenAPI-3.0",
 //                                                          "mpOpenTracing-3.0",
