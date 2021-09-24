@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,6 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
-import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 
 /**
  * Represents an independent HTTP/2 stream
@@ -108,9 +107,6 @@ public class H2StreamProcessor {
     // the remote window, which we're keeping track of as a sender
     private long streamWindowUpdateWriteInitialSize;
     private long streamWindowUpdateWriteLimit;
-
-    //change to 8192 to track better if this is occurring
-    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 8192;
 
     // the local window, which we're keeping track of as a receiver
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
@@ -1952,24 +1948,27 @@ public class H2StreamProcessor {
         if (currentFrame.isWriteFrame() && currentFrame.getInitialized()) {
             WsByteBuffer writeFrameBuffer = null;
             WsByteBuffer[] writeFrameBuffers = null;
+            int writeTimeout = muxLink.config.getWriteTimeout();
             try {
                 if (currentFrame.getFrameType() == FrameTypes.DATA) {
                     FrameData data = (FrameData) currentFrame;
                     boolean timedOut = false;
 
-                    // Check to see if the write window is large enough to write this data.
+                    // Check to see if the write window is large enough to write this data
+                    // if it's not, wait for at most the configured writeTimeout period (default 60s)
                     if (isWindowLimitExceeded((FrameData) currentFrame)) {
-                        // the connection or stream window is too small to write this data frame.  This thread will wait for a max of
-                        // 5 seconds for a window update that's large enough to allow the data frame to be written out
                         long startTime = System.currentTimeMillis();
                         while (isWindowLimitExceeded((FrameData) currentFrame) && !timedOut) {
                             synchronized (this) {
-                                this.wait(MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS);
+                                this.wait(writeTimeout);
                             }
+                            long elapsed = System.currentTimeMillis() - startTime;
                             if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
                                 return false;
-                            } else if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
+                            } else if (elapsed > writeTimeout) {
                                 timedOut = true;
+                            } else {
+                                writeTimeout -= elapsed;
                             }
                         }
                     }
@@ -1977,9 +1976,9 @@ public class H2StreamProcessor {
                     if (!timedOut) {
                         writeFrameBuffers = data.buildFrameArrayForWrite();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "stream: " + myID + " write with default (60 second) timeout.");
+                            Tr.debug(tc, "stream: " + myID + " write with timeout: " + writeTimeout);
                         }
-                        muxLink.writeSync(null, writeFrameBuffers, data.getWriteFrameLength(), TCPRequestContext.USE_CHANNEL_TIMEOUT,
+                        muxLink.writeSync(null, writeFrameBuffers, data.getWriteFrameLength(), writeTimeout,
                                           data.getFrameType(), data.getPayloadLength(), myID);
 
                         streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
@@ -1998,9 +1997,9 @@ public class H2StreamProcessor {
                     // this frame is not a data frame, and so it's not subject to flow control and we can write immediately
                     writeFrameBuffer = currentFrame.buildFrameForWrite();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "stream: " + myID + " write with default (60 second) timeout");
+                        Tr.debug(tc, "stream: " + myID + " write with timeout: " + writeTimeout);
                     }
-                    muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), TCPRequestContext.USE_CHANNEL_TIMEOUT,
+                    muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), writeTimeout,
                                       currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
                 }
             } catch (IOException e) {
