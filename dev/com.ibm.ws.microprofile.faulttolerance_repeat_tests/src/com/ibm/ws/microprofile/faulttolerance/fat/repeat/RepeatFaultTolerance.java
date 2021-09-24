@@ -67,7 +67,7 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP20);
+        return repeat(server, TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP40, MicroProfileActions.MP20);
     }
 
     /**
@@ -79,7 +79,8 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatAll(String server) {
-        return repeat(server, TestMode.LITE, MicroProfileActions.MP13, MicroProfileActions.MP20, MicroProfileActions.MP22, MicroProfileActions.MP30, MicroProfileActions.MP32,
+        return repeat(server, TestMode.LITE, MicroProfileActions.MP50, MicroProfileActions.MP13, MicroProfileActions.MP20, MicroProfileActions.MP22, MicroProfileActions.MP30,
+                      MicroProfileActions.MP32,
                       MicroProfileActions.MP33, MicroProfileActions.MP40);
     }
 
@@ -90,7 +91,7 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeat20AndAbove(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP22, MicroProfileActions.MP30, MicroProfileActions.MP32,
+        return repeat(server, TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP40, MicroProfileActions.MP22, MicroProfileActions.MP30, MicroProfileActions.MP32,
                       MicroProfileActions.MP33);
     }
 
