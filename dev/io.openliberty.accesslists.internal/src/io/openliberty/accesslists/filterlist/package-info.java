@@ -8,18 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.accesslists;
-
 /**
- * Do not change the values of these without coordinating with the
- * channel framework equivalents.
+ * @version 1.0
  */
-public interface AccessListsConstants {
+@org.osgi.annotation.versioning.Version("1.0")
 
-    /** TCP RAS trace group name */
-    String TCP_TRACE_GROUP = "TCPChannel";
 
-    /** RAS trace bundle for TCP NLS */
-    String TCP_MESSAGES = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
+@TraceOptions(traceGroup = "TCPChannel", messageBundle = AccessListsConstants.TCP_MESSAGES)
+package io.openliberty.accesslists.filterlist;
 
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import io.openliberty.accesslists.AccessListsConstants;

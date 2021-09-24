@@ -21,10 +21,11 @@ import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.channel.internal.filter.FilterList;
-import com.ibm.ws.http.channel.internal.filter.FilterListFastStr;
-import com.ibm.ws.http.channel.internal.filter.FilterListSlowStr;
-import com.ibm.ws.http.channel.internal.filter.FilterListStr;
+
+import io.openliberty.accesslists.filterlist.FilterList;
+import io.openliberty.accesslists.filterlist.FilterListFastStr;
+import io.openliberty.accesslists.filterlist.FilterListSlowStr;
+import io.openliberty.accesslists.filterlist.FilterListStr;
 
 /**
  * Parses and keeps track of the HttpDispatcher trustedHeaderOrigin and trustedSensitiveHeaderOrigin configurations

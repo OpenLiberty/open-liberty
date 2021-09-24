@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.netty.internal.tcp;
+package io.openliberty.accesslists.filterlist;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Contains the address tree of multiple IPv4 and IPv6 Addresses. This tree can
- * then
- * be used to determine if a new address is contain in this tree. Therefore
+ * then be used to determine if a new address is contain in this tree. Therefore
  * this object is used to see in a IPv4 or IPv6 Address in contained in a given
- * list
- * of IPv4 and IPv6 addresses. The compatibility between IPv4 and IPv6 within
- * this tree is maintained by first converting all IPv4 addresses to IPv6 before
- * processing the address.
- * 
- * Taken from {@link com.ibm.ws.tcpchannel.internal.FilterList}
+ * list of IPv4 and IPv6 addresses. The compatibility between IPv4 and IPv6
+ * within this tree is maintained by first converting all IPv4 addresses to IPv6
+ * before processing the address.
  */
 public class FilterList {
+
+    private static final TraceComponent tc = Tr.register(FilterList.class);
 
     // the number of places in an IPv6 address
     private static final int IP_ADDR_NUMBERS = 8;
@@ -39,46 +41,47 @@ public class FilterList {
         this.firstCell = new FilterCell();
     }
 
-    protected void setActive(boolean value) {
+    public void setActive(boolean value) {
         this.active = value;
     }
 
-    protected boolean getActive() {
+    public boolean getActive() {
         return this.active;
     }
 
     /**
-     * Build the address tree from a string of data which contains valid
-     * IPv4 and/or IPv6 addresses. The string array should contain all the
-     * addresses.
-     * 
-     * @param data
-     *            list of IPv4 and/or IPv6 address which are
-     *            to be used to create a new address tree.
+     * Build the address tree from a string of data which contains valid IPv4 and/or
+     * IPv6 addresses. The string array should contain all the addresses.
+     *
+     * @param data list of IPv4 and/or IPv6 address which are to be used to create a
+     *             new address tree.
+     * @return true if every address is in a valid format
      */
-    protected void buildData(String[] data, boolean validateOnly) {
+    public boolean buildData(String[] data, boolean validateOnly) {
 
         if (data == null) {
-            return;
+            return false;
         }
 
         int length = data.length;
+        boolean valid = true;
 
         for (int i = 0; i < length; i++) {
-            addAddressToList(data[i], validateOnly);
+            valid = addAddressToList(data[i], validateOnly);
         }
-
+        return valid;
     }
 
     /**
-     * Add one IPv4 or IPv6 address to the tree. The address is passed in as
-     * a string and converted to an integer array by this routine. Another method
-     * is then called to put it into the tree
+     * Add one IPv4 or IPv6 address to the tree. The address is passed in as a
+     * string and converted to an integer array by this routine. Another method is
+     * then called to put it into the tree
      * 
-     * @param newAddress
-     *            address to add
+     * @param newAddress address to add
+     * @return true if the address is in a valid format
      */
-    private void addAddressToList(String newAddress, boolean validateOnly) {
+    @FFDCIgnore(NumberFormatException.class)
+    private boolean addAddressToList(String newAddress, boolean validateOnly) {
         int start = 0;
         char delimiter = '.';
         String sub;
@@ -108,13 +111,27 @@ public class FilterList {
                 if (sub.trim().equals("*")) {
                     addressToAdd[slot] = -1; // 0xFFFFFFFF is the wildcard.
                 } else {
-                    addressToAdd[slot] = Integer.parseInt(sub, radix);
+                    try {
+                        addressToAdd[slot] = Integer.parseInt(sub, radix);
+                    } catch (NumberFormatException nfe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "addAddressToList: [" + newAddress + "] is not a valid IP address");
+                        }
+                        return false;
+                    }
                 }
             } else {
                 if (addr.trim().equals("*")) {
                     addressToAdd[slot] = -1; // 0xFFFFFFFF is the wildcard.
                 } else {
-                    addressToAdd[slot] = Integer.parseInt(addr, radix);
+                    try {
+                        addressToAdd[slot] = Integer.parseInt(addr, radix);
+                    } catch (NumberFormatException nfe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "addAddressToList: [" + newAddress + "] is not a valid IP address");
+                        }
+                        return false;
+                    }
                 }
                 break;
             }
@@ -124,23 +141,25 @@ public class FilterList {
 
         if (!validateOnly) {
             putInList(addressToAdd);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "address added to list:" + newAddress);
+            }
         }
+        return true;
     }
 
     /**
-     * Add one address to the tree. The address is passed in as
-     * an (n-level) integer array. n is currently set at 8, since that
-     * is the number of numbers in an IPv6 address. The format of the array
-     * is that the rightmost number of the address goes into the n-1 position
-     * in the array, the next right most number into the n-2 position, and so on.
-     * Positions in the array which have not be set, are then set to 0.
-     * This means an IPv4 address of 1.2.3.4 should be
-     * put into the array as a[0] - a[7] as: 0, 0, 0, 0, 1, 2, 3, 4, in
-     * IPv6 format this would be 0:0:0:0:1:2:3:4
+     * Add one address to the tree. The address is passed in as an (n-level) integer
+     * array. n is currently set at 8, since that is the number of numbers in an
+     * IPv6 address. The format of the array is that the rightmost number of the
+     * address goes into the n-1 position in the array, the next right most number
+     * into the n-2 position, and so on. Positions in the array which have not be
+     * set, are then set to 0. This means an IPv4 address of 1.2.3.4 should be put
+     * into the array as a[0] - a[7] as: 0, 0, 0, 0, 1, 2, 3, 4, in IPv6 format this
+     * would be 0:0:0:0:1:2:3:4
      * 
-     * @param address
-     *            int array of the address to add. The format of this
-     *            address is described above.
+     * @param address int array of the address to add. The format of this address is
+     *                described above.
      */
     private void putInList(int[] address) {
         FilterCell currentCell = firstCell;
@@ -165,14 +184,12 @@ public class FilterList {
     }
 
     /**
-     * Determine if an address, represented by a byte array, is in the address
-     * tree
+     * Determine if an address, represented by a byte array, is in the address tree
      * 
-     * @param address
-     *            byte array representing the address, leftmost number
-     *            in the address should start at array offset 0.
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address byte array representing the address, leftmost number in the
+     *                address should start at array offset 0.
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     public boolean findInList(byte[] address) {
         int len = address.length;
@@ -187,16 +204,14 @@ public class FilterList {
     }
 
     /**
-     * Determine if an IPv6 address, represented by a byte array, is in the
-     * address tree
+     * Determine if an IPv6 address, represented by a byte array, is in the address
+     * tree
      * 
-     * @param address
-     *            byte array representing the address, leftmost number
-     *            in the address should start at array offset 0. Two bytes form 1
-     *            number
-     *            of the address, bytes assumed to be in network order
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address byte array representing the address, leftmost number in the
+     *                address should start at array offset 0. Two bytes form 1
+     *                number of the address, bytes assumed to be in network order
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     public boolean findInList6(byte[] address) {
         int len = address.length;
@@ -221,11 +236,10 @@ public class FilterList {
      * Determine if an address, represented by an integer array, is in the address
      * tree
      * 
-     * @param address
-     *            integer array representing the address, leftmost number
-     *            in the address should start at array offset 0.
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address integer array representing the address, leftmost number in the
+     *                address should start at array offset 0.
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     public boolean findInList(int[] address) {
         int len = address.length;
@@ -251,23 +265,18 @@ public class FilterList {
     }
 
     /**
-     * Determine, recursively, if an address, represented by an integer array, is
-     * in the address tree
+     * Determine, recursively, if an address, represented by an integer array, is in
+     * the address tree
      * 
-     * @param address
-     *            integer array representing the address, leftmost number
-     *            in the address should start at array offset 0. IPv4 address should
-     *            be
-     *            padded LEFT with zeroes.
-     * @param index
-     *            the next index in the address array of the number to match against
-     *            the tree.
-     * @param cell
-     *            the current cell in the tree that we are matching against
-     * @param endIndex
-     *            the last index in the address array that we need to match
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address  integer array representing the address, leftmost number in
+     *                 the address should start at array offset 0. IPv4 address
+     *                 should be padded LEFT with zeroes.
+     * @param index    the next index in the address array of the number to match
+     *                 against the tree.
+     * @param cell     the current cell in the tree that we are matching against
+     * @param endIndex the last index in the address array that we need to match
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     private boolean findInList(int[] address, int index, FilterCell cell, int endIndex) {
         if (cell.getWildcardCell() != null) {
@@ -310,6 +319,22 @@ public class FilterList {
         }
         // this path did not find a match.
         return false;
+    }
+
+    /**
+     * Create a FilterList from an array of element Strings
+     * 
+     * @param elements
+     * @return the non null, but could be empty, FilterList
+     */
+    public static FilterList create(String[] elements) {
+    
+        FilterList filterList = new FilterList();
+        if (elements != null) {
+            filterList.buildData(elements, false);
+            filterList.setActive(true);
+        }
+        return filterList;
     }
 
 }

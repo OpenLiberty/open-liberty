@@ -7,7 +7,6 @@
 	<!-- Check these "_"s are replaced correctly they will be found in the output/.../server.xml 
 		CLIENT+HOST CLIENT+ADDR CLIENT+PORT 
 		CLIENT_HOST CLIENT_ADDR CLIENT_PORT -->
-
 <server>
 
     <featureManager>
