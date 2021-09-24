@@ -111,13 +111,6 @@
 	>
 	</openidConnectClient>	
 
-<!--
-		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
- 
- 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigning/token"  
-		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigning/userinfo"		
---> 	
 	<authFilter id="authFilterRS384">
 		<requestUrl
 			id="requestUrlRS384"
@@ -420,6 +413,60 @@
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>		
-							
+					
+					
+<!-- Implicit -->	
+	<authFilter id="authFilterImplicitRS256">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/simple/implicitRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256Implicit"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigning/authorize"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterImplicitRS256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		grantType="implicit"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning"
+	>
+	</openidConnectClient>	
+		
+	<authFilter id="authFilterImplicitHS256">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/simple/implicitHS256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256Implicit"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHSSigning/authorize"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterImplicitHS256"
+		grantType="implicit"
+		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigHSSigning"
+	>
+	</openidConnectClient>
+						
 </server>
 

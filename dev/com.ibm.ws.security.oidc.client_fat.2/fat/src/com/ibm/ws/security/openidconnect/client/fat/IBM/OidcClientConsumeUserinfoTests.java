@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
@@ -81,6 +82,14 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             }
         };
 
+        // apps are taking too long to start up for the normal app check, but, we need to be sure that they're ready before we try to use them.
+        List<String> extraMsgs = new ArrayList<String>() {
+            {
+                add("CWWKZ0001I.*" + JwtConstants.JWT_SIMPLE_BUILDER_SERVLET);
+                add("CWWKZ0001I.*" + Constants.USERINFO_ENDPOINT_SERVLET);
+            }
+        };
+
         testSettings = new TestSettings();
 
         // Set config parameters for Access token with X509 Certificate in OP config files
@@ -88,7 +97,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         String certType = Constants.X509_CERT;
 
         // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
         SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         //Start the OIDC RP server and setup default values
@@ -122,6 +131,10 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      */
     public void genericConsumeJWSUserinfoTest(String alg) throws Exception {
         genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), alg);
+    }
+
+    public void genericImplicitConsumeJWSUserinfoTest(String alg) throws Exception {
+        genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), "implicit" + alg);
     }
 
     /**
@@ -161,6 +174,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      */
     public void genericConsumeJWTUserinfoTest(String alg, String tokenEndpointBuilderId, String userinfoBuilderId, String appName) throws Exception {
 
+        boolean isImplicit = appName.contains("implicit");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
         Log.info(thisClass, _testName, "******** Testing with a JWT userinfo response - token endpoint using builder: " + tokenEndpointBuilderId + " and userinfo using builder: " + userinfoBuilderId + "********");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
@@ -168,27 +182,29 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
-        //updatedTestSettings.addRequestParms();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
         updatedTestSettings.setSignatureAlg(alg);
-        // TODO will we need sign and encrypt with different algs?
         updatedTestSettings.setDecryptKey(JwtKeyTools.getComplexPrivateKeyForSigAlg(testOPServer.getServer(), alg));
+        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings, isImplicit);
 
-        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings);
+        if (isImplicit) {
+            updatedTestSettings.setState(".+");
+        } else {
+            // for implicit flow, we don't use the token endpoint
+            List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", tokenEndpointBuilderId);
 
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", tokenEndpointBuilderId);
-
-        // Invoke the test TokenEndpoint stub.  It will invoke the Jwt Builder to create a JWT Token (using the builder specified in the builderId passed in via parms
-        // The TokenEndpoint stub will save that token and it will be returned when the RP uses it's TokenEnpdointUrl specified in it's config
-        //  (That url is:  http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken)
-        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
+            // Invoke the test TokenEndpoint stub.  It will invoke the Jwt Builder to create a JWT Token (using the builder specified in the builderId passed in via parms
+            // The TokenEndpoint stub will save that token and it will be returned when the RP uses it's TokenEnpdointUrl specified in it's config
+            //  (That url is:  http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken)
+            genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
+        }
         // let's create a similar JWT token, but make sure that it has an additional claim - we'll check to make sure that the extra claim
         // shows up in the subject that our protected test app sees
         // 3rd parm tells createTokenWithSubjectAndExpectations whether the userinfo token will or will not match the config so it can determine whether to set
         //  expectations for things that should be found, or things that should NOT be found
         // 4th parm tells createTokenWithSubjectAndExpectations whether we're using JWS or JWE tokens (messages we're searching for will be different) - the check
         //  in the call determines token type because the test app names match the signature alg for JWS tests - for JWE, the appNames are more complex.
-        String token = createTokenWithSubjectAndExpectations(userinfoBuilderId, expectations, tokenEndpointBuilderId.equals(userinfoBuilderId), appName.equals(alg));
+        String token = createTokenWithSubjectAndExpectations(userinfoBuilderId, expectations, tokenEndpointBuilderId.equals(userinfoBuilderId), appName.replace("implicit", "").equals(alg));
         // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
         List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", token);
         //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
@@ -334,6 +350,18 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     }
 
     /**
+     * Test shows that the RP can handle a JWS response signed with RS256 from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_implicitFlow() throws Exception {
+
+        genericImplicitConsumeJWSUserinfoTest(Constants.SIGALG_RS256);
+
+    }
+
+    /**
      * Test shows that the RP can handle a JWS response signed with RS384 from the userinfo endpoint
      *
      * @throws Exception
@@ -367,6 +395,18 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256() throws Exception {
 
         genericConsumeJWSUserinfoTest(Constants.SIGALG_HS256);
+
+    }
+
+    /**
+     * Test shows that the RP can handle a JWS response signed with HS256 from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256_implicitFlow() throws Exception {
+
+        genericImplicitConsumeJWSUserinfoTest(Constants.SIGALG_HS256);
 
     }
 
@@ -450,6 +490,27 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             }
         }
     }
+
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_implcicitFlow_userinfoMismatch() throws Exception {
+
+        for (String alg : Constants.ALL_TEST_SIGALGS) {
+            if (!alg.equals(Constants.SIGALG_RS256)) {
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_RS256);
+            }
+        }
+    }
+
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256_implcicitFlow_userinfoMismatch() throws Exception {
+
+        for (String alg : Constants.ALL_TEST_SIGALGS) {
+            if (!alg.equals(Constants.SIGALG_HS256)) {
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_HS256);
+            }
+        }
+    }
+
     // TODO - do we really need to test all variations
 
     /************************** JWE Response ****************************/

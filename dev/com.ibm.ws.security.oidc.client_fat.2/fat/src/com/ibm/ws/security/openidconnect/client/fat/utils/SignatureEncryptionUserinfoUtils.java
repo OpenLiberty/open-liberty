@@ -36,7 +36,15 @@ public class SignatureEncryptionUserinfoUtils extends CommonTest {
 
     public static Class<?> thisClass = SignatureEncryptionUserinfoUtils.class;
 
+    public List<validationData> setBasicSigningImplicitExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings) throws Exception {
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, settings, true);
+    }
+
     public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings) throws Exception {
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, settings, false);
+    }
+
+    public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings, boolean isImplicit) throws Exception {
 
         String test_FinalAction = Constants.LOGIN_USER;
 
@@ -48,7 +56,9 @@ public class SignatureEncryptionUserinfoUtils extends CommonTest {
             expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
                     "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
             expectations = validationTools.addRequestParmsExpectations(expectations, _testName, test_FinalAction, settings);
-            expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, settings);
+            if (!isImplicit) {
+                expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, settings);
+            }
             expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, settings);
         } else {
             // validate that we get the correct error message(s) for tests that use the same sig alg, but have mis-matched keys
