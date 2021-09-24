@@ -539,7 +539,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.66.Final</version>
+      <version>4.1.68.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
