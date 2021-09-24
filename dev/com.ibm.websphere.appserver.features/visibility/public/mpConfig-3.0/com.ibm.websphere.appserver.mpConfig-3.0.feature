@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpConfig-3.0
+symbolicName=com.ibm.websphere.appserver.mpConfig-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
