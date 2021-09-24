@@ -16,11 +16,14 @@ import java.net.InetAddress;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.accesslists.AccessListKeysFacade;
+import io.openliberty.accesslists.AccessListsConstants;
+
 public class AccessLists {
     protected UDPFilterList excludeAccess = null;
     protected UDPFilterList includeAccess = null;
 
-    private static final TraceComponent tc = Tr.register(AccessLists.class, UDPMessages.TR_GROUP, UDPMessages.TR_MSGS);
+    private static final TraceComponent tc = Tr.register(AccessLists.class, AccessListsConstants.UDP_TRACE_GROUP, AccessListsConstants.UDP_MESSAGES);
 
     /**
      * Constructor.
@@ -33,13 +36,13 @@ public class AccessLists {
         includeAccess = _includeAccess;
     }
 
-    protected static AccessLists getInstance(UDPChannelConfiguration config) {
+    protected static AccessLists getInstance(AccessListKeysFacade keys) {
         AccessLists retVal = null;
         boolean haveAList = false;
         UDPFilterList excludeAccess = null;
         UDPFilterList includeAccess = null;
 
-        String sExclude[] = config.getAddressExcludeList();
+        String sExclude[] = keys.getAddressExcludeList();
         excludeAccess = new UDPFilterList();
         if (sExclude != null) {
             excludeAccess.buildData(sExclude, false);
@@ -47,7 +50,7 @@ public class AccessLists {
             haveAList = true;
         }
 
-        String[] sInclude = config.getAddressIncludeList();
+        String[] sInclude = keys.getAddressIncludeList();
         includeAccess = new UDPFilterList();
         if (sInclude != null) {
             includeAccess.buildData(sInclude, false);

@@ -5159,7 +5159,9 @@ public class LibertyServer implements LogMonitorClient {
                             String regexp = it.next();
                             if (Pattern.compile(regexp).matcher(line).find()) {
                                 it.remove();
-                                break;
+                                //There used to be a break here but if a user passed in a
+                                //pattern that overlapped with one of the ones above only
+                                //one was removed. The watchFor list is usually small.
                             }
                         }
                     }

@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.accesslists.AccessListsConstants;
+
 /**
  * Contains the address tree of multiple URL Addresses. This tree can then
  * be used to determine if a new address is contain in this tree. Therefore
@@ -30,7 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
  */
 public class FilterListFastStr implements FilterListStr {
 
-    private static final TraceComponent tc = Tr.register(FilterListFastStr.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(FilterListFastStr.class, AccessListsConstants.TCP_TRACE_GROUP, AccessListsConstants.TCP_MESSAGES);
 
     private byte PERIOD_VALUE = 46;
     private byte WILDCARD_VALUE = 42;
