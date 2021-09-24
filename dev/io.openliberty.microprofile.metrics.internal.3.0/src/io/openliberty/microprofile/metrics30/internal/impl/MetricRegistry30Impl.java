@@ -1337,7 +1337,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
     @Override
     public <T, R extends Number> Gauge<R> gauge(MetricID metricID, T object, Function<T, R> func) {
         Metadata metadata = Metadata.builder().withName(metricID.getName()).withType(MetricType.GAUGE).build();
-        return gauge(metadata, object, func, null);
+        return gauge(metadata, object, func, metricID.getTagsAsArray());
     }
 
     @Override
@@ -1349,7 +1349,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
     @Override
     public <T extends Number> Gauge<T> gauge(MetricID metricID, Supplier<T> supplier) {
         Metadata metadata = Metadata.builder().withName(metricID.getName()).withType(MetricType.GAUGE).build();
-        return gauge(metadata, supplier, null);
+        return gauge(metadata, supplier, metricID.getTagsAsArray());
     }
 
     private static class GaugeToDoubleFunction<T, R extends Number> implements Gauge<R> {
