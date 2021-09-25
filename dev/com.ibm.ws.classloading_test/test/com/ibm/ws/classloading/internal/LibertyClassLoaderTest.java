@@ -15,15 +15,20 @@ import static com.ibm.ws.classloading.internal.TestUtil.createAppClassloader;
 import static com.ibm.ws.classloading.internal.TestUtil.getClassLoadingService;
 import static com.ibm.ws.classloading.internal.TestUtil.getOtherClassesURL;
 import static com.ibm.ws.classloading.internal.TestUtil.getServletJarURL;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.jar.Manifest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -76,6 +81,33 @@ public class LibertyClassLoaderTest {
         } catch (ClassFormatError e) {
             assertTrue("Should have traced an error", outputManager.checkForStandardErr("CWWKL0002E"));
         }
+    }
+
+    /**
+     * Validates that we only load the Manifest one time for a particular jar.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestLoadedOnce() throws Exception {
+        Container c = buildMockContainer("testJar", TestUtil.getTestJarURL());
+
+        List<Manifest> manifests = new ArrayList<>();
+        loader = new AppClassLoader(null, loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
+            @Override
+            public Package definePackage(String name, Manifest manifest, URL sealBase) throws IllegalArgumentException {
+                manifests.add(manifest);
+                return super.definePackage(name, manifest, sealBase);
+            }
+        };
+
+        loader.loadClass("test.StringReturner");
+
+        loader.loadClass("test2.Package2Class");
+
+        assertEquals(2, manifests.size());
+
+        assertSame(manifests.get(0), manifests.get(1));
     }
 
     @Test
