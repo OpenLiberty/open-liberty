@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/NpTimerV32ApiEJB.jar/src, \
+	test-applications/NpTimerV32ApiOtherEJB.jar/src, \
+	test-applications/NpTimerV32ApiShared.jar/src, \
+	test-applications/NpTimerV32ApiWeb.war/src
+
+fat.project: true
+
+tested.features: \
+	ejbLite-3.2,\
+	enterpriseBeansLite-4.0,\
+	servlet-3.1,\
+	servlet-4.0,\
+	servlet-5.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.websphere.javaee.transaction.1.2;version=latest, \
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest,\
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

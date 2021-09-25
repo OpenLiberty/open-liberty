@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimerLifecycleEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimerLifecycleWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimerOperationsEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimersEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimerShared.jar/src"/>
+	<classpathentry kind="src" path="test-applications/NpTimersWeb.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

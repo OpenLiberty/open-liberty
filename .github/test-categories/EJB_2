@@ -5,7 +5,11 @@ com.ibm.ws.ejbcontainer.security.jacc_fat.2
 com.ibm.ws.ejbcontainer.session.async_fat
 com.ibm.ws.ejbcontainer.session.passivation_fat
 com.ibm.ws.ejbcontainer.timer.auto_fat
+com.ibm.ws.ejbcontainer.timer.calendar_fat
+com.ibm.ws.ejbcontainer.timer.np.config_fat
+com.ibm.ws.ejbcontainer.timer.np_fat
 com.ibm.ws.ejbcontainer.timer.persistent_fat
+com.ibm.ws.ejbcontainer.timer.v32_fat
 com.ibm.ws.ejbcontainer.tx_fat
 com.ibm.ws.injection_fat
 com.ibm.ws.managedbeans_fat

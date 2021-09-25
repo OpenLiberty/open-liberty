@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+repositories {
+  ivy {
+    url "../cnf/local"
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    }
+  }
+}
+
+configurations {
+  ejbTools
+  enterpriseBeansTools
+}
+
+dependencies {
+  ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  enterpriseBeansTools 'test:io.openliberty.ejbcontainer.jakarta.fat_tools:1.+'
+}
+
+task addEJBTools {
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.np.config.NpTimerConfigServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+  }
+}
+
+task addEnterpriseBeansTools {
+  dependsOn ':io.openliberty.ejbcontainer.jakarta.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.np.config.NpTimerConfigServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn addEJBTools
+  dependsOn addEnterpriseBeansTools
+  dependsOn addJakartaTransformer
+}
