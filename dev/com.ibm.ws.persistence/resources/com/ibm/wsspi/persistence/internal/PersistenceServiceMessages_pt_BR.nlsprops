@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=O DatabaseStore registrou esta mensagem de erro.
 PROVIDER_ERROR_CWWKD0292E.useraction=Consulte a documenta\u00e7\u00e3o do DatabaseStore.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: O n\u00edvel de isolamento de transa\u00e7\u00e3o configurado {0} n\u00e3o \u00e9 suportado.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=O driver de banco de dados associado n\u00e3o suporta o n\u00edvel de isolamento solicitado.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Mude o n\u00edvel de isolamento antes de tentar novamente.
+

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -154,9 +154,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Beim Versuch, auf die Datenbank 
 DatabaseHashMap.selectNoUpdateError.useraction=Handelt es sich um eine SQL-Ausnahme, k\u00f6nnen Sie weitere Informationen hierzu in der entsprechenden Datenbankdokumentation f\u00fcr Ihre Umgebung nachlesen. Vergewissern Sie sich, dass eine Datenquelle f\u00fcr den Sitzungsmanager konfiguriert wurde.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Es wurde versucht, mehr als 2 MB in die gro\u00dfe Spalte zu schreiben.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Es wurde versucht, mehr Daten in die Datenbankspalte zu schreiben, als es der Wert der Eigenschaft rowSizeLimit zul\u00e4sst.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Die Sitzungsdaten sind m\u00f6glicherweise f\u00fcr die Datenbankspalte zu gro\u00df.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduzieren Sie die Gr\u00f6\u00dfe dieses Attributs, bevor Sie versuchen, das Attribut in der Sitzung zu speichern.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduzieren Sie die Gr\u00f6\u00dfe dieses Attributs, bevor Sie versuchen, das Attribut in der Sitzung zu speichern, oder erh\u00f6hen Sie den Wert der Eigenschaft rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: Der Service {0} wurde erfolgreich initialisiert.

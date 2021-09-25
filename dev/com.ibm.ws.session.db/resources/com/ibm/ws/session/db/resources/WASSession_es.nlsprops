@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Se ha detectado una excepci\u00f
 DatabaseHashMap.selectNoUpdateError.useraction=Si se ha producido una SQLException, v\u00e9ase la documentaci\u00f3n apropiada de la base de datos para su entorno. Asimismo, aseg\u00farese de haber configurado correctamente un origen de datos para el gestor de sesiones.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Se han intentado grabar m\u00e1s de 2M en una columna de gran tama\u00f1o.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Se ha intentado grabar m\u00e1s en la columna de base de datos de lo que permite el valor de la propiedad rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Es posible que los datos de sesi\u00f3n sean demasiado grandes para la columna de base de datos.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduzca el tama\u00f1o de este atributo antes de intentar almacenarlo en la sesi\u00f3n.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduzca el tama\u00f1o de este atributo antes de intentar almacenarlo en la sesi\u00f3n o aumente el valor de la propiedad rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: El servicio {0} se ha inicializado satisfactoriamente.

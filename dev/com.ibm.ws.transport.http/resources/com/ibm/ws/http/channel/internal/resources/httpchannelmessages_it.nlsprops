@@ -191,3 +191,15 @@ config.hsts.invalid.max.age.value.useraction=Assicurarsi che la direttiva max-ag
 config.hsts.missing.max.age=CWWKT0041W: \u00c8 stato effettuato un tentativo di configurare [{0}] come intestazione Strict-Transport-Security. Questa configurazione non contiene la direttiva max-age obbligatoria. Una configurazione che non contiene una direttiva max-age non \u00e8 valida e non pu\u00f2 essere utilizzata.
 config.hsts.missing.max.age.explanation=La configurazione specificata deve contenere una direttiva max-age con un valore intero non negativo.
 config.hsts.missing.max.age.useraction=Assicurarsi che la configurazione contenga una direttiva max-age con un valore intero non negativo.
+
+headers.emptyName=CWWKT0042W: \u00c8 stato trovato un nome intestazione vuoto quando \u00e8 stata analizzata la configurazione {0}. Questo valore viene ignorato.
+headers.emptyName.explanation=Il nome intestazione specificato \u00e8 una stringa vuota. Un nome intestazione non deve essere vuoto. 
+headers.emptyName.useraction=Assicurarsi che non vi siano nomi intestazione vuoti.  
+
+headers.duplicateHeaderName=CWWKT0043W: \u00c8 stato trovato un nome intestazione duplicato nell''intestazione [{0}] utilizzando la configurazione {1}. Tutte le configurazioni per l''intestazione [{0}] vengono ignorate. Qualsiasi intestazione definita dalle configurazioni remove, add, set o setIfMissing deve essere univoca in tutte le configurazioni.
+headers.duplicateHeaderName.explanation=Il nome intestazione specificato \u00e8 stato precedentemente configurato da un'altra configurazione della funzione delle intestazioni.
+headers.duplicateHeaderName.useraction=Assicurarsi che le intestazioni definite dalle configurazioni remove, add, set o setIfMissing non siano presenti in pi\u00f9 di una configurazione.
+
+headers.knownDuplicateHeader=CWWKT0044W: L''intestazione [{0}], il cui nome \u00e8 contrassegnato come duplicato, \u00e8 stata trovata nella configurazione {1}. L''intestazione [{0}] viene ignorata. Qualsiasi intestazione definita dalla configurazione {1} deve contenere nomi di intestazione univoci.
+headers.knownDuplicateHeader.explanation=Il nome intestazione specificato \u00e8 stato gi\u00e0 trovato dalle configurazioni remove, add, set o setIfMissing.
+headers.knownDuplicateHeader.useraction=Assicurarsi che i nomi intestazione definiti in questa configurazione siano univoci nelle configurazioni remove, add, set o setIfMissing.              
