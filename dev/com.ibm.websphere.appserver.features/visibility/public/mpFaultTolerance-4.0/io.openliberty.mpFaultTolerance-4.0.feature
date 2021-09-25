@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpFaultTolerance-4.0
+symbolicName=io.openliberty.mpFaultTolerance-4.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -8,7 +8,7 @@ IBM-API-Package: org.eclipse.microprofile.faulttolerance.exceptions;  type="stab
                  org.eclipse.microprofile.faulttolerance;  type="stable"
 IBM-ShortName: mpFaultTolerance-4.0
 Subsystem-Name: MicroProfile Fault Tolerance 4.0
--features=com.ibm.websphere.appserver.mpConfig-3.0, \
+-features=io.openliberty.mpConfig-3.0, \
   io.openliberty.org.eclipse.microprofile.faulttolerance-4.0, \
   io.openliberty.mpCompatible-5.0, \
   io.openliberty.cdi-3.0
