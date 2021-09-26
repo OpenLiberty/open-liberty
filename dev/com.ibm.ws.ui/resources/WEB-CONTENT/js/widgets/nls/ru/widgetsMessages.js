@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 define({
-    LIBERTY_HEADER_TITLE: "Центр администрирования Liberty",
+    LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "Параметры",
     LIBERTY_HEADER_LOGOUT: "Выход",
     LIBERTY_HEADER_LOGOUT_USERNAME: "Выход ({0})",

@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 define({
-    LIBERTY_HEADER_TITLE: "Centro de Administração Liberty",
+    LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "Preferências",
     LIBERTY_HEADER_LOGOUT: "Efetuar logout",
     LIBERTY_HEADER_LOGOUT_USERNAME: "Efetuar logout de {0}",
