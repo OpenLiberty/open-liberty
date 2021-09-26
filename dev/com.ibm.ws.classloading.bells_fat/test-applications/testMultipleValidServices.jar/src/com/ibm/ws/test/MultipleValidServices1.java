@@ -11,13 +11,27 @@
 
 package com.ibm.ws.test;
 
+import java.util.Map;
+
 import com.ibm.ws.classloading.exporting.test.TestInterface;
 
 public class MultipleValidServices1 implements TestInterface {
+
+    Map<String, String> serviceProperties = null;
+
+    public MultipleValidServices1() {}
+
+    public MultipleValidServices1(Map<String, String> serviceProps) {
+        serviceProperties = serviceProps;
+    }
 
     @Override
     public String isThere(String name) {
         return name + " is there";
     }
 
+    @Override
+    public String hasProperties(String name) {
+        return name + " has properties " + serviceProperties;
+    }
 }

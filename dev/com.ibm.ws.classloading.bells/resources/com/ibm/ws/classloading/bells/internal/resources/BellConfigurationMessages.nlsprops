@@ -79,3 +79,17 @@ bell.error.ctor.useraction=If an exception occurred in the constructor, review a
 bell.no.services.config=CWWKL0058W: Cannot find the {0} service in META-INF/services folder from the {1} library.
 bell.no.services.config.explanation=There is no matching service declared in the META-INF/services folder.
 bell.no.services.config.useraction= No user action is required.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.properties.constructor=CWWKL0059W: The {0} implementation class is missing a public constructor with parameter of type java.util.Map<String,String>. The system will not propagate configured service properties to the implementation of the service that is declared in the {1} file and registered from the {2} library.
+bell.missing.properties.constructor.explanation=The system cannot propagate service properties to the service implementation because the implementation class does not declare a public constructor with a single parameter of type java.util.Map<String, String>.
+bell.missing.properties.constructor.useraction=Ensure that the implementation class declares a public constructor with a single parameter of type java.util.Map<String, String>.
+
+# {0} - the property name
+# {1} - the property value
+bell.invalid.property=CWWKL0060W: A configured service property contains an empty name or value: name = [{0}], value = [{1}].  The system will ignore the property.
+bell.invalid.property.explanation=The name and value attributes for BELL service properties should not be empty.
+bell.invalid.property.useraction=Ensure that the service properties configuration is correct.
+

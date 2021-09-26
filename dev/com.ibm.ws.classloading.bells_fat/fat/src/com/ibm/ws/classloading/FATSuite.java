@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-               BellFatTest.class
+//               BellFatTest.class,
+               BellServicePropertiesTest.class
 })
 public class FATSuite {}

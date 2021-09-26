@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -23,6 +24,7 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -76,12 +78,14 @@ public class Bell implements LibraryChangeListener {
     private static final class ServiceInfo {
         final ArtifactEntry providerConfigFile;
         final String implClass;
-        final Hashtable<String, String> props;
+        final Hashtable<String, String> props; // OSGi service props
+        final Map<String, String> serviceProps; // BELL service props
 
-        ServiceInfo(final ArtifactEntry providerConfigFile, final String implClass, final Hashtable<String, String> props) {
+        ServiceInfo(final ArtifactEntry providerConfigFile, final String implClass, final Hashtable<String, String> props, final Map<String, String> serviceProps) {
             this.providerConfigFile = providerConfigFile;
             this.implClass = implClass;
             this.props = props;
+            this.serviceProps = serviceProps;
         }
 
         @Override
@@ -91,6 +95,10 @@ public class Bell implements LibraryChangeListener {
     }
 
     private static final String SERVICE_ATT = "service";
+
+    private static final Boolean isBetaEdition = Boolean.getBoolean("com.ibm.ws.beta.edition");
+    private static final String SERVICE_PROPERTIES_ATT = "serviceProperties"; // Enable for beta, only
+
     private final ReentrantLock trackerLock = new ReentrantLock();
     private ServiceTracker<Library, List<ServiceRegistration<?>>> tracker;
 
@@ -150,7 +158,10 @@ public class Bell implements LibraryChangeListener {
             throw new RuntimeException(e);
         }
         final Set<String> serviceNames = getServiceNames((String[]) config.get(SERVICE_ATT));
+        //final Map<String, String> serviceProperties = (isBetaEdition) ? getServiceProperties(config) : null;
+        final Map<String, Map<String, String>> serviceProperties = (isBetaEdition) ? getServiceProperties(serviceNames, config) : null;
         // create a tracker that will register the services once the library becomes available
+
         ServiceTracker<Library, List<ServiceRegistration<?>>> newTracker = null;
         newTracker = new ServiceTracker<Library, List<ServiceRegistration<?>>>(context, filter, new ServiceTrackerCustomizer<Library, List<ServiceRegistration<?>>>() {
             @Override
@@ -158,7 +169,7 @@ public class Bell implements LibraryChangeListener {
                 Library library = context.getService(libraryRef);
                 // Got the library now register the services.
                 // The list of registrations is returned so we don't have to store them ourselves.
-                return registerLibraryServices(library, serviceNames);
+                return registerLibraryServices(library, serviceNames, serviceProperties);
             }
 
             @Override
@@ -202,6 +213,108 @@ public class Bell implements LibraryChangeListener {
         return new HashSet<String>(Arrays.asList(configuredServices));
     }
 
+    // Enable for beta, only
+    // For parsing <serviceProperties [service="x, y, z"] p0="p0_val" ... pn="pn_val" />
+    static final String ServiceProperties = "serviceProperties";
+    static final String ServicePropertiesService = "service";
+    static final String ServicePropertiesAnyService = "any_service_";
+
+    /**
+     * Collect BELL service properties into a Map that correlates service name to
+     * service-specific properties. Properties are collected as a Map of names to value
+     * strings. Properties not specific to a service are correlated to key
+     * #ServicePropertiesAnyService.
+     *
+     * TODO: WHAT IF BELL SERVICENAMES DOES NOT SERVICEPROPERTIES SERVICENAMES?
+     *
+     * @param serviceNames Services either correctly named in the BELL configuration xor
+     *                         discovered in the service metadata provided in the library
+     *                         referenced by the BELL.
+     * @param config       A Map containing the BELL configuration elements
+     * @return A Map<String, Map<String, String>> of service names to service properties.
+     */
+    private static Map<String, Map<String, String>> getServiceProperties(Set<String> serviceNames, Map<String, Object> config) {
+        Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
+
+        final String SP_Prefix = ServiceProperties + ".";
+        final String SP_ServiceSuffix = "." + ServicePropertiesService;
+
+        // Collect the property maps for each <serviceProperty/>
+        Map<String, Map<String, String>> spIdxToPropsMap = new HashMap<String, Map<String, String>>();
+        Set<String> keys = config.keySet(); // see if config.getProperties("serviceProperties") reduces this set size
+        for (String key : keys) {
+            System.out.println("key: " + key);
+            if (!!!key.startsWith(SP_Prefix)) {
+                continue;
+            }
+            String[] spSplit = key.split("\\."); // e.g. SP_Prefix | SP # | SP Name
+
+            System.out.println("spSplit: " + spSplit);
+            String spIdx = spSplit[1];
+            String spName = spSplit[2];
+
+            Map<String, String> propsMap = (spIdxToPropsMap.get(spIdx));
+            if (propsMap == null) {
+                propsMap = new HashMap<String, String>();
+                System.out.println("put " + spIdx + ", " + propsMap);
+                spIdxToPropsMap.put(spIdx, propsMap);
+            }
+            if (!!!ServicePropertiesService.equals(spName)) {
+                System.out.println("put " + spName + ", " + config.get(key));
+                propsMap.put(spName, (String) config.get(key));
+            }
+            System.out.println("propsMap: " + propsMap);
+        }
+
+        // Associate services to properties
+        Map<String, String> anyServiceProps = new HashMap<String, String>();
+        result.put(ServicePropertiesAnyService, anyServiceProps);
+        final int spN = spIdxToPropsMap.keySet().size();
+        for (int i = 0; i < spN; i++) {
+            String spIdx = String.valueOf(i);
+            String spServiceNames = (String) config.get(SP_Prefix + spIdx + SP_ServiceSuffix);
+            System.out.println("services: " + spServiceNames);
+            if (spServiceNames == null || "".equals(spServiceNames)) {
+                Map<String, String> spIdxProps = spIdxToPropsMap.remove(spIdx);
+                anyServiceProps.putAll(spIdxProps);
+                continue;
+            }
+            String[] spServiceNamesSplit = spServiceNames.split(",");
+            for (String serviceName : spServiceNamesSplit) {
+                System.out.println("serviceName: " + serviceName.trim());
+                result.put(serviceName.trim(), spIdxToPropsMap.get(spIdx));
+            }
+            System.out.println("result: " + result);
+        }
+
+        return result;
+    }
+
+//    Solution for <serviceProperties [service="x, y, z"]> <property name="p0" value="p0_val"/> ... <property name="p0" value="p0_val"/>
+//    static final String ServicePropertyPrefix = "serviceProperties.";
+//    static final String ServicePropertyName = ".name";
+//    static final String ServicePropertyValue = ".value";
+//    private static Map<String, String> getServiceProperties(Map<String, Object> config) {
+//        Map<String, String> result = new HashMap<String, String>();
+//        int idx = 0;
+//        String name = null;
+//        do {
+//            name = (String) config.get(ServicePropertyPrefix + idx + ServicePropertyName);
+//            if (name != null) {
+//                String value = (String) config.get(ServicePropertyPrefix + idx + ServicePropertyValue);
+//                if (name.length() > 0 && value != null && value.length() > 0) {
+//                    result.put(name, value);
+//                } else {
+//                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+//                        Tr.warning(tc, "bell.invalid.property", name, value);
+//                    }
+//                }
+//                idx += 1;
+//            }
+//        } while (name != null);
+//        return result;
+//    }
+
     /**
      * 1) Retrieve all the meta-inf services entries from the library
      * 2) For each line in each services file, create an instance of the specified implementation class
@@ -210,7 +323,7 @@ public class Bell implements LibraryChangeListener {
      * - exported.from=LibraryId
      * 4) Store the service registrations in a collection, indexed by library (by library instance not library id, since library ID can be null when we remove it)
      */
-    private List<ServiceRegistration<?>> registerLibraryServices(final Library library, Set<String> serviceNames) {
+    private List<ServiceRegistration<?>> registerLibraryServices(final Library library, Set<String> serviceNames, Map<String, Map<String, String>> serviceProperties) {
         final BundleContext context = getGatewayBundleContext(library);
         if (context == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -230,7 +343,7 @@ public class Bell implements LibraryChangeListener {
                 }
                 continue;
             }
-            serviceInfos.addAll(getListOfServicesForContainer(servicesFolder.convertToContainer(), library, serviceNames, servicesNotFound));
+            serviceInfos.addAll(getListOfServicesForContainer(servicesFolder.convertToContainer(), library, serviceNames, serviceProperties, servicesNotFound));
         }
 
         for (String serviceName : servicesNotFound)
@@ -285,24 +398,30 @@ public class Bell implements LibraryChangeListener {
     }
 
     private static List<ServiceInfo> getListOfServicesForContainer(final ArtifactContainer servicesFolder, final Library library,
-                                                                   Set<String> serviceNames, Set<String> servicesNotFound) {
+                                                                   Set<String> serviceNames, Map<String, Map<String, String>> serviceProperties,
+                                                                   Set<String> servicesNotFound) {
         final List<ServiceInfo> serviceInfos = new LinkedList<ServiceInfo>();
         if (serviceNames.isEmpty()) {
-            // just exposing all mete-inf services
+            // just exposing all meta-inf services
             for (ArtifactEntry providerConfigFile : servicesFolder) {
-                getServiceInfos(providerConfigFile, providerConfigFile.getName(), servicesNotFound, library, serviceInfos);
+                getServiceInfos(providerConfigFile, providerConfigFile.getName(), serviceProperties, servicesNotFound, library, serviceInfos);
             }
         } else {
             // only look for services that have been specified
             for (String serviceName : serviceNames) {
                 ArtifactEntry providerConfigFile = servicesFolder.getEntry(serviceName);
-                getServiceInfos(providerConfigFile, serviceName, servicesNotFound, library, serviceInfos);
+                getServiceInfos(providerConfigFile, serviceName, serviceProperties, servicesNotFound, library, serviceInfos);
             }
         }
         return serviceInfos;
     }
 
-    private static void getServiceInfos(ArtifactEntry providerConfigFile, String serviceName, Set<String> servicesNotFound,
+    private static Map<String, String> getServiceProperties(String serviceName) {
+        XXXXXX
+    }
+
+    private static void getServiceInfos(ArtifactEntry providerConfigFile, String serviceName, Map<String, String> serviceProperties,
+                                        Set<String> servicesNotFound,
                                         Library library, List<ServiceInfo> serviceInfos) {
         if (providerConfigFile != null) {
             try {
@@ -327,7 +446,7 @@ public class Bell implements LibraryChangeListener {
                         }
 
                         if (implClass.length() > 0) {
-                            serviceInfos.add(new ServiceInfo(providerConfigFile, implClass, props));
+                            serviceInfos.add(new ServiceInfo(providerConfigFile, implClass, props, serviceProperties));
                             servicesNotFound.remove(serviceName);
                             props = new Hashtable<String, String>();
                         }
@@ -426,7 +545,7 @@ public class Bell implements LibraryChangeListener {
                 // Note the following methods will produce messages if something goes wrong
                 Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl);
                 if (serviceType != null) {
-                    return createService(serviceType, library.id(), fileUrl);
+                    return createService(serviceType, serviceInfo.serviceProps, library.id(), fileUrl);
                 }
                 // something went wrong have to return null.
                 // TODO may want to throw a ServiceException with our message here so we don't
@@ -468,10 +587,25 @@ public class Bell implements LibraryChangeListener {
         return service;
     }
 
-    private static Object createService(final Class<?> serviceType, final String libID, final URL fileUrl) {
+    private static Object createService(final Class<?> serviceType, final Map<String, String> serviceProps,
+                                        final String libID, final URL fileUrl) {
         Object service = null;
+
+        final Constructor<?> propsCtor = (isBetaEdition) ? doGetDeclaredConstructor(serviceType, java.util.Map.class) : null;
+        System.out.println("SERVICE TYPE: " + serviceType);
+        System.out.println("SERVICE PROP: " + serviceProps);
+        System.out.println("SERVICE PROPSCTOR: " + propsCtor);
         try {
-            service = serviceType.newInstance();
+            if (propsCtor != null) {
+                service = propsCtor.newInstance(((HashMap) serviceProps).clone());
+            } else {
+                if (isBetaEdition && !serviceProps.isEmpty()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                        Tr.warning(tc, "bell.missing.properties.constructor", serviceType.getName(), fileUrl, libID);
+                    }
+                }
+                service = serviceType.newInstance();
+            }
         } catch (final IllegalAccessException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "bell.illegal.access", serviceType.getName(), fileUrl, libID);
@@ -486,6 +620,28 @@ public class Bell implements LibraryChangeListener {
             }
         }
         return service;
+    }
+
+    // TODO This may be unnecessary
+    private static Constructor<?> doPrivGetDeclaredConstructor(final Class<?> serviceType, final Class<?> parmType) {
+        return AccessController.doPrivileged(new PrivilegedAction<Constructor<?>>() {
+            @Override
+            public Constructor<?> run() {
+                return doGetDeclaredConstructor(serviceType, parmType);
+            }
+        });
+    }
+
+    private static Constructor<?> doGetDeclaredConstructor(final Class<?> serviceType, final Class<?> parmType) {
+        Constructor<?> ctor = null;
+        try {
+            ctor = serviceType.getDeclaredConstructor(parmType);
+        } catch (Throwable e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "doGetDeclaredConstructor: error:", e);
+            }
+        }
+        return ctor;
     }
 
     @Reference(name = "library", target = "(id=unbound)")

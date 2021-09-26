@@ -21,4 +21,6 @@ public interface TestInterface {
 
     String isThere(String name);
 
+    String hasProperties(String name);
+
 }

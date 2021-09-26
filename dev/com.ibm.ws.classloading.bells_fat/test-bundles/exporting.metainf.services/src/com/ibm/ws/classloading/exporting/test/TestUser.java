@@ -35,6 +35,13 @@ public class TestUser {
             @Override
             public Object addingService(ServiceReference<Object> ref) {
                 Object service =  context.getService(ref);
+
+                if (service instanceof TestInterface) {
+                    System.out.println("TestUser addingService: " +  ((TestInterface) service).hasProperties(service.getClass().getSimpleName()));
+                } else if (service instanceof TestInterface2) {
+                    System.out.println("TestUser addingService: " +  ((TestInterface2) service).hasProperties2(service.getClass().getSimpleName()));
+                }
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     if (service instanceof TestInterface) {
                         Tr.debug(tc, "addingService", ((TestInterface) service).isThere("impl"));

@@ -1,0 +1,95 @@
+<server>
+    <featureManager>
+        <feature>user.feature.meta.inf.services-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>bells-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+
+    <library id="testPropertiesLib"
+            name="testProperties" 
+            description="testProperties">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testPropertiesLib">
+        <serviceProperties
+            TP_P0="TP_P0_VAL, TP_P1="TP_P1_VAL", TP_P2="TP_P2_VAL" />
+<!--
+        <serviceProperties>
+            <property name="TP_P0" value="TP_P0_VAL"/>
+            <property name="TP_P1" value="TP_P1_VAL"/>
+            <property name="TP_P2" value="TP_P2_VAL"/>
+        </serviceProperties>
+-->
+    </bell>
+
+
+   <library id="testMissingPropertiesCtorLib"
+            name="testMissingPropertiesCtorLib"
+            description="testMissingPropertiesCtorLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotConstructible.jar" />
+    </library>
+
+    <bell libraryRef="testMissingPropertiesCtorLib">
+        <serviceProperties 
+            TMPC_P0" value="TMPC_P0_VAL" />
+        </serviceProperties>
+        <serviceProperties>
+            <property name="TMPC_P0" value="TMPC_P0_VAL"/>
+        </serviceProperties>
+    </bell>
+
+
+    <library id="testInvalidPropertiesLib"
+            name="testInvalidPropertiesLib"
+            description="testInvalidPropertiesLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testInvalidPropertiesLib">
+        <serviceProperties>
+            <property name=""       value="TIP_P0_VAL"/>
+            <property name="TIP_P1" value=""/>
+        </serviceProperties>
+    </bell>
+
+
+<!-- TBD
+    <library id="testUpdatedPropertiesLib"
+            name="testUpdatedPropertiesLib"
+            description="testUpdatedPropertiesLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testUpdatedPropertiesLib">
+        <serviceProperties>
+            <property name="TUP_P0" value="TUP_P0_VAL"/>
+            <property name="TUP_P1" value="TUP_P1_VAL"/>
+            <property name="TUP_P2" value="TUP_P2_VAL"/>
+        </serviceProperties>
+    </bell>
+-->
+
+    <library id="testPropertiesContainLibertyVarsLib"
+            name="testPropertiesContainLibertyVarsLib"
+            description="testPropertiesContainLibertyVarsLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <variable name="LV_0" value="LV_0_VAL"/>
+    <variable name="LV_1" value="LV_1_VAL"/>
+    
+    <bell libraryRef="testPropertiesContainLibertyVarsLib">
+        <serviceProperties>
+            <property name="TPCLV_P0" value="${LV_0}"/>
+            <property name="TPCLV_P1_${LV_1}" value="TPCLV_P1_${LV_1}"/>
+            <property name="TPCLV_P2" value="TPCLV_P2_VAL"/>
+        </serviceProperties>
+    </bell>
+
+-->
+
+</server>

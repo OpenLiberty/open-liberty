@@ -20,4 +20,9 @@ public class MultipleImplsOfSingleService2 implements TestInterface {
         return name + " of " + this.getClass().getName() + " is there";
     }
 
+    @Override
+    public String hasProperties(String name) {
+        return name + " has properties " + null;
+    }
+
 }

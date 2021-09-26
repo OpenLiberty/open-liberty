@@ -20,4 +20,8 @@ public class ImplClassNotFound implements TestInterface {
         return name + " is there";
     }
 
+    @Override
+    public String hasProperties(String name) {
+        return name + " has properties " + null;
+    }
 }

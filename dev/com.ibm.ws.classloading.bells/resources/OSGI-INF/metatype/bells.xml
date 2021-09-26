@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -9,25 +9,95 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
+
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/bells" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
 
-  <OCD name="%bell" description="%bell.desc"
-       id="com.ibm.ws.classloading.bell"
+  <OCD id="com.ibm.ws.classloading.bell" name="%bell" description="%bell.desc"
        ibm:alias="bell">
-    
-    <AD name="%bell.library.ref" description="%bell.library.ref.desc"  
-        id="libraryRef" 
-        required="true" 
-        type="String"    
-        ibm:type="pid" 
-        ibm:reference="com.ibm.ws.classloading.sharedlibrary"
-    />
-    <AD id="library.target" type="String" required="true" default="(service.pid=${libraryRef})" name="internal" description="internal use only" ibm:final="true" />
-    <AD id="service" name="%service.name" description="%service.name.desc" required="false" type="String" cardinality="2147483647"/>
+
+    <AD id="libraryRef" name="%bell.library.ref" description="%bell.library.ref.desc"
+        type="String" required="true"
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary" />
+
+    <AD id="library.target" name="internal" description="internal use only"
+        type="String" required="true" default="(service.pid=${libraryRef})"
+        ibm:final="true" />
+
+    <AD id="service" name="%service.name" description="%service.name.desc"
+        type="String" required="false" cardinality="2147483647" />
+
+    <AD id="serviceProperties" name="%service.properties" description="%service.properties.desc"
+        type="String" required="false"
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.bell.serviceProperties"
+        ibm:flat="true"
+        ibm:beta="true" />
   </OCD>
 
   <Designate factoryPid="com.ibm.ws.classloading.bell">
     <Object ocdref="com.ibm.ws.classloading.bell"/>
+  </Designate>
+
+
+<!-- TODO REMOVE Idea for "service" type that nests 0+ <property/>.  Seems bad form as the runtime will 
+     accept config like below, but it looks odd to not have service name as an attr 
+        <bell>
+          <service>s1</service> 
+          <service>s1</service>
+-->
+<!-- <OCD id="com.ibm.ws.classloading.bell.service" name="%bell.service" description="%bell.service.desc" -->
+<!--        ibm:beta="true"> -->
+
+<!--     <AD id="service" name="%service.name" description="%service.name.desc" -->
+<!--         type="String" required="false" cardinality="2147483647" /> -->
+
+<!--     <AD id="property" name="%service.properties.property" description="%service.properties.property.desc" -->
+<!--         type="String" required="false" default="" cardinality="2147483647" -->
+<!--         ibm:type="pid"  -->
+<!--         ibm:reference="com.ibm.ws.classloading.bell.serviceProperties.property" -->
+<!--         ibm:flat="true" -->
+<!--         ibm:beta="true" /> -->
+<!--   </OCD> -->
+
+<!--   <Designate factoryPid="com.ibm.ws.classloading.bell.service"> -->
+<!--     <Object ocdref="com.ibm.ws.classloading.bell.service" /> -->
+<!--   </Designate> -->
+
+
+  <OCD id="com.ibm.ws.classloading.bell.serviceProperties" name="%service.properties" description="%service.properties.desc"
+       ibm:beta="true">
+
+    <AD id="service" name="%service.properties.service.name" description="%service.properties.service.name.desc"
+        type="String" required="false" />
+
+    <AD id="property" name="%service.properties.property" description="%service.properties.property.desc"
+        type="String" required="false" default="" cardinality="2147483647"
+        ibm:type="pid" 
+        ibm:reference="com.ibm.ws.classloading.bell.serviceProperties.property"
+        ibm:flat="true"
+        ibm:beta="true" />
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.classloading.bell.serviceProperties">
+    <Object ocdref="com.ibm.ws.classloading.bell.serviceProperties" />
+  </Designate>
+
+
+  <OCD id="com.ibm.ws.classloading.bell.serviceProperties.property" name="%service.properties.property" description="%service.properties.property.desc"
+       ibm:beta="true">
+
+    <AD id="name" name="%service.properties.property.name" description="%service.properties.property.name.desc"
+        type="String" required="false" default=""
+        ibm:beta="true" />
+
+    <AD id="value" name="%service.properties.property.value" description="%service.properties.property.value.desc"
+        type="String" required="false" default=""
+        ibm:beta="true" />
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.classloading.bell.serviceProperties.property">
+    <Object ocdref="com.ibm.ws.classloading.bell.serviceProperties.property"/>
   </Designate>
 
 </metatype:MetaData>

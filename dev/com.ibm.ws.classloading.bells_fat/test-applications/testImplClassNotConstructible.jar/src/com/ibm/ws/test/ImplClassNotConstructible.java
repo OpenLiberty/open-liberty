@@ -15,13 +15,16 @@ import com.ibm.ws.classloading.exporting.test.TestInterface;
 
 public class ImplClassNotConstructible implements TestInterface {
 
-    public ImplClassNotConstructible(String name) {
-
-    }
+    public ImplClassNotConstructible(String name) {}  // Ctor parm type must be none or Map<String,String>
 
     @Override
     public String isThere(String name) {
         return name + " is there";
+    }
+
+    @Override
+    public String hasProperties(String name) {
+        return name + " has properties " + null;
     }
 
 }

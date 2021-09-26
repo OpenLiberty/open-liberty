@@ -47,7 +47,7 @@ public class BellFatTest {
     public static void setup() throws Throwable {
         buildAndExportBellLibrary(server, "testNoEntry.jar", "NoEntry");
         buildAndExportBellLibrary(server, "testOneValidEntry.jar", "OneValidEntry");
-        buildAndExportBellLibrary(server, "testMultipleValidServices.jar", "MultipleValidServices");
+        buildAndExportBellLibrary(server, "testMultipleValidServices.jar", "MultipleValidServices1", "MultipleValidServices2");
         buildAndExportBellLibrary(server, "testMultipleImplsOfSingleService.jar", "MultipleImplsOfSingleService");
         buildAndExportBellLibrary(server, "testInterfaceClassNotFound.jar", "InterfaceClassNotFound");
         buildAndExportBellLibrary(server, "testImplClassThrowsException.jar", "ImplClassThrowsException");
