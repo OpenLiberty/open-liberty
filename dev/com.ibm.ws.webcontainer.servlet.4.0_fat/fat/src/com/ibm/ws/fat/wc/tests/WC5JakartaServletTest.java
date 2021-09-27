@@ -13,6 +13,7 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -144,9 +145,8 @@ public class WC5JakartaServletTest {
         LOG.info("Server configuration that was saved: " + configuration);
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("serverConfigs/EnablePostOnlyJSecurityCheckServer.xml");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
 
-        //Wait for "CWWKG0017I: The server configuration was successfully updated in"
-        server.waitForStringInLogUsingMark("CWWKG0017I:.*");
         configuration = server.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 
@@ -155,7 +155,7 @@ public class WC5JakartaServletTest {
         } finally {
             server.setMarkToEndOfLog();
             server.restoreServerConfiguration();
-            server.waitForStringInLogUsingMark("CWWKG0017I:.*");
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
         }
     }
 
