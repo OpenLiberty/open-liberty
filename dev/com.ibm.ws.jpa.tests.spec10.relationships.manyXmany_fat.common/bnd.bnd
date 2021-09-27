@@ -16,7 +16,7 @@ src: \
     test-applications/helpers/DatabaseManagement/src,\
     test-applications/jpa10/relationships/manyXmany/src
 
-test.project: false
+test.project: true
 publish.wlp.jar.disabled: true
 instrument.disabled: true
 

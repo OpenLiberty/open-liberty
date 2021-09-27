@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.jpa.tests.spec10.relationships.manyXmany</name>
+	<name>com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_fat.common</name>
 	<comment></comment>
 	<projects>
 	</projects>
