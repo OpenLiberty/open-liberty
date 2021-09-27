@@ -42,6 +42,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.ServerFileUtils;
 
@@ -313,6 +315,7 @@ public class WCResponseHeadersTest {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testHeaderMisconfiguration_EmptyHeaderName() throws Exception {
 
         String testName = "testHeaderMisconfiguration_EmptyHeaderName";
@@ -380,6 +383,7 @@ public class WCResponseHeadersTest {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testHeaderMisconfiguration_DuplicateHeaderName() throws Exception {
 
         String testName = "testHeaderMisconfiguration_DuplicateHeaderName";
@@ -449,7 +453,8 @@ public class WCResponseHeadersTest {
      *
      * @throws Exception
      */
-    @Test
+    @Test  
+    @Mode(TestMode.FULL)
     public void testHeaderMisconfiguration_PreviouslyDuplicatedHeaderName() throws Exception {
 
         String testName = "testHeaderMisconfiguration_PreviouslyDuplicatedHeaderName";
@@ -529,6 +534,7 @@ public class WCResponseHeadersTest {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testHeaderMisconfiguration_CaseInsensitivity() throws Exception {
         String testName = "testHeaderCaseInsensitivity";
         String url = generateURL("/ResponseHeadersServlet?testCondition=singleHeader");
@@ -944,6 +950,52 @@ public class WCResponseHeadersTest {
         expectations.evaluate(headers);
     }
 
+
+    /**
+     *
+     * Tests the "remove" configuration of the <headers> element by specifying
+     * a header that will not be present in the response. 
+     *
+     * The application will add the [appVerificationHeader] header to the response. No further
+     * application interaction is expected.
+     *
+     * The header [undefinedHeader] will be configured in the remove option, but will not be 
+     * present on the response. A status 200 is expected with no [undefinedHeader] added 
+     * to the response. 
+     * 
+     * Expected present headers: [appVerificationHeader]
+     * Expected missing headers: [undefinedHeader]
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRemoveMissingHeader() throws Exception {
+
+        String url = generateURL("/ResponseHeadersServlet");
+        String testName = "testRemoveMissingHeader";
+        restoreSavedConfig = true;
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        Log.info(ME, testName, "Server configuration that was saved: " + configuration);
+
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+        httpEndpoint.getHeaders().setRemove("undefinedHeader");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*ResponseHeadersTest.*");
+
+        Log.info(ME, testName, "Updated server configuration: " + configuration);
+
+        //Send the request and verify the expected headers
+        Header[] headers = executeExchangeAndGetHeaders(url, testName);
+
+        HeaderExpectations expectations = new HeaderExpectations();
+        expectations.expectPresent("appVerificationHeader");
+        expectations.expectMissing("undefinedHeader");
+
+        expectations.evaluate(headers);
+    }
+
     /**
      *
      * Cookie Header Test Series Test 1/4 : "add" attribute configuration
@@ -1165,7 +1217,31 @@ public class WCResponseHeadersTest {
 
     }
 
-    @Test
+    /**
+     * Tests that the configuration is applied to all responses in the process of authenticating 
+     * an end-user to a secure application. The server configuration will configure the "add" attribute 
+     * with the header [foo:bar].
+     * 
+     * First Request: 
+     * Expected response code: 302
+     * Expected response header: [foo:bar]
+     * 
+     * Second Request: Login Page
+     * Expected response code: 200
+     * Expected response header: [foo:bar]
+     * 
+     * Third Request: Perform Login
+     * Expected response code: 302
+     * Expected response header: [foo:bar]
+     * 
+     * Fourth Request: Application Servlet
+     * Expected response code: 200
+     * Expected response header: [foo:bar]
+     *
+     * @throws Exception
+     */
+    @Test   
+    @Mode(TestMode.FULL)
     public void testHeadersDuringLogin() throws Exception {
 
         String testName = "testHeadersDuringLogin";
