@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,6 +41,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.microprofile41.internal.test.helloworld.HelloWorldApplication;
@@ -60,6 +63,9 @@ public class BasicHealthTest {
     private static final String APP_NAME = "helloworld";
 
     private static final String MESSAGE = BasicHelloWorldBean.MESSAGE;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUp() throws Exception {
