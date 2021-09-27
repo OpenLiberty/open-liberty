@@ -80,6 +80,7 @@ public abstract class InstallUtilityToolTest {
         ProgramOutput po9 = runCommand("listFilesInJava", "ls -l", param9s);
         String output3 = po9.getStdout();
         logger.info(output3);
+
         //DEBUG
         String[] param10 = { "/etc/os-release" };
         ProgramOutput po10 = runCommand("OSRelease", "cat /etc/os-release", param10);
@@ -90,6 +91,12 @@ public abstract class InstallUtilityToolTest {
         ProgramOutput po11 = runCommand("listJava", "ls", param11);
         String output11 = po11.getStdout();
         logger.info(output11);
+        exiting(c, METHOD_NAME);
+
+        String[] param12 = { "-version" };
+        ProgramOutput po12 = runCommand("javaVersion", "java", param12);
+        String output12 = po11.getStdout();
+        logger.info(output12);
         exiting(c, METHOD_NAME);
     }
 
