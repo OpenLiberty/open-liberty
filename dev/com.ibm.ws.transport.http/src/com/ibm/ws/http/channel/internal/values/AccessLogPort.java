@@ -10,11 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
 public class AccessLogPort extends AccessLogData {
+
+    /** Trace component for debugging */
+    private static final TraceComponent tc = Tr.register(AccessLogPort.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public AccessLogPort() {
         super("%p");
@@ -62,7 +69,9 @@ public class AccessLogPort extends AccessLogData {
         return localPort;
     }
 
+    @Deprecated
     public static String getRemotePort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        betaFenceCheck();
         HttpRequestMessageImpl requestMessageImpl = null;
         String remotePort = null;
         if (request != null) {
@@ -75,4 +84,19 @@ public class AccessLogPort extends AccessLogData {
         return remotePort;
     }
 
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
+
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("This method is beta and is not available.");
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + AccessLogPort.class.getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
 }
