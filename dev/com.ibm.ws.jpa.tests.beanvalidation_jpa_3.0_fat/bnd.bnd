@@ -29,7 +29,7 @@ tested.features: persistence-3.0, persistenceContainer-3.0, beanValidation-3.0
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
-    com.ibm.ws.jpa.tests.beanvalidation;version=latest,\
+    com.ibm.ws.jpa.tests.beanvalidation_fat.common;version=latest,\
     fattest.simplicity;version=latest,\
     io.openliberty.jakarta.annotation.2.0;version=latest,\
     io.openliberty.jakarta.cdi.3.0;version=latest,\
