@@ -23,7 +23,7 @@ src: \
     test-applications/svlquery/src,\
     test-applications/helpers/DatabaseManagement/src
 
-test.project: false
+test.project: true
 publish.wlp.jar.disabled: true
 instrument.disabled: true
 
