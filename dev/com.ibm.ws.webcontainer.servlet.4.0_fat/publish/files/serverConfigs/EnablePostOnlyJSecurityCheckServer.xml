@@ -10,23 +10,17 @@
  -->
 <server description="Extended Server for testing Servlet 50 jakarta.servlet">
 
-  <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestPorts.xml"/>
 
-  <featureManager>
-    <feature>servlet-5.0</feature>
-    <feature>jsp-2.3</feature>
-    <feature>appSecurity-2.0</feature>
-  </featureManager>
+    <featureManager>
+        <feature>servlet-5.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
 
-  <webContainer enablePostOnlyJSecurityCheck="false"/> 
+    <webContainer enablePostOnlyJSecurityCheck="false"/> 
 
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:GenericBNF=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
-    
     <!--Java2 security-->
-  <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 
 </server>
