@@ -10,19 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent;
 
+import java.util.Map;
+
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.wsspi.threadcontext.WSContextService;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  * Interface that exposes various details about a managed executor service internally to other bundles.
  */
 public interface WSManagedExecutorService {
     /**
-     * Returns the context service instance backing the managed executor.
+     * <p>Captures context from the thread that invokes this method,
+     * or creates new thread context as determined by the execution properties.
+     * Do not expect the captured context to be serializable.</p>
      *
-     * @return the context service instance backing the managed executor.
+     * @param props execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
+     * @return captured thread context.
      */
-    WSContextService getContextService();
+    ThreadContextDescriptor captureThreadContext(Map<String, String> props);
 
     /**
      * When the longRunningPolicy is configured, returns the policy executor for running tasks against the long running concurrency policy.
