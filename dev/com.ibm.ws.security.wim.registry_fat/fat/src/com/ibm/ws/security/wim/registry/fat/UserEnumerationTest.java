@@ -257,7 +257,7 @@ public class UserEnumerationTest {
         int allowedRatioMin = 70;
         int allowedRatioMax = 130;
 
-        int validityCheckRounds = 10;
+        int validityCheckRounds = 15;
 
         for (int j = 0; j < validityCheckRounds; j++) {
             /*
