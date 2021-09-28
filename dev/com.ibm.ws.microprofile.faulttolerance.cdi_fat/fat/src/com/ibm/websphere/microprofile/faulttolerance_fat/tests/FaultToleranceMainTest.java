@@ -208,7 +208,7 @@ public class FaultToleranceMainTest extends FATServletClient {
         }
     }
 
-    @SkipForRepeat({ MicroProfileActions.MP40_ID, MicroProfileActions.MP41_ID }) // FT 3.0 does not close executors until the application shuts down
+    @SkipForRepeat({ MicroProfileActions.MP40_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID }) // FT 3.0+ does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 
