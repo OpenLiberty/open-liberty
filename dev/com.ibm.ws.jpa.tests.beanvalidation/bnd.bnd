@@ -11,15 +11,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+test.project: true
+publish.wlp.jar.disabled: true
+instrument.disabled: true
+
 src: \
     fat/src,\
     test-applications/beanvalidation/src,\
     test-applications/beanvalidation20/src,\
     test-applications/helpers/DatabaseManagement/src
-
-test.project: false
-publish.wlp.jar.disabled: true
-instrument.disabled: true
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -36,6 +36,6 @@ instrument.disabled: true
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3
+    org.jboss.shrinkwrap:shrinkwrap-api;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=latest

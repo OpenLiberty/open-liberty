@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.beanvalidation20.ejb.TestBeanValidation20_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.beanvalidation20.ejb.TestBeanValidation20_EJB_SF_Servlet;
 import com.ibm.ws.jpa.beanvalidation20.ejb.TestBeanValidation20_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.annotation.Server;
@@ -124,6 +125,8 @@ public class BeanValidation20_EJB extends JPAFATServletClient {
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipDBRule.setDatabase(getDbVendor().name());
     }
 
     private static void setupTestApplication() throws Exception {
@@ -138,6 +141,15 @@ public class BeanValidation20_EJB extends JPAFATServletClient {
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
+
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            ejbApp.move("/META-INF/persistence-oracle-21.xml", "/META-INF/persistence.xml");
+        }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
