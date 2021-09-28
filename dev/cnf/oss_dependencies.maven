@@ -436,6 +436,7 @@ org.glassfish.hk2:hk2-locator:2.5.0-b42
 org.glassfish.hk2:hk2-utils:2.3.0-b10
 org.glassfish.hk2:hk2-utils:2.5.0-b42
 org.glassfish.hk2:osgi-resource-locator:1.0.1
+org.glassfish.hk2:osgi-resource-locator:1.0.3
 org.glassfish.jaxb:codemodel:3.0.1
 org.glassfish.jaxb:jaxb-core:3.0.1
 org.glassfish.jaxb:jaxb-jxc:3.0.1
