@@ -29,11 +29,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 public class HelloWorldEarTest extends HelloWorldBasicTest {
 
@@ -92,7 +90,7 @@ public class HelloWorldEarTest extends HelloWorldBasicTest {
     }
 
     @Test
-    public void testHelloWorld() throws Exception {
+    public void testHelloWorldEar() throws Exception {
         String response = runHelloWorldTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r1"));
     }

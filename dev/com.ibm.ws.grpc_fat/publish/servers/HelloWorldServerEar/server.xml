@@ -14,10 +14,7 @@
         <feature>grpcClient-1.0</feature>
     </featureManager>
 
-    <mpMetrics authentication = "false"/>
-    <keyStore id="defaultKeyStore" password="passw0rd" />
-
     <include location="../fatTestPorts.xml"/>
-    
+
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>
