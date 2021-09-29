@@ -131,44 +131,47 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
         if (container != null) {
             GrpcServletApplication currentApp = initGrpcServices(container, isc.getWebAppConfig().getApplicationName());
             if (currentApp != null) {
-                Set<String> services = currentApp.getServiceClassNames();
-                if (services != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "gRPC services found for app {0}; starting initialization", sc.getServletContextName());
-                    }
-                    Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
-                    for (String serviceClassName : services) {
-                        BindableService service = newServiceInstanceFromClassName(currentApp, serviceClassName);
-                        if (service != null) {
-                            grpcServiceClasses.put(serviceClassName, service);
+                // synchronize to protect against GrpcServletApplication.destroy() being invoked concurrently
+                synchronized(currentApp) {
+                    Set<String> services = currentApp.getServiceClassNames();
+                    if (services!= null && !services.isEmpty()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "gRPC services found for app {0}; starting initialization", sc.getServletContextName());
                         }
-                    }
-                    if (!grpcServiceClasses.isEmpty()) {
-                        // keep track of the current application so that we can restart it if <grpcService/> is updated
-                        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-                        if (cmd != null) {
-                            currentApp.setAppName(cmd.getJ2EEName().getApplication());
+                        Map<String, BindableService> grpcServiceClasses = new HashMap<String, BindableService>();
+                        for (String serviceClassName : services) {
+                            BindableService service = newServiceInstanceFromClassName(currentApp, serviceClassName);
+                            if (service != null) {
+                                grpcServiceClasses.put(serviceClassName, service);
+                            }
                         }
-                        // register URL mappings for each gRPC service we've registered
-                        for (BindableService service : grpcServiceClasses.values()) {
-                            String serviceName = service.bindService().getServiceDescriptor().getName();
-
-                            // pass all of our grpc service implementors into a new GrpcServlet
-                            // and register that new Servlet on this context
-                            GrpcServlet grpcServlet = new GrpcServlet(
-                                    new ArrayList<BindableService>(grpcServiceClasses.values()), isc.getWebAppConfig().getApplicationName());
-                            ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
-                            servletRegistration.setAsyncSupported(true);
-
-                            String urlPattern = "/" + serviceName + "/*";
-                            servletRegistration.addMapping(urlPattern);
-
-                            // keep track of this service name -> application path mapping
-                            currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
-
-                            Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
+                        if (!grpcServiceClasses.isEmpty()) {
+                            // keep track of the current application so that we can restart it if <grpcService/> is updated
+                            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                            if (cmd != null) {
+                                currentApp.setAppName(cmd.getJ2EEName().getApplication());
+                            }
+                            // register URL mappings for each gRPC service we've registered
+                            for (BindableService service : grpcServiceClasses.values()) {
+                                String serviceName = service.bindService().getServiceDescriptor().getName();
+    
+                                // pass all of our grpc service implementors into a new GrpcServlet
+                                // and register that new Servlet on this context
+                                GrpcServlet grpcServlet = new GrpcServlet(
+                                        new ArrayList<BindableService>(grpcServiceClasses.values()), isc.getWebAppConfig().getApplicationName());
+                                ServletRegistration.Dynamic servletRegistration = sc.addServlet("grpcServlet" + ":" + serviceName, grpcServlet);
+                                servletRegistration.setAsyncSupported(true);
+    
+                                String urlPattern = "/" + serviceName + "/*";
+                                servletRegistration.addMapping(urlPattern);
+    
+                                // keep track of this service name -> application path mapping
+                                currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
+    
+                                Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
@@ -260,7 +263,9 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
         // clean up any grpc URL mappings
         GrpcServletApplication currentApp = grpcApplications.remove(appInfo.getName());
         if (currentApp != null) {
-            currentApp.destroy();
+            synchronized(currentApp) {
+                currentApp.destroy();
+            }
         }
     }
 
