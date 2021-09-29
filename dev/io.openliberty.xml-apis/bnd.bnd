@@ -16,6 +16,9 @@ Bundle-Name: DOM & SAX XML APIs
 Bundle-SymbolicName: io.openliberty.xml-apis
 Bundle-Description: Provides XML APIs as a bundle
 
+test.project: true
+publish.wlp.jar.disabled: true
+
 #javax.xml classes (JAXP & StAX) intentionally excluded
 #org.apache.xmlcommons classes intentionally excluded
 -includeresource: \

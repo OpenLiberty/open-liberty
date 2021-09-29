@@ -16,6 +16,9 @@ Bundle-Name: Apache Xerces2-j
 Bundle-SymbolicName: io.openliberty.org.apache.xerces
 Bundle-Description: Provides Apache xercesImpl as a bundle
 
+test.project: true
+publish.wlp.jar.disabled: true
+
 -includeresource: \
   @${repo;xerces:xercesImpl;2.12.1;EXACT}
 
