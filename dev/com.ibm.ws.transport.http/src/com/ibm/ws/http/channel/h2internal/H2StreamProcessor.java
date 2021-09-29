@@ -1958,11 +1958,12 @@ public class H2StreamProcessor {
                     // if it's not, wait for at most the configured writeTimeout period (default 60s)
                     if (isWindowLimitExceeded((FrameData) currentFrame)) {
                         long startTime = System.currentTimeMillis();
+                        long elapsed = 0;
                         while (isWindowLimitExceeded((FrameData) currentFrame) && !timedOut) {
                             synchronized (this) {
                                 this.wait(writeTimeout);
                             }
-                            long elapsed = System.currentTimeMillis() - startTime;
+                            elapsed = System.currentTimeMillis() - startTime;
                             if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
                                 return false;
                             } else if (elapsed > writeTimeout) {
