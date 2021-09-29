@@ -135,7 +135,7 @@ class SystemConfiguration {
             @Override
             public void restore() {
                 try {
-                    reprocessConfig();
+                    reprocessConfig(true);
                 } catch (ConfigUpdateException e) {
                     throw new RuntimeException(e);
                 }
@@ -188,17 +188,18 @@ class SystemConfiguration {
             serverXMLConfig.loadInitialConfiguration(variableRegistry);
         }
 
-        reprocessConfig();
+        reprocessConfig(false);
     }
 
-    void reprocessConfig() throws ConfigUpdateException {
+    void reprocessConfig(boolean restoreHook) throws ConfigUpdateException {
         if (serverXMLConfig.isModified() || variableRegistry.variablesChanged()) {
             variableRegistry.clearVariableCache();
             changeHandler.updateAtStartup(serverXMLConfig.getConfiguration());
             serverXMLConfig.setConfigReadTime();
             bundleProcessor.startProcessor(true);
+        } else if (!restoreHook) {
+            bundleProcessor.startProcessor(false);
         }
-
     }
 
     void stop() {
