@@ -78,7 +78,7 @@ public class TAIRequestHelper {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
 
-        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest, isNewMpJwtAndMpConfig(request));
+        mpJwtTaiRequest = setTaiRequestConfigInfo(request, mpJwtTaiRequest);
         boolean result = false;
         boolean ignoreAppAuthMethod = true;
 
@@ -108,15 +108,6 @@ public class TAIRequestHelper {
         }
 
         return result;
-    }
-
-    private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) {
-        boolean newMpjwtAndMpConfig = false;
-        MpConfigProperties mpConfigProps = getMpConfigPropsFromRequestObject(request);
-        if (mpConfigProps != null && !mpConfigProps.isEmpty()) {
-            newMpjwtAndMpConfig = true;
-        }
-        return newMpjwtAndMpConfig;
     }
 
     public MpConfigProperties getMpConfigPropsFromRequestObject(HttpServletRequest request) {
@@ -304,7 +295,7 @@ public class TAIRequestHelper {
         return param;
     }
 
-    MicroProfileJwtTaiRequest setTaiRequestConfigInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
+    MicroProfileJwtTaiRequest setTaiRequestConfigInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
         String methodName = "setTaiRequestConfigInfo";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
@@ -312,7 +303,7 @@ public class TAIRequestHelper {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Specific config ID not provided, so will set generic config information for MpJwtTaiRequest object");
         }
-        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest, defaultConfig);
+        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest);
 
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
@@ -320,7 +311,7 @@ public class TAIRequestHelper {
         return result;
     }
 
-    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
+    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
         String methodName = "setGenericAndFilteredConfigTaiRequestInfo";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
@@ -329,14 +320,14 @@ public class TAIRequestHelper {
             mpJwtTaiRequest = createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
         }
         Iterator<MicroProfileJwtConfig> services = getConfigServices();
-        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(request, mpJwtTaiRequest, services, defaultConfig);
+        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(request, mpJwtTaiRequest, services);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
     }
 
-    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, Iterator<MicroProfileJwtConfig> services, boolean defaultConfig) {
+    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, Iterator<MicroProfileJwtConfig> services) {
         String methodName = "setGenericAndFilteredConfigTaiRequestInfoFromConfigServices";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest, services);
@@ -358,9 +349,7 @@ public class TAIRequestHelper {
                 if (authFilter.isAccepted(request)) {
                     mpJwtTaiRequest.addFilteredConfig(mpJwtConfig);
                 }
-            } else if (defaultConfig) {
-                mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
-            } else if (!isMpJwtDefaultConfig(mpJwtConfig)) {
+            } else {
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
             }
         }
