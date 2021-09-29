@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.values.AccessLogCurrentTime;
 import com.ibm.ws.http.channel.internal.values.AccessLogElapsedTime;
 import com.ibm.ws.http.channel.internal.values.AccessLogFirstLine;
+import com.ibm.ws.http.channel.internal.values.AccessLogPort;
 import com.ibm.ws.http.channel.internal.values.AccessLogRemoteIP;
 import com.ibm.ws.http.channel.internal.values.AccessLogRemoteUser;
 import com.ibm.ws.http.channel.internal.values.AccessLogRequestCookie;
@@ -307,10 +308,12 @@ public class AccessLogSource implements Source {
                         fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort()));
                     } else {
                         for (Object data : fields.get("%p")) {
-                            if ("remote".equals(data))
+                            if (AccessLogPort.TYPE_REMOTE.equals(data)) {
+                                AccessLogPort.betaFenceCheck();
                                 fieldSetters.add((ald, alrd) -> ald.setRemotePort(alrd.getRemotePort()));
-                            else
+                            } else {
                                 fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort()));
+                            }
                         }
                     }
                     break;
@@ -373,10 +376,12 @@ public class AccessLogSource implements Source {
                             builder.add(addRequestPortField(format));
                         } else {
                             for (Object data : fields.get("%p")) {
-                                if ("remote".equals(data))
+                                if (AccessLogPort.TYPE_REMOTE.equals(data)) {
+                                    AccessLogPort.betaFenceCheck();
                                     builder.add(addRemotePortField(format));
-                                else
+                                } else {
                                     builder.add(addRequestPortField(format));
+                                }
                             }
                         }
                         break;

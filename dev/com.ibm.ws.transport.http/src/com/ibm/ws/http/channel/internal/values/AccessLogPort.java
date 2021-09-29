@@ -23,6 +23,9 @@ public class AccessLogPort extends AccessLogData {
     /** Trace component for debugging */
     private static final TraceComponent tc = Tr.register(AccessLogPort.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
+    @Deprecated
+    public static final String TYPE_REMOTE = "remote";
+
     public AccessLogPort() {
         super("%p");
         // %p - Local port
@@ -47,8 +50,9 @@ public class AccessLogPort extends AccessLogData {
 
     public static String getPort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
         // Matching logic in multiple places in com.ibm.ws.http.logging.source.AccessLogSource
-        if ("remote".equals(data)) {
+        if (TYPE_REMOTE.equals(data)) {
             // %{remote}p
+            betaFenceCheck();
             return getRemotePort(response, request, data);
         } else {
             // %p
@@ -69,9 +73,7 @@ public class AccessLogPort extends AccessLogData {
         return localPort;
     }
 
-    @Deprecated
     public static String getRemotePort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        betaFenceCheck();
         HttpRequestMessageImpl requestMessageImpl = null;
         String remotePort = null;
         if (request != null) {
@@ -87,7 +89,7 @@ public class AccessLogPort extends AccessLogData {
     // Flag tells us if the message for a call to a beta method has been issued
     private static boolean issuedBetaMessage = false;
 
-    private static void betaFenceCheck() throws UnsupportedOperationException {
+    public static void betaFenceCheck() throws UnsupportedOperationException {
         // Not running beta edition, throw exception
         if (!ProductInfo.getBetaEdition()) {
             throw new UnsupportedOperationException("This method is beta and is not available.");
