@@ -75,4 +75,6 @@ public abstract class ApplicationStateMachine {
     public abstract void describe(StringBuilder sb);
 
     public abstract boolean isBlocked();
+
+    public abstract void resetStartTime();
 }

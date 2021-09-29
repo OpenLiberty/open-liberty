@@ -1444,4 +1444,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         return false;
     }
 
+    @Override
+    public void resetStartTime() {
+        Action current = _currentAction.get();
+        if (current != null) {
+            current.resetStartTime();
+        }
+    }
 }

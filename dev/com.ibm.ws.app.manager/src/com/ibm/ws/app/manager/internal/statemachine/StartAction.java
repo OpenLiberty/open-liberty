@@ -56,8 +56,8 @@ class StartAction implements Action {
                     String key = _update ? "APPLICATION_UPDATE_SUCCESSFUL" : "APPLICATION_START_SUCCESSFUL";
                     NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.TRUE,
                                                        AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName(),
-                                                                                                             TimestampUtils.getElapsedTime(_startTime.get())));
-                    AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName(), TimestampUtils.getElapsedTime(_startTime.get()));
+                                                                                                             TimestampUtils.getElapsedTimeNanos(_startTime.get())));
+                    AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName(), TimestampUtils.getElapsedTimeNanos(_startTime.get()));
                     callback.changed();
                 } else {
                     if (!cancelled) {
@@ -117,7 +117,7 @@ class StartAction implements Action {
     /** {@inheritDoc} */
     @Override
     public void execute(ExecutorService executor) {
-        _startTime.set(System.currentTimeMillis());
+        _startTime.set(System.nanoTime());
         @SuppressWarnings({ "rawtypes" })
         final ApplicationHandler handler = _aii.getHandler();
         if (handler == null) {
@@ -135,7 +135,7 @@ class StartAction implements Action {
             @SuppressWarnings("deprecation")
             @Override
             public void run() {
-                AppMessageHelper.get(handler).audit("APPLICATION_SLOW_STARTUP", _config.getName(), TimestampUtils.getElapsedTime(_startTime.get()));
+                AppMessageHelper.get(handler).audit("APPLICATION_SLOW_STARTUP", _config.getName(), TimestampUtils.getElapsedTimeNanos(_startTime.get()));
             }
         }, maxWait, TimeUnit.SECONDS));
 
@@ -172,5 +172,10 @@ class StartAction implements Action {
     public void cancel() {
         this.cancelled = true;
         stopSlowStartMessage();
+    }
+
+    @Override
+    public void resetStartTime() {
+        _startTime.set(System.nanoTime());
     }
 }
