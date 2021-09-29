@@ -6,6 +6,7 @@
     <feature>wasJmsServer-1.0</feature>
     <feature>wasJmsSecurity-1.0</feature>
     <feature>testjmsinternals-1.0</feature>
+    <feature>jmsMdb-3.2</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
@@ -14,10 +15,7 @@
 
   <wasJmsOutbound id="BootstrapSecureMessaging" useSSL="true"/>
 
-  <logging
-    traceSpecification="*=info:logservice=all:SIBCommunications=all:SIB*=all:ChannelFramework=all"
-    maxFileSize="200"
-  />
+<!--   <logging traceSpecification="*=info:logservice=all:SIBCommunications=all:SIB*=all:ChannelFramework=all" maxFileSize="200" /> -->
 
   <keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
 
@@ -35,11 +33,14 @@
     <queue id="QUEUE2"/>
     <queue id="QUEUE3"/>
     <queue id="QUEUE4"/>
+    <queue id="RedeliveryQueue1" maxRedeliveryCount="2" />
+
     <topicSpace id="NewTopic1"/>
     <topicSpace id="NewTopic2"/>
     <topicSpace id="NewTopic3"/>
+    <topicSpace id="TestTopicSpace"/>
 
-    <messagingSecurity>
+  	<messagingSecurity>
       <role name="developer">
         <queuePermission queueRef="QUEUE1">
           <action>SEND</action>
@@ -65,15 +66,33 @@
           <action>RECEIVE</action>
         </queuePermission>
 
+        <queuePermission queueRef="RedeliveryQueue1">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
         <topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
           <action>ALL</action>
         </topicPermission>
 
-        <topicPermission topicSpaceRef="NewTopic3" topicName="testTopic3">
+        <topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2">
           <action>ALL</action>
         </topicPermission>
 
-        <topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2">
+        <topicPermission topicName="localTopicNonDurableMDB" topicSpaceRef="TestTopicSpace" id="localTopicNonDurableMDB">
+          <action>ALL</action>
+        </topicPermission>
+
+         <topicPermission topicName="remoteTopicNonDurableMDB" topicSpaceRef="TestTopicSpace" id="remoteTopicNonDurableMDB">
+          <action>ALL</action>
+        </topicPermission>
+
+         <topicPermission topicName="localTopicDurableMDB" topicSpaceRef="TestTopicSpace" id="localTopicDurableMDB">
+          <action>ALL</action>
+        </topicPermission>
+
+         <topicPermission topicName="remoteTopicDurableMDB" topicSpaceRef="TestTopicSpace" id="remoteTopicDurableMDB">
           <action>ALL</action>
         </topicPermission>
 
@@ -97,8 +116,8 @@
           <action>RECEIVE</action>
         </tempDestinationPermission>
 
-        <user name="user1"/>
-        <group name="Testers"/>
+        <user name="user1" />
+        <group name="Testers" />
       </role>
 
     </messagingSecurity>
@@ -119,31 +138,51 @@
   <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
   <jmsQueue jndiName="jndi_INPUT_Q">
-    <properties.wasJms  queueName="QUEUE1" timeToLive="500000"/>
+    <properties.wasJms queueName="QUEUE1" timeToLive="500000"/>
   </jmsQueue>
 
   <jmsQueue jndiName="jndi_INPUT_Q1">
-    <properties.wasJms  queueName="QUEUE2"/>
+    <properties.wasJms queueName="QUEUE2"/>
   </jmsQueue>
 
   <jmsQueue jndiName="jndi_INPUT_Q2">
-    <properties.wasJms  queueName="QUEUE3"/>
+    <properties.wasJms queueName="QUEUE3"/>
   </jmsQueue>
 
   <jmsQueue jndiName="jndi_INPUT_Q3">
-    <properties.wasJms  queueName="QUEUE4"/>
+    <properties.wasJms queueName="QUEUE4"/>
   </jmsQueue>
 
-  <jmsTopic jndiName="eis/topic1">
+  <jmsQueue id="RedeliveryQueue1" jndiName="jndi_RedeliveryQueue1">
+    <properties.wasJms queueName="RedeliveryQueue1"/>
+  </jmsQueue>
+
+  <jmsTopic id="topic1" jndiName="eis/topic1">
     <properties.wasJms topicSpace="NewTopic1" topicName="testTopic"/>
   </jmsTopic>
 
-  <jmsTopic jndiName="eis/topic2">
+  <jmsTopic id="topic2" jndiName="eis/topic2">
     <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2"/>
   </jmsTopic>
 
-  <jmsTopic jndiName="eis/topic3">
+  <jmsTopic  id="topic3" jndiName="eis/topic3">
     <properties.wasJms topicSpace="NewTopic3" topicName="testTopic3"/>
+  </jmsTopic>
+
+  <jmsTopic id="localTopicNonDurableMDB" jndiName="eis/localTopicNonDurableMDB">
+    <properties.wasJms topicName="localTopicNonDurableMDB" topicSpace="TestTopicSpace"/>
+  </jmsTopic>
+
+  <jmsTopic id="remoteTopicNonDurableMDB" jndiName="eis/remoteTopicNonDurableMDB">
+    <properties.wasJms topicName="remoteTopicNonDurableMDB" topicSpace="TestTopicSpace"/>
+  </jmsTopic>
+
+  <jmsTopic id="localTopicDurableMDB" jndiName="eis/localTopicDurableMDB">
+    <properties.wasJms topicName="localTopicDurableMDB" topicSpace="TestTopicSpace"/>
+  </jmsTopic>
+
+  <jmsTopic id="remoteTopicDurableMDB" jndiName="eis/remoteTopicDurableMDB">
+    <properties.wasJms topicName="remoteTopicDurableMDB" topicSpace="TestTopicSpace"/>
   </jmsTopic>
 
   <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr2">
@@ -155,8 +194,57 @@
     <properties.wasJms userName="user1"
                        password="user1pwd"
                        temporaryTopicNamePrefix="Ttemp"
-                       remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging"
-    />
+                       remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging"/>
   </jmsTopicConnectionFactory>
   <connectionManager id="ConMgr3" maxPoolSize="2"/>
+
+  <jmsActivationSpec id="jmsapp/RDC1MessageDrivenBean">
+     <properties.wasJms destinationRef="RedeliveryQueue1" userName="user1" password="user1pwd"/>
+  </jmsActivationSpec>
+
+  <jmsActivationSpec id="jmsapp/RDC2MessageDrivenBean">
+     <properties.wasJms destinationRef="RedeliveryQueue1" userName="user1" password="user1pwd" remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging"/>
+  </jmsActivationSpec>
+
+    <jmsActivationSpec id="jmsapp/LocalTopicNonDurableMDB1">
+		<properties.wasJms
+			destinationRef="localTopicNonDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="NonDurableShared" clientId="ClientId" subscriptionName="LocalTopicNonDurableShared" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/LocalTopicNonDurableMDB2">
+		<properties.wasJms
+			destinationRef="localTopicNonDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="NonDurableShared" clientId="ClientId" subscriptionName="LocalTopicNonDurableShared" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/RemoteTopicNonDurableMDB1">
+		<properties.wasJms
+			destinationRef="remoteTopicNonDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="NonDurableShared" clientId="ClientId" subscriptionName="RemoteTopicNonDurableShared" remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/RemoteTopicNonDurableMDB2">
+		<properties.wasJms
+			destinationRef="remoteTopicNonDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="NonDurableShared" clientId="ClientId" subscriptionName="RemoteTopicNonDurableShared" remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/LocalTopicDurableMDB1">
+		<properties.wasJms
+			destinationRef="localTopicDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="DurableShared" clientId="ClientId" subscriptionName="LocalTopicDurableShared" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/LocalTopicDurableMDB2">
+		<properties.wasJms
+			destinationRef="localTopicDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="DurableShared" clientId="ClientId" subscriptionName="LocalTopicDurableShared" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/RemoteTopicDurableMDB1">
+		<properties.wasJms
+			destinationRef="remoteTopicDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="DurableShared" clientId="ClientId" subscriptionName="RemoteTopicDurableShared" remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging" />
+	</jmsActivationSpec>
+
+	<jmsActivationSpec id="jmsapp/RemoteTopicDurableMDB2">
+		<properties.wasJms
+			destinationRef="remoteTopicDurableMDB" userName="user1" password="user1pwd" destinationType="javax.jms.Topic" subscriptionDurability="DurableShared" clientId="ClientId" subscriptionName="RemoteTopicDurableShared" remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging" />
+	</jmsActivationSpec>
+
+<!--    <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/> -->
 </server>
