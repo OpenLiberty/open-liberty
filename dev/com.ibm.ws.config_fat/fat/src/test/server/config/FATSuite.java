@@ -18,7 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 ServerConfigTest.class,
                 ConfigExtensionsTest.class,
-                ConfigValidatorTest.class,
                 ChildAliasTest.class,
                 ProductExtensionsTest.class,
                 BadConfigTests.class,
