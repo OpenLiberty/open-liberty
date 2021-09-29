@@ -11,7 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.66.Final
+nettyVersion=4.1.68.Final
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
