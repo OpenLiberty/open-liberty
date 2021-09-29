@@ -426,16 +426,21 @@ goto:eof
   call:serverExists true
   if %RC% == 2 goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
-  set PRUNSRV_RC=!errorlevel!
+  set RC=!errorlevel!
 
   @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
   @rem RC=0 indicates the server is running; ie the stop request failed.
-  @rem      Change RC to the return code given by prunsrv (expect rc=6 when stop fails).
+  @rem      Call stopServer directly. Stopping the server should stop the service.
   @rem RC=1 is what we are expecting, meaning server stopped. 
   @rem      Change RC to RC=0 to indicate success.
   call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
-  if !RC! EQU 0 set RC=!PRUNSRV_RC!
-  if !RC! EQU 1 set RC=0
+
+  if !RC! EQU 0 (
+     @rem The service failed to stop, attempt to stop the server directly.
+     call:stopServer
+  ) else ( 
+     set RC=0
+  )
 goto:eof
 
 :unregisterWinService
@@ -749,7 +754,7 @@ goto:eof
   if NOT "%~1" == "" set serverRunningTimeOut=%~1
   if NOT "%~2" == "" set serverRunningDesiredStatus=%~2
 
-  @REM DO WHILE ( not timed out and desired status not achieved )
+  @REM DO WHILE not timed out and desired status not achieved.
   :repeatServerRunning
 
     @REM Check server status
