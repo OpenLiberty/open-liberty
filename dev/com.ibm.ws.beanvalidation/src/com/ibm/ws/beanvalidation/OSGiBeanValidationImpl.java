@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -502,9 +502,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     @Reference(name = REFERENCE_VALIDATOR_FACTORY_BUILDER,
                service = ValidatorFactoryBuilder.class,
-               cardinality = ReferenceCardinality.MULTIPLE,
+               cardinality = ReferenceCardinality.AT_LEAST_ONE,
                policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY)
+               policyOption = ReferencePolicyOption.GREEDY,
+               target = "(id=unbound)")
     protected void setValidatorFactoryBuilder(ServiceReference<ValidatorFactoryBuilder> ref) {
         validatorFactoryBuilderSR.setReference(ref);
     }
