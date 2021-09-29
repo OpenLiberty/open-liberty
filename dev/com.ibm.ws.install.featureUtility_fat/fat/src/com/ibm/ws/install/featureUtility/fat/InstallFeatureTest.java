@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +36,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	@BeforeClass
 	public static void beforeClassSetup() throws Exception {
 		final String methodName = "beforeClassSetup";
+        /* Enable tests only if running on a zOS machine, otherwise skip class */
+        Assume.assumeTrue(!isZos);
 		Log.entering(c, methodName);
 		setupEnv();
 		Log.exiting(c, methodName);
