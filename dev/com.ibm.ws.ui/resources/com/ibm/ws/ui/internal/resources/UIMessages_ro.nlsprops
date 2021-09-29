@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nicio ac\u0163iune necesar\u010
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Datele uneltei {0} pentru utilizatorul {1} au fost \u00eenc\u0103rcate din spa\u0163iul de stocare persistent folosind numele s\u0103u de fi\u015fier vechi \u015fi au fost convertite la noul nume de fi\u015fier.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Produsul a \u00eenc\u0103rcat datele uneltei din spa\u0163iul de stocare persistent folosind numele de fi\u015fier vechi \u015fi a stocat o copie \u00een noul nume de fi\u015fier. Copia din noul nume de fi\u015fier va fi \u00eenc\u0103rcat\u0103 la accesul urm\u0103tor la spa\u0163iul de stocare persistent.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nicio ac\u0163iune necesar\u0103.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Catalogul implicit Admin Center a fost \u00eenc\u0103rcat de la persisten\u0163a COLLECTIVE care a fost crreat\u0103 de o versiune de server anterioar\u0103. Catalogul este re\u00eenc\u0103rcat folosind o copie a versiunii de server curente.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Produsul a convertit catalogul implicit Admin Center la versiunea de server curent\u0103. Copia din persisten\u0163a COLLECTIVE este \u00eenc\u0103rcat\u0103 de accesul ulterior la spa\u0163iul de stocare persistat.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nicio ac\u0163iune necesar\u0103.

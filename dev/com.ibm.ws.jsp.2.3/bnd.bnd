@@ -79,12 +79,12 @@ Import-Package: \
    org.apache.el.lang; version="3.0.0", \
    org.apache.el.parser; version="3.0.0", \
    org.apache.el.util; version="3.0.0", \
-   org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.env;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.impl;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.core.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.classfmt;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.env;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.impl;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.problem;usage="JSP", \
    sun.io;resolution:=optional, \
    *
    

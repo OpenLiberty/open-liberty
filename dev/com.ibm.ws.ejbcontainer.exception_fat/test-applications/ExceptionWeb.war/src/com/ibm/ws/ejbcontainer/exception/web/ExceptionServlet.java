@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.sql.SQLException;
 
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -45,8 +44,7 @@ import componenttest.app.FATServlet;
 public class ExceptionServlet extends FATServlet {
 
     private SLRemoteEx lookupSLRemoteExBean() throws Exception {
-        Object stub = new InitialContext().lookup("java:app/ExceptionBean/SLRemoteExBean!com.ibm.ws.ejbcontainer.exception.ejb.SLRemoteExHome");
-        SLRemoteExHome home = (SLRemoteExHome) PortableRemoteObject.narrow(stub, SLRemoteExHome.class);
+        SLRemoteExHome home = (SLRemoteExHome) new InitialContext().lookup("java:app/ExceptionBean/SLRemoteExBean!com.ibm.ws.ejbcontainer.exception.ejb.SLRemoteExHome");
         return home.create();
     }
 

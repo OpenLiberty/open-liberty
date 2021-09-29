@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.fat.ann.sf.web.AdvBasicCMTStatefulAnnRemoteServlet;
 import com.ibm.ws.ejbcontainer.remote.fat.ann.sf.web.AdvCompCMTStatefulAnnRemoteServlet;
 import com.ibm.ws.ejbcontainer.remote.fat.ann.sf.web.BasicCMTStatefulAnnRemoteServlet;
@@ -94,7 +95,7 @@ public class RemoteSessionTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### StatefulAnnRemoteTest.ear
         JavaArchive StatefulAnnRemoteEJB = ShrinkHelper.buildJavaArchive("StatefulAnnRemoteEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.ann.sf.ejb.");
@@ -105,7 +106,7 @@ public class RemoteSessionTests extends AbstractTest {
         StatefulAnnRemoteTest.addAsModule(StatefulAnnRemoteEJB).addAsModule(StatefulAnnRemoteWeb);
         StatefulAnnRemoteTest = (EnterpriseArchive) ShrinkHelper.addDirectory(StatefulAnnRemoteTest, "test-applications/StatefulAnnRemoteTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulAnnRemoteTest);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulAnnRemoteTest, DeployOptions.SERVER_ONLY);
 
         //#################### StatefulMixRemoteTest.ear
         JavaArchive StatefulMixRemoteEJB = ShrinkHelper.buildJavaArchive("StatefulMixRemoteEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.mix.sf.ejb.");
@@ -117,7 +118,7 @@ public class RemoteSessionTests extends AbstractTest {
         StatefulMixRemoteTest.addAsModule(StatefulMixRemoteEJB).addAsModule(StatefulMixRemoteWeb);
         StatefulMixRemoteTest = (EnterpriseArchive) ShrinkHelper.addDirectory(StatefulMixRemoteTest, "test-applications/StatefulMixRemoteTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulMixRemoteTest);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulMixRemoteTest, DeployOptions.SERVER_ONLY);
 
         //#################### StatefulXMLRemoteTest.ear
         JavaArchive StatefulXMLRemoteEJB = ShrinkHelper.buildJavaArchive("StatefulXMLRemoteEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.");
@@ -129,7 +130,7 @@ public class RemoteSessionTests extends AbstractTest {
         StatefulXMLRemoteTest.addAsModule(StatefulXMLRemoteEJB).addAsModule(StatefulXMLRemoteWeb);
         StatefulXMLRemoteTest = (EnterpriseArchive) ShrinkHelper.addDirectory(StatefulXMLRemoteTest, "test-applications/StatefulXMLRemoteTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulXMLRemoteTest);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulXMLRemoteTest, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

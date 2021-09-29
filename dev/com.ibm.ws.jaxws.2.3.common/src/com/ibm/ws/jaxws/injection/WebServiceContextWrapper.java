@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.jaxws.context.WebServiceContextImpl;
+import org.apache.cxf.jaxws.context.WrappedMessageContext;
+import org.apache.cxf.jaxws.handler.soap.SOAPMessageContextImpl;
+import org.apache.cxf.message.Message;
 import org.w3c.dom.Element;
 
 public class WebServiceContextWrapper implements WebServiceContext {
@@ -40,10 +43,19 @@ public class WebServiceContextWrapper implements WebServiceContext {
         return context.getEndpointReference(clazz, referenceParameters);
     }
 
-    /** {@inheritDoc} */
     @Override
     public MessageContext getMessageContext() {
-        return context.getMessageContext();
+
+        WrappedMessageContext wmc = (WrappedMessageContext) context.getMessageContext();
+
+        if (wmc != null) {
+            Message msg = wmc.getWrappedMessage();
+            SOAPMessageContextImpl smci = new SOAPMessageContextImpl(msg);
+            return smci;
+        } else {
+            return wmc;
+        }
+
     }
 
     /** {@inheritDoc} */

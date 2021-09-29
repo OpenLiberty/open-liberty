@@ -343,7 +343,7 @@ PROP_SET_ERROR.useraction=Verifique se o valor especificado \u00e9 v\u00e1lido p
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Um dos atributos errorCode ou sqlState deve ser especificado.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Atualize a configura\u00e7\u00e3o para especificar pelo menos um dos atributos errorCode ou sqlState no elemento describeException.
 
-8068_EXC_REPLACE_CONFLICT=DSRA8068E: A origem de dados {0} n\u00e3o pode configurar ambos os atributos sqlState e errorCode no mesmo elemento identifyException quando o atributo replaceExceptions \u00e9 configurado como o valor "true".
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: O DataSource {0} n\u00e3o pode configurar ambos os atributos sqlState e errorCode no mesmo elemento identifyException quando o atributo substituExceptions \u00e9 configurado para o valor ''verdadeiro''.
 8068_EXC_REPLACE_CONFLICT.explanation=Ao substituir exce\u00e7\u00f5es, a exce\u00e7\u00e3o pode ser identificada por seu Estado SQL ou seu c\u00f3digo de erro, n\u00e3o ambos.
 8068_EXC_REPLACE_CONFLICT.useraction=Especificar elementos de configura\u00e7\u00e3o identifyException separados para o sqlState e o errorCode.
 

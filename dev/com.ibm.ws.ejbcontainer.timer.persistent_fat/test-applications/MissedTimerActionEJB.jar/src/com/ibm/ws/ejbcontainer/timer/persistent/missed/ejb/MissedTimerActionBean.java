@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,10 @@ public class MissedTimerActionBean implements MissedTimerAction {
                 nextTimeouts.add(timer.getNextTimeout());
                 timeRemains.add(timer.getTimeRemaining());
                 logger.info("MissedTimerActionBean.timeout : " + timer.getNextTimeout() + ", " + timer.getTimeRemaining());
+                if (latch.getCount() == 1) {
+                    logger.info("MissedTimerActionBean.timeout : countdown reached, canceling timer : " + timer);
+                    timer.cancel();
+                }
                 timerLatch.countDown();
             }
         }

@@ -34,6 +34,7 @@ WS-TraceGroup: FAULTTOLERANCE
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi20.FaultToleranceCDI20Extension
 
+jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\

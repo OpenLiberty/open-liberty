@@ -191,3 +191,15 @@ config.hsts.invalid.max.age.value.useraction=Ujist\u011bte se, \u017ee nakonfigu
 config.hsts.missing.max.age=CWWKT0041W: Byl proveden pokus o konfiguraci [{0}] jako z\u00e1hlav\u00ed Strict-Transport-Security. Tato konfigurace neobsahuje povinnou direktivu max-age. Konfigurace, kter\u00e1 neobsahuje direktivu max-age, je neplatn\u00e1 a nelze ji pou\u017e\u00edt.
 config.hsts.missing.max.age.explanation=Ur\u010den\u00e1 konfigurace mus\u00ed obsahovat direktivu max-age s nez\u00e1pornou celo\u010d\u00edselnou hodnotou.
 config.hsts.missing.max.age.useraction=Ujist\u011bte se, \u017ee konfigurace obsahuje direktivu max-age s nez\u00e1pornou celo\u010d\u00edselnou hodnotou.
+
+headers.emptyName=CWWKT0042W: Byl nalezen pr\u00e1zdn\u00fd n\u00e1zev z\u00e1hlav\u00ed p\u0159i anal\u00fdze konfigurace {0}. Tato hodnota je ignorov\u00e1na.
+headers.emptyName.explanation=Ur\u010den\u00fd n\u00e1zev z\u00e1hlav\u00ed je pr\u00e1zdn\u00fd \u0159et\u011bzec. N\u00e1zev z\u00e1hlav\u00ed nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd. 
+headers.emptyName.useraction=Zajist\u011bte, aby \u017e\u00e1dn\u00fd n\u00e1zev z\u00e1hlav\u00ed nebyl pr\u00e1zdn\u00fd. 
+
+headers.duplicateHeaderName=CWWKT0043W: Byl nalezen duplicitn\u00ed n\u00e1zev z\u00e1hlav\u00ed v z\u00e1hlav\u00ed [{0}] pou\u017e\u00edvaj\u00edc\u00ed konfiguraci {1}. V\u0161echny konfigurace pro z\u00e1hlav\u00ed [{0}] jsou ignorov\u00e1ny. Ka\u017ed\u00e9 z\u00e1hlav\u00ed, kter\u00e9 je definov\u00e1no konfiguracemi remove, add, set nebo setIfMissing, mus\u00ed b\u00fdt jedine\u010dn\u00e9 ve v\u0161ech konfigurac\u00edch.
+headers.duplicateHeaderName.explanation=Zadan\u00fd n\u00e1zev z\u00e1hlav\u00ed byl d\u0159\u00edve nakonfigurov\u00e1n jinou konfigurac\u00ed funkce z\u00e1hlav\u00ed.
+headers.duplicateHeaderName.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed definovan\u00e1 konfiguracemi remove, add, set nebo setIfMissing nejsou ve v\u00edce konfigurac\u00edch.
+
+headers.knownDuplicateHeader=CWWKT0044W: Z\u00e1hlav\u00ed [{0}], kter\u00e9 je ozna\u010deno jako duplicitn\u00ed n\u00e1zev z\u00e1hlav\u00ed, bylo nalezeno v konfiguraci {1}. Z\u00e1hlav\u00ed [{0}] je ignorov\u00e1no. Ka\u017ed\u00e9 z\u00e1hlav\u00ed definovan\u00e9 konfigurac\u00ed {1} mus\u00ed obsahovat jedine\u010dn\u00e9 n\u00e1zvy z\u00e1hlav\u00ed.
+headers.knownDuplicateHeader.explanation=Ur\u010den\u00fd n\u00e1zev z\u00e1hlav\u00ed byl ji\u017e nalezen konfiguracemi remove, add, set nebo setIfMissing.
+headers.knownDuplicateHeader.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy z\u00e1hlav\u00ed definovan\u00e9 v t\u00e9to konfiguraci jsou jedine\u010dn\u00e9 nap\u0159\u00ed\u010d konfiguracemi remove, add, set nebo setIfMissing. 

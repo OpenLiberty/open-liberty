@@ -18,7 +18,6 @@ import static org.junit.Assert.fail;
 import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -202,8 +201,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetOneHome rtoh1 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetOneHome");
-            rtoh1 = (RemoteTargetOneHome) PortableRemoteObject.narrow(lookup, RemoteTargetOneHome.class);
+            rtoh1 = (RemoteTargetOneHome) ctx.lookup("ejb/RemoteTargetOneHome");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOneHome lookup failed");
@@ -437,8 +435,7 @@ public class BindingsServlet extends FATServlet {
         SubRemoteHome srh = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/SubRemoteHome");
-            srh = (SubRemoteHome) PortableRemoteObject.narrow(lookup, SubRemoteHome.class);
+            srh = (SubRemoteHome) ctx.lookup("ejb/SubRemoteHome");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check SubRemoteHome lookup failed");
@@ -482,8 +479,7 @@ public class BindingsServlet extends FATServlet {
         SupRemoteHome srh = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/SupRemoteHome");
-            srh = (SupRemoteHome) PortableRemoteObject.narrow(lookup, SupRemoteHome.class);
+            srh = (SupRemoteHome) ctx.lookup("ejb/SupRemoteHome");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check SupRemoteHome lookup failed");

@@ -111,7 +111,12 @@
          </AD>
          <AD id="validationMethod" name="%validationMethod" description="%validationMethod.desc" required="false" type="String" default="introspect">
                 <Option label="%validationMethod.introspect" value="introspect" />
-            	<Option label="%validationMethod.userinfo" value="userinfo" />
+                <Option label="%validationMethod.userinfo" value="userinfo" />
+         </AD>
+         <AD id="jwtAccessTokenRemoteValidation" name="%jwtAccessTokenRemoteValidation" description="%jwtAccessTokenRemoteValidation.desc" required="false" type="String" default="none" ibm:beta="true">
+                <Option label="%jwtAccessTokenRemoteValidation.none" value="none" />
+                <Option label="%jwtAccessTokenRemoteValidation.allow" value="allow" />
+                <Option label="%jwtAccessTokenRemoteValidation.require" value="require" />
          </AD>
          <AD id="authzParameter" name="%authzParameter" description="%authzParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />
          <AD id="tokenParameter" name="%tokenParameter" description="%tokenParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />

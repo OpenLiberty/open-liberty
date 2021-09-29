@@ -395,8 +395,8 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectObjFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectObjFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
 
@@ -461,8 +461,8 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectPrimFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectPrimFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
 
@@ -530,8 +530,8 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 update lookup for new bindings
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectObjMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectObjMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
 
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
@@ -560,8 +560,8 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 update lookup for new bindings
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectObjMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectObjMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
 
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
@@ -628,8 +628,8 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectPrimMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectPrimMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLRSB created successfully.", bean);
 

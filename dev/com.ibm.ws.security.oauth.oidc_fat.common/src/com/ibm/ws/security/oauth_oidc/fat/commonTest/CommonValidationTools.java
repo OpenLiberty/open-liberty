@@ -796,10 +796,10 @@ public class CommonValidationTools {
                         msgUtils.assertTrueAndLog(thisMethod, "Expires in is null", value != null);
                         Long expectedExpires = setAccessTimeout(settings);
                         Long actualExpires = Long.valueOf(value).longValue();
-                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 20L)) {
-                            Log.info(thisClass, thisMethod, "expires in was within 20sec of expected time");
+                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 60L)) {
+                            Log.info(thisClass, thisMethod, "expires in was within 60sec of expected time");
                         } else {
-                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 20sec");
+                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 60sec");
                         }
                     }
                     if (key.equals(Constants.STATE_KEY)) {

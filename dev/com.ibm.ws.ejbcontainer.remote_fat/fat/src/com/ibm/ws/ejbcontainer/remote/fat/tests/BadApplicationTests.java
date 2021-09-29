@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ejbcontainer.remote.enventry.web.EnvEntryServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -192,13 +193,20 @@ public class BadApplicationTests extends AbstractTest {
                     "javax.ejb.EJBException", "com.ibm.ejs.container.ContainerException",
                     "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testApplicationExceptionExtendsThrowable() throws Exception {
+        Log.info(this.getClass(), "testApplicationExceptionExtendsThrowable", "os.name : " + System.getProperty("os.name", "unknown").toLowerCase());
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
         server.setServerConfigurationFile("ExtendsThrowable" + eeVersion + ".xml");
         server.waitForStringInLogUsingMark("CWWKG0016I", 240 * 1000); // Starting server configuration update.
         server.waitForConfigUpdateInLogUsingMark(installedApps);
-        assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
+        assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E")); // must subclass exception
+        assertNotNull(server.waitForStringInLogUsingMark("CNTR0075E")); // class (wrapper) not loaded
+        assertNotNull(server.waitForStringInLogUsingMark("CNTR4006E")); // bean failed to start
+        assertNotNull(server.waitForStringInLogUsingMark("CNTR0190E")); // startup singleton failed to initialize
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E")); // could not start web application
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0002E")); // exception starting application
+        // Generating this file on some windows systems can take awhile; wait for it before restoring configuration
+        assertNotNull(server.waitForStringInLogUsingMark("SRVE9103I"), 240 * 1000); // config file for web server plugin generated
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForStringInLogUsingMark("CWWKG0016I", 240 * 1000); // Starting server configuration update.

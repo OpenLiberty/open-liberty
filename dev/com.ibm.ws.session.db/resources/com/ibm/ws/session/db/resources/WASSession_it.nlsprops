@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=\u00c8 stata rilevata una eccezi
 DatabaseHashMap.selectNoUpdateError.useraction=Se si \u00e8 verificata una SQLException, consultare l'appropriata documentazione del database per il proprio ambiente. Accertarsi inoltre di avere configurato correttamente una origine dati per il Gestore sessioni.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \u00c8 stato fatto un tentativo di scrivere pi\u00f9 di 2M nella colonna per oggetti di grandi dimensioni.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \u00c8 stato effettuato un tentativo di scrivere nella colonna del database una quantit\u00e0 di dati superiore a quella consentita dal valore della propriet\u00e0 rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=I dati sessione potrebbero essere di dimensioni eccessive per la colonna del database.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Ridurre la dimensione di questo attributo prima di provare a memorizzarlo nella sessione.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Ridurre la dimensione di questo attributo prima di provare a memorizzarlo nella sessione o aumentare il valore della propriet\u00e0 rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: Il servizio {0} \u00e8 stato inizializzato correttamente.

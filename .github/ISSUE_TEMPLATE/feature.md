@@ -34,8 +34,10 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] Complete any follow-ons from the POC Review.
 - [ ] Design / UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
 - [ ] No Design / No UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
-- [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
+  * Note: Design is required if any of the following apply: SVT or Performance testing, new UI, Servicibility considerations, significant documentation changes
 - [ ] ID Requirements identified ([Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty)). (Epic owner / Feature owner with ID focal point)
+  * Note: If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
+- [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.
 
 ##
@@ -80,6 +82,7 @@ All features (both "Design Approved" and "No Design Approved")
 "Design Approved" features
 - [ ] **Accessibility** - ([Steven Zvonek](https://github.com/steven1046)). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
 - [ ] **ID** - ([Karen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
+  * Note: If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
 - [ ] **Performance** - ([Jared Anderson](https://github.com/jhanders34)). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - ([Don Bourne](https://github.com/donbourne)). Serviceability has been addressed.
 - [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.

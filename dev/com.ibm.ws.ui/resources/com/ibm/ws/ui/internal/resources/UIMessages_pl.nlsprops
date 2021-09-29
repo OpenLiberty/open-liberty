@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nie jest wymagana \u017cadna cz
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Dane narz\u0119dzia {0} dla u\u017cytkownika {1} zosta\u0142y za\u0142adowane z utrwalonej pami\u0119ci masowej z pliku o starej nazwie i przekszta\u0142cone w plik o nowej nazwie.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Produkt za\u0142adowa\u0142 dane narz\u0119dzi dla okre\u015blonego u\u017cytkownika i narz\u0119dzia z utrwalonej pami\u0119ci masowej, u\u017cywaj\u0105c starej nazwy pliku, i zapisa\u0142 kopi\u0119 w pliku o nowej nazwie. Kopia z pliku o nowej nazwie zostanie za\u0142adowana przy nast\u0119pnym dost\u0119pie do utrwalonej pami\u0119ci masowej.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Katalog domy\u015blny Centrum administracyjnego zosta\u0142 za\u0142adowany z trwa\u0142o\u015bci COLLECTIVE utworzonej przez wcze\u015bniejsz\u0105 wersj\u0119 serwera. Zostanie za\u0142adowana kopia katalogu z bie\u017c\u0105cej wersji serwera.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Produkt przekszta\u0142ci\u0142 katalog domy\u015blny Centrum administracyjnego tak, by odpowiada\u0142 bie\u017c\u0105cej wersji serwera. Kopia w trwa\u0142o\u015bci COLLECTIVE zostanie za\u0142adowana podczas nast\u0119pnego dost\u0119pu do trwa\u0142ej pami\u0119ci masowej.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -201,10 +201,10 @@ public class MicroProfileActions {
                                                           "restfulWSClient-3.0",
                                                           "jsonb-2.0",
                                                           "jsonp-2.0",
-                                                          "mpConfig-3.0" };
-//                                                          "mpFaultTolerance-4.0",
-//                                                          "mpHealth-4.0",
-//                                                          "mpJwt-2.0",
+                                                          "mpConfig-3.0",
+                                                          "mpFaultTolerance-4.0",
+                                                          "mpHealth-4.0",
+                                                          "mpJwt-2.0" };
 //                                                          "mpMetrics-4.0",
 //                                                          "mpOpenAPI-3.0",
 //                                                          "mpOpenTracing-3.0",

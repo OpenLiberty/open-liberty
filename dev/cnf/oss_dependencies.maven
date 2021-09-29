@@ -303,12 +303,12 @@ org.apache.myfaces.core:myfaces-impl:2.3.9
 org.apache.myfaces.core:myfaces-impl:3.0.1
 org.apache.neethi:neethi:3.1.1
 org.apache.openjpa:openjpa:3.1.2
-org.apache.santuario:xmlsec:2.2.0
+org.apache.santuario:xmlsec:2.2.3
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.sshd:sshd-common:2.5.1
 org.apache.sshd:sshd-core:2.5.1
 org.apache.sshd:sshd-scp:2.5.1
-org.apache.thrift:libthrift:0.11.0
+org.apache.thrift:libthrift:0.13.0
 org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.tomcat:tomcat-el-api:10.0.10
@@ -338,7 +338,6 @@ org.codehaus.woodstox:woodstox-core-asl:4.2.0
 org.cryptacular:cryptacular:1.2.4
 org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer:2.7.1
 org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627
-org.eclipse.jdt.core.compiler:ecj:4.3.1
 org.eclipse.jdt:ecj:3.22.0
 org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723
 org.eclipse.jetty.websocket:javax-websocket-client-impl:9.4.39.v20210325
@@ -376,6 +375,7 @@ org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.0.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:3.0
+org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:4.0-RC2
 org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.2
 org.eclipse.microprofile.health:microprofile-health-api:1.0
 org.eclipse.microprofile.health:microprofile-health-api:2.0.1
@@ -383,8 +383,10 @@ org.eclipse.microprofile.health:microprofile-health-api:2.1
 org.eclipse.microprofile.health:microprofile-health-api:2.2
 org.eclipse.microprofile.health:microprofile-health-api:3.0
 org.eclipse.microprofile.health:microprofile-health-api:3.1
+org.eclipse.microprofile.health:microprofile-health-api:4.0-RC3
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.2
+org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:2.0-RC2
 org.eclipse.microprofile.lra:microprofile-lra-api:1.0-M2
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1
@@ -434,6 +436,7 @@ org.glassfish.hk2:hk2-locator:2.5.0-b42
 org.glassfish.hk2:hk2-utils:2.3.0-b10
 org.glassfish.hk2:hk2-utils:2.5.0-b42
 org.glassfish.hk2:osgi-resource-locator:1.0.1
+org.glassfish.hk2:osgi-resource-locator:1.0.3
 org.glassfish.jaxb:codemodel:3.0.1
 org.glassfish.jaxb:jaxb-core:3.0.1
 org.glassfish.jaxb:jaxb-jxc:3.0.1

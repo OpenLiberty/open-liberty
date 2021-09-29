@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -934,6 +934,8 @@ public class XAResourceImpl implements XAResource, Serializable {
                                 .println("No XARecoveryData - returning null xid array");
             return null;
         }
+        
+        System.out.println("XAResource state in recover(): "+self());
 
         _XAEvents.add(new XAEvent(XAEventCode.RECOVER, _key));
 
@@ -941,7 +943,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         if (recoverAction != XAResource.XA_OK) {
             final int repeatCount = self().getRecoverRepeatCount();
             self().setRecoverRepeatCount(repeatCount - 1);
-            if (repeatCount >= 0) {
+            if (repeatCount > 0) {
                 switch (recoverAction) {
                     case RUNTIME_EXCEPTION:
                         throw new RuntimeException();

@@ -187,6 +187,19 @@ trusted.sensitive.header.origin.invalid.value.useraction=Verifica\u0163i c\u0103
 config.hsts.invalid.max.age.value=CWWKT0040W: Valoarea configurat\u0103 [{0}] pentru directiva max-age este invalid\u0103 \u015fi nu poate fi utilizat\u0103. Valoarea pentru directiva max-age trebuie s\u0103 fie un \u00eentreg nenegativ.
 config.hsts.invalid.max.age.value.explanation=Valoarea pentru directiva max-age nu poate fi un \u00eentreg negativ.
 config.hsts.invalid.max.age.value.useraction=Asigura\u0163i-v\u0103 c\u0103 directiva max-age configurat\u0103 con\u0163ine o valoare de \u00eentreg nenegativ.
+
 config.hsts.missing.max.age=CWWKT0041W: A fost f\u0103cut\u0103 o \u00eencercare de configurare [{0}] ca antet Strict-Transport-Security. Aceast\u0103 configura\u0163ie nu con\u0163ine directiva max-age obligatorie. O configura\u0163ie care nu con\u0163ine o directiv\u0103 max-age este invalid\u0103 \u015fi nu poate fi utilizat\u0103.
 config.hsts.missing.max.age.explanation=Configura\u0163ia specificat\u0103 trebuie s\u0103 con\u0163in\u0103 o directiv\u0103 max-age cu o valoare \u00eentreag\u0103 nenegativ\u0103.
-config.hsts.missing.max.age.useraction=Asigura\u0163i-v\u0103 c\u0103 directiva max-age din configura\u0163ie are o valoare de \u00eentre nenegativ. 
+config.hsts.missing.max.age.useraction=Asigura\u0163i-v\u0103 c\u0103 directiva max-age din configura\u0163ie are o valoare de \u00eentre nenegativ.
+
+headers.emptyName=CWWKT0042W: A fost g\u00eesit un nume de antet gol c\u00e2nd a fost parsat\u0103 configura\u0163ia {0}. Aceast\u0103 valoare este ignorat\u0103.
+headers.emptyName.explanation=Numele de antet specificat este un \u015fir gol. Un nume de antet nu trebuie s\u0103 fie gol. 
+headers.emptyName.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de antet nu este gol. 
+
+headers.duplicateHeaderName=CWWKT0043W: A fost g\u0103sit un nume de antet duplicat \u00een antetul [{0}] la utilizarea configura\u0163iei {1}. Toate configura\u0163iile pentru antetul [{0}] sunt ignorate. Orice antet care este definit de configura\u0163iile remove, add, set sau setIfMissing trebuie s\u0103 fie unic \u00een toate configura\u0163iile.
+headers.duplicateHeaderName.explanation=Numele de antet specificat a fost configurat anterior de o alt\u0103 configura\u0163ie a caracteristicii Headers.
+headers.duplicateHeaderName.useraction=Asigura\u0163i-v\u0103 c\u0103 anteturile care sunt definite de configura\u0163iile remove, add, set sau setIfMissing nu sunt prezente \u00een mai mult de o configura\u0163ie.
+
+headers.knownDuplicateHeader=CWWKT0044W: Antetul [{0}], care este marcat ca un nume de antet duplicat, a fost g\u0103sit \u00een configura\u0163ia {1}. Antetul [{0}] este ignorat. Orice antet care este definit \u00een configura\u0163ia {1} trebuie s\u0103 con\u0163in\u0103 nume de antet unice.
+headers.knownDuplicateHeader.explanation=Numele de antet specificat a fost deja g\u0103sit de configura\u0163iile remove, add, set sau setIfMissing.
+headers.knownDuplicateHeader.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de anteturi care sunt definite \u00een aceast\u0103 configura\u0163ie sunt unice \u00een configura\u0163iile remove, add, set sau setIfMissing.

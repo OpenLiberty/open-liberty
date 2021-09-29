@@ -13,7 +13,7 @@ define({
         LOGIN_TITLE: "Administrační centrum Liberty",
         LOGIN_USER: "Jméno uživatele",
         LOGIN_PASSWORD: "Heslo",
-        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation a další. Všechna práva vyhrazena.\nTento program a doprovodné materiály jsou povoleny za podmínek licence Eclipse Public License v1.0, která je součástí této distribuce a je k dispozici na adrese http://www.eclipse.org/legal/epl-v10.html",
+        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation a další. Všechna práva vyhrazena.\nTento program a doprovodné materiály jsou k dispozici za podmínek licence Eclipse Public License v1.0, která je součástí této distribuce a je dostupná na adrese http://www.eclipse.org/legal/epl-v10.html",
         LOGIN_ERROR_MESSAGE: "Chyba přihlášení: Neznámé jméno uživatele anebo heslo.",
         ACCESS_ERROR_MESSAGE: "Chyba přístupu: Uživatelský účet nemá autorizaci pro přístup k administračnímu centru."
 });

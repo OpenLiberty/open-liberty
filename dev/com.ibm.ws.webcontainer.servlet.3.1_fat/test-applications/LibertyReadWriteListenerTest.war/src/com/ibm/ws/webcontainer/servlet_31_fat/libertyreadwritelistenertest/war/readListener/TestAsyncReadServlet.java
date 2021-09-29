@@ -110,8 +110,10 @@ public class TestAsyncReadServlet extends HttpServlet {
         }
 
         else if (req.getHeader("TestToCall").toString().equals("test_ReadVariousInputDataSizes_AsyncRL")) {
-            if (req.getHeader("TestInputData").toString().equals("1024000"))
-                ac.setTimeout(75000); //set longer timeout in case of network latency, issue 17013
+            if (req.getHeader("TestInputData").toString().equals("1024000")) {
+                LOG.info("TestAsyncReadServlet, setting async timeout to 300000 for big data");
+                ac.setTimeout(300000); //set longer timeout in case of network latency, issue 17013, 18624
+            }
 
             ReadListener readListener = new TestAsyncReadListener(input, res, ac, req, "test_ReadVariousInputDataSizes_AsyncRL");
             input.setReadListener(readListener);

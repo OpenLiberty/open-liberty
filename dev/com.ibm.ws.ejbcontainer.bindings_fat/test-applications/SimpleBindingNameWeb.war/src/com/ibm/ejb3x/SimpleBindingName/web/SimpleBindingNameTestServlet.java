@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -389,8 +388,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String SimpleBindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + SimpleBindingName);
-            Object lookup = context.lookup(lookupName);
-            SimpleBindingNameRemoteHome beanHome = (SimpleBindingNameRemoteHome) PortableRemoteObject.narrow(lookup, SimpleBindingNameRemoteHome.class);
+            SimpleBindingNameRemoteHome beanHome = (SimpleBindingNameRemoteHome) context.lookup(lookupName);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
                     fail("lookup " + lookupName + " should have worked for " + SimpleBindingName + " and context " + contextString);

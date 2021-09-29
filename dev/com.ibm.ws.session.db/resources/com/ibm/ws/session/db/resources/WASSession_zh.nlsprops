@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=\u5c1d\u8bd5\u8bbf\u95ee\u6570\u
 DatabaseHashMap.selectNoUpdateError.useraction=\u5982\u679c\u53d1\u751f SQLException\uff0c\u8bf7\u53c2\u9605\u73af\u5883\u7684\u76f8\u5e94\u6570\u636e\u5e93\u6587\u6863\u3002\u5e76\u4e14\uff0c\u8bf7\u786e\u4fdd\u5df2\u6b63\u786e\u5730\u914d\u7f6e\u4f1a\u8bdd\u7ba1\u7406\u5668\u7684\u6570\u636e\u6e90\u3002
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \u5c1d\u8bd5\u5c06\u8d85\u8fc7 2M \u7684\u6570\u636e\u5199\u81f3\u5927\u578b\u5217\u3002
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \u8bd5\u56fe\u5411\u6570\u636e\u5e93\u5217\u5199\u5165\u8d85\u8fc7 rowSizeLimit \u5c5e\u6027\u503c\u6240\u5141\u8bb8\u7684\u6570\u636e\u91cf\u3002
 DatabaseHashMapMR.db2LongVarCharErr.explanation=\u5bf9\u4e8e\u6570\u636e\u5e93\u5217\uff0c\u4f1a\u8bdd\u6570\u636e\u53ef\u80fd\u592a\u5927\u3002
-DatabaseHashMapMR.db2LongVarCharErr.useraction=\u5c1d\u8bd5\u5c06\u6b64\u5c5e\u6027\u5b58\u50a8\u5230\u4f1a\u8bdd\u4e2d\u4e4b\u524d\uff0c\u8bf7\u964d\u4f4e\u6b64\u5c5e\u6027\u7684\u5927\u5c0f\u3002
+DatabaseHashMapMR.db2LongVarCharErr.useraction=\u5c1d\u8bd5\u5c06\u6b64\u5c5e\u6027\u5b58\u50a8\u5230\u4f1a\u8bdd\u4e2d\u4e4b\u524d\uff0c\u8bf7\u51cf\u5c0f\u6b64\u5c5e\u6027\u7684\u5927\u5c0f\uff0c\u6216\u8005\u589e\u5927 rowSizeLimit \u5c5e\u6027\u7684\u503c\u3002
 
 
 ControllerSession.Initialized=SESN0126I: {0} \u670d\u52a1\u5df2\u6210\u529f\u521d\u59cb\u5316\u3002

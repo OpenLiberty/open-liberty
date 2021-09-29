@@ -16,12 +16,14 @@ src: \
 
 fat.project: true
 
-tested.features: pages-3.0, appsecurity-4.0, cdi-3.0
+tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0
 
 -buildpath: \
     fattest.simplicity;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
+    org.apache.directory.server:apacheds-all;version=latest, \
+    org.apache.directory.server:kerberos-client;version=latest, \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.security;version=latest,\
     com.ibm.ws.kernel.service;version=latest,\

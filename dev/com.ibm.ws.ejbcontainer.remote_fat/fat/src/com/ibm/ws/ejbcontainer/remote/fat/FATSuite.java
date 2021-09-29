@@ -26,5 +26,4 @@ import com.ibm.ws.ejbcontainer.remote.fat.tests.Server2ServerTests;
                 RemoteTests.class,
                 Server2ServerTests.class
 })
-public class FATSuite {
-}
+public class FATSuite {}
