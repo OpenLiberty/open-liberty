@@ -22,6 +22,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Rule;
@@ -69,7 +70,7 @@ public class TransformerTest {
             }
         });
         byte[] originalBytes = "Hello!".getBytes();
-        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "hello");
+        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "hello", Collections.emptyList());
 
         assertTrue(transformerInvoked.get());
         assertArrayEquals(originalBytes, transformedBytes);
@@ -90,7 +91,7 @@ public class TransformerTest {
             }
         });
         byte[] originalBytes = "Goodbye!".getBytes();
-        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "goodbye");
+        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "goodbye", Collections.emptyList());
 
         assertTrue(transformerInvoked.get());
         assertArrayEquals(originalBytes, transformedBytes);
@@ -113,7 +114,7 @@ public class TransformerTest {
             }
         });
         byte[] originalBytes = "Greetings".getBytes();
-        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "greetings");
+        byte[] transformedBytes = loader.transformClassBytes(originalBytes, "greetings", Collections.emptyList());
 
         assertTrue(transformerInvoked.get());
         assertFalse(Arrays.equals(originalBytes, transformedBytes));
