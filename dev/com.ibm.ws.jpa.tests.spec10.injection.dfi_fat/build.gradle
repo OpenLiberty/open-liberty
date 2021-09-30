@@ -37,7 +37,7 @@ dependencies {
   openjpaJPA22	 'org.apache.xbean:xbean-asm8-shaded:4.17'
   
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
-  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.injection.common")
+  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.injection_fat.common")
 }
 
 task addhibernateJPA22(type: Copy) {
@@ -69,25 +69,25 @@ task addJPAFATTools (type: Copy) {
 }
 
 task copyFAT {
-    dependsOn ':com.ibm.ws.jpa.tests.spec10.injection.common:build'
+    dependsOn ':com.ibm.ws.jpa.tests.spec10.injection_fat.common:build'
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common')
+      from project(':com.ibm.ws.jpa.tests.spec10.injection_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common')
       into new File('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common')
     }
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.jpa.tests.spec10.injection.common:build'
+  dependsOn ':com.ibm.ws.jpa.tests.spec10.injection_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('test-applications')
+      from project(':com.ibm.ws.jpa.tests.spec10.injection_fat.common').file('test-applications')
       into new File('test-applications')
     }
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('test-bundles')
+      from project(':com.ibm.ws.jpa.tests.spec10.injection_fat.common').file('test-bundles')
       into new File('test-bundles')
     }
 
@@ -95,7 +95,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('publish')
+      from project(':com.ibm.ws.jpa.tests.spec10.injection_fat.common').file('publish')
       into new File('publish')
     }
   }

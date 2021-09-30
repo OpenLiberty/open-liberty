@@ -30,7 +30,7 @@ fat.bucket.db.type: Derby
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
-    com.ibm.ws.jpa.tests.spec10.injection.common;version=latest,\
+    com.ibm.ws.jpa.tests.spec10.injection_fat.common;version=latest,\
     com.ibm.ws.jpa_testframework;version=latest,\
     fattest.simplicity;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\

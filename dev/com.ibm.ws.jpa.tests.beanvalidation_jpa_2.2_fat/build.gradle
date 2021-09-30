@@ -17,7 +17,7 @@ configurations {
 
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
-  requiredLibs project(":com.ibm.ws.jpa.tests.beanvalidation")
+  requiredLibs project(":com.ibm.ws.jpa.tests.beanvalidation_fat.common")
 
   hibernateJPA22 'org.hibernate:hibernate-core:5.5.7.Final'
   hibernateJPA22 'org.jboss.logging:jboss-logging:3.4.2.Final'
@@ -58,21 +58,21 @@ task addOpenJPA_JPA22(type: Copy) {
 }
 
 task copyFAT {
-    dependsOn ':com.ibm.ws.jpa.tests.beanvalidation:build'
+    dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
       into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
     }
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.jpa.tests.beanvalidation:build'
+  dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation').file('test-applications')
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('test-applications')
       into new File('test-applications')
     }
     
@@ -80,7 +80,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation').file('publish')
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('publish')
       into new File('publish')
     }
   }
