@@ -54,7 +54,8 @@ public abstract class FeatureUtilityToolTest {
     private static String originalWlpInstallType;
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
-
+    public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
+    
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");

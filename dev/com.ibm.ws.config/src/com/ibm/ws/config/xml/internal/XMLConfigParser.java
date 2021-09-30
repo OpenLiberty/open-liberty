@@ -35,8 +35,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
-import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
-import com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -70,7 +68,6 @@ public class XMLConfigParser {
     private final LinkedList<String> docLocationStack = new LinkedList<String>();
     private final LinkedList<MergeBehavior> behaviorStack = new LinkedList<MergeBehavior>();
 
-    private final XMLConfigValidator configValidator = XMLConfigValidatorFactory.getInstance().getXMLConfigValidator();
     private final ConfigVariableRegistry variableRegistry;
 
     public XMLConfigParser(WsLocationAdmin locationService, ConfigVariableRegistry variableRegistry) {
@@ -111,11 +108,6 @@ public class XMLConfigParser {
         return sequenceCounter++;
     }
 
-    @Trivial
-    public XMLConfigValidator getConfigValidator() {
-        return configValidator;
-    }
-
     // test entry point only
     public ServerConfiguration parseServerConfiguration(WsResource resource) throws ConfigParserException, ConfigValidationException {
         return parseServerConfiguration(resource, new ServerConfiguration());
@@ -127,7 +119,7 @@ public class XMLConfigParser {
         tempVariables.variables.clear();
         InputStream in = null;
         try {
-            in = configValidator.validateResource(resource.get(), location);
+            in = resource.get();
             if (parseServerConfiguration(in, location, configuration, MergeBehavior.MERGE)) {
                 configuration.updateLastModified(resource.getLastModified());
             } else {
@@ -147,7 +139,7 @@ public class XMLConfigParser {
         String location = resource.toExternalURI().toString();
         InputStream in = null;
         try {
-            in = configValidator.validateResource(resource.get(), location);
+            in = resource.get();
 
             if (parseServerConfiguration(in, location, configuration, mergeBehavior)) {
                 configuration.updateLastModified(resource.getLastModified());

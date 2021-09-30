@@ -15,7 +15,7 @@ test {
 
     doFirst {
         ant.jar(destfile: new File(compileTestJava.destinationDir, 'test.jar'), manifest: project.file('test-resources/PackageDefineTestResources/MANIFEST.MF')) {
-            fileset(dir: compileTestJava.destinationDir, includes: 'test/')
+            fileset(dir: compileTestJava.destinationDir, includes: "test/,test2/")
         }
     }
 

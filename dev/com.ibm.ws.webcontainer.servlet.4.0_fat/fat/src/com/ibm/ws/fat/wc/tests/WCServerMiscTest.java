@@ -42,7 +42,7 @@ public class WCServerMiscTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.startServer(WCServerTest.class.getSimpleName() + ".log");
+        server.startServer(WCServerMiscTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass

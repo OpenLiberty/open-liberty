@@ -31,7 +31,8 @@ src: \
     test-applications/TrailersTest.war/src,\
     test-applications/TestServlet40Clarifications.war/src,\
     test-applications/TestPushBuilderAPI.war/src,\
-    test-applications/ResponseHeadersTest.war/src
+    test-applications/ResponseHeadersTest.war/src,\
+    test-applications/DeferServletRequestListenerDestroyOnErrorTest.war/src
 
 fat.project: true
 
@@ -52,4 +53,5 @@ tested.features:\
     httpunit:httpunit;version=1.5.4,\
     net.sf.jtidy:jtidy;version=9.3.8,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0.2,\
-    org.apache.httpcomponents.core5:httpcore5;version=5.0.2
+    org.apache.httpcomponents.core5:httpcore5;version=5.0.2,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest

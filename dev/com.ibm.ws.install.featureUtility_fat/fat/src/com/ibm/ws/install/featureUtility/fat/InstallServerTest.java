@@ -17,6 +17,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +33,8 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     public static void beforeClassSetup() throws Exception {
         final String methodName = "setup";
         Log.entering(c, methodName);
+        /* Enable tests only if running on a zOS machine, otherwise skip class */
+        Assume.assumeTrue(!isZos);
         setupEnv();
         copyFileToMinifiedRoot("usr/temp", "../../publish/tmp/serverX.zip");
         replaceWlpProperties(getPreviousWlpVersion());

@@ -156,16 +156,18 @@ public class LDAPUtils {
                  */
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.startsWith("z/os")) {
-                    Log.error(c, "<clinit>", e, "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Any remote Ldap tests trying to run local will fail.");
-                }
+                    Log.error(c, "<clinit>", e,
+                              "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Some failures setting up remote LDAPs, but local ApacheDS will not run on z/OS, doing remote anyway.");
+                } else {
 
-                Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
-                                            "To run against the remote LDAP servers, ensure that the tests are being run " +
-                                            "on the IBM network, that you have added your global IBM GHE access token " +
-                                            "(global.ghe.access.token) to the user.build.properties file in your home directory " +
-                                            "and that you are a member of the 'websphere' organization in IBM GHE.");
-                CONSUL_LOOKUP_FAILED = true;
-                uselocalLDAP = true;
+                    Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
+                                                "To run against the remote LDAP servers, ensure that the tests are being run " +
+                                                "on the IBM network, that you have added your global IBM GHE access token " +
+                                                "(global.ghe.access.token) to the user.build.properties file in your home directory " +
+                                                "and that you are a member of the 'websphere' organization in IBM GHE.");
+                    CONSUL_LOOKUP_FAILED = true;
+                    uselocalLDAP = true;
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.config.ext;
+package test2;
 
 /**
  *
  */
-public class ConfigExtension {
-
-    public static final boolean useDefaultConfigValidation = true;
-    public static boolean forceEmbeddedConfigValidation = false;
-
-    public static void setUseEmbeddedValidation(boolean b) {
-        forceEmbeddedConfigValidation = b;
-    }
+public class Package2Class {
 
 }
