@@ -25,6 +25,7 @@ tested.features: oauth-2.0, securitylibertyinternals-1.0, openidconnectserver-1.
     com.ibm.websphere.javaee.servlet.3.0;version=latest,\
     com.ibm.websphere.security;version=latest,\
     com.ibm.ws.security.fat.common;version=latest,\
+    com.ibm.ws.security.fat.common.jwt;version=latest,\
     com.ibm.ws.security.oauth.2.0;version=latest,\
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
     com.ibm.ws.security.oidc.server_fat;version=latest,\

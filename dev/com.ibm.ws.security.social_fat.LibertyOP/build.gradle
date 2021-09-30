@@ -25,7 +25,9 @@ repositories {
 
 dependencies {
    requiredLibs project(':com.ibm.ws.security.social_fat'),
-                project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+   				project(':com.ibm.ws.security.fat.common'),
+	  	  		project(':com.ibm.ws.security.fat.common.jwt'),
+	            project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.6R5'
@@ -56,11 +58,13 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  ******************************************************************
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.doLast {
 
   def servers = [
 	"com.ibm.ws.security.social_fat.LibertyOP.op",
+    'com.ibm.ws.security.social_fat.LibertyOP.opWithStub',
 	"com.ibm.ws.security.social_fat.LibertyOP.social",
 	"com.ibm.ws.security.social_fat.LibertyOP.socialDisc"
   ]
@@ -75,6 +79,11 @@ autoFVT.doLast {
       from new File(projectDir, "securitykeys/rsa_trust_for_LibertyOP.jks")
       into new File(autoFvtDir, "publish/servers/" + server)
     }
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'signEncryptSSLSettings.xml'
+    }      
     copy { 
       from new File(projectDir, "publish/files/serversettings")
       into new File(autoFvtDir, "publish/servers/" + server + "/imports")
@@ -84,6 +93,14 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
+      	/* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }
+    
   }
     
   /*
@@ -124,4 +141,42 @@ autoFVT.doLast {
       include 'oidc_features.xml', 'provider_OAuthConfigTai.xml', 'provider_OAuthMediatorProvider.xml'
     }
   }
+  
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testTokenEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.opWithStub/test-apps')
+    rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
+  }
+  
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.opWithStub/imports')
+    include 'tokenEndpointApplication.xml'
+    include 'signingBuilders.xml'
+    include 'signingEncryptingBuilders.xml'  
+    include 'oauthRoles_1.xml'
+  }
+  
+  copy {
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.opWithStub/imports')
+    include 'jwtBuilderApplication.xml'
+  }
+
+  copy {
+    from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.opWithStub/test-apps')
+  }
+
+  copy { 
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.opWithStub')
+    include '*.pem'
+  }
+
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.social_fat.LibertyOP.social/imports')
+    include 'signingEncryptingBuilders.xml'  
+  }  
 }

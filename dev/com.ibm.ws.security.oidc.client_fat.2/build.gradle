@@ -110,6 +110,12 @@ autoFVT.doLast {
       include 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks'
     }
+    
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/servers/" + server+ "/imports')
+      include 'signEncryptSSLSettings.xml'
+    }    
   }
   
   /*
@@ -171,6 +177,9 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/imports')
     include 'tokenEndpointApplication.xml'
     include 'userinfoEndpointApplication.xml'
+    include 'signingBuilders.xml'
+    include 'signingEncryptingBuilders.xml'
+    include 'oauthRoles_1.xml'
   }
   copy {
     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
@@ -201,7 +210,8 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/imports')
     include 'userinfoEndpointApplication.xml'
-  } 
+    include 'signingBuilders.xml'
+    include 'signingEncryptingBuilders.xml'  } 
  /*
   * Copy the pem files that are needed to use with the TokenEndpointServlet
   */

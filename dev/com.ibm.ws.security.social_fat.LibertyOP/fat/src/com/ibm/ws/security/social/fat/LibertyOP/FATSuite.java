@@ -11,7 +11,6 @@
 
 package com.ibm.ws.security.social.fat.LibertyOP;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -19,24 +18,23 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                LibertyOP_BasicTests_oauth_usingSocialConfig.class,
-                LibertyOP_BasicTests_oidc_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oauth_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
-                LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_Social_SamesiteTests_oauth_usingSocialConfig.class,
-                LibertyOP_Social_SamesiteTests_oidc_usingSocialConfig.class
+        AlwaysPassesTest.class,
+        LibertyOP_BasicTests_oauth_usingSocialConfig.class,
+        LibertyOP_BasicTests_oidc_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oauth_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
+        LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_Social_SamesiteTests_oauth_usingSocialConfig.class,
+        LibertyOP_Social_SamesiteTests_oidc_usingSocialConfig.class,
+        LibertyOP_SignatureAlg_oidc_usingSocialConfig.class,
+        LibertyOP_Encryption_oidc_usingSocialConfig.class
 
 })
 
@@ -47,9 +45,9 @@ public class FATSuite {
 
     public static String UserApiEndpoint = Constants.USERINFO_ENDPOINT;
 
-    /*
-     * Run EE9 tests in LITE mode and run all tests in FULL mode.
-     */
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    //    /*
+    //     * Run EE9 tests in LITE mode and run all tests in FULL mode.
+    //     */
+    //    @ClassRule
+    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
 }

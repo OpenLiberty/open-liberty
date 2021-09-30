@@ -27,9 +27,9 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.SignatureEncryptionUserinfoUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
-import com.ibm.ws.security.openidconnect.client.fat.utils.SignatureEncryptionUserinfoUtils;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
@@ -81,7 +81,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
     public static Class<?> thisClass = OidcPropagationConsumeUserinfoTests.class;
 
     private static final JwtTokenActions actions = new JwtTokenActions();
-    private static final SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
+    protected static SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -171,9 +171,9 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
         String access_token = createTokenWithSubject(builderId);
 
         // create and save an updated token to be used as the response from the userinfo endpoint
-        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings);
+        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings, Constants.LOGIN_USER);
         List<NameValuePair> userinfoParms = createExtraParms(null, userinfoBuilderId);
-        String token = createTokenWithSubjectPlus(userinfoBuilderId, userinfoParms);
+        String token = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), userinfoBuilderId, userinfoParms);
         expectations = createRSExpectations(expectations, userinfoParms, builderId.equals(userinfoBuilderId), isJws, appName.contains(Constants.USERINFO_ENDPOINT));
 
         // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
@@ -225,13 +225,13 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
         Log.info(thisClass, _testName, "RS Protected App: " + updatedTestSettings.getRSProtectedResource());
         updatedTestSettings.setSignatureAlg(alg);
 
-        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings);
+        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings, Constants.LOGIN_USER);
 
         WebResponse response = genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
         String access_token = validationTools.getTokenFromOutput("access_token=", response);
 
         List<NameValuePair> userinfoParms = createExtraParms(null, userinfoBuilderId);
-        String token = createTokenWithSubjectPlus(userinfoBuilderId, userinfoParms);
+        String token = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), userinfoBuilderId, userinfoParms);
         List<validationData> expectations2 = createRSExpectations(expectations, userinfoParms, userinfoBuilderId.startsWith(alg), isJws, rsAppName.contains(Constants.USERINFO_ENDPOINT));
 
         // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
@@ -395,7 +395,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
                         expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                     }
                 } else {
-                    expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
+                    expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Found claim " + parm.getName() + " in the response and it should not be there.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                 }
             }
 
@@ -433,24 +433,6 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
         parms = setParmsForECWorkaround(parms, builderId);
         return parms;
 
-    }
-
-    /**
-     * Creates a token using the passed builder along with any parms passed
-     *
-     * @param builderId
-     *            - the builder id to use to build the token
-     * @param parms
-     *            - extra parms if any
-     * @return - a token built using the builder id and extra parms passed
-     * @throws Exception
-     */
-    protected String createTokenWithSubjectPlus(String builderId, List<NameValuePair> parms) throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
-        Log.info(thisClass, _testName, jwtToken);
-
-        return jwtToken;
     }
 
     /**

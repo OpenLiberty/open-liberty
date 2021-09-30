@@ -140,4 +140,10 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'testFiles')
       include '**'
     }
+    
+   copy {
+     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.rp/imports')
+     include 'oauthRoles_1.xml'
+  }    
 }

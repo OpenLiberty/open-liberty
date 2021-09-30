@@ -1,0 +1,1993 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+<!--  RS encryption variations -->	
+
+	<authFilter id="authFilterHS256RS256">
+		<requestUrl
+			id="requestUrlHS256RS256"
+			urlPattern="/rest/helloworldSignHS256EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256RS256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384RS256">
+		<requestUrl
+			id="requestUrlHS384RS256"
+			urlPattern="/rest/helloworldSignHS384EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384RS256"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512RS256">
+		<requestUrl
+			id="requestUrlHS512RS256"
+			urlPattern="/rest/helloworldSignHS512EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512RS256"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256RS256">
+		<requestUrl
+			id="requestUrlRS256RS256"
+			urlPattern="/rest/helloworldSignRS256EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256RS256"
+		signatureAlgorithm="RS256"
+		trustAliasName="rs256"
+		hostNameVerificationEnabled="false"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384RS256">
+		<requestUrl
+			id="requestUrlRS384RS256"
+			urlPattern="/rest/helloworldSignRS384EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384RS256"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512RS256">
+		<requestUrl
+			id="requestUrlRS512RS256"
+			urlPattern="/rest/helloworldSignRS512EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512RS256"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256RS256">
+		<requestUrl
+			id="requestUrlES256RS256"
+			urlPattern="/rest/helloworldSignES256EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256RS256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384RS256">
+		<requestUrl
+			id="requestUrlES384RS256"
+			urlPattern="/rest/helloworldSignES384EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384RS256"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512RS256">
+		<requestUrl
+			id="requestUrlES512RS256"
+			urlPattern="/rest/helloworldSignES512EncryptRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512RS256"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+
+	<authFilter id="authFilterHS256RS384">
+		<requestUrl
+			id="requestUrlHS256RS384"
+			urlPattern="/rest/helloworldSignHS256EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256RS384"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384RS384">
+		<requestUrl
+			id="requestUrlHS384RS384"
+			urlPattern="/rest/helloworldSignHS384EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384RS384"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512RS384">
+		<requestUrl
+			id="requestUrlHS512RS384"
+			urlPattern="/rest/helloworldSignHS512EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512RS384"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256RS384">
+		<requestUrl
+			id="requestUrlRS256RS384"
+			urlPattern="/rest/helloworldSignRS256EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256RS384"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384RS384">
+		<requestUrl
+			id="requestUrlRS384RS384"
+			urlPattern="/rest/helloworldSignRS384EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384RS384"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512RS384">
+		<requestUrl
+			id="requestUrlRS512RS384"
+			urlPattern="/rest/helloworldSignRS512EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512RS384"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256RS384">
+		<requestUrl
+			id="requestUrlES256RS384"
+			urlPattern="/rest/helloworldSignES256EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256RS384"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384RS384">
+		<requestUrl
+			id="requestUrlES384RS384"
+			urlPattern="/rest/helloworldSignES384EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384RS384"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512RS384">
+		<requestUrl
+			id="requestUrlES512RS384"
+			urlPattern="/rest/helloworldSignES512EncryptRS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptRS384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512RS384"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+
+	<authFilter id="authFilterHS256RS512">
+		<requestUrl
+			id="requestUrlHS256RS512"
+			urlPattern="/rest/helloworldSignHS256EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256RS512"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384RS512">
+		<requestUrl
+			id="requestUrlHS384RS512"
+			urlPattern="/rest/helloworldSignHS384EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384RS512"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512RS512">
+		<requestUrl
+			id="requestUrlHS512RS512"
+			urlPattern="/rest/helloworldSignHS512EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512RS512"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256RS512">
+		<requestUrl
+			id="requestUrlRS256RS512"
+			urlPattern="/rest/helloworldSignRS256EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256RS512"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384RS512">
+		<requestUrl
+			id="requestUrlRS384RS512"
+			urlPattern="/rest/helloworldSignRS384EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384RS512"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512RS512">
+		<requestUrl
+			id="requestUrlRS512RS512"
+			urlPattern="/rest/helloworldSignRS512EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512RS512"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256RS512">
+		<requestUrl
+			id="requestUrlES256RS512"
+			urlPattern="/rest/helloworldSignES256EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256RS512"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384RS512">
+		<requestUrl
+			id="requestUrlES384RS512"
+			urlPattern="/rest/helloworldSignES384EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384RS512"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512RS512">
+		<requestUrl
+			id="requestUrlES512RS512"
+			urlPattern="/rest/helloworldSignES512EncryptRS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptRS512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512RS512"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+				
+	
+<!-- ES encryption variations -->
+	<authFilter id="authFilterHS256ES256">
+		<requestUrl
+			id="requestUrlHS256ES256"
+			urlPattern="/rest/helloworldSignHS256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256ES256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384ES256">
+		<requestUrl
+			id="requestUrlHS384ES256"
+			urlPattern="/rest/helloworldSignHS384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384ES256"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512ES256">
+		<requestUrl
+			id="requestUrlHS512ES256"
+			urlPattern="/rest/helloworldSignHS512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512ES256"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256ES256">
+		<requestUrl
+			id="requestUrlRS256ES256"
+			urlPattern="/rest/helloworldSignRS256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256ES256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384ES256">
+		<requestUrl
+			id="requestUrlRS384ES256"
+			urlPattern="/rest/helloworldSignRS384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384ES256"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512ES256">
+		<requestUrl
+			id="requestUrlRS512ES256"
+			urlPattern="/rest/helloworldSignRS512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512ES256"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256ES256">
+		<requestUrl
+			id="requestUrlES256ES256"
+			urlPattern="/rest/helloworldSignES256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256ES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384ES256">
+		<requestUrl
+			id="requestUrlES384ES256"
+			urlPattern="/rest/helloworldSignES384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384ES256"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512ES256">
+		<requestUrl
+			id="requestUrlES512ES256"
+			urlPattern="/rest/helloworldSignES512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512ES256"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+
+	<authFilter id="authFilterHS256ES384">
+		<requestUrl
+			id="requestUrlHS256ES384"
+			urlPattern="/rest/helloworldSignHS256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256ES384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384ES384">
+		<requestUrl
+			id="requestUrlHS384ES384"
+			urlPattern="/rest/helloworldSignHS384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384ES384"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512ES384">
+		<requestUrl
+			id="requestUrlHS512ES384"
+			urlPattern="/rest/helloworldSignHS512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512ES384"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256ES384">
+		<requestUrl
+			id="requestUrlRS256ES384"
+			urlPattern="/rest/helloworldSignRS256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256ES384"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384ES384">
+		<requestUrl
+			id="requestUrlRS384ES384"
+			urlPattern="/rest/helloworldSignRS384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384ES384"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512ES384">
+		<requestUrl
+			id="requestUrlRS512ES384"
+			urlPattern="/rest/helloworldSignRS512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512ES384"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256ES384">
+		<requestUrl
+			id="requestUrlES256ES384"
+			urlPattern="/rest/helloworldSignES256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256ES384"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384ES384">
+		<requestUrl
+			id="requestUrlES384ES384"
+			urlPattern="/rest/helloworldSignES384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384ES384"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512ES384">
+		<requestUrl
+			id="requestUrlES512ES384"
+			urlPattern="/rest/helloworldSignES512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptES384"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512ES384"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+
+	<authFilter id="authFilterHS256ES512">
+		<requestUrl
+			id="requestUrlHS256ES512"
+			urlPattern="/rest/helloworldSignHS256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS256EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256ES512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS384ES512">
+		<requestUrl
+			id="requestUrlHS384ES512"
+			urlPattern="/rest/helloworldSignHS384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS384EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS384ES512"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+
+	<authFilter id="authFilterHS512ES512">
+		<requestUrl
+			id="requestUrlHS512ES512"
+			urlPattern="/rest/helloworldSignHS512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignHS512EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS512ES512"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>
+	
+	
+	<authFilter id="authFilterRS256ES512">
+		<requestUrl
+			id="requestUrlRS256ES512"
+			urlPattern="/rest/helloworldSignRS256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256ES512"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS384ES512">
+		<requestUrl
+			id="requestUrlRS384ES512"
+			urlPattern="/rest/helloworldSignRS384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384ES512"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS512ES512">
+		<requestUrl
+			id="requestUrlRS512ES512"
+			urlPattern="/rest/helloworldSignRS512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512ES512"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES256ES512">
+		<requestUrl
+			id="requestUrlES256ES512"
+			urlPattern="/rest/helloworldSignES256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256ES512"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES384ES512">
+		<requestUrl
+			id="requestUrlES384ES512"
+			urlPattern="/rest/helloworldSignES384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384ES512"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterES512ES512">
+		<requestUrl
+			id="requestUrlES512ES512"
+			urlPattern="/rest/helloworldSignES512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512EncryptES512"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512ES512"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+		
+<!-- Other -->						
+	<authFilter id="authFilterInvalidKeyManagementKeyAlias">
+		<requestUrl
+			id="requestUrlInvalidKeyManagementKeyAlias"
+			urlPattern="/rest/helloworldInvalidKeyManagementKeyAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="invalidKeyManagementKeyAlias"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterInvalidKeyManagementKeyAlias"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="ES384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterNonExistantKeyManagementKeyAlias">
+		<requestUrl
+			id="requestUrNonExistantKeyManagementKeyAlias"
+			urlPattern="/rest/helloworldNonExistantKeyManagementKeyAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="nonExistantKeyManagementKeyAlias"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterNonExistantKeyManagementKeyAlias"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="nonExistantKeyManagementKeyAlias"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+			
+	<authFilter id="authFilterOmittedKeyManagementKeyAlias">
+		<requestUrl
+			id="requestUrlOmittedKeyManagementKeyAlias"
+			urlPattern="/rest/helloworldOmittedKeyManagementKeyAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="omittedKeyManagementKeyAlias"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterOmittedKeyManagementKeyAlias"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+
+	<authFilter id="authFilterRS256none">
+		<requestUrl
+			id="requestUrlRS256none"
+			urlPattern="/rest/helloworldSignRS256Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256none"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+	
+	<authFilter id="authFilterRS384none">
+		<requestUrl
+			id="requestUrlRS384none"
+			urlPattern="/rest/helloworldSignRS384Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS384Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS384none"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>					
+
+	<authFilter id="authFilterRS512none">
+		<requestUrl
+			id="requestUrlRS512none"
+			urlPattern="/rest/helloworldSignRS512Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS512Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS512none"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>					
+
+	<authFilter id="authFilterES256none">
+		<requestUrl
+			id="requestUrlES256none"
+			urlPattern="/rest/helloworldSignES256Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256none"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+	
+	<authFilter id="authFilterES384none">
+		<requestUrl
+			id="requestUrlES384none"
+			urlPattern="/rest/helloworldSignES384Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES384Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES384none"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>					
+
+	<authFilter id="authFilterES512none">
+		<requestUrl
+			id="requestUrlES512none"
+			urlPattern="/rest/helloworldSignES512Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES512Encryptnone"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES512none"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+	
+	<authFilter id="authFilterRS256ShortRS256">
+		<requestUrl
+			id="requestUrlRS256ShortRS256"
+			urlPattern="/rest/helloworldSignRS256EncryptShortRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptShortRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256ShortRS256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="short_rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>	
+		
+	<authFilter id="authFilterRS256PublicRS256">
+		<requestUrl
+			id="requestUrlRS256PublicRS256"
+			urlPattern="/rest/helloworldSignRS256EncryptPublicRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignRS256EncryptPublicRS256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256PublicRS256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg_badKeyStore"
+	>
+	</oidcLogin>		
+
+	<authFilter id="authFilterRP_trustStoreRefOmitted">
+		<requestUrl
+			id="requestUrlRP_trustStoreRefOmitted"
+			urlPattern="/rest/helloworldRP_trustStoreRefOmitted"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="RP_trustStoreRefOmitted"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRP_trustStoreRefOmitted"
+		signatureAlgorithm="RS256"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuer="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
+	</oidcLogin>		
+	
+	<authFilter id="authFilterRP_sslRefOmitted">
+		<requestUrl
+			id="requestUrlRP_sslRefOmitted"
+			urlPattern="/rest/helloworldRP_sslRefOmitted"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="RP_sslRefOmitted"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRP_sslRefOmitted"
+		signatureAlgorithm="RS256"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs256"
+	>
+	</oidcLogin>		
+		
+</server>
