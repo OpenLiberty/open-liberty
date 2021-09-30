@@ -19,25 +19,29 @@ import java.security.PrivilegedAction;
 import java.util.Properties;
 
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
-/**
- *
- */
+@Component(service = {}, configurationPolicy = ConfigurationPolicy.IGNORE)
 public final class LocalConnectorActivator {
 
     /**  */
     private static final String JMX_LOCAL_ADDRESS = "com.ibm.ws.jmx.local.address";
-    private volatile WsLocationAdmin locationService;
-    private volatile WsResource localJMXAddressWorkareaFile;
-    private volatile WsResource localJMXAddressStateFile;
+    private final WsLocationAdmin locationAdmin;
+    private final WsResource localJMXAddressWorkareaFile;
+    private final WsResource localJMXAddressStateFile;
     private static final TraceComponent tc = Tr.register(LocalConnectorActivator.class);
 
     private static final class LocalConnectorHelper {
@@ -147,12 +151,14 @@ public final class LocalConnectorActivator {
         }
     }
 
-    public LocalConnectorActivator() {
+    @Activate
+    public LocalConnectorActivator(@Reference WsLocationAdmin locationAdmin, @Reference ServerStarted serverStarted) {
+        this.locationAdmin = locationAdmin;
+        localJMXAddressWorkareaFile = createJMXWorkAreaResource();
+        localJMXAddressStateFile = createJMXStateResource();
     }
 
-    protected void activate(ComponentContext compContext) {
-    }
-
+    @Deactivate
     protected void deactivate(ComponentContext compContext) {
         removeJMXAddressResource(localJMXAddressWorkareaFile);
         removeJMXAddressResource(localJMXAddressStateFile);
@@ -180,32 +186,16 @@ public final class LocalConnectorActivator {
         }
     }
 
-    protected void setLocationService(WsLocationAdmin locationService) {
-        this.locationService = locationService;
-        if (localJMXAddressWorkareaFile == null) {
-            localJMXAddressWorkareaFile = createJMXWorkAreaResource(locationService);
-        }
-        if (localJMXAddressStateFile == null) {
-            localJMXAddressStateFile = createJMXStateResource(locationService);
-        }
-    }
-
-    protected void unsetLocationService(WsLocationAdmin locationService) {
-        if (this.locationService == locationService) {
-            this.locationService = null;
-        }
-    }
-
     /**
      * @param locationService2
      * @return
      */
-    private WsResource createJMXStateResource(WsLocationAdmin locationAdmin) {
+    private WsResource createJMXStateResource() {
         WsResource resource = locationAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_STATE_DIR + JMX_LOCAL_ADDRESS);
         return createJmxAddressResource(resource);
     }
 
-    private WsResource createJMXWorkAreaResource(WsLocationAdmin locationAdmin) {
+    private WsResource createJMXWorkAreaResource() {
         WsResource resource = locationAdmin.getServerWorkareaResource(JMX_LOCAL_ADDRESS);
         return createJmxAddressResource(resource);
     }
