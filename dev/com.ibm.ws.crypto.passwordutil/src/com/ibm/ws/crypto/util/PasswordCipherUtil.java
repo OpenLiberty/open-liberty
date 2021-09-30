@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,8 @@ public class PasswordCipherUtil {
 
     static final String KEY_ENCRYPTION_SERVICE = "customPasswordEncryption";
     private static AtomicServiceReference<CustomPasswordEncryption> customPasswordEncryption = new AtomicServiceReference<CustomPasswordEncryption>(KEY_ENCRYPTION_SERVICE);
+
+    private static final String HW_PROVIDER = "IBMJCECCA";
 
     private static CustomPasswordEncryption cpeImpl = null;
     private static List<CustomManifest> cms = null;
@@ -440,8 +443,16 @@ public class PasswordCipherUtil {
      */
     private static EncryptedInfo aesEncipher(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info,
                                              byte[] encrypted_bytes) throws UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
+        byte[] seed = null;
         SecureRandom rand = new SecureRandom();
-        byte[] seed = rand.generateSeed(20);
+        Provider provider = rand.getProvider();
+        String providerName = provider.getName();
+        if (providerName.equals(HW_PROVIDER)) {
+            seed = new byte[20];
+            rand.nextBytes(seed);
+        } else {
+            seed = rand.generateSeed(20);
+        }
         byte[] preEncrypted = new byte[decrypted_bytes.length + 21];
         preEncrypted[0] = 20; // how many seed bytes there are.
         System.arraycopy(seed, 0, preEncrypted, 1, 20);
