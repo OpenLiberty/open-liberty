@@ -31,8 +31,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
@@ -47,9 +49,6 @@ public abstract class ExpressionFactory {
 
     private static final boolean IS_SECURITY_ENABLED =
                     (System.getSecurityManager() != null);
-
-    private static final String SERVICE_RESOURCE_NAME =
-                    "META-INF/services/javax.el.ExpressionFactory";
 
     private static final String PROPERTY_NAME = "javax.el.ExpressionFactory";
 
@@ -404,37 +403,20 @@ public abstract class ExpressionFactory {
     }
 
     private static String getClassNameServices(ClassLoader tccl) {
-        InputStream is = null;
 
-        if (tccl == null) {
-            is = ClassLoader.getSystemResourceAsStream(SERVICE_RESOURCE_NAME);
-        } else {
-            is = tccl.getResourceAsStream(SERVICE_RESOURCE_NAME);
+        ExpressionFactory result = null;
+
+        ServiceLoader<ExpressionFactory> serviceLoader = ServiceLoader.load(ExpressionFactory.class, tccl);
+        Iterator<ExpressionFactory> iter = serviceLoader.iterator();
+        while (result == null && iter.hasNext()) {
+            result = iter.next();
         }
 
-        if (is != null) {
-            String line = null;
-            try (InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-                            BufferedReader br = new BufferedReader(isr)) {
-                line = br.readLine();
-                if (line != null && line.trim().length() > 0) {
-                    return line.trim();
-                }
-            } catch (UnsupportedEncodingException e) {
-                // Should never happen with UTF-8
-                // If it does - ignore & return null
-            } catch (IOException e) {
-                throw new ELException("Failed to read " + SERVICE_RESOURCE_NAME,
-                                e);
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException ioe) {/* Ignore */
-                }
-            }
+        if (result == null) {
+            return null;
         }
 
-        return null;
+        return result.getClass().getName();
     }
 
     private static String getClassNameJreDir() {
