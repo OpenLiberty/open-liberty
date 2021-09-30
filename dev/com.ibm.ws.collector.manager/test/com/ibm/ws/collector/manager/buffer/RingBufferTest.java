@@ -358,7 +358,7 @@ public class RingBufferTest {
         long waitTimeInMilliSecs = 4000;
         long timeElapsedInMilliSecs = 0;
 
-        System.out.println("Waiting for thread to enter either blocked or waiting state...");
+        System.out.println("Waiting for thread to enter either blocked or waiting state... Current state " + thread.getState());
         while (!(thread.getState() == Thread.State.WAITING || thread.getState() == Thread.State.BLOCKED)
                && timeElapsedInMilliSecs < threadWaitTimeOutInMilliSecs) {
             try {
@@ -369,7 +369,7 @@ public class RingBufferTest {
             timeElapsedInMilliSecs += waitTimeInMilliSecs;
             System.out.println("Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
         }
-        assertTrue(message, thread.getState() == Thread.State.WAITING || thread.getState() == Thread.State.BLOCKED);
+        assertTrue(message + ". state: " + thread.getState(), thread.getState() == Thread.State.WAITING || thread.getState() == Thread.State.BLOCKED);
     }
 
     public void assertNotBlocked(String message, Thread thread) {
@@ -378,7 +378,7 @@ public class RingBufferTest {
         long waitTimeInMilliSecs = 1000;
         long timeElapsedInMilliSecs = 0;
 
-        System.out.println("Waiting for thread to enter either runnable or terminated state...");
+        System.out.println("Waiting for thread to enter either runnable or terminated state... Current state " + thread.getState());
         while (!(thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED)
                && timeElapsedInMilliSecs < threadWaitTimeOutInMilliSecs) {
             try {
@@ -390,7 +390,7 @@ public class RingBufferTest {
             timeElapsedInMilliSecs += waitTimeInMilliSecs;
             System.out.println("Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
         }
-        assertTrue(message, thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED);
+        assertTrue(message + ". state: " + thread.getState(), thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED);
 
         /*
          * For tests that passed (i.e. unblocked) after the original 10 seconds.
