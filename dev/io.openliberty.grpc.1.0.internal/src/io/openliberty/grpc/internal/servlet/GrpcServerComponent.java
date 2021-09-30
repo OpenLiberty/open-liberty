@@ -233,6 +233,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
             if (services != null && !services.isEmpty()) {
                 if (!services.isEmpty()) {
                     GrpcServletApplication currentApplication = new GrpcServletApplication();
+                    currentApplication.setAppName(appName);
                     for (String name : services) {
                         // only add the class name
                         currentApplication.addServiceClassName(name);
