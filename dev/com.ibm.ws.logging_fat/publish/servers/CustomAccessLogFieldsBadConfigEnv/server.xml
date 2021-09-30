@@ -20,7 +20,7 @@
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"
 		  		  host="*">
-		<accessLogging logFormat='%a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u'/>
+		<accessLogging logFormat='%a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u %{remote}p'/>
     </httpEndpoint>
     
     <logging jsonAccessLogFields="bad"/>

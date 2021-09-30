@@ -21,7 +21,7 @@
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"
 		  		  host="*">
-       <accessLogging logFormat='%h %H %A %B %m %p %{R}W %s %q %{User-Agent}i %U %a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u'/>
+       <accessLogging logFormat='%h %H %A %B %m %p %{R}W %s %q %{User-Agent}i %U %a %b %C %D %{header}i %{Content-Type}o %r %t %{t}W %u %{remote}p'/>
     </httpEndpoint>
     
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
