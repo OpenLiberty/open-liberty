@@ -23,15 +23,19 @@ tested.features: mpfaulttolerance-1.0,\
                  mpFaultTolerance-1.1,\
                  mpfaulttolerance-2.0,\
                  mpfaulttolerance-3.0,\
+                 mpfaulttolerance-4.0,\
                  mpConfig-1.3,\
+                 mpConfig-3.0,\
                  cdi-2.0,\
+                 cdi-3.0,\
                  appsecurity-3.0,\
                  el-3.0,\
                  mpmetrics-1.0,\
                  mpMetrics-1.1,\
                  mpMetrics-2.0,\
                  mpMetrics-2.3,\
-                 mpMetrics-3.0
+                 mpMetrics-3.0,\
+                 servlet-5.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

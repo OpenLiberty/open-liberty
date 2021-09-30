@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.instrument.ClassDefinition;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
@@ -159,6 +161,13 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
      * A unifying interface to bridge ArtifactContainers, and adaptable Containers.
      */
     private interface UniversalContainer {
+
+        /**
+         * Constant that is used to indicate that there is no Manifest.
+         * This constant is used to indicate that getManifest() should return null.
+         */
+        static final Manifest NULL_MANIFEST = new Manifest();
+
         /**
          * A resource located within a UniversalContainer
          */
@@ -210,6 +219,13 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          * <code>ArtifactContainer.getURLs()</code>.
          */
         Collection<URL> getContainerURLs();
+
+        /**
+         * Attempts to load the manifest for the current resource URL and returns it.
+         *
+         * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
+         */
+        public Manifest getManifest();
     }
 
     /**
@@ -277,15 +293,19 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         return bytes;
     }
 
+    @SuppressWarnings("unchecked")
+    static <E extends Throwable> void sneakyThrow(Throwable e) throws E {
+            throw (E) e;
+    }
     /**
      * Implementation of UniversalResource backed by an adaptable Entry.
      */
     private static class EntryUniversalResource implements UniversalContainer.UniversalResource {
-        final Container container;
+        final UniversalContainer container;
         final Entry entry;
         final String resourceName;
 
-        public EntryUniversalResource(Container container, Entry entry, String resourceName) {
+        public EntryUniversalResource(UniversalContainer container, Entry entry, String resourceName) {
             this.container = container;
             this.entry = entry;
             this.resourceName = resourceName;
@@ -325,16 +345,24 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             boolean foundInClassCache = bytes != null;
             if (!foundInClassCache) {
+                bytes = getActualBytes();
+            }
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, () -> getActualBytes());
+        }
+
+        private byte[] getActualBytes() {
+            try {
                 try {
                     InputStream is = this.entry.adapt(InputStream.class);
-                    bytes = ContainerClassLoader.getBytes(is, (int) entry.getSize());
+                    return ContainerClassLoader.getBytes(is, (int) entry.getSize());
                 } catch (UnableToAdaptException e) {
                     throw new IOException(e);
                 }
+            } catch (IOException e) {
+                sneakyThrow(e);
+                return null; //never gets here
             }
-            return new EntryByteResourceInformation(bytes, this.entry, this.container, resourceName, foundInClassCache);
         }
-
         @Override
         public String getNativeLibraryPath() {
             try {
@@ -394,6 +422,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         private final boolean isRoot;
         private String debugString;
 
+        private volatile Manifest manifest;
+
         public ContainerUniversalContainer(Container container) {
             this.container = container;
             this.isRoot = container.isRoot();
@@ -423,7 +453,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             //try a lookup for the path in the container.
             Entry e = this.container.getEntry(path);
             if (e != null) {
-                return new EntryUniversalResource(this.container, e, path);
+                return new EntryUniversalResource(this, e, path);
             } else {
                 return null;
             }
@@ -472,6 +502,48 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         }
 
         @Override
+        @FFDCIgnore(value = { IOException.class })
+        public Manifest getManifest() {
+            // See if we've already loaded the manifest
+            if (manifest == null) {
+                synchronized (this) {
+                    if (manifest == null) {
+                        Entry e = this.container.getEntry("META-INF/MANIFEST.MF");
+                        if (e != null) {
+                            InputStream manifestStream = null;
+                            try {
+                                manifestStream = e.adapt(InputStream.class);
+                                if (manifestStream != null) {
+                                    Manifest manifestLoading = new Manifest(manifestStream);
+                                    manifest = manifestLoading;
+                                }
+                            } catch (UnableToAdaptException e1) {
+                                // Ignore, we'll just define a package with no package information
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "UnableToAdaptException thrown opening resource {0}", e.getResource());
+                                }
+                            } catch (IOException e2) {
+                                // Ignore, we'll just define a package with no package information
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "IOException thrown opening resource {0}", e.getResource());
+                                }
+                            } finally {
+                                Util.tryToClose(manifestStream);
+                            }
+                        }
+                        // if it is still null, then set it to the static variable to 
+                        // indicate a null Manifest should be returned.
+                        if (manifest == null) {
+                            manifest = NULL_MANIFEST;
+                        }
+                    }
+                }
+            }
+
+            return manifest == NULL_MANIFEST ? null : manifest;
+        }
+
+        @Override
         public String toString() {
             if (debugString == null) {
                 String physicalPath = this.container.getPhysicalPath();
@@ -488,11 +560,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
      * Implementation of a UniversalResource backed by an ArtifactEntry
      */
     private static class ArtifactEntryUniversalResource implements UniversalContainer.UniversalResource {
-        final ArtifactContainer container;
+        final UniversalContainer container;
         final ArtifactEntry entry;
         final String resourceName;
 
-        public ArtifactEntryUniversalResource(ArtifactContainer container, ArtifactEntry entry, String resourceName) {
+        public ArtifactEntryUniversalResource(UniversalContainer container, ArtifactEntry entry, String resourceName) {
             this.container = container;
             this.entry = entry;
             this.resourceName = resourceName;
@@ -534,9 +606,18 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 InputStream is = this.entry.getInputStream();
                 bytes = ContainerClassLoader.getBytes(is, (int) entry.getSize());
             }
-            return new ArtifactEntryByteResourceInformation(bytes, this.entry, this.container, resourceName, foundInClassCache);
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, () -> getActualBytes());
         }
 
+        byte[] getActualBytes() {
+            try {
+                InputStream is = this.entry.getInputStream();
+                return ContainerClassLoader.getBytes(is, (int) entry.getSize());
+            } catch (IOException e) {
+                sneakyThrow(e);
+                return null; // never actually get here
+            }
+        }
         @Override
         public String getNativeLibraryPath() {
             try {
@@ -556,6 +637,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     private static class ArtifactContainerUniversalContainer implements UniversalContainer {
         final ArtifactContainer container;
         final boolean isRoot;
+
+        private volatile Manifest manifest;
 
         public ArtifactContainerUniversalContainer(ArtifactContainer container) {
             this.container = container;
@@ -592,7 +675,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 //try a lookup for the path in the container.
                 ArtifactEntry e = this.container.getEntry(path);
                 if (e != null) {
-                    return new ArtifactEntryUniversalResource(this.container, e, path);
+                    return new ArtifactEntryUniversalResource(this, e, path);
                 } else {
                     return null;
                 }
@@ -637,6 +720,43 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         @Override
         public Collection<URL> getContainerURLs() {
             return container == null ? null : container.getURLs();
+        }
+
+        @Override
+        @FFDCIgnore(value = { IOException.class })
+        public Manifest getManifest() {
+            // See if we've already loaded the manifest
+            if (manifest == null) {
+                synchronized (this) {
+                    if (manifest == null) {
+                        ArtifactEntry e = this.container.getEntry("META-INF/MANIFEST.MF");
+                        if (e != null) {
+                            InputStream manifestStream = null;
+                            try {
+                                manifestStream = e.getInputStream();
+                                if (manifestStream != null) {
+                                    Manifest manifestLoading = new Manifest(manifestStream);
+                                    manifest = manifestLoading;
+                                }
+                            } catch (IOException e2) {
+                                // Ignore, we'll just define a package with no package information
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "IOException thrown opening resource {0}", e.getResource());
+                                }
+                            } finally {
+                                Util.tryToClose(manifestStream);
+                            }
+                        }
+                        // if it is still null, then set it to the static variable to 
+                        // indicate a null Manifest should be returned.
+                        if (manifest == null) {
+                            manifest = NULL_MANIFEST;
+                        }
+                    }
+                }
+            }
+
+            return manifest == NULL_MANIFEST ? null : manifest;
         }
     }
 
@@ -1182,78 +1302,29 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     }
 
     /**
-     * Interface that represents byte data for a resource.<p>
+     * Class that represents byte data for a resource.<p>
      * A data structure that stores the resource URL and bytes for a particular class.<br>
      * It also has a utility to try to load a manifest from the resource URL (assuming it points to a JAR)<br>
      */
-    protected interface ByteResourceInformation {
-        /**
-         * Returns the bytes for the class loaded from this resource.
-         *
-         * @return The byte[]
-         */
-        byte[] getBytes();
-
-        /**
-         * Attempts to load the manifest for the current resource URL and returns it.
-         *
-         * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
-         */
-        Manifest getManifest();
-
-        /**
-         * Returns the resource URL for this resource
-         *
-         * @return
-         */
-        public URL getResourceUrl();
-
-        /**
-         * Returns the resource style path to this resource, this will be in the form "a/b/c" rather than a . notation.
-         *
-         * @return The resource path
-         */
-        public String getResourcePath();
-
-        /**
-         * Returns whether the class was found in the shared class cache or not.  If it is found in the cache,
-         * there is no need to call the cache to store the class again.
-         * 
-         * @return whether the Class was found in the shared class cache or not.
-         */
-        public boolean foundInClassCache();
-
-        /**
-         * Returns the actual class bytes even if the class was found in the shared class cache.
-         * @return the actual bytes of the class.
-         */
-        public byte[] getActualBytes() throws IOException;
-    }
-
-    /**
-     * Implementation of {@link ByteResourceInformation} backed by an Entry. <p>
-     * Enables use of the Container for MANIFEST.MF location.
-     */
-    static class EntryByteResourceInformation implements ByteResourceInformation {
+    static final class ByteResourceInformation {
         private final byte[] bytes;
-        private final Entry resourceEntry;
-        private final Container resourceContainer;
+        private final URL resourceEntry;
+        private final UniversalContainer resourceContainer;
         private final String resourcePath;
         private final boolean fromClassCache;
-
-        private Manifest manifest;
-        private boolean manifestLoaded;
+        private final Supplier<byte[]> actualBytes;
 
         /**
          * @param bytes
          * @param resourceUrl
          */
-        EntryByteResourceInformation(byte[] bytes, Entry resourceUrl, Container root, String resourcePath, boolean fromClassCache) {
+        ByteResourceInformation(byte[] bytes, URL resourceUrl, UniversalContainer root, String resourcePath, boolean fromClassCache, Supplier<byte[]> actualBytes) {
             this.bytes = bytes;
             this.resourceEntry = resourceUrl;
             this.resourceContainer = root;
             this.resourcePath = resourcePath;
             this.fromClassCache = fromClassCache;
+            this.actualBytes = actualBytes;
         }
 
         /**
@@ -1261,21 +1332,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          *
          * @return The byte[]
          */
-        @Override
         public byte[] getBytes() {
             return this.bytes;
-        }
-
-        @Override
-        @FFDCIgnore(UnableToAdaptException.class)
-        public byte[] getActualBytes() throws IOException {
-            InputStream is;
-            try {
-                is = resourceEntry.adapt(InputStream.class);
-            } catch (UnableToAdaptException e) {
-                throw new IOException(e);
-            }
-            return ContainerClassLoader.getBytes(is, (int) resourceEntry.getSize());
         }
 
         /**
@@ -1283,40 +1341,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          *
          * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
          */
-        @Override
-        @FFDCIgnore(value = { IOException.class })
         public Manifest getManifest() {
-            // See if we've already loaded the manifest
-            if (!this.manifestLoaded) {
-                // No matter what happens set the boolean to true, if we fail to load a manifest we won't succeed next time so don't waste time trying, just return null
-                this.manifestLoaded = true;
-
-                Entry e = this.resourceContainer.getEntry("META-INF/MANIFEST.MF");
-                if (e != null) {
-                    InputStream manifestStream = null;
-                    try {
-                        manifestStream = e.adapt(InputStream.class);
-                        if (manifestStream != null) {
-                            Manifest manifestLoading = new Manifest(manifestStream);
-                            this.manifest = manifestLoading;
-                        }
-                    } catch (UnableToAdaptException e1) {
-                        // Ignore, we'll just define a package with no package information
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "UnableToAdaptException thrown opening resource {0}", this.resourceEntry.getResource());
-                        }
-                    } catch (IOException e2) {
-                        // Ignore, we'll just define a package with no package information
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "IOException thrown opening resource {0}", this.resourceEntry.getResource());
-                        }
-                    } finally {
-                        Util.tryToClose(manifestStream);
-                    }
-                }
-            }
-
-            return this.manifest;
+            return resourceContainer.getManifest();
         }
 
         /**
@@ -1324,9 +1350,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          *
          * @return
          */
-        @Override
         public URL getResourceUrl() {
-            return this.resourceEntry.getResource();
+            return this.resourceEntry;
         }
 
         /**
@@ -1334,118 +1359,16 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          *
          * @return The resource path
          */
-        @Override
         public String getResourcePath() {
             return this.resourcePath;
         }
 
-        @Override
         public boolean foundInClassCache() {
             return fromClassCache;
         }
-    }
 
-    /**
-     * Implementation of {@link ByteResourceInformation} backed by an ArtifactEntry. <p>
-     * Enables use of the ArtifactContainer for MANIFEST.MF location.
-     */
-    static class ArtifactEntryByteResourceInformation implements ByteResourceInformation {
-        private final byte[] bytes;
-        private final ArtifactEntry resourceEntry;
-        private final ArtifactContainer resourceContainer;
-        private final String resourcePath;
-        private final boolean fromClassCache;
-
-        private Manifest manifest;
-        private boolean manifestLoaded;
-
-        /**
-         * @param bytes
-         * @param resourceUrl
-         */
-        ArtifactEntryByteResourceInformation(byte[] bytes, ArtifactEntry resourceUrl, ArtifactContainer root, String resourcePath, boolean fromClassCache) {
-            this.bytes = bytes;
-            this.resourceEntry = resourceUrl;
-            this.resourceContainer = root;
-            this.resourcePath = resourcePath;
-            this.fromClassCache = fromClassCache;
-        }
-
-        /**
-         * Returns the bytes for the class loaded from this resource.
-         *
-         * @return The byte[]
-         */
-        @Override
-        public byte[] getBytes() {
-            return this.bytes;
-        }
-
-        @Override
         public byte[] getActualBytes() throws IOException {
-            InputStream is = resourceEntry.getInputStream();
-            return ContainerClassLoader.getBytes(is, (int) resourceEntry.getSize());
-        }
-
-        /**
-         * Attempts to load the manifest for the current resource URL and returns it.
-         *
-         * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
-         */
-        @Override
-        @FFDCIgnore(value = { IOException.class })
-        public Manifest getManifest() {
-            // See if we've already loaded the manifest
-            if (!this.manifestLoaded) {
-                // No matter what happens set the boolean to true, if we fail to load a manifest we won't succeed next time so don't waste time trying, just return null
-                this.manifestLoaded = true;
-
-                ArtifactEntry e = this.resourceContainer.getEntry("META-INF/MANIFEST.MF");
-                if (e != null) {
-                    InputStream manifestStream = null;
-                    try {
-                        manifestStream = e.getInputStream();
-                        if (manifestStream != null) {
-                            Manifest manifestLoading = new Manifest(manifestStream);
-                            this.manifest = manifestLoading;
-                        }
-                    } catch (IOException e2) {
-                        // Ignore, we'll just define a package with no package information
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "IOException thrown opening resource {0}", this.resourceEntry.getResource());
-                        }
-                    } finally {
-                        Util.tryToClose(manifestStream);
-                    }
-                }
-            }
-
-            return this.manifest;
-        }
-
-        /**
-         * Returns the resource URL for this resource
-         *
-         * @return
-         */
-        @Override
-        public URL getResourceUrl() {
-            return this.resourceEntry.getResource();
-        }
-
-        /**
-         * Returns the resource style path to this resource, this will be in the form "a/b/c" rather than a . notation.
-         *
-         * @return The resource path
-         */
-        @Override
-        public String getResourcePath() {
-            return this.resourcePath;
-        }
-
-        @Override
-        public boolean foundInClassCache() {
-            return fromClassCache;
+            return actualBytes.get();
         }
     }
 

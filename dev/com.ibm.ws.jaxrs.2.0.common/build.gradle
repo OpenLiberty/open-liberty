@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  cxf
+}
+
+dependencies {
+  cxf 'org.apache.cxf:cxf-core:3.1.18',
+      'org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.18',
+      'org.apache.cxf:cxf-rt-rs-client:3.1.18',
+      'org.apache.cxf:cxf-rt-transports-http:3.1.18'
+}
+
+// Copy each class from each CXF jar into the build directory
+// so the build can inject entry/exit trace into the bytecode
+task extractInjectedClasses(type: Copy) {
+  from zipTree(configurations.cxf[0])
+  include "**/*.class"
+  into compileJava.destinationDir
+
+  from zipTree(configurations.cxf[1])
+  include "**/*.class"
+  into compileJava.destinationDir
+
+  from zipTree(configurations.cxf[2])
+  include "**/*.class"
+  into compileJava.destinationDir
+
+  from zipTree(configurations.cxf[3])
+  include "**/*.class"
+  into compileJava.destinationDir
+}
+
+// uncomment this line to enable entry/exit trace for CXF
+//compileJava.dependsOn extractInjectedClasses

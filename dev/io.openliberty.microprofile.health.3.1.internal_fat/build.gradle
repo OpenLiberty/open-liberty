@@ -13,4 +13,6 @@
 dependencies {
   //requiredLibs 'org.glassfish:javax.json:1.1'
   requiredLibs 'org.apache.johnzon:johnzon-core:1.1.0'
+  
+  addRequiredLibraries.dependsOn addJakartaTransformer
 }
