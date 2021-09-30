@@ -8,37 +8,33 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
- 
+
 <server>
 
     <featureManager>
-        <feature>timedexit-1.0</feature>
-        <feature>oauth-2.0</feature>
-        <feature>openidConnectServer-1.0</feature>
-        <feature>ssl-1.0</feature>
-        <feature>osgiconsole-1.0</feature>
-       	<feature>jaxrs-2.0</feature>
 		<feature>jsonp-1.0</feature> <!-- needed for the TokenEndpointServlet -->
 	    <feature>jwt-1.0</feature>
-        <feature>timedexit-1.0</feature>
     </featureManager>
-    
+
+	<include location="${server.config.dir}/imports/oidcServerFeatures.xml" />
+
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+	
 	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
-
-	<include location="${server.config.dir}/imports/miscNoSslSettings.xml" />
 
 	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
 
+	<include location="${server.config.dir}/imports/oidcUserinfoProvider.xml" />
+
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
-	
-	<include location="${server.config.dir}/imports/tokenEndpointApplication.xml" />
-	
-	<include location="${server.config.dir}/imports/oidcSigningEncryptingProvider.xml" />
 
+	<include location="${server.config.dir}/imports/signingBuilders.xml" />
 	<include location="${server.config.dir}/imports/signingEncryptingBuilders.xml" />
-								
-</server>
+	
+	<include location="${server.config.dir}/imports/userinfoEndpointApplication.xml" />
+	
+	<include location="${server.config.dir}/imports/jwtBuilderApplication.xml" />
 
+</server>

@@ -22,6 +22,6 @@
 
 	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
 	
-	<include location="${server.config.dir}/imports/oidcSigningEncryptingClients.xml" />
-         		
+	<include location="${server.config.dir}/imports/oidcUserinfoClients.xml" />
+	
 </server>

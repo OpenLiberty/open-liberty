@@ -13,15 +13,15 @@
 
 	<include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
 
+	<include location="${server.config.dir}/imports/oidcUserinfoPropRSClients.xml" />
+
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
 
-	<include location="${server.config.dir}/imports/formlogin_1.xml" />
+	<include location="${server.config.dir}/imports/helloworldApplication.xml" />
 
-	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
+	<include location="${server.config.dir}/imports/rs_fatTestPorts.xml" />
 	
-	<include location="${server.config.dir}/imports/oidcSigningEncryptingClients.xml" />
-         		
 </server>
