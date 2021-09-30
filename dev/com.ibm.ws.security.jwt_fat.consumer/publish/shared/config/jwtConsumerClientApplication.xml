@@ -20,5 +20,7 @@
 	</application>
 	
 	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission codebase="${server.config.dir}/test-apps/jwtconsumerclient.war" className="org.osgi.framework.AdminPermission" actions="context" name="*" />
+	<javaPermission codebase="${server.config.dir}/test-apps/jwtconsumerclient.war" className="org.osgi.framework.ServicePermission" actions="get" name="*" />
 	
 </server>    
