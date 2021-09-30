@@ -347,7 +347,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             if (!foundInClassCache) {
                 bytes = getActualBytes();
             }
-            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, () -> getActualBytes());
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, this::getActualBytes);
         }
 
         private byte[] getActualBytes() {
@@ -603,10 +603,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             boolean foundInClassCache = bytes != null;
             if (!foundInClassCache) {
-                InputStream is = this.entry.getInputStream();
-                bytes = ContainerClassLoader.getBytes(is, (int) entry.getSize());
+                bytes = getActualBytes();
             }
-            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, () -> getActualBytes());
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, this::getActualBytes);
         }
 
         byte[] getActualBytes() {
