@@ -98,11 +98,34 @@ public abstract class BndExtAdapter<ConfigType> {
 
         String cachePath = ddArtifactRoot.getPath();
 
+        // The logic, below, is convoluted:
+        //
+        // If the current container is an application container, application
+        // information will be directly available, and no module information
+        // will be available.
+        //
+        // If the current container is a module container, module information
+        // should be directly available.
+        //
+        // Having neither application nor module information is unexpected.
+        // Answer null in this case.
+        //
+        // Having obtained module information, if the module is within an
+        // application, application info should be available from the module
+        // info.
+        //
+        // Having no application info from the module info may be an error,
+        // or may be usual for a stand-alone module.  In either case, since
+        // overrides are obtained from the application configuration elements,
+        // having no application information means no overrides can possibly
+        // be available.
+
         ApplicationInfo appInfo = (ApplicationInfo)
             ddOverlay.getFromNonPersistentCache(cachePath, ApplicationInfo.class);        
         ModuleInfo moduleInfo = null;
         if ( (appInfo == null) && (ddOverlay.getParentOverlay() != null) ) {
-            moduleInfo = (ModuleInfo) ddOverlay.getFromNonPersistentCache(cachePath, ModuleInfo.class);
+            moduleInfo = (ModuleInfo)
+                ddOverlay.getFromNonPersistentCache(cachePath, ModuleInfo.class);
             if ( moduleInfo == null ) {
                 return null;
             }
@@ -125,7 +148,7 @@ public abstract class BndExtAdapter<ConfigType> {
                     appInfo, appServicePid, appExtendsPid);
 
         } else {
-            Map<String, ConfigType> configs = getConfigs(
+            Map<String, ConfigType> configs = getConfigOverrides(
                     configurations,
                     appInfo,
                     ddOverlay, appServicePid, appExtendsPid);
@@ -133,8 +156,6 @@ public abstract class BndExtAdapter<ConfigType> {
             return ( (configs == null) ? null : configs.get( moduleInfo.getName() ) );
         }
     }
-
-    //
 
     /**
      * Retrieve the configuration override for a module descriptor.
@@ -211,7 +232,7 @@ public abstract class BndExtAdapter<ConfigType> {
      *
      * @return The matching configuration.  Null if no matching configuration is found.
      */    
-    public Map<String, ConfigType> getConfigs(
+    public Map<String, ConfigType> getConfigOverrides(
             List<ConfigType> configurations,
             ApplicationInfo appInfo, OverlayContainer ddOverlay,
             String appServicePid, String appExtendsPid)
@@ -287,7 +308,7 @@ public abstract class BndExtAdapter<ConfigType> {
         return selectedConfigs;
     }
 
-    // Helper methods ...
+    //
 
     private String getSimpleName(ApplicationInfo appInfo) {
         return DDParser.getSimpleName( appInfo.getContainer() );

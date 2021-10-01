@@ -88,7 +88,20 @@ public class ApplicationClientBndAdapter
     }
 
     //
-    
+
+    /**
+     * Local operation to retrieve configuration overrides.
+     * 
+     * Other cases have a module name which is used to match
+     * overrides.  Application clients do not have a module name.
+     *
+     * @param ddOverlay The root overlay container of the descriptor.  This will be
+     *     a module overlay.
+     * @param ddArtifactRoot The root artifact container of the descriptor.  This will
+     *     be a module container.
+     *
+     * @return The selected configuration override.  Null if none is available.
+     */
     private ApplicationClientBnd getConfigOverrides(
         OverlayContainer ddOverlay,
         ArtifactContainer ddArtifactRoot) {
