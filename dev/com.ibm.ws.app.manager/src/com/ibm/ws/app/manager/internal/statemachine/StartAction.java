@@ -46,7 +46,7 @@ class StartAction implements Action {
     private volatile boolean cancelled = false;
     private final AtomicReference<Future<?>> _slowMessageAction = new AtomicReference<Future<?>>();
     private final CompletionListener<Boolean> _listener = new CompletionListener<Boolean>() {
-        @SuppressWarnings("deprecation")
+
         @Override
         public void successfulCompletion(Future<Boolean> future, Boolean result) {
             StateChangeCallback callback = _callback.getAndSet(null);
@@ -132,7 +132,6 @@ class StartAction implements Action {
 
         _slowMessageAction.set(((ScheduledExecutorService) executor).schedule(new Runnable() {
 
-            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 AppMessageHelper.get(handler).audit("APPLICATION_SLOW_STARTUP", _config.getName(), TimestampUtils.getElapsedTimeNanos(_startTime.get()));
