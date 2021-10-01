@@ -60,7 +60,7 @@ import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
-
+    private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
@@ -78,6 +78,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private volatile ExecuteCRIU criu;
 
     private static volatile CheckpointImpl INSTANCE = null;
+
+    private final boolean stubCriu;
 
     @Activate
     public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin) {
@@ -100,6 +102,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.transformerReg = null;
             INSTANCE = null;
         }
+        stubCriu = Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_STUB_CRIU));
     }
 
     @Deactivate
@@ -181,7 +184,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
         prepare(checkpointHooks);
         try {
-            ExecuteCRIU currentCriu = criu;
+            ExecuteCRIU currentCriu = getCurrentCriu();
             if (currentCriu == null) {
                 debug(tc, () -> "No ExecuteCRIU service available.");
                 throw new CheckpointFailedException(Type.UNSUPPORTED, "The criu command is not available.", null, 0);
@@ -204,6 +207,24 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         restore(phase, checkpointHooks);
         createRestoreMarker();
+    }
+
+    ExecuteCRIU getCurrentCriu() {
+        if (stubCriu) {
+            return new ExecuteCRIU() {
+
+                @Override
+                public boolean isCheckpointSupported() {
+                    return true;
+                }
+
+                @Override
+                public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
+                    // do nothing
+                }
+            };
+        }
+        return criu;
     }
 
     /**
