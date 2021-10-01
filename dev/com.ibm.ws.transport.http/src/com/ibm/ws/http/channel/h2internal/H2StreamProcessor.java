@@ -1961,12 +1961,12 @@ public class H2StreamProcessor {
                         long elapsed = 0;
                         while (isWindowLimitExceeded((FrameData) currentFrame) && !timedOut) {
                             synchronized (this) {
-                                this.wait(writeTimeout);
+                                this.wait(1000);
                             }
                             elapsed = System.currentTimeMillis() - startTime;
                             if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
                                 return false;
-                            } else if (elapsed > writeTimeout) {
+                            } else if (elapsed >= writeTimeout) {
                                 timedOut = true;
                             } else {
                                 writeTimeout -= elapsed;
