@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011,2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -29,6 +29,10 @@
 		  <AD id="pageCacheTimeout" name="%pageCacheTimeOut" description="%pageCacheTimeOut.desc" required="false" type="String" ibm:type="duration" default="30000ms"/>
 		  
 		  <AD id="extendedProperty" name="%extendedProperty" description="%extendedProperty.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.extendedProperty" required="false"  cardinality="2147483647"/>
+
+		  <!-- Review name, add supporting description and messages if made external -->
+		  <AD id="failedLoginDelayMin" name="internal" description="internal use only" required="false" type="String" ibm:type="duration" default="0s"/>	
+          <AD id="failedLoginDelayMax" name="internal" description="internal use only" required="false" type="String" ibm:type="duration" default="5s"/>
 </OCD>
 
 <Designate factoryPid="com.ibm.ws.security.wim.core.config">

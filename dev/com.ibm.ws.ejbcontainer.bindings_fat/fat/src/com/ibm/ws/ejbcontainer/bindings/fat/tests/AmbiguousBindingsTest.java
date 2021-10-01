@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,13 +27,14 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnError;
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnError.EJBONERROR;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.EjbOnError;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE7;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE9;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -65,7 +66,7 @@ public class AmbiguousBindingsTest extends FATServletClient {
     private static String servlet = "AmbiguousWeb/AmbiguousTestServlet";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RepeatOnError(EJBONERROR.WARN, "com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnError(EJBONERROR.FAIL, "com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnError(EJBONERROR.IGNORE, "com.ibm.ws.ejbcontainer.bindings.fat.server.err"));
+    public static RepeatTests r = RepeatTests.with(new RepeatOnErrorEE7(EjbOnError.WARN).forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE7(EjbOnError.FAIL).forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE7(EjbOnError.IGNORE).forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE9(EjbOnError.WARN).fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE9(EjbOnError.FAIL).fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE9(EjbOnError.IGNORE).fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -82,9 +83,9 @@ public class AmbiguousBindingsTest extends FATServletClient {
         AmbiguousTestApp.addAsModules(AmbiguousEJB, AmbiguousWeb);
         ShrinkHelper.addDirectory(AmbiguousTestApp, "test-applications/AmbiguousTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, AmbiguousTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, AmbiguousTestApp, DeployOptions.SERVER_ONLY);
 
-        if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
+        if (RepeatOnErrorEE7.isActive(EjbOnError.FAIL) || RepeatOnErrorEE9.isActive(EjbOnError.FAIL)) {
             // don't validate apps loaded like default startServer() does
             server.startServerAndValidate(true, true, false);
         } else {
@@ -98,25 +99,32 @@ public class AmbiguousBindingsTest extends FATServletClient {
         if (server != null && server.isStarted()) {
             server.stopServer("CNTR0338W", "CNTR4002E", "CWWKZ0106E", "CWWKZ0002E");
         }
+
+        // Remove the customBindings.OnError configuration that was added by repeat actions
+        if (RepeatOnErrorEE7.isActive()) {
+            RepeatOnErrorEE7.cleanup(server);
+        } else if (RepeatOnErrorEE9.isActive()) {
+            RepeatOnErrorEE9.cleanup(server);
+        }
     }
 
     @Test
     @AllowedFFDC("javax.naming.NamingException")
     public void testAmbiguousBindings() throws Exception {
 
-        if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
+        if (RepeatOnErrorEE7.isActive(EjbOnError.FAIL) || RepeatOnErrorEE9.isActive(EjbOnError.FAIL)) {
             // make sure application stopped with correct error
             String message = "CWWKZ0106E:";
             assertNotNull("Application AmbiguousTestApp should have been stopped", server.waitForStringInLog(message));
             message = "CNTR4002E:.*com.ibm.ambiguous.ejb.AmbiguousOtherNameRemoteHome";
             assertNotNull("Application AmbiguousTestApp did not get correct error", server.waitForStringInLog(message));
-        } else if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_IGNORE")) {
+        } else if (RepeatOnErrorEE7.isActive(EjbOnError.IGNORE) || RepeatOnErrorEE9.isActive(EjbOnError.IGNORE)) {
             // make sure warning is not there
             String message = "CNTR0338W:";
             assertTrue("Application AmbiguousTestApp should not have got ambiguous warning", server.findStringsInLogs(message).isEmpty());
             FATServletClient.runTest(server, servlet, "testAmbiguousOnErrorIgnore");
         } else {
-            // RepeatTestFilter.CURRENT_REPEAT_ACTION == EJBCBOnErr_WARN
+            // RepeatTestFilter.CURRENT_REPEAT_ACTION == EjbOnError_WARN
 
             // make sure warning is there
             String message = "CNTR0338W:";

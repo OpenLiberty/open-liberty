@@ -1429,6 +1429,10 @@ public abstract class HTTPConduit
                 if (origMessage != null && origMessage.contains(url.toString())) {
                     throw e;
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    // tracing here because this exception can get lost in async scenarios
+                    Tr.debug(tc, "Caught IOException while closing HTTPConduit", e);
+                }
                 throw mapException(e.getClass().getSimpleName()
                                    + " invoking " + url + ": "
                                    + e.getMessage(), e,

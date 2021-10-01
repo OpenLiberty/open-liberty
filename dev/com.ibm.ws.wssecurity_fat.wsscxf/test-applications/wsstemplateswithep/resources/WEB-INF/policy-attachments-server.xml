@@ -55,8 +55,8 @@
 
     <wsp:PolicyAttachment>
 		<wsp:AppliesTo>
-             <wsa:EndpointReference>
-                 <wsa:Address>/WSSTemplatesService2</wsa:Address>
+            <wsa:EndpointReference>
+                 <wsa:Address>https://localhost:8020/wsstemplates/WSSTemplatesService2</wsa:Address>
              </wsa:EndpointReference>
 		</wsp:AppliesTo>
 		  <!-- UsernameToken with plain text password -->
@@ -106,7 +106,7 @@
 
     <wsp:PolicyAttachment>
 		<wsp:AppliesTo>
-             <wsa:EndpointReference>
+            <wsa:EndpointReference>
                  <wsa:Address>/WSSTemplatesService3</wsa:Address>
              </wsa:EndpointReference>
 		</wsp:AppliesTo>
@@ -165,8 +165,8 @@
 
     <wsp:PolicyAttachment>
         <wsp:AppliesTo>
-             <wsa:EndpointReference>
-                 <wsa:Address>/WSSTemplatesService4</wsa:Address>
+            <wsa:EndpointReference>
+                 <wsa:Address>http://localhost:8010/wsstemplates/WSSTemplatesService4</wsa:Address>
              </wsa:EndpointReference>
         </wsp:AppliesTo>
           <!-- UsernameToken Mutual Authentication -->
@@ -319,7 +319,7 @@
 
     <wsp:PolicyAttachment>
         <wsp:AppliesTo>
-             <wsa:EndpointReference>
+            <wsa:EndpointReference>
                  <wsa:Address>/WSSTemplatesService6</wsa:Address>
              </wsa:EndpointReference>
         </wsp:AppliesTo>

@@ -12,6 +12,10 @@ package com.ibm.ws.kernel.service.util;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * API for reading information related to the JDK
@@ -141,6 +145,61 @@ public class JavaInfo {
         return instance().MICRO;
     }
 
+    private static final Map<String, Boolean> systemClassAvailability = new ConcurrentHashMap<>();
+
+    /**
+     * In rare cases where different behaviour is performed based on the JVM vendor
+     * this method should be used to test for a unique JVM class provided by the
+     * vendor rather than using the vendor method. For example if on JVM provides a
+     * different Kerberos login module testing for that login module being loadable
+     * before configuring to use it is preferable to using the vendor data.
+     *
+     * New users of this method should consider adding their class name in
+     * JavaInfoTest in the com.ibm.ws.java11_fat project.
+     *
+     * @param className the name of a class in the JVM to test for
+     * @return true if the class is available, false otherwise.
+     */
+    public static boolean isSystemClassAvailable(String className) {
+        return systemClassAvailability.computeIfAbsent(className, (k) -> AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            @FFDCIgnore(ClassNotFoundException.class)
+            public Boolean run() {
+                try {
+                    // Using ClassLoader.findSystemClass() instead of
+                    // Class.forName(className, false, null) because Class.forName with a null
+                    // ClassLoader only looks at the boot ClassLoader with Java 9 and above
+                    // which doesn't look at all the modules available to the findSystemClass.
+                    systemClassAccessor.getSystemClass(className);
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    //No FFDC needed
+                    return false;
+                }
+            }
+        }));
+    }
+
+    private static final SystemClassAccessor systemClassAccessor = new SystemClassAccessor();
+
+    private static final class SystemClassAccessor extends ClassLoader {
+        public Class<?> getSystemClass(String className) throws ClassNotFoundException {
+            return findSystemClass(className);
+        }
+    }
+
+    @Deprecated
+    /**
+     * This method should not be used to change behaviour based on the Java vendor.
+     * Instead if there are behaviour differences between JVMs a test should be performed
+     * to detect the actual capability used before making a decision. For example if there
+     * is a different class on one JVM that needs to be used vs another an attempt should
+     * be made to load the class and take the code path.
+     *
+     * <p>This method is intended to only be used for debug purposes.</p>
+     *
+     * @return the detected vendor of the JVM
+     */
     public static Vendor vendor() {
         return instance().VENDOR;
     }
@@ -151,6 +210,15 @@ public class JavaInfo {
 
     public static int fixPack() {
         return instance().FIXPACK;
+    }
+
+    /**
+     * For debug purposes only
+     *
+     * @return a String containing basic info about the JDK
+     */
+    public static String debugString() {
+        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
     }
 
     /**

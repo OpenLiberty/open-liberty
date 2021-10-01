@@ -11,13 +11,15 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.62.Final
+nettyVersion=4.1.68.Final
 
 Bundle-Name: Netty SSL classes as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty.ssl
 Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
   !com.google.protobuf*, \
   !com.jcraft.jzlib,\
   !com.ning.*,\

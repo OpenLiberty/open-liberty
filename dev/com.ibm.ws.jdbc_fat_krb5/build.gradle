@@ -8,13 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
-
-dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
-}
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn addJakartaTransformer
+  dependsOn copyTestContainers
 }

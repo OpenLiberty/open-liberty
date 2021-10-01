@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+      <display-name>TimerRetryBean</display-name>
+      <enterprise-beans>
+          <session id="TimerRetryBeanA_ID">
+            <ejb-name>TimerRetryBeanA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.timer.np.config.retry.ejb.TimerRetryBeanA</ejb-class>
+            <session-type>Stateless</session-type>
+          </session>
+          <session id="TimerRetryBeanB_ID">
+            <ejb-name>TimerRetryBeanB</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.timer.np.config.retry.ejb.TimerRetryBeanB</ejb-class>
+            <session-type>Stateless</session-type>
+          </session>
+          <session id="TimerRetryBeanC_ID">
+            <ejb-name>TimerRetryBeanC</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.timer.np.config.retry.ejb.TimerRetryBeanC</ejb-class>
+            <session-type>Stateless</session-type>
+          </session>
+          <session id="TimerRetryBeanD_ID">
+            <ejb-name>TimerRetryBeanD</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.timer.np.config.retry.ejb.TimerRetryBeanD</ejb-class>
+            <session-type>Stateless</session-type>
+          </session>
+      </enterprise-beans>
+   </ejb-jar>

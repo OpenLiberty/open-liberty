@@ -1,0 +1,49 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbPersistentTimer-3.2</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <databaseStore id="HowdyDatabaseStore" tablePrefix="WLP_" keyGenerationStrategy="SEQUENCE"/>
+	<persistentExecutor id="Howdy" taskStoreRef="HowdyDatabaseStore" initialPollDelay="-1" enableTaskExecution="true" retryInterval="300s" retryLimit="-1">
+		<contextService/>
+	</persistentExecutor>
+
+	<ejbContainer>
+		<timerService persistentExecutorRef="Howdy"/>
+	</ejbContainer>
+
+    <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+	+    is required beyond a single server start, configure the databaseName with a file location such as:
+	+    databaseName="${server.config.dir}/data/EJBTimerDB" -->
+	<databaseStore id="defaultDatabaseStore" keyGenerationStrategy="SEQUENCE"/>
+    <dataSource id="DefaultDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties.derby.embedded createDatabase="create" databaseName="memory:EJBTimerDB"/>
+    </dataSource>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library id="DerbyLib">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+
+    <!-- Increased due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
+    <transaction totalTranLifetimeTimeout="30m"/>
+
+    <!-- Permissions required by Derby -->
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+</server>

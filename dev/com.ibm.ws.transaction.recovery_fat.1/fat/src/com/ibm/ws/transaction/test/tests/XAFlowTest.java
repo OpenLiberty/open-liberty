@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,11 +89,11 @@ public class XAFlowTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+        TestUtils.stopServer(server);
 
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
             @Override
             public Void run() throws Exception {
-                server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
                 server.deleteFileFromLibertyInstallRoot("lib/features/xaflow-1.0.mf");
                 assertFalse("Failed to uninstall xaflow-1.0 manifest",
                             server.fileExistsInLibertyInstallRoot("lib/features/xaflow-1.0.mf"));

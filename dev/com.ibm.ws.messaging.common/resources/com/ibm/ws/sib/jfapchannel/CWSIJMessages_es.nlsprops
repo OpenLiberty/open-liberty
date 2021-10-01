@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Defina una cadena de mensajer\u
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: La cadena de canal de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n {0} no se ha definido para este servidor de aplicaciones
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=La cadena de canal de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n no se ha definido para este servidor de aplicaciones.  Quiz\u00e1 este servidor de aplicaciones no pueda establecer conexiones con motores de mensajer\u00eda de pasarela remotos.
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Defina una cadena de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n para este servidor de aplicaciones.
-
-# -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: El archivo de propiedades ''{0}'' utilizado para determinar la seguridad a nivel de transporte de mensajer\u00eda inicial del cliente no se ha podido localizar.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=El archivo de propiedades que contiene informaci\u00f3n que se utiliza cuando se establecen conexiones de mensajer\u00eda del cliente seguras no se puede localizar.  Se asumir\u00e1 un conjunto de valores por omisi\u00f3n.  Quiz\u00e1 no sea posible establecer conexiones de mensajer\u00eda del cliente seguras.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configure el archivo de propiedades para la seguridad del nivel de transporte de mensajer\u00eda del cliente.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
@@ -456,18 +450,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Se ha producido un error interno.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: No se puede localizar una cadena de transportes denominada {0} desde la que obtener una configuraci\u00f3n SSL que puede ser necesaria para establecer una conexi\u00f3n con un host remoto denominado {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=La informaci\u00f3n necesaria para establecer una conexi\u00f3n a un igual basada en SSL (Secure Sockets Layer) no existe en la configuraci\u00f3n actual.  Esta informaci\u00f3n se obtiene normalmente de una definici\u00f3n de cadena de transporte adecuada. Esta definici\u00f3n de cadena tiene un nombre que coincide con una cadena que existe en el igual remoto.  No se puede encontrar dicha cadena de transporte.  Es posible que no se pueda establecer la conexi\u00f3n.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Defina las cadenas de transporte adicionales.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: La cadena de transporte denominada {0} no contiene ninguna configuraci\u00f3n SSL que puede ser necesaria para establecer una conexi\u00f3n con el host remoto denominado {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=La informaci\u00f3n necesaria para establecer una conexi\u00f3n a un igual basada en SSL (Secure Sockets Layer) no existe en la configuraci\u00f3n actual.  Esta informaci\u00f3n se obtiene normalmente de una definici\u00f3n de cadena de transporte adecuada. Esta definici\u00f3n de cadena tiene un nombre que coincide con una cadena que existe en el igual remoto.  No se puede encontrar dicha cadena de transporte.  Es posible que no se pueda establecer la conexi\u00f3n.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configure los canales de transporte SSL para la cadena de transporte especificada.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

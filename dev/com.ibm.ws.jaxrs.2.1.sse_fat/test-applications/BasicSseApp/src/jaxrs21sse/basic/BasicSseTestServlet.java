@@ -439,4 +439,13 @@ public class BasicSseTestServlet extends FATServlet {
         assertEquals("Received an unexpected number of events", 0, receivedEvents.size());
         assertEquals("Received an unexpected number of errors", 1, errors.size());
     }
+
+    public void testNoEventsResultsIn200(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newClient();
+        int port = req.getServerPort();
+        System.out.println("port = " + port);
+        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/noEvents");
+        Response response = target.request().get();
+        assertEquals(200, response.getStatus());
+    }
 }

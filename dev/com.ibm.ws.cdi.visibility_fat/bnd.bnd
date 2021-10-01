@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/commonLibraryCrossInjectionTestJarOne.jar/src,\
+	test-applications/commonLibraryCrossInjectionTestJarTwo.jar/src,\
+	test-applications/commonLibraryCrossInjectionTest.war/src,\
 	test-applications/jarInRar.jar/src,\
 	test-applications/jarInRar.rar/src,\
 	test-applications/jarInRarEjb.jar/src,\
@@ -68,19 +71,20 @@ test.project: true
 
 tested.features:\
 	cdi-2.0,\
-        servlet-4.0,\
-        servlet-5.0,\
-        cdi-3.0,\
-        restfulwsclient-3.0,\
-        restfulws-3.0,\
-        jsonp-2.0,\
-        appclientsupport-2.0,\
-        enterprisebeans-4.0,\
-        enterprisebeansremote-4.0,\
-        jdbc-4.2,\
-        enterprisebeanshome-4.0,\
-        enterprisebeanslite-4.0,\
-        enterprisebeanspersistenttimer-4.0
+	servlet-4.0,\
+	servlet-5.0,\
+	cdi-3.0,\
+	connectors-2.0,\
+	restfulwsclient-3.0,\
+	restfulws-3.0,\
+	jsonp-2.0,\
+	appclientsupport-2.0,\
+	enterprisebeans-4.0,\
+	enterprisebeansremote-4.0,\
+	jdbc-4.2,\
+	enterprisebeanshome-4.0,\
+	enterprisebeanslite-4.0,\
+	enterprisebeanspersistenttimer-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

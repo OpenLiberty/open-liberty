@@ -29,11 +29,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.restfulWS.config.ConfigImpl;
-
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
@@ -76,7 +73,11 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 providers.add(clazz);
             }
             if (Application.class.isAssignableFrom(clazz)){
-                appClasses.add(clazz);
+                if (!getServletsForApplication(clazz, servletContext, false).isEmpty() || clazz.isAnnotationPresent(ApplicationPath.class)) {
+                    appClasses.add(clazz);
+                } else {
+                    Tr.warning(tc, "UNMAPPED_APPLICATION_CWWKW1302W", new Object[] {servletContext.getServletContextName(), clazz.getName()});
+                }
             }
         }
         if (appClasses.size() == 0 && resources.size() == 0) {
@@ -93,12 +94,12 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         }
     }
 
-    private Set<ServletRegistration> getServletsForApplication(Class<?> applicationClass, ServletContext servletContext) {
+    private Set<ServletRegistration> getServletsForApplication(Class<?> applicationClass, ServletContext servletContext, boolean includeAppClass) {
         Set<ServletRegistration> set = new HashSet<>();
         ServletRegistration reg = servletContext.getServletRegistration(applicationClass.getName());
         if (reg != null) {
             set.add(reg);
-        } else if (Application.class.equals(applicationClass)) {
+        } else if (includeAppClass && Application.class.equals(applicationClass)) {
             // try EE8 class name in case the app's web.xml hasn't been properly transformed
             reg = servletContext.getServletRegistration(EE8_APP_CLASS_NAME);
             if (reg != null) {
@@ -120,7 +121,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     @Override
     protected void register(Class<?> applicationClass, Set<Class<?>> providers, Set<Class<?>> resources, ServletContext servletContext) {
         
-        Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext);
+        Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext, true);
         // ignore @ApplicationPath if application is already mapped in web.xml
         if (!servletsForApp.isEmpty()) {
             for (ServletRegistration servletReg : servletsForApp) {
@@ -175,6 +176,14 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     }
 
     private void registerResourcesAndProviders(ServletRegistration reg, Set<Class<?>> providers, Set<Class<?>> resources) {
+        reg.setInitParameter("resteasy.proxy.implement.all.interfaces", "true");
+        String unwrappedExceptions = reg.getInitParameter("resteasy.unwrapped.exceptions");
+        if (unwrappedExceptions == null) {
+            reg.setInitParameter("resteasy.unwrapped.exceptions", "jakarta.ejb.EJBException");
+        } else if (!unwrappedExceptions.contains("jakarta.ejb.EJBException")){
+            reg.setInitParameter("resteasy.unwrapped.exceptions", unwrappedExceptions + ",jakarta.ejb.EJBException");
+        }
+
         if (resources.size() > 0) {
             StringBuilder builder = new StringBuilder();
             boolean first = true;
@@ -201,10 +210,6 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 builder.append(provider.getName());
             }
             reg.setInitParameter(ResteasyContextParameters.RESTEASY_SCANNED_PROVIDERS, builder.toString());
-        }
-        Config config = ResteasyConfigProvider.getInstance().getConfig();
-        if (config instanceof ConfigImpl) {
-            ((ConfigImpl)config).updateProperties(reg.getInitParameters());
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,113 +8,45 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-repositories {
-  if (isUsingArtifactory) { 
-    maven { 
-      credentials { 
-        username userProps.getProperty("artifactory.download.user") 
-        password userProps.getProperty("artifactory.download.token")    
-      } 
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")   
-    }   
-  } else {  
-    mavenCentral()  
-  } 
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
-  reactivex
-  cxf
-  jersey
-  resteasy
-  mockserver
+  rxproviders
 }
 
-configurations.jersey {
+configurations.rxproviders {
   transitive = false
 }
 
 dependencies {
- reactivex 'io.reactivex:rxjava:1.3.8',
+ requiredLibs 'org.mock-server:mockserver-client-java:5.11.2', // MockServer
+    'org.mock-server:mockserver-core:5.11.2',
+    'org.mock-server:mockserver-logging:5.3.0',
+    'org.mock-server:mockserver-netty:5.11.2',
+    'org.bouncycastle:bcprov-jdk15on:1.61',
+    'org.bouncycastle:bcpkix-jdk15on:1.61'
+ rxproviders 'io.reactivex:rxjava:1.3.8', // reactivex
     'io.reactivex.rxjava2:rxjava:2.2.2',
-    project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
- cxf 'org.apache.cxf:cxf-rt-rs-extension-reactivestreams:3.3.6',
-    'org.apache.cxf:cxf-rt-rs-extension-rx2:3.3.6'
- jersey 'org.glassfish.jersey.core:jersey-client:2.30.1',
+    project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0'),
+    'org.apache.cxf:cxf-rt-rs-extension-reactivestreams:3.4.3', //cxf
+    'org.apache.cxf:cxf-rt-rs-extension-rx2:3.4.3',
+    'org.glassfish.jersey.core:jersey-client:2.30.1', // jersey
     'org.glassfish.hk2.external:javax.inject:2.3.0-b10',
     'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava:2.30.1',
-    'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2:2.30.1'
- resteasy 'org.jboss.resteasy:resteasy-rxjava2:4.6.0.Final',
- 'org.jboss.resteasy:resteasy-core-spi:4.6.0.Final',
- 'org.jboss.logging:jboss-logging:3.4.0.Final'
-  mockserver('org.mock-server:mockserver-netty:3.10.7') {
-    exclude group: 'xerces', module: 'xerces'
-  }
-  mockserver('org.mock-server:mockserver-client-java:3.10.7') {
-    exclude group: 'xerces', module: 'xerces'
-  }
-  mockserver('org.mock-server:mockserver-core:3.10.7-IBM20191022') { 
-    exclude group: 'xerces', module: 'xerces'
-  }
-  mockserver 'com.google.guava:guava:18.0'
-  mockserver 'io.netty:netty-buffer:4.1.8.Final'
-  mockserver 'io.netty:netty-codec:4.1.8.Final'
-  mockserver 'io.netty:netty-codec-http:4.1.8.Final'
-  mockserver 'io.netty:netty-codec-socks:4.1.8.Final'
-  mockserver 'io.netty:netty-common:4.1.8.Final'
-  mockserver 'io.netty:netty-handler:4.1.8.Final'
-  mockserver 'io.netty:netty-transport:4.1.8.Final'
-  mockserver 'junit:junit:4.12'
-  mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
-  mockserver 'org.slf4j:slf4j-api:1.7.25'
-  mockserver 'ch.qos.logback:logback-classic:1.1.3'
-  mockserver 'janino:janino:2.5.10'
-  mockserver 'org.mock-server:mockserver-logging:3.10.7'
-  mockserver 'ch.qos.logback:logback-core:1.1.3'
-  mockserver project(':io.openliberty.com.fasterxml.jackson')
-  mockserver 'com.github.fge:json-schema-validator:2.2.6'
-  mockserver 'com.jcraft:jzlib:1.1.3'
-  mockserver 'javax.servlet:javax.servlet-api:3.0.1'
-  mockserver 'org.apache.commons:commons-lang3:3.4'
-  mockserver project(':com.ibm.ws.org.apache.commons.io')
-  mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
-  mockserver 'org.bouncycastle:bcmail-jdk15on:1.56'
-  mockserver 'org.bouncycastle:bcpkix-jdk15on:1.56'
-  mockserver project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
-  mockserver 'org.skyscreamer:jsonassert:1.2.3'   
-}
-task addReactivex(type: Copy) {
-  from configurations.reactivex
-  into "${buildDir}/autoFVT/lib/"
+    'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2:2.30.1',
+    'org.jboss.resteasy:resteasy-rxjava2:4.6.0.Final', // resteasy
+    'org.jboss.resteasy:resteasy-core-spi:4.6.0.Final',
+    'org.jboss.logging:jboss-logging:3.4.0.Final'
 }
 
-task addCXF(type: Copy) {
-  from configurations.cxf
-  into "${buildDir}/autoFVT/lib/"
-}
-
-task addJersey(type: Copy) {
-  from configurations.jersey
-  into "${buildDir}/autoFVT/lib/"
-}
-
-task addResteasy(type: Copy) {
-  from configurations.resteasy
-  into "${buildDir}/autoFVT/lib/"
-}
-
-task addMockserver(type: Copy) {
-  from configurations.mockserver
+task addRxProviders(type: Copy) {
+  from configurations.rxproviders
   into "${buildDir}/autoFVT/lib/"
 }
 
 
 addRequiredLibraries {
-  dependsOn addReactivex
-  dependsOn addCXF
-  dependsOn addJersey
-  dependsOn addResteasy
-  dependsOn addMockserver
+  dependsOn addRxProviders
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

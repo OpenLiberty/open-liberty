@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,15 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Z nab\u00eddek produktu Installation M
 OSGI_SERVICE_ERROR=CWWKX1066E: Slu\u017eba OSGi {0} je nedostupn\u00e1.
 OSGI_SERVICE_ERROR.explanation=Do\u0161lo k intern\u00ed chyb\u011b serveru, proto\u017ee uveden\u00e1 slu\u017eba nen\u00ed dostupn\u00e1.
 OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou clean.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: Panel n\u00e1stroj\u016f administra\u010dn\u00edho centra pro u\u017eivatele {0} byl na\u010dten z trval\u00e9ho \u00falo\u017ei\u0161t\u011b pomoc\u00ed star\u00e9ho n\u00e1zvu souboru, kter\u00fd byl p\u0159eveden na nov\u00fd n\u00e1zev souboru.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=Produkt na\u010detl soubor n\u00e1stroj\u016f administra\u010dn\u00edho centra z trval\u00e9ho \u00falo\u017ei\u0161t\u011b s pou\u017eit\u00edm star\u00e9ho n\u00e1zvu souboru a ulo\u017eil jeho kopii do nov\u00e9ho n\u00e1zvu souboru. Kopie v nov\u00e9m n\u00e1zvu souboru bude na\u010dtena n\u00e1sledn\u00fdm p\u0159\u00edstupem k trval\u00e9mu \u00falo\u017ei\u0161ti.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Data n\u00e1stroje {0} pro u\u017eivatele {1} byla na\u010dtena z trval\u00e9ho \u00falo\u017ei\u0161t\u011b pomoc\u00ed star\u00e9ho n\u00e1zvu souboru, kter\u00fd byl p\u0159eveden na nov\u00fd n\u00e1zev souboru.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Produkt na\u010detl data n\u00e1stroje pro ur\u010den\u00e9ho u\u017eivatele a n\u00e1stroj z trval\u00e9ho \u00falo\u017ei\u0161t\u011b s pou\u017eit\u00edm star\u00e9ho n\u00e1zvu souboru a ulo\u017eil jeho kopii do nov\u00e9ho n\u00e1zvu souboru. Kopie v nov\u00e9m n\u00e1zvu souboru bude na\u010dtena n\u00e1sledn\u00fdm p\u0159\u00edstupem k trval\u00e9mu \u00falo\u017ei\u0161ti.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Byl na\u010dten v\u00fdchoz\u00ed katalog administra\u010dn\u00edho centra z perzistence COLLECTIVE, kter\u00e1 je vytvo\u0159ena d\u0159\u00edv\u011bj\u0161\u00ed verz\u00ed serveru. Katalog je znovu na\u010dten pomoc\u00ed kopie z aktu\u00e1ln\u00ed verze serveru.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Produkt p\u0159evedl v\u00fdchoz\u00ed katalog administra\u010dn\u00edho centra na aktu\u00e1ln\u00ed verzi serveru. Kopie v perzistenci COLLECTIVE je na\u010dtena n\u00e1sledn\u00fdm p\u0159\u00edstupem do trval\u00e9ho \u00falo\u017ei\u0161t\u011b.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

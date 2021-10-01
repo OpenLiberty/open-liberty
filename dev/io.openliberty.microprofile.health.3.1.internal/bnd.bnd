@@ -36,6 +36,8 @@ Import-Package: \
   javax.enterprise.context.spi; version="[1.1,3)",\
   javax.enterprise.inject.*; version="[1.1,3)",\
   javax.enterprise.util; version="[1.1,3)",\
+  org.eclipse.microprofile.health; version="[3.1,5)",\
+  org.eclipse.microprofile.health.spi; version="[3.1,5)",\
   *
 
 Export-Package: \
@@ -61,6 +63,8 @@ Include-Resource: \
 src: src,resources
 testsrc: test/src
 
+jakartaeeMe: true
+
 -buildpath: \
         com.ibm.websphere.javaee.annotation.1.3;version=latest,\
         com.ibm.websphere.javaee.servlet.4.0; version=latest,\
@@ -78,6 +82,7 @@ testsrc: test/src
         com.ibm.ws.container.service;version=latest,\
         com.ibm.ws.context;version=latest,\
         com.ibm.ws.javaee.metadata.context;version=latest,\
+        com.ibm.ws.javaee.version;version=latest,\
         com.ibm.ws.kernel.service;version=latest,\
         com.ibm.ws.logging;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

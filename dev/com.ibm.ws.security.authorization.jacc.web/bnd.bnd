@@ -20,11 +20,10 @@ Bundle-ActivationPolicy: lazy
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.authorization.internal.jacc.web.jar
-#JakartaEE-Bundle-Name: Web support for Jakarta Authorization 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authorization.internal.jacc.web
-#JakartaEE-Bundle-Description: Web support for Jakarta Authorization 2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.authorization.internal.jacc.web.jar
+jakartaFinalBundleName: Security Web support for JACC 2.0 Service
+jakartaFinalBundleId: io.openliberty.security.authorization.internal.jacc.web
+jakartaFinalBundleDescription: Security Web support for JACC 2.0 Service
 
 WS-TraceGroup: Authorization
 

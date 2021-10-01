@@ -428,6 +428,30 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
     }
 
+    @Override
+    public boolean isActive(String endpoints) {
+
+        Set<String> targetList = createTargetList(endpoints);
+
+        // Sync with other methods changing/querying states for PauseableComponents
+        synchronized (this) {
+            for (PauseableComponent pauseableComponent : tracker.getTracked().values()) {
+                if (targetList.contains(pauseableComponent.getName())) {
+
+                    if (pauseableComponent.isPaused()) {
+                        return false;
+                    }
+                    targetList.remove(pauseableComponent.getName());
+                }
+            }
+        }
+
+        if (targetList.isEmpty())
+            return true;
+
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -447,7 +471,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
      * @param args
      * @return
      */
-    private Set<String> createTargetList(String targets) throws PauseableComponentControllerRequestFailedException {
+    private Set<String> createTargetList(String targets) {
 
         Set<String> targetSet = new HashSet<String>();
 

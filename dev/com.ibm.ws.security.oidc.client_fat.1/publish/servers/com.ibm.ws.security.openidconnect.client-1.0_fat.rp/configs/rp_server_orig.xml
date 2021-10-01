@@ -1,0 +1,55 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+	<include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
+
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_addParms.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_addBadParms.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_addDynamicParm.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_regexp_redirect.xml" />
+        <include location="${server.config.dir}/imports/oidcClientBasicConfig_nonceEnabled.xml" />
+        <include location="${server.config.dir}/imports/oidcClientBasicConfigBadFilter.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_consent.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_http_redirect.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_default_redirect.xml" />
+	<include location="${server.config.dir}/imports/oidcClientHttpsTrue.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicSSLConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientNoRedirectSSL.xml" />
+	<include location="${server.config.dir}/imports/oidcClientNoOpenidConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBadClientSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientSSLHttpsTrue.xml" />
+	<include location="${server.config.dir}/imports/oidcClientSSLHttpsFalse.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_sigAlgNone_withSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_sigAlgNone_withoutSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_sigAlgHS256.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_pwdTest.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBadClientID.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBadSharedKey.xml" />
+	<include location="${server.config.dir}/imports/oidcClientUseOauthConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientUseOauthWithOpenidInScopeConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBadTokenEndpt.xml" />
+        <!-- chc remove OAuth from the next file name -->
+	<include location="${server.config.dir}/imports/oidcClientBadAuthorizationEndptOAuth.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBadAuthorizationEndptWebContainer.xml" />
+	<include location="${server.config.dir}/imports/oidcClientBasicConfig_jvmproxyprops.xml" />
+
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/formlogin_1.xml" />
+
+	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
+
+</server>

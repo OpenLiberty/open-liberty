@@ -30,6 +30,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 /**
@@ -43,6 +44,7 @@ public class PartitionReducerTest extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         HttpUtils.trustAllCertificates();
         BatchFATHelper.setConfig("BatchManagementEnabledTests/server.xml", testClass);
 
@@ -58,7 +60,7 @@ public class PartitionReducerTest extends BatchFATHelper {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W", "CWWKY0041W");
+            server.stopServer("CWWKY0011W", "CWWKY0041W","CWWKS9582E");
         }
     }
 

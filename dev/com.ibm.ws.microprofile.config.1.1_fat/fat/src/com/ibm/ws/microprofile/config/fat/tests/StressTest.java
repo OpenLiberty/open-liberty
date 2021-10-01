@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.appConfig.stress.test.StressTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -40,14 +41,15 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class StressTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "StressServer";
     public static final String APP_NAME = "stress";
 
-    @Server("StressServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = StressTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("StressServer", MicroProfileActions.MP14, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP14, MicroProfileActions.MP41);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -61,7 +63,7 @@ public class StressTest extends FATServletClient {
                                                                           + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
                                                                  "services/org.eclipse.microprofile.config.spi.ConfigSource");
 
-        ShrinkHelper.exportDropinAppToServer(server, stress_war);
+        ShrinkHelper.exportDropinAppToServer(server, stress_war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,13 +43,15 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @WebServlet("/EJBHomeTestServlet")
 @SuppressWarnings("serial")
 public class EJBHomeTestServlet extends FATServlet {
     private static final Logger logger = Logger.getLogger(EJBHomeTestServlet.class.getName());
+    private static final String rmicCompatibleProperty = System.getProperty("com.ibm.websphere.ejbcontainer.rmicCompatible");
+    private static final boolean rmicCompatible = EJB.class.getName().startsWith("jakarta.")
+                                                  || ("all".equalsIgnoreCase(rmicCompatibleProperty) || "values".equalsIgnoreCase(rmicCompatibleProperty));
 
     @EJB(name = "ejb/home")
     private TestEJBHome home;
@@ -72,7 +74,7 @@ public class EJBHomeTestServlet extends FATServlet {
 
     @Test
     public void testEJBHomeLookup_EJBHomeTest() throws Exception {
-        assertEquals("abcd", narrow(new InitialContext().lookup("java:module/TestEJBHomeBean"), TestEJBHome.class).create().echo("abcd"));
+        assertEquals("abcd", ((TestEJBHome) new InitialContext().lookup("java:module/TestEJBHomeBean")).create().echo("abcd"));
     }
 
     private Object cosNamingResolve(String... names) throws Exception {
@@ -114,10 +116,11 @@ public class EJBHomeTestServlet extends FATServlet {
      * values that should use write_value/read_value. The "WAS EJB 3"
      * marshalling actually uses writeAbstractObject/read_abstract_interface,
      * so a tie mismatch will result in an OutOfMemoryError.
+     * The Enterprise Beans 4.0 marshalling is compatible with RMIC and uses
+     * write_value/read_value so a tie mismatch will result in
+     * CORBA.MARSHAL: Illegal valuetype.
      */
     @Test
-    // TODO: Remove Skip when #17757 is fixed
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testEJBHomeWriteValueDirect_EJBHomeTest() throws Exception {
         List<?> expected = new ArrayList<Object>(Arrays.asList("a", "b", "c"));
         List<?> actual = stubTestWriteValue((Stub) home.create(), expected);
@@ -132,11 +135,21 @@ public class EJBHomeTestServlet extends FATServlet {
             try {
                 try {
                     OutputStream out = (OutputStream) stub._request("testWriteValue", true);
-                    // "WAS EJB 3" marshalling using writeAbstractObject...
-                    Util.writeAbstractObject(out, value);
+                    if (rmicCompatible) {
+                        // Enterprise Beans 4.0 (or rmicCompatible) marshalling using write_value..
+                        out.write_value((Serializable) value, List.class);
+                    } else {
+                        // "WAS EJB 3" marshalling using writeAbstractObject...
+                        Util.writeAbstractObject(out, value);
+                    }
                     in = (InputStream) stub._invoke(out);
-                    // ...and read_abstract_interface.
-                    return (List<?>) in.read_abstract_interface(List.class);
+                    if (rmicCompatible) {
+                        // ...and read_value.
+                        return (List<?>) in.read_value(List.class);
+                    } else {
+                        // ...and read_abstract_interface.
+                        return (List<?>) in.read_abstract_interface(List.class);
+                    }
                 } catch (ApplicationException ex) {
                     in = (InputStream) ex.getInputStream();
                     String id = in.read_string();

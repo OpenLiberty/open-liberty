@@ -25,9 +25,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.security.KeyStore;
-import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -65,8 +63,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
-import com.ibm.websphere.simplicity.Machine;
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonIOTools;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
@@ -88,12 +84,9 @@ import com.meterware.httpunit.WebForm;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPUtils;
-import componenttest.topology.utils.LibertyServerUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
@@ -1749,6 +1742,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             try {
                 // update the allowedTimeout count to account for msgs issued during start retries
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
                 tearDownServer(server);
                 newServerRefList.add(server);
             } catch (Exception e) {
@@ -3219,40 +3213,4 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         testSettings.setHashed(true);
     }
 
-    private static void transformAppsInDefaultDirs(TestServer server, String appDirName) {
-
-        LibertyServer myServer = server.getServer();
-        Machine machine = myServer.getMachine();
-
-        Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
-        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
-
-        RemoteFile[] list = null;
-        try {
-            if (appDir.isDirectory()) {
-                list = appDir.list(false);
-            }
-        } catch (Exception e) {
-            Log.error(thisClass, "transformAppsInDefaultDirs", e);
-        }
-        if (list != null) {
-            for (RemoteFile app : list) {
-                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
-            }
-        }
-    }
-
-    /**
-     * JakartaEE9 transform applications for a specified server.
-     *
-     * @param serverName The server to transform the applications on.
-     */
-    private static void transformApps(TestServer server) {
-        if (JakartaEE9Action.isActive()) {
-
-            transformAppsInDefaultDirs(server, "dropins");
-            transformAppsInDefaultDirs(server, "test-apps");
-
-        }
-    }
 }

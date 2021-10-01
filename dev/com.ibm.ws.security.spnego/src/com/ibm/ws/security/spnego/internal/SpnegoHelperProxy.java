@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -129,15 +129,14 @@ public class SpnegoHelperProxy {
 
     @Activate
     protected void activate(ComponentContext cc) {
-        supportJDK = Krb5Common.isIBMJdk18 || Krb5Common.isOtherSupportJDKs;
+        supportJDK = Krb5Common.IBM_KRB5_LOGIN_MODULE_AVAILABLE || Krb5Common.OTHER_KRB5_LOGIN_MODULE_AVAILABLE;
         if (supportJDK) {
             kerberosExtServiceRef.activate(cc);
         }
     }
 
     @Modified
-    protected void modified(Map<String, Object> props) {
-    }
+    protected void modified(Map<String, Object> props) {}
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {

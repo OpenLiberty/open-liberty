@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,17 +98,13 @@ dependencies {
       'net.sourceforge.htmlunit:webdriver:2.6',
       'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
       'org.brotli:dec:0.1.2',
-      'xerces:xercesImpl:2.11.0',
-      'xalan:xalan:2.7.2',
       project(':com.ibm.ws.org.apache.commons.io'),
       'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
       'org.apache.commons:commons-lang3:3.8',
-      project(':io.openliberty.org.apache.commons.codec'),
       'org.apache.httpcomponents:httpmime:4.5.3',
       project(':com.ibm.ws.org.apache.httpcomponents'),
       project(':io.openliberty.org.apache.commons.codec'),
       project(':io.openliberty.org.apache.commons.logging'),
-      'xml-apis:xml-apis:1.4.01',
       'io.grpc:grpc-core:' + grpcVersion,
       'io.grpc:grpc-stub:' + grpcVersion,
       'io.grpc:grpc-protobuf:' + grpcVersion,
@@ -202,3 +198,5 @@ assemble.doLast {
           into "generated-src"
     }
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

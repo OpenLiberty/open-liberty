@@ -62,7 +62,7 @@ public abstract class BatchFATHelper {
 
     private static String tmpDir = System.getProperty("java.io.tmpdir", "/tmp");
 
-    protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("batchFAT");
+    protected static LibertyServer server = LibertyServerFactory.getLibertyServer("batchFAT");
 
     public String _testName = "";
 

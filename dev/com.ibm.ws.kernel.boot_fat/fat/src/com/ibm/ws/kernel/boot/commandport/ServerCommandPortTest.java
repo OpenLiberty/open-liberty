@@ -25,6 +25,8 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -34,6 +36,8 @@ import componenttest.topology.utils.HttpUtils;
  * to communicate with a running server, if required.
  */
 public class ServerCommandPortTest {
+    private static final Class<?> c = ServerCommandPortTest.class;
+
     private static final String COMMAND_PORT_DISABLED_SERVER_NAME = "com.ibm.ws.kernel.boot.commandport.disabled.fat";
     private static final String COMMAND_PORT_ENABLED_SERVER_NAME = "com.ibm.ws.kernel.boot.commandport.enabled.fat";
 
@@ -134,6 +138,7 @@ public class ServerCommandPortTest {
      * @throws Exception
      */
     public void testServerCommandPortEnabled() throws Exception {
+        String method = "testServerCommandPortEnabled";
         LibertyServer server = commandPortEnabledServer;
 
         String output = server.startServer().getStdout();
@@ -155,11 +160,17 @@ public class ServerCommandPortTest {
         assertTrue(getCommandPort(server) > 0);
 
         // validate server javadump command on all platforms except mac (and any hotspot vm),
-        // because javadump is unreliable on hotspot jvms
-        if (!isMac && !isHotspotVM) {
+        // because javadump is unreliable on hotspot jvms.  Note some of the jdks combinations
+        // do not contain the hotspot indicator (ex, sun_oracle).
+        if (!isMac && !isHotspotVM && JavaInfo.forServer(server).vendor() != Vendor.SUN_ORACLE) {
+            Log.info(c, method, "Server javadump command is being executed/validated due to isMac = " + isMac + " and isHotspotVM = " + isHotspotVM + " and vendor = "
+                                + JavaInfo.forServer(server).vendor());
             output = server.executeServerScript("javadump", null).getStdout();
             assertTrue(output.contains("Server " + server.getServerName() + " dump complete in"));
             validateDumpFile(output, server, COMMAND_PORT_ENABLED_SERVER_NAME);
+        } else {
+            Log.info(c, method, "Server javadump command is NOT being executed/validated due to isMac = " + isMac + " and isHotspotVM = " + isHotspotVM + " and vendor = "
+                                + JavaInfo.forServer(server).vendor());
         }
 
         // validate server dump command

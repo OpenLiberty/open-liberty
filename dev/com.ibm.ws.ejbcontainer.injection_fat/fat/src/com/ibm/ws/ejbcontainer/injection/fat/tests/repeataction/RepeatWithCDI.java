@@ -13,6 +13,7 @@ package com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction;
 import java.util.HashSet;
 import java.util.Set;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 
 /**
@@ -37,6 +38,10 @@ public class RepeatWithCDI extends FeatureReplacementAction {
 
     public static FeatureReplacementAction WithRepeatWithCDI() {
         return new RepeatWithCDI();
+    }
+
+    public static boolean isActive() {
+        return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
     /*

@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import batch.fat.util.BatchFATHelper;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
@@ -21,6 +22,7 @@ public class ChunkTest extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig("ChunkTest/server.xml", testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);

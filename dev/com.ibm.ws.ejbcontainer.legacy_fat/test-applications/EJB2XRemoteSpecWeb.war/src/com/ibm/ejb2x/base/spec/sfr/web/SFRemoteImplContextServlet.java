@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ejb2x.base.spec.sfr.web;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +29,7 @@ import com.ibm.ejb2x.base.spec.sfr.ejb.SFRaHome;
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -96,10 +98,8 @@ public class SFRemoteImplContextServlet extends FATServlet {
     @PostConstruct
     private void initializeBeans() {
         try {
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SFRaHome.class);
-            fhome2 = FATHelper.lookupRemoteBinding(ejbJndiName2, SFRaHome.class);
-            //fhome1 = (SFRaHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/EJB2XSFRemoteSpecEJB/SFRaBMT"), SFRaHome.class);
-            //fhome2 = (SFRaHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/EJB2XSFRemoteSpecEJB/SFRaCMT"), SFRaHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SFRaHome.class);
+            fhome2 = FATHelper.lookupRemoteHomeBinding(ejbJndiName2, SFRaHome.class);
 
             fejb1 = fhome1.create();
             fejb2 = fhome2.create();
@@ -172,6 +172,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      * (ixc04) Test Stateful remote EJBContext.getEnvironment().
      */
     @Test
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSFRemoteEJBContext_getEnvironment() throws Exception {
         String tempStr = fejb1.context_getEnvironment("value1");
         assertEquals("Get Environment string from context was unexpected value", tempStr, "value of value1");
@@ -182,6 +183,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      */
     @SuppressWarnings("deprecation")
     @Test
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSFRemoteEJBContext_getCallerIdentity() throws Exception {
         Object o = fejb1.context_getCallerIdentity();
         if (o instanceof Throwable) {
@@ -221,6 +223,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      */
     @SuppressWarnings("deprecation")
     @Test
+    @SkipForRepeat({ EE9_FEATURES })
     public void testSFRemoteEJBContext_isCallerInRole_Identity() throws Exception {
         Object o = fejb1.context_isCallerInRole((java.security.Identity) null);
         if (o instanceof Throwable) {

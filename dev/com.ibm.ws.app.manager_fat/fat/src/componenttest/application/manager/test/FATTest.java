@@ -772,6 +772,8 @@ public class FATTest extends AbstractAppManagerTest {
             pathsToCleanup.add(server.getServerRoot() + "/apps");
             // Ignore expected NPE and unknown resource warning
             server.stopServer("CWWKZ0002E", "CWWKZ0014W", "CWWKZ0005E");
+            server.uninstallSystemFeature("test.app.notifications");
+            server.uninstallSystemBundle("test.app.notifications");
         }
     }
 

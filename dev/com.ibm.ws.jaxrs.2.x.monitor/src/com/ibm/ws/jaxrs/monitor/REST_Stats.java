@@ -200,6 +200,14 @@ public class REST_Stats extends Meter implements RestStatsMXBean {
     public void updateMinuteLatestMinimumDuration(long min) {
         this.minuteLatestMinimumDuration.setCurrentValue(min);
     }
+
+    public boolean compareAndUpdateMinuteLatestMaximumDuration(long expected, long max) {
+        return this.minuteLatestMaximumDuration.compareAndSetCurrentValue(expected, max);
+    }
+
+    public boolean  compareAndUpdateMinuteLatestMinimumDuration(long expected, long min) {
+        return this.minuteLatestMinimumDuration.compareAndSetCurrentValue(expected, min);
+    }
     
     public void updateMinuteLatest(long minute) {
         this.minuteLatest.setCurrentValue(minute);

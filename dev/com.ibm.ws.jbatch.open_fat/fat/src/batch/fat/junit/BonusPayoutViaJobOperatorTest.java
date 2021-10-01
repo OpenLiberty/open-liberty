@@ -68,6 +68,7 @@ public class BonusPayoutViaJobOperatorTest extends BatchFATHelper {
          */
         @Override
         public void beforeAll() throws Exception {
+            runCount = 0;
             setup();
         }
 

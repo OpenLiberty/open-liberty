@@ -11,6 +11,7 @@
 package com.ibm.ws.security.openidconnect.client;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -29,6 +30,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONObject;
@@ -39,6 +44,7 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.jwt.utils.JweHelper;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -48,6 +54,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -67,6 +74,7 @@ public class AccessTokenAuthenticator {
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
+    AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
 
     private static boolean issuedBetaMessage = false;
 
@@ -105,9 +113,7 @@ public class AccessTokenAuthenticator {
         if (accessToken == null) {
             accessToken = getBearerAccessTokenToken(req, clientConfig);
         }
-
         if (accessToken == null) {
-
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "access token in the request as attribute: ", accessToken);
             }
@@ -115,15 +121,29 @@ public class AccessTokenAuthenticator {
             // logging an error produced spurious log messages if the token was missing but fallbacks were available.
             oidcClientRequest.setRsFailMsg("", "suppress_CWWKS1704W"); // suppress later warning message if token is just missing.
             return oidcResult;
+        }
 
+        boolean accessTokenIsJWT = isTokenJWT(accessToken);
+
+        ProviderAuthenticationResult cachedResult = null;
+        if (clientConfig.getTokenReuse() || !accessTokenIsJWT) {
+            cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        }
+        if (cachedResult != null) {
+            req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+            return cachedResult;
         }
 
         String validationMethod = clientConfig.getValidationMethod();
+        String jwtRemoteValidation = ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_NONE;
 
-        if (isTokenJWT(accessToken)) {
+        if (accessTokenIsJWT) {
             // accessToken is a JWT Token
-            validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
+            jwtRemoteValidation = clientConfig.getJwtAccessTokenRemoteValidation();
+            if (!ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_REQUIRE.equals(jwtRemoteValidation)) {
+                validationMethod = ClientConstants.VALIDATION_LOCAL;
+            }
         }
         SSLSocketFactory sslSocketFactory = null;
         try {
@@ -137,23 +157,11 @@ public class AccessTokenAuthenticator {
 
         if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_LOCAL)) {
             oidcResult = parseJwtToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-        } else {
-            String validationEndpointURL = clientConfig.getValidationEndpointUrl();
-            if (validationEndpointURL != null && !validationEndpointURL.isEmpty()) {
-                if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, validationEndpointURL)) {
-                    logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", validationEndpointURL);
-                    return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-                }
-                if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
-                    oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                    // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                    (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory);
-                } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
-                    oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
-                }
-            } else {
-                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
+            if (!isAuthenticationResultSuccessful(oidcResult) && ClientConstants.JWT_ACCESS_TOKEN_REMOTE_VALIDATION_ALLOW.equals(jwtRemoteValidation)) {
+                oidcResult = doRemoteAccessTokenValidation(clientConfig, oidcClientRequest, accessToken, sslSocketFactory);
             }
+        } else {
+            oidcResult = doRemoteAccessTokenValidation(clientConfig, oidcClientRequest, accessToken, sslSocketFactory);
         }
 
         if (AuthResult.SUCCESS == oidcResult.getStatus()) {
@@ -163,11 +171,40 @@ public class AccessTokenAuthenticator {
             oidcResult = fixSubject(oidcResult); // replace IdToken Object if needed
             // this is authenticated by the access_token
             req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+
+            cacheHelper.cacheTokenAuthenticationResult(clientConfig, accessToken, oidcResult);
         }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "oidcResult httpStatusCode:" + oidcResult.getHttpStatusCode() + " status:" + oidcResult.getStatus() + " result:" + oidcResult);
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
+        }
+        return oidcResult;
+    }
+
+    boolean isAuthenticationResultSuccessful(ProviderAuthenticationResult result) {
+        return (result != null && result.getStatus() == AuthResult.SUCCESS);
+    }
+
+    ProviderAuthenticationResult doRemoteAccessTokenValidation(OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest, String accessToken, SSLSocketFactory sslSocketFactory) {
+        ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
+        String validationMethod = clientConfig.getValidationMethod();
+
+        String validationEndpointURL = clientConfig.getValidationEndpointUrl();
+        if (validationEndpointURL != null && !validationEndpointURL.isEmpty()) {
+            if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, validationEndpointURL)) {
+                logError(clientConfig, oidcClientRequest, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", validationEndpointURL);
+                return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+            }
+            if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
+                oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+                // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
+                (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
+            } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
+                oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
+            }
+        } else {
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", validationEndpointURL);
         }
         return oidcResult;
     }
@@ -399,29 +436,35 @@ public class AccessTokenAuthenticator {
             return null;
         }
         boolean isJwe = false;
-        if (JweHelper.isJwe(responseString)) {
-            responseString = JweHelper.extractPayloadFromJweToken(responseString, clientConfig, null);
-            isJwe = true;
+        try {
+            if (JweHelper.isJwe(responseString)) {
+                responseString = JweHelper.extractPayloadFromJweToken(responseString, clientConfig, null);
+                isJwe = true;
+            }
+            if (JweHelper.isJws(responseString)) {
+                return extractClaimsFromJwsResponse(responseString, clientConfig, oidcClientRequest);
+            } else if (isJwe) {
+                // JWE payloads can be either JWS or raw JSON, so allow falling back to parsing raw JSON in the case of a JWE response
+                return extractClaimsFromJsonResponse(responseString, clientConfig, oidcClientRequest);
+            }
+        } catch (Exception e) {
+            String msg = Tr.formatMessage(tc, "OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE", new Object[] { clientConfig.getId(), e });
+            throw new Exception(msg, e);
         }
-        if (JweHelper.isJws(responseString)) {
-            // TODO - parse differently
-            //            // Option 1
-            //            jose4jUtil.createResultWithJose4JForJwt(responseString, clientConfig, oidcClientRequest);
-            //            // Option 2
-            //            ConsumerUtils consumerUtils = clientConfig.getConsumerUtils();
-            //            if (consumerUtils != null) {
-            //                JwtToken jwtResponse = consumerUtils.parseJwt(responseString, clientConfig);
-            //                if (jwtResponse != null) {
-            //                    Claims claims = jwtResponse.getClaims();
-            //                    if (claims != null) {
-            //                        responseString = claims.toJsonString();
-            //                        return JSONObject.parse(responseString);
-            //                    }
-            //                }
-            //            }
-        } else if (isJwe) {
-            // JWE payloads can be either JWS or raw JSON, so allow falling back to parsing raw JSON in the case of a JWE response
-            return extractClaimsFromJsonResponse(responseString, clientConfig, oidcClientRequest);
+        return null;
+    }
+
+    JSONObject extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
+        JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
+        if (jwtContext != null) {
+            // Validate the JWS signature only; extract the claims so they can be verified elsewhere
+            JsonWebStructure jwsStructure = jose4jUtil.getJsonWebStructureFromJwtContext(jwtContext);
+            Key signingKey = jose4jUtil.getSignatureVerificationKeyFromJsonWebStructure(jwsStructure, clientConfig, oidcClientRequest);
+            Jose4jValidator validator = new Jose4jValidator(signingKey, clientConfig.getClockSkewInSeconds(), null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
+            JwtClaims claims = validator.validateJwsSignature((JsonWebSignature) jwsStructure, responseString);
+            if (claims != null) {
+                return JSONObject.parse(claims.toJson());
+            }
         }
         return null;
     }
@@ -693,22 +736,18 @@ public class AccessTokenAuthenticator {
 
     protected boolean validateJsonResponse(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest req) {
         if (jobj.get("active") != null && ((Boolean) jobj.get("active")) != true) {
-            logError(clientConfig, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-            if (req != null) { // avoid subsequent CWWKS1704W with null cause.
-                req.setRsFailMsg("", Tr.formatMessage(tc, "PROPAGATION_TOKEN_NOT_ACTIVE",
-                        new Object[] { clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl() }));
-            }
+            logError(clientConfig, req, "PROPAGATION_TOKEN_NOT_ACTIVE", clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
             return false;
         }
         // ToDo: check exp, iat
 
-        if (!isExpValid(jobj, clientConfig)) {
+        if (!isExpValid(jobj, clientConfig, req)) {
             return false;
         }
-        if (!isIatValid(jobj, clientConfig)) {
+        if (!isIatValid(jobj, clientConfig, req)) {
             return false;
         }
-        if (!isIssuerValid(jobj, clientConfig)) {
+        if (!isIssuerValid(jobj, clientConfig, req)) {
             return false;
         }
 
@@ -717,51 +756,51 @@ public class AccessTokenAuthenticator {
         return true;
     }
 
-    private boolean isExpValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isExpValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
         Long exp = 0L;
         if (jobj.get("exp") != null && (exp = getLong(jobj.get("exp"))) != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "exp = ", exp);
             }
-            if (!verifyExpirationTime(exp, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+            if (!verifyExpirationTime(exp, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                 return false;
             }
         } else if (clientConfig.requireExpClaimForIntrospection()) {
             // required field
-            logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "exp", "iss, iat, exp");
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "exp", "iss, iat, exp");
             return false;
         }
         return true;
     }
 
-    private boolean isIatValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isIatValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
         Long iat = 0L;
         if (jobj.get("iat") != null && (iat = getLong(jobj.get("iat"))) != null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "iat = ", iat);
             }
-            if (!checkIssueatTime(iat, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+            if (!checkIssueatTime(iat, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                 return false;
             }
         } else if (clientConfig.requireIatClaimForIntrospection()) {
             // required field
-            logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iat", "iss, iat, exp");
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iat", "iss, iat, exp");
             return false;
         }
         return true;
     }
 
-    private boolean isIssuerValid(JSONObject jobj, OidcClientConfig clientConfig) {
+    private boolean isIssuerValid(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         Date currentDate = new Date();
-        if (issuerChecking(jobj, clientConfig)) {
+        if (issuerChecking(jobj, clientConfig, oidcClientRequest)) {
             Long nbf = 0L;
             if (jobj.get("nbf") != null && (nbf = getLong(jobj.get("nbf"))) != null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "nbf = ", nbf);
                 }
-                if (!checkNotBeforeTime(nbf, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig)) {
+                if (!checkNotBeforeTime(nbf, currentDate, clientConfig.getClockSkewInSeconds(), clientConfig, oidcClientRequest)) {
                     return false;
                 }
             }
@@ -771,12 +810,12 @@ public class AccessTokenAuthenticator {
         return true;
     }
 
-    boolean issuerChecking(JSONObject jobj, OidcClientConfig clientConfig) {
+    boolean issuerChecking(JSONObject jobj, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         String issuer = (String) jobj.get("iss");
         String issuers = null;
         if (clientConfig.disableIssChecking()) {
             if (issuer != null) {
-                logError(clientConfig, "PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR", clientConfig.getValidationEndpointUrl(), "iss", "disableIssChecking");
+                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR", clientConfig.getValidationEndpointUrl(), "iss", "disableIssChecking");
                 return false;
             }
             return true;
@@ -785,12 +824,12 @@ public class AccessTokenAuthenticator {
                 if (issuer.isEmpty()
                         || ((issuers = getIssuerIdentifier(clientConfig)) == null)
                         || notContains(issuers, issuer)) {
-                    logError(clientConfig, "PROPAGATION_TOKEN_ISS_ERROR", issuers, issuer);
+                    logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_ISS_ERROR", issuers, issuer);
                     return false;
                 }
             } else {
                 // required field
-                logError(clientConfig, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iss", "iss, iat, exp");
+                logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR", "iss", "iss, iat, exp");
                 return false;
             }
         }
@@ -841,7 +880,7 @@ public class AccessTokenAuthenticator {
      * @param clockSkewInSeconds
      * @return
      */
-    private boolean checkNotBeforeTime(Long nbfInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    private boolean checkNotBeforeTime(Long nbfInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
         long nbf = nbfInSeconds.longValue() * 1000; // MilliSeconds
         Date nbfDate = new Date(nbf);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -850,13 +889,13 @@ public class AccessTokenAuthenticator {
         // nbf should not be in future
         Date currentDatePlusClockSkew = new Date(currentDate.getTime() + (clockSkewInSeconds * 1000));
         if (nbfDate.after(currentDatePlusClockSkew)) {// nbf is future time
-            logError(clientConfig, true, "PROPAGATION_TOKEN_NBF_ERR", nbfDate.toString(), currentDatePlusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_NBF_ERR", nbfDate.toString(), currentDatePlusClockSkew.toString());
             return false;
         }
         return true;
     }
 
-    protected boolean verifyExpirationTime(Long expInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    protected boolean verifyExpirationTime(Long expInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
 
         long exp = expInSeconds.longValue() * 1000; // MilliSeconds
         Date expDate = new Date(exp);
@@ -868,13 +907,13 @@ public class AccessTokenAuthenticator {
         if (expDate.before(currentDateMinusClockSkew)) { // if expiration time
                                                          // is before current
                                                          // time... expired
-            logError(clientConfig, true, "PROPAGATION_TOKEN_EXPIRED_ERR", expDate.toString(), currentDateMinusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_EXPIRED_ERR", expDate.toString(), currentDateMinusClockSkew.toString());
             return false;
         }
         return true;
     }
 
-    protected boolean checkIssueatTime(Long iatInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig) {
+    protected boolean checkIssueatTime(Long iatInSeconds, Date currentDate, long clockSkewInSeconds, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
 
         long iat = iatInSeconds.longValue() * 1000; // MilliSeconds
         Date iatDate = new Date(iat);
@@ -884,7 +923,7 @@ public class AccessTokenAuthenticator {
         // Let's check if the token is issued in a future time(iat)
         Date currentDatePlusClockSkew = new Date(currentDate.getTime() + (clockSkewInSeconds * 1000));
         if (iatDate.after(currentDatePlusClockSkew)) {// iat is future time
-            logError(clientConfig, true, "PROPAGATION_TOKEN_FUTURE_TOKEN_ERR", iatDate.toString(), currentDatePlusClockSkew.toString());
+            logError(clientConfig, true, oidcClientRequest, "PROPAGATION_TOKEN_FUTURE_TOKEN_ERR", iatDate.toString(), currentDatePlusClockSkew.toString());
             return false;
         }
         return true;
@@ -907,6 +946,7 @@ public class AccessTokenAuthenticator {
 
         Hashtable<String, Object> customProperties = attributeToSubject.handleCustomProperties();
         customProperties.put(Constants.ACCESS_TOKEN, accessToken);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, jobj);
         ProviderAuthenticationResult oidcResult = null;
         // The doMapping() will save the current time.
         // ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS
@@ -988,16 +1028,8 @@ public class AccessTokenAuthenticator {
     // do not show the error in messages.log yet. Since this will fall down to
     // RP.
     // If RP can not handle it. RP will display its own error 212457
-    void logError(OidcClientConfig oidcClientConfig, String msgKey, Object... objs) {
-        logError(oidcClientConfig, false, msgKey, objs);
-    }
-
     void logError(OidcClientConfig oidcClientConfig, OidcClientRequest oidcClientRequest, String msgKey, Object... objs) {
         logError(oidcClientConfig, false, oidcClientRequest, msgKey, objs);
-    }
-
-    void logError(OidcClientConfig oidcClientConfig, boolean warningWhenSupported, String msgKey, Object... objs) {
-        logError(oidcClientConfig, warningWhenSupported, null, msgKey, objs);
     }
 
     // do not show the error in messages.log yet. Since this will fall down to

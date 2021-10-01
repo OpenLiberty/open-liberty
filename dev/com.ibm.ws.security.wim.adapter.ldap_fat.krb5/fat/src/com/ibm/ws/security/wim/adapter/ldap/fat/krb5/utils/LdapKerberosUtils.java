@@ -83,7 +83,7 @@ public class LdapKerberosUtils {
     public static LdapRegistry getTicketCache(String hostname, int port, String ticketCacheFile, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
 
-        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
+        getLdapRegistryElement(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         ldap.setKrb5Principal(BIND_PRINCIPAL_NAME);
         ldap.setKrb5TicketCache(ticketCacheFile);
@@ -95,27 +95,27 @@ public class LdapKerberosUtils {
     }
 
     /**
-     * Get a basic LdapRegistry with Kerberos and krb5Principal name, contextpool and caches disables
+     * Get an LdapRegistry element with Kerberos enabled, krb5Principal name set, contextpool and caches disables
      *
      * @param hostname
      * @param port
      * @return
      */
-    public static LdapRegistry getKrb5PrincipalNameWithoutContextPool(String hostname, int port) {
-        return getKrb5PrincipalName(hostname, port, true, true);
+    public static LdapRegistry getLdapRegistryWithKrb5EnabledWithoutContextPool(String hostname, int port) {
+        return getLdapRegistryWithKrb5Enabled(hostname, port, true, true);
     }
 
     /**
-     * Get a basic LdapRegistry with Kerberos and krb5Principal name, contextpool and caches can be enabled or disabled
+     * Get an LdapRegistry element with Kerberos enabled and krb5Principal name, contextpool and caches can be enabled or disabled
      *
      * @param hostname
      * @param port
      * @param disableCaches
      * @return
      */
-    public static LdapRegistry getKrb5PrincipalName(String hostname, int port, boolean disableContextPool, boolean disableCaches) {
+    public static LdapRegistry getLdapRegistryWithKrb5Enabled(String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
-        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
+        getLdapRegistryElement(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         ldap.setKrb5Principal(BIND_PRINCIPAL_NAME);
 
@@ -124,14 +124,14 @@ public class LdapKerberosUtils {
     }
 
     /**
-     * Get an LdapRegistry with simple bindAuthmech and Bind DN and Bind password with
+     * Get an LdapRegistry element with simple bindAuthmech and Bind DN and Bind password with
      * disabled Context Pool/Caches
      *
      * @param hostname
      * @param port
      * @return
      */
-    public static LdapRegistry getSimpleBind(String hostname, int port) {
+    public static LdapRegistry getLdapRegistryWithSimpleBind(String hostname, int port) {
         return getSimpleBind(hostname, port, true, true);
     }
 
@@ -147,7 +147,7 @@ public class LdapKerberosUtils {
     public static LdapRegistry getSimpleBind(String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
 
-        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
+        getLdapRegistryElement(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_SIMPLE);
         ldap.setBindDN(BIND_SIMPLE_DN);
         ldap.setBindPassword(BIND_PASSWORD);
@@ -178,14 +178,14 @@ public class LdapKerberosUtils {
     }
 
     /**
-     * Get a basic LdapRegistry with optionally disabled cache/contextPool, no bind credentials added
+     * Get an LdapRegistry element with optionally disabled cache/contextPool, no bind credentials added
      *
      * @param ldap
      * @param hostname
      * @param port
      * @param disableCaches
      */
-    public static void getBasicsLdapRegistry(LdapRegistry ldap, String hostname, int port, boolean disableContextPool, boolean disableCaches) {
+    public static void getLdapRegistryElement(LdapRegistry ldap, String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         ldap.setId("LDAP1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost(hostname);

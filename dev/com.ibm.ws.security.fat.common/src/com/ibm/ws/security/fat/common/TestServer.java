@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common;
 
@@ -69,6 +69,7 @@ public class TestServer extends ExternalResource {
     protected String callbackFeature;
     protected int retryTimeoutCount = 0;
     protected int overrideRestartWaitTime = 0;
+    protected int sslWaitTimeoutCount = 0;
 
     protected CommonMessageTools msgUtils = new CommonMessageTools();
     protected ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
@@ -331,7 +332,6 @@ public class TestServer extends ExternalResource {
             server.setMarkToEndOfLog(server.getMatchingLogFile("messages.log"));
             server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         } catch (Exception e) {
-            e.printStackTrace();
             Log.error(thisClass, methodName, e, "Failure setting the mark at the end of one or more of the server logs.");
         }
     }
@@ -712,6 +712,11 @@ public class TestServer extends ExternalResource {
             addIgnoredServerException(MessageConstants.CWWKO0221E_PORT_IN_USE);
             // ignore shutdown timing issues
             addIgnoredServerExceptions(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING);
+            // ignore ssl restart warnings - if they caused problems, tests would also be failing
+            addIgnoredServerExceptions(MessageConstants.SSL_NOT_RESTARTED_PROPERLY);
+            // ignore ssl message - runtime retries and can proceed (sometimes) when it can't tests will fail when they don't get the correct response
+            server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
+
             server.stopServer(ignoredServerExceptions);
         }
         unInstallCallbackHandler(callback, callbackFeature);
@@ -826,6 +831,7 @@ public class TestServer extends ExternalResource {
         assertNotNull("Did not encounter the CWWKG0017I message saying the server configuration was successfully updated.", updateMsg);
 
         waitForAppsToReboot();
+        waitForSSLRestart();
         validateStartMessages(startMessages, reportViaJunit);
     }
 
@@ -862,6 +868,33 @@ public class TestServer extends ExternalResource {
         }
         Log.info(thisClass, method, "App [" + app + "] was found to be ready");
         return true;
+    }
+
+    private void waitForSSLRestart() throws Exception {
+
+        String thisMethod = "waitForSSLRestart";
+        Log.info(thisClass, thisMethod, "Checking for SSL restart for server: " + server.getServerName());
+
+        // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
+        // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStopMsg = server.waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
+        if (sslStopMsg != null) {
+            String sslStartMsg = server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+            if (sslStartMsg == null) {
+                Log.warning(thisClass, "SSL may not have started properly - future failures may be due to this");
+                sslWaitTimeoutCount += 1;
+            } else {
+                Log.info(thisClass, thisMethod, "SSL appears have restarted properly");
+            }
+        } else {
+            Log.info(thisClass, thisMethod, "Did not detect a restart of the SSL port");
+            sslWaitTimeoutCount += 1;
+        }
+
+    }
+
+    public int getSslWaitTimeoutCount() {
+        return sslWaitTimeoutCount;
     }
 
     /**
@@ -1276,6 +1309,7 @@ public class TestServer extends ExternalResource {
         }
     }
 
+
     public void unInstallCallbackHandler(String callbackHandler, String feature) throws Exception {
         if (feature != null) {
             Log.info(thisClass, "unInstallCallbackHandler", "Un-Installing callback handler feature: " + feature);
@@ -1286,6 +1320,7 @@ public class TestServer extends ExternalResource {
             server.uninstallUserBundle(callbackHandler);
         }
     }
+
 
     /** TODO *************************************** Bootstrap utils *****************************************/
 
@@ -1300,7 +1335,7 @@ public class TestServer extends ExternalResource {
         Properties serverProperties = this.getServer().getBootstrapProperties();
         return serverProperties.getProperty(key, null);
     }
-    
+
     public String getJvmOptionsFilePath() throws Exception {
         String thisMethod = "getJvmOptionsFilePath";
         String jvmProps = getServerFileLoc() + "/jvm.options";

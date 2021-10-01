@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * This class represents a scheduled task and its future.
@@ -232,10 +231,9 @@ public class ScheduledTask<T> implements Callable<T> {
             this.threadContextDescriptor = a.getContextDescriptor();
         } else {
             this.task = task;
-            WSContextService contextSvc = managedExecSvc.getContextService();
             Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
             try {
-                this.threadContextDescriptor = contextSvc.captureThreadContext(execProps);
+                this.threadContextDescriptor = managedExecSvc.captureThreadContext(execProps);
             } catch (NullPointerException x) {
                 throw x;
             } catch (Throwable x) {
@@ -299,10 +297,9 @@ public class ScheduledTask<T> implements Callable<T> {
             this.threadContextDescriptor = a.getContextDescriptor();
         } else {
             this.task = task;
-            WSContextService contextSvc = managedExecSvc.getContextService();
             Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
             try {
-                this.threadContextDescriptor = contextSvc.captureThreadContext(execProps);
+                this.threadContextDescriptor = managedExecSvc.captureThreadContext(execProps);
             } catch (Throwable x) {
                 throw new RejectedExecutionException(x);
             }

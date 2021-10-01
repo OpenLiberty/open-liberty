@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=La cha\u00eene de canau
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=D\u00e9finissez une cha\u00eene de canaux de messagerie de communications sortantes s\u00e9curis\u00e9es et plac\u00e9es en tunnel par d\u00e9faut pour ce serveur d'applications.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Impossible de localiser le fichier de propri\u00e9t\u00e9s ''{0}'' permettant de d\u00e9terminer la s\u00e9curit\u00e9 du niveau de transport de messagerie initial client.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Impossible de localiser le fichier de propri\u00e9t\u00e9s contenant des informations permettant d'\u00e9tablir des connexions de messagerie client s\u00e9curis\u00e9es.  Un ensemble de valeurs par d\u00e9faut est utilis\u00e9.  Il peut ne pas \u00eatre possible d'\u00e9tablir des connexions de messagerie client s\u00e9curis\u00e9es.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configurez le fichier de propri\u00e9t\u00e9s de la s\u00e9curit\u00e9 du niveau de transport de messagerie client.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Une erreur interne s''est produite.  Impossible de localiser une repr\u00e9sentation de la classe {0}.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
@@ -454,18 +448,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Une erreur interne s'est produite.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Impossible de localiser une cha\u00eene de transport nomm\u00e9e {0} \u00e0 partir de laquelle obtenir la configuration SSL pouvant \u00eatre requise pour \u00e9tablir une connexion avec un h\u00f4te \u00e9loign\u00e9 nomm\u00e9 {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Les informations requises pour l'\u00e9tablissement d'une connexion de type SSL (Secure Sockets Layer) \u00e0 un homologue ne sont pas pr\u00e9sentes dans la configuration en cours.  Ces informations sont g\u00e9n\u00e9ralement obtenues \u00e0 partir d'une d\u00e9finition de cha\u00eene de transport appropri\u00e9e. Cette d\u00e9finition de cha\u00eene porte un nom qui correspond \u00e0 une cha\u00eene pr\u00e9sente sur l'homologue \u00e9loign\u00e9.  Une telle cha\u00eene de transport est introuvable.  Il peut ne pas \u00eatre possible d'\u00e9tablir la connexion.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=D\u00e9finissez les autres cha\u00eenes de transport.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: La cha\u00eene de transport nomm\u00e9e {0} ne contient pas de configuration SSL, \u00e9l\u00e9ment pouvant \u00eatre requis pour l''\u00e9tablissement d''une connexion \u00e0 l''h\u00f4te \u00e9loign\u00e9 nomm\u00e9 {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Les informations requises pour l'\u00e9tablissement d'une connexion de type SSL (Secure Sockets Layer) \u00e0 un homologue ne sont pas pr\u00e9sentes dans la configuration en cours.  Ces informations sont g\u00e9n\u00e9ralement obtenues \u00e0 partir d'une d\u00e9finition de cha\u00eene de transport appropri\u00e9e. Cette d\u00e9finition de cha\u00eene porte un nom qui correspond \u00e0 une cha\u00eene pr\u00e9sente sur l'homologue \u00e9loign\u00e9.  Une telle cha\u00eene de transport est introuvable.  Il peut ne pas \u00eatre possible d'\u00e9tablir la connexion.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configurez les autres cha\u00eenes de transport SSL de la cha\u00eene de transport sp\u00e9cifi\u00e9e.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

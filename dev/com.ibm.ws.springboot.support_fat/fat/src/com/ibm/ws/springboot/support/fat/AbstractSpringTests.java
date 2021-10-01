@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public abstract class AbstractSpringTests {
         SPRING_BOOT_APP_TAG
     }
 
+    public static final String ID_DEFAULT_HOST = "default_host";
     public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
     public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
     public static final String ID_SSL = "springBootSsl-";
@@ -172,6 +173,15 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
+    public List<String> getExpectedWebApplicationEndpoints() {
+        String testMethodName = testName.getMethodName();
+        List<String> expectedEndpoints = new ArrayList<String>();
+        if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            expectedEndpoints.add(ID_DEFAULT_HOST);
+        }
+        return expectedEndpoints;
+    }
+
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
         // do nothing by default
     }
@@ -256,10 +266,11 @@ public abstract class AbstractSpringTests {
                 assertNotNull("The application was not installed", server
                                 .waitForStringInLog("CWWKZ0001I:.*"));
                 if (expectWebApplication()) {
-                    String testMethodName = testName.getMethodName();
-                    if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
-                        assertNotNull("The endpoint not available on default_host", server
-                                        .waitForStringInLog("CWWKT0016I:.*\\bdefault_host\\b.*"));
+                    List<String> expectedEndpoints = getExpectedWebApplicationEndpoints();
+                    if (!expectedEndpoints.isEmpty()) {
+                        for (String ep : expectedEndpoints)
+                            assertNotNull("The endpoint \"" + ep + "\" is not available", server
+                                            .waitForStringInLog("CWWKT0016I:.*\\b" + ep + "\\b.*"));
                     } else {
                         assertNotNull("The endpoint is not available", server
                                         .waitForStringInLog("CWWKT0016I:.*"));

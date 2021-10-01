@@ -119,7 +119,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 /**
  * DOCUMENT ME!

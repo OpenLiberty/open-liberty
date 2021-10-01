@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.bnd.lookupoverride.web.LookupOverrideServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -39,7 +40,7 @@ public class LookupOverrideTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver"));
 
     public static JavaArchive LookupOverrideEJBShared;
     public static JavaArchive LookupOverrideEJB;
@@ -75,7 +76,7 @@ public class LookupOverrideTest extends FATServletClient {
             LookupOverrideTestApp.addAsModules(DoaAppEJB);
         }
 
-        ShrinkHelper.exportDropinAppToServer(server, LookupOverrideTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, LookupOverrideTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

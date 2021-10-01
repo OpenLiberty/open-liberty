@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,8 @@ public class AuthorizationCodeHandler {
 
             String url = clientConfig.getTokenEndpointUrl();
             if (url == null || url.length() == 0) {
-                throw new MalformedURLException("MalformedURLException");
+                String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientConfig.getClientId());
+                throw new MalformedURLException(message);
             }
             HashMap<String, String> tokens = oidcClientUtil.getTokensFromAuthzCode(url,
                     clientId,
@@ -129,7 +130,7 @@ public class AuthorizationCodeHandler {
             oidcResult = jose4jUtil.createResultWithJose4J(responseState, tokens, clientConfig, oidcClientRequest);
 
             //go get the userinfo if configured to do so, and update the authentication result to include it.
-            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory);
+            new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, tokens, sslSocketFactory, oidcClientRequest);
 
             addAuthCodeToUsedList(authzCode);
 

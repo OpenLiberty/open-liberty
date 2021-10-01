@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-import com.ibm.ws.collector.manager.buffer.Event;
 
 import test.common.SharedOutputManager;
 
@@ -336,7 +333,8 @@ public class RingBufferTest {
                 try {
                     buffer.get(seqNum);
                 } catch (InterruptedException t) {
-                    //TODO: Do nothing
+                    //Check to see if we're swallowing an interruption
+                    t.printStackTrace();
                 }
             }
         });
@@ -376,7 +374,7 @@ public class RingBufferTest {
 
     public void assertNotBlocked(String message, Thread thread) {
 
-        long threadWaitTimeOutInMilliSecs = 10000;
+        long threadWaitTimeOutInMilliSecs = 70000;//originally 10 seconds (i.e. 10000)
         long waitTimeInMilliSecs = 1000;
         long timeElapsedInMilliSecs = 0;
 
@@ -386,12 +384,20 @@ public class RingBufferTest {
             try {
                 Thread.sleep(waitTimeInMilliSecs);
             } catch (InterruptedException e) {
-                //Nothing to do here!!
+                //Check to see if we are swallowing an interruption.
+                e.printStackTrace();
             }
             timeElapsedInMilliSecs += waitTimeInMilliSecs;
             System.out.println("Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
         }
         assertTrue(message, thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED);
+
+        /*
+         * For tests that passed (i.e. unblocked) after the original 10 seconds.
+         * We want it to fail so that we can record/see how long it took for
+         * problematic systems.
+         */
+        assertTrue("This test took longer than 10 seconds to \"pass\". It took " + timeElapsedInMilliSecs + " instead.", timeElapsedInMilliSecs <= 10000);
     }
 
     //Utility methods

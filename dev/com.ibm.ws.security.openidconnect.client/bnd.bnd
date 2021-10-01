@@ -19,11 +19,10 @@ Bundle-Description: Liberty Security OpenID Connect Client, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.openidconnect.internal.client.jar
-#JakartaEE-Bundle-Name: Liberty Security OpenID Connect Client 1.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.openidconnect.internal.client
-#JakartaEE-Bundle-Description: Liberty Security OpenID Connect Client, version=${bVersion}
-#JakartaEE-Bundle-Version:
+jakartaFinalJarName: io.openliberty.security.openidconnect.internal.client.jar
+jakartaFinalBundleName: Liberty Security OpenID Connect Client 1.0
+jakartaFinalBundleId: io.openliberty.security.openidconnect.internal.client
+jakartaFinalBundleDescription: Liberty Security OpenID Connect Client 1.0; Jakarta Enabled
 
 # in whiteboard project, we have: Web-ContextPath: @httpWhiteboard
 

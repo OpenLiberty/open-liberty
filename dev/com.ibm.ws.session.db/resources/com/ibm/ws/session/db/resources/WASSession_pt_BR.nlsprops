@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Foi detectada uma exce\u00e7\u00
 DatabaseHashMap.selectNoUpdateError.useraction=Se ocorreu um SQLException, consulte a documenta\u00e7\u00e3o do banco de dados apropriada para seu ambiente. Al\u00e9m disso, assegure-se de ter configurado de forma adequada uma origem de dados para o Gerenciador de Sess\u00f5es.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Foi feita uma tentativa de gravar mais de 2M na coluna grande.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Uma tentativa foi feita para escrever mais para a coluna de banco de dados do que \u00e9 permitido pelo valor da propriedade rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Os dados da sess\u00e3o podem ser muito grandes para a coluna do banco de dados.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduza o tamanho desse atributo antes de tentar armazen\u00e1-lo na sess\u00e3o.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduza o tamanho deste atributo antes de tentar armazen\u00e1-lo na sess\u00e3o ou aumente o valor da propriedade rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: O servi\u00e7o {0} foi inicializado com \u00eaxito.

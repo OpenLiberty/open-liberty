@@ -18,6 +18,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -155,16 +156,18 @@ public class LDAPUtils {
                  */
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.startsWith("z/os")) {
-                    Log.error(c, "<clinit>", e, "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Any remote Ldap tests trying to run local will fail.");
-                }
+                    Log.error(c, "<clinit>", e,
+                              "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Some failures setting up remote LDAPs, but local ApacheDS will not run on z/OS, doing remote anyway.");
+                } else {
 
-                Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
-                                            "To run against the remote LDAP servers, ensure that the tests are being run " +
-                                            "on the IBM network, that you have added your global IBM GHE access token " +
-                                            "(global.ghe.access.token) to the user.build.properties file in your home directory " +
-                                            "and that you are a member of the 'websphere' organization in IBM GHE.");
-                CONSUL_LOOKUP_FAILED = true;
-                uselocalLDAP = true;
+                    Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
+                                                "To run against the remote LDAP servers, ensure that the tests are being run " +
+                                                "on the IBM network, that you have added your global IBM GHE access token " +
+                                                "(global.ghe.access.token) to the user.build.properties file in your home directory " +
+                                                "and that you are a member of the 'websphere' organization in IBM GHE.");
+                    CONSUL_LOOKUP_FAILED = true;
+                    uselocalLDAP = true;
+                }
             }
         }
 
@@ -543,6 +546,32 @@ public class LDAPUtils {
         for (int requested = count; requested > 0; requested--) {
             try {
                 List<ExternalTestService> services = new ArrayList<ExternalTestService>(ExternalTestService.getServices(requested, service));
+
+                /*
+                 * Remove services that are not available.
+                 */
+                Set<ExternalTestService> toRemove = new HashSet<ExternalTestService>();
+                for (ExternalTestService serviceToPing : services) {
+                    try {
+                        if (!isLdapServerAvailable(serviceToPing.getAddress(),
+                                                   serviceToPing.getProperties().get(CONSUL_LDAP_PORT_KEY), false,
+
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_DN_KEY),
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_PASSWORD_KEY))) {
+                            Log.warning(c, "For service, " + service + ", Ldap at " + serviceToPing.getAddress() + " failed to ping");
+                            toRemove.add(serviceToPing);
+                        }
+                    } catch (Exception e) {
+                        Log.warning(c, "For service, " + service + ", Ldap at " + serviceToPing.getAddress() + " failed to ping with exception: " + e.getMessage());
+                        toRemove.add(serviceToPing);
+                    }
+                }
+                if (services.size() == toRemove.size()) {
+                    throw new Exception("For service, " + service + ", no LDAPs responded to ping, follow regular failover path which will run local LDAP if possible.");
+                } else if (!toRemove.isEmpty()) {
+                    Log.warning(c, "For service, " + service + ", some LDAPS failed to ping, will remove from services list and run with good LDAPs only.");
+                    services.removeAll(toRemove);
+                }
 
                 /*
                  * Copy unique instances to fill out the requested count of services.

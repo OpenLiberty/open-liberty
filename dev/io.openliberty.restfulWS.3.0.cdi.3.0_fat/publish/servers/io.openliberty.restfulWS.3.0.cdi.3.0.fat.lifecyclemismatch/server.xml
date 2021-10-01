@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>restfulWS-3.0</feature>
+        <feature>cdi-3.0</feature>
+    </featureManager>
+
+  	<include location="../fatTestPorts.xml"/>
+  	<!-- <javaPermission className="java.util.PropertyPermission" name="resteasy.original.webapplicationexception.behavior" actions="read"/> -->
+  	<!-- <javaPermission className="java.lang.RuntimePermission" name="getenv.resteasy.original.webapplicationexception.behavior"/> -->
+</server>

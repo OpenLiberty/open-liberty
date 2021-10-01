@@ -90,6 +90,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         // control issues since ForkJoinPool doesn't have doPriv calls for getting some properties
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
+            @Trivial
             public Void run() {
                 ForkJoinPool.commonPool();
                 return null;
@@ -195,10 +196,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     /**
      * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
-    public ManagedExecutorServiceImpl(String name, int hash, PolicyExecutor policyExecutor, ThreadContextImpl mpThreadContext,
+    public ManagedExecutorServiceImpl(String name, int hash, int eeVersion,
+                                      PolicyExecutor policyExecutor, ContextServiceImpl mpThreadContext,
                                       AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         this.name.set(name);
         this.hash = hash;
+        this.eeVersion = eeVersion;
         this.policyExecutor = policyExecutor;
         this.longRunningPolicyExecutorRef.set(policyExecutor);
         this.mpContextService = mpThreadContext;
@@ -288,6 +291,19 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        WSContextService contextSvc;
+        if (mpContextService == null)
+            contextSvc = contextSvcRef.getServiceWithException();
+        else
+            contextSvc = mpContextService;
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor threadContext = contextSvc.captureThreadContext(props);
+        return threadContext;
+    }
+
+    @Override
     public <U> CompletableFuture<U> completedFuture(U value) {
         return ManagedCompletableFuture.completedFuture(value, this);
     }
@@ -315,7 +331,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Override
     public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
-        if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
+        if (!MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
 
         final CompletableFuture<T> copy = ManagedCompletableFuture.JAVA8 //
@@ -357,7 +373,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
                 task = a.getAction();
                 taskUpdates = Arrays.asList(task);
             } else {
-                contextDescriptor = getContextService().captureThreadContext(getExecutionProperties(task));
+                contextDescriptor = captureThreadContext(getExecutionProperties(task));
             }
 
             callbacks[0] = new TaskLifeCycleCallback(this, contextDescriptor);
@@ -376,8 +392,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
                     Map<String, String> execProps = getExecutionProperties(task);
                     TaskLifeCycleCallback callback = execPropsToCallback.get(execProps);
                     if (callback == null) {
-                        contextSvc = contextSvc == null ? getContextService() : contextSvc;
-                        execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps)));
+                        execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, captureThreadContext(execProps)));
                     }
                     callbacks[t++] = callback;
                 }
@@ -416,16 +431,22 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         return null;
     }
 
-    @Override
+    @Deprecated // being replaced with captureThreadContext so that this method signature can change to spec
+    @Trivial
     public WSContextService getContextService() {
+        WSContextService contextSvc;
         if (mpContextService == null)
             try {
-                return contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
+                contextSvc = contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
             } catch (IllegalStateException x) {
                 throw new RejectedExecutionException(x);
             }
         else
-            return mpContextService;
+            contextSvc = mpContextService;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getContextService: " + contextSvc);
+        return contextSvc;
     }
 
     @Override
@@ -436,12 +457,21 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
+    @Trivial
     public PolicyExecutor getLongRunningPolicyExecutor() {
-        return longRunningPolicyExecutorRef.get();
+        PolicyExecutor executor = longRunningPolicyExecutorRef.get();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getLongRunningPolicyExecutor: " + executor);
+        return executor;
     }
 
     @Override
+    @Trivial
     public PolicyExecutor getNormalPolicyExecutor() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getNormalPolicyExecutor: " + policyExecutor);
+
         return policyExecutor;
     }
 
@@ -699,8 +729,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             contextDescriptor = a.getContextDescriptor();
             task = a.getAction();
         } else {
-            WSContextService contextSvc = getContextService();
-            contextDescriptor = contextSvc.captureThreadContext(execProps);
+            contextDescriptor = captureThreadContext(execProps);
         }
 
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextDescriptor);
@@ -719,8 +748,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             contextDescriptor = a.getContextDescriptor();
             task = a.getAction();
         } else {
-            WSContextService contextSvc = getContextService();
-            contextDescriptor = contextSvc.captureThreadContext(execProps);
+            contextDescriptor = captureThreadContext(execProps);
         }
 
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextDescriptor);

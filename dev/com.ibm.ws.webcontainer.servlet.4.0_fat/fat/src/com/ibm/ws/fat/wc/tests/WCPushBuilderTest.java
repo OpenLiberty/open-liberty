@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,63 +14,49 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Note this is a basic test to ensure newPushBuilder() returns null for non H2 requests.
- * A comprehensive test of the pushbuilder api is included in the Servlet 4.0 unit tests.
- * A comprehensive test of pushbuilder functionality for H2 requests is included in the transport FAT bucket.
+ * A comprehensive test of the PushBuilder API is included in the Servlet 4.0 unit tests.
+ * A comprehensive test of the PushBuilder functionality for H2 requests is included in the transport FAT bucket.
  */
 @RunWith(FATRunner.class)
-public class WCPushBuilderTest extends LoggingTest {
+public class WCPushBuilderTest {
 
     private static final Logger LOG = Logger.getLogger(WCPushBuilderTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
+    @Server("servlet40_wcServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        LOG.info("Setup : add TestServlet40 to the server if not already present.");
+        LOG.info("Setup : add TestPushBuilderAPI to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
-                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
-                                                  "testservlet40.war.listeners", "testservlet40.jar.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TestPushBuilderAPI.war", "testpushbuilderapi.servlets");
 
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestServlet40", WCPushBuilderTest.class.getName(), SHARED_SERVER.getLibertyServer());
         LOG.info("Setup : complete, ready for Tests");
+        server.startServer(WCPushBuilderTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
     public void testPushBuilderAPI() throws Exception {
-        String[] expectedMessages = { "PASS" };
-        String[] unExpectedMessages = { "FAIL" };
-
-        this.verifyResponse("/TestServlet40/PushBuilderAPIServlet", expectedMessages, unExpectedMessages);
+        HttpUtils.findStringInReadyUrl(server, "/TestPushBuilderAPI/PushBuilderAPIServlet",
+                                       "PASS : req.newPushBuilder() returned null");
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }

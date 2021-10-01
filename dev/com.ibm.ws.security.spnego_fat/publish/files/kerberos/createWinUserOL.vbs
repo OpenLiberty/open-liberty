@@ -209,6 +209,7 @@ if isDisableKerberosAuthentication = "true" then
   call disableKerberosAuthentication(objUserLDAP)
 end if
 
+call enableAES128(objUserLDAP)
 
 ' Set objSysInfo = CreateObject("ADSystemInfo")
 ' Set strDomainOrWorkgroup = objSysInfo.DomainDNSName
@@ -297,6 +298,14 @@ Function enablePasswordNeverExpires(ByRef objUser)
   	objUser.setinfo
   end if
   Wscript.Echo UserName&": Password Never Expires."
+End Function
+
+Function enableAES128(ByRef objUser)
+  '<<<<< msDS-SupportedEncryptionTypes needs to get set >>>>>
+    const AES128_VALUE = &H08
+    objUser.put "msDS-SupportedEncryptionTypes", AES128_VALUE
+    objUser.setinfo	
+	Wscript.Echo UserName&": msDS-SupportedEncryptionTypes set to use AES128"
 End Function
 
 

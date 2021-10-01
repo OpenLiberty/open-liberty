@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.3.0
+ * @version 1.4.0
  */
-@org.osgi.annotation.versioning.Version("1.3.0")
+@org.osgi.annotation.versioning.Version("1.4.0")
 @TraceOptions(traceGroup = "Location")
 package com.ibm.wsspi.kernel.service.location;
 

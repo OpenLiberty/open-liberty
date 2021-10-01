@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
@@ -29,11 +32,7 @@ public class SingleTableCache extends CommonCache {
         }
         lookupTable = Collections.synchronizedMap(new BoundedHashMap(this.entryLimit));
 
-        if (timeoutInMilliSeconds > 0) {
-            this.timeoutInMilliSeconds = timeoutInMilliSeconds;
-        }
-
-        scheduleEvictionTask(this.timeoutInMilliSeconds);
+        rescheduleCleanup(timeoutInMilliSeconds);
     }
 
     /**
@@ -47,21 +46,41 @@ public class SingleTableCache extends CommonCache {
      * Find and return the object associated with the specified key.
      */
     public synchronized Object get(@Sensitive String key) {
-        return lookupTable.get(key);
+        CacheEntry entry = (CacheEntry) lookupTable.get(key);
+        if (entry == null) {
+            return null;
+        }
+        if (entry.isExpired(timeoutInMilliSeconds)) {
+            remove(key);
+            return null;
+        }
+        return entry.getValue();
     }
 
     /**
      * Insert the value into the Cache using the specified key.
      */
     public synchronized void put(@Sensitive String key, Object value) {
-        lookupTable.put(key, value);
+        CacheEntry entry = new CacheEntry(value);
+        lookupTable.put(key, entry);
     }
 
     /**
      * Implementation of the eviction strategy.
      */
+    @Override
     protected synchronized void evictStaleEntries() {
-        lookupTable = Collections.synchronizedMap(new BoundedHashMap(this.entryLimit));
+        List<String> keysToRemove = new ArrayList<String>();
+        for (Entry<String, Object> entry : lookupTable.entrySet()) {
+            String key = entry.getKey();
+            Object cacheEntry = entry.getValue();
+            if (cacheEntry == null || ((CacheEntry) cacheEntry).isExpired(timeoutInMilliSeconds)) {
+                keysToRemove.add(key);
+            }
+        }
+        for (String keyToRemove : keysToRemove) {
+            lookupTable.remove(keyToRemove);
+        }
     }
 
 }

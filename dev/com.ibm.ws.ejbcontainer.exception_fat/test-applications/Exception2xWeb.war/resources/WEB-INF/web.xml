@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp">
+	<display-name>Exception2xWeb</display-name>
+	<servlet>
+		<servlet-name>Exception2xServlet</servlet-name>
+		<servlet-class>com.ibm.ws.ejbcontainer.exception2x.web.Exception2xServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Exception2xServlet</servlet-name>
+		<url-pattern>/Exception2xServlet</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LifecycleMethod2xServlet</servlet-name>
+		<servlet-class>com.ibm.ws.ejbcontainer.exception2x.web.LifecycleMethod2xServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LifecycleMethod2xServlet</servlet-name>
+		<url-pattern>/LifecycleMethod2xServlet</url-pattern>
+	</servlet-mapping>
+</web-app>

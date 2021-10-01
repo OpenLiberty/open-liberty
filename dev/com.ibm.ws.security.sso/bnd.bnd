@@ -19,11 +19,10 @@ Bundle-Description: WAS Security SSO 1.0, version=${bVersion}
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.sso.internal.jar
-#JakartaEE-Bundle-Name: Security Single Sign-On Implementation
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.sso.internal
-#JakartaEE-Bundle-Description: Security Single Sign-On Implementation, version=2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.sso.internal.jar
+jakartaFinalBundleName: Security Single Sign-On
+jakartaFinalBundleId: io.openliberty.security.sso.internal
+jakartaFinalBundleDescription: Security Single Sign-on; Jakarta Enabled
 
 WS-TraceGroup: SSO
 

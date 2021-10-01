@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,12 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 
 import jakarta.enterprise.context.ContextNotActiveException;
@@ -18,6 +23,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import prototype.enterprise.concurrent.Async;
 
 @Singleton
 public class TaskBean implements Callable<String> {
@@ -56,5 +64,28 @@ public class TaskBean implements Callable<String> {
         singletonScopedBean.put("Key_TaskBean", singletonScopedBean.get("Key_TaskBean") + " and more text");
 
         return (String) new InitialContext().lookup("java:comp/env/entry1");
+    }
+
+    /**
+     * Asynchronously, look up a JNDI name and convert the result to a String value.
+     */
+    @Async
+    public CompletionStage<List<String>> lookupAll(String jndiName1, String jndiName2, String jndiName3) {
+        if (Async.Result.getFuture().isDone())
+            throw new AssertionError("Result CompletableFuture should not be done already!");
+        try {
+            return dependentScopedBean.lookupAndConvertToString(jndiName1)
+                            .thenCombine(CompletableFuture.completedFuture(InitialContext.doLookup(jndiName2).toString()),
+                                         (s1, s2) -> {
+                                             // application component context must be available to dependent stage
+                                             try {
+                                                 return Arrays.asList(s1, s2, InitialContext.doLookup(jndiName3).toString());
+                                             } catch (NamingException x) {
+                                                 throw new CompletionException(x);
+                                             }
+                                         });
+        } catch (NamingException x) {
+            throw new CompletionException(x);
+        }
     }
 }

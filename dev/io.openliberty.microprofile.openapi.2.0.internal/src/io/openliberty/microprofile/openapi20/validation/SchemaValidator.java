@@ -61,8 +61,8 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
-            if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_MULTIPLE_OF_LESS_THAN_ONE);
+            if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ZERO) <= 0)) {
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_MULTIPLE_OF_NOT_GREATER_THAN_ZERO);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
@@ -129,7 +129,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
 
             if (!propertiesInvalidValue.isEmpty()) {
                 for (String s : propertiesInvalidValue) {
-                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_MULTIPLE_OF_LESS_THAN_ZERO, s);
+                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.SCHEMA_PROPERTY_LESS_THAN_ZERO, s);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }

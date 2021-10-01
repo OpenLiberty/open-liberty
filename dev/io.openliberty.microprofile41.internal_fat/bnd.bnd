@@ -17,7 +17,8 @@ src: \
 	
 fat.project: true
 
-tested.features: microProfile-4.1
+tested.features: microProfile-4.1,\
+                 microProfile-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\

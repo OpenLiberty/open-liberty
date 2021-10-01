@@ -46,15 +46,17 @@ import java.util.logging.XMLFormatter;
 import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
+import javax.sql.PooledConnection;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
+
+import org.ietf.jgss.GSSCredential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
@@ -853,11 +855,30 @@ public class OracleHelper extends DatabaseHelper {
         
         if (useKerb != KerbUsage.NONE) {
             try {
-                checkIBMJava8();
+                assertIBMKerberosSupported();
                 setKerberosDatasourceProperties(ds);
             } catch (ResourceException ex) {
                 throw AdapterUtil.toSQLException(ex);
             }
+            
+            //Workaround for Oracle Driver + IBM JDK issue with non-connection builder path
+            if (mcf.dsConfig.get().sendGSSCredentialOnOracleBuilder) {
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Using Connection Builder path for Kerberos");
+                        Connection conn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<Connection>() {
+                            public Connection run() throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+                                Object oracleConnectionBuilder = ds.getClass().getMethod("createConnectionBuilder").invoke(ds);
+                                Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
+                                Method m = oracleConnectionBuilder.getClass().getMethod("build");
+                                m.setAccessible(true);
+                                return (Connection) m.invoke(oracleConnectionBuilder2);
+                            }
+                        });
+                } catch (Throwable t) {
+                    throw AdapterUtil.toSQLException(t);
+                }
+            };
         }
         
         return super.getConnectionFromDatasource(ds, useKerb, gssCredential);
@@ -873,8 +894,35 @@ public class OracleHelper extends DatabaseHelper {
                      cri, useKerberos, gssCredential);
         
         if (useKerberos != KerbUsage.NONE) {
-            checkIBMJava8();
+            assertIBMKerberosSupported();
             setKerberosDatasourceProperties(ds);
+            
+            //Workaround for Oracle Driver + IBM JDK issue with non-connection builder path
+            if (mcf.dsConfig.get().sendGSSCredentialOnOracleBuilder) {
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Using Connection Builder path for Kerberos");
+
+                    PooledConnection pConn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<PooledConnection>() {
+                        public PooledConnection run() throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+                            Object oracleConnectionBuilder;
+                            if (is2Phase) { //XAConnection
+                                oracleConnectionBuilder = ds.getClass().getMethod("createXAConnectionBuilder").invoke(ds);
+                            } else { //PooledConnection
+                                oracleConnectionBuilder = ds.getClass().getMethod("createPooledConnectionBuilder").invoke(ds);    
+                            }
+                            Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
+                            Method m = oracleConnectionBuilder.getClass().getMethod("build");
+                            m.setAccessible(true);
+                            return (PooledConnection) m.invoke(oracleConnectionBuilder2);                          
+                        }
+                    });
+                    return new ConnectionResults(pConn, null);
+                } catch (Throwable e) {
+                    throw new ResourceException(e);
+                }
+            };
+            
         }
         ConnectionResults results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
 
@@ -884,8 +932,8 @@ public class OracleHelper extends DatabaseHelper {
     }
 
     @FFDCIgnore(Exception.class)
-    private void checkIBMJava8() throws ResourceException {
-        if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
+    private void assertIBMKerberosSupported() throws ResourceException {
+        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
             // The Oracle JDBC driver prior to 21c does not support kerberos authentication on IBM JDK 8 because
             // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
             boolean ibmJdkSupported;

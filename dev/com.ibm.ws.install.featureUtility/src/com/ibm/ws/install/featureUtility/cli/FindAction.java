@@ -21,6 +21,7 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class FindAction implements ActionHandler {
 
     private ExitCode execute() {
         try {
-            FeatureUtility featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFeaturesToInstall(argList).build();
+            FeatureUtility featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFeaturesToInstall(argList).setAdditionalJsons(new ArrayList<>()).build();
             featureUtility.findFeatures();
             progressBar.finish();
         } catch (IOException e) {

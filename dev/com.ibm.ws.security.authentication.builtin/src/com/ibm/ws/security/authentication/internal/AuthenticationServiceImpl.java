@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -199,13 +199,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /** {@inheritDoc} */
     @Override
     public Subject authenticate(String jaasEntryName, AuthenticationData authenticationData, Subject subject) throws AuthenticationException {
-        ReentrantLock currentLock = optionallyObtainLockedLock(authenticationData);
+        AuthenticationData hashtableAuthData = getHashtable(subject);
+        ReentrantLock currentLock = obtainCurrentLock(authenticationData, hashtableAuthData);
+
         try {
             // If basic auth login to a different realm, then create a basic auth subject
             if (isBasicAuthLogin(authenticationData)) {
                 return createBasicAuthSubject(authenticationData, subject);
             } else {
-                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject);
+                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
                 if (authenticatedSubject == null) {
                     authenticatedSubject = performJAASLogin(jaasEntryName, authenticationData, subject);
                     insertSubjectInAuthCache(authenticationData, authenticatedSubject);
@@ -216,6 +218,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             releaseLock(authenticationData, currentLock);
             CertificateLoginModule.collectiveCertificate.set(false);
         }
+    }
+
+    /**
+     * If we have hashtableAuthData from the subject, then use the hashtableAuthData to lock it.
+     * Otherwise, will use the regular authenticationData to lock it.
+     *
+     * @param authenticationData
+     * @param hashtableAuthData
+     * @return
+     */
+    private ReentrantLock obtainCurrentLock(AuthenticationData authenticationData, AuthenticationData hashtableAuthData) {
+        ReentrantLock currentLock;
+        if (!hashtableAuthData.isEmpty())
+            currentLock = optionallyObtainLockedLock(hashtableAuthData);
+        else
+            currentLock = optionallyObtainLockedLock(authenticationData);
+        return currentLock;
     }
 
     private boolean isBasicAuthLogin(AuthenticationData authenticationData) {
@@ -260,14 +279,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (Exception e) {
             throw new AuthenticationException(e.getMessage());
         }
+        AuthenticationData hashtableAuthData = getHashtable(subject);
+        ReentrantLock currentLock = obtainCurrentLock(authenticationData, hashtableAuthData);
 
-        ReentrantLock currentLock = optionallyObtainLockedLock(authenticationData);
         try {
             // If basic auth login to a different realm, then create a basic auth subject
             if (isBasicAuthLogin(authenticationData)) {
                 return createBasicAuthSubject(authenticationData, subject);
             } else {
-                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject);
+                Subject authenticatedSubject = findSubjectInAuthCache(authenticationData, subject, hashtableAuthData);
                 if (authenticatedSubject == null) {
                     authenticatedSubject = performJAASLogin(jaasEntryName, callbackHandler, subject);
                     insertSubjectInAuthCache(authenticationData, authenticatedSubject);
@@ -315,7 +335,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationGuard.relinquishAccess(authenticationData, currentLock);
     }
 
-    private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject) throws AuthenticationException {
+    private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject,
+                                           AuthenticationData hashtableAuthData) throws AuthenticationException {
         Subject subject = null;
         AuthCacheService authCacheService = getAuthCacheService();
         if (authCacheService != null && authenticationData != null) {
@@ -342,7 +363,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         if (userid != null && password != null) {
                             subject = findSubjectByUseridAndPassword(authCacheService, userid, password);
                         } else if (partialSubject != null) {
-                            subject = findSubjectBySubjectHashtable(authCacheService, partialSubject);
+                            subject = findSubjectBySubjectHashtable(authCacheService, partialSubject, hashtableAuthData);
                         }
                     }
                 }
@@ -407,35 +428,62 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password));
     }
 
-    private Subject findSubjectBySubjectHashtable(AuthCacheService authCacheService, Subject partialSubject) {
+/*
+ * We only create cache key (CustomCacheKeyProvider.java) for hashtable login so there is no need to
+ * get the lookup key for userId/pwd and userId only cases.
+ */
+    private Subject findSubjectBySubjectHashtable(AuthCacheService authCacheService, Subject partialSubject, AuthenticationData hashtableAuthData) {
         Subject subject = null;
+        if (hashtableAuthData.isEmpty())
+            return subject;
+
+        String customCacheKey = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
+        if (customCacheKey != null) {
+            subject = authCacheService.getSubject(customCacheKey);
+            return subject;
+        }
+        //We do not create look up key for hashtable userid/pwd or userid only
+        String userid = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_USERID);
+        String password = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
+
+        String lookupKey;
+        if (password != null) {
+            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
+        } else {
+            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
+        }
+        subject = authCacheService.getSubject(lookupKey);
+
+        return subject;
+    }
+
+    private AuthenticationData getHashtable(Subject partialSubject) {
+        AuthenticationData authData = new WSAuthenticationData();
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(partialSubject, new String[] { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY });
         if (hashtable != null) {
             String customCacheKey = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
-            Boolean internalCachekeyAssertion = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
-
-            if (customCacheKey != null && internalCachekeyAssertion != null && internalCachekeyAssertion.equals(Boolean.TRUE)) {
-                subject = authCacheService.getSubject(customCacheKey);
-                return subject;
+            if (customCacheKey != null) {
+                authData.set(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
             }
         }
+
         hashtable = subjectHelper.getHashtableFromSubject(partialSubject, new String[] { AttributeNameConstants.WSCREDENTIAL_USERID,
                                                                                          AttributeNameConstants.WSCREDENTIAL_PASSWORD });
         if (hashtable != null) {
             String userid = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_USERID);
             String password = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
-
-            String lookupKey;
-            if (password != null) {
-                lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
-            } else {
-                lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
+            if (userid != null & password != null) {
+                authData.set(AttributeNameConstants.WSCREDENTIAL_USERID, userid);
+                authData.set(AttributeNameConstants.WSCREDENTIAL_PASSWORD, password);
+            } else if (userid != null) {
+                Boolean internalCachekeyAssertion = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
+                if (internalCachekeyAssertion != null && internalCachekeyAssertion.equals(Boolean.TRUE))
+                    authData.set(AttributeNameConstants.WSCREDENTIAL_USERID, userid); //Allow to login with user ID only
             }
-            subject = authCacheService.getSubject(lookupKey);
         }
 
-        return subject;
+        return authData;
     }
 
     @Sensitive

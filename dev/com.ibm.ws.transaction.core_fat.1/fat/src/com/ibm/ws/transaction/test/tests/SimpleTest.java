@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.SimpleServlet;
@@ -95,6 +96,13 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
+    public void testShowPort() throws Exception {
+        // Just testing the debug output really
+        @SuppressWarnings("unused")
+        ProgramOutput startServerExpectFailure = server.startServerExpectFailure("blabla.log", false, false);
+    }
+
+    @Test
     // TODO: Remove skip when injection is enabled for jakartaee9
     @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testAsyncFallback() throws Exception {
@@ -127,7 +135,7 @@ public class SimpleTest extends FATServletClient {
     /**
      * Test enlistment in transactions.
      *
-     * @param request HTTP request
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */

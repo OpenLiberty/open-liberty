@@ -11,13 +11,11 @@
 package com.ibm.ws.security.saml20.fat.commonTest;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 //issue 17687
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.TrustManager;
 
@@ -50,9 +48,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 
 import componenttest.common.apiservices.Bootstrap;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPUtils;
 
 public class SAMLCommonTest extends CommonTest {
@@ -114,7 +110,7 @@ public class SAMLCommonTest extends CommonTest {
     protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
     protected static boolean cipherMayExceed128 = false;
     public static boolean usingExternalLDAPServer = false;
-	//issue 17687
+    //issue 17687
     public static String callbackHandlerWss4j = SAMLConstants.EXAMPLE_CALLBACK_WSS4J;
     public static String featureWss4j = SAMLConstants.EXAMPLE_CALLBACK_FEATURE_WSS4J;
 
@@ -157,7 +153,6 @@ public class SAMLCommonTest extends CommonTest {
         testSettings = null;
         samlConfigSettings = new SAMLConfigSettings();
         helpers = null;
-        timeoutCounter = 0;
         //allowableTimeoutCount = 0;
         flowType = null;
         copyMetaData = true;
@@ -205,7 +200,7 @@ public class SAMLCommonTest extends CommonTest {
 
     }
 
-    //issue 17687 
+    //issue 17687
     public static SAMLTestServer commonSetUp(String requestedServer,
                                              String serverXML, String testType, String serverType,
                                              List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, String callbackHandler,
@@ -221,14 +216,13 @@ public class SAMLCommonTest extends CommonTest {
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, checkForSecuityStart, cbHandlers);
 
     } //End issue 17687
-	
-    
+
     //issue 17687
     public static SAMLTestServer commonSetUp(String requestedServer,
                                              String serverXML, String testType, String serverType,
                                              List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, Map<String, String> cbHandlers) throws Exception {
-    //End issue 17687
-		
+        //End issue 17687
+
         String thisMethod = "commonSetUp";
         msgUtils.printMethodName(thisMethod);
 
@@ -246,7 +240,6 @@ public class SAMLCommonTest extends CommonTest {
             }
         }
 
-        timeoutCounter = 0;
         //        allowableTimeoutCount = 0;
         //		Integer defaultPort = null;
         String httpString = null;
@@ -269,7 +262,7 @@ public class SAMLCommonTest extends CommonTest {
             } else {
                 aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType, cbHandlers);
             } //End issue 17687
-			
+
             aTestServer.removeServerConfigFiles();
             aTestServer.setServerNameAndHostIp();
 
@@ -328,35 +321,7 @@ public class SAMLCommonTest extends CommonTest {
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
             }
 
-            switch (requestedServer) {
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.sp"):
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.sp"):
-                    Log.info(thisClass, thisMethod, "in sp case");
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war");
-                    break;
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.rs"):
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.rs"):
-                    Log.info(thisClass, thisMethod, "in rs case");
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/helloworld.war");
-                    break;
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.merged_sp_rs"):
-                    Log.info(thisClass, thisMethod, "in merged case");
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war",
-                                  "test-apps/helloworld.war");
-                    break;
-                case ("com.ibm.ws.security.saml.sso_fat.logout"):
-                case ("com.ibm.ws.security.saml.sso_fat.logout.server2"):
-                    Log.info(thisClass, thisMethod, "in logout case");
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/httpServletRequestApp.war");
-                    break;
-                case ("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth"):
-                    transformApps(aTestServer.getServer(), "dropins/testmarker.war", "test-apps/idp.war");
-                    break;
-                default:
-                    Log.info(thisClass, thisMethod, "in default case");
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war");
-                    break;
-            }
+            transformApps(aTestServer);
 
             Log.info(thisClass, thisMethod, "files: " + aTestServer.getServer().pathToAutoFVTTestFiles + "/buildWorkAround");
             if (LibertyFileManager.libertyFileExists(machine, aTestServer.getServer().pathToAutoFVTTestFiles + "/buildWorkAround")) {
@@ -462,10 +427,10 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFileWithDefaultSettings(SAMLTestServer server, String configFileName, String configOutputName) {
@@ -482,11 +447,11 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configSettings
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, BaseConfigSettings configSettings, String configOutputName) {
@@ -500,12 +465,12 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param replaceVals
-     *            Maps variable names to the values to be used to replace them within the file.
+     *                             Maps variable names to the values to be used to replace them within the file.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, Map<String, String> replaceVals, String configOutputName) {
@@ -952,6 +917,7 @@ public class SAMLCommonTest extends CommonTest {
         try {
             for (SAMLTestServer server : serverRefList) {
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
             }
             timeoutChecker();
         } catch (Exception e) {
@@ -1210,7 +1176,7 @@ public class SAMLCommonTest extends CommonTest {
      * Add the newly added server to the list of server references
      *
      * @param server
-     *            - server reference to add
+     *                   - server reference to add
      * @throws Exception
      */
     private static void addToServerRefList(SAMLTestServer server) throws Exception {
@@ -1233,21 +1199,7 @@ public class SAMLCommonTest extends CommonTest {
         return extraMsgs;
     }
 
-    /**
-     * JakartaEE9 transform a list of applications.
-     *
-     * @param myServer The server to transform the applications on.
-     * @param apps The names of the applications to transform. Should include the path from the server root directory.
-     */
-    private static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        }
-    }
-
+    @Override
     public WebClient getAndSaveWebClient() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -1255,6 +1207,7 @@ public class SAMLCommonTest extends CommonTest {
         return webClient;
     }
 
+    @Override
     public WebClient getAndSaveWebClient(boolean override) throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient(override);

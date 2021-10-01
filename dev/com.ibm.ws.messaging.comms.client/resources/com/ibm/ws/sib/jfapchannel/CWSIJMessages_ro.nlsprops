@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Valoarea implicit\u0103
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Defini\u0163i valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje pentru acest server de aplica\u0163ii.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Fi\u015fierul de propriet\u0103\u0163i ''{0}'' folosit pentru determinarea securit\u0103\u0163ii ini\u0163iale client la nivel transport mesagerie nu poate fi localizat.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Fi\u015fierul de propriet\u0103\u0163i con\u0163in\u00e2nd informa\u0163ii folosite la stabilirea conexiunilor mesagerie sigur\u0103 client nu poate fi localizat\u0103.  Va fi propus un set de valori implicite.  E posibil s\u0103 nu se poat\u0103 stabili conexiuni sigure de mesagerie client.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configura\u0163i fi\u015fierul de propriet\u0103\u0163i pentru nivelul de securitate de transport mesaje client.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=MSG0001
@@ -454,18 +448,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: A ap\u0103rut o eroare intern\u0103.
 CRLDRI_INTERNAL_SICJ0065.explanation=MSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nu se poate localiza un lan\u0163 de transport numit {0} de la care s\u0103 se poat\u0103 ob\u0163ine configura\u0163ia SSL care ar putea fi necesar\u0103 pentru a stabili conexiunea cu o gazd\u0103 de la distan\u0163\u0103 numit\u0103 {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Informa\u0163iile necesare pentru a stabili o conexiune bazat\u0103 pe SSL cu un peer nu exist\u0103 in configura\u0163ia curent\u0103.  Aceast\u0103 informa\u0163ie este ob\u0163inut\u0103 \u00een mod obi\u015fnuit dintr-o defini\u0163ie convenabil\u0103 de lan\u0163 de transport. Aceast\u0103 defini\u0163ie de lan\u0163 are un nume care se potrive\u015fte cu cu un lan\u0163 existent la peer-ul la distan\u0163\u0103.  Un astfel de lan\u0163 de transport nu poate fi g\u0103sit.  E posibil s\u0103 nu se poat\u0103 stabili conexiunea.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Defini\u0163i lan\u0163uri de transport suplimentare.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Lan\u0163ul de transport numit {0} nu con\u0163ine nicio configura\u0163ie SSL care ar putea fi necesar\u0103 pentru a stabili conexiunea cu o gazd\u0103 de la distan\u0163\u0103 numit\u0103 {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Informa\u0163iile necesare pentru a stabili o conexiune bazat\u0103 pe SSL cu un peer nu exist\u0103 in configura\u0163ia curent\u0103.  Aceast\u0103 informa\u0163ie este ob\u0163inut\u0103 \u00een mod obi\u015fnuit dintr-o defini\u0163ie convenabil\u0103 de lan\u0163 de transport. Aceast\u0103 defini\u0163ie de lan\u0163 are un nume care se potrive\u015fte cu cu un lan\u0163 existent la peer-ul la distan\u0163\u0103.  Un astfel de lan\u0163 de transport nu poate fi g\u0103sit.  E posibil s\u0103 nu se poat\u0103 stabili conexiunea.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configura\u0163i canale suplimentare de transport SSL pentru lan\u0163ul de transport specificat.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

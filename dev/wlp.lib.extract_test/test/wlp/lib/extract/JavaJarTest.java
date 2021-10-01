@@ -120,22 +120,6 @@ public class JavaJarTest {
     private static final File readme = new File(wlpDir, "README.TXT");
 
     private static final File samplesTmpDir = new File("build/unittest/samplestmp");
-    private static final File samplesCoreDir = new File("build/unittest/samplescoretmp");
-    private static final File samplesBaseDir = new File("build/unittest/samplesbasetmp");
-    private static final File samplesWP7UpgradeDir = new File("build/unittest/sampleswp7tmp");
-    private static final File samplesILANDowngradeDir = new File("build/unittest/samplesilantmp");
-    private static final File samplesBaseUpgradeDir = new File("build/unittest/samplesbaseupgradetmp");
-    private static final File samplesLicenseUpgradeDir = new File("build/unittest/sampleslicenseupgradetmp");
-    private static final File samplesLicenseDowngradeDir = new File("build/unittest/sampleslicensedowngradetmp");
-    private static final File samplesBundleDowngradeDir = new File("build/unittest/samplesbundledowngradetmp");
-    private static final File samplesBundleUpgradeDir = new File("build/unittest/samplesbundleupgradetmp");
-    private static final File samplesOldVersionDowngradeDir = new File("build/unittest/samplesoldversiondowngradetmp");
-    private static final File samplesBaseRollbackDir = new File("build/unittest/samplesbaserollbacktmp");
-    private static final File samplesBaseUpgradeWithFeatureDir = new File("build/unittest/samplesbaseupgradewithfeaturetmp");
-    private static final File samplesNdDowngradeWithFeatureDir = new File("build/unittest/samplesnddowngradewithfeaturetmp");
-    private static final File samplesNdDir = new File("build/unittest/samplesndtmp");
-    private static final File samplesNdLicDir = new File("build/unittest/samplesndlictmp");
-    private static final File samplesBaseLicDir = new File("build/unittest/samplesbaselictmp");
     private static final File samplesWlpDir = new File(samplesTmpDir, "wlp");
 
     private static final File dummySampleJar = new File("build/dummySample/output/dummySample.jar");
@@ -299,35 +283,23 @@ public class JavaJarTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        File samplesNdDir = new File("build/unittest/samplesndtmp");
         Assert.assertTrue("mkdir -p " + tmpDir.getAbsolutePath(), tmpDir.mkdirs() || tmpDir.isDirectory());
         Assert.assertTrue("mkdir -p " + samplesTmpDir.getAbsolutePath(), samplesTmpDir.mkdirs() || samplesTmpDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesBaseDir.getAbsolutePath(), samplesBaseDir.mkdirs() || samplesBaseDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesBaseUpgradeDir.getAbsolutePath(), samplesBaseUpgradeDir.mkdirs() || samplesBaseUpgradeDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesBaseRollbackDir.getAbsolutePath(), samplesBaseRollbackDir.mkdirs() || samplesBaseRollbackDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesBaseUpgradeWithFeatureDir.getAbsolutePath(),
-                          samplesBaseUpgradeWithFeatureDir.mkdirs() || samplesBaseUpgradeWithFeatureDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesNdDowngradeWithFeatureDir.getAbsolutePath(),
-                          samplesNdDowngradeWithFeatureDir.mkdirs() || samplesNdDowngradeWithFeatureDir.isDirectory());
         Assert.assertTrue("mkdir -p " + samplesNdDir.getAbsolutePath(), samplesNdDir.mkdirs() || samplesNdDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesNdLicDir.getAbsolutePath(), samplesNdLicDir.mkdirs() || samplesNdLicDir.isDirectory());
-        Assert.assertTrue("mkdir -p " + samplesBaseLicDir.getAbsolutePath(), samplesBaseLicDir.mkdirs() || samplesBaseLicDir.isDirectory());
         // Get a server unpacked for the samples to extract against
         if (disableTestSuite) {
             return;
         }
         if (runCoreTest) {
+            File samplesCoreDir = new File("build/unittest/samplescoretmp");
+            Assert.assertTrue("mkdir -p " + samplesCoreDir.getAbsolutePath(), samplesCoreDir.mkdirs() || samplesCoreDir.isDirectory());
             extractEditionJar(WlpJarType.CORE_ALL, samplesCoreDir);
+            deleteDir(samplesCoreDir);
         }
         extractEditionJar(WlpJarType.BASE, samplesTmpDir);
-        extractEditionJar(WlpJarType.BASE, samplesBaseDir);
-        extractEditionJar(WlpJarType.BASE, samplesBaseLicDir);
-        extractEditionJar(WlpJarType.BASE, samplesBaseUpgradeDir);
-        extractEditionJar(WlpJarType.BASE, samplesBaseRollbackDir);
-        extractEditionJar(WlpJarType.BASE, samplesBaseUpgradeWithFeatureDir);
         extractEditionJar(WlpJarType.ND, samplesNdDir);
-        extractEditionJar(WlpJarType.ND, samplesNdLicDir);
-        extractEditionJar(WlpJarType.ND, samplesNdDowngradeWithFeatureDir);
-
+        deleteDir(samplesNdDir);
     }
 
     private static void extractEditionJar(WlpJarType type, File dest) throws Exception {
@@ -358,22 +330,6 @@ public class JavaJarTest {
     public static void cleanUp() {
         System.out.println("Clean up Samples temp directory...");
         deleteDir(samplesTmpDir);
-        deleteDir(samplesCoreDir);
-        deleteDir(samplesBaseDir);
-        deleteDir(samplesBaseLicDir);
-        deleteDir(samplesBaseUpgradeDir);
-        deleteDir(samplesBaseRollbackDir);
-        deleteDir(samplesNdDir);
-        deleteDir(samplesNdLicDir);
-        deleteDir(samplesBaseUpgradeWithFeatureDir);
-        deleteDir(samplesNdDowngradeWithFeatureDir);
-        deleteDir(samplesLicenseUpgradeDir);
-        deleteDir(samplesLicenseDowngradeDir);
-        deleteDir(samplesBundleDowngradeDir);
-        deleteDir(samplesOldVersionDowngradeDir);
-        deleteDir(samplesBundleUpgradeDir);
-        deleteDir(samplesWP7UpgradeDir);
-        deleteDir(samplesILANDowngradeDir);
     }
 
     private static void delete(File file) {

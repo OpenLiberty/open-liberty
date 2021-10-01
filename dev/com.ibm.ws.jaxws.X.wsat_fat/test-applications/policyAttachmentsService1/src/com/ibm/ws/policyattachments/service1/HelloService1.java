@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/package com.ibm.ws.policyattachments.service1;
+ *******************************************************************************/
+package com.ibm.ws.policyattachments.service1;
+
 
 import javax.jws.WebService;
 

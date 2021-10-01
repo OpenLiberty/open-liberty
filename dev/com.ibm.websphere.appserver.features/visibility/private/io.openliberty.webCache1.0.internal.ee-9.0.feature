@@ -5,6 +5,7 @@ visibility=private
 -features=\
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.pages-3.0
--bundles=com.ibm.ws.dynacache.web.jakarta
-kind=noship
-edition=full
+-bundles=com.ibm.ws.dynacache.web.jakarta, \
+  com.ibm.ws.dynacache.web.servlet31.jakarta
+kind=beta
+edition=core

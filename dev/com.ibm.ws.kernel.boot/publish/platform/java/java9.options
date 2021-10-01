@@ -10,6 +10,9 @@ java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED
 # for Oracle Kerberos
 --add-exports
 java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED
+# for Dump action: com.ibm.ws.kernel.boot.internal.commands.HotSpotJavaDumperImpl$VirtualMachine.remoteDataDump(HotSpotJavaDumperImpl.java:339)
+--add-exports
+jdk.attach/sun.tools.attach=ALL-UNNAMED
 ### Opens
 --add-opens
 java.base/java.util=ALL-UNNAMED
@@ -46,6 +49,6 @@ java.desktop/java.awt.image=ALL-UNNAMED
 # for com.ibm.ws.transport.iiop_fat:testResolvable/testResolvableThatThrows (yoko accessible calls)
 --add-opens
 java.base/java.security=ALL-UNNAMED
-# for java -jar execution on command line (java.net.URLClassLoader)
+# for java -jar execution on command line (java.net.URLClassLoader) and CXF 3.1.X Authenticator support
 --add-opens
 java.base/java.net=ALL-UNNAMED

@@ -12,9 +12,10 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=3.0.0
+eclVersion=3.0.2
 eclFullVersion=${eclVersion}
-eclPackageVersion=3.0.0
+eclPackageVersion=3.0.2
+asmFullVersion=9.1.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.0.thirdparty
 Bundle-Description: EclipseLink JPA
@@ -25,7 +26,7 @@ Premain-Class: org.eclipse.persistence.internal.jpa.deployment.JavaSECMPInitiali
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse.org - EclipseLink Project
 Bundle-ManifestVersion: 2
-Specification-Version: 3.0.0
+Specification-Version: ${eclVersion}
 
 Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
@@ -34,7 +35,7 @@ Export-Package: \
             org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
-            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${asmFullVersion}", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
             org.eclipse.persistence.*;version="${eclVersion}"
@@ -108,12 +109,11 @@ DynamicImport-Package: \
 Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 

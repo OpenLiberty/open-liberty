@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,8 +118,7 @@ public class PassivationRegressionServlet extends FATServlet {
     public void testTxNotSupported() throws Exception {
         BMTXSession bean = null;
 
-        BMTXSessionHome home = FATHelper.lookupRemoteBinding(BMTX_HOME, BMTXSessionHome.class);
-        //BMTXSessionHome home = (BMTXSessionHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/BMTXSession"), BMTXSessionHome.class);
+        BMTXSessionHome home = FATHelper.lookupRemoteHomeBinding(BMTX_HOME, BMTXSessionHome.class);
         bean = home.create();
         svLogger.info("Call the method, runNotSupportedTest, to start the test.");
 
@@ -145,8 +144,7 @@ public class PassivationRegressionServlet extends FATServlet {
     public void testNSOException() throws Exception {
         String keyStr = "Bean for testNSOException";
 
-        BMEntityHome beanHome = FATHelper.lookupRemoteBinding(BMENTITY_HOME, BMEntityHome.class);
-        //BMEntityHome beanHome = (BMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/BMEntity"), BMEntityHome.class);
+        BMEntityHome beanHome = FATHelper.lookupRemoteHomeBinding(BMENTITY_HOME, BMEntityHome.class);
         BMEntity b = beanHome.create(keyStr);
 
         svLogger.info("Verifying removal of bean managed entity bean ...");
@@ -178,8 +176,7 @@ public class PassivationRegressionServlet extends FATServlet {
     @Test
     public void testTXContextFlow() throws Exception {
         UserTransaction curr = lookupUserTransaction();
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
         CMEntity b = null;
 
         svLogger.info("creating test beans ...");
@@ -224,8 +221,7 @@ public class PassivationRegressionServlet extends FATServlet {
     @Test
     @ExpectedFFDC({ "org.omg.CORBA.OBJECT_NOT_EXIST", "java.lang.RuntimeException", "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testTXRequiredExceptionCommit() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
         UserTransaction curr = lookupUserTransaction();
 
         svLogger.info("creating entity bean ... ");
@@ -281,8 +277,7 @@ public class PassivationRegressionServlet extends FATServlet {
     @Test
     @ExpectedFFDC({ "org.omg.CORBA.OBJECT_NOT_EXIST", "java.lang.RuntimeException", "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testTXRequiredException() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
         UserTransaction curr = lookupUserTransaction();
 
         svLogger.info("creating entity bean ... ");
@@ -349,8 +344,7 @@ public class PassivationRegressionServlet extends FATServlet {
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testRollbackOnlyMethod() throws Exception {
         StatefulSessionHome statefulHome = null;
-        statefulHome = FATHelper.lookupRemoteBinding(STATEFUL_HOME, StatefulSessionHome.class);
-        //statefulHome = (StatefulSessionHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/StatefulSession"), StatefulSessionHome.class);
+        statefulHome = FATHelper.lookupRemoteHomeBinding(STATEFUL_HOME, StatefulSessionHome.class);
 
         // ---------------------------------------------------------
         // Create entity bean to delegate to, and session bean to
@@ -388,8 +382,7 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testCheckedExceptioHandling() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
         UserTransaction userTx = lookupUserTransaction();
 
         svLogger.info("creating entity bean ... ");
@@ -461,10 +454,8 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testMarkedTXRollback() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        StatefulSessionHome statefulHome = FATHelper.lookupRemoteBinding(STATEFUL_HOME, StatefulSessionHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
-        //StatefulSessionHome statefulHome = (StatefulSessionHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/StatefulSession"), StatefulSessionHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
+        StatefulSessionHome statefulHome = FATHelper.lookupRemoteHomeBinding(STATEFUL_HOME, StatefulSessionHome.class);
 
         svLogger.info("creating beans ... ");
         CMEntity eb = null;
@@ -517,10 +508,8 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testEntityNonPersistentVar() throws Exception {
-        BMEntityHome bmHome = FATHelper.lookupRemoteBinding(BMENTITY_HOME, BMEntityHome.class);
-        StatefulSessionHome statefulHome = FATHelper.lookupRemoteBinding(STATEFUL_HOME, StatefulSessionHome.class);
-        //BMEntityHome bmHome = (BMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/BMEntity"), BMEntityHome.class);
-        //StatefulSessionHome statefulHome = (StatefulSessionHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/StatefulSession"), StatefulSessionHome.class);
+        BMEntityHome bmHome = FATHelper.lookupRemoteHomeBinding(BMENTITY_HOME, BMEntityHome.class);
+        StatefulSessionHome statefulHome = FATHelper.lookupRemoteHomeBinding(STATEFUL_HOME, StatefulSessionHome.class);
 
         String keyStr = "Bean for testEntityNonPersistentVar";
 
@@ -560,8 +549,7 @@ public class PassivationRegressionServlet extends FATServlet {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testGetSetGetRollback() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
 
         svLogger.info("creating beans ... ");
         CMEntity eb = null;
@@ -591,8 +579,7 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testStatelessGetEJBObject() throws Exception {
-        StatelessSessionHome statelessHome = FATHelper.lookupRemoteBinding(STATELESS_HOME, StatelessSessionHome.class);
-        //StatelessSessionHome statelessHome = (StatelessSessionHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/StatelessSession"), StatelessSessionHome.class);
+        StatelessSessionHome statelessHome = FATHelper.lookupRemoteHomeBinding(STATELESS_HOME, StatelessSessionHome.class);
         StatelessSession sbean = statelessHome.create();
         assertNotNull("Stateless bean failed to create", sbean);
         assertNotNull("getEJBObject failed to return", sbean.getEJBObject());
@@ -615,10 +602,8 @@ public class PassivationRegressionServlet extends FATServlet {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     public void testBMTLeftOpenCausesRollback() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        BMTXStatelessHome statelessHome = FATHelper.lookupRemoteBinding(BMTXSL_HOME, BMTXStatelessHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
-        //BMTXStatelessHome statelessHome = (BMTXStatelessHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/BMTXStateless"), BMTXStatelessHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
+        BMTXStatelessHome statelessHome = FATHelper.lookupRemoteHomeBinding(BMTXSL_HOME, BMTXStatelessHome.class);
 
         CMEntity b1 = null;
         final BMTXStateless sbean;
@@ -662,8 +647,7 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testJavaCompUserTranLookup() throws Exception {
-        BMTXStatelessHome statelessHome = FATHelper.lookupRemoteBinding(BMTXSL_HOME, BMTXStatelessHome.class);
-        //BMTXStatelessHome statelessHome = (BMTXStatelessHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/BMTXStateless"), BMTXStatelessHome.class);
+        BMTXStatelessHome statelessHome = FATHelper.lookupRemoteHomeBinding(BMTXSL_HOME, BMTXStatelessHome.class);
         BMTXStateless sbean = statelessHome.create();
         sbean.testAccessToUserTransaction();
         svLogger.info("testJavaCompUserTranLookup passed");
@@ -683,8 +667,7 @@ public class PassivationRegressionServlet extends FATServlet {
      */
     @Test
     public void testJavaCompEnvAccess() throws Exception {
-        CMEntityHome cmHome = FATHelper.lookupRemoteBinding(CMENTITY_HOME, CMEntityHome.class);
-        //CMEntityHome cmHome = (CMEntityHome) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/StatefulPassivationEJB/CMEntity"), CMEntityHome.class);
+        CMEntityHome cmHome = FATHelper.lookupRemoteHomeBinding(CMENTITY_HOME, CMEntityHome.class);
 
         svLogger.info("creating beans ... ");
         CMEntity eb = null;

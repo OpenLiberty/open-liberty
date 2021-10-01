@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.StringReader;
 import java.net.ConnectException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -33,15 +32,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.xml.namespace.QName;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.ws.Dispatch;
-import javax.xml.ws.Service;
-import javax.xml.ws.Service.Mode;
-import javax.xml.ws.soap.SOAPBinding;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -77,6 +67,9 @@ public class CommonTests {
     protected static TrustManager tm = null;
 
     protected static String hostName = "localhost";
+
+    //6/2021
+    //protected static String CBHVersion = "";
 
     //static final int TCPMON_LISTENER_PORT = 9088;
     static final int TCPMON_LISTENER_PORT = 0;
@@ -313,6 +306,7 @@ public class CommonTests {
     }
 
     // CXF Client tests
+    //orig:
     public void genericTest(String thisMethod, String useThisUrl,
                             String securePort, String id, String pw, String serviceName,
                             String clientWsdl, String servicePort, String sendMsg,
@@ -324,15 +318,30 @@ public class CommonTests {
                     verifyMsg, null, failMsg);
     }
 
+    //6/2021
+    public void genericAsyncTest(String thisMethod, String useThisUrl,
+                                 String securePort, String id, String pw, String serviceName,
+                                 String clientWsdl, String servicePort, String sendMsg,
+                                 String verifyMsg, String failMsg, String callbackVersion) throws Exception {
+
+        genericAsyncTest(thisMethod, useThisUrl,
+                         securePort, id, pw, serviceName,
+                         clientWsdl, servicePort, sendMsg,
+                         verifyMsg, null, failMsg, null);
+    }//End 6/20201
+
+    //orig:
     public void genericTest(String thisMethod, String useThisUrl,
                             String securePort, String id, String pw, String serviceName,
                             String clientWsdl, String servicePort, String sendMsg,
                             String verifyMsg, String verifyMsg2, String failMsg) throws Exception {
+
         try {
             genericTestSub(thisMethod, useThisUrl,
                            securePort, id, pw, serviceName,
                            clientWsdl, servicePort, sendMsg,
                            verifyMsg, verifyMsg2, failMsg);
+
         } catch (ConnectException e) {
             // Something must be very wrong. This is calling from HttpClient to ServiceClient
             // It should not get any ConnectException
@@ -354,10 +363,53 @@ public class CommonTests {
                                securePort, id, pw, serviceName,
                                clientWsdl, servicePort, sendMsg,
                                verifyMsg, verifyMsg2, failMsg);
+
             }
         }
     }
 
+    //new
+    //6/20201
+    public void genericAsyncTest(String thisMethod, String useThisUrl,
+                                 String securePort, String id, String pw, String serviceName,
+                                 String clientWsdl, String servicePort, String sendMsg,
+                                 String verifyMsg, String verifyMsg2, String failMsg, String callbackVersion) throws Exception {
+
+        //6/20201
+        try {
+            genericAsyncTestSub(thisMethod, useThisUrl,
+                                securePort, id, pw, serviceName,
+                                clientWsdl, servicePort, sendMsg,
+                                verifyMsg, verifyMsg2, failMsg, callbackVersion); //End 6/20201
+
+        } catch (ConnectException e) {
+            // Something must be very wrong. This is calling from HttpClient to ServiceClient
+            // It should not get any ConnectException
+
+            String strMsg = e.getMessage();
+            if (strMsg != null && strMsg.indexOf("Connection refused") >= 0) {
+                // This Exception should not happen
+                // Let wait 1 second before try again.
+                String strTmp = "Let's sleep 1 second to wait for the resource to cool down a little bit....";
+                Log.error(thisClass, thisMethod, e, strTmp);
+                System.err.println(strTmp);
+                try {
+                    Thread.currentThread().sleep(1000);
+                } catch (Exception se) {
+                    // do nothing
+                }
+                // call again
+                //6/2021
+                genericAsyncTestSub(thisMethod, useThisUrl,
+                                    securePort, id, pw, serviceName,
+                                    clientWsdl, servicePort, sendMsg,
+                                    verifyMsg, verifyMsg2, failMsg, callbackVersion);
+
+            }
+        }
+    }
+
+    //Orig:
     public void genericTestSub(String thisMethod, String useThisUrl,
                                String securePort, String id, String pw, String serviceName,
                                String clientWsdl, String servicePort, String sendMsg,
@@ -469,69 +521,188 @@ public class CommonTests {
 
     }
 
-    // TWAS Client tests
-    public void genericTest(String thisMethod, String ENDPOINT_EXT,
-                            String serviceName, String servicePort, String sendMsg,
-                            String verifyMsg) throws Exception {
-        genericTest(thisMethod, ENDPOINT_EXT, serviceName, servicePort,
-                    sendMsg, verifyMsg, "");
-    }
-
-    public void genericTest(String thisMethod, String ENDPOINT_EXT,
-                            String serviceName, String servicePort, String sendMsg,
-                            String verifyMsg, String verifyMsg2) throws Exception {
+    //6/20201
+    public void genericAsyncTestSub(String thisMethod, String useThisUrl,
+                                    String securePort, String id, String pw, String serviceName,
+                                    String clientWsdl, String servicePort, String sendMsg,
+                                    String verifyMsg, String verifyMsg2, String failMsg, String callbackVersion) throws Exception { //End 6/2021
 
         printMethodName(thisMethod);
-        Log.info(thisClass, thisMethod, "In generic TWAS client code");
-
-        String respMsg = null;
-        StringReader sendThisMsg = new StringReader(sendMsg);
-
-        QName QUALIFIED_SERVICE_NAME = new QName(NAMESPACE_URI, serviceName);
-        QName QUALIFIED_PORT_NAME = new QName(NAMESPACE_URI, servicePort);
-
-        Service svc = Service.create(QUALIFIED_SERVICE_NAME);
-
-        svc.addPort(QUALIFIED_PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING,
-                    ENDPOINT_BASE + ENDPOINT_EXT);
+        String respReceived = null;
+        Log.info(thisClass, thisMethod, "In CommontTests.genericAsyncTestSub: generic CXF client code");
 
         try {
+            /*
+             * com.sun.net.ssl.HttpsURLConnection
+             * .setDefaultHostnameVerifier(new com.sun.net.ssl.HostnameVerifier() {
+             * public boolean verify(String urlHostname,
+             * String certHostname) {
+             * return true;
+             * }
+             * });
+             */
 
-            Dispatch<SOAPMessage> dispatch = svc.createDispatch(
-                                                                QUALIFIED_PORT_NAME, SOAPMessage.class, Mode.MESSAGE);
-            Source src = new StreamSource(sendThisMsg);
-            MessageFactory factory = MessageFactory.newInstance();
-            SOAPMessage message = factory.createMessage();
-            message.getSOAPPart().setContent(src);
-            message.saveChanges();
-            Log.info(thisClass, thisMethod,
-                     "Invoking Web Service:");
-            SOAPMessage returnMessage = dispatch.invoke(message);
-            Log.info(thisClass, thisMethod,
-                     "Response received:");
-            respMsg = returnMessage.getSOAPBody().getTextContent();
+//            if (!securePort.isEmpty()) {
+//                Log.info(thisClass, thisMethod, "Setting trustStore to " + strJksLocation);
+//                System.setProperty("javax.net.ssl.trustStore", strJksLocation);
+//                System.setProperty("javax.net.ssl.trustStorePassword",
+//                                   "LibertyClient");
 
-            Log.info(thisClass, thisMethod,
-                     "Response SOAP Body content: " + respMsg);
+//                setupSSLClient(strJksLocation, "LibertyClient");
+//            }
 
-        } catch (Exception ex) {
-            respMsg = ex.getMessage();
-            Log.info(thisClass, thisMethod,
-                     "exception received: " + respMsg);
-            ex.printStackTrace();
+            WebRequest request = null;
+            WebResponse response = null;
+
+            // Create the conversation object which will maintain state for us
+            WebConversation wc = new WebConversation();
+
+            // Invoke the service client - servlet
+            //Log.info(thisClass, thisMethod, "useThisUrl is: " + useThisUrl);
+            Log.info(thisClass, thisMethod, "Invoke service client: " + useThisUrl);
+            //6/2021
+            Log.info(thisClass, thisMethod, "Before setParam, callbackHandlerVersion is: " + callbackVersion);
+            request = new GetMethodWebRequest(useThisUrl);
+
+            request.setParameter("testName", thisMethod);
+            request.setParameter("httpDefaultPort", portNumber);
+            request.setParameter("httpSecureDefaultPort", securePort);
+            request.setParameter("id", id);
+            request.setParameter("pw", pw);
+            request.setParameter("serviceName", serviceName);
+            request.setParameter("clientWsdl", clientWsdl);
+            request.setParameter("servicePort", servicePort);
+            request.setParameter("msg", sendMsg);
+            //6/2021
+            request.setParameter("CallBackhandlerVersion", callbackVersion);
+
+            // debug
+//            Log.info(thisClass, thisMethod, "testName " + thisMethod);
+//            Log.info(thisClass, thisMethod, "httpDefaultPort" + portNumber);
+//            Log.info(thisClass, thisMethod, "httpSecureDefaultPort" +
+//                                            securePort);
+//            Log.info(thisClass, thisMethod, "id" + id);
+//            Log.info(thisClass, thisMethod, "pw" + pw);
+//            Log.info(thisClass, thisMethod, "serviceName" + serviceName);
+//            Log.info(thisClass, thisMethod, "clientWsdl" + clientWsdl);
+//            Log.info(thisClass, thisMethod, "servicePort" + servicePort);
+//            Log.info(thisClass, thisMethod, "msg" + sendMsg);
+//
+//            Log.info(thisClass, thisMethod, "wc: " + wc);
+            Log.info(thisClass, thisMethod, "After setParam, CallBackhandlerVersion is: " + callbackVersion);
+            Log.info(thisClass, thisMethod, "request is: " + request);
+
+            // Invoke the client
+
+            Log.info(thisClass, thisMethod, "Invoke the client - before wc.getResponse");
+            response = wc.getResponse(request);
+            Log.info(thisClass, thisMethod, "After wc.getResponse");
+
+            if (response == null) {
+                Log.info(thisClass, thisMethod, "Response from CXF x509 Sig Service client was null");
+            }
+            // Read the response page from client jsp
+            Log.info(thisClass, thisMethod, "Read the response - before response.getText() ");
+            respReceived = response.getText();
+            Log.info(thisClass, thisMethod, "Response from CXF x509 Sig Service client: " + respReceived);
+
+            // Service client catches the exception from the service and returns
+            // the exception in
+            // the msg, so, if we get an exception, there must be something
+            // really wrong!
+        } catch (ConnectException e) {// defect 109058 java.net.ConnectException: Connection refused
+            // The request is from httpClient to the serviceClient. It should not get Connection refused
+            Log.error(thisClass, thisMethod, e,
+                      "javax.net.ConnectException occurred - we should not get ConnectionException ");
+            System.err.println("ConnectException: " + e);
+            throw e;
+
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e,
+                      "Exception occurred - Service Client would catch all expected exceptions: ");
+            System.err.println("Exception: " + e);
+            throw e;
         }
 
-        assertTrue("The " + thisMethod + " test failed.  Expected: "
-                   + verifyMsg + " Received: " + respMsg, respMsg.contains(verifyMsg));
+        // assertTrue(failMsg + " Message received is: " + respReceived,
+        // respReceived.contains(verifyMsg));
+        assertTrue("\n" + "Expected: " + "\n" + verifyMsg + "\n"
+                   + " But received: " + "\n" + respReceived + "\n", respReceived.contains(verifyMsg));
         if (verifyMsg2 != null) {
-            assertTrue("The " + thisMethod + " test failed.  Expected: "
-                       + verifyMsg2 + " Received: " + respMsg, respMsg.contains(verifyMsg2));
+            assertTrue("\n" + "Expected: " + "\n" + verifyMsg2 + "\n"
+                       + " But received: " + "\n" + respReceived + "\n", respReceived.contains(verifyMsg2));
         }
 
         Log.info(thisClass, thisMethod, thisMethod + ": PASS");
         return;
 
     }
+
+    //6/20201 compilation error: "cannot find symbol" line "Service svc = Service.create(QUALIFIED_SERVICE_NAME);"
+    //Commented out for now
+    // TWAS Client tests
+    //public void genericTest(String thisMethod, String ENDPOINT_EXT,
+    //                        String serviceName, String servicePort, String sendMsg,
+    //                        String verifyMsg) throws Exception {
+    //    genericTest(thisMethod, ENDPOINT_EXT, serviceName, servicePort,
+    //                sendMsg, verifyMsg, "");
+    //}
+
+    //public void genericTest(String thisMethod, String ENDPOINT_EXT,
+    //                        String serviceName, String servicePort, String sendMsg,
+    //                        String verifyMsg, String verifyMsg2) throws Exception {
+
+    //    printMethodName(thisMethod);
+    //    Log.info(thisClass, thisMethod, "In generic TWAS client code");
+
+    //    String respMsg = null;
+    //    StringReader sendThisMsg = new StringReader(sendMsg);
+
+    //    QName QUALIFIED_SERVICE_NAME = new QName(NAMESPACE_URI, serviceName);
+    //    QName QUALIFIED_PORT_NAME = new QName(NAMESPACE_URI, servicePort);
+
+    //    Service svc = Service.create(QUALIFIED_SERVICE_NAME);
+
+    //    svc.addPort(QUALIFIED_PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING,
+    //                ENDPOINT_BASE + ENDPOINT_EXT);
+
+    //    try {
+
+    //        Dispatch<SOAPMessage> dispatch = svc.createDispatch(
+    //                                                            QUALIFIED_PORT_NAME, SOAPMessage.class, Mode.MESSAGE);
+    //        Source src = new StreamSource(sendThisMsg);
+    //        MessageFactory factory = MessageFactory.newInstance();
+    //        SOAPMessage message = factory.createMessage();
+    //        message.getSOAPPart().setContent(src);
+    //        message.saveChanges();
+    //        Log.info(thisClass, thisMethod,
+    //                 "Invoking Web Service:");
+    //        SOAPMessage returnMessage = dispatch.invoke(message);
+    //        Log.info(thisClass, thisMethod,
+    //                 "Response received:");
+    //        respMsg = returnMessage.getSOAPBody().getTextContent();
+
+    //        Log.info(thisClass, thisMethod,
+    //                 "Response SOAP Body content: " + respMsg);
+
+    //    } catch (Exception ex) {
+    //        respMsg = ex.getMessage();
+    //        Log.info(thisClass, thisMethod,
+    //                 "exception received: " + respMsg);
+    //        ex.printStackTrace();
+    //    }
+
+    //    assertTrue("The " + thisMethod + " test failed.  Expected: "
+    //               + verifyMsg + " Received: " + respMsg, respMsg.contains(verifyMsg));
+    //    if (verifyMsg2 != null) {
+    //        assertTrue("The " + thisMethod + " test failed.  Expected: "
+    //                   + verifyMsg2 + " Received: " + respMsg, respMsg.contains(verifyMsg2));
+    //    }
+
+    //    Log.info(thisClass, thisMethod, thisMethod + ": PASS");
+    //    return;
+
+    // }
 
     public static void reconfigServer(String copyFromFile) throws Exception {
 
@@ -615,7 +786,8 @@ public class CommonTests {
     public void endTest() throws Exception {
 
         try {
-            restoreServer();
+            //Removed to resolve RTC 285305, 285315
+            //restoreServer();
             String _testName = testName.getMethodName();
             printMethodName(_testName, "Ending TEST ");
             System.out.println("----- End:  " + testName + "   ----------------------------------------------------");

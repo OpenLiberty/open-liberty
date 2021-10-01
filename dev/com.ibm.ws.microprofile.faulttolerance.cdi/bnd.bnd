@@ -37,6 +37,8 @@ testsrc=test/src
 
 WS-TraceGroup: FAULTTOLERANCE
 
+jakartaeeMe: true
+
 -cdiannotations:
 
 -dsannotations-inherit: true

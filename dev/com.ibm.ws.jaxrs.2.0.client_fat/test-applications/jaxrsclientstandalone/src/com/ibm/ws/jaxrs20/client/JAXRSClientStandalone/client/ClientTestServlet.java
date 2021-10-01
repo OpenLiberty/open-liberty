@@ -135,6 +135,7 @@ public class ClientTestServlet extends HttpServlet {
                         .path(param.get("param"))
                         .request()
                         .get(String.class);
+        System.out.println("testFlowProgram_ClientStandalone - recvd " + res);
         c.close();
         ret.append(res);
     }

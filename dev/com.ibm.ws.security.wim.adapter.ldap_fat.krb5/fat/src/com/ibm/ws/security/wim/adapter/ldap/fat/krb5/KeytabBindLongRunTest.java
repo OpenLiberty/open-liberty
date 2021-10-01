@@ -60,7 +60,7 @@ public class KeytabBindLongRunTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodyOfRestartServer();
+        innerRestartApacheServersTest();
     }
 
     /**
@@ -80,6 +80,6 @@ public class KeytabBindLongRunTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodyOfRestartServer();
+        innerRestartApacheServersTest();
     }
 }

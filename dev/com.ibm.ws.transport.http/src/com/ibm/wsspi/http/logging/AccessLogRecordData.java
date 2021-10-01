@@ -36,4 +36,6 @@ public interface AccessLogRecordData {
     String getLocalIP();
 
     String getLocalPort();
+
+    String getRemotePort();
 }

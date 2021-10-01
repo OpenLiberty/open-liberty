@@ -1,9 +1,9 @@
 <server description="Server for testing microProfile">
 
-    <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestPorts.xml" />
 
     <featureManager>
         <feature>microProfile-5.0</feature>
-        <feature>jakartaee-9.0</feature>
+        <feature>jakartaee-9.1</feature>
     </featureManager>
 </server>

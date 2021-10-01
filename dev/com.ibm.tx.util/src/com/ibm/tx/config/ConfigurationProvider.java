@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
+// comment
 package com.ibm.tx.config;
 
 import java.util.logging.Level;

@@ -34,7 +34,6 @@
 # Using 0000-0299 for General DataStore Adapter exception messages and warnings
 # 
 # ----------------------------------------------------------------------------
-# 0010E      SQL_STATE_ERROR_CODE
 # 
 # {0}        The SQLSTATE.
 # {1}        The ERRORCODE
@@ -66,8 +65,6 @@ DSA_INTERNAL_WARNING.useraction=Visit the IBM support Web site for information o
 # 0060 deleted
 # 0070 deleted
 
-# 0080E      DSA_ERROR
-# 
 # {0}        The exception.
 DSA_ERROR=DSRA0080E: An exception was received by the Data Store Adapter. See original exception message: {0}.
 DSA_ERROR.explanation=The database backend generated an exception that was caught by the Data Store Adapter.
@@ -85,48 +82,42 @@ UNSUPPORTED_METHOD=DSRA0091I: Method {0} is not supported for this backend datab
 UNSUPPORTED_METHOD.explanation=An internal error has occurred.
 UNSUPPORTED_METHOD.useraction=Visit the IBM support Web site for information on problem determination.
 
-#TRANSLATOR Do Not Translate: DataSource
-RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: An implicit database transaction was detected. WebSphere will {0} the transaction. This message will be logged once for each DataSource. Subsequent implicit transactions will be resolved automatically. 
-RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=The Application Server has detected that the database started a transaction. The Application Server will attempt to resolve the transaction as configured in the custom properties for the data source.
+#Do not translate: DataSource
+RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: An implicit database transaction was detected and is resolved with the {0} operation. This message is logged once for each DataSource. Subsequent implicit transactions are resolved automatically.
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=The Application Server has detected that the database started a transaction. The Application Server attempts to resolve the transaction as configured in the custom properties for the data source.
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=There is no user action required. 
 
-#TRANSLATOR Do Not Translate: Datasource, FFDC
+#Do not translate: Datasource, FFDC
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: An implicit database transaction was detected . WebSphere tried to {0} the transaction but an error occurred {1}.
-ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=The Application Server has detected that the database started a transaction. The Application Server will attempt to resolve the transaction as configured in the custom properties for the data source. An error occurred that prevented the transaction from being resolved.
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=The Application Server has detected that the database started a transaction. The Application Server attempts to resolve the transaction as configured in the custom properties for the data source. An error occurred that prevented the transaction from being resolved.
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Gather the FFDC log files and any server log files. If the error is not related to a database outage, visit the IBM support Web site for problem determination.
 
-#TRANSLATOR Do Not Translate: Datasource
-IMPLICIT_TRANSACTION_FOUND=DSRA0095I: A database transaction that is not tracked by WebSphere is found, attemping to rollback before cleaning connection. This message will be logged once for each DataSource. Subsequent implicit transactions will be resolved automatically. 
-IMPLICIT_TRANSACTION_FOUND.explanation=The database has started a transaction on the connection. The Application Server will rollback the transaction before returning the connection to the pool.
-IMPLICIT_TRANSACTION_FOUND.useraction=Evaluate the application code to determine what might be causing the implicit transaction. The application code might be able to prevent further implicit transactions explicity, or you could configure an explicit action to take for the data source. 
+#Do not translate: Datasource
+IMPLICIT_TRANSACTION_FOUND=DSRA0095I: A database transaction that is not tracked by Liberty is found. Attempting to roll back before cleaning up the connection. This message is logged once for each DataSource. Subsequent implicit transactions are resolved automatically.
+IMPLICIT_TRANSACTION_FOUND.explanation=The database has started a transaction on the connection. The Application Server rolls back the transaction before returning the connection to the pool.
+IMPLICIT_TRANSACTION_FOUND.useraction=Evaluate the application code to determine what might be causing the implicit transaction. The application code might be able to prevent further implicit transactions explicitly, or you could configure an explicit action to take for the data source.
 
 # 0096-0101 deleted
 # 0110 deleted
 # 0174 deleted
 
-# TRANSLATOR Do not translate: ManagedConnection.destroy()
+# Do not translate: ManagedConnection.destroy()
 DSTRY_ERROR_EX=DSRA0180W: Exception detected during ManagedConnection.destroy().  The exception is:  {0}.
 DSTRY_ERROR_EX.explanation=An exception was detected cleaning up the ManagedConnection for a destroy operation.
 DSTRY_ERROR_EX.useraction=Refer to the error reported by the database software to help determine the cause of the error.
 
-# 0230E      INVALID_TX_STATE
-# 
 # {0}        The operation.
 # {1}        The transaction state.
 INVALID_TX_STATE=DSRA0230E: Attempt to perform operation {0} is not allowed because transaction state is {1}.
 INVALID_TX_STATE.explanation=The operation that was requested is not allowed during a transaction.
 INVALID_TX_STATE.useraction=Perform the operation before starting the transaction or after completing the transaction.
 
-# 0240E      INVALID_CONNECTION
-#
 INVALID_CONNECTION=DSRA0240E: Invalid Connection.  Connection Pool is being purged.
 INVALID_CONNECTION.explanation=A request was initiated by the user to purge the pool. This request makes existing connections in the pool no longer valid.
-INVALID_CONNECTION.useraction=Exit the transaction, and the method boundary, and attempt the logic again with a new connection.
+INVALID_CONNECTION.useraction=Exit the transaction, the method boundary, and attempt the logic again with a new connection.
 
 # 0244 deleted
 
-# 0250E		WS_ERROR
-#
 # General purpose template for messages that will not be translated
 WS_ERROR=DSRA0250E: An exception was received by the Data Store Adapter. See original exception message: {0}.
 WS_ERROR.explanation=CMSG0001
@@ -149,46 +140,31 @@ DISPLAY_XAEX_CONTENT=DSRA0304E:  XAException occurred. XAException contents and 
 DISPLAY_XAEX_CONTENT.explanation=A two-phase operation on the database resulted in an exception.
 DISPLAY_XAEX_CONTENT.useraction=CMSG0002
 
-# 0310E      XID_MISMATCH
-# 
 # {0}        The Xid from the XAResource.start method.
 # {1}        An XAResource method name.
 # {2}        The Xid for the above XAResource method.
 XID_MISMATCH=DSRA0310E: Xids do not match.\nXAResource.start: {0}\nXAResource.{1}: {2}
-XID_MISMATCH.explanation=The Application Server attempted to perform an XAResource operation with an Xid other than the Xid that is used for XAResource.start.
+XID_MISMATCH.explanation=The Application Server attempted to perform an XAResource operation with an Xid other than the Xid that is used for the XAResource.start method.
 XID_MISMATCH.useraction=Obtain a new connection and attempt the transaction again.
 
-# 0330E      ORACLE_RAC_RETRY
-# 
-# {0}        The operation being delayed.
-# {1}        Number of milliseconds from the last stale connection.
-# {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
-ORACLE_RAC_RETRY=DSRA0330E: The application server is delaying the {0} request, because the amount of time from the last stale connection, {1} milliseconds, is within the oracleRACXARecoveryDelay value, which is {2} milliseconds.
-ORACLE_RAC_RETRY.explanation=The data source custom property, oracleRACXARecoveryDelay, causes the application server to delay xa.commit and xa.rollback operations for the duration of the retry interval.
-ORACLE_RAC_RETRY.useraction=Wait for the transaction manager to retry the operation. You must configure heuristic retries on the transaction manager in order for oracleRACXARecoveryDelay to work properly.
+# 0330 unreachable
 
-# 0400W      TBC_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_NOT_SUPPORTED=DSRA0400W: Datasource {0}: does not support tight branch coupling
-TBC_NOT_SUPPORTED.explanation=The database or the jdbc provider specified by datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with a DB2 for z/OS database accessed by the DB2 Universal JCC driver.  The default option of loose branch coupling will be used.  This may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks will not be shared across transaction branches within the same global transaction.
+TBC_NOT_SUPPORTED.explanation=The database or the JDBC provider that is specified by the datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with a DB2 for z/OS database accessed by the DB2 Universal JCC driver.  The default option of loose branch coupling is used.  This may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks are not shared across transaction branches within the same global transaction.
 TBC_NOT_SUPPORTED.useraction=You must configure the datasource to use a supported level of JDBC driver and database, or configure your application to not require tight branch coupling.
 
 # 0401 deleted
 
-# 0402W      TBC_DB_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_DB_NOT_SUPPORTED=DSRA0402W: Datasource {0}: the database version does not support tight branch coupling
-TBC_DB_NOT_SUPPORTED.explanation=The database specified by the datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with type 4 connections to DB2 for z/OS V8 (+ APAR PK47713) or DB2 for Linux, UNIX, Windows V8 and later versions.  The default option of loose branch coupling will be used.  This may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks will not be shared across transaction branches within the same global transaction.
-TBC_DB_NOT_SUPPORTED.useraction=You must configure the datasource to use a supported level of JDBC driver and database, or configure your application to not require tight branch coupling.
+TBC_DB_NOT_SUPPORTED.explanation=The database that is specified by the datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with type 4 connections to DB2 for z/OS V8 (+ APAR PK47713) or DB2 for Linux, UNIX, Windows V8 and later versions.  The default option of loose branch coupling is used.  This option may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks are not shared across transaction branches within the same global transaction.
+TBC_DB_NOT_SUPPORTED.useraction=You must configure the datasource to use a supported level of the JDBC driver and the database, or configure your application to not require tight branch coupling.
 
-# 0403W      TBC_JCC_NOT_SUPPORTED
-#
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0}: does not support tight branch coupling as the DB2 JCC driver is at an incorrect level
-TBC_JCC_NOT_SUPPORTED.explanation=The jdbc provider specified by datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with minimum levels of DB2 Universal JCC driver version 3.51 or 3.6, as bundled with DB2 9.5 or 9 service levels, or the JCC4 driver version 4.1.  The default option of loose branch coupling will be used.  This may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks will not be shared across transaction branches within the same global transaction.
-TBC_JCC_NOT_SUPPORTED.useraction=You must configure the datasource to use a supported level of JDBC driver and database, or configure your application to not require tight branch coupling.
+TBC_JCC_NOT_SUPPORTED.explanation=The jdbc provider that is specified by the datasource does not support the tight branch coupling option.  Tight branch coupling is only supported with minimum levels of DB2 Universal JCC driver version 3.51 or 3.6, as bundled with DB2 9.5 or 9 service levels, or the JCC4 driver version 4.1.  The default option of loose branch coupling is used.  This option may cause lock timeouts, deadlocks and/or transaction rollbacks if the application is designed for tight branch coupling since database locks are not shared across transaction branches within the same global transaction.
+TBC_JCC_NOT_SUPPORTED.useraction=You must configure the datasource to use a supported level of the JDBC driver and the database, or configure your application to not require tight branch coupling.
 
 # ----------------------------------------------------------------------------
 # 
@@ -198,18 +174,14 @@ TBC_JCC_NOT_SUPPORTED.useraction=You must configure the datasource to use a supp
 # 1100-1102 deleted
 # 1110 deleted
 
-# 1120E      CONN_NEVER_CLOSED
-# 
-CONN_NEVER_CLOSED=DSRA1120E: Application did not explicitly close all handles to this Connection. Connection cannot be pooled.
-CONN_NEVER_CLOSED.explanation=The connection will not be reset for connection pooling because the application failed to explicitly close all handles.
+CONN_NEVER_CLOSED=DSRA1120E: Application did not explicitly close all handles to this connection. Connection cannot be pooled.
+CONN_NEVER_CLOSED.explanation=The connection is not reset for connection pooling because the application failed to explicitly close all handles.
 CONN_NEVER_CLOSED.useraction=Modify the application to always close all connection handles.
 
 # 1130 deleted
 # 1200 deleted
 # 1210-1213 deleted
 
-# 1300E      FEATURE_NOT_IMPLEMENTED
-# 
 # {0}        The feature (usually a JDBC API method)
 FEATURE_NOT_IMPLEMENTED=DSRA1300E: Feature is not implemented: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=The feature that was requested is not available.
@@ -260,7 +232,7 @@ DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level 
 DSRA4008.tran.none.unsupported.useraction=Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: The data source {0} cannot be configured with an isolation level of TRANSACTION_NONE and transactional=true.
-DSRA4009.tran.none.transactional.unsupported.explanation=A JDBC driver that is configured with an isolation level of TRANSACTION_NONE will not support transactions.
+DSRA4009.tran.none.transactional.unsupported.explanation=A JDBC driver that is configured with an isolation level of TRANSACTION_NONE does not support transactions.
 DSRA4009.tran.none.transactional.unsupported.useraction=Set transactional=false on the data source.
 
 DSRA4010.tran.none.autocommit.required=DSRA4010E: Auto commit is required when using an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
@@ -294,34 +266,30 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Update the data source to 
 # 7000 reserved for other NLS file
 # 7001-7009 deleted
 
-# No Comment Provided
-DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: trace file specified {0} does not exist, an exception will be thrown from the database if problem is not corrected.
+DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: trace file specified {0} does not exist, an exception is thrown from the database if the problem is not corrected.
 DB2_FILE_OUTSTREAM_ERROR.explanation=The trace file that you specified on the data source does not exist.
 DB2_FILE_OUTSTREAM_ERROR.useraction=Use an existing file for the trace file.
 
 # 7011-7013 deleted
 
-# TRANSLATOR Do not translate: DB2 Universal JDBC
+# Do not translate: DB2 Universal JDBC
 DB2ZOS_CONFIG_INFO=DSRA7014I: The DB2 Universal JDBC driver runs in a RRS environment
 DB2ZOS_CONFIG_INFO.explanation=The DB2 Universal JDBC driver has been switched to run in an RRS environment on DB2 for z/OS. 
 DB2ZOS_CONFIG_INFO.useraction=This is the informational message for the environment of the JDBC driver that is running.
 
 
-# TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
+# Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
 DB2ZOS_TYPE2_ERROR=DSRA7015E: DB2 does not support driver type 2 with DB2XADataSource under DB2 for z/OS
 DB2ZOS_TYPE2_ERROR.explanation=The driverType custom property for the data source was set to the value of 2 on the DB2XADatasource. This configuration is not supported by DB2 for z/OS.
 DB2ZOS_TYPE2_ERROR.useraction=Use the DB2ConnectionPoolDatasource or switch to the DB2 Universal JDBC driver type 4 if it is available for your configuration.
 
 # 7016 deleted
 
-# DSRA7017I      ORACLE_TRACE_WARNING
-# TRANSLATOR Do not translate: IOException
+# Do not translate: IOException
 ORACLE_TRACE_WARNING=DSRA7017I: Logging to file {0} cannot occur because of IOException {1}
 ORACLE_TRACE_WARNING.explanation=An IOException occurred when the Application Server was trying to open the trace file that was specified.
 ORACLE_TRACE_WARNING.useraction=Examine the exception, fix the IO problem, and start the Application Server again.
 
-# DSRA7018I      META_DATA_EXCEPTION
-# 
 META_DATA_EXCEPTION=DSRA7018I: Database metadata access caused a non-stale connection exception.  Normal execution is resumed.  Exception is: {0}
 META_DATA_EXCEPTION.explanation=An exception occurred when the Application Server was trying to get or access the metadata object for the database.
 META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backend database.
@@ -338,24 +306,18 @@ META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backen
 # 8000-8001 deleted
 # 8010 deleted
 
-# 8011E      NO_SETTER_METHOD
-# 
 # {0}        The property we cannot find a setter method for.
 NO_SETTER_METHOD=DSRA8011E: No setter method for property ''{0}''.
 NO_SETTER_METHOD.explanation=The Application Server could not find a setter method on the data source to set the property that is requested.
 NO_SETTER_METHOD.useraction=Verify that the property name that is specified is correct.
 
-# 8020E      PROP_NOT_FOUND
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 # {0}        The DataSource class name.
 # {1}        The property name.
 PROP_NOT_FOUND=DSRA8020E: Warning: The property ''{1}'' does not exist on the DataSource class {0}.
 PROP_NOT_FOUND.explanation=The Application Server was not able to locate the data source property that was specified.  The possible reasons are: 1) The data source property is not spelled or capitalized correctly, 2) The property that is specified does not apply to the data source that is being configured, or 3) the Application Server contains the default configuration for a different version of the JDBC driver that was specified, and this caused a mismatch of data source properties.
 PROP_NOT_FOUND.useraction=Verify that the property that is specified is correct for the data source. Correct any errors with spellings or capitalization.  Delete the property if it does not apply (or no longer applies) to the JDBC driver that is used.
 
-# 8021W      PROP_SET_ERROR
-# 
 # {0}        The property name.
 # {1}        The Exception class, if not already included in the exception message.
 # {2}        The Exception.
@@ -369,95 +331,77 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 # 8060 deleted
 # 8065 deleted
      
-# 8066E
 # {0}         The invalid attribute value
-# {1}         The allowed attribute values
+# {1}         The recommended attribute values
 # Do not translate: identifyException, as
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Allowed values are: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Recommended values are: {1}
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=An invalid value was specified for the identifyException configuration element.
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Update the configuration to specify one of the allowed values.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Update the configuration to specify one of the recommended values.
 
-# 8067E
 # Do not translate: errorCode, sqlState, identifyException
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: At least one of the 'errorCode' or 'sqlState' attributes must be specified on the identifyException element.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=One of the errorCode or sqlState attributes must be specified.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Update the configuration to specify at least one of the errorCode or sqlState attributes on the identifyException element.
 
-# 8100E      JAVAX_CONN_ERR
-# 
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: DataSource {0} cannot configure both the sqlState and errorCode attributes on the same identifyException element when the replaceExceptions attribute is configured to the ''true'' value.
+8068_EXC_REPLACE_CONFLICT.explanation=When replacing exceptions, the exception can be identified by its SQL State or its error code, not both.
+8068_EXC_REPLACE_CONFLICT.useraction=Specify separate identifyException configuration elements for the sqlState and the errorCode.
+
+8069_HELPER_INIT_ERR=DSRA8069E: DataSource {0} is unable to initialize DataStoreHelper implementation {1} due to an error: {2}
+8069_HELPER_INIT_ERR.explanation=The configured DataStoreHelper class was either inaccessible, lacked a public constructor with a single java.util.Properties parameter, or raised an error when invoked.
+8069_HELPER_INIT_ERR.useraction=Inspect the chained exception to determine the cause.
+
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Unable to get a {0} from the DataSource.
 JAVAX_CONN_ERR.explanation=See the linkedException for more information.
 JAVAX_CONN_ERR.useraction=See the linkedException for more information.
 
-# 8101E      NOT_A_1_PHASE_DS
-# 
-# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
 # {0}        ClassCastException message.
 NOT_A_1_PHASE_DS=DSRA8101E: DataSource class cannot be used as one-phase: ClassCastException: {0}
 NOT_A_1_PHASE_DS.explanation=The 'enable2Phase' property can only be set to false if the data source class implements the ConnectionPoolDatasource interface.
 NOT_A_1_PHASE_DS.useraction=Set 'enable2Phase' to true for XADataSource or false for ConnectionPoolDataSource.
 
-# 8102E      NOT_A_2_PHASE_DS
-# 
-# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
-# {0}        ClassCastException message.
-NOT_A_2_PHASE_DS=DSRA8102E: DataSource class cannot be used as two-phase: ClassCastException: {0}
-NOT_A_2_PHASE_DS.explanation=The 'enable2Phase' property can only be set to true if the data source class implements XADatasource interface.
-NOT_A_2_PHASE_DS.useraction=Set 'enable2Phase' to true for XADataSource or false for ConnectionPoolDataSource.
-
+# 8102 deleted
 # 8150 deleted
 # 8160 deleted
 # 8200-8202 deleted
 
-# 8203I      DB_PRODUCT_NAME
-# 
-# TRANSLATOR Do not translate: Database.
+# Do not translate: Database.
 DB_PRODUCT_NAME=DSRA8203I: Database product name : {0}
 DB_PRODUCT_NAME.explanation=This message displays the product name for the Database.
 DB_PRODUCT_NAME.useraction=The Database name that is listed above is now being used by applications.
 
-# 8204I      DB_PRODUCT_VERSION
-# 
 DB_PRODUCT_VERSION=DSRA8204I: Database product version : {0}
 DB_PRODUCT_VERSION.explanation=This message displays the product version for the Database.
 DB_PRODUCT_VERSION.useraction=The Database version that is listed above is now being used by applications.
 
-# 8205I      JDBC_DRIVER_NAME
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 JDBC_DRIVER_NAME=DSRA8205I: JDBC driver name  : {0}
 JDBC_DRIVER_NAME.explanation=This message displays the name of the Java Database Connectivity (JDBC) driver.
 JDBC_DRIVER_NAME.useraction=The name of the JDBC driver that is listed above is now being used by applications.
 
-# 8206I      JDBC_DRIVER_VERSION
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 JDBC_DRIVER_VERSION=DSRA8206I: JDBC driver version  : {0}
 JDBC_DRIVER_VERSION.explanation=The version of the Java Database Connectivity (JDBC) driver.
 JDBC_DRIVER_VERSION.useraction=The version that is listed above for the JDBC driver is now being used by applications.
 
-# 8207I      ORA_READONLY
-# 
-ORA_READONLY=DSRA8207I: Method setReadOnly(false) is ignored. No Oracle transaction will be started.
-ORA_READONLY.explanation=Oracle databases do not implement the setReadOnly method. A setReadOnly(true) method will not make the connection as readonly connection. The setReadOnly(false) is also not implemented, and a transaction is implicitly started by an Oracle database. The Application Server will not invoke the setReadOnly(false) method on an Oracle database to prevent an unnecessary transaction from being started.   
+ORA_READONLY=DSRA8207I: Method setReadOnly(false) is ignored. No Oracle transaction is started.
+ORA_READONLY.explanation=Oracle databases do not implement the setReadOnly method. A setReadOnly(true) method does not make the connection into a read-only connection. The setReadOnly(false) is also not implemented, and a transaction is implicitly started by an Oracle database. The Application Server does not invoke the setReadOnly(false) method on an Oracle database to prevent an unnecessary transaction from being started.
 ORA_READONLY.useraction=Inspect your application to verify that your application does not depend on a transaction after the setReadOnly(false) method is called.
 
 # 8208-8212 deleted
 
-# 8213W     PROVIDER_NOT_SUPPORTED
 PROVIDER_NOT_SUPPORTED=DSRA8213W: JDBC provider, {0}, is no longer supported by WebSphere Application Server.  Applications should use {1}.
 PROVIDER_NOT_SUPPORTED.explanation=The application is using a JDBC provider that is no longer supported by the Application Server.
 PROVIDER_NOT_SUPPORTED.useraction=Use the JDBC provider that is provided in the error text.
 
 # 8214-8222 deleted
 
-# 8230W     NONTRAN_DATASOURCE_WARNING
-# 
 # {0}       The name of the data source property for nontransactional behavior
 # {1}       The name of the data source property for configuring commit or rollback on connection cleanup
 NONTRAN_DATASOURCE_WARNING=DSRA8230W: The application server is unable to determine if a transaction should be resolved because data source custom property {0} is configured but data source custom property {1} is not configured.
-NONTRAN_DATASOURCE_WARNING.explanation=An attempt is made to pool a connection that has an AutoCommit value of False. The application server cannot determine if a transaction is active because the data source is configured as nontransactional. The application server will not attempt to resolve the transaction because the data source is not configured to automatically commit or roll back during connection cleanup.
+NONTRAN_DATASOURCE_WARNING.explanation=An attempt is made to pool a connection that has an AutoCommit value of False. The application server cannot determine if a transaction is active because the data source is configured as nontransactional. The application server does not attempt to resolve the transaction because the data source is not configured to automatically commit or roll back during connection cleanup.
 NONTRAN_DATASOURCE_WARNING.useraction=Configure the data source to automatically commit or roll back on connection cleanup, or always reset the AutoCommit value to True.
 
 # ----------------------------------------------------------------------------
@@ -466,9 +410,7 @@ NONTRAN_DATASOURCE_WARNING.useraction=Configure the data source to automatically
 # 
 # 8520 deleted
 
-# 8600W      ERR_CLOSING_OBJECT
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 # {0}        The object
 # {1}        The error
 ERR_CLOSING_OBJECT=DSRA8600W: Error closing {0}\n{1}
@@ -480,9 +422,7 @@ ERR_CLOSING_OBJECT.useraction=CMSG0002
 # 8680 deleted
 # 8710 deleted
 
-# 8720W      MULTITHREADED_ACCESS_DETECTED
-#
-# TRANSLATOR Do not translate: Statements, ResultSets, metadata, Datasource
+# Do not translate: Statements, ResultSets, metadata, Datasource
 # 
 # {0}        Object on which multithreaded access was detected.
 # {1}        The thread id on which access is permissible.
@@ -494,23 +434,17 @@ MULTITHREADED_ACCESS_DETECTED.useraction=Adjust the application to avoid multith
 
 # 8730 deleted
 
-# 8750W      UNSUPPORTED_JDBC30_METHOD
-# 
 # {0}        The method trying to be invoked
 UNSUPPORTED_JDBC30_METHOD=DSRA8750W: The JDBC 3.0 method {0} is not implemented on this JDBC Provider.
 UNSUPPORTED_JDBC30_METHOD.explanation=The method being invoked is part of the Java Database Connectivty (JDBC) specification V3.0, and the method does not exist on the provider.
 UNSUPPORTED_JDBC30_METHOD.useraction=Ensure that your JDBC provider supports the JDBC specification V3.0, or do not use this method.
 
-# 8760W      VENDOR_IMPL_NOT_FOUND
-#
 # {0}        The vendor interface requested for the wrapper.
 # {1}        The underlying connection implementation class of the pooled connection.
 VENDOR_IMPL_NOT_FOUND=DSRA8760W: Unable to locate the implementation for vendor interface {0} after switching to another pooled connection. The unwrapped connection handle is no longer usable as that interface. The new connection implementation class is: {1}
 VENDOR_IMPL_NOT_FOUND.explanation=The connection handle is now associated with a pooled connection that is different and that does not implement the interface that is requested for the wrapper.
 VENDOR_IMPL_NOT_FOUND.useraction=Wrappers for the interface that is specified should not be used when the Wrapper.isWrapperFor method indicates that the connection is not a wrapper of the interface.
 
-# 8770I      DEFAULT_MATCH_ORIGINAL
-# 
 # {0}        The name of the connection property.
 # {1}        The name of the data source custom property.
 DEFAULT_MATCH_ORIGINAL=DSRA8770I: By default, the connection property, {0}, is matched for shareable connections based on the original connection request rather than the current state of the connection. You may use the data source custom property, {1}, to configure this behavior.
@@ -527,28 +461,19 @@ DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=To avoid this warning, remove the
 # 
 # Using the 9000's for JDBC wrapper messages.
 # 
-# 9000-9001 deleted
+# 9000-9002 deleted
 
-# 9002E      RESX_TO_SQLX		Reserved, do not use 342913
-#RESX_TO_SQLX=DSRA9002E
-
-# 9010E      METHOD_UNSUPPORTED
-# 
 # {0}        The method name.
 # {1}        The interface class.
 METHOD_UNSUPPORTED=DSRA9010E: ''{0}'' is not supported on the WebSphere {1} implementation.
 METHOD_UNSUPPORTED.explanation=The method that is specified is not supported by the implementation of the Application Server.
 METHOD_UNSUPPORTED.useraction=Do not use the method.
 
-# 9020E      NOT_A_JDBC_METHOD
-# 
-# TRANSLATOR Do not translate: JDBC.
+# Do not translate: JDBC.
 NOT_A_JDBC_METHOD=DSRA9020E: The method invoked is not a JDBC method. WebSphere code must pass in a valid key to access this method.
 NOT_A_JDBC_METHOD.explanation=This method is provided only for internal use by the Application Server.
 NOT_A_JDBC_METHOD.useraction=Do not call this method.
 
-# 9110E      OBJECT_CLOSED
-# 
 # {0}        The object class (such as Connection).
 OBJECT_CLOSED=DSRA9110E: {0} is closed.
 OBJECT_CLOSED.explanation=Attempted to perform an operation on an object that is closed.
@@ -557,8 +482,6 @@ OBJECT_CLOSED.useraction=Retrieve a new instance of the object on which to perfo
 # 9115 deleted
 # 9120-9121 - reserved for other NLS file
 
-# 9122E      NO_WRAPPED_OBJECT
-# 
 # {0}        The WebSphere wrapper object.
 # {1}        The Class of the wrapped object.
 NO_WRAPPED_OBJECT=DSRA9122E: {0} does not wrap any objects of type {1}.
@@ -567,8 +490,6 @@ NO_WRAPPED_OBJECT.useraction=Verify that the wrapper and the parameters for the 
 
 # 9123 reserved for other NLS file
 
-# 9124       NOT_AN_INTERFACE
-#
 # {0}        The Class that was specified to unwrap to
 NOT_AN_INTERFACE=DSRA9124E: Cannot unwrap object to {0} because {0} is not an interface class.
 NOT_AN_INTERFACE.explanation=The unwrap method only permits unwrapping to an interface class.
@@ -576,8 +497,6 @@ NOT_AN_INTERFACE.useraction=Unwrap to a class that is an interface instead of a 
 
 # 9125 reserved for other NLS file
 
-# 9130E      OPERATION_NOT_PERMITTED
-# 
 # {0}        The operation.
 OPERATION_NOT_PERMITTED=DSRA9130E: Operation is not permitted by the application server: {0}
 OPERATION_NOT_PERMITTED.explanation=The Application Server does not permit the operation that was requested.
@@ -585,9 +504,7 @@ OPERATION_NOT_PERMITTED.useraction=Do not use the operation that is specified.
 
 # 9210 deleted
 
-# 9250E      OP_NOT_SHAREABLE
-# 
-# TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
+# Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
 # {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
 OP_NOT_SHAREABLE=DSRA9250E: Operation {0} is not allowed during a global transaction for Shareable Connections.
 OP_NOT_SHAREABLE.explanation=The Application Server does not allow calls to the setTypeMap, setReadOnly or setCatalog methods on Shareable Connections while a global transaction is active.
@@ -601,56 +518,42 @@ OP_NOT_SHAREABLE.useraction=Do not call setTypeMap, setReadOnly or setCatalog on
 # 9330 deleted
 # 9340 deleted
 
-# 9350E      OP_NOT_VALID_IN_GT
-# 
-# TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
+# Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
 # {0}        The operation being performed (such as Connection.commit)
 OP_NOT_VALID_IN_GT=DSRA9350E: Operation {0} is not allowed during a global transaction.
 OP_NOT_VALID_IN_GT.explanation=The Application Server does not allow calls to the commit, rollback, setSavepoint or releaseSavepoint methods on the Connection while a global transaction is active.
-OP_NOT_VALID_IN_GT.useraction=Do not call the commit, rollback, setSavepoint or releaseSavepoint methods on the connection when it is in a global transaction. If a non-transactional data source (for example, non-jta-data-source for Java Persistence API) is being used, then configure non-jta-data-source in persistence.xml and also configure the nonTransactionalDataSource custom property on the data source.
+OP_NOT_VALID_IN_GT.useraction=Do not call the commit, rollback, setSavepoint or releaseSavepoint methods on the connection when it is in a global transaction. If a non-transactional data source (for example, non-jta-data-source for Java Persistence API) is being used, then configure the non-jta-data-source element in the persistence.xml file and also configure the 'transactional' dataSource attribute in the server.xml file to the 'false' value.
 
-# 9360E      INVALID_TRAN_STATE
-# 
 # {0}        String representing the current ManagedConnection transaction state.
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 INVALID_TRAN_STATE=DSRA9360E: Unable to perform the requested operation from the following transaction state: {0}.
 INVALID_TRAN_STATE.explanation=You cannot perform operations when the application is in the current transaction state.
 INVALID_TRAN_STATE.useraction=Get a new Connection on which to perform the operation.
 
 # 9380 deleted
 
-# 9400E      REASSOCIATION_ERR
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 # {0}        The error.
 REASSOCIATION_ERR=DSRA9400E: Fatal error occurred during Connection reassociation: {0}
 REASSOCIATION_ERR.explanation=The current Connection handle could not be reassociated.
 REASSOCIATION_ERR.useraction=Try obtaining a new Connection.
 
-# 9410E      CANNOT_REASSOCIATE
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 # {0}        Current Connection state.
 CANNOT_REASSOCIATE=DSRA9410E: Handle reassociation is allowed only from the INACTIVE state. Current Connection state is {0}.
 CANNOT_REASSOCIATE.explanation=Connection handles can only be reassociated from the INACTIVE state.
 CANNOT_REASSOCIATE.useraction=Close your current Connection handle, and obtain a new one.
 
-# 9420E      CHILDREN_STILL_OPEN
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 CHILDREN_STILL_OPEN=DSRA9420E: Connection cannot be reassociated because child objects are still open.
 CHILDREN_STILL_OPEN.explanation=Connection handles can only be reassociated if all the child objects are closed.
 CHILDREN_STILL_OPEN.useraction=Close your current Connection handle, and obtain a new one.
 
-# 9430E      HANDLE_IN_USE
-# 
-# TRANSLATOR Do not translate: Connection.
+# Do not translate: Connection.
 HANDLE_IN_USE=DSRA9430E: Connection handle cannot be dissociated because it is currently in use.
 HANDLE_IN_USE.explanation=An operation is currently being performed on the Connection handle. It cannot be dissociated during the operation.
 HANDLE_IN_USE.useraction=Wait until all the operations on the handle have finished, then dissociate the handle.
 
-# 9500E      NO_NEGATIVE_FETCH_SIZES
-# 
 NO_NEGATIVE_FETCH_SIZES=DSRA9500E: Negative values are not allowed for fetch size.
 NO_NEGATIVE_FETCH_SIZES.explanation=The fetch size can only be set to a value that is not negative.
 NO_NEGATIVE_FETCH_SIZES.useraction=Choose a value for the fetch size that is not negative.
@@ -659,10 +562,9 @@ NO_NEGATIVE_FETCH_SIZES.useraction=Choose a value for the fetch size that is not
 # 9520 deleted
 # 9530-9542 deleted
 
-# DSRA9543W      KERBEROS_NOT_SUPPORTED_WARNING
-# TRANSLATOR Do not translate: Kerberos
-KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: The Application Server does not support Kerberos against the backend database that is being used.  No user name and password will be used to get a connection.
-KERBEROS_NOT_SUPPORTED_WARNING.explanation= The Application Server does not support Kerberos authentication on the database that is used. User name and password will not be used when getting a connection.
+# Do not translate: Kerberos
+KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: The Application Server does not support Kerberos against the backend database that is being used.  No user name and password are used to get a connection.
+KERBEROS_NOT_SUPPORTED_WARNING.explanation= The Application Server does not support Kerberos authentication on the database that is used. User name and password are not used when getting a connection.
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backend with the DB2 universal JDBC driver.
 
 # 9544-9548 deleted

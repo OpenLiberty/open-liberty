@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
@@ -72,6 +83,15 @@
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"> </wsSecurityProvider> 
 		<application name="untoken" location="${server.config.dir}/untoken.war"> 
 		<classloader apiTypeVisibility="spec, ibm-api, third-party" /> </application> -->
+		
+	<wsSecurityProvider
+		id="default"
+		ws-security.return.security.error="true"
+	>
+	<!-- 3/2021 added ws-security.return.security.error -->
+	
+	</wsSecurityProvider>
+		
 	<wsSecurityClient
 		id="default"
 		ws-security.username="user1"
@@ -79,16 +99,6 @@
 	>
 	</wsSecurityClient>
 
-        <!-- added 12/2020  -->
-        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA5Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA7Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA4Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA6Service" actions="POST:AcceptSOAPActionUser-Agent"/>         
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-       
+    <include location="imports/java2Permissions.xml" />
+    
 </server>

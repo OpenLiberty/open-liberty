@@ -18,5 +18,5 @@ singleton=true
  com.ibm.ws.org.joda.time.2.9.9, \
  com.ibm.ws.org.opensaml.opensaml.core.3.4.5.jakarta, \
  com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=base

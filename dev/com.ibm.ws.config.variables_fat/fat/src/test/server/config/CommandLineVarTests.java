@@ -53,6 +53,7 @@ public class CommandLineVarTests extends ServletRunner {
 
         // check that variables are still overridden after updating the server
         server.setServerConfigurationFile(UPDATED_SERVER);
+        server.waitForConfigUpdateInLogUsingMark(null);
 
         test(server);
     }

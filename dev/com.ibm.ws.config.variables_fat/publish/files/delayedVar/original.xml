@@ -23,6 +23,10 @@
 	<variable name="variableDefaultTest" defaultValue="this is the default"/>
 
 	<delayedVar delayedVariable="${variableDelayTest}"
-		immediateVar="${variableDelayTest}" immediateVarTwo="${variableDelayTest}" />
+		immediateVar="${variableDelayTest}" immediateVarTwo="${variableDelayTest}" 
+		defaultTest="${variableDefaultTest}" 
+		defaultInstanceWithValueTest="${defaultInstanceWithValue}"
+		defaultInstanceNoValueTest="${defaultInstanceNoValue}"
+	/>
 
 </server>

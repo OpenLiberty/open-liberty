@@ -10,11 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.Server;
@@ -26,6 +24,7 @@ import componenttest.topology.impl.LibertyServer;
 @Mode
 @RunWith(FATRunner.class)
 public class DualServerDynamicFSTest2 extends DualServerDynamicCoreTest2 {
+
     @Server("com.ibm.ws.transaction_FSCLOUD001")
     @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer firstServer;
@@ -36,25 +35,10 @@ public class DualServerDynamicFSTest2 extends DualServerDynamicCoreTest2 {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("NYTRACE: DualServerDynamicTestBase.setUp called");
-        server1 = firstServer;
-        server2 = secondServer;
-        servletName = APP_NAME + "/SimpleFS2PCCloudServlet";
-        cloud1RecoveryIdentity = "FScloud001";
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        setup(firstServer, secondServer, "SimpleFS2PCCloudServlet", "FScloud001");
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
     }
-
 }

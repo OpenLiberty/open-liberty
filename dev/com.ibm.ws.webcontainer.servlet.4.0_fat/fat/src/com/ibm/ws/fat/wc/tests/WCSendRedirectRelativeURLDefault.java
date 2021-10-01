@@ -43,7 +43,7 @@ public class WCSendRedirectRelativeURLDefault {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.war.listeners");
+        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.listeners");
 
         LOG.info("Setup : complete, ready for Tests");
         server.startServer(WCSendRedirectRelativeURLDefault.class.getSimpleName() + ".log");

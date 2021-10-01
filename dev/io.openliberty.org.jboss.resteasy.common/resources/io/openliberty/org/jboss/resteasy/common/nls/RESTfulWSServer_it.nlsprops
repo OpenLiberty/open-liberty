@@ -72,6 +72,11 @@ INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: La propriet\u00e0 del client {0}
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Le propriet\u00e0 del client, ad esempio se seguire automaticamente i reindirizzamenti, devono essere configurate come valori booleani o come una stringa che \u00e8 possibile convertire in valore booleano. Questo messaggio indica che una propriet\u00e0 del client \u00e8 stata impostata su un valore non valido. Questa propriet\u00e0 verr\u00e0 ignorata.
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Esaminare il codice dell'applicazione e la configurazione del server per determinare quali siano le impostazioni non corrette di questa propriet\u00e0 e rimuovere la propriet\u00e0 o modificarla in un valore booleano valido.
 
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Il provider {0} viene ignorato dal server in quanto non valido.
+INVALID_PROVIDER_CWWKW1305W.explanation=\u00c8 probabile che la classe del provider specificato non contenga un costruttore pubblico valido o che non implementi un'interfaccia provider Jakarta REST. I requisiti per un'implementazione provider valida sono documentati nella sezione 4 della specifica dei servizi web RESTful Jakarta.
+INVALID_PROVIDER_CWWKW1305W.useraction=Esaminare il codice dell'applicazione per verificare che il provider specificato implementi correttamente l'interfaccia provider e che contenga un costruttore pubblico valido nei requisiti della specifica.
+
+
 # Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
 warn_missing_mpjwt_token=CWWKW0707W: L''attributo [{0}] nella configurazione [{1}] \u00e8 impostato su [{2}], ma il JWT (JSON Web Token) microprofilo non \u00e8 disponibile. La richiesta non contiene un''intestazione Autorizzazione con il token.
 warn_missing_mpjwt_token.explanation=Il runtime non \u00e8 riuscito a trovare il JWT microprofilo nel soggetto Esegui come. Questo errore generalmente indica un problema con l'autenticazione. Assicurarsi che non vengano rilevati errori mentre la funzione JWT microprofilo autentica un utente.

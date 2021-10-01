@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2020 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnError;
-import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnError.EJBONERROR;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.EjbOnError;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE8;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE9;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -58,7 +58,7 @@ public class BndErrorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RepeatOnError(EJBONERROR.WARN, "com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnError(EJBONERROR.FAIL, "com.ibm.ws.ejbcontainer.bindings.fat.server.err"));
+    public static RepeatTests r = RepeatTests.with(new RepeatOnErrorEE8(EjbOnError.WARN).forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE8(EjbOnError.FAIL).forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE9(EjbOnError.WARN).fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err")).andWith(new RepeatOnErrorEE9(EjbOnError.FAIL).fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server.err"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -98,7 +98,7 @@ public class BndErrorTest extends FATServletClient {
 
         assertNotNull("Expected error message was not logged: " + errorText, server.waitForStringInLogUsingMark(errorText));
 
-        if (appStop || RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
+        if (appStop || RepeatOnErrorEE8.isActive(EjbOnError.FAIL) || RepeatOnErrorEE9.isActive(EjbOnError.FAIL)) {
             String message = "CWWKZ0106E:";
             assertNotNull("Application " + appName + " should have been stopped", server.waitForStringInLogUsingMark(message));
         } else {
@@ -177,7 +177,9 @@ public class BndErrorTest extends FATServletClient {
      * Binding name contains blank (" ") string
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testBlankString() throws Exception {
         testHelper(9, "CNTR0138E:", false);
@@ -187,7 +189,9 @@ public class BndErrorTest extends FATServletClient {
      * Binding name contains empty ("") string
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEmptyString() throws Exception {
         testHelper(10, "CNTR0138E:", false);
@@ -260,7 +264,9 @@ public class BndErrorTest extends FATServletClient {
      * Has ejblocal:local:ejb in local-home-binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInLocalHomeBindingName() throws Exception {
         testHelper(18, "CNTR0340W:.*ejblocal:local:ejb/myBean", false);
@@ -270,7 +276,9 @@ public class BndErrorTest extends FATServletClient {
      * Has ejblocal:local:ejb in simple-binding-name (for local bean)
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInBindingName() throws Exception {
         testHelper(19, "CNTR0339W:.*ejblocal:local:ejb/myBean", false);
@@ -280,7 +288,9 @@ public class BndErrorTest extends FATServletClient {
      * Has local: in remote-home-binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamepsaceInRemoteHomeBindingName() throws Exception {
         testHelper(20, "CNTR0339W:.*local:RemoteTargetHome", false);
@@ -290,7 +300,9 @@ public class BndErrorTest extends FATServletClient {
      * Has random colon in remote-home-binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testRandomColonInRemoteHomeBindingName() throws Exception {
         testHelper(21, "CNTR0339W:.*myBean:RemoteTargetHome", false);
@@ -300,7 +312,9 @@ public class BndErrorTest extends FATServletClient {
      * Has java:app/ in simple-binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testJavaAppInSimpleBindingName() throws Exception {
         testHelper(22, "CNTR0339W:.*java:app/MyLocalTargetBean", false);
@@ -310,7 +324,9 @@ public class BndErrorTest extends FATServletClient {
      * Has local: in binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInBindingName() throws Exception {
         testHelper(23, "CNTR0339W:.*local:ejb/RemoteTargetBiz", false);
@@ -320,7 +336,9 @@ public class BndErrorTest extends FATServletClient {
      * Has local:ejb in component-id
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInComponentId() throws Exception {
         testHelper(24, "CNTR0339W:.*local:ejb/MyLocalTargetBean", false);
@@ -330,7 +348,9 @@ public class BndErrorTest extends FATServletClient {
      * Has empty string in component-id
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEmptyComponentId() throws Exception {
         testHelper(25, "CNTR0138E:", false);
@@ -340,7 +360,9 @@ public class BndErrorTest extends FATServletClient {
      * Has local:ejb in JNDIName
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testNamespaceInJNDIName() throws Exception {
         testHelper(26, "CNTR0339W:.*local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome1", false);
@@ -350,7 +372,9 @@ public class BndErrorTest extends FATServletClient {
      * Has empty string in JNDIName
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "javax.ejb.EJBException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEmptyJNDIName() throws Exception {
         testHelper(27, "CNTR0138E:", false);
@@ -360,7 +384,9 @@ public class BndErrorTest extends FATServletClient {
      * Has ejblocal::ejb in local-home-binding-name
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testDoubleColonInLocalHomeBindingName() throws Exception {
         testHelper(28, "CNTR0340W:.*ejblocal::ejb/myBean", false);
@@ -370,7 +396,9 @@ public class BndErrorTest extends FATServletClient {
      * Has ejblocal: in local-home-binding-name (empty besides ejblocal:)
      */
     @Test
-    @ExpectedFFDC(repeatAction = "EJBCBOnErr_FAIL",
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE8.ID_FAIL,
+                  value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @ExpectedFFDC(repeatAction = RepeatOnErrorEE9.ID_FAIL,
                   value = { "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEmptyAfterEJBLocalInLocalHomeBindingName() throws Exception {
         testHelper(29, "CNTR0138E:", false);

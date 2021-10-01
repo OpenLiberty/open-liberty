@@ -47,13 +47,14 @@ public class DDLTest extends BatchFATHelper {
 
     public final static String DROP_DDL = "IdPersistence/batch-jpa-drop.ddl";
 
-    protected static final LibertyServer testServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
+    protected static LibertyServer testServer;
 
     @BeforeClass
     public static void setup() throws Exception {
 
         Log.info(DDLTest.class, "setup", "Start server.");
 
+        testServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         // Start server

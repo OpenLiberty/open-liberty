@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.fat.config;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.session.ClientSession;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -104,7 +109,7 @@ public class InitClass {
 
         try {
             //obtaining kdcp and kdc_r information
-            services = CommonTest.getKDCServices(1, SPNEGOConstants.KDC_HOST_FROM_CONSUL);
+            services = CommonTest.getKDCServices(2, SPNEGOConstants.KDC_HOST_FROM_CONSUL);
             KDC_HOSTNAME = services.get(0).getAddress();
             KDC_USER = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_CONSUL);
             KDC_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
@@ -116,6 +121,33 @@ public class InitClass {
             SECOND_USER = services.get(0).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
             USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.USER_PWD_FROM_CONSUL);
             Z_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
+
+            ConnectionInfo connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
+            Machine kdcMachine = Machine.getMachine(connInfo);
+
+            try {
+                Log.info(c, thisMethod, "Testing connection to KDC: " + KDC_HOST_SHORTNAME);
+                establishConnectionToKDC(thisMethod, kdcMachine);
+            } catch (Exception e) {
+                String failedKdcShortName = KDC_HOST_SHORTNAME;
+                KDC_HOSTNAME = services.get(1).getAddress();
+                KDC_USER = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_CONSUL);
+                KDC_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
+                KDC_REALM = services.get(1).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
+                KDC_HOST_SHORTNAME = services.get(1).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
+                KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                Z_USER = services.get(1).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
+                FIRST_USER = services.get(1).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
+                SECOND_USER = services.get(1).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
+                USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER_PWD_FROM_CONSUL);
+                Z_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
+
+                Log.info(c, thisMethod, "connection to " + failedKdcShortName + " failed. Attempting failover KDC: " + KDC_HOST_SHORTNAME);
+
+                connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
+                kdcMachine = Machine.getMachine(connInfo);
+                establishConnectionToKDC(thisMethod, kdcMachine);
+            }
 
             KDCP_VAR = getKDCHostnameMask(KDC_HOSTNAME);
 
@@ -137,10 +169,6 @@ public class InitClass {
             SECOND_USER_KRB5_FQN = SECOND_USER + FQN;
             COMMON_TOKEN_USER = FIRST_USER;
             COMMON_TOKEN_USER_PWD = FIRST_USER_PWD;
-            ConnectionInfo connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
-            Machine kdcMachine = Machine.getMachine(connInfo);
-
-            establishConnectionToKDC(thisMethod, kdcMachine);
 
             // get canonical and short host name
             getServerCanonicalHostName();
@@ -167,17 +195,22 @@ public class InitClass {
      * @throws InterruptedException
      */
     private static void establishConnectionToKDC(String thisMethod, Machine kdcMachine) throws Exception, InterruptedException {
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 3; i++) {
             try {
-                kdcMachine.connect();
+                SshClient sshClient = getSshClient();
+                try {
+                    getSshSession(sshClient, kdcMachine);
+                } finally {
+                    sshClient.stop();
+                }
                 Log.info(c, thisMethod, "KDC connection succeeded after " + i + " attempt(s)");
                 break;
             } catch (Exception e) {
-                if (i == 6) {
+                if (i == 3) {
                     Log.info(c, thisMethod, "KDC connection still failed after retrying " + i + " attempts");
                     throw e;
                 }
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
         }
     }
@@ -344,5 +377,31 @@ public class InitClass {
      */
     public static String getServerShortHostName() throws UnknownHostException {
         return getShortHostName(serverCanonicalHostName, true);
+    }
+
+    /**
+     * Get a (started) SshClient.
+     *
+     * @return The SshClient.
+     */
+    protected static SshClient getSshClient() {
+        SshClient sshClient = SshClient.setUpDefaultClient();
+        sshClient.start();
+        return sshClient;
+    }
+
+    /**
+     * Get an SSH ClientSession to the specified machine.
+     *
+     * @param sshClient The SSH client.
+     * @param machine The machine to connect to.
+     * @return The session.
+     * @throws IOException If there was an error getting an SSH session to the machine.
+     */
+    protected static ClientSession getSshSession(SshClient sshClient, Machine machine) throws IOException {
+        ClientSession session = sshClient.connect(machine.getUsername(), machine.getHostname(), 22).verify(30, TimeUnit.SECONDS).getSession();
+        session.addPasswordIdentity(machine.getPassword());
+        session.auth().verify(30, TimeUnit.SECONDS).isSuccess();
+        return session;
     }
 }

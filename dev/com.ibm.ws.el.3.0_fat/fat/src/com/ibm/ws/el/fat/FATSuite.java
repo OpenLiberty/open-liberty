@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.el.fat.tests.EL30CoercionRulesTest;
 import com.ibm.ws.el.fat.tests.EL30LambdaExpressionsTest;
 import com.ibm.ws.el.fat.tests.EL30ListCollectionObjectOperationsTest;
 import com.ibm.ws.el.fat.tests.EL30MethodExpressionInvocationsTest;
+import com.ibm.ws.el.fat.tests.EL30MiscTests;
 import com.ibm.ws.el.fat.tests.EL30OperatorPrecedenceTest;
 import com.ibm.ws.el.fat.tests.EL30OperatorsTest;
 import com.ibm.ws.el.fat.tests.EL30ReservedWordsTest;
@@ -31,6 +32,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+
 /**
  * EL 3.0 Tests
  *
@@ -57,7 +59,8 @@ import componenttest.rules.repeater.RepeatTests;
                 EL22OperatorsTest.class,
                 EL30OperatorsTest.class,
                 EL30MethodExpressionInvocationsTest.class,
-                EL30VarargsMethodMatchingTest.class
+                EL30VarargsMethodMatchingTest.class,
+                EL30MiscTests.class
 })
 public class FATSuite {
 

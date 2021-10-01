@@ -20,8 +20,8 @@ public class BootstrapLocations {
     private String serverDir;
     private String logDir;
     private String consoleLogFile;
-    private String serviceBindingRoot;
     private String workAreaDirectory;
+    private String variableSourceDirs;
 
     /**
      * @return the processName
@@ -94,20 +94,6 @@ public class BootstrapLocations {
     }
 
     /**
-     * @return the serviceBindingRoot
-     */
-    public String getServiceBindingRoot() {
-        return serviceBindingRoot;
-    }
-
-    /**
-     * @param serviceBindingRoot the serviceBindingRoot to set
-     */
-    public void setServiceBindingRoot(String serviceBindingRoot) {
-        this.serviceBindingRoot = serviceBindingRoot;
-    }
-
-    /**
      * @return
      */
     public String getWorkAreaDir() {
@@ -118,4 +104,11 @@ public class BootstrapLocations {
         this.workAreaDirectory = directory;
     }
 
+    public String getVariableSourceDirs() {
+        return this.variableSourceDirs;
+    }
+
+    public void setVariableSourceDirs(String path) {
+        this.variableSourceDirs = path;
+    }
 }

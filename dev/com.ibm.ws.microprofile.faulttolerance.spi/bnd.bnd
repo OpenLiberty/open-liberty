@@ -27,9 +27,6 @@ Export-Package:\
 Private-Package: \
     com.ibm.ws.microprofile.faulttolerance.spi.resources
 
-Include-Resource: \
-    META-INF=resources/META-INF
-
 WS-TraceGroup: FAULTTOLERANCE
 
 -cdiannotations:
@@ -42,13 +39,9 @@ testsrc: test/src
 -buildpath: \
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.logging.core;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

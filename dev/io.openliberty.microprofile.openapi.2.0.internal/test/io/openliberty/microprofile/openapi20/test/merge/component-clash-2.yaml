@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: test2
+  version: "1.0"
+paths:
+  "/testfoo":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme: []
+      callbacks:
+        test2:
+          $ref: "#/components/callbacks/fooCallback"
+components:
+  schemas:
+    fooSchema:
+      type: string
+      description: test2
+  responses:
+    fooResponse:
+      description: test2
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/fooSchema"
+          examples: 
+            foo:
+              $ref: "#/components/examples/fooExample"
+      headers:
+        foo: 
+          $ref: "#/components/headers/fooHeader"
+      links:
+        foo:
+          $ref: "#/components/links/fooLink"
+  parameters:
+    fooParameter:
+      name: foo
+      description: test2
+      in: query
+      required: true
+      schema:
+        type: string
+  examples:
+    fooExample:
+      value: test2
+  requestBodies:
+    fooRequestBody:
+      description: test2
+      content: {}
+  headers:
+    fooHeader:
+      description: test2
+      schema:
+        type: string
+  securitySchemes:
+    fooSecurityScheme:
+      name: test2
+      type: apiKey
+      in: query
+  links:
+    fooLink: 
+      description: test2
+  callbacks:
+    fooCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test2
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test2

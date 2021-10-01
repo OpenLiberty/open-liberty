@@ -20,7 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.transformer.jakarta.JakartaTransformer;
@@ -47,6 +50,31 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     public static final String ID = "EE9_FEATURES";
 
+    private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
+    private static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
+    private static final Map<String,String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
+    private static final Map<String,String> TRANSFORMATION_RULES_APPEND = new HashMap();
+
+    static{
+        // Fill the default transformation rules for the transformer
+        // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
+        // the user 'autoFVT-templates' folder.
+        //
+        //   jakarta-selections.properties
+        //   jakarta-renames.properties
+        //   jakarta-versions.properties
+        //   jakarta-bundles.properties
+        //   jakarta-direct.properties
+        //   jakarta-xml-master.properties
+        //   (other xml properties files as referenced by 'jakarta-xml-master.properties'
+        DEFAULT_TRANSFORMATION_RULES.put("-tr", TRANSFORMER_RULES_ROOT + "jakarta-renames.properties"); // Package renames
+        DEFAULT_TRANSFORMATION_RULES.put("-ts", TRANSFORMER_RULES_ROOT + "jakarta-selections.properties"); // File selections and omissions
+        DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions.properties"); // Package version updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tb", TRANSFORMER_RULES_ROOT + "jakarta-bundles.properties"); // bundle identity updates
+        DEFAULT_TRANSFORMATION_RULES.put("-td", TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tf", TRANSFORMER_RULES_ROOT + "jakarta-xml-master.properties"); // master xml subsitution file
+    }
+
     // Point-in-time list of enabled JakartaEE9 features.
     // This list is of only the currently enabled features.
     //
@@ -55,16 +83,15 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     static final String[] EE9_FEATURES_ARRAY = {
                                                  "appClientSupport-2.0",
-                                                 "jakartaee-9.0",
-                                                 "webProfile-9.0",
-                                                 "jakartaeeClient-9.0",
+                                                 "jakartaee-9.1",
+                                                 "webProfile-9.1",
+                                                 "jakartaeeClient-9.1",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
                                                  "txtest-2.0",
                                                  "appAuthentication-2.0",
                                                  "appAuthorization-2.0",
                                                  "appSecurity-4.0",
                                                  "batch-2.0",
-                                                 "batchManagement-2.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
@@ -115,7 +142,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     @Override
     public String toString() {
-        return "JakartaEE9 FAT repeat action";
+        return "JakartaEE9 FAT repeat action (" + getID() + ")";
     }
 
     //
@@ -175,6 +202,78 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return (JakartaEE9Action) super.forClients(clientNames);
     }
 
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional package transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     * 
+     */
+    public JakartaEE9Action withLocalPackageTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-tr", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional selection transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     */
+    public JakartaEE9Action withLocalSelectionTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-ts", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional version transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     */
+    public JakartaEE9Action withLocalVersionTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-tv", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional bundle transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     */
+    public JakartaEE9Action withLocalBundleTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-tb", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional string transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     */
+    public JakartaEE9Action withLocalStringTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-td", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
+    /**
+     * Specifies which file in the rules directory of the FAT will be used for 
+     * adding additional xml transformations.
+     * 
+     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     */
+    public JakartaEE9Action withLocalXMLTransformAppend(String fileName) {
+        TRANSFORMATION_RULES_APPEND.put("-tf", TRANSFORMER_RULES_APPEND_ROOT + fileName);
+        return this;
+    }
+
     //
 
     @Override
@@ -207,6 +306,18 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      */
     public static void transformApp(Path appPath) {
         transformApp(appPath, null);
+    }
+
+    /**
+     * Invoke the Jakarta transformer on an application with added transformation rules.
+     *
+     * @param appPath The application path to be transformed to Jakarta
+     * @param newAppPath The application path of the transformed file (or <code>null<code>)
+     * @param transformationRulesAppend The map with the additional transformation rules to add
+     */
+    public static void transformApp(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+        TRANSFORMATION_RULES_APPEND.putAll(transformationRulesAppend);
+        transformApp(appPath, newAppPath);
     }
 
     /**
@@ -267,21 +378,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             outputPath = newAppPath;
         }
 
-        // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
-        // the user 'autoFVT-templates' folder.
-        //
-        //   jakarta-selections.properties
-        //   jakarta-renames.properties
-        //   jakarta-versions.properties
-        //   jakarta-bundles.properties
-        //   jakarta-direct.properties
-        //   jakarta-xml-master.properties
-        //   (other xml properties files as referenced by 'jakarta-xml-master.properties'
-
-        String transformerRulesRoot = System.getProperty("user.dir") + "/autoFVT-templates/";
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[15];
+            String[] args = new String[15 + TRANSFORMATION_RULES_APPEND.size() * 2];
 
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
@@ -291,17 +390,30 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             // override jakarta default properties, which are
             // packaged in the transformer jar
             args[3] = "-tr"; // package-renames
-            args[4] = transformerRulesRoot + "jakarta-renames.properties";
+            args[4] = DEFAULT_TRANSFORMATION_RULES.get("-tr");
             args[5] = "-ts"; // file selections and omissions
-            args[6] = transformerRulesRoot + "jakarta-selections.properties";
+            args[6] = DEFAULT_TRANSFORMATION_RULES.get("-ts");
             args[7] = "-tv"; // package version updates
-            args[8] = transformerRulesRoot + "jakarta-versions.properties";
+            args[8] = DEFAULT_TRANSFORMATION_RULES.get("-tv");
             args[9] = "-tb"; // bundle identity updates
-            args[10] = transformerRulesRoot + "jakarta-bundles.properties";
+            args[10] = DEFAULT_TRANSFORMATION_RULES.get("-tb");
             args[11] = "-td"; // exact java string constant updates
-            args[12] = transformerRulesRoot + "jakarta-direct.properties";
+            args[12] = DEFAULT_TRANSFORMATION_RULES.get("-td");
             args[13] = "-tf"; // master xml subsitution file
-            args[14] = transformerRulesRoot + "jakarta-xml-master.properties";
+            args[14] = DEFAULT_TRANSFORMATION_RULES.get("-tf");
+
+            // Go through the additions
+            if(TRANSFORMATION_RULES_APPEND.size() > 0){
+                String[] additions = new String[TRANSFORMATION_RULES_APPEND.size() * 2];
+                int index = 0;
+                for (Entry<String, String> addition : TRANSFORMATION_RULES_APPEND.entrySet()) {
+                    additions[index++] = addition.getKey();
+                    additions[index++] = addition.getValue();
+                }
+                System.arraycopy(additions, 0, args, 15, TRANSFORMATION_RULES_APPEND.size() * 2);
+            }
+
+            Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));
 
             // Note the use of 'com.ibm.ws.JakartaTransformer'.
             // 'org.eclipse.transformer.Transformer' might also be used instead.

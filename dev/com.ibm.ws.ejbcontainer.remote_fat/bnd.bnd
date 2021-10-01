@@ -15,6 +15,7 @@ src: \
 	fat/src,\
 	test-applications/AppExcExtendsThrowableErrBean.jar/src, \
 	test-applications/BasicRemote.war/src, \
+	test-applications/CrossApp2xEJB.jar/src, \
 	test-applications/CrossAppRemoteClient.war/src, \
 	test-applications/CrossAppRemoteEJB.war/src, \
 	test-applications/CrossAppRemoteShared.jar/src, \
@@ -56,6 +57,8 @@ src: \
 fat.project: true
 
 tested.features: \
+	appSecurity-3.0,\
+	appSecurity-4.0,\
 	enterpriseBeansHome-4.0,\
 	enterpriseBeansLite-4.0,\
 	enterpriseBeansRemote-4.0,\

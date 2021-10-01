@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -23,16 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
@@ -49,7 +45,7 @@ public class WCAddJspFileTest {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.war.listeners");
+        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.listeners");
 
         LOG.info("Setup : complete, ready for Tests");
         server.startServer(WCAddJspFileTest.class.getSimpleName() + ".log");
@@ -69,37 +65,37 @@ public class WCAddJspFileTest {
      */
     @Test
     public void testJSPOne() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/jsp1", "Welcome to jsp one.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/jsp1", "Welcome to jsp one.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPOneDirect() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/addJsp/one.jsp", "Welcome to jsp one.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/addJsp/one.jsp", "Welcome to jsp one.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPTwo() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/jsp2", "Welcome to jsp two.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/jsp2", "Welcome to jsp two.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPDefinedInWebXml() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/webxmljsp", "Welcome to jsp webxml.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/webxmljsp", "Welcome to jsp webxml.jsp");
     }
 
     @Test
     public void testJSPPartiallyDefinedInWebXml() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/webxmlpartialone", "Welcome to jsp webxmlpartialone.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/webxmlpartialone", "Welcome to jsp webxmlpartialone.jsp");
     }
 
     @Test
     public void testJSPMultipleMappingPartiallyDefinedInWebXml() throws Exception {
-        verifyStringInResponse("/TestAddJspFile", "/webxmlpartialtwo", "Welcome to jsp webxmlpartialtwo.jsp");
-        verifyStringInResponse("/TestAddJspFile", "/webxmlpartialthree", "Welcome to jsp webxmlpartialtwo.jsp");
-        verifyStringInResponse("/TestAddJspFile", "/webxmlpartialfour", "Welcome to jsp webxmlpartialtwo.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/webxmlpartialtwo", "Welcome to jsp webxmlpartialtwo.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/webxmlpartialthree", "Welcome to jsp webxmlpartialtwo.jsp");
+        HttpUtils.findStringInReadyUrl(server, "/TestAddJspFile/webxmlpartialfour", "Welcome to jsp webxmlpartialtwo.jsp");
 
     }
 
@@ -116,22 +112,4 @@ public class WCAddJspFileTest {
         assertFalse("Test Failed : Failure message found in log", failFound);
         assertTrue("Test Failed : Expected 2 messages but got : " + messages.size(), messages.size() == 2);
     }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
-
-    }
-
 }

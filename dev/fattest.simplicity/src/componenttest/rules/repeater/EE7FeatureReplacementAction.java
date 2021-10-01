@@ -31,7 +31,6 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jpa-2.1",
                                                  "jpaContainer-2.1",
                                                  "batch-1.0",
-                                                 "batchManagement-1.0",
                                                  "beanValidation-1.1",
                                                  "jaxrs-2.0",
                                                  "jaxrsClient-2.0",
@@ -59,7 +58,10 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "wasJmsClient-2.0",
                                                  "wasJmsServer-1.0",
                                                  "wasJmsSecurity-1.0",
-                                                 "jaxws-2.2" };
+                                                 "jaxws-2.2",
+                                                 "j2eeManagement-1.1",
+                                                 "jaspic-1.1",
+                                                 "jacc-1.5" };
 
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 
@@ -68,6 +70,7 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

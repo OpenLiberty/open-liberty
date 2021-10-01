@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.security.LoginModuleProxy;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -64,6 +63,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     public static final String USERNAME_AND_PASSWORD = "userNameAndPassword";
 
     public static final String DELEGATE = "delegate";
+
+    public static final String IBM_KRB5_LOGIN_MODULE = "com.ibm.security.auth.module.Krb5LoginModule";
 
     public static final Class<WSLoginModuleProxy> WSLOGIN_MODULE_PROXY_CLASS = com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy.class;
 
@@ -193,8 +194,9 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
 
             Class<?> cl = null;
             try {
-                if (isIBMJdk18() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
-                    //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
+                //If the IBM Krb5LoginModule class is available then try to load the target class
+                //OR, if it isn't available, only try to load the target class if it isn't the IBM Krb5LoginModule
+                if (JavaInfo.isSystemClassAvailable(IBM_KRB5_LOGIN_MODULE) || !IBM_KRB5_LOGIN_MODULE.equalsIgnoreCase(target)) {
                     cl = Class.forName(target, false, loader);
                 }
             } catch (ClassNotFoundException e) {
@@ -260,7 +262,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
      * or is found to not be loadable from any.
      *
      * @param className class name, including package, of the JAAS custom login module to load.
-     * @param appInfo information about the enterprise application.
+     * @param appInfo   information about the enterprise application.
      * @return the loaded class. Null if unable to load from any web module.
      */
     @FFDCIgnore(ClassNotFoundException.class)
@@ -405,9 +407,4 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     protected void setClassLoadingSvc(ClassLoadingService classLoadingService) {
         this.classLoadingService = classLoadingService;
     }
-
-    private static boolean isIBMJdk18() {
-        return (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8);
-    }
-
 }

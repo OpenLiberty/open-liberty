@@ -62,7 +62,7 @@ public abstract class LogstashCollectorTest {
     public static final String EXIT = "Exit";
     public static final String MESSAGE_PREFIX = "Test Logstash Message";
     public static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
-    public static final int DEFAULT_TIMEOUT = 30 * 1000; // 30 seconds
+    public static final int DEFAULT_TIMEOUT = 40 * 1000; // 40 seconds
 
     protected abstract LibertyServer getServer();
 

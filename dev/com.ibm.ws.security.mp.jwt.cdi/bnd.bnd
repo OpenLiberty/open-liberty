@@ -6,10 +6,20 @@ Bundle-Name: com.ibm.ws.security.mp.jwt.cdi
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.cdi
 Bundle-Description: Microprofile JWT CDI, version ${bVersion}
 
+#
+# Generate a Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.security.mp.jwt.cdi.internal.jar
+jakartaFinalBundleName: Liberty Microprofile JWT CDI
+jakartaFinalBundleId: io.openliberty.security.mp.jwt.cdi.internal
+jakartaFinalBundleDescription: Liberty Microprofile JWT CDI; Jakarta Enabled
+
 Import-Package: \
     !com.ibm.ws.security.mp.jwt.cdi, \
-	javax.enterprise.*; version="[1.1,3)",\
-	*
+    javax.enterprise.*; version="[1.1,3)",\
+    org.eclipse.microprofile.jwt; version="[1.0,3)",\
+    *
 
 Export-Package: \
     !com.ibm.ws.security.mp.jwt.cdi.resources, \

@@ -406,6 +406,7 @@ public final class JAXRSUtils {
                                 requestContentType, acceptContentTypes, true, true);
     }
 
+    @FFDCIgnore(IllegalArgumentException.class)
     public static OperationResourceInfo findTargetMethod(
                                                          Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources,
                                                          Message message,
@@ -423,7 +424,10 @@ public final class JAXRSUtils {
         try {
             requestType = toMediaType(requestContentType);
         } catch (IllegalArgumentException ex) {
-            throw ExceptionUtils.toNotSupportedException(ex, null);
+            //Liberty change start - throw 400 if content type is invalid rather than 415
+            //throw ExceptionUtils.toNotSupportedException(ex, null);
+            throw ExceptionUtils.toBadRequestException(ex, null);
+            //Liberty change end
         }
 
         SortedMap<OperationResourceInfo, MultivaluedMap<String, String>> candidateList = new TreeMap<OperationResourceInfo, MultivaluedMap<String, String>>(new OperationResourceInfoComparator(message, httpMethod, getMethod, requestType, acceptContentTypes));
@@ -1445,8 +1449,12 @@ public final class JAXRSUtils {
                 value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
             }
         }
-
-        queries.add(HttpUtils.urlDecode(name), value);
+        
+        if (decode) {  // CXF change:  https://github.com/apache/cxf/pull/809
+            queries.add(HttpUtils.urlDecode(name), value);
+        } else {
+            queries.add(name, value);
+        }    
     }
 
     @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class })

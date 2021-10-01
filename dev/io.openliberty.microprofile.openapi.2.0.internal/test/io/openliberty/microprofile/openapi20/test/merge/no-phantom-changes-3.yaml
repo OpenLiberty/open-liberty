@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: "test"
+  version: "1.0"
+paths:
+  /testC:
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/barParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/barRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/barResponse"
+        202:
+          description: "success"
+      security:
+        - barSecurityScheme: []
+      callbacks:
+        test:
+          $ref: "#/components/callbacks/barCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org
+  description: test docs
+components:
+  schemas:
+    barSchema:
+      type: string
+      description: test
+  responses:
+    barResponse:
+      description: test
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/barSchema"
+          examples: 
+            bar:
+              $ref: "#/components/examples/barExample"
+      headers:
+        bar: 
+          $ref: "#/components/headers/barHeader"
+      links:
+        bar:
+          $ref: "#/components/links/barLink"
+  parameters:
+    barParameter:
+      name: bar
+      description: test
+      in: query
+      required: true
+      schema:
+        type: string
+  examples:
+    barExample:
+      value: test
+  requestBodies:
+    barRequestBody:
+      description: test
+      content: {}
+  headers:
+    barHeader:
+      description: test
+      schema:
+        type: string
+  securitySchemes:
+    barSecurityScheme:
+      name: test
+      type: apiKey
+      in: query
+  links:
+    barLink: 
+      description: test
+  callbacks:
+    barCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test

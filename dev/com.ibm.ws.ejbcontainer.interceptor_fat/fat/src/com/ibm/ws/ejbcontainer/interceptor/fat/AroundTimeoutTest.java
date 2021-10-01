@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutAnnServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutMixServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutXmlServlet;
@@ -76,7 +77,7 @@ public class AroundTimeoutTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -96,7 +97,7 @@ public class AroundTimeoutTest extends FATServletClient {
         EnterpriseArchive AroundTimeoutTest = ShrinkWrap.create(EnterpriseArchive.class, "AroundTimeoutTest.ear");
         AroundTimeoutTest.addAsModule(AroundTimeoutAnnEJB).addAsModule(AroundTimeoutExcEJB).addAsModule(AroundTimeoutMixEJB).addAsModule(AroundTimeoutXmlEJB).addAsModule(AroundTimeoutWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, AroundTimeoutTest);
+        ShrinkHelper.exportDropinAppToServer(server, AroundTimeoutTest, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

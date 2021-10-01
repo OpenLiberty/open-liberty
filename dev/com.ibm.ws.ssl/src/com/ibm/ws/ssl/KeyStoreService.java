@@ -43,6 +43,15 @@ public interface KeyStoreService {
     String getKeyStoreLocation(String keyStoreName) throws KeyStoreException;
 
     /**
+     * Returns the type of the keystore.
+     *
+     * @param keyStoreName The keystore's configuration ID
+     * @return the keystore type. {@code null} is not returned.
+     * @throws KeyStoreException if the keystore does not exist in the configuration
+     */
+    public String getKeyStoreType(String keyStoreName) throws KeyStoreException;
+
+    /**
      * Returns the set of trusted cert entries in the keystore.
      *
      * @param keyStoreName The keystore's configuration ID
@@ -209,4 +218,5 @@ public interface KeyStoreService {
      * @throws KeyStoreException
      */
     public KeyStore getKeyStore(String keyStoreName) throws KeyStoreException;
+
 }

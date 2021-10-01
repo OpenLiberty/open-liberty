@@ -10,7 +10,7 @@
  -->
 <server>
     <featureManager>
-        <feature>jakartaee-9.0</feature>
+        <feature>jakartaee-9.1</feature>
         <feature>componenttest-2.0</feature>
     </featureManager>
     

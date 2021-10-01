@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ejb2x.jndiName.web.JNDINameTestServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -59,7 +60,7 @@ public class JNDINameTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -76,7 +77,7 @@ public class JNDINameTest extends FATServletClient {
         JNDINameTestApp.addAsModules(JNDINameEJB, JNDINameWeb);
         ShrinkHelper.addDirectory(JNDINameTestApp, "test-applications/JNDINameTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, JNDINameTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, JNDINameTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

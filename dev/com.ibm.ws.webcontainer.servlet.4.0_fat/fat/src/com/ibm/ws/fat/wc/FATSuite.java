@@ -26,10 +26,14 @@ import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
+import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
+import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
+import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
+import com.ibm.ws.fat.wc.tests.WCServerPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
@@ -60,34 +64,37 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Shared Servers
-                WCPushBuilderTest.class,
-                WCServletClarificationTest.class,
-                WCContextRootPrecedence.class,
-                WCTrailersTest.class,
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
                 // the gradlew 'buildandrun' invocation.
                 // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
-                WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
-                // @Server Annotations
+                WCContextRootPrecedence.class,
+                WCPushBuilderTest.class,
+                WCServletContainerInitializerFilterServletNameMappingTest.class,
+                WCServletClarificationTest.class,
                 WCAddJspFileTest.class,
+                WCTrailersTest.class,
                 WCEncodingTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
                 WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class,
+                WCSameSiteCookieAttributeSecurityTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
                 WCSendRedirectRelativeURLTrue.class,
                 WCSendRedirectRelativeURLDefault.class,
                 WC5GetContextPath.class,
-                WCSCIHandlesTypesTest.class
+                WCSCIHandlesTypesTest.class,
+                WCResponseHeadersTest.class,
+                WCServerMiscTest.class,
+                WCServerPropertyTest.class
+
 })
 
 public class FATSuite {

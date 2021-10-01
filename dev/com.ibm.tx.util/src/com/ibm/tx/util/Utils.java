@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2020 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class Utils {
-    private static final String pattern = "dd/mm/yyyy, HH:MM.ss:SSS z";
+    private static final String pattern = "dd/MM/yyyy, HH:mm.ss:SSS z";
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(pattern);
     private static final ZoneId ZONE_ID = ZoneId.systemDefault();

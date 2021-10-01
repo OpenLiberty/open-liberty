@@ -54,11 +54,6 @@ public class JPATestOLGH16686Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0/2.7 are updated to include the fix
-        if ((isUsingJPA30Feature() || isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
-        }
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();

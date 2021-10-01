@@ -11,6 +11,7 @@
 
 configurations {
   hibernateJPA22
+  openjpaJPA22
   jpaFatTools
 }
 
@@ -27,9 +28,15 @@ dependencies {
   hibernateJPA22 'org.dom4j:dom4j:2.1.1'
   hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
   
-  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  openjpaJPA22	 'org.apache.openjpa:openjpa:3.1.2'
+  openjpaJPA22	 'org.apache.commons:commons-collections4:4.4'
+  openjpaJPA22	 'org.apache.commons:commons-dbcp2:2.7.0'
+  openjpaJPA22	 'commons-logging:commons-logging:1.2'
+  openjpaJPA22	 'org.apache.commons:commons-pool2:2.6.0'
+  openjpaJPA22	 'net.sourceforge.serp:serp:1.15.1'
+  openjpaJPA22	 'org.apache.xbean:xbean-asm8-shaded:4.17'
   
-  requiredLibs project(':io.openliberty.org.testcontainers')
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
 }
 
 task addhibernateJPA22(type: Copy) {
@@ -46,6 +53,12 @@ task addhibernateJPA22(type: Copy) {
   rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
 }
 
+task addOpenJPA_JPA22(type: Copy) {
+  shouldRunAfter jar
+  from configurations.openjpaJPA22
+  into new File(autoFvtDir, 'publish/shared/resources/jpa22_openjpa')
+}
+
 task addJPAFATTools (type: Copy) {
   mustRunAfter jar
   from configurations.jpaFatTools
@@ -57,6 +70,8 @@ task addJPAFATTools (type: Copy) {
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn addhibernateJPA22
+  dependsOn addOpenJPA_JPA22
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn copyTestContainers
 }

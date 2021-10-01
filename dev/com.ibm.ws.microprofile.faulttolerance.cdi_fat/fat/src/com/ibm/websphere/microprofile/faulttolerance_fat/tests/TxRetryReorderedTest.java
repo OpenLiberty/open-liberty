@@ -16,6 +16,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
@@ -45,6 +46,7 @@ public class TxRetryReorderedTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.exportTxFaultToleranceAppToServer(server);
         server.startServer();
     }
 

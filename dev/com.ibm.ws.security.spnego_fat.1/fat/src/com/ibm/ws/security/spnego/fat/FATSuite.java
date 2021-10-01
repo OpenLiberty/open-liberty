@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DynamicSpnegoConfigTest.class,
+                //DynamicSpnegoConfigTest.class,
                 S4U2SelfTest.class,
                 S4U2ProxyTest.class
 })
@@ -51,7 +51,7 @@ public class FATSuite extends InitClass {
     /**
      * Rule to setup users, SPNs etc on the KDC.
      */
-    //@ClassRule
+    @ClassRule
     public static ExternalResource beforeRule = new ExternalResource() {
         /**
          * Creates the SPN and keytab file to be used in any ensuing tests. Test classes can elect to create their own

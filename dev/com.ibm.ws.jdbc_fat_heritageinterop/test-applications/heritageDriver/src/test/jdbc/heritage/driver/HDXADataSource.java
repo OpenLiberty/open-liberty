@@ -11,6 +11,7 @@
 package test.jdbc.heritage.driver;
 
 import java.sql.SQLException;
+import java.sql.SQLNonTransientException;
 
 import javax.sql.XAConnection;
 import javax.sql.XADataSource;
@@ -25,6 +26,9 @@ public class HDXADataSource extends HDDataSource implements XADataSource {
 
     @Override
     public XAConnection getXAConnection(String username, String password) throws SQLException {
+        if ("ConnectionRefused".equalsIgnoreCase(username))
+            throw new SQLNonTransientException("Connection Refused for Testing Purposes", "08001", 40000);
+
         return new HDConnection(this, super.getConnection(username, password));
     }
 }

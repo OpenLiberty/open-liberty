@@ -14,7 +14,8 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/TestEL3.0.war/src,\
-    test-applications/TestVarargsMatching.war/src
+    test-applications/TestVarargsMatching.war/src,\
+    test-applications/ELServicesLookup.war/src
 
 fat.project: true
 
@@ -29,4 +30,7 @@ tested.features:\
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    org.apache.httpcomponents:httpclient;version=4.1.2,\
+    org.apache.httpcomponents:httpcore;version=4.1.2,\
+    httpunit:httpunit;version=1.5.4

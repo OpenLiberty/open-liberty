@@ -288,4 +288,9 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una richiesta per [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che include un cookie con un formato non corretto.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie con il formato non corretto pu\u00f2 essere causato dalla modifica del cookie presso l'agent utente con un nome host diverso dal nome host del reindirizzamento registrato con il provider. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity in server.xml.
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Il client OpenID Connect {0} non \u00e8 in grado di estrarre le richieste JWT (JSON Web Token) dalla risposta web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La risposta web deve essere un JWT in formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Il formato della risposta potrebbe non essere corretto oppure il client OpenID Connect ha rilevato un altro errore durante l'elaborazione della risposta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la risposta sia in formato JWT.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

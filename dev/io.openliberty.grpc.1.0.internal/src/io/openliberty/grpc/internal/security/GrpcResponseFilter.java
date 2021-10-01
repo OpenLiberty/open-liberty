@@ -22,19 +22,19 @@ import javax.servlet.http.HttpServletResponse;
 
 public class GrpcResponseFilter implements Filter{
 
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-			throws IOException, ServletException {
-		
-		// We will need to override the response as 
-		// com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils.handleOAuthChallenge
-		// gets a writer and commits the response
-	    GrpcSecurityServletResponseWrapper wrappedResponse = 
-	    		new GrpcSecurityServletResponseWrapper((HttpServletResponse)res);
-	    
-	    
-	    chain.doFilter(req, wrappedResponse);
-		
-	}
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
+        
+        // We will need to override the response as 
+        // com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils.handleOAuthChallenge
+        // gets a writer and commits the response
+        GrpcSecurityServletResponseWrapper wrappedResponse = 
+                new GrpcSecurityServletResponseWrapper((HttpServletResponse)res);
+        
+        
+        chain.doFilter(req, wrappedResponse);
+        
+    }
 
 }

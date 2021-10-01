@@ -27,7 +27,6 @@ import javax.management.ObjectName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * API for getting cpu info about the system
@@ -253,7 +252,7 @@ public class CpuInfo {
             return new NullCpuInfoAccessor();
         }
         try {
-            if (JavaInfo.vendor() == Vendor.IBM) {
+            if (JavaInfo.isSystemClassAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
                 return new IBMJavaCpuInfoAccessor(mbean);
             }
             return new ModernJavaCpuInfoAccessor(mbean);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019, 2020 IBM Corporation and others.
+    Copyright (c) 2019, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@
         <AD id="includeClientGSSCredentialInSubject" name="%includeClientGSSCredentialInSubject" description="%includeClientGSSCredentialInSubject.desc"
             required="false" type="Boolean" default="true" />     
 
-        <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  
+        <AD id="includeCustomCacheKeyInSubject" name="%includeCustomCacheKeyInSubject" description="%includeCustomCacheKeyInSubject.desc"  
             required="false" type="Boolean" default="true"/>
 
         <AD id="allowLocalHost" name="internal" description="internal use only"

@@ -388,13 +388,19 @@ public class InstallKernelMap implements Map {
                     }
                     String type = wlpInfo.getJsonString("typeLabel").getString();
 
-                    // todo null checking?
-                    String shortname = wlpInfo.getJsonString("shortName").getString();
-                    String description = json.getJsonString("shortDescription").getString();
+                    if (wlpInfo.getJsonString("shortName") != null && json.getJsonString("shortDescription") != null) {
+                        String shortname = wlpInfo.getJsonString("shortName").getString();
+                        String description = json.getJsonString("shortDescription").getString();
 
-                    if (query.isEmpty() || shortname.toLowerCase().contains(query) || description.toLowerCase().contains(query)) {
-                        returnedFeatures.add(String.format("%s : %s : %s", type, shortname, name));
+                        if (query.isEmpty() || shortname.toLowerCase().contains(query) || description.toLowerCase().contains(query)) {
+                            returnedFeatures.add(String.format("%s : %s : %s", type, shortname, name));
+                        }
+                    } else { //user feature that doesn't have shortname and/or description
+                        if (query.isEmpty() || name.contains(query)) {
+                            returnedFeatures.add(String.format("%s : %s ", type, name));
+                        }
                     }
+
                 }
 
             } catch (FileNotFoundException e) {

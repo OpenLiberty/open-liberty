@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * Krb5Common
@@ -35,17 +34,9 @@ public class Krb5Common {
     // Kerberos mechanism OID
     static public Oid KRB5_MECH_OID;
 
-    // Is IBM JDK 1.8
-    static public boolean isIBMJdk18 = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8);
+    static public boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule");
 
-    // Is Oracle JDK
-    static public boolean isOracleJdk = (JavaInfo.vendor() == Vendor.ORACLE);
-
-    // Is IBM, Oracle and Open JDK 11 or higher
-    static private boolean isJdk11OrUp = JavaInfo.majorVersion() >= 11;
-
-    // SPNEGO support IBM JDK 8 and lower and JDK 11 and higher
-    static public boolean isOtherSupportJDKs = isOracleJdk || isJdk11OrUp;
+    static public boolean OTHER_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable("com.sun.security.auth.module.Krb5LoginModule");
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";
@@ -165,7 +156,7 @@ public class Krb5Common {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Jdk vendor: " + JavaInfo.vendor() + " and major version: " + JavaInfo.majorVersion());
         }
-        if (isOtherSupportJDKs) {
+        if (OTHER_KRB5_LOGIN_MODULE_AVAILABLE) {
             KRB5_PRINCIPAL = SUN_KRB5_PRINCIPAL;
         }
 

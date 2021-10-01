@@ -56,19 +56,19 @@ public class SimpleBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksForSimple() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with bindAuthMechanism set to simple");
+    public void loginChecksForSimple() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with bindAuthMechanism set to simple");
 
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithSimpleBind();
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**
-     * et bindAuthMechanism to something invalid
+     * Set bindAuthMechanism to something invalid
      *
      * @throws Exception
      */
@@ -93,8 +93,8 @@ public class SimpleBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksSimple_withoutBindAuth() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with no bindAuthMechanism set.");
+    public void loginChecksSimple_withoutBindAuth() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with no bindAuthMechanism set.");
 
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithSimpleBind();
@@ -102,7 +102,7 @@ public class SimpleBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**
@@ -112,8 +112,8 @@ public class SimpleBindTest extends CommonBindTest {
      */
     @AllowedFFDC("javax.naming.NoPermissionException")
     @Test
-    public void basicLoginChecksNoneBindAuth() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with bindAuthMech of none, with and without allowing anon access.");
+    public void loginChecksNoneBindAuth() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with bindAuthMech of none, with and without allowing anon access.");
 
         DirectoryService ds = ApacheDSandKDC.getDirectoryService();
         assertNotNull("DirectoryService is null, cannot update anon access.", ds);
@@ -129,14 +129,14 @@ public class SimpleBindTest extends CommonBindTest {
             newServer.getLdapRegistries().add(ldap);
             updateConfigDynamically(server, newServer);
 
-            Log.info(c, testName.getMethodName(), "Basic login should be successful with bindAuth=none, allowed by DirectoryService.");
-            baselineTests();
+            Log.info(c, testName.getMethodName(), "Login should be successful with bindAuth=none, allowed by DirectoryService.");
+            baselineLoginAndGetTests();
         } finally {
             Log.info(c, testName.getMethodName(), "Updating DirectoryService to block anonymous bind.");
             ds.setAllowAnonymousAccess(false);
         }
 
-        Log.info(c, testName.getMethodName(), "Basic logins should fail with bindAuth=none, blocked by DirectoryService.");
+        Log.info(c, testName.getMethodName(), "Logins should fail with bindAuth=none, blocked by DirectoryService.");
         loginUserShouldFail();
     }
 
@@ -147,8 +147,8 @@ public class SimpleBindTest extends CommonBindTest {
      */
     @AllowedFFDC("javax.naming.NoPermissionException")
     @Test
-    public void basicLoginChecksNone_withoutBindAuth() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with none implied, with allowing anon access.");
+    public void loginChecksNone_withoutBindAuth() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with none implied, with allowing anon access.");
 
         DirectoryService ds = ApacheDSandKDC.getDirectoryService();
         assertNotNull("DirectoryService is null, cannot update anon access.", ds);
@@ -164,14 +164,14 @@ public class SimpleBindTest extends CommonBindTest {
             newServer.getLdapRegistries().add(ldap);
             updateConfigDynamically(server, newServer);
 
-            Log.info(c, testName.getMethodName(), "Basic login should be successful with bindAuth=none, allowed by DirectoryService.");
-            baselineTests();
+            Log.info(c, testName.getMethodName(), "Login should be successful with bindAuth=none, allowed by DirectoryService.");
+            baselineLoginAndGetTests();
         } finally {
             Log.info(c, testName.getMethodName(), "Updating DirectoryService to block anonymous bind.");
             ds.setAllowAnonymousAccess(false);
         }
 
-        Log.info(c, testName.getMethodName(), "Basic logins should fail with bindAuth=none, blocked by DirectoryService.");
+        Log.info(c, testName.getMethodName(), "Logins should fail with bindAuth=none, blocked by DirectoryService.");
         loginUserShouldFail();
     }
 
@@ -181,7 +181,7 @@ public class SimpleBindTest extends CommonBindTest {
      * @return
      */
     private LdapRegistry getLdapRegistryWithSimpleBind() {
-        return LdapKerberosUtils.getSimpleBind(ldapServerHostName, LDAP_PORT);
+        return LdapKerberosUtils.getLdapRegistryWithSimpleBind(ldapServerHostName, LDAP_PORT);
     }
 
     /**

@@ -23,10 +23,13 @@ import java.io.InputStream;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
@@ -38,7 +41,6 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,21 +52,21 @@ import org.junit.rules.TestRule;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheEntry;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -78,7 +80,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 
 import test.common.SharedOutputManager;
 
-public class AccessTokenAuthenticatorTest {
+public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     @Rule
@@ -273,6 +275,10 @@ public class AccessTokenAuthenticatorTest {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
@@ -289,7 +295,6 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-
             }
         });
 
@@ -320,7 +325,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
                 will(returnValue(true));
@@ -356,7 +365,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                exactly(2).of(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
                 will(returnValue(false));
@@ -390,7 +403,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 allowing(clientConfig).getInboundPropagation();
                 will(returnValue("required"));
@@ -441,7 +458,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue("client_secret"));
@@ -470,11 +491,11 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SUCCESS, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
-
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_GoodOidcResult() {
+        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -489,7 +510,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue("client_secret"));
@@ -511,6 +536,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
+                exactly(2).of(clientConfig).getCache();
+                will(returnValue(cache));
             }
         });
 
@@ -520,6 +547,11 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SUCCESS, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+
+        // Verify that the result was cached
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cacheEntry);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cacheEntry.getResult());
     }
 
     @Test
@@ -537,7 +569,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                exactly(3).of(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue(null));
@@ -576,7 +612,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                exactly(2).of(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue(null));
@@ -607,7 +647,11 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(INVALID_VALIDATION));
                 one(clientConfig).getTokenEndpointUrl();
                 will(returnValue(HTTPS_URL));
@@ -673,6 +717,10 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
 
@@ -687,6 +735,37 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SEND_401, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void testAuthenticate_resultAlreadyCached() {
+        SingleTableCache cache = getCache();
+        ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
+        AccessTokenCacheEntry cacheEntry = new AccessTokenCacheEntry("unique id", cachedResult);
+        cache.put(ACCESS_TOKEN, cacheEntry);
+
+        mockery.checking(new Expectations() {
+            {
+                one(req).getHeader(Authorization_Header);
+                will(returnValue(BEARER));
+                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+                one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
+
+        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
+                AuthResult.SUCCESS, oidcResult.getStatus());
+        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
+                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
     }
 
     @Test
@@ -1111,45 +1190,6 @@ public class AccessTokenAuthenticatorTest {
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
-    //@Test
-    public void test_extractSuccessfulResponse_jws() throws Exception {
-        JSONObject headerJson = new JSONObject();
-        headerJson.put("alg", "HS256");
-        headerJson.put("typ", "JWT");
-        JSONObject payloadJson = new JSONObject();
-        payloadJson.put("iss", GOOD_ISSUER);
-        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
-        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString());
-        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
-        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
-        final InputStream input = new ByteArrayInputStream(rawResponse.getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/jwt");
-        ConsumerUtils consumerUtils = new ConsumerUtils(null);
-
-        // TODO - update once parsing JWS tokens is implemented
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(clientConfig).getConsumerUtils();
-                will(returnValue(consumerUtils));
-                allowing(clientConfig).getKeyManagementKeyAlias();
-                will(returnValue(null));
-                one(clientConfig).getClockSkew();
-                will(returnValue(3000L));
-                one(clientConfig).isValidationRequired();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-            }
-        });
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not match the expected value.", payloadJson, result);
-    }
-
     @Test
     public void test_extractClaimsFromJwtResponse_responseStringEmpty() throws Exception {
         String rawResponse = "";
@@ -1158,35 +1198,28 @@ public class AccessTokenAuthenticatorTest {
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
-    //@Test
-    public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
-        // Create a JWS but mangle the payload string
-        JSONObject headerJson = new JSONObject();
-        headerJson.put("alg", "HS256");
-        headerJson.put("typ", "JWT");
-        JSONObject payloadJson = new JSONObject();
-        payloadJson.put("iss", GOOD_ISSUER);
-        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
-        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString()) + "_mangled";
-        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
-        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
+    @Test
+    public void test_extractClaimsFromJwtResponse_notJwt() throws Exception {
+        String rawResponse = "This is not in JWT format";
 
-        // TODO - update once parsing JWS tokens is implemented
+        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
+        String rawResponse = "aaa.bbb.ccc";
         mockery.checking(new Expectations() {
             {
-                //                one(clientConfig).getConsumerUtils();
-                //                will(returnValue(consumerUtils));
-                //                allowing(clientConfig).getKeyManagementKeyAlias();
-                //                will(returnValue(null));
-                //                one(clientConfig).getClockSkew();
-                //                will(returnValue(3000L));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
             }
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got " + result + ".");
-        } catch (InvalidJwtException e) {
-            assertTrue("Did not find expected exception and reason string. Exception was " + e, e.toString().contains("Unable to parse"));
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.jwt.consumer.InvalidJwtException"));
         }
     }
 
@@ -1202,16 +1235,15 @@ public class AccessTokenAuthenticatorTest {
             {
                 one(clientConfig).getJweDecryptionKey();
                 will(returnValue(decryptionKey));
-                one(clientConfig).getId();
+                allowing(clientConfig).getId();
                 will(returnValue("configId"));
             }
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got " + result + ".");
-        } catch (InvalidTokenException e) {
-            String expectedMsg = "CWWKS6056E";
-            assertTrue("Did not see expected " + expectedMsg + " error message in the exception [" + e + "].", e.getMessage().contains(expectedMsg));
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
         }
     }
 
@@ -1251,6 +1283,19 @@ public class AccessTokenAuthenticatorTest {
     private String getJSONObjectString(Boolean active, Long expDate, Long issueAtDate, String issuer, Long notBeforeTime) {
         return "{\"user\":\"user1\" , \"active\":" + active + " , \"exp\":" + expDate + " , \"iat\":" + issueAtDate + " , \"iss\":\"" + issuer + "\" , \"nbf\":" + notBeforeTime
                 + "}";
+    }
+
+    private SingleTableCache getCache() {
+        return new SingleTableCache(1000 * 60);
+    }
+
+    private ProviderAuthenticationResult createProviderAuthenticationResult(long expTime) {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> accessTokenInfo = new HashMap<String, Object>();
+        accessTokenInfo.put("exp", expTime);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, accessTokenInfo);
+        ProviderAuthenticationResult result = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, GOOD_USER, new Subject(), customProperties, HTTPS_URL);
+        return result;
     }
 
     final class FakeAccessTokenAuthenticator extends AccessTokenAuthenticator {

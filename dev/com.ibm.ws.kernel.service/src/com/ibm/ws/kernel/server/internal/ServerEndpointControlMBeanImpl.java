@@ -195,4 +195,10 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
         return opDescription;
     }
 
+    @Override
+    public boolean isActive(String targets) {
+        return pauseableComponentController.isActive(targets);
+
+    }
+
 }

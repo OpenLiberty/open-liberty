@@ -47,6 +47,13 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
 
+    @Deprecated
+    /**
+     * Use of a service filter should be used with extreme caution.
+     * There is a possibility of filtering out all available docker engines available to a build machine.
+     * Resulting in an unavoidable failed FAT bucket.
+     * If certain docker engines are performing poorly please raise an issue.
+     */
     public static Predicate<ExternalTestService> serviceFilter = null;
 
     /**

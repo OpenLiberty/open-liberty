@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,15 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Obtenga una JVM que admita los product
 OSGI_SERVICE_ERROR=CWWKX1066E: El servicio OSGi {0} no est\u00e1 disponible.
 OSGI_SERVICE_ERROR.explanation=Este error interno del servidor se ha producido porque el servicio especificado no est\u00e1 disponible.
 OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n clean.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: La caja de herramientas del centro de administraci\u00f3n para el usuario {0} se ha cargado desde el almacenamiento persistencia con el nombre de archivo antiguo y se ha convertido al nombre de archivo nuevo.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=El producto ha cargado la caja de herramientas del centro de administraci\u00f3n desde el almacenamiento persistido con el nombre de archivo antiguo y ha guardado una copia en el nombre de archivo nuevo. La copia del nombre de archivo nuevo se cargar\u00e1 durante el siguiente acceso al almacenamiento persistido.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=No se requiere ninguna acci\u00f3n.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Los datos de la herramienta {0} data para el usuario {1} se ha cargado desde el almacenamiento persistencia con el nombre de archivo antiguo y se ha convertido al nombre de archivo nuevo.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=El producto ha cargado los datos de la herramienta para el usuario y la herramienta especificados desde el almacenamiento persistido con el nombre de archivo antiguo y ha guardado una copia en el nombre de archivo nuevo. La copia del nombre de archivo nuevo se cargar\u00e1 durante el siguiente acceso al almacenamiento persistido.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=No se requiere ninguna acci\u00f3n.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: El cat\u00e1logo predeterminado del Centro de administraci\u00f3n se ha cargado desde la persistencia COLLECTIVE que ha creado una versi\u00f3n anterior del servidor. El cat\u00e1logo se ha vuelto a cargar utilizando una copia de la versi\u00f3n actual del servidor.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=El producto ha convertido el cat\u00e1logo predeterminado del Centro de administraci\u00f3n en la versi\u00f3n actual del servidor. La copia de la persistencia COLLECTIVE se carga en el siguiente acceso al almacenamiento persistente.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=No se requiere ninguna acci\u00f3n.

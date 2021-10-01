@@ -4,6 +4,7 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: webProfile-9.1
+WLP-AlsoKnownAs: webProfile-9.0
 Subsystem-Version: 9.1.0
 Subsystem-Name: Jakarta EE Web Profile 9.1
 -features=io.openliberty.cdi-3.0, \

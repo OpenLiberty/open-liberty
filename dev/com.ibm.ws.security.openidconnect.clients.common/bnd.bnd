@@ -19,11 +19,10 @@ Bundle-Description: Liberty Security OpenID Connect Clients Common Code, version
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.openidconnect.internal.clients.common.jar
-#JakartaEE-Bundle-Name: Liberty Security OpenID Connect Clients Common Code 1.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.openidconnect.internal.clients.common
-#JakartaEE-Bundle-Description: Liberty Security OpenID Connect Clients Common Code, version=${bVersion}
-#JakartaEE-Bundle-Version:
+jakartaFinalJarName: io.openliberty.security.openidconnect.internal.clients.common.jar
+jakartaFinalBundleName: Liberty Security OpenID Connect Clients Common Code 1.0
+jakartaFinalBundleId: io.openliberty.security.openidconnect.internal.clients.common
+jakartaFinalBundleDescription: Liberty Security OpenID Connect Clients Common Code 1.0; Jakarta Enabled
 
 IBM-Authorization-Roles: com.ibm.ws.security.oidcclient10
 

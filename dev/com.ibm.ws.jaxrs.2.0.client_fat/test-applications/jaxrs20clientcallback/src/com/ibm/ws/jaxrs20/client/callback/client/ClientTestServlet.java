@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.core.Response;
 
 @WebServlet("/ClientTestServlet")
 public class ClientTestServlet extends HttpServlet {
@@ -55,10 +60,10 @@ public class ClientTestServlet extends HttpServlet {
             Method testM = this.getClass().getDeclaredMethod(testMethod, new Class[] { Map.class, StringBuilder.class });
             Map<String, String> m = new HashMap<String, String>();
 
-            Iterator itr = req.getParameterMap().keySet().iterator();
+            Iterator<String> itr = req.getParameterMap().keySet().iterator();
 
             while (itr.hasNext()) {
-                String key = (String) itr.next();
+                String key = itr.next();
                 if (key.indexOf("@") == 0) {
                     m.put(key.substring(1), req.getParameter(key));
                 }
@@ -92,6 +97,81 @@ public class ClientTestServlet extends HttpServlet {
         } finally {
             c.close();
             ret.append(res);
+        }
+    }
+
+    public void testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_Response(Map<String, String> param, StringBuilder ret) {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        Client c = cb.build();
+        Future<Response> future = null;
+        AtomicReference<String> invCallbackResult = new AtomicReference<>("uninvoked");
+        InvocationCallback<Response> callback = new InvocationCallback<Response>() {
+
+            @Override
+            public void completed(Response r) {
+                // note that we don't actually read the response here - we do that with the Future<Response> later in the code
+                invCallbackResult.set("completed");
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                t.printStackTrace();
+                invCallbackResult.set(t.toString());
+            }
+            
+        };
+        try {
+            future = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/rest/hello")
+                      .request()
+                      .async()
+                      .get(callback);
+            String res = future.get(2, TimeUnit.MINUTES).readEntity(String.class);
+            ret.append(invCallbackResult.get()).append(" ").append(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ret.append("[Error]:" + e.toString());
+        } finally {
+            c.close();
+        }
+    }
+
+    public void testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_String(Map<String, String> param, StringBuilder ret) {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        Client c = cb.build();
+        Future<String> future = null;
+        AtomicReference<String> invCallbackResult = new AtomicReference<>("uninvoked");
+        InvocationCallback<String> callback = new InvocationCallback<String>() {
+
+            @Override
+            public void completed(String s) {
+                invCallbackResult.set(s);
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                t.printStackTrace();
+                invCallbackResult.set(t.toString());
+            }
+            
+        };
+        try {
+            future = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/rest/hello")
+                      .request()
+                      .async()
+                      .get(callback);
+            String res = future.get(2, TimeUnit.MINUTES);
+            ret.append(invCallbackResult.get()).append(" ").append(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ret.append("[Error]:" + e.toString());
+        } finally {
+            c.close();
         }
     }
 }

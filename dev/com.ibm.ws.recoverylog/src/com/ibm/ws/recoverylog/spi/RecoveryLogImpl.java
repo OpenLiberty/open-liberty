@@ -28,7 +28,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
      * specify the FailureScope for recovery log being created.
      * </p>
      *
-     * @param recoveryLog  MultiScopeLog delegate
+     * @param recoveryLog MultiScopeLog delegate
      * @param failureScope FailureScope criteria used to filter the delegates
      */
     public RecoveryLogImpl(MultiScopeLog recoveryLog, FailureScope failureScope) {
@@ -282,5 +282,16 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "delete", this);
+    }
+
+    @Override
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+
+        _recoveryLog.retainLogsInPeerRecoveryEnv(retainLogs);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,15 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Acquisire una JVM che supporti i prodo
 OSGI_SERVICE_ERROR=CWWKX1066E: Il servizio OSGi {0} non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.explanation=Questo errore interno del server si verifica perch\u00e9 il servizio specificato non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione clean.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: La casella degli strumenti Centro di gestione per l''utente {0} \u00e8 stata caricata dallo storage persistente utilizzando il relativo nome file precedente ed \u00e8 stata convertita al nuovo nome file.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=Il prodotto ha caricato la casella degli strumenti Centro di gestione dallo storage persistente utilizzando il relativo nome file precedente ed ha memorizzato una copia nel nuovo nome file. La copia nel nuovo nome file verr\u00e0 caricata dall'accesso successivo allo storage persistente.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nessuna azione richiesta.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: I dati dello strumento {0} per l''utente {1} sono stati caricati dallo storage persistente utilizzando il relativo nome file precedente ed \u00e8 stata convertita al nuovo nome file.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Il prodotto ha caricato i dati dello strumento dallo storage persistente utilizzando il relativo nome file precedente ed ha memorizzato una copia nel nuovo nome file. La copia nel nuovo nome file verr\u00e0 caricata dall'accesso successivo allo storage persistente.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nessuna azione richiesta.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Il catalogo predefinito del centro di gestione \u00e8 stato caricato dalla persistenza COLLECTIVE che \u00e8 stata creata da una versione precedente del server. Il catalogo viene ricaricato utilizzando una copia dalla versione corrente del server.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Il prodotto ha convertito il catalogo predefinito del centro di gestione alla versione corrente del server. La copia nella persistenza COLLECTIVE viene caricata da un accesso successivo allo storage persistente.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nessuna azione richiesta.

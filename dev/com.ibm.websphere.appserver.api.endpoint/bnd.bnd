@@ -24,4 +24,5 @@ Export-Package: com.ibm.websphere.endpoint
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
-	com.ibm.ws.channelfw
+	io.openliberty.endpoint
+

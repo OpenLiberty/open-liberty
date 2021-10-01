@@ -30,8 +30,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Spnego;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCforSPNEGO;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCCommonTest;
 import com.ibm.ws.security.spnego.fat.config.CommonTest;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
 import com.ibm.ws.security.spnego.fat.config.Krb5Helper;
@@ -87,7 +85,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
                                         SPNEGOConstants.USE_COMMON_KEYTAB,
                                         SPNEGOConstants.START_SERVER);
 
-        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E");
+        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W");
     }
 
     @Before

@@ -17,6 +17,6 @@ import io.grpc.ServerInterceptor;
  */
 public interface GrpcMonitoringServerInterceptorService {
 
-	public ServerInterceptor createInterceptor(String serviceName, String appName);
+    public ServerInterceptor createInterceptor(String serviceName, String appName);
 
 }

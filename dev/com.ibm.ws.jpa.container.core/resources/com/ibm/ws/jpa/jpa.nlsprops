@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -305,6 +305,12 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtain a newer version of the JPA
 ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: An error occurred while attempting to transform the {0} Java Class.  The following failure detail was gathered: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=An unexpected error occurred while transforming the Java class. This error is usually caused by invalid Java bytecode.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=The class cache might be corrupted or the application might be packaged incorrectly. First, clear the class cache. If that action does not resolve the problem, then review the application archive for packaging mistakes.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: A JPA default property configured in the server.xml file contains an empty name or empty value: name = [{0}], value = [{1}]. The property will be ignored.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=The name and value attributes for a JPA default property must not be empty.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Change the server configuration to provide a non-empty name and value for the property or remove the property.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

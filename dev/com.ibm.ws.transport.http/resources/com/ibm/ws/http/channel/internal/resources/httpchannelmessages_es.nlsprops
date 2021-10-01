@@ -191,3 +191,15 @@ config.hsts.invalid.max.age.value.useraction=Aseg\u00farese de que la directiva 
 config.hsts.missing.max.age=CWWKT0041W: Se ha intentado configurar [{0}] como la cabecera Strict-Transport-Security. Esta configuraci\u00f3n no contiene la directiva max-age obligatoria. Una configuraci\u00f3n que no contiene una directiva max-age no es v\u00e1lida y no se puede utilizar.
 config.hsts.missing.max.age.explanation=La configuraci\u00f3n especificada debe contener una directiva max-age con un valor entero no negativo.
 config.hsts.missing.max.age.useraction=Aseg\u00farese de que la configuraci\u00f3n contiene una directiva max-age con un valor entero no negativo.
+
+headers.emptyName=CWWKT0042W: Se ha encontrado un nombre de cabecera vac\u00edo cuando se ha analizado la configuraci\u00f3n de {0}. Este valor se ignora.
+headers.emptyName.explanation=El nombre de cabecera especificado es una serie vac\u00eda. Un nombre de cabecera no debe estar vac\u00edo. 
+headers.emptyName.useraction=Aseg\u00farese de que ning\u00fan nombre de cabecera est\u00e9 vac\u00edo.  
+
+headers.duplicateHeaderName=CWWKT0043W: Se ha encontrado un nombre de cabecera duplicado en la cabecera [{0}] que utiliza la configuraci\u00f3n {1}. Se ignoran todas las configuraciones para la cabecera [{0}]. Cualquier cabecera definida por las configuraciones de remove, add, set o setIfMissing debe ser exclusiva en todas las configuraciones.
+headers.duplicateHeaderName.explanation=El nombre de cabecera especificado estaba configurado anteriormente por otra configuraci\u00f3n de la caracter\u00edstica de cabeceras.
+headers.duplicateHeaderName.useraction=Aseg\u00farese de que las cabeceras definidas por las configuraciones remove, add, set o setIfMissing no aparezcan en m\u00e1s de una configuraci\u00f3n.
+
+headers.knownDuplicateHeader=CWWKT0044W: Se ha encontrado la cabecera [{0}], que est\u00e1 marcada como un nombre de cabecera duplicado, en la configuraci\u00f3n {1}. La cabecera [{0}] se ignora. Cualquier cabecera definida por la configuraci\u00f3n {1} debe contener nombres de cabecera exclusivos.
+headers.knownDuplicateHeader.explanation=El nombre de cabecera especificado ya se ha encontrado en las configuraciones de remove, add, set o setIfMissing.
+headers.knownDuplicateHeader.useraction=Aseg\u00farese de que los nombres de cabecera definidos en esta configuraci\u00f3n sean exclusivos en las configuraciones de remove, add, set o setIfMissing.              

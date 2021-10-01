@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public abstract class CommonCache {
+
+    private static final TraceComponent tc = Tr.register(CommonCache.class);
 
     /**
      * Maximum number of entries allowed in the cache.
@@ -28,9 +39,11 @@ public abstract class CommonCache {
     protected long timeoutInMilliSeconds = 5 * 60 * 1000;
 
     /**
-     * Timer to schedule the eviction task.
+     * Scheduled executor to run the eviction task.
      */
-    protected Timer timer;
+    private ScheduledExecutorService evictionSchedule;
+
+    private ScheduledFuture<?> previousScheduledTask = null;
 
     public int size() {
         return this.entryLimit;
@@ -62,16 +75,45 @@ public abstract class CommonCache {
         if (newTimeoutInMillis > 0) {
             this.timeoutInMilliSeconds = newTimeoutInMillis;
         }
-        timer.cancel();
-        scheduleEvictionTask(timeoutInMilliSeconds);
+        if (previousScheduledTask != null) {
+            previousScheduledTask.cancel(true);
+        }
+        evictionSchedule = getScheduledExecutorService();
+        if (evictionSchedule != null) {
+            previousScheduledTask = evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to obtain a ScheduledExecutorService");
+            }
+        }
     }
 
-    protected void scheduleEvictionTask(long timeoutInMilliSeconds) {
-        EvictionTask evictionTask = new EvictionTask();
-        timer = new Timer(true);
-        long period = timeoutInMilliSeconds;
-        long delay = period;
-        timer.schedule(evictionTask, delay, period);
+    ScheduledExecutorService getScheduledExecutorService() {
+        BundleContext executorServiceBundle = getBundleContext();
+        return getService(executorServiceBundle, ScheduledExecutorService.class);
+    }
+
+    private BundleContext getBundleContext() {
+        BundleContext context = null;
+        if (FrameworkState.isValid()) {
+            Bundle bundle = FrameworkUtil.getBundle(getClass());
+            if (bundle != null) {
+                context = bundle.getBundleContext();
+            }
+        }
+        return context;
+    }
+
+    private <T> T getService(BundleContext bundleContext, Class<T> serviceClass) {
+        if (!FrameworkState.isValid() || bundleContext == null) {
+            return null;
+        }
+        ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
+        T service = null;
+        if (ref != null) {
+            service = bundleContext.getService(ref);
+        }
+        return service;
     }
 
     /**
@@ -79,13 +121,10 @@ public abstract class CommonCache {
      */
     abstract protected void evictStaleEntries();
 
-    private class EvictionTask extends TimerTask {
-        /** {@inheritDoc} */
+    private class EvictionTask implements Runnable {
         @Override
         public void run() {
             evictStaleEntries();
         }
-
     }
-
 }

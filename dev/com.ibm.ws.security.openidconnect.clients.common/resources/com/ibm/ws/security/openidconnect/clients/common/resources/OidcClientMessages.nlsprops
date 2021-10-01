@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,13 @@ USERINFO_INVALID.explanation=The sub claim of user info data is required to matc
 USERINFO_INVALID.useraction=Ensure that the OpenID Connect provider generates valid User Info data.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: The OpenID Connect client [{0}] requires an authorization endpoint URL, but it is not set.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=An authorization endpoint URL must be set to obtain an authorization code or the required tokens.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Set the authorizationEndpointUrl attribute in the OpenID Connect client configuration to the authorization endpoint URL of the OpenID Connect provider. Alternatively, set the discoveryEndpointUrl attribute in the OpenID Connect client configuration to the discovery endpoint URL of the OpenID Connect provider.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: The OpenID Connect client [{0}] requires a token endpoint URL, but it is not set.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=A token endpoint URL must be set to obtain the required tokens.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Set the tokenEndpointUrl attribute in the OpenID Connect client configuration to the token endpoint URL of the OpenID Connect provider. Alternatively, set the discoveryEndpointUrl attribute in the OpenID Connect client configuration to the discovery endpoint URL of the OpenID Connect provider.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

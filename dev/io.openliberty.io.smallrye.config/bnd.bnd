@@ -42,6 +42,8 @@ Private-Package: \
 Export-Package: \
         io.smallrye.config.*;version="2.0.0"
 
+jakartaeeMe: true
+
 -buildpath: \
   io.openliberty.io.smallrye.common;version=latest, \
   io.smallrye.config:smallrye-config;version=2.1.0, \

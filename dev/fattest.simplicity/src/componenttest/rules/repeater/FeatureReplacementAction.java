@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,6 +109,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public static FeatureReplacementAction EE9_FEATURES() {
         return new JakartaEE9Action();
+    }
+
+    /**
+     * Remove the EE7, EE8, and EE9 features; replace them with the EE10 features
+     */
+    public static FeatureReplacementAction EE10_FEATURES() {
+        return new JakartaEE10Action();
     }
 
     private boolean forceAddFeatures = true;
@@ -574,7 +581,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * @return                     The replacement feature name. Null if no replacement is available.
      */
-    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
+    public static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
         String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
         int dashOffset = originalFeature.indexOf('-');
@@ -671,7 +678,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
+        return getID();
     }
 
     @Override
@@ -679,7 +686,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         if (currentID != null) {
             return currentID;
         } else {
-            return toString();
+            return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
         }
     }
 }

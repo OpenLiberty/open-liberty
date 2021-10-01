@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+    <featureManager>
+		<feature>jsonp-1.0</feature> <!-- needed for the TokenEndpointServlet -->
+	    <feature>jwt-1.0</feature>
+    </featureManager>
+
+	<include location="${server.config.dir}/imports/oidcServerFeatures.xml" />
+
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+	
+	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
+
+	<include location="${server.config.dir}/imports/oidcUserinfoProvider.xml" />
+
+	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
+
+	<include location="${server.config.dir}/imports/signingBuilders.xml" />
+	<include location="${server.config.dir}/imports/signingEncryptingBuilders.xml" />
+	
+	<include location="${server.config.dir}/imports/userinfoEndpointApplication.xml" />
+	
+	<include location="${server.config.dir}/imports/jwtBuilderApplication.xml" />
+
+</server>

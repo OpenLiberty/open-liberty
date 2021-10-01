@@ -4,6 +4,7 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: jakartaee-9.1
+WLP-AlsoKnownAs: jakartaee-9.0
 Subsystem-Version: 9.1.0
 Subsystem-Name: Jakarta EE Platform 9.1
 -features=io.openliberty.mail-2.0, \

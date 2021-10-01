@@ -35,7 +35,7 @@
 -->
 
     <properties>
-        <microprofile.rest.client.version>2.0.1-RC1</microprofile.rest.client.version>
+        <microprofile.rest.client.version>2.0.1-RC2</microprofile.rest.client.version>
         <arquillian.version>1.3.0.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->

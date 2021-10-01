@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/AppExcExtendsThrowableErrBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/BasicRemote.war/src"/>
+	<classpathentry kind="src" path="test-applications/CrossApp2xEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/CrossAppRemoteClient.war/src"/>
 	<classpathentry kind="src" path="test-applications/CrossAppRemoteEJB.war/src"/>
 	<classpathentry kind="src" path="test-applications/CrossAppRemoteShared.jar/src"/>

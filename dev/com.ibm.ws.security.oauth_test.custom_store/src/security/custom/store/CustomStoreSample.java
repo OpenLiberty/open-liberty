@@ -36,6 +36,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteResult;
 
@@ -504,8 +505,24 @@ public class CustomStoreSample implements OAuthStore {
     @Override
     public void update(OAuthClient oauthClient) throws OAuthStoreException {
         try {
-            DBCollection col = getClientCollection();
-            col.update(createClientKeyHelper(oauthClient), createClientDBObjectHelper(oauthClient), false, false);
+            for (int i = 0; i < RETRY_COUNT; i++) {
+                try {
+                    DBCollection col = getClientCollection();
+                    col.update(createClientKeyHelper(oauthClient), createClientDBObjectHelper(oauthClient), false, false);
+                    break;
+                } catch (Exception e) {
+                    if (i < RETRY_COUNT && isNetworkFailure(e)) {
+                        try {
+                            System.out.println("CustomStoreSample update hit a failure, trying again " + e.getMessage());
+
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e1) {
+                        }
+                    } else {
+                        throw e;
+                    }
+                }
+            }
             System.out.println("CustomStoreSample update on " + oauthClient.getClientId());
         } catch (Exception e) {
             throw new OAuthStoreException("Failed on update for OAuthClient for " + oauthClient.getClientId(), e);
@@ -635,7 +652,7 @@ public class CustomStoreSample implements OAuthStore {
         System.out.println("CustomStoreSample isNetworkFailure processing for " + e);
         Throwable causeBy = e;
         while (causeBy != null) {
-            if (causeBy instanceof IOException) {
+            if (causeBy instanceof IOException || causeBy instanceof MongoTimeoutException) {
                 System.out.println("Hit an IOException: " + causeBy);
                 return true;
             } else {

@@ -32,18 +32,24 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 			System.out.println("==============MultiRecoveryCheckServlet Test Number: " + number
 					+ "================");
 			String output = "";
+			int maxAttempts = 300;
+			int attempt = 0;
 
 			XAResourceImpl.printState();
 			
 			int	txCount = XAResourceImpl.transactionCount();
 
-			while (txCount != 0) {
+			while (txCount != 0 && attempt++ < maxAttempts) {
 				try {
 					System.out.println("Waiting for " + txCount + " transaction" + (txCount == 1 ? "" : "s") + " to finish.");
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
 				txCount = XAResourceImpl.transactionCount();
+			}
+			
+			if (0 != XAResourceImpl.transactionCount()) {
+				System.out.println("Transactions are still running. This test has probably failed.");
 			}
 
 			switch (number) {

@@ -12,6 +12,13 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Stack;
 
 import com.ibm.websphere.ras.Tr;
@@ -97,7 +104,7 @@ public class RLSUtils {
      * Converts a byte array into a printable hex string.
      *
      * @param byteSource The byte array source.
-     * @param bytes      The number of bytes to display.
+     * @param bytes The number of bytes to display.
      *
      * @return String printable hex string or "null"
      */
@@ -233,28 +240,73 @@ public class RLSUtils {
     }
 
     /**
-     * Recursively delete a filesystem directory and its contents.
+     * Move a filesystem directory to a hidden trash directory for subsequent deletion
      *
      * @param directoryToBeDeleted
      * @return
      */
-    public static boolean deleteDirectoryTree(File directoryToBeDeleted) {
+    public static void archiveAndDeleteDirectoryTree(File directoryToBeDeleted) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteDirectoryTree", directoryToBeDeleted.getAbsolutePath());
-        boolean deleted = false;
+            Tr.entry(tc, "archiveAndDeleteDirectoryTree", directoryToBeDeleted.getAbsolutePath());
+        String trashDir = directoryToBeDeleted.getParent() + File.separator + ".trash";
+        createDirectoryTree(trashDir);
+        File to = new File(trashDir + File.separator + directoryToBeDeleted.getName());
 
-        synchronized (_directoryCreationLock) {
-            File[] allContents = directoryToBeDeleted.listFiles();
-            if (allContents != null) {
-                for (File file : allContents) {
-                    deleteDirectoryTree(file);
+        directoryToBeDeleted.renameTo(to);
+
+        File trashDirFile = new File(trashDir);
+        for (File file : trashDirFile.listFiles()) {
+            deleteDirectoryTreeTrash(file);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "archiveAndDeleteDirectoryTree");
+    }
+
+    /**
+     * Recursively delete a filesystem directory and its contents.
+     *
+     * @param directoryToBeDeleted
+     */
+    public static void deleteDirectoryTreeTrash(File directoryToBeDeleted) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteDirectoryTreeTrash", directoryToBeDeleted.getAbsolutePath());
+        Path rootPath = Paths.get(directoryToBeDeleted.getAbsolutePath());
+
+        try {
+            Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "deleting file ", file.toString());
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "visitFile: failed to delete because:", e);
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-            }
-            deleted = directoryToBeDeleted.delete();
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "deleting dir ", dir.toString());
+                    try {
+                        Files.delete(dir);
+                    } catch (IOException e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "postVisitDirectory: failed to delete because:", e);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "deleteDirectoryTreeTrash: failed to delete because:", e);
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteDirectoryTree", deleted);
-        return deleted;
+            Tr.exit(tc, "deleteDirectoryTreeTrash");
+        return;
     }
 }

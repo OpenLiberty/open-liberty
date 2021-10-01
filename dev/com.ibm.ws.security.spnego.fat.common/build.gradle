@@ -8,16 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/fat.gradle'
-
-dependencies { 
-    requiredLibs 'org.apache.directory.server:apacheds-all:2.0.0-M24',
-	'org.apache.directory.server:kerberos-client:2.0.0-M24',
-    project(':fattest.simplicity'),
-    project(':com.ibm.ws.security.registry_test.servlet'),
-    project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5'),
-    'org.slf4j:slf4j-jdk14:1.7.7'
-}
 
 apply plugin: 'war'
 

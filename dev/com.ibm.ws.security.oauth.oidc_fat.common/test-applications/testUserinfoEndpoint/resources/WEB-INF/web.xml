@@ -32,11 +32,15 @@
   </servlet-mapping>         
   <servlet-mapping id="ServletMapping_2">
     <servlet-name>UserinfoEndpointServlet</servlet-name>
-    <url-pattern>/getJws</url-pattern>
+    <url-pattern>/getJWT</url-pattern>
   </servlet-mapping>
 
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_3">
+    <servlet-name>UserinfoEndpointServlet</servlet-name>
+    <url-pattern>/getJws</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_4">
     <servlet-name>UserinfoEndpointServlet</servlet-name>
     <url-pattern>/getJwe</url-pattern>
   </servlet-mapping>

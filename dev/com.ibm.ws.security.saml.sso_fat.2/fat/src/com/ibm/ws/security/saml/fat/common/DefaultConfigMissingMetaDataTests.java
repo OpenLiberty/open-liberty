@@ -69,6 +69,7 @@ public class DefaultConfigMissingMetaDataTests extends SAMLCommonTest {
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
+        //expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not fail to find a valid identity provider", SAMLMessageConstants.CWWKS5023E_IDP_METADATA_NOT_VALID);
         expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not fail to find a valid identity provider", SAMLMessageConstants.CWWKS5045E_INVALID_ISSUER);
 
         genericSAML(_testName, webClient, updatedTestSettings, SAMLConstants.IDP_INITIATED_FLOW, expectations);
@@ -85,6 +86,7 @@ public class DefaultConfigMissingMetaDataTests extends SAMLCommonTest {
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, null);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not fail to find a valid identity provider", SAMLMessageConstants.CWWKS5023E_IDP_METADATA_NOT_VALID);
         expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not fail to find a valid identity provider", SAMLMessageConstants.CWWKS5079E_CANNOT_FIND_IDP_URL_IN_METATDATA);
 
         genericSAML(_testName, webClient, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW_ONLY_SP, expectations);

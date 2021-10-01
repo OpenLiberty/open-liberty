@@ -52,6 +52,14 @@
 @REM              to y to allow remote debugging. By default, this value is not
 @REM              defined, which does not allow remote debugging on newer JDK/JREs.
 @REM
+@REM WINDOWS_SERVICE_START_TIMEOUT - Use when liberty is registered as a Windows
+@REM              service.  The value specifies the number of seconds the script 
+@REM              waits for the service to start before continuing. Default is 5.
+@REM
+@REM WINDOWS_SERVICE_STOP_TIMEOUT - Use when liberty is registered as a Windows
+@REM              service.  The value specifies the number of seconds the script 
+@REM              waits for the service to stop before continuing.  Default is 5.
+@REM
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -87,6 +95,11 @@ if defined LOG_FILE set LOG_FILE=!LOG_FILE:"=!
 if defined WLP_USER_DIR set WLP_USER_DIR=!WLP_USER_DIR:"=!
 if defined WLP_OUTPUT_DIR set WLP_OUTPUT_DIR=!WLP_OUTPUT_DIR:"=!
 if defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=!WLP_DEBUG_ADDRESS:"=!
+if defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=!WINDOWS_SERVICE_START_TIMEOUT:"=!
+if defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=!WINDOWS_SERVICE_STOP_TIMEOUT:"=!
+
+if NOT defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=5
+if NOT defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=5
 
 @REM Consume script parameters
 
@@ -400,7 +413,9 @@ goto:eof
   ) else (
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
      set RC=!errorlevel!
-     call:serverRunning
+
+     @rem  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running" 
+     call:serverRunning !WINDOWS_SERVICE_START_TIMEOUT! 0
      call:javaCmdResult
   )   
 goto:eof
@@ -412,6 +427,20 @@ goto:eof
   if %RC% == 2 goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
   set RC=!errorlevel!
+
+  @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
+  @rem RC=0 indicates the server is running; ie the stop request failed.
+  @rem      Call stopServer directly. Stopping the server should stop the service.
+  @rem RC=1 is what we are expecting, meaning server stopped. 
+  @rem      Change RC to RC=0 to indicate success.
+  call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
+
+  if !RC! EQU 0 (
+     @rem The service failed to stop, attempt to stop the server directly.
+     call:stopServer
+  ) else ( 
+     set RC=0
+  )
 goto:eof
 
 :unregisterWinService
@@ -705,22 +734,58 @@ goto:eof
 
 @REM
 @REM serverRunning: Return 0 if the server is running (.sLock file is in use), 
-@REM                1 if not (file is not in use),
+@REM                       1 if not (file is not in use),
+@REM Parmeters %1 - optional.  Time (in seconds) to wait for a particular status.
+@REM                 default: 0 
+@REM           %2 - optional. (0 or 1). Status to wait for.
+@REM                 0: wait for server to be running
+@REM                 1: wait for server to be stopped
+@REM                 default: 0
 @REM
 :serverRunning
+
+  @REM set defaults
+  set serverRunningCounter=0
+  set serverRunningTimeOut=0
+  set serverRunningDesiredStatus=0
   set SERVER_LOCK_FILE=!SERVER_OUTPUT_DIR!\workarea\.sLock
-  if NOT EXIST "%SERVER_LOCK_FILE%" (
-    set RC=1
-  ) else (
-    @REM If the server has locked .sLock, then the redirection will fail.  The
-    @REM type command doesn't set errorlevel by itself, so use ||.
-    (type nul > "%SERVER_LOCK_FILE%") 2> nul || rem
-    if !errorlevel! == 0 (
+
+  @REM Read parameters if any
+  if NOT "%~1" == "" set serverRunningTimeOut=%~1
+  if NOT "%~2" == "" set serverRunningDesiredStatus=%~2
+
+  @REM DO WHILE not timed out and desired status not achieved.
+  :repeatServerRunning
+
+    @REM Check server status
+    if NOT EXIST "%SERVER_LOCK_FILE%" (
       set RC=1
     ) else (
-      set RC=0
+      @REM If the server has locked .sLock, then the redirection will fail.  The
+      @REM type command doesn't set errorlevel by itself, so use ||.
+      (type nul > "%SERVER_LOCK_FILE%") 2> nul || rem
+      if !errorlevel! == 0 (
+        set RC=1
+      ) else (
+        set RC=0
+      )
     )
-  )
+
+    @REM If no timeout is set, just return. Not waiting for any particular status.
+    if !serverRunningTimeOut! EQU 0 goto:eof
+
+    @REM Got desired status?  Get out of here.
+    if !RC! EQU !serverRunningDesiredStatus! goto:eof
+
+    @REM If timed out, get out of here.
+    if !serverRunningCounter! GEQ !serverRunningTimeOut! goto:eof
+
+    @REM Delay 1 second and repeat loop
+    timeout /t 1 > nul
+    set /A serverRunningCounter = !serverRunningCounter! + 1
+    goto :repeatServerRunning
+
+  @REM END WHILE
 goto:eof
 
 @REM

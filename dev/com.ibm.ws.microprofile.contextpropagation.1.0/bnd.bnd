@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2020 IBM Corporation and others.
+# Copyright (c) 2018,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ instrument.classesExcludes: com/ibm/ws/microprofile/context/resources/*.class
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.context;version=latest,\
+  com.ibm.ws.javaee.version;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.resource;version=latest,\

@@ -26,8 +26,6 @@ import java.util.logging.LogRecord;
 import com.ibm.ejs.ras.Untraceable;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.DataFormatHelper;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.collector.DateFormatHelper;
@@ -41,8 +39,6 @@ import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
  *
  */
 public class BaseTraceFormatter extends Formatter {
-
-    private static final TraceComponent tc = Tr.register(BaseTraceFormatter.class);
 
     public static final String banner = "********************************************************************************";
 
@@ -74,8 +70,6 @@ public class BaseTraceFormatter extends Formatter {
     static final String EXIT = "Exit ";
     static final String SYSOUT = "SystemOut";
     static final String SYSERR = "SystemErr";
-
-    private static Boolean isBetaEdition;
 
     /**
      * Array used to convert integers to hex values
@@ -554,19 +548,6 @@ public class BaseTraceFormatter extends Formatter {
         return sb.toString();
     }
 
-    public Boolean betaFenceCheck() {
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                Tr.warning(tc, "The 'tbasic' logging format option is in beta and is not available in this version of OpenLiberty.");
-                isBetaEdition = false;
-
-            }
-        }
-        return isBetaEdition;
-    }
-
     /**
      * The messages log always uses the same/enhanced format, and relies on already formatted
      * messages. This does the formatting needed to take a message suitable for console.log
@@ -1041,7 +1022,7 @@ public class BaseTraceFormatter extends Formatter {
         // Pad amount changes based on trace format
         if (TraceFormat.ADVANCED.equals(traceFormat)) {
             nlPad = nlAdvancedPadding;
-        } else if (TraceFormat.BASIC.equals(traceFormat) || (TraceFormat.TBASIC.equals(traceFormat) && betaFenceCheck())) {
+        } else if (TraceFormat.BASIC.equals(traceFormat) || TraceFormat.TBASIC.equals(traceFormat)) {
             nlPad = nlBasicPadding;
         } else {
             nlPad = nlEnhancedPadding;
@@ -1155,7 +1136,15 @@ public class BaseTraceFormatter extends Formatter {
             if (Proxy.isProxyClass(cls) || className.contains("$Proxy$_$$_Weld")) {
                 return "Proxy for " + className + "@" + Integer.toHexString(System.identityHashCode(objs));
             }
-            return objs.toString();
+            // Security level augmented to overcome a Java 2 sec error at a JAX-WS bundle
+            String s = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return objs.toString();
+                }
+            });
+
+            return s;
         } catch (Exception e) {
             // No FFDC code needed
             String s = objs == null ? "null" : objs.getClass().getName();

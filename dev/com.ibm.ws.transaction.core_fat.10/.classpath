@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/FATSuite.java"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-fatsrc" excluding="com/ibm/ws/transaction/test/FATSuite.java"/>
+	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-eventlistener"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-com.ibm.ws.transaction.fat.eventListener"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-utdecorator"/>

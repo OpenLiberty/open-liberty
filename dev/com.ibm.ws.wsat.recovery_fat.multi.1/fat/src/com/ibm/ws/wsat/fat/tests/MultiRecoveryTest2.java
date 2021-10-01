@@ -49,169 +49,100 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	public void tearDown() throws Exception {
 		stopServers(server, server2);
 	}
-
+	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
-	public void WSTXMPR009AFVT() throws Exception {
-		recoveryTest(server, server2, "901","server1");
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
+	public void WSTXMPR005AFVT() throws Exception {
+		recoveryTest(server, server2, "501","server1");
 	}
 	
 	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = {"javax.transaction.SystemException"})
-	//Caused by: javax.transaction.xa.XAException
-		//at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
-		//Perhaps this can be ignored
-	public void WSTXMPR009BFVT() throws Exception {
-		recoveryTest(server, server2, "902","server2");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	//javax.transaction.xa.XAException 
-	//Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
-	//Need review on whether it is expected
-	public void WSTXMPR009CFVT() throws Exception {
-		recoveryTest(server, server2, "903","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
-	public void WSTXMPR010AFVT() throws Exception {
-		recoveryTest(server, server2, "1001","server1");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException"})
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
+	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	// Need Jon Review:
-	// Caused by: javax.transaction.xa.XAException
-	// at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
-	// Perhaps this can be ignored
-	public void WSTXMPR010BFVT() throws Exception {
-		recoveryTest(server, server2, "1002","server2");
+	// Got Exception WTRN0046E and Warning WTRN0049W, WTRN0094W during test
+	// Expect XAException and RollbackException
+	// Report javax.transaction.SystemException 
+	public void WSTXMPR005BFVT() throws Exception {
+		recoveryTest(server, server2, "502","server2");
+	}
+	
+	@Test
+	//@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+	public void WSTXMPR005CFVT() throws Exception {
+		recoveryTest(server, server2, "503","both");
+	}
+	
+	@Test
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+	public void WSTXMPR006AFVT() throws Exception {
+		recoveryTest(server, server2, "601","server1");
+	}
+	
+	@Test
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
+	@AllowedFFDC(value = { "javax.transaction.SystemException" })
+	public void WSTXMPR006BFVT() throws Exception {
+		recoveryTest(server, server2, "602","server2");
+	}
+	
+	@Test
+	public void WSTXMPR006CFVT() throws Exception {
+		recoveryTest(server, server2, "603","both");
+	}
+	
+	@Test
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
+	public void WSTXMPR007AFVT() throws Exception {
+		recoveryTest(server, server2, "701","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
+	@AllowedFFDC(value = { "javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
+	// JDK8: Allow HeuristicHazardException
+	public void WSTXMPR007BFVT() throws Exception {
+		recoveryTest(server, server2, "702","server2");
+	}
+	
+  @Mode(TestMode.LITE)
+	@Test
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
+	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// Need Jon Review:
 	// javax.transaction.xa.XAException 
 	// Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
 	// Need review on whether it is expected
-	// Maybe a defect so
-	// Add @ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
-	// Because javax.transaction.xa.XAException > at com.ibm.tx.jta.embeddable.impl.WSATParticipantWrapper.commit(WSATParticipantWrapper.java:118)
-	public void WSTXMPR010CFVT() throws Exception {
-		recoveryTest(server, server2, "1003","both");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR011AFVT() throws Exception {
-		recoveryTest(server, server2, "1101","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR011BFVT() throws Exception {
-		recoveryTest(server, server2, "1102","server2");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR011CFVT() throws Exception {
-		recoveryTest(server, server2, "1103","both");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	public void WSTXMPR012AFVT() throws Exception {
-		recoveryTest(server, server2, "1201","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.transaction.SystemException" })
-	public void WSTXMPR012BFVT() throws Exception {
-		recoveryTest(server, server2, "1202","server2");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-  @Mode(TestMode.LITE)
-	public void WSTXMPR012CFVT() throws Exception {
-		recoveryTest(server, server2, "1203","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	public void WSTXMPR013AFVT() throws Exception {
-		recoveryTest(server, server2, "1301","server1");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException","javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	@ExpectedFFDC(value = {"javax.transaction.RollbackException"})
-	public void WSTXMPR013BFVT() throws Exception {
-		recoveryTest(server, server2, "1302","server2");
-	}
-	
-	@Test
-	public void WSTXMPR013CFVT() throws Exception {
-		recoveryTest(server, server2, "1303","both");
-	}
-	
-	@Test
-	public void WSTXMPR014AFVT() throws Exception {
-		recoveryTest(server, server2, "1401","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
-	@AllowedFFDC(value = {"javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
+	// Report javax.transaction.SystemException
 	// JDK8: Allow HeuristicHazardException
-	public void WSTXMPR014BFVT() throws Exception {
-		recoveryTest(server, server2, "1402","server2");
+	public void WSTXMPR007CFVT() throws Exception {
+		recoveryTest(server, server2, "703","both");
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException"})
-	public void WSTXMPR014CFVT() throws Exception {
-		recoveryTest(server, server2, "1403","both");
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
+	public void WSTXMPR008AFVT() throws Exception {
+		recoveryTest(server, server2, "801","server1");
 	}
 	
 	@Test
-	public void WSTXMPR015AFVT() throws Exception {
-		recoveryTest(server, server2, "1501","server1");
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
+	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
+	// JDK8: Allow HeuristicHazardException
+	public void WSTXMPR008BFVT() throws Exception {
+		recoveryTest(server, server2, "802","server2");
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException" })
-	public void WSTXMPR015BFVT() throws Exception {
-		recoveryTest(server, server2, "1502","server2");
-	}
-	
-	@Test
-	public void WSTXMPR015CFVT() throws Exception {
-		recoveryTest(server, server2, "1503","both");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR016AFVT() throws Exception {
-		recoveryTest(server, server2, "1601","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR016BFVT() throws Exception {
-		recoveryTest(server, server2, "1602","server2");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	public void WSTXMPR016CFVT() throws Exception {
-		recoveryTest(server, server2, "1603","both");
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
+	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
+	// Need Jon Review:
+	// javax.transaction.xa.XAException 
+	// Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
+	// Need review on whether it is expected
+	// Report javax.transaction.SystemException
+	// JDK8: Allow HeuristicHazardException
+	public void WSTXMPR008CFVT() throws Exception {
+		recoveryTest(server, server2, "803","both");
 	}
 }

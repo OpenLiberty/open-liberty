@@ -17,7 +17,18 @@ src: \
 
 fat.project: true
 
-tested.features=servlet-4.0,cdi-2.0,mpConfig-2.0
+tested.features: \
+  servlet-4.0,\
+  cdi-2.0,\
+  mpConfig-2.0,\
+  appsecurity-3.0,\
+  el-3.0,\
+  mpHealth-4.0,\
+  servlet-5.0,\
+  cdi-3.0,\
+  mpConfig-3.0,\
+  appsecurity-4.0,\
+  expressionlanguage-4.0
 
 -buildpath: \
 	org.apache.commons:commons-compress;version=1.20, \

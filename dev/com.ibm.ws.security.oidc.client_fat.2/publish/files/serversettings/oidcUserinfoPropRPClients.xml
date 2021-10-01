@@ -1,0 +1,117 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+	<authFilter id="authFilterHS256O">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/simple/HS256opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256O"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O/token"  
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O/userinfo"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256O"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterHS256J">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/simple/HS256jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256J"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J/token"  
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J/userinfo"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterHS256J"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS256O">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/simple/RS256opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256O"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O/token"  
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O/userinfo"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256O"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS256J">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/simple/RS256jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256J"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J/token"  
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J/userinfo"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterRS256J"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+	>
+	</openidConnectClient>	
+						
+</server>
+

@@ -69,13 +69,11 @@ public class POJOJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
         Object implementor = null;
         try {
             ImplBeanCustomizer implBeanCustomizer = (ImplBeanCustomizer) publisherContext.getAttribute("ImplBeanCustomizer");
-            if (implBeanCustomizer != null)
-            {
+            if (implBeanCustomizer != null) {
                 Container container = jaxWsModuleMetaData.getModuleContainer();
                 implementor = implBeanCustomizer.onPrepareImplBean(implBeanClass, container);
             }
-            if (implementor == null)
-            {
+            if (implementor == null) {
                 implementor = jaxWsModuleMetaData.getJaxWsInstanceManager().createInstance(implBeanClass);
             }
         } catch (InstantiationException e) {
@@ -113,7 +111,7 @@ public class POJOJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
 
         // Customize WSDL Get Interceptor.
         customizeWSDLGetInterceptor(implBeanClass);
-        customizeLoggingInOutIntercetptor(endpointInfo);
+        enableLogging(endpointInfo);
 
         server.start();
 

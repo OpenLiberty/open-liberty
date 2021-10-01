@@ -15,7 +15,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
   sqlserver 'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8'
 }
 
@@ -35,3 +34,4 @@ task copySharedSQLServer(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedSQLServer
 addRequiredLibraries.dependsOn copySharedSqlServerAnon
+addRequiredLibraries.dependsOn copyTestContainers

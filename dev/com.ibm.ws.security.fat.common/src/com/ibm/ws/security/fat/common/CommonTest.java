@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.junit.After;
@@ -21,14 +22,19 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.WebClientTracker;
+
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.LibertyServerUtils;
 
 public class CommonTest {
 
     private final static Class<?> thisClass = CommonTest.class;
     public static String _testName = "";
-    protected static int timeoutCounter = 0;
     protected static int allowableTimeoutCount = 0;
     public static CommonMessageTools msgUtils = new CommonMessageTools();
     protected WebClientTracker webClientTracker = new WebClientTracker();
@@ -108,6 +114,7 @@ public class CommonTest {
     public static void timeoutChecker() throws Exception {
         String method = "timeoutChecker";
 
+        int timeoutCounter = 0 ;
         boolean timeoutFound = false;
         String outputFile = "./results/output.txt";
         File f = new File(outputFile);
@@ -130,10 +137,6 @@ public class CommonTest {
                                 timeoutFound = true;
                             }
                         }
-                    }
-                    if (theLine.contains("TestClass END")) {
-                        Log.info(thisClass, method, "Found an end of test class marker in log");
-                        timeoutFound = false;
                     }
                 }
             } catch (IOException e) {
@@ -195,6 +198,43 @@ public class CommonTest {
         return webClient;
     }
 
+    private static void transformAppsInDefaultDirs(TestServer server, String appDirName) {
+
+        LibertyServer myServer = server.getServer();
+        Machine machine = myServer.getMachine();
+
+        Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
+        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
+
+        RemoteFile[] list = null;
+        try {
+            if (appDir.isDirectory()) {
+                list = appDir.list(false);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e);
+        }
+        if (list != null) {
+            for (RemoteFile app : list) {
+                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+            }
+        }
+    }
+
+    /**
+     * JakartaEE9 transform applications for a specified server.
+     *
+     * @param serverName The server to transform the applications on.
+     */
+    public static void transformApps(TestServer server) {
+        if (JakartaEE9Action.isActive()) {
+
+            transformAppsInDefaultDirs(server, "dropins");
+            transformAppsInDefaultDirs(server, "test-apps");
+
+        }
+    }
+    
     @After
     public void endTestCleanup() throws Exception {
 
