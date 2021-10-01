@@ -77,8 +77,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
 
-    static final boolean IS_BETA = ProductInfo.getBetaEdition();
-
     enum SearchLocation {
         PARENT, SELF, DELEGATES
     };
@@ -119,7 +117,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
         // only use system transformers if IS_BETA (part of checkpoint feature)
-        this.systemTransformers = IS_BETA ? systemTransformers : Collections.emptyList();
+        this.systemTransformers = systemTransformers;
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
@@ -311,6 +309,12 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
+        byte[] bytes = transformClassBytes(resourceName, byteResourceInformation);
+
+        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
+    }
+
+    byte[] transformClassBytes(String name, ByteResourceInformation toTransform) throws ClassNotFoundException {
         // If a class is loaded from the shared classes cache it cannot be transformed.  The bytes are not in 
         // the normal class bytes format, but rather a cookie to where the bytes are stored in the classes cache.
         // Since the class was put into the classes cache, it was not transformed previously.  We are
@@ -320,9 +324,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         // types of exceptions or quitting out of the transformation code which will result in the class not being
         // transformed anyway.
         byte[] bytes;
-        if (byteResourceInformation.foundInClassCache()) {
+        if (toTransform.foundInClassCache()) {
             if (systemTransformers.isEmpty()) {
-                bytes = byteResourceInformation.getBytes(); 
+                bytes = toTransform.getBytes(); 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
                 }
@@ -331,23 +335,22 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have global tranformers");
                 }
                 try {
-                    bytes = byteResourceInformation.getActualBytes();
+                    bytes = toTransform.getActualBytes();
                     bytes = transformClassBytes(bytes, name, systemTransformers);
                 } catch (IOException e) {
                     // auto FFDC
                     // fallback to the cached class
-                    bytes = byteResourceInformation.getBytes();
+                    bytes = toTransform.getBytes();
                 }
             }
         } else {
-            bytes = transformClassBytes(byteResourceInformation.getBytes(), name, transformers);
+            bytes = transformClassBytes(toTransform.getBytes(), name, transformers);
             bytes = transformClassBytes(bytes, name, systemTransformers);
         }
-
-        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
+        return bytes;
     }
 
-    byte[] transformClassBytes(final byte[] originalBytes, String name, List<ClassFileTransformer> cfts) throws ClassNotFoundException {
+    private byte[] transformClassBytes(final byte[] originalBytes, String name, List<ClassFileTransformer> cfts) throws ClassNotFoundException {
         byte[] bytes = originalBytes;
         for (ClassFileTransformer transformer : cfts) {
             bytes = doTransformation(name, bytes, transformer);
