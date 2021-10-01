@@ -30,68 +30,68 @@ import test.common.SharedOutputManager;
  */
 public class GrpcServiceConfigTest {
 
-	private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
-	@Rule
-	public TestRule rule = outputMgr;
+    @Rule
+    public TestRule rule = outputMgr;
 
-	@Rule
-	public TestName name = new TestName();
+    @Rule
+    public TestName name = new TestName();
 
-	@After
-	public void tearDown() {
-		GrpcServletServices.destroy();
-	}
+    @After
+    public void tearDown() {
+        GrpcServletServices.destroy();
+    }
 
-	/**
-	 * Verify that the application name map works as expected
-	 */
-	@Test
-	public void testApplicationMap() {
-		String app_name_1 = "APP1";
-		String app_name_2 = "APP2";
-		String app_name_3 = "APP3";
-		GrpcServiceConfigImpl config = new GrpcServiceConfigImpl();
-		GrpcServiceConfigImpl.addApplication(app_name_1);
-		GrpcServiceConfigImpl.addApplication(app_name_2);
-		GrpcServiceConfigImpl.addApplication(app_name_3);
-		GrpcServiceConfigImpl.removeApplication(app_name_1);
-		GrpcServiceConfigImpl.removeApplication(app_name_2);
-		Set<String> apps = config.getDependentApplications();
-		Assert.assertEquals(1, apps.size());
-		Assert.assertTrue(apps.contains(app_name_3));
-		GrpcServiceConfigImpl.removeApplication(app_name_3);
-		Assert.assertEquals(0, config.getDependentApplications().size());
-	}
-	
-	/**
-	 * Verify that the application name map works as expected
-	 */
-	@Test
-	public void testModified() {
-		// create and activate a property set
-		Map<String, Object> props = new HashMap<String, Object>();
-		props.put("prop1", "value1");
-		props.put(GrpcConfigConstants.TARGET_PROP, "*");
-		GrpcServiceConfigImpl config1 = new GrpcServiceConfigImpl();
-		config1.activate(props);
-		Assert.assertTrue(GrpcServiceConfigHolder.getURIProps("uri").containsKey("prop1"));
+    /**
+     * Verify that the application name map works as expected
+     */
+    @Test
+    public void testApplicationMap() {
+        String app_name_1 = "APP1";
+        String app_name_2 = "APP2";
+        String app_name_3 = "APP3";
+        GrpcServiceConfigImpl config = new GrpcServiceConfigImpl();
+        GrpcServiceConfigImpl.addApplication(app_name_1);
+        GrpcServiceConfigImpl.addApplication(app_name_2);
+        GrpcServiceConfigImpl.addApplication(app_name_3);
+        GrpcServiceConfigImpl.removeApplication(app_name_1);
+        GrpcServiceConfigImpl.removeApplication(app_name_2);
+        Set<String> apps = config.getDependentApplications();
+        Assert.assertEquals(1, apps.size());
+        Assert.assertTrue(apps.contains(app_name_3));
+        GrpcServiceConfigImpl.removeApplication(app_name_3);
+        Assert.assertEquals(0, config.getDependentApplications().size());
+    }
+    
+    /**
+     * Verify that the application name map works as expected
+     */
+    @Test
+    public void testModified() {
+        // create and activate a property set
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("prop1", "value1");
+        props.put(GrpcConfigConstants.TARGET_PROP, "*");
+        GrpcServiceConfigImpl config1 = new GrpcServiceConfigImpl();
+        config1.activate(props);
+        Assert.assertTrue(GrpcServiceConfigHolder.getURIProps("uri").containsKey("prop1"));
 
-		// modify the property and make sure the new values are in use 
-		String serviceName = "ExplicitName";
-		props.put(GrpcConfigConstants.TARGET_PROP, "ExplicitName");
-		config1.modified(props);
-		Assert.assertNull(GrpcServiceConfigHolder.getURIProps("uri"));
-		Assert.assertTrue(GrpcServiceConfigHolder.getURIProps("ExplicitName").containsKey("prop1"));
+        // modify the property and make sure the new values are in use 
+        String serviceName = "ExplicitName";
+        props.put(GrpcConfigConstants.TARGET_PROP, "ExplicitName");
+        config1.modified(props);
+        Assert.assertNull(GrpcServiceConfigHolder.getURIProps("uri"));
+        Assert.assertTrue(GrpcServiceConfigHolder.getURIProps("ExplicitName").containsKey("prop1"));
 
-		// test some additional params
-		String fakeInterceptorClass = "com.fake.Class";
-		props.put(GrpcConfigConstants.SERVER_INTERCEPTORS_PROP, fakeInterceptorClass);
-		props.put(GrpcConfigConstants.MAX_INBOUND_MSG_SIZE_PROP, "64");
-		config1.modified(props);
-		Assert.assertEquals(fakeInterceptorClass, GrpcServiceConfigHolder.getServiceInterceptors(serviceName));
-		Assert.assertEquals(64, GrpcServiceConfigHolder.getMaxInboundMessageSize(serviceName));
-		config1.deactivate();
-		Assert.assertNull(GrpcServiceConfigHolder.getURIProps(serviceName));
-	}
+        // test some additional params
+        String fakeInterceptorClass = "com.fake.Class";
+        props.put(GrpcConfigConstants.SERVER_INTERCEPTORS_PROP, fakeInterceptorClass);
+        props.put(GrpcConfigConstants.MAX_INBOUND_MSG_SIZE_PROP, "64");
+        config1.modified(props);
+        Assert.assertEquals(fakeInterceptorClass, GrpcServiceConfigHolder.getServiceInterceptors(serviceName));
+        Assert.assertEquals(64, GrpcServiceConfigHolder.getMaxInboundMessageSize(serviceName));
+        config1.deactivate();
+        Assert.assertNull(GrpcServiceConfigHolder.getURIProps(serviceName));
+    }
 }

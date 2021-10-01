@@ -21,68 +21,68 @@ import javax.servlet.http.HttpServletResponseWrapper;
  *
  */
 public class GrpcSecurityServletResponseWrapper extends HttpServletResponseWrapper{
-	
-	private GrpcSecurityOutputWriter  writer      = null;
-	private ServletOutputStream stream = null;
+    
+    private GrpcSecurityOutputWriter  writer      = null;
+    private ServletOutputStream stream = null;
 
-	public GrpcSecurityServletResponseWrapper(HttpServletResponse response) throws IOException {
-		super(response);		
-	}
-	
-	  @Override
-	  public PrintWriter getWriter() throws IOException {
-	     if (this.writer == null && this.stream != null) {
-	       throw new IllegalStateException(
-	         "SecurityServletResponseWrapper: OutputStream obtained already - cannot get PrintWriter");
-	     }
-	     if(this.writer == null) {
-	    	 writer = new GrpcSecurityOutputWriter(getResponse().getOutputStream());
-	     }
-	     return this.writer;
-	  }
+    public GrpcSecurityServletResponseWrapper(HttpServletResponse response) throws IOException {
+        super(response);		
+    }
+    
+      @Override
+      public PrintWriter getWriter() throws IOException {
+         if (this.writer == null && this.stream != null) {
+           throw new IllegalStateException(
+             "SecurityServletResponseWrapper: OutputStream obtained already - cannot get PrintWriter");
+         }
+         if(this.writer == null) {
+             writer = new GrpcSecurityOutputWriter(getResponse().getOutputStream());
+         }
+         return this.writer;
+      }
 
-	  @Override
-	  public ServletOutputStream getOutputStream() throws IOException {
-	    if (this.writer != null) {
-	      throw new IllegalStateException(
-	        "SecurityServletResponseWrapper: PrintWriter obtained already - cannot get OutputStream");
-	    }
-	    if (this.stream == null) {
-	      this.stream = 
-	        getResponse().getOutputStream();
-	    }
-	    return this.stream;
-	  }
-	
+      @Override
+      public ServletOutputStream getOutputStream() throws IOException {
+        if (this.writer != null) {
+          throw new IllegalStateException(
+            "SecurityServletResponseWrapper: PrintWriter obtained already - cannot get OutputStream");
+        }
+        if (this.stream == null) {
+          this.stream = 
+            getResponse().getOutputStream();
+        }
+        return this.stream;
+      }
+    
 
-	  
-	  @Override
-	  public void flushBuffer() throws IOException {
+      
+      @Override
+      public void flushBuffer() throws IOException {
 
-	    if(this.writer != null) {
-	      this.writer.flush();
-	    }
+        if(this.writer != null) {
+          this.writer.flush();
+        }
 
-	    IOException excep = null;
-	    try{
-	      if(this.stream != null) {
-	        this.stream.flush();
-	      }
-	    } catch(IOException e) {
-	        excep = e;
-	    }
+        IOException excep = null;
+        try{
+          if(this.stream != null) {
+            this.stream.flush();
+          }
+        } catch(IOException e) {
+            excep = e;
+        }
 
-	    IOException excep1 = null;
-	    try {
-	      super.flushBuffer();
-	    } catch(IOException e){
-	      excep1 = e;
-	    }
+        IOException excep1 = null;
+        try {
+          super.flushBuffer();
+        } catch(IOException e){
+          excep1 = e;
+        }
 
-	    if(excep != null) throw excep;
-	    if(excep1 != null) throw excep1;
-	  }
+        if(excep != null) throw excep;
+        if(excep1 != null) throw excep1;
+      }
 
-	  
+      
 }
 

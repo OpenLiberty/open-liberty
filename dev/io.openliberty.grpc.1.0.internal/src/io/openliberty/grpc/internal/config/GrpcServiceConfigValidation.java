@@ -17,18 +17,18 @@ import io.openliberty.grpc.internal.GrpcMessages;
 
 public class GrpcServiceConfigValidation {
 
-	private static final TraceComponent tc = Tr.register(GrpcServiceConfigValidation.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
+    private static final TraceComponent tc = Tr.register(GrpcServiceConfigValidation.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
-	/**
-	 * @param value - key name
-	 * @return true if max inbound message size value is valid
-	 */
-	static boolean validateMaxInboundMessageSize(String value) {
-		int size = Integer.parseInt(value);
-		if (size < 1) {
-			Tr.error(tc, "invalid.inbound.msg.size", size);
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @param value - key name
+     * @return true if max inbound message size value is valid
+     */
+    static boolean validateMaxInboundMessageSize(String value) {
+        int size = Integer.parseInt(value);
+        if (size < 1) {
+            Tr.error(tc, "invalid.inbound.msg.size", size);
+            return false;
+        }
+        return true;
+    }
 }
