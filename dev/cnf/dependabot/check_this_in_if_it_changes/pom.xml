@@ -2017,6 +2017,11 @@
       <version>2.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <version>3.0-RC3</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
       <artifactId>microprofile-opentracing-api</artifactId>
       <version>1.0.1</version>
