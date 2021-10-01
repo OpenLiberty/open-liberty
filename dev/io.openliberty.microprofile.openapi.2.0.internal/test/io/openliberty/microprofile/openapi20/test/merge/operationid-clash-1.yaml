@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: test1
+  version: "1.0"
+paths:
+  "/testA":
+    get:
+      operationId: getTest
+      responses:
+        202:
+          description: "success"
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/test"
+      responses:
+        200:
+          description: "success"
+          links:
+            idLink:
+              operationId: "getTest"
+            refLink:
+              operationRef: "#/paths/~1testA/get"
+components:
+  schemas:
+    test:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required: 
+        - id
+        - name

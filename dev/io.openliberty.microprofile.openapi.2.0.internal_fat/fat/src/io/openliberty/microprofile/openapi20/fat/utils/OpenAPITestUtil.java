@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,17 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat.utils;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -221,10 +225,10 @@ public class OpenAPITestUtil {
         assertNotNull(pathsNode);
         assertTrue(pathsNode.isObject());
         ObjectNode paths = (ObjectNode) pathsNode;
-
-        assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
-        List<String> expected = Arrays.asList(containedPaths);
-        expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
+        
+        List<String> pathNames = asList(paths.fieldNames());
+        assertThat("Path names", pathNames, hasItems(containedPaths));
+        assertThat("Path names", pathNames, hasSize(expectedCount));
     }
 
     public static void checkInfo(JsonNode root, String defaultTitle, String defaultVersion) {
@@ -237,8 +241,8 @@ public class OpenAPITestUtil {
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
-        assertTrue("Incorrect default value for title", title.equals(defaultTitle));
-        assertTrue("Incorrect default value for version", version.equals(defaultVersion));
+        assertEquals("Incorrect default value for title", defaultTitle, title);
+        assertEquals("Incorrect default value for version", defaultVersion, version);
     }
 
     public static void changeServerPorts(LibertyServer server, int httpPort, int httpsPort) throws Exception {
@@ -271,11 +275,11 @@ public class OpenAPITestUtil {
             server.updateServerConfiguration(config);
         }
     }
-
+    
     public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort) {
         return getServerURLs(server, httpPort, httpsPort, null);
     }
-
+    
     public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort, String contextRoot) {
         List<String> servers = new ArrayList<>();
         contextRoot = contextRoot == null ? "" : contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
@@ -291,5 +295,14 @@ public class OpenAPITestUtil {
     public static void setMarkToEndOfAllLogs(LibertyServer server) throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+    }
+    
+    private static <T> List<T> asList(Iterator<? extends T> i) {
+        List<T> result = new ArrayList<>();
+        while (i.hasNext()) {
+            T item = i.next();
+            result.add(item);
+        }
+        return result;
     }
 }
