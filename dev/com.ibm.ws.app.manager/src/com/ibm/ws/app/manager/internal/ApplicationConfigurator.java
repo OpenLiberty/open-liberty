@@ -87,17 +87,20 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.logging.Introspector;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+
 /**
  *
  */
-@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class },
+@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class, CheckpointHookFactory.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
                         Constants.SERVICE_VENDOR + "=" + "IBM",
                         Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID
            })
-public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator {
+public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator, CheckpointHookFactory {
     private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
     /**
@@ -2069,4 +2072,18 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     }
 
+    @Override
+    public CheckpointHook create(Phase phase) {
+        if (phase == Phase.DEPLOYMENT) {
+            return new CheckpointHook() {
+                @Override
+                public void restore() {
+                    synchronized (ApplicationConfigurator.this) {
+                        _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
+                    }
+                }
+            };
+        }
+        return null;
+    }
 }

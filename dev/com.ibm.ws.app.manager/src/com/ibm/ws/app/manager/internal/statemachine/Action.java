@@ -19,4 +19,8 @@ interface Action {
     public void execute(ExecutorService executor);
 
     public void cancel();
+
+    public default void resetStartTime() {
+        // do nothing by default
+    }
 }
