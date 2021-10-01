@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: test.exceptionmapper-2.0
+Subsystem-SymbolicName: test.exceptionmapper-2.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content:
+  test.exceptionmapper; version="[1.0,1.100)",
+  com.ibm.ws.jaxrs.defaultexceptionmapper; version="[1.0,1.100)",
+  com.ibm.ws.jaxrs.2.x.defaultexceptionmapper; version="[1.0,1.100)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
