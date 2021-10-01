@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017,2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@
         </failoverServers>
     </ldapRegistry>    
 		
-	<ldapRegistry id="LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}" ignoreCase="true"
+	<ldapRegistry id="LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="0" ignoreCase="true"
 		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
 		ldapType="Sun Java System Directory Server"
 		searchTimeout="8m">
