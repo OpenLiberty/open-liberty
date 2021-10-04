@@ -76,6 +76,9 @@ public class LibertyOP_Encryption_oidc_usingSocialConfig extends Social_Encrypti
         socialSettings = updateLibertyOPSettings(socialSettings);
 
         socialSettings.setTokenEndpt(socialSettings.getTokenEndpt().replace("oidc/endpoint/OidcConfigSample/token", "TokenEndpointServlet").replace("oidc/providers/OidcConfigSample/token", "TokenEndpointServlet") + "/saveToken");
+        socialSettings.setScope("openid profile email");
+        socialSettings.setRealm(testOPServer.getServerHttpsString());
+        socialSettings.setUserName("testuser");
 
     }
 

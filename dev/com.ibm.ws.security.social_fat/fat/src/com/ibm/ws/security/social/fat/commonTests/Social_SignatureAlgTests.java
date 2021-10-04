@@ -150,7 +150,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS256_SocialVerifyHS256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS256_SocialVerifyHS256() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_HS256, Constants.SIGALG_HS256);
 
@@ -163,7 +163,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS384_SocialVerifyHS384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS384_SocialVerifyHS384() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_HS384, Constants.SIGALG_HS384);
 
@@ -175,7 +175,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS512_SocialVerifyHS512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS512_SocialVerifyHS512() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_HS512, Constants.SIGALG_HS512);
 
@@ -187,7 +187,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS256_SocialVerifyRS256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS256_SocialVerifyRS256() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256);
 
@@ -199,7 +199,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS384_SocialVerifyRS384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS384_SocialVerifyRS384() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_RS384, Constants.SIGALG_RS384);
 
@@ -211,7 +211,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS512_SocialVerifyRS512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS512_SocialVerifyRS512() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_RS512, Constants.SIGALG_RS512);
 
@@ -224,7 +224,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES256_SocialVerifyES256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES256_SocialVerifyES256() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_ES256, Constants.SIGALG_ES256);
 
@@ -236,7 +236,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES384_SocialVerifyES384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES384_SocialVerifyES384() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_ES384, Constants.SIGALG_ES384);
 
@@ -248,7 +248,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES512_SocialVerifyES512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES512_SocialVerifyES512() throws Exception {
 
         genericSigAlgTest(Constants.SIGALG_ES512, Constants.SIGALG_ES512);
 
@@ -264,7 +264,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithHS256_SocialVerifyHS256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithHS256_SocialVerifyHS256() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_HS256;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -281,7 +281,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithHS384_SocialVerifyHS384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithHS384_SocialVerifyHS384() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_HS384;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -299,7 +299,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithHS512_SocialVerifyHS512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithHS512_SocialVerifyHS512() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_HS512;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -316,7 +316,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithRS256_SocialVerifyRS256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithRS256_SocialVerifyRS256() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_RS256;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -333,7 +333,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithRS384_SocialVerifyRS384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithRS384_SocialVerifyRS384() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_RS384;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -351,7 +351,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithRS512_SocialVerifyRS512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithRS512_SocialVerifyRS512() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_RS512;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -368,7 +368,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithES256_SocialVerifyES256() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithES256_SocialVerifyES256() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_ES256;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -385,7 +385,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithES384_SocialVerifyES384() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithES384_SocialVerifyES384() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_ES384;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -402,7 +402,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenNotWithES512_SocialVerifyES512() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenNotWithES512_SocialVerifyES512() throws Exception {
 
         String SocialClientSigAlg = Constants.SIGALG_ES512;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
@@ -424,7 +424,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS256_SocialVerifyHS256_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS256_SocialVerifyHS256_keyMismatch() throws Exception {
 
         genericSigAlgTest("diff_" + Constants.SIGALG_HS256, Constants.SIGALG_HS256);
 
@@ -436,7 +436,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS384_SocialVerifyHS384_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS384_SocialVerifyHS384_keyMismatch() throws Exception {
 
         genericSigAlgTest("diff_" + Constants.SIGALG_HS384, Constants.SIGALG_HS384);
 
@@ -448,7 +448,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenHS512_SocialVerifyHS512_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenHS512_SocialVerifyHS512_keyMismatch() throws Exception {
 
         genericSigAlgTest("diff_" + Constants.SIGALG_HS512, Constants.SIGALG_HS512);
 
@@ -460,7 +460,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS256_SocialVerifyRS256_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS256_SocialVerifyRS256_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS256, Constants.SIGALG_RS256);
 
@@ -472,7 +472,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS384_SocialVerifyRS384_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS384_SocialVerifyRS384_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS384, Constants.SIGALG_RS384);
 
@@ -484,7 +484,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenRS512_SocialVerifyRS512_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenRS512_SocialVerifyRS512_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS512, Constants.SIGALG_RS512);
 
@@ -497,7 +497,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES256_SocialVerifyES256_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES256_SocialVerifyES256_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_ES256, Constants.SIGALG_ES256);
 
@@ -509,7 +509,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES384_SocialVerifyES384_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES384_SocialVerifyES384_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_ES384, Constants.SIGALG_ES384);
 
@@ -521,7 +521,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientSignatureAlgTests_SignTokenES512_SocialVerifyES512_keyMismatch() throws Exception {
+    public void Social_SignatureAlgTests_SignTokenES512_SocialVerifyES512_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_ES512, Constants.SIGALG_ES512);
 

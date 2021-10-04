@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.social.fat.LibertyOP;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -18,6 +19,9 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -45,9 +49,9 @@ public class FATSuite {
 
     public static String UserApiEndpoint = Constants.USERINFO_ENDPOINT;
 
-    //    /*
-    //     * Run EE9 tests in LITE mode and run all tests in FULL mode.
-    //     */
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    /*
+     * Run EE9 tests in LITE mode and run all tests in FULL mode.
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
 }

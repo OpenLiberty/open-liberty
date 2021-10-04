@@ -84,7 +84,6 @@ public class LibertyOP_SignatureAlg_oidc_usingSocialConfig extends Social_Signat
         socialSettings.setTokenEndpt(socialSettings.getTokenEndpt().replace("oidc/endpoint/OidcConfigSample/token", "TokenEndpointServlet").replace("oidc/providers/OidcConfigSample/token", "TokenEndpointServlet") + "/saveToken");
         socialSettings.setScope("openid profile");
         socialSettings.setRealm(testOPServer.getServerHttpString() + "/TokenEndpointServlet");
-        socialSettings.printSocialTestSettings();
         socialSettings.setUserName("testuser");
     }
 }
