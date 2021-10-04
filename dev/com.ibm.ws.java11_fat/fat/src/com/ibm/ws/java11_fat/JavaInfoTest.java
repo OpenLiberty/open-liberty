@@ -12,7 +12,6 @@ package com.ibm.ws.java11_fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Map.Entry;
 
@@ -57,30 +56,6 @@ public class JavaInfoTest extends FATServletClient {
 
     private static void log(String msg) {
         Log.info(c, "setup", msg);
-    }
-
-    @Test
-    public void testJavaVendor() {
-        assertTrue("Found an unknown java vendor java.vendor=" + System.getProperty("java.vendor"),
-                   JavaInfo.Vendor.UNKNOWN != JavaInfo.vendor());
-
-        // Verify that the Kernel's copy of JavaInfo.vendor() is consistent with the FAT framework's
-        switch (JavaInfo.vendor()) {
-            case IBM:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.IBM,
-                             fatJavaInfo.vendor());
-                break;
-            case OPENJ9:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.OPENJ9,
-                             fatJavaInfo.vendor());
-                break;
-            case ORACLE:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.SUN_ORACLE,
-                             fatJavaInfo.vendor());
-                break;
-            default:
-                fail("Got unknown java vendor: " + JavaInfo.vendor());
-        }
     }
 
     @Test
