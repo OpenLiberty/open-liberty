@@ -26,6 +26,7 @@ A lightweight open framework for building fast and efficient cloud-native Java m
 * Open Liberty is fast to start up with low memory footprint and live reload for quick iteration.
 * Simple to add and remove features from the latest versions of MicroProfile and Java EE.
 * Zero migration lets you focus on what's important, not the APIs changing under you.
+* Checkpoint/Restore applications quickly.
 
 ## Getting Started
 
