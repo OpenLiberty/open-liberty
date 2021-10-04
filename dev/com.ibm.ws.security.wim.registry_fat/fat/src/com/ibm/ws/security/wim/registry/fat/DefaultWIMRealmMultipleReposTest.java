@@ -74,12 +74,14 @@ public class DefaultWIMRealmMultipleReposTest {
          */
         ServerConfiguration serverConfig = server.getServerConfiguration();
         for (LdapRegistry ldap : serverConfig.getLdapRegistries()) {
-            if (ldap.getRealm().equals("SUN_LDAP")) {
+            Log.info(c, "setUp", ldap.getRealm());
+            if (ldap.getId().equals("SUN_LDAP")) {
                 ldap.setHost("localhost");
                 ldap.setPort(String.valueOf(sunLdapServer.getLdapPort()));
                 ldap.setBindDN(InMemorySunLDAPServer.getBindDN());
                 ldap.setBindPassword(InMemorySunLDAPServer.getBindPassword());
                 server.updateServerConfiguration(serverConfig);
+                Log.info(c, "setUp", "Updated the SUN_LDAP to unboundID");
                 break;
             }
         }
