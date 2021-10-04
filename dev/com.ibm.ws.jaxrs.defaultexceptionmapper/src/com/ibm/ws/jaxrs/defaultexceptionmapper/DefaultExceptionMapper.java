@@ -25,41 +25,41 @@ import javax.ws.rs.ext.Provider;
 
 import com.ibm.ws.jaxrs.defaultexceptionmapper.internal.DefaultExceptionMapperCallbackTracker;
 
-@Provider 
+@Provider
 public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
-	static final long serialVersionUID = 9083611544695926229L;
+    static final long serialVersionUID = 9083611544695926229L;
 
-	@Context
-	private ResourceInfo resourceInfo;
+    @Context
+    private ResourceInfo resourceInfo;
 
-	private final List<DefaultExceptionMapperCallback> callbacks = new LinkedList<>();
-	
-	public DefaultExceptionMapper() {
-		this.callbacks.addAll(DefaultExceptionMapperCallbackTracker.getCallbacks());
-	}
+    private final List<DefaultExceptionMapperCallback> callbacks = new LinkedList<>();
 
-	@Override
-	public Response toResponse(Throwable t) {
-		Response response;
-		if (t instanceof WebApplicationException && ((WebApplicationException)t).getResponse() != null) {
-			response = ((WebApplicationException)t).getResponse();
-		} else {
-			response = Response.serverError().build();
-		} 
-		Map<String, Object> callbackHeaders = new HashMap<>();
-		Map<String, Object> callbackHeader;
-		for (DefaultExceptionMapperCallback callback : this.callbacks) {
-			callbackHeader = callback.onDefaultMappedException(t, response.getStatus(), this.resourceInfo);
-			if (callbackHeader != null) {
-				callbackHeaders.putAll(callbackHeader);
-			}
-		}
-		if (!callbackHeaders.isEmpty()) {
-			Response.ResponseBuilder builder = Response.fromResponse(response);
-			for (Map.Entry<String, Object> entry : callbackHeaders.entrySet())
-				builder = builder.header(entry.getKey(), entry.getValue()); 
-			response = builder.build();
-		} 
-		return response;
-	}
+    public DefaultExceptionMapper() {
+        this.callbacks.addAll(DefaultExceptionMapperCallbackTracker.getCallbacks());
+    }
+
+    @Override
+    public Response toResponse(Throwable t) {
+        Response response;
+        if (t instanceof WebApplicationException && ((WebApplicationException) t).getResponse() != null) {
+            response = ((WebApplicationException) t).getResponse();
+        } else {
+            response = Response.serverError().build();
+        }
+        Map<String, Object> callbackHeaders = new HashMap<>();
+        Map<String, Object> callbackHeader;
+        for (DefaultExceptionMapperCallback callback : this.callbacks) {
+            callbackHeader = callback.onDefaultMappedException(t, response.getStatus(), this.resourceInfo);
+            if (callbackHeader != null) {
+                callbackHeaders.putAll(callbackHeader);
+            }
+        }
+        if (!callbackHeaders.isEmpty()) {
+            Response.ResponseBuilder builder = Response.fromResponse(response);
+            for (Map.Entry<String, Object> entry : callbackHeaders.entrySet())
+                builder = builder.header(entry.getKey(), entry.getValue());
+            response = builder.build();
+        }
+        return response;
+    }
 }

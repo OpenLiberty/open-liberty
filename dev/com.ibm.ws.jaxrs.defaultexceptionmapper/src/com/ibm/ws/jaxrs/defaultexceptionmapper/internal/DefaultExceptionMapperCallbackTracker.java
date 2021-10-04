@@ -27,32 +27,32 @@ import com.ibm.ws.jaxrs.defaultexceptionmapper.DefaultExceptionMapperCallback;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class DefaultExceptionMapperCallbackTracker {
-    
+
     private static DefaultExceptionMapperCallbackTracker instance;
-    
+
     public static Collection<DefaultExceptionMapperCallback> getCallbacks() {
         List<DefaultExceptionMapperCallback> result = null;
-        
+
         DefaultExceptionMapperCallbackTracker instance = DefaultExceptionMapperCallbackTracker.instance;
         if (instance != null) {
             result = instance.callbacks;
         }
-        
+
         if (result == null) {
             result = Collections.emptyList();
         }
-        
+
         return result;
     }
-    
+
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<DefaultExceptionMapperCallback> callbacks;
-    
+
     @Activate
     private void activate() {
         instance = this;
     }
-    
+
     @Deactivate
     private void deactivate() {
         if (instance == this) {

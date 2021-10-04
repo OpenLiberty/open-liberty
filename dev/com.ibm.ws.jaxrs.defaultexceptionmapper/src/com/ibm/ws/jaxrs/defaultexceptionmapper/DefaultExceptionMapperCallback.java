@@ -12,6 +12,7 @@
 package com.ibm.ws.jaxrs.defaultexceptionmapper;
 
 import java.util.Map;
+
 import javax.ws.rs.container.ResourceInfo;
 
 public interface DefaultExceptionMapperCallback {
@@ -22,7 +23,7 @@ public interface DefaultExceptionMapperCallback {
      * unmapped exception and the mapped status code. The returned map is
      * a map of headers to be added to the resulting Response. Null or an empty
      * map indicates no new headers should be added.
-     * 
+     *
      * @param throwable the unmapped exception
      * @param statusCode the mapped status code
      * @param resourceInfo the ResourceInfo for the request
