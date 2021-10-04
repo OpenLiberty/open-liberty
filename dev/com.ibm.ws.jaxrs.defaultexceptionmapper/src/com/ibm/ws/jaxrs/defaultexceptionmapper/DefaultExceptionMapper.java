@@ -11,7 +11,6 @@
 
 package com.ibm.ws.jaxrs.defaultexceptionmapper;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +23,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import com.ibm.ws.jaxrs.defaultexceptionmapper.internal.DefaultExceptionMapperCallbackTracker;
+
 @Provider 
 public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 	static final long serialVersionUID = 9083611544695926229L;
@@ -32,9 +33,9 @@ public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 	private ResourceInfo resourceInfo;
 
 	private final List<DefaultExceptionMapperCallback> callbacks = new LinkedList<>();
-
-	DefaultExceptionMapper(Collection<DefaultExceptionMapperCallback> callbacks) {
-		this.callbacks.addAll(callbacks);
+	
+	public DefaultExceptionMapper() {
+		this.callbacks.addAll(DefaultExceptionMapperCallbackTracker.getCallbacks());
 	}
 
 	@Override

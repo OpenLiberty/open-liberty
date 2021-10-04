@@ -14,6 +14,7 @@ IBM-API-Package: io.opentracing;  type="third-party",\
   com.ibm.websphere.appserver.jaxrs-2.1, \
   com.ibm.websphere.appserver.cdi-2.0
 -bundles=com.ibm.ws.jaxrs.defaultexceptionmapper, \
+         com.ibm.ws.jaxrs.2.x.defaultexceptionmapper, \
          io.openliberty.opentracing.2.0.internal, \
          io.openliberty.opentracing.2.0.internal.cdi, \
          io.openliberty.io.opentracing.opentracing-util.0.33.0, \
