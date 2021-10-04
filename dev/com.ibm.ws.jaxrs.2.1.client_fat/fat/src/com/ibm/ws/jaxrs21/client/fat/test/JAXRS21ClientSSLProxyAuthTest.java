@@ -146,7 +146,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-    @Test
+    //@Test TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
     public void testTunnelThroughProxyToHTTPSEndpoint_ClientBuilder() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
