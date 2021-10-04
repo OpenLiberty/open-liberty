@@ -113,7 +113,7 @@ autoFVT.doLast {
     
     copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
-      into new File(autoFvtDir, 'publish/servers/" + server+ "/imports')
+      into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
       include 'signEncryptSSLSettings.xml'
     }    
   }
