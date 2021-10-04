@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -106,10 +107,15 @@ public class FeaturesStartTestAToL {
 
     @After
     public void cleanup() throws Exception {
+        String method = "cleanup";
         if (server.isStarted()) {
             // If the server is started at this point, stop the server ignoring all messages
-            // but keep the logs (because there was a failure)
+            // but keep the logs (because there was a failure). Also attempt to kill the server pid.
+            String pid = server.getPid();
+            Log.info(c, method, "Server was found running after it should have been stopped.  Attempting a stop again.");
             server.stopServer(".*");
+            Log.info(c, method, "Attempting to kill server with pid = " + pid);
+            killServerPid(pid);
         }
     }
 
@@ -118,6 +124,7 @@ public class FeaturesStartTestAToL {
         final String m = testName.getMethodName();
         Set<String> failingFeatures = new HashSet<String>();
         Map<String, Exception> otherFailures = new HashMap<String, Exception>();
+        String pid = null;
 
         for (String feature : features) {
 
@@ -135,6 +142,9 @@ public class FeaturesStartTestAToL {
                 if (!featureStarted)
                     failingFeatures.add(feature);
 
+                pid = server.getPid();
+                Log.info(c, m, "Server pid = " + pid);
+
                 // Stop server and only save logs if a feature failed to start
                 Set<String> allowedErrors = acceptableErrors.get(feature);
                 server.stopServer(false, allowedErrors == null ? new String[] {} : allowedErrors.toArray(new String[allowedErrors.size()]));
@@ -144,8 +154,10 @@ public class FeaturesStartTestAToL {
                 Log.error(c, m, e);
                 otherFailures.put(feature, e);
             } finally {
-                if (saveLogs)
+                if (saveLogs) {
+                    killServerPid(pid);
                     server.postStopServerArchive();
+                }
                 Log.info(c, m, "<<<<< END   " + feature);
             }
         }
@@ -275,5 +287,20 @@ public class FeaturesStartTestAToL {
 
         for (String allowedError : allowedErrors)
             allowedSet.add(allowedError);
+    }
+
+    private void killServerPid(String pid) {
+        String method = "killServerPid";
+
+        // Make sure the server really is stopped and no extra processes are hanging out
+        Machine machine = server.getMachine();
+        try {
+            if (pid != null)
+                machine.killProcess(Integer.parseInt(pid));
+            else
+                Log.info(c, method, "pid was null");
+        } catch (Exception e) {
+            Log.info(c, method, "Exception why trying to kill PID = " + e);
+        }
     }
 }
