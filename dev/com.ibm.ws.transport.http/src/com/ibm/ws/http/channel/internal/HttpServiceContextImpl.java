@@ -1968,12 +1968,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
                 // if all expected body bytes will be written out, set the end of stream flag
                 addBytesWritten(length);
-                boolean addEndOfStream = false;
-                if (msg.getContentLength() == getNumBytesWritten()) {
-                    addEndOfStream = true;
-                }
 
-                ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, addEndOfStream);
+                ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, false);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written");
