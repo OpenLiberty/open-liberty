@@ -85,7 +85,7 @@ public class LibertyClassLoaderTest {
 
     /**
      * Validates that we only load the Manifest one time for a particular jar.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -93,7 +93,7 @@ public class LibertyClassLoaderTest {
         Container c = buildMockContainer("testJar", TestUtil.getTestJarURL());
 
         List<Manifest> manifests = new ArrayList<>();
-        loader = new AppClassLoader(null, loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
+        loader = new AppClassLoader(null, loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration(), Collections.emptyList()) {
             @Override
             public Package definePackage(String name, Manifest manifest, URL sealBase) throws IllegalArgumentException {
                 manifests.add(manifest);

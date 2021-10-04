@@ -77,6 +77,7 @@ import com.ibm.ws.classloading.internal.util.MultiMap;
 import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -151,6 +152,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
                     fieldOption = FieldOption.UPDATE,
                     target = "(io.openliberty.classloading.system.transformer=true)")
     private final List<ClassFileTransformer> systemTransformers = new CopyOnWriteArrayList<>();
+    List<ClassFileTransformer> unitTestOnlyGetSystemTransformers() {
+        return systemTransformers;
+    }
+    private final boolean isBeta;
 
     /**
      * Mapping from META-INF services file names to the corresponding service provider implementation class name.
@@ -183,6 +188,14 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         if(this.globalConfig == globalConfig) {
             this.globalConfig = null;
         }      
+    }
+
+    public ClassLoadingServiceImpl() {
+        this.isBeta = ProductInfo.getBetaEdition();
+    }
+
+    List<ClassFileTransformer> getSystemTransformers() {
+        return isBeta ? systemTransformers : Collections.emptyList();
     }
 
     @Activate
@@ -301,7 +314,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
         if (clConfig.getIncludeAppExtensions())
             addAppExtensionLibs(clConfig);
-        AppClassLoader result = createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, systemTransformers)
+        AppClassLoader result = createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setClassPath(classPath)
             .configure(gwConfig)
             .configure(clConfig));
@@ -312,7 +325,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createBundleAddOnClassLoader(List<File> classPath, ClassLoader gwClassLoader, ClassLoaderConfiguration clConfig) {
-        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, systemTransformers)
+        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setSharedLibPath(classPath)
             .configure(createGatewayConfiguration())
             .useBundleAddOnLoader(gwClassLoader)
@@ -323,7 +336,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createChildClassLoader(List<Container> classPath, ClassLoaderConfiguration config) {
         if (config.getIncludeAppExtensions())
             addAppExtensionLibs(config);
-        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, systemTransformers)
+        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setClassPath(classPath)
             .configure(config));
     }
@@ -431,7 +444,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             }
         }
 
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, systemTransformers)
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
                                         .setApiTypeVisibility(apiTypeVisibility))
