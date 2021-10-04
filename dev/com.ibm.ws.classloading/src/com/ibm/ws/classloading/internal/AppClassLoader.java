@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -364,10 +365,38 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         }
 
         ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
+        
+        final ProtectionDomain fpd = pd;
+        java.security.PermissionCollection pc = null;
+        if (pd.getPermissions() == null) {
+            try {
+                pc = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.PermissionCollection>() {
+                    @Override
+                    public java.security.PermissionCollection run() {
+                        java.security.Policy p = java.security.Policy.getPolicy();
+                        java.security.PermissionCollection fpc = p.getPermissions(fpd.getCodeSource());
 
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,  " Overall Java 2 Policy for class: " + name);
+                            java.util.Enumeration e = fpc.elements();
+                            while (e.hasMoreElements()) {
+                                java.security.Permission pp = (Permission) e.nextElement();
+                                Tr.debug(tc, "     permString: " + pp.toString() + " permName: " + pp.getName() + " permActions: " + pp.getActions());
+                            }
+                           
+                        }
+                        return fpc;
+                    }
+                });
+            } catch (PrivilegedActionException paex) {
+            } 
+            pd = new ProtectionDomain(pd.getCodeSource(), pc);
+        }
+        
         Class<?> clazz = null;
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
+            
         } finally {
             final TraceComponent cltc;
             if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
