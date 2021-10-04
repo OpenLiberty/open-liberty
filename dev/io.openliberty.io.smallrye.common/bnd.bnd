@@ -32,3 +32,5 @@ bVersion=1.0
   io.smallrye.common:smallrye-common-constraint;version=1.6.0, \
   io.smallrye.common:smallrye-common-function;version=1.6.0, \
   io.smallrye.common:smallrye-common-classloader;version=1.6.0
+
+jakartaeeMe: true

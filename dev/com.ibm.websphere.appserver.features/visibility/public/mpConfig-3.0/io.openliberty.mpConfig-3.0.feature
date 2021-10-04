@@ -19,7 +19,7 @@ Subsystem-Name: MicroProfile Config 3.0
   io.openliberty.mpCompatible-5.0, \
   io.openliberty.jakarta.cdi-3.0
 -bundles=io.openliberty.io.smallrye.config.jakarta, \
- io.openliberty.io.smallrye.common, \
+ io.openliberty.io.smallrye.common.jakarta, \
  io.openliberty.microprofile.config.internal.common, \
  io.openliberty.microprofile.config.internal.serverxml, \
  com.ibm.ws.org.apache.commons.lang3, \
