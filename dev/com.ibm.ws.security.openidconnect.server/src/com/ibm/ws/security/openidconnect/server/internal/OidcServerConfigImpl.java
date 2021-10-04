@@ -1176,6 +1176,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
      */
     private Pattern handleNonOidcPattern() {
         String pattern = "/oidc/(endpoint|providers)/" + providerId + "/(end_session|check_session_iframe)"; // take off end_session check_session_iframe
+        //String pattern = "/oidc/(endpoint|providers)/" + providerId + "/(check_session_iframe)"; // @AV999 only check_session_iframe
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Non Pattern:" + pattern);
         }
