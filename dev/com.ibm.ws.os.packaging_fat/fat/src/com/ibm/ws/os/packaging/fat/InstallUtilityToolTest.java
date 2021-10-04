@@ -84,52 +84,33 @@ public abstract class InstallUtilityToolTest {
         //DEBUG
         String[] param10 = { "/etc/os-release" };
         ProgramOutput po10 = runCommand("OSRelease", "cat", param10);
-//        String output10 = po10.getStdout();
-//        logger.info(output10);
+        String output10 = po10.getStdout();
+        logger.info(output10);
 
         String[] param11 = { "-laR " + javaHome + "/lib/jli" };
         ProgramOutput po11 = runCommand("list libjli", "ls", param11);
-//        String output11 = po11.getStdout();
-//        logger.info(output11);
+        String output11 = po11.getStdout();
+        logger.info(output11);
+        exiting(c, METHOD_NAME);
 
         String[] param12 = { "-version" };
         ProgramOutput po12 = runCommand("javaVersion", javaHome + "/bin/java", param12);
-//        String output12 = po12.getStdout();
-//        logger.info(output12);
+        String output12 = po12.getStdout();
+        logger.info(output12);
 
         //env
         String[] param13 = { "" };
         ProgramOutput po13 = runCommand("env", "env", param13);
-//        String output13 = po13.getStdout();
-//        logger.info(output13);
+        String output13 = po13.getStdout();
+        logger.info(output13);
 
         // ldd
         String[] param14 = { javaHome + "/bin/java" };
         ProgramOutput po14 = runCommand("ldd", "ldd", param14);
-//        String output14 = po14.getStdout();
-//        logger.info(output14);
-//
-        // ls
-        String[] param15 = { "-laR", "/etc/ld.so.conf", "/etc/ld.so.conf.d/*" };
-        ProgramOutput po15 = runCommand("ls", "ls", param15);
-//        String output15 = po15.getStdout();
-//        logger.info(output15);
+        String output14 = po14.getStdout();
+        logger.info(output14);
 
-        // cat
-        String[] param16 = { "/etc/ld.so.conf", "/etc/ld.so.conf.d/*" };
-        ProgramOutput po16 = runCommand("cat", "cat", param16);
-//        String output16 = po16.getStdout();
-//        logger.info(output16);
-
-        // locate
-        String[] param17 = { "libjli.so" };
-        ProgramOutput po17 = runCommand("locate", "locate", param17);
-
-        // ls system javas
-        String[] param18 = { "-la", "/usr/bin/java", "/etc/alternatives/java", "/usr/lib/jvm/java*" };
-        ProgramOutput po18 = runCommand("ls", "ls", param18);
         exiting(c, METHOD_NAME);
-
     }
 
     /**
