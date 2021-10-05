@@ -384,13 +384,11 @@ public class PasswordCipherUtil {
             if (algorithm == null) {
                 algorithm = properties.get(PasswordUtil.PROPERTY_HASH_ALGORITHM);
             }
-            if (algorithm == null) {
-                algorithm = PasswordHashGenerator.getDefaultAlgorithm();
-            }
 
             if (!saltSet) {
                 saltString = properties.get(PasswordUtil.PROPERTY_HASH_SALT);
                 salt = PasswordHashGenerator.generateSalt(saltString);
+                saltSet = true;
             }
 
             if (iteration < 0) {
@@ -399,9 +397,6 @@ public class PasswordCipherUtil {
                     iteration = Integer.parseInt(value);
                 }
             }
-            if (iteration < 0) {
-                iteration = PasswordHashGenerator.getDefaultIteration();
-            }
 
             if (length < 0) {
                 String value = properties.get(PasswordUtil.PROPERTY_HASH_LENGTH);
@@ -409,9 +404,25 @@ public class PasswordCipherUtil {
                     length = Integer.parseInt(value);
                 }
             }
-            if (length < 0) {
-                length = PasswordHashGenerator.getDefaultOutputLength();
-            }
+        }
+
+        // If there were no properties or only a partial set of properties provided to fill in information need to hash
+        // the data then fill in the missing information with the defaults.
+
+        if (algorithm == null) {
+            algorithm = PasswordHashGenerator.getDefaultAlgorithm();
+        }
+
+        if (!saltSet) {
+            salt = PasswordHashGenerator.generateSalt(saltString);
+        }
+
+        if (iteration < 0) {
+            iteration = PasswordHashGenerator.getDefaultIteration();
+        }
+
+        if (length < 0) {
+            length = PasswordHashGenerator.getDefaultOutputLength();
         }
 
         try {
