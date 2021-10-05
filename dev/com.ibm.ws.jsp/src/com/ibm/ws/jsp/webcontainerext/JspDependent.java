@@ -82,11 +82,13 @@ public class JspDependent {
             
         } else {
             File dependentFile = new File(context.getRealPath(dependentFilePath));
-            if (dependentFile.lastModified() != lastModified){
+            long ts = dependentFile.lastModified();
+            if (ts == 0) {ts = getTimestamp();}
+            if (ts != lastModified){  
     			outdated = true;
     			// begin 213703: add logging for isoutdated checks
     			if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    				logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "dependentFile ts [" + dependentFile.lastModified() + "] differs from cached ts [" + this.lastModified +"]. Recompile JSP.");
+    				logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "dependentFile ts [" + ts + "] differs from cached ts [" + this.lastModified +"]. Recompile JSP."); 
     				logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "dependentFile [" + dependentFile + "]");
     			}
     			// end 213703: add logging for isoutdated checks
