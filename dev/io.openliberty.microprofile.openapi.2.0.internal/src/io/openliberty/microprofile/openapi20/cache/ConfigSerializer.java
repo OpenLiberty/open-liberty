@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class ConfigSerializer {
         APPLICATION_PATH_DISABLE("applicationPathDisable", c -> Boolean.toString(c.applicationPathDisable())),
         PRIVATE_PROPERTIES_ENABLE("privatePropertiesEnable", c -> Boolean.toString(c.privatePropertiesEnable())),
         PROPERTY_NAMING_STRATEGY("propertyNamingStrategy", OpenApiConfig::propertyNamingStrategy),
+        SORTED_PROPERTIES_ENABLE("sortedPropertiesEnable", c -> Boolean.toString(c.sortedPropertiesEnable())),
         SCHEMAS("getSchemas", c -> serializeMap(c.getSchemas())),
         OPEN_API_VERSION("getOpenApiVersion", OpenApiConfig::getOpenApiVersion),
         INFO_TITLE("getInfoTitle", OpenApiConfig::getInfoTitle),
@@ -64,6 +65,7 @@ public class ConfigSerializer {
         ARRAY_REFERENCES_ENABLE("arrayReferencesEnable", c -> Boolean.toString(c.arrayReferencesEnable())),
         DEFAULT_PRODUCES("getDefaultProduces", OpenApiConfig::getDefaultProduces, Optional::toString),
         DEFAULT_CONSUMES("getDefaultConsumes", OpenApiConfig::getDefaultConsumes, Optional::toString),
+        ALLOW_NAKED_PATH_PARAMETER("allowNakedPathParameter", OpenApiConfig::allowNakedPathParameter, Optional::toString),
         ;
 
         Function<OpenApiConfig, String> function;
