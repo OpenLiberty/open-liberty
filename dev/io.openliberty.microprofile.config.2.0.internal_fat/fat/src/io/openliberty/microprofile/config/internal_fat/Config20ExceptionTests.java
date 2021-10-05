@@ -77,7 +77,7 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testBadObserver() throws Exception {
         List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property DOESNOTEXIST");
+                        .findStringsInLogs("SRCFG02000:.*DOESNOTEXIST");
         assertNotNull("error not found", errors);
         assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
@@ -113,14 +113,14 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
+        List<String> errors = server.findStringsInLogs("SRCFG02000:.*nonExistantKey");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKeyWithCustomConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
+        List<String> errors = server.findStringsInLogs("SRCFG02000:.*nonExistingKeyWithCustomConverter");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
 
@@ -131,14 +131,14 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testConverterMissing() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
+        List<String> errors = server.findStringsInLogs("SRCFG02007:.*" + TypeWithNoConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
+        List<String> errors = server.findStringsInLogs("SRCFG00039:.*badConverterKey.*throwing intentional exception");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
@@ -153,7 +153,7 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testNonExistingPropertyExpressionForServerXMLVariable() throws Exception {
         List<String> errors = server
-                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLVariable in property keyFromVariableInServerXML");
+                        .findStringsInLogs("SRCFG00011:.*keyFromVariableInServerXML");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
@@ -161,7 +161,7 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testNonExistingPropertyExpressionForServerXMLAppProperty() throws Exception {
         List<String> errors = server
-                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLAppProperty in property keyFromAppPropertyInServerXML");
+                        .findStringsInLogs("SRCFG00011:.*keyFromAppPropertyInServerXML");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
