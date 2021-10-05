@@ -152,8 +152,19 @@ Private-Package: \
   org.apache.james.*
   
 instrument.ffdc: false
-instrument.disabled: false
-
+instrument.classesExcludes: \
+  org/jboss/resteasy/client/jaxrs/internal/ClientConfiguration.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ClientInvocationBuilder.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ClientWebTarget.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ResteasyClientBuilderImpl.class, \
+  org/jboss/resteasy/client/jaxrs/internal/ResteasyClientImpl.class, \
+  org/jboss/resteasy/core/interception/jaxrs/ContainerResponseContextImpl.class, \
+  org/jboss/resteasy/core/providerfactory/ResteasyProviderFactoryImpl.class, \
+  org/jboss/resteasy/core/ResteasyContext.class, \
+  org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
+  org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
+  org/jboss/resteasy/util/snapshot/SnapshotMap.class, \
+  org/jboss/resteasy/util/ThreadLocalStack.class
 
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
