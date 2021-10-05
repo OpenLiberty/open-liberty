@@ -112,6 +112,11 @@ autoFVT.doLast {
     }
     
     copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'oauthRoles_1.xml'
+    }
+    copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
       into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
       include 'signEncryptSSLSettings.xml'
