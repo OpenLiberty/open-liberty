@@ -625,14 +625,14 @@ public class LdapConfigManager {
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_PERSON_ACCOUNT);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();
-                    int index = iUserFilter.indexOf(objectClassStr);
+                    int index = iUserFilter.toLowerCase().indexOf(objectClassStr);
                     while (index > -1) {
                         int endIndex = iUserFilter.indexOf(")", index);
                         String objectClass = iUserFilter.substring(index + length, endIndex);
                         objClsSet.add(objectClass);
 
                         index = endIndex + 1;
-                        index = iUserFilter.indexOf(objectClassStr, endIndex);
+                        index = iUserFilter.toLowerCase().indexOf(objectClassStr, endIndex);
                     }
                     if (objClsSet.size() > 0) {
                         ldapEntity.getObjectClasses().clear();
