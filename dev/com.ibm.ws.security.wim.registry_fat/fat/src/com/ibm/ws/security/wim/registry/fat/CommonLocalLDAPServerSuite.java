@@ -27,10 +27,13 @@ public class CommonLocalLDAPServerSuite {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        /**
+         * Remote servers are required for some tests that cannot be tested with a local LDAP. If the remote LDAP is not available, the tests will not run.
+         */
         HashMap<String, ArrayList<String>> testServers = LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_2_NAME, LDAPUtils.LDAP_SERVER_2_PORT, null, null, null);
 
         Log.info(c, "setUp", "Calling LocalLDAPServerSuite.setUpUsingServers()");
-        LocalLDAPServerSuite.setUpUsingServers(testServers);
+        LocalLDAPServerSuite.setUpUsingServers(testServers, false);
     }
 
     @AfterClass

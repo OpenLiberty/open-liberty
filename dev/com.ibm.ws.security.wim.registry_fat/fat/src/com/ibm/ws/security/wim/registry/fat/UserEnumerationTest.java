@@ -60,11 +60,16 @@ public class UserEnumerationTest {
      */
     @BeforeClass
     public static void setupClass() throws Exception {
+        if (LDAPUtils.USE_LOCAL_LDAP_SERVER) {
+            Log.info(c, "setupClass", "The UserEnumerationTest will not run -- using local Ldaps and this test requires a remote LDAP.");
+        }
+        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
+
         /*
          * Add LDAP variables to bootstrap properties file
          */
         LDAPUtils.addLDAPVariables(libertyServer);
-        Log.info(c, "setUpLibertyServer", "Starting the server... (will wait for userRegistry servlet to start)");
+        Log.info(c, "setupClass", "Starting the server... (will wait for userRegistry servlet to start)");
         libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         libertyServer.addInstalledAppForValidation("userRegistry");
         libertyServer.startServer(c.getName() + ".log");
@@ -79,7 +84,7 @@ public class UserEnumerationTest {
         assertNotNull("Server did not came up",
                       libertyServer.waitForStringInLog("CWWKF0011I"));
 
-        Log.info(c, "setUp", "Creating servlet connection the server");
+        Log.info(c, "setupClass", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
         if (servlet.getRealm() == null) {
