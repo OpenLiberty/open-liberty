@@ -68,15 +68,6 @@
             <version>2.0.0</version>
         </dependency>  
         
-        <!--  api commented out in previous mpjwt 1.2 fat-->
-        <!-- 
-        <dependency>
-		    <groupId>javax.json</groupId>
-		    <artifactId>javax.json-api</artifactId>
-		    <version>1.1</version>
-		</dependency>
-		 -->
-        
         <!-- This is the MP-JWT TCK base extension and utility classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
@@ -90,10 +81,8 @@
             <artifactId>microprofile-jwt-auth-tck</artifactId>
             <version>2.0-RC2</version>
             <type>test-jar</type>        
-       <!--     <systemPath>/Users/kristenclarke/MPJWT12/clone091321_TCK20RC2/microprofile-jwt-auth-2.0-RC2/tck/target/microprofile-jwt-auth-tck-2.0-RC2-SNAPSHOT-tests.jar</systemPath>   -->
-        <!--   <scope>system</scope>   -->
-
-
+            <!--   <systemPath>/Users/mypath/microprofile-jwt-auth-2.0-RC2/tck/target/microprofile-jwt-auth-tck-2.0-RC2-SNAPSHOT-tests.jar</systemPath>   -->
+            <!--   <scope>system</scope>   -->
         </dependency>
         
         <!-- You need to specify your JAX-RS client implementation as the unit
@@ -104,7 +93,6 @@
             <artifactId>org.jboss.resteasy.common</artifactId>
             <version>1</version>
             <scope>system</scope>
-     <!--         <systemPath>/Users/kristenclarke/libertyGit/open-liberty/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common.jakarta_1.0.57.jar</systemPath>  --> 
             <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
          </dependency>
         
@@ -146,14 +134,12 @@
         </dependency>
         
         
-        <!--   Additional dependencies from working with Andy -->
-        
+        <!--   Additional dependencies for RESTEasy -->        
          <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>logging</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <!--<systemPath>/Users/kristenclarke/libertyGit/open-liberty/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common.jakarta_1.0.57.jar</systemPath>  --> 
              <systemPath>${com.ibm.ws.logging_}</systemPath> 
          </dependency>
          
@@ -162,7 +148,6 @@
             <artifactId>org.jboss.logging</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <!--<systemPath>/Users/kristenclarke/libertyGit/open-liberty/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common.jakarta_1.0.57.jar</systemPath>  --> 
              <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath> 
          </dependency>
          
@@ -171,7 +156,6 @@
             <artifactId>org.reactivestreams.reactive-streams</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <!--<systemPath>/Users/kristenclarke/libertyGit/open-liberty/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common.jakarta_1.0.57.jar</systemPath>  --> 
              <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath> 
          </dependency>
          
@@ -179,11 +163,8 @@
               <groupId>jakarta.activation</groupId>
               <artifactId>jakarta.activation-api</artifactId>
               <version>2.0.1</version>
-              <!-- <scope>provided</scope> -->
-        </dependency>
-         
-         
-           <!-- End Additional dependencies from working with Andy -->
+        </dependency>                  
+           <!-- End Additional dependencies -->
          
         <dependency>
             <groupId>org.testng</groupId>
