@@ -111,6 +111,8 @@ public class RequestInfoTest {
                 allowing(HTTP_SERVLET_REQUEST_MCK).setAttribute("SpSLOInProgress", "true");
                 allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -147,6 +149,8 @@ public class RequestInfoTest {
                 allowing(HTTP_SERVLET_REQUEST_MCK).setAttribute("SpSLOInProgress", "true");
                 allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue("oidc_redirect_uri"));
             }
         });
 
@@ -160,6 +164,7 @@ public class RequestInfoTest {
         Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getReqUrl());
         Assert.assertEquals(ForwardRequestInfo.METHOD_GET, requestInfo.method); //No getter for method field
         Assert.assertEquals(33, requestInfo.getInResponseToId().length()); //Should be any string with 33 characters
+        Assert.assertEquals("oidc_redirect_uri", requestInfo.getRedirectAfterSPLogout());
     }
 
     /**
@@ -432,6 +437,9 @@ public class RequestInfoTest {
 
                 one(HTTP_SERVLET_RESPONSE_MCK).setDateHeader(with(any(String.class)), with(any(Long.class)));
                 one(HTTP_SERVLET_RESPONSE_MCK).setContentType(with(any(String.class)));
+                
+                allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -463,6 +471,9 @@ public class RequestInfoTest {
 
                 one(HTTP_SERVLET_RESPONSE_MCK).getWriter();
                 will(returnValue(new PrintWriter(baos)));
+                
+                allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -499,6 +510,9 @@ public class RequestInfoTest {
 
                 one(HTTP_SERVLET_RESPONSE_MCK).getWriter();
                 will(returnValue(new PrintWriter(baos)));
+                
+                allowing(HTTP_SERVLET_REQUEST_MCK).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 

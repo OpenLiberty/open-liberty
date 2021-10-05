@@ -314,6 +314,8 @@ public class SolicitedTest {
             {
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
                 one(basicMessageContext).getMetadataProvider();
                 will(returnValue(metadataProvider));
                 one(ssoConfig).isAuthnRequestsSigned();
@@ -390,6 +392,8 @@ public class SolicitedTest {
 
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -445,6 +449,8 @@ public class SolicitedTest {
 
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -466,6 +472,8 @@ public class SolicitedTest {
                 atMost(2).of(ssoConfig).getIdpMetadata();
                 will(returnValue(null));
                 allowing(request).getAttribute("FormLogoutExitPage");
+                will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
                 will(returnValue(null));
             }
         });
@@ -491,6 +499,8 @@ public class SolicitedTest {
                 will(throwException(e));
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
             }
         });
 
@@ -515,6 +525,8 @@ public class SolicitedTest {
                 atMost(2).of(ssoConfig).getIdpMetadata();
                 will(returnValue(null));
                 allowing(request).getAttribute("FormLogoutExitPage");
+                will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
                 will(returnValue(null));
             }
         });
@@ -588,6 +600,8 @@ public class SolicitedTest {
                 one(badParserPool).newDocument();
                 will(throwException(e));
                 allowing(request).getAttribute("FormLogoutExitPage");
+                will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
                 will(returnValue(null));
                 allowing(ssoService).getPrivateKey();
                 //will(returnValue(null));

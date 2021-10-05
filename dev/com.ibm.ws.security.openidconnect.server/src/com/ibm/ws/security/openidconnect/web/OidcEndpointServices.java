@@ -513,20 +513,21 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         if (oauth20provider.isTrackOAuthClients()) {
             redirectUri = updateRedirectUriWithTrackedOAuthClients(request, response, oauth20provider, redirectUri);
         }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri + "]");
-        }
         //@AV999-092821
+        request.setAttribute("OIDC_END_SESSION_REDIRECT", redirectUri);
         if (continueLogoff && user != null) {
             // logout deletes ltpatoken cookie and oidc_bsc cookie.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "save  OIDC_END_SESSION_REDIRECT uri in op end_session : " + redirectUri);
             }
-            //if during the servlet request logout, if the other logouts are in play, then we may not want to redirect here in that case
-            request.setAttribute("OIDC_END_SESSION_REDIRECT", redirectUri);
+            //if during the servlet request logout, if the other logouts are in play, then we may not want to redirect here in that case       
             request.logout();
         }
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+            request.removeAttribute("OIDC_END_SESSION_REDIRECT");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri + "]");
+            }
             response.sendRedirect(redirectUri);
         }
         
