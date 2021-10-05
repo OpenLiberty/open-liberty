@@ -3229,22 +3229,22 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.0.8.RELEASE</version>
+      <version>5.0.17.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.1.4.RELEASE</version>
+      <version>5.0.17.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.0.17.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.2.6.RELEASE</version>
+      <version>5.0.17.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
