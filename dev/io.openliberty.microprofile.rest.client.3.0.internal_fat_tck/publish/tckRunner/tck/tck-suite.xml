@@ -11,20 +11,21 @@
 <suite name="microprofile-rest.client-3.0-tck" verbose="2"
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.rest.client.tck">
-        <packages>
-            <package name="org.eclipse.microprofile.rest.client.tck.*"/>
-        </packages>
+<!--         <packages> -->
+<!--             <package name="org.eclipse.microprofile.rest.client.tck.*"/> -->
+<!--         </packages> -->
         <classes>
-        <class name="org.eclipse.microprofile.rest.client.tck.sse.BasicReactiveStreamsTest">
-            <methods>
-                <exclude name=".*" />
-            </methods>
-        </class>
-        <class name="org.eclipse.microprofile.rest.client.tck.sse.ReactiveStreamsPublisherTckTest">
-            <methods>
-                <exclude name=".*" />
-            </methods>
-        </class>
+<!--         <class name="org.eclipse.microprofile.rest.client.tck.sse.BasicReactiveStreamsTest"> -->
+<!--             <methods> -->
+<!--                 <exclude name=".*" /> -->
+<!--             </methods> -->
+<!--         </class> -->
+<!--         <class name="org.eclipse.microprofile.rest.client.tck.sse.ReactiveStreamsPublisherTckTest"> -->
+<!--             <methods> -->
+<!--                 <exclude name=".*" /> -->
+<!--             </methods> -->
+<!--         </class> -->
+        <class name="org.eclipse.microprofile.rest.client.tck.InvokeSimpleGetOperationTest"></class>
     </classes>
     </test>
 </suite>

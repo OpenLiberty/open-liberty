@@ -14,9 +14,9 @@ IBM-API-Package: \
 IBM-ShortName: mpRestClient-3.0
 Subsystem-Name: MicroProfile Rest Client 3.0
 
-#  com.ibm.websphere.appserver.mpConfig-3.0, \
 -features=io.openliberty.jsonp-2.0, \
   io.openliberty.restfulWSClient-3.0, \
+  io.openliberty.mpConfig-3.0, \
   io.openliberty.mpCompatible-5.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
@@ -25,5 +25,3 @@ Subsystem-Name: MicroProfile Rest Client 3.0
 kind=noship
 edition=core
 WLP-Activation-Type: parallel
-
-#TODO: update MP Config API feature dependency to 3.0 when available
