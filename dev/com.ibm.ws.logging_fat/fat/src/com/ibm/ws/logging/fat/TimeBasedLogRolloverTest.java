@@ -293,7 +293,8 @@ public class TimeBasedLogRolloverTest {
         serverInUse.waitForStringInLogUsingMark("CWWKG0017I"); //wait for server config update
 
         long nextRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        Thread.sleep(nextRollover+FILE_WAIT_SECONDS_PADDING); //sleep for another length of the old specified log rolloverInterval
+        if (nextRollover > 0)
+            Thread.sleep(nextRollover+FILE_WAIT_SECONDS_PADDING); //sleep for another length of the old specified log rolloverInterval
 
         //check that only 2 messages*/trace* prefixed logs exist 
         //aka the messages/trace logs were not rolled over again
@@ -349,14 +350,14 @@ public class TimeBasedLogRolloverTest {
         setUp(server_xml, "testMaxFileSizeRolling");
         setServerConfiguration(false, false, true, "", "", 1);
 
+         //check for rolled log first, to ensure we start writing messages at the next minute
+         checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
+
         //hit QuickLogTest endpoint (run for 10s)
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 10000) {
+        while (System.currentTimeMillis() - startTime < 25000) {
             hitWebPage("logger-servlet", "LoggerServlet", false, null);
         }
-        // getHttpServlet("QuickLogTest/QuickLogTestServlet4?threads=1&duration=10&messageSize=0&delay=0&action=log&stepThreads=false", server_xml);
-
-        // Thread.sleep(5000); //wait 5s for logs to fill up, should fill up at least 3
 
         File logsDir = new File(getLogsDirPath());
         String[] logsDirFiles = logsDir.list();
@@ -367,6 +368,8 @@ public class TimeBasedLogRolloverTest {
                 messagesLogs.add(logsDirFiles[i]);
 		}
 
+        //at least three messages_*.log files: the first rolled over by time,
+        //the second rolloed over by size, and then the newest file
         assertTrue("There should be at least 3 messages prefixed log files. Instead, "+
         "these are the messages prefixed logs: "+messagesLogs.toString(), messagesLogs.size() >= 3);
         
@@ -394,7 +397,8 @@ public class TimeBasedLogRolloverTest {
         File traceLog = new File(getLogsDirPath(), traceLogName);
 
         long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        Thread.sleep(timeToFirstRollover+FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+        if (timeToFirstRollover > 0)
+            Thread.sleep(timeToFirstRollover+FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
 
         assertTrue("The rolled messages.log file "+messagesLog+" doesn't exist.", messagesLog.exists());
 

@@ -128,16 +128,6 @@
             ibm:variable="com.ibm.ws.logging.apps.write.json"
             id="appsWriteJson" required="false" type="Boolean" default="false">
         </AD>
-
-        <AD name="%rollover.start.time" description="%rollover.start.time.desc" 
-            ibm:variable="com.ibm.ws.logging.rollover.start.time"
-            id="rolloverStartTime" required="false" type="String" default="" ibm:beta="true">
-        </AD>
-
-        <AD name="%rollover.interval" description="%rollover.interval.desc" 
-            ibm:variable="com.ibm.ws.logging.rollover.interval"
-            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1" ibm:beta="true">
-        </AD>
     </OCD>
   
     <Designate pid="com.ibm.ws.logging">
