@@ -58,12 +58,14 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         deleteFeaturesAndLafilesFolders("afterCleanUp");
     }
 
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        // TODO
-        resetOriginalWlpProps();
-        cleanUpTempFiles();
-    }
+	@AfterClass
+	public static void cleanUp() throws Exception {
+		// TODO
+		if (!isZos) {
+			resetOriginalWlpProps();
+			cleanUpTempFiles();
+		}
+	}
     /**
      * Test install when no features are specified in server.xml
      */
