@@ -54,4 +54,5 @@ fat.project: true
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version=2.20,\
-	xml-apis:xml-apis;version=1.4.01
+	io.openliberty.xml-apis;version=latest,\
+	io.openliberty.org.apache.xerces;version=latest

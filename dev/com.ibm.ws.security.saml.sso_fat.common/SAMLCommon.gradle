@@ -33,8 +33,7 @@ dependencies {
                project(':com.ibm.ws.org.apache.httpcomponents'),
                'httpunit:httpunit:1.6.2',                           // 1.7 has issues noted above
                'jtidy:jtidy:4aug2000r7-dev',
-               'rhino:js:1.6R5',
-               'xml-apis:xml-apis:1.4.01'
+               'rhino:js:1.6R5'
               
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
@@ -48,8 +47,7 @@ dependencies {
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'org.apache.httpcomponents:httpmime:4.5.12',
                'org.brotli:dec:0.1.2',
-               'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0'
+               project(':io.openliberty.org.apache.xerces')
 }
   
 task copyResolver (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
