@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,8 +265,21 @@ public class PersistentErrorTestServlet extends HttpServlet {
                                                  && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
                 status = scheduler.getStatus(status.getTaskId());
 
-            if (status.getNextExecutionTime() == null && status.isCancelled())
-                throw new Exception("Unexpected canceled status: " + status);
+            // Polling (above) isn't granular enough to guarantee that we will also see the SKIPPED state
+            // before it transitions to ENDED,FAILURE_LIMIT_REACHED, so the test needs to accept seeing
+            // either as the resulting status after polling,
+
+            if (status.getNextExecutionTime() == null) {
+                if (status.isCancelled()) {
+                    throw new Exception("Unexpected canceled status: " + status);
+                } else if (status.toString().indexOf("ENDED") < 0
+                        || status.toString().indexOf("FAILURE_LIMIT_REACHED") < 0) {
+                    status.cancel(true);
+                    throw new Exception("Unexpected status: " + status);
+                } else {
+                    return;
+                }
+            }
 
             if (status.toString().indexOf("SKIPPED") < 0) {
                 status.cancel(true);
