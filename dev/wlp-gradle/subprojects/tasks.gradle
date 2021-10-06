@@ -158,8 +158,8 @@ if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
                             'commons-cli:commons-cli:1.4',
                             'org.slf4j:slf4j-simple:1.7.30',
                             'org.slf4j:slf4j-api:1.7.26',
-                            'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
-                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+                            'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
+                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
   }
 
   task jakartaeeTransform {
