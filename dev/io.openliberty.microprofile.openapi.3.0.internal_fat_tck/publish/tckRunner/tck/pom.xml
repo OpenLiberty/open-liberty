@@ -17,6 +17,7 @@
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
         <arquillian-wlp.version>2.0.0</arquillian-wlp.version>
 
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
 
@@ -59,14 +60,9 @@
                 <configuration>
                     <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
 
-                    <dependenciesToScan>
-                        <dependency>org.eclipse.microprofile.openapi:microprofile-openapi-tck</dependency>
-                    </dependenciesToScan>
-<!--  
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
- -->
 
                 </configuration>
             </plugin>
@@ -124,13 +120,5 @@
             <version>${arquillian-wlp.version}</version>
             <scope>test</scope>
         </dependency>
-        
-<!--         
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>xml-path</artifactId>
-            <version>3.0.6</version>
-        </dependency>
- -->
     </dependencies>
 </project>
