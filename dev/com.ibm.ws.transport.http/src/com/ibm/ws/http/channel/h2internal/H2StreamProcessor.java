@@ -1972,6 +1972,9 @@ public class H2StreamProcessor {
                                 writeTimeout -= elapsed;
                             }
                         }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "stream: " + myID + " write window wait complete; waited " + elapsed + " ms, timed out = " + timedOut);
+                        }
                     }
                     // the flow control window is large enough to write the data frame
                     if (!timedOut) {
