@@ -660,7 +660,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
     }
 
     @Test
-    public void OidcClientEncryptionTests_SignWithValidAlg_EncryptValid_DecryptNonExistantKeyManagementKeyAlias() throws Exception {
+    public void Social_EncryptionTests_SignWithValidAlg_EncryptValid_DecryptNonExistantKeyManagementKeyAlias() throws Exception {
         String socialClientEncryptAlg = SocialConstants.SIGALG_RS256;
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS256;
 
@@ -700,7 +700,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
 
     @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test
-    public void Social_EncryptionTestsEncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithRS512() throws Exception {
+    public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithRS512() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS512;
         String socialClientEncryptAlg = SocialConstants.SIGALG_NONE;
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS512;
