@@ -10,7 +10,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.10.0
+ * @version 1.11.0
  */
-@org.osgi.annotation.versioning.Version("1.10.0")
+@org.osgi.annotation.versioning.Version("1.11.0")
 package com.ibm.wsspi.webcontainer;
