@@ -72,6 +72,24 @@ public class PasswordUtil {
      * </p>
      **/
     public final static String PROPERTY_HASH_LENGTH = "hash.length";
+    /**
+     * <p>
+     * Constant that holds the name of the property for specifying keyring where the encryption key is stored.
+     * </p>
+     **/
+    public final static String PROPERTY_KEYRING = "keyring";
+    /**
+     * <p>
+     * Constant that holds the name of the property for secifying the type of the keyring where the encryption key is stored.
+     * </p>
+     **/
+    public final static String PROPERTY_KEYRING_TYPE = "keyring.type";
+    /**
+     * <p>
+     * Constant that holds the name of the property for specifying the label for the encryption key stored in the keyring.
+     * </p>
+     **/
+    public final static String PROPERTY_KEY_LABEL = "key.label";
 
     private static final Class<?> CLASS_NAME = PasswordUtil.class;
     private static final String RB = "com.ibm.ws.crypto.util.internal.resources.Messages";
@@ -149,7 +167,7 @@ public class PasswordUtil {
      * For example, {xor}CDo9Hgw=.
      * If the decoded_string is already encoded, the string will be decoded and then encoded by using the default encoding algorithm.
      * Use this method for encoding the string by using the default encoding algorithm.
-     * 
+     *
      * @param decoded_string the string to be encoded.
      * @return The encoded string.
      * @throws InvalidPasswordEncodingException If the decoded_string is null or invalid. Or the encoded_string is null.
@@ -181,7 +199,7 @@ public class PasswordUtil {
      * If the decoded_string is already encoded, the string will be decoded and then encoded by using the specified crypto algorithm.
      * Use this method for encoding the string by using the AES encryption with the specific crypto key.
      * Note that this method is only avaiable for the Liberty profile.
-     * 
+     *
      * @param decoded_string the string to be encoded.
      * @param crypto_algorithm the algorithm to be used for encoding.
      * @param crypto_key the key for the encryption. This value is only valid for aes algorithm.
