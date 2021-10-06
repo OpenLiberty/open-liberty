@@ -77,14 +77,15 @@ public class ModulePropertiesUtils {
     }
 
     public boolean isHttpAuthenticationMechanism() {
-       if (isHam == null) {
-          HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
-          if (ham != null) {
-              isHam = true;
-          }
-          isHam = false;
-       }
-       return isHam;
+        if (isHam == null) {
+            HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
+            if (ham != null) {
+                isHam = true;
+            } else {
+                isHam = false;
+            }
+        }
+        return isHam;
     }
 
     public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
