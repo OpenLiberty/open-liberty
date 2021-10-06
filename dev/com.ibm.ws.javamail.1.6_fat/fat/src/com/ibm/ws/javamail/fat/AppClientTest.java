@@ -63,6 +63,8 @@ public class AppClientTest {
 
         configureAndLaunchGreenMailService();
         runClient(testClientName, "javaMailClient");
+        client.waitForStringInCopiedLog("CWWKE1103I:.*");
+
     }
 
     @AfterClass
