@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import org.osgi.service.component.annotations.*;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.javaee.dd.client.ApplicationClient;
 import com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
@@ -41,52 +39,40 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
     service = ContainerAdapter.class,
     property = { "service.vendor=IBM",
                  "toType=com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd" })
-public class ApplicationClientBndAdapter
-    extends BndExtAdapter<ApplicationClientBnd>
-    implements ContainerAdapter<ApplicationClientBnd> {
+public class ApplicationClientBndAdapter extends BndExtAdapter<ApplicationClientBnd> {
 
-    @Reference( cardinality = ReferenceCardinality.MULTIPLE,
-                policy = ReferencePolicy.DYNAMIC,
-                policyOption = ReferencePolicyOption.GREEDY )
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
     volatile List<ApplicationClientBnd> configurations;
 
+    @Override    
+    public List<? extends ApplicationClientBnd> getConfigurations() {
+        return configurations;
+    }
+    
     //
 
     @Override
-    @FFDCIgnore(ParseException.class)
     public ApplicationClientBnd adapt(
         Container ddRoot,
         OverlayContainer ddOverlay,
         ArtifactContainer ddArtifactRoot,
         Container ddAdaptRoot) throws UnableToAdaptException {
 
-        ApplicationClient appClient = ddAdaptRoot.adapt(ApplicationClient.class);
-        String ddVersion = ( (appClient == null) ? null : appClient.getVersion() );
-        boolean xmi = ( "1.2".equals(ddVersion) || "1.3".equals(ddVersion) || "1.4".equals(ddVersion) );
-        String ddPath = ( xmi ? ApplicationClientBnd.XMI_BND_NAME : ApplicationClientBnd.XML_BND_NAME );  
+        String ddVersion = getAppClientVersion(ddAdaptRoot);
+        boolean xmi = ( "1.2".equals(ddVersion) ||
+                        "1.3".equals(ddVersion) ||
+                        "1.4".equals(ddVersion) );
+        String ddPath =
+                ( xmi ? ApplicationClientBnd.XMI_BND_NAME
+                      : ApplicationClientBnd.XML_BND_NAME );  
 
-        ApplicationClientBnd fromConfig = getConfigOverrides(ddOverlay, ddArtifactRoot);
-        
-        Entry ddEntry = ddAdaptRoot.getEntry(ddPath);
-        if ( ddEntry == null ) {
-            return fromConfig;
-        }
-
-        ApplicationClientBnd fromModule;
-        try {
-            fromModule = new ApplicationClientBndDDParser(ddAdaptRoot, ddEntry, xmi).parse();
-        } catch ( ParseException e ) {
-            throw new UnableToAdaptException(e);
-        }
-
-        if ( fromConfig == null ) {
-            return fromModule;
-        } else {  
-            setDelegate(fromConfig, fromModule);
-            return fromConfig;
-        }
+        return process(
+                ddRoot, ddOverlay, ddArtifactRoot, ddAdaptRoot,
+                ddPath, xmi);
     }
-
+    
     //
 
     /**
@@ -102,11 +88,13 @@ public class ApplicationClientBndAdapter
      *
      * @return The selected configuration override.  Null if none is available.
      */
-    private ApplicationClientBnd getConfigOverrides(
+    @Override
+    protected ApplicationClientBnd getConfigOverrides(
         OverlayContainer ddOverlay,
         ArtifactContainer ddArtifactRoot) {
 
-        if ( (configurations == null) || configurations.isEmpty() ) {
+        List<? extends ApplicationClientBnd> useConfigurations = getConfigurations();                
+        if ( (useConfigurations == null) || useConfigurations.isEmpty() ) {
             return null;
         }
 
@@ -123,7 +111,7 @@ public class ApplicationClientBndAdapter
         String appServicePid = (String) configHelper.get("service.pid");
         String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
 
-        for ( ApplicationClientBnd appClientBnd : configurations ) {
+        for ( ApplicationClientBnd appClientBnd : useConfigurations ) {
             String parentPid = getParentPid(appClientBnd);
             if ( appServicePid.equals(parentPid) || parentPid.equals(appExtendsPid) ) {
                 return appClientBnd;
@@ -133,26 +121,42 @@ public class ApplicationClientBndAdapter
     }
 
     //
+    
+    @Override    
+    protected ApplicationClientBnd parse(Container ddAdaptRoot, Entry ddEntry, boolean xmi)
+            throws ParseException {
+        return ( new ApplicationClientBndDDParser(ddAdaptRoot, ddEntry, xmi) ).parse();                
+    }
+    
+    //
 
+    @Override    
     protected String getParentPid(ApplicationClientBnd appClientBnd) {
         ApplicationClientBndComponentImpl appClientBndImpl =
             (ApplicationClientBndComponentImpl) appClientBnd;
         return (String) appClientBndImpl.getConfigAdminProperties().get("config.parentPID");        
     }
 
+    @Override    
     protected String getModuleName(ApplicationClientBnd appClientBnd) {
         return null; // Unused
     }
 
+    @Override    
     protected String getElementTag() {
         return "application-client-bnd"; // Unused
     }
 
+    @Override    
     protected Class<?> getCacheType() {
         return ApplicationClientBndAdapter.class; // Unused
     }
     
-    protected void setDelegate(ApplicationClientBnd appClientBnd, ApplicationClientBnd appClientBndDelegate) {
+    @Override    
+    protected void setDelegate(
+            ApplicationClientBnd appClientBnd,
+            ApplicationClientBnd appClientBndDelegate) {
+
         ((ApplicationClientBndComponentImpl) appClientBnd).setDelegate(appClientBndDelegate);
     }
 }

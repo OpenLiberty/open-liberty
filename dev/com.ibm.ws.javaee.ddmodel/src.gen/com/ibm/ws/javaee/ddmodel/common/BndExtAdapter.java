@@ -22,9 +22,14 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
@@ -53,20 +58,80 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  *
  * @param <ConfigType> The type of configuration element which is being adapted.
  */
-public abstract class BndExtAdapter<ConfigType> {
-    private static final TraceComponent tc = Tr.register(BndExtAdapter.class);
+public abstract class BndExtAdapter<ConfigType>
+    implements ContainerAdapter<ConfigType> {
+
+    protected static final TraceComponent tc = Tr.register(BndExtAdapter.class);
+
+    // Subclass APIs ...
+
+    /**
+     * Each adapter is supplied with a collection of overrides which are read
+     * out of the server configuration.
+     */
+    public abstract List<? extends ConfigType> getConfigurations();
+
+    /**
+     * Control parameter for {@link #parse(Container, Entry, boolean)}:
+     * Use this as the <code>xmi</code> parameter value to document
+     * that the parameter value is expected to be ignored.
+     */
+    protected static final boolean XMI_UNUSED = false;
+
+    /**
+     * Common parse step: Parse the specified entry.  Implementers
+     * are expected to specialize to create a parser for the type
+     * processed by this adapter.
+     * 
+     * Null should never be returned.  Any parsing failure should be
+     * thrown as a {@link ParseException}.
+     */
+    protected abstract ConfigType parse(Container ddAdaptRoot, Entry ddEntry, boolean xmi)
+            throws ParseException;
 
     //
-    
+
     protected abstract String getParentPid(ConfigType config);
     protected abstract String getModuleName(ConfigType config);
-    
+
     protected abstract String getElementTag();
     protected abstract Class<?> getCacheType();
 
     protected abstract void setDelegate(ConfigType config, ConfigType configDelegate);
+    
+    // Common processing steps ...
 
-    //
+    /**
+     * Standard processing step: Obtain the configuration override and
+     * parse the bindings and extensions entry.  Answer one or the other.
+     * When both are available, wire the entry data as the delegate of
+     * the override data and answer the override data.
+     */
+    protected ConfigType process(
+            Container ddRoot,
+            OverlayContainer ddOverlay,
+            ArtifactContainer ddArtifactRoot,
+            Container ddAdaptRoot,
+            String ddPath,
+            boolean xmi) throws UnableToAdaptException {
+
+        // Always try to get both the override and the parsed data.
+        ConfigType fromConfig = getConfigOverrides(ddOverlay, ddArtifactRoot);
+        ConfigType fromModule = parse(ddAdaptRoot, ddPath, xmi);
+
+        // Answer whichever was obtained.  If both were obtained, set
+        // the parsed data as the delegate of the override, and answer
+        // the override.
+
+        if ( fromConfig == null ) {
+            return fromModule;
+        } else {
+            if ( fromModule != null ) {
+                setDelegate(fromConfig, fromModule);
+            }
+            return fromConfig;
+        }
+    }
 
     /**
      * Retrieve the configuration override for a module descriptor.
@@ -76,7 +141,6 @@ public abstract class BndExtAdapter<ConfigType> {
      * Set the module descriptor as the delegate of the configuration
      * override, if both are present.
      * 
-     * @param configurations The available configuration overrides.
      * @param ddOverlay The root overlay container of the descriptor.  This will be
      *     a module overlay.
      * @param ddArtifactRoot The root artifact container of the descriptor.  This will
@@ -87,11 +151,11 @@ public abstract class BndExtAdapter<ConfigType> {
      * @throws UnableToAdaptException Thrown if application or module information
      *     cannot be retrieved.
      */
-    public <CacheType> ConfigType getConfigOverrides(
-            List<ConfigType> configurations,
+    protected ConfigType getConfigOverrides(
             OverlayContainer ddOverlay,
             ArtifactContainer ddArtifactRoot) throws UnableToAdaptException {
 
+        List<? extends ConfigType> configurations = getConfigurations();
         if ( (configurations == null) || configurations.isEmpty() ) {
             return null;
         }
@@ -143,15 +207,11 @@ public abstract class BndExtAdapter<ConfigType> {
         String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
 
         if ( moduleInfo == null ) {
-            return getFirstConfig(
-                    configurations,
-                    appInfo, appServicePid, appExtendsPid);
+            return getFirstConfig(appInfo, appServicePid, appExtendsPid);
 
         } else {
-            Map<String, ConfigType> configs = getConfigOverrides(
-                    configurations,
-                    appInfo,
-                    ddOverlay, appServicePid, appExtendsPid);
+            Map<String, ConfigType> configs =
+                getConfigOverrides(appInfo, ddOverlay, appServicePid, appExtendsPid);
 
             return ( (configs == null) ? null : configs.get( moduleInfo.getName() ) );
         }
@@ -169,7 +229,6 @@ public abstract class BndExtAdapter<ConfigType> {
      * service PID or extends PID.  There is a match if the parent PID equals
      * either of the application PIDs.
      *
-     * @param configurations The available configuration overrides.
      * @param appInfo Current application information.
      * @param appServicePid The application service PID.
      * @param appExtendsPid The application extends PID.
@@ -177,12 +236,11 @@ public abstract class BndExtAdapter<ConfigType> {
      * @return The first matching configuration.  Null if no matching configuration
      *     is available.
      */
-    public ConfigType getFirstConfig(
-            List<ConfigType> configurations,
+    protected ConfigType getFirstConfig(
             ApplicationInfo appInfo,
             String appServicePid, String appExtendsPid) {
 
-        for ( ConfigType config : configurations ) {
+        for ( ConfigType config : getConfigurations() ) {
             String parentPid = getParentPid(config);
             if ( appServicePid.equals(parentPid) || parentPid.equals(appExtendsPid) ) {
                 return config;
@@ -191,10 +249,10 @@ public abstract class BndExtAdapter<ConfigType> {
         return null;
     }
     
-    private static final String MODULE_NAME_CHECKS = "module.name.checks";
-    private static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
-    private static final String MODULE_NAME_NOT_FOUND = "module.name.not.found";
-    private static final String MODULE_NAME_DUPLICATED = "module.name.duplicated";
+    public static final String MODULE_NAME_CHECKS = "module.name.checks";
+    public static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
+    public static final String MODULE_NAME_NOT_FOUND = "module.name.not.found";
+    public static final String MODULE_NAME_DUPLICATED = "module.name.duplicated";
 
     /**
      * Retrieve the configuration override for a module descriptor.
@@ -223,7 +281,6 @@ public abstract class BndExtAdapter<ConfigType> {
      * application, which means modules of the same type will perform the same
      * validations.
      *
-     * @param configurations The available configuration overrides.
      * @param appInfo Current application information.
      * @param ddOverlay The module overlay.  Note that message recording is done
      *     in the application overlay, which is the parent of this module overlay. 
@@ -232,8 +289,7 @@ public abstract class BndExtAdapter<ConfigType> {
      *
      * @return The matching configuration.  Null if no matching configuration is found.
      */    
-    public Map<String, ConfigType> getConfigOverrides(
-            List<ConfigType> configurations,
+    protected Map<String, ConfigType> getConfigOverrides(
             ApplicationInfo appInfo, OverlayContainer ddOverlay,
             String appServicePid, String appExtendsPid)
         throws UnableToAdaptException {
@@ -243,7 +299,7 @@ public abstract class BndExtAdapter<ConfigType> {
         Set<String> dupModuleNames = null;
         int absentModuleNames = 0;
 
-        for ( ConfigType config : configurations ) {
+        for ( ConfigType config : getConfigurations() ) {
             String parentPid = getParentPid(config);
             if ( !appServicePid.equals(parentPid) && !parentPid.equals(appExtendsPid) ) {
                 continue;
@@ -274,14 +330,14 @@ public abstract class BndExtAdapter<ConfigType> {
 
             if ( absentModuleNames != 0 ) {
                 appName = getSimpleName(appInfo);
-                Tr.warning(tc, MODULE_NAME_NOT_SPECIFIED, appName, elementTag);
+                Tr.error(tc, MODULE_NAME_NOT_SPECIFIED, appName, elementTag);
             }
 
             if ( dupModuleNames != null ) {
                 if ( appName == null ) {
                     appName = getSimpleName(appInfo);
                 }
-                Tr.warning(tc, MODULE_NAME_DUPLICATED, appName, elementTag, dupModuleNames);
+                Tr.error(tc, MODULE_NAME_DUPLICATED, appName, elementTag, dupModuleNames);
             }
 
             if ( selectedConfigs != null ) {
@@ -300,7 +356,7 @@ public abstract class BndExtAdapter<ConfigType> {
                     if ( appName == null ) {
                         appName = getSimpleName(appInfo);
                     }
-                    Tr.warning(tc, MODULE_NAME_NOT_FOUND, appName, elementTag, missingModuleNames, appModuleNames);
+                    Tr.error(tc, MODULE_NAME_NOT_FOUND, appName, elementTag, missingModuleNames, appModuleNames);
                 }
             }
         }
@@ -308,13 +364,7 @@ public abstract class BndExtAdapter<ConfigType> {
         return selectedConfigs;
     }
 
-    //
-
-    private String getSimpleName(ApplicationInfo appInfo) {
-        return DDParser.getSimpleName( appInfo.getContainer() );
-    }
-
-    private Set<String> getModuleNames(ApplicationInfo appInfo) throws UnableToAdaptException {
+    protected Set<String> getModuleNames(ApplicationInfo appInfo) throws UnableToAdaptException {
         Application app = appInfo.getContainer().adapt(Application.class);
         List<Module> modules = app.getModules();        
         Set<String> moduleNames = new HashSet<String>( modules.size() );
@@ -324,7 +374,7 @@ public abstract class BndExtAdapter<ConfigType> {
         return moduleNames;
     }
 
-    private String stripExtension(String moduleName) {
+    protected String stripExtension(String moduleName) {
         if ( moduleName.endsWith(".war") || moduleName.endsWith(".jar") ) {
             return moduleName.substring(0, moduleName.length() - 4);
         } else {
@@ -332,7 +382,11 @@ public abstract class BndExtAdapter<ConfigType> {
         }
     }
 
-    private boolean alreadyRecorded(OverlayContainer ddOverlay, String overlayMessage) {
+    protected String getSimpleName(ApplicationInfo appInfo) {
+        return DDParser.getSimpleName( appInfo.getContainer() );
+    }
+
+    protected boolean alreadyRecorded(OverlayContainer ddOverlay, String overlayMessage) {
         Class<?> cacheType = getCacheType();
         
         OverlayContainer appOverlay = ddOverlay.getParentOverlay();
@@ -345,4 +399,48 @@ public abstract class BndExtAdapter<ConfigType> {
             return false;
         }
     }
+
+    /**
+     * Common parse step: Retrieve and parse a specified entry.
+     * Answer null if the entry is not available.
+     */
+    @FFDCIgnore(ParseException.class)    
+    protected ConfigType parse(Container ddAdaptRoot, String ddPath, boolean xmi)
+            throws UnableToAdaptException {
+
+        Entry ddEntry = ddAdaptRoot.getEntry(ddPath);
+        if ( ddEntry == null ) {
+            return null;
+        }
+
+        try {
+            return parse(ddAdaptRoot, ddEntry, xmi);
+        } catch ( ParseException e ) {
+            // Don't process through FFDC: This exception will
+            // be handled as a part of the UnableToAdaptException.
+            throw new UnableToAdaptException(e);
+        }
+    }
+    
+    // 
+    
+    public String getAppVersion(Container ddAdaptRoot) throws UnableToAdaptException {
+        return AppStructureHelper.getAppVersion(ddAdaptRoot);
+    }
+
+    public String getAppClientVersion(Container ddAdaptRoot) throws UnableToAdaptException {
+        return AppStructureHelper.getAppClientVersion(ddAdaptRoot);
+    }
+
+    public boolean isWebModule(OverlayContainer ddOverlay, ArtifactContainer ddArtifactRoot) {
+        return AppStructureHelper.isWebModule(ddOverlay, ddArtifactRoot);
+    }    
+
+    public String getWebVersion(Container ddAdaptRoot) throws UnableToAdaptException {
+        return AppStructureHelper.getWebVersion(ddAdaptRoot);
+    }
+
+    public Integer getEJBVersion(Container ddAdaptRoot) throws UnableToAdaptException {
+        return AppStructureHelper.getEJBVersion(ddAdaptRoot);
+    }    
 }

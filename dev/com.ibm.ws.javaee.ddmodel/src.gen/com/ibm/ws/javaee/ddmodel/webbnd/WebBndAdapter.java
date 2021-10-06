@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,10 @@
 package com.ibm.ws.javaee.ddmodel.webbnd;
 
 import java.util.List;
-import com.ibm.ws.javaee.dd.web.WebApp;
+
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 
 import org.osgi.service.component.annotations.*;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -42,74 +41,70 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
     service = ContainerAdapter.class,
     property = { "service.vendor=IBM",
                  "toType=com.ibm.ws.javaee.dd.webbnd.WebBnd" })
-public class WebBndAdapter
-    extends BndExtAdapter<WebBnd>
-    implements ContainerAdapter<WebBnd> {
+public class WebBndAdapter extends BndExtAdapter<WebBnd> {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
-            policy = ReferencePolicy.DYNAMIC,
-            policyOption = ReferencePolicyOption.GREEDY)
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
     volatile List<WebBnd> configurations;
 
+    @Override
+    public List<? extends WebBnd> getConfigurations() {
+        return configurations;
+    }
+    
     //
 
     @Override
-    @FFDCIgnore(ParseException.class)
     public WebBnd adapt(
         Container ddRoot,
         OverlayContainer ddOverlay,
         ArtifactContainer ddArtifactRoot,
         Container ddAdaptRoot) throws UnableToAdaptException {
 
-        WebApp webApp = ddAdaptRoot.adapt(WebApp.class);
-        String webAppVersion = ((webApp == null) ? null : webApp.getVersion() );
-        boolean xmi = ( "2.2".equals(webAppVersion) ||
-                        "2.3".equals(webAppVersion) ||
-                        "2.4".equals(webAppVersion) );
+        String webVersion = getWebVersion(ddAdaptRoot);
+        boolean xmi = ( "2.2".equals(webVersion) ||
+                        "2.3".equals(webVersion) ||
+                        "2.4".equals(webVersion) );
         String ddPath = ( xmi ? WebBnd.XMI_BND_NAME : WebBnd.XML_BND_NAME );  
 
-        WebBnd fromConfig = getConfigOverrides(configurations, ddOverlay, ddArtifactRoot);
-
-        Entry ddEntry = ddAdaptRoot.getEntry(ddPath);
-        if ( ddEntry == null ) {
-            return fromConfig;
-        }
-
-        WebBnd fromModule;
-        try {
-            WebBndDDParser parser = new WebBndDDParser(ddAdaptRoot, ddEntry, xmi);
-            fromModule = parser.parse();
-        } catch ( ParseException e ) {
-            throw new UnableToAdaptException(e);
-        }
-    
-        if ( fromConfig == null ) {
-            return fromModule;
-         } else {  
-             setDelegate(fromConfig, fromModule);
-             return fromConfig;
-         }
+        return process(
+                ddRoot, ddOverlay, ddArtifactRoot, ddAdaptRoot,
+                ddPath, xmi);
     }    
 
     //
+    
+    @Override    
+    protected WebBnd parse(Container ddAdaptRoot, Entry ddEntry, boolean xmi)
+            throws ParseException {
+        return ( new WebBndDDParser(ddAdaptRoot, ddEntry, xmi) ).parse();                
+    }
 
+    //
+
+    @Override    
     protected String getParentPid(WebBnd webBnd) {
         WebBndComponentImpl webBndImpl = (WebBndComponentImpl) webBnd;
         return (String) webBndImpl.getConfigAdminProperties().get("config.parentPID");        
     }
 
+    @Override    
     protected String getModuleName(WebBnd webBnd) {
         return (String) ((WebBndComponentImpl) webBnd).getConfigAdminProperties().get("moduleName");    
     }
 
+    @Override    
     protected String getElementTag() {
         return "web-bnd";
     }
 
+    @Override    
     protected Class<?> getCacheType() {
         return WebBndAdapter.class;
     }
     
+    @Override    
     protected void setDelegate(WebBnd webBnd, WebBnd webBndDelegate) {
         ((WebBndComponentImpl) webBnd).setDelegate(webBndDelegate);
     }    

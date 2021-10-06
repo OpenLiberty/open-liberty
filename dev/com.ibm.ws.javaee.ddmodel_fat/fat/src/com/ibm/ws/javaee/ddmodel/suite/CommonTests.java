@@ -300,12 +300,14 @@ public abstract class CommonTests {
         public final String description;
         public final String expectedErrors;
 
-        public ErrorTest(String initialLine, String finalLine, String configSuffix,
+        public ErrorTest(String initialLine, String finalLine,
+                         String configSuffix,
                          String description,
                          String expectedErrors) {
 
             this.initialLine = initialLine;
             this.finalLine = finalLine;
+
             this.configSuffix = configSuffix;
             this.description = description;
             this.expectedErrors = expectedErrors;
@@ -328,7 +330,7 @@ public abstract class CommonTests {
         if ( replacements != 1 ) {
             Log.info( testClass, methodName, description +
                       ": Replacement failure: Expected [ 1 ]; Actual [ " + replacements + " ]" );
-            Assert.assertEquals(description + ": Incorrect count of replacements", replacements, 1);
+            Assert.assertEquals(description + ": Incorrect count of replacements", 1, replacements);
         }
 
         String errorMessage;
@@ -343,8 +345,8 @@ public abstract class CommonTests {
         }
 
         if ( errorMessage == null ) {
-            Log.info(testClass, methodName, description + "FAILED");
-            Assert.assertNotNull(errorTest.description, errorMessage);
+            Log.info(testClass, methodName, description + ": FAILED");
+            Assert.assertNotNull(errorMessage);
         } else {
             Log.info(testClass, methodName, description + "PASSED");
         }

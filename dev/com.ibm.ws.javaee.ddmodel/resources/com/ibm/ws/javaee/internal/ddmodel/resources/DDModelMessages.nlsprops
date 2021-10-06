@@ -302,7 +302,7 @@ invalid.long.value.useraction=Correct the deployment descriptor to use a valid l
 #    {0} The simple name of an application.
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
-module.name.not.specified=CWWKC2276W: The ''moduleName'' attribute is missing from one or more ''{1}'' bindings and extension configuration elements of the {0} application.
+module.name.not.specified=CWWKC2276E: The ''moduleName'' attribute is missing from one or more ''{1}'' bindings and extension configuration elements of the {0} application.
 module.name.not.specified.explanation=Bindings and extension configuration elements must have a ''moduleName'' attribute.
 module.name.not.specified.useraction=Ensure that a ''moduleName'' attribute is present in all bindings and extension configuration elements.
 
@@ -319,7 +319,7 @@ module.name.not.specified.useraction=Ensure that a ''moduleName'' attribute is p
 #    {2} Module names used in configuration elements and not found in the application.
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
-module.name.not.found=CWWKC2277W: Cannot find the {2} ''moduleName'' attributes specified in the ''{1}'' bindings and extension configuration elements of the {0} application.  The application module names are {3}.
+module.name.not.found=CWWKC2277E: Cannot find the {2} ''moduleName'' attributes specified in the ''{1}'' bindings and extension configuration elements of the {0} application.  The application module names are {3}.
 module.name.not.found.explanation=The ''moduleName' attributes of bindings and extension configuration elements must match application module names.
 module.name.not.found.useraction=Ensure that all ''moduleName' attributes of bindings and extension configuration elements match application module names. 
 
@@ -330,7 +330,7 @@ module.name.not.found.useraction=Ensure that all ''moduleName' attributes of bin
 #    {1} The type of element which is being processed.
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
-module.name.duplicated=CWWKC2278W: Duplicate {2} ''moduleName'' attributes are specified in the ''{1}'' bindings and extension configuration elements of the {0} application.
+module.name.duplicated=CWWKC2278E: Duplicate {2} ''moduleName'' attributes are specified in the ''{1}'' bindings and extension configuration elements of the {0} application.
 module.name.duplicated.explanation=The ''moduleName' attributes of bindings and extension configuration elements may not be duplicated.
 module.name.duplicated.useraction=Ensure that all ''moduleName' attributes of bindings and extension configuration elements are unique. 
 
