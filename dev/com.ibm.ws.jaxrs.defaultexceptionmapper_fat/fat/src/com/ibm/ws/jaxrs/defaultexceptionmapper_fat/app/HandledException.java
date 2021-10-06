@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "JaxRsCommon")
-package com.ibm.ws.jaxrs.defaultexceptionmapper;
+package com.ibm.ws.jaxrs.defaultexceptionmapper_fat.app;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+public class HandledException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
+    public HandledException(String message) {
+        super(message);
+    }
+
+}
