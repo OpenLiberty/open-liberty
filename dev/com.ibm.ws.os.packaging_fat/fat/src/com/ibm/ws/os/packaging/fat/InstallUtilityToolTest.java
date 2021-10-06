@@ -74,41 +74,37 @@ public abstract class InstallUtilityToolTest {
             logger.info("OpenLiberty did not install successfully");
         }
 
-        String[] param8s = { "chmod", "-R", "a+X", "/home" };
+        String[] param8s = { "chmod", "-R", "a+rX", "/home" };
         ProgramOutput po8 = runCommand("changeJavaPerm", "sudo", param8s);
         String[] param9s = { javaHome + "/bin/java" };
         ProgramOutput po9 = runCommand("listFilesInJava", "ls -l", param9s);
-        String output3 = po9.getStdout();
-        logger.info(output3);
 
         //DEBUG
         String[] param10 = { "/etc/os-release" };
         ProgramOutput po10 = runCommand("OSRelease", "cat", param10);
-        String output10 = po10.getStdout();
-        logger.info(output10);
 
         String[] param11 = { "-laR " + javaHome + "/lib/jli" };
         ProgramOutput po11 = runCommand("list libjli", "ls", param11);
         String output11 = po11.getStdout();
-        logger.info(output11);
-        exiting(c, METHOD_NAME);
 
         String[] param12 = { "-version" };
         ProgramOutput po12 = runCommand("javaVersion", javaHome + "/bin/java", param12);
-        String output12 = po12.getStdout();
-        logger.info(output12);
 
         //env
         String[] param13 = { "" };
         ProgramOutput po13 = runCommand("env", "env", param13);
-        String output13 = po13.getStdout();
-        logger.info(output13);
 
         // ldd
         String[] param14 = { javaHome + "/bin/java" };
         ProgramOutput po14 = runCommand("ldd", "ldd", param14);
-        String output14 = po14.getStdout();
-        logger.info(output14);
+
+        // ls
+        String[] param15 = { "-laR", "/etc/ld.so.conf", "/etc/ld.so.conf.d/*" };
+        ProgramOutput po15 = runCommand("ls", "ls", param15);
+
+        // cat
+        String[] param16 = { "/etc/ld.so.conf", "/etc/ld.so.conf.d/*" };
+        ProgramOutput po16 = runCommand("cat", "cat", param16);
 
         exiting(c, METHOD_NAME);
     }
