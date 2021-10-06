@@ -309,7 +309,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
-        byte[] bytes = transformClassBytes(resourceName, byteResourceInformation);
+        byte[] bytes = transformClassBytes(name, byteResourceInformation);
 
         return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
     }
