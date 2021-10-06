@@ -11,6 +11,7 @@
 package jaxrs21.fat.resourceinfoatstartup;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -29,21 +30,21 @@ public class StartupSingletonBean {
     ExecutorService executor;
 
     @PostConstruct
-    public void invokeClientAtStartup() {        
+    public void invokeClientAtStartup() {     
+        System.out.println("StartupSingletonBean - @PostConstruct invoked");
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
                 ClientResource client = new ClientResource();
+                if (!client.checkCanInvoke(2, TimeUnit.MINUTES)) {
+                    return; // fails the test - endpoint was never available
+                }
                 int numClients = Integer.getInteger("test.clients", 50);
                 System.out.println("about to test " + numClients + " clients in EJB startup method");
                 Response r = client.test(numClients);
                 System.out.println("All Clients Finished " + r.readEntity(String.class));
             }
-        });        
+        });
+        System.out.println("StartupSingletonBean - @PostConstruct exiting");
     }
 }

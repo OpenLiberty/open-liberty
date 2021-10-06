@@ -22,9 +22,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
+import com.ibm.ws.security.openidconnect.client.fat.utils.SignatureEncryptionUserinfoUtils;
 import com.meterware.httpunit.WebConversation;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -62,6 +62,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
     public static String test_FinalAction = Constants.LOGIN_USER;
     protected static String hostName = "localhost";
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
+    private static final SignatureEncryptionUserinfoUtils signingUtils = new SignatureEncryptionUserinfoUtils();
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -141,34 +142,8 @@ public class OidcClientSignatureAlgTests extends CommonTest {
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + sigAlgForRP));
         updatedTestSettings.setSignatureAlg(adjustSigAlg(sigAlgForBuilder));
 
-        List<validationData> expectations = null;
-        // if the signature alg in the build matches what's in the RP, the test should succeed - validate status codes and token content
-        if (sigAlgForBuilder.equals(sigAlgForRP)) {
-            expectations = vData.addSuccessStatusCodes(null);
-            expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_FinalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
-            expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                    "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
-            expectations = validationTools.addRequestParmsExpectations(expectations, _testName, test_FinalAction, updatedTestSettings);
-            expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
-            expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
-        } else {
-            // validate that we get the correct error message(s) for tests that use the same sig alg, but have mis-matched keys
-            if (sigAlgForBuilder.contains(sigAlgForRP)) {
-                expectations = validationTools.add401Responses(Constants.LOGIN_USER);
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES,
-                        "Client messages.log should contain a message indicating that there is a signature mismatch",
-                        MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".*client01.*" + sigAlgForRP + ".*");
-            } else {
-                // create negative expectations when signature algorithms don't match
-                expectations = validationTools.add401Responses(Constants.LOGIN_USER);
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES,
-                        "Client messages.log should contain a message indicating that there is a signature mismatch",
-                        MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + sigAlgForRP + ".*" + sigAlgForBuilder + ".*");
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
-                        "Client messages.log should contain a message indicating that there is a signature mismatch",
-                        MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
-            }
-        }
+        List<validationData> expectations = signingUtils.setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, updatedTestSettings);
+
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", sigAlgForBuilder + "Builder");
 
         // Invoke the test TokenEndpoint stub.  It will invoke the Jwt Builder to create a JWT Token (using the builder specified in the builderId passed in via parms

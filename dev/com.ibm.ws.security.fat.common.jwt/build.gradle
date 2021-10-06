@@ -11,30 +11,25 @@
 apply from: '../wlp-gradle/subprojects/fat.gradle'
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.apache.commons.codec'),
-				project(':io.openliberty.org.apache.commons.logging'),
-				'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
-				'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
-				'net.sourceforge.htmlunit:htmlunit:2.44.0',
-        'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
-        'net.sourceforge.htmlunit:webdriver:2.6',
-        'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
-        'org.brotli:dec:0.1.2',
-        'xalan:xalan:2.7.2',
-        project(':com.ibm.ws.org.apache.commons.io'),
-				'org.apache.commons:commons-lang3:3.5',
-				'org.apache.commons:commons-lang3:3.8',
-				project(':com.ibm.ws.org.apache.httpcomponents'),
-				'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
-				'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
-				'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
-				'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
-				'org.eclipse.jetty:jetty-util:9.4.7.RC0',
-				'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
-				'xerces:xercesImpl:2.11.0',
-				'xml-apis:xml-apis:1.4.01'
-      
-      
+   requiredLibs project(':io.openliberty.org.apache.commons.codec'),
+                project(':io.openliberty.org.apache.commons.logging'),
+                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+                'net.sourceforge.htmlunit:htmlunit:2.44.0',
+                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+                'net.sourceforge.htmlunit:webdriver:2.6',
+                'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+                'org.brotli:dec:0.1.2',
+                project(':com.ibm.ws.org.apache.commons.io'),
+                'org.apache.commons:commons-lang3:3.8',
+                project(':com.ibm.ws.org.apache.httpcomponents'),
+                'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+                'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+                'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+                'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+                'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+                'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+                project(':io.openliberty.org.apache.xerces')
 }
 
 

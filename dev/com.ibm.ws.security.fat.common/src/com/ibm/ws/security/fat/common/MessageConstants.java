@@ -26,6 +26,7 @@ public class MessageConstants {
     public static final String CWWKG0014E_XML_PARSER_ERROR = "CWWKG0014E";
     public static final String CWWKO0221E_PORT_IN_USE = "CWWKO0221E";
     public static final String CWWKO0227E_EXECUTOR_SERVICE_MISSING = "CWWKO0227E";
+    public static final String CWWKO0801E_UNABLE_TO_INIT_SSL = "CWWKO0801E";
 
     public static final String SSL_NOT_RESTARTED_PROPERLY = "SSL may not have started properly";
 

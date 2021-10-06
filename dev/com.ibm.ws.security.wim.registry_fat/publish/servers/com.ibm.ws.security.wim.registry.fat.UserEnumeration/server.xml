@@ -1,0 +1,29 @@
+<server description="WIMURRegression">
+	<include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+        <feature>ldapRegistry-3.0</feature>
+	</featureManager>
+	
+	<ldapRegistry id="AD_LDAP" realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}"
+   		baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindPassword="testuserpwd"
+		ldapType="Microsoft Active Directory">
+		<failoverServers name="failoverLdapServers">
+		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
+        </failoverServers>
+        <ldapCache>
+        <searchResultsCache enabled="false" />
+      </ldapCache>
+	</ldapRegistry>
+
+    <federatedRepository>
+        <primaryRealm name="newRealm">
+            <participatingBaseEntry name="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"/>
+        </primaryRealm>
+    </federatedRepository>
+</server>

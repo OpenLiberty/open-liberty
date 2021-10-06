@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	metadata-complete="false">
+
+	<display-name>NonPersistentTimerTestEJBModule</display-name>
+	<enterprise-beans>
+		<session id="NpTimerBeanBMT">
+			<display-name>NpTimerBeanBMT</display-name>
+			<ejb-name>NpTimerBeanBMT</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Bean</transaction-type>
+		</session>
+		<session id="NpTimerBeanRequiresNew">
+			<display-name>NpTimerBeanRequiresNew</display-name>
+			<ejb-name>NpTimerBeanRequiresNew</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerBean</ejb-class>
+			<session-type>Stateless</session-type>
+		</session>
+		<session id="NpTimerBeanRequired">
+			<display-name>NpTimerBeanRequired</display-name>
+			<ejb-name>NpTimerBeanRequired</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerBean</ejb-class>
+			<session-type>Stateless</session-type>
+		</session>
+		<session id="NpTimerBeanNotSupported">
+			<display-name>NpTimerBeanNotSupported</display-name>
+			<ejb-name>NpTimerBeanNotSupported</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerBean</ejb-class>
+			<session-type>Stateless</session-type>
+		</session>
+		<session id="NpTimerBeanBMTNoCommit">
+			<display-name>NpTimerBeanBMTNoCommit</display-name>
+			<ejb-name>NpTimerBeanBMTNoCommit</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.NpTimedObjectTimerBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Bean</transaction-type>
+		</session>
+		<session id="TimeoutFailureBeanCMT">
+			<display-name>TimeoutFailureBeanCMT</display-name>
+			<ejb-name>TimeoutFailureBeanCMT</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.TimeoutFailureLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.TimeoutFailureBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<timeout-method>
+				<method-name>xmlTimeout</method-name>
+				<method-params>
+					<method-param>javax.ejb.Timer</method-param>
+				</method-params>
+			</timeout-method>
+			<transaction-type>Container</transaction-type>
+		</session>
+		<session id="TimeoutFailureBeanBMT">
+			<display-name>TimeoutFailureBeanBMT</display-name>
+			<ejb-name>TimeoutFailureBeanBMT</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.TimeoutFailureLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.TimeoutFailureBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<timeout-method>
+				<method-name>xmlTimeout</method-name>
+				<method-params>
+					<method-param>javax.ejb.Timer</method-param>
+				</method-params>
+			</timeout-method>
+			<transaction-type>Bean</transaction-type>
+		</session>
+		<session id="XMLTxBean">
+			<display-name>XMLTxBean</display-name>
+			<ejb-name>XMLTxBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.XMLTxLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.XMLTxBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<timeout-method>
+				<method-name>expireTimeout</method-name>
+				<method-params>
+					<method-param>javax.ejb.Timer</method-param>
+				</method-params>
+			</timeout-method>
+		</session>
+		<session id="SimpleSFSBBean">
+			<display-name>SimpleSFSBBean</display-name>
+			<ejb-name>SimpleSFSBBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.timer.np.ejb.SimpleSFSBLocal</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.timer.np.ejb.SimpleSFSBBean</ejb-class>
+			<session-type>Stateful</session-type>
+		</session>
+	</enterprise-beans>
+	<assembly-descriptor>
+		<container-transaction>
+			<method>
+				<ejb-name>NpTimerBeanRequiresNew</ejb-name>
+				<method-name>*</method-name>
+			</method>
+			<trans-attribute>RequiresNew</trans-attribute>
+		</container-transaction>
+		<container-transaction>
+			<method>
+				<ejb-name>NpTimerBeanRequired</ejb-name>
+				<method-name>*</method-name>
+			</method>
+			<trans-attribute>Required</trans-attribute>
+		</container-transaction>
+		<container-transaction>
+			<method>
+				<ejb-name>NpTimerBeanNotSupported</ejb-name>
+				<method-name>*</method-name>
+			</method>
+			<trans-attribute>NotSupported</trans-attribute>
+		</container-transaction>
+	</assembly-descriptor>
+</ejb-jar>

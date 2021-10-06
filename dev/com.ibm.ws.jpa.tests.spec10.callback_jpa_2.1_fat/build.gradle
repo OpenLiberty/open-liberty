@@ -15,7 +15,7 @@ configurations {
 
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
-  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.callback")
+  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.callback_fat.common")
 }
 
 task addJPAFATTools (type: Copy) {
@@ -27,21 +27,21 @@ task addJPAFATTools (type: Copy) {
 }
 
 task copyFAT {
-    dependsOn ':com.ibm.ws.jpa.tests.spec10.callback:build'
+    dependsOn ':com.ibm.ws.jpa.tests.spec10.callback_fat.common:build'
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.callback').file('fat/src/com/ibm/ws/jpa/tests/spec10/callback/tests')
+      from project(':com.ibm.ws.jpa.tests.spec10.callback_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/callback/tests')
       into new File('fat/src/com/ibm/ws/jpa/tests/spec10/callback/tests')
     }
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.jpa.tests.spec10.callback:build'
+  dependsOn ':com.ibm.ws.jpa.tests.spec10.callback_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.callback').file('test-applications')
+      from project(':com.ibm.ws.jpa.tests.spec10.callback_fat.common').file('test-applications')
       into new File('test-applications')
     }
     
@@ -49,7 +49,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.callback').file('publish')
+      from project(':com.ibm.ws.jpa.tests.spec10.callback_fat.common').file('publish')
       into new File('publish')
     }
   }

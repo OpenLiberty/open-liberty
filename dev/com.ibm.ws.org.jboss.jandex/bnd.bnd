@@ -10,10 +10,10 @@
 #*******************************************************************************
 
 -include=\
-	jar:${fileuri;${repo;org.jboss.jandex;2.3.0.Final}}!/META-INF/MANIFEST.MF,\
+	jar:${fileuri;${repo;org.jboss.jandex;2.4.0.Final}}!/META-INF/MANIFEST.MF,\
 	bnd.overrides
 
 instrument.disabled: true
 
 -buildpath:\
-	org.jboss.jandex;version=2.3.0.Final
+	org.jboss.jandex;version=2.4.0.Final

@@ -3,7 +3,7 @@
     <feature>componentTest-1.0</feature>
     <feature>servlet-4.0</feature>
     <feature>localConnector-1.0</feature>
-    <feature>javaMail-1.6</feature>
+    <feature>javaMail-1.5</feature>
     <feature>jndi-1.0</feature>
     <feature>ejbLite-3.2</feature>
   </featureManager>
@@ -13,6 +13,8 @@
   <variable name="onError" value="FAIL"/>
 
   <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear"/>
+  
+   <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   <!-- Needed due to missing doPriv in javax.mail.Session.loadFile(), and we have no idea of the actual base paths -->

@@ -16,13 +16,13 @@ import javax.enterprise.context.Dependent;
 @Dependent
 public class DependentBean {
 
-	public String getMsg() {
-		return "";
-	}
+    public String getMsg() {
+        return "";
+    }
 
-	@PreDestroy
-	public void destroy() {
-		MyResource.registerPreDestroy("");
-	}
+    @PreDestroy
+    public void destroy() {
+        new Throwable("Diag - PreDestroy").printStackTrace();
+        MyResource.registerPreDestroy("");
+    }
 }
-

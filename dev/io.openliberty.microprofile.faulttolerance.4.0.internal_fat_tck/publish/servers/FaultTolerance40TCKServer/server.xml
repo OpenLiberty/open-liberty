@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2019, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+   <featureManager>
+        <feature>appSecurity-4.0</feature>
+        <feature>mpFaultTolerance-4.0</feature>
+        <feature>cdi-3.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>mpConfig-3.0</feature>
+        <!-- <feature>mpMetrics-3.0</feature> -->
+        <feature>localConnector-1.0</feature>
+        <feature>arquillian-support-jakarta-2.0</feature>
+   </featureManager>
+
+   <include location="../fatTestPorts.xml"/>
+
+   <!--Java2 security-->
+   <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+   
+   <!-- Usually, we recommend customers not to change this, however our Async 
+        tests are quite sensitive to timing. We were filling up the threadpool, 
+        and then the test was complaining that the timeout didn't fire quickly enough.
+        
+        Liberty would notice that the pool was full and quickly add more threads, 
+        but we'd get test failures because the timeout fired a few seconds late. 
+        We could increase the size of the timing window instead, but that would make 
+        the test run take longer, so instead I'm setting a minimum number of threads. -->
+   <executor coreThreads="20"/>
+   
+
+</server>

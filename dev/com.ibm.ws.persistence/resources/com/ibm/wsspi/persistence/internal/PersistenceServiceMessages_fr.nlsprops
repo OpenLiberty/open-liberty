@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=L'\u00e9l\u00e9ment DatabaseStore a consign\u00e9 ce message d'erreur.
 PROVIDER_ERROR_CWWKD0292E.useraction=Consultez la documentation DatabaseStore.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: Le niveau d''isolement de transaction configur\u00e9 {0} n''est pas pris en charge.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=Le pilote de base de donn\u00e9es associ\u00e9 ne prend pas en charge le niveau d'isolement demand\u00e9.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Modifiez le niveau d'isolement avant de faire une nouvelle tentative.
+

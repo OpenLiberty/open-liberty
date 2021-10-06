@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Une exception a \u00e9t\u00e9 d\
 DatabaseHashMap.selectNoUpdateError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Une tentative d'\u00e9criture de plus de 2 Mo dans une grande colonne a \u00e9t\u00e9 effectu\u00e9e.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Une tentative a \u00e9t\u00e9 faite pour \u00e9crire davantage de donn\u00e9es dans la colonne de base de donn\u00e9es que la quantit\u00e9 autoris\u00e9e par la valeur de la propri\u00e9t\u00e9 rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=La taille des donn\u00e9es de session peut \u00eatre trop importante pour la colonne de la base de donn\u00e9es.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=R\u00e9duisez la taille de cet attribut avant d'essayer de le stocker dans la session.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=R\u00e9duisez la taille de cet attribut avant d'essayer de le stocker dans la session ou d'augmenter la valeur de la propri\u00e9t\u00e9 rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: Le service {0} a \u00e9t\u00e9 initialis\u00e9.

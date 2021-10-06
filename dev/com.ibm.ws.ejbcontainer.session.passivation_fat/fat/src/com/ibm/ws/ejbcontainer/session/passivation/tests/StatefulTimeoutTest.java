@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.web.StatefulTimeoutServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -61,7 +62,7 @@ public class StatefulTimeoutTest extends AbstractTest {
         EnterpriseArchive StatefulTimeoutTestApp = ShrinkWrap.create(EnterpriseArchive.class, "StatefulTimeoutTestApp.ear");
         StatefulTimeoutTestApp.addAsModule(StatefulTimeoutEJBJar).addAsModule(StatefulTimeoutWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulTimeoutTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulTimeoutTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

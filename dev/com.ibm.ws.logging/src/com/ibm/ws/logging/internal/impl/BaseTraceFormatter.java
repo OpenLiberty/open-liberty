@@ -208,10 +208,10 @@ public class BaseTraceFormatter extends Formatter {
      *
      * @param logRecord
      * @param id
-     * @param formattedMsg the result of {@link #formatMessage}, or null if that
-     *            method was not previously called
+     * @param formattedMsg        the result of {@link #formatMessage}, or null if that
+     *                                method was not previously called
      * @param formattedVerboseMsg the result of {@link #formatVerboseMessage},
-     *            or null if that method was not previously called
+     *                                or null if that method was not previously called
      * @return
      */
     public String traceLogFormat(LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -259,7 +259,7 @@ public class BaseTraceFormatter extends Formatter {
      * formatObj(...) to the log record message.
      *
      * @param logRecord
-     * @param logParams the parameters for the message
+     * @param logParams         the parameters for the message
      * @param useResourceBundle
      * @return
      */
@@ -312,8 +312,8 @@ public class BaseTraceFormatter extends Formatter {
      * reused if specified and no parameters need to be modified.
      *
      * @param logRecord
-     * @param msg the result of {@link #formatMessage}, or null if that method
-     *            was not previously called
+     * @param msg       the result of {@link #formatMessage}, or null if that method
+     *                      was not previously called
      * @return
      */
     public String formatVerboseMessage(LogRecord logRecord, String msg) {
@@ -327,8 +327,8 @@ public class BaseTraceFormatter extends Formatter {
      * reused if specified and no parameters need to be modified.
      *
      * @param logRecord
-     * @param formattedMsg the result of {@link #formatMessage}, or null if that
-     *            method was not previously called
+     * @param formattedMsg      the result of {@link #formatMessage}, or null if that
+     *                              method was not previously called
      * @param useResourceBundle
      * @return the formatted message
      */
@@ -400,7 +400,7 @@ public class BaseTraceFormatter extends Formatter {
      * messages
      *
      * @param logRecord
-     * @param txt the result of {@link #formatMessage}
+     * @param txt       the result of {@link #formatMessage}
      * @return Formatted string for the console
      */
     public String consoleLogFormat(LogRecord logRecord, String txt) {
@@ -1136,7 +1136,15 @@ public class BaseTraceFormatter extends Formatter {
             if (Proxy.isProxyClass(cls) || className.contains("$Proxy$_$$_Weld")) {
                 return "Proxy for " + className + "@" + Integer.toHexString(System.identityHashCode(objs));
             }
-            return objs.toString();
+            // Security level augmented to overcome a Java 2 sec error at a JAX-WS bundle
+            String s = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return objs.toString();
+                }
+            });
+
+            return s;
         } catch (Exception e) {
             // No FFDC code needed
             String s = objs == null ? "null" : objs.getClass().getName();

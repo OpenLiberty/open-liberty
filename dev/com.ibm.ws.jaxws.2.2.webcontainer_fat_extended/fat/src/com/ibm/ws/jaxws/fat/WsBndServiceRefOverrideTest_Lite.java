@@ -28,7 +28,9 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -169,8 +171,11 @@ public class WsBndServiceRefOverrideTest_Lite {
      * Test the LoggingInOutInterceptor Prop defined in service-ref
      *
      * @throws Exception
+     *
+     *                       LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
      */
     @Test
+    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
     public void testLoggingInOutInterceptorProp() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "WsBndServiceRefOverrideTest", "ibm-ws-bnd_testLoggingInOutInterceptorProp.xml",

@@ -753,7 +753,8 @@ public class AcmeFatUtils {
 		}
 		if (!failedFiles.isEmpty()) {
 			StringBuffer sb = new StringBuffer();
-			sb.append("Failed to delete ACME files after " + retries + ". Future tests may fail. The following files failed: ");
+			sb.append("Failed to delete ACME files after " + retries
+					+ ". Future tests may fail. If this is a Windows/OpenJDK run, may need to update the OpenJDK level in the method, isWindowsWithOpenJDK(). The following files failed: ");
 			for (Object[] failure : failedFiles) {
 				File f = (File) failure[0];
 				IOException ioe = (IOException) failure[1];
@@ -882,16 +883,16 @@ public class AcmeFatUtils {
 		Log.info(AcmeFatUtils.class, methodName,
 				"Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
 		if (os.startsWith("win") && (javaVendor.contains("openjdk") || javaVendor.contains(("oracle")))
-				&& (javaVersion.startsWith("11") || javaVersion.equals("14.0.1")
-						|| javaVersion.equals("1.8.0_181") || javaVersion.equals("15") || javaVersion.equals("16"))) {
+				&& (javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
+						|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17"))) {
 			/*
 			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
-			 * deleting the Acme related files.
+			 * deleting the Acme related files. Later JDK11s seem to be working. 11.0.7+10, 11.0.8+10, 11.0.10+9, 11.0.12+7
+			 * are fine.
 			 * 
 			 * "The process cannot access the file because it is being used by another
 			 * process"
 			 * 
-			 * The exception is not seen on later OpenJDK versions.
 			 */
 			Log.info(AcmeFatUtils.class, methodName,
 					"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")

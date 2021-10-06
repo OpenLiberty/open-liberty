@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.EJBContainerElement;
 import com.ibm.websphere.simplicity.config.EJBTimerServiceElement;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
@@ -71,7 +72,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### MissedTimerActionApp.ear
         JavaArchive MissedTimerActionEJB = ShrinkHelper.buildJavaArchive("MissedTimerActionEJB.jar", "com.ibm.ws.ejbcontainer.timer.persistent.missed.ejb.");
@@ -80,7 +81,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
         EnterpriseArchive MissedTimerActionApp = ShrinkWrap.create(EnterpriseArchive.class, "MissedTimerActionApp.ear");
         MissedTimerActionApp.addAsModule(MissedTimerActionEJB).addAsModule(MissedTimerActionWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, MissedTimerActionApp);
+        ShrinkHelper.exportDropinAppToServer(server, MissedTimerActionApp, DeployOptions.SERVER_ONLY);
 
         //#################### PersistentTimerCoreApp.ear
         JavaArchive PersistentTimerCoreEJB = ShrinkHelper.buildJavaArchive("PersistentTimerCoreEJB.jar", "com.ibm.ws.ejbcontainer.timer.persistent.core.ejb.");
@@ -91,7 +92,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
         PersistentTimerCoreApp.addAsModule(PersistentTimerCoreEJB).addAsModule(PersistentTimerCoreWeb);
         PersistentTimerCoreApp = (EnterpriseArchive) ShrinkHelper.addDirectory(PersistentTimerCoreApp, "test-applications/PersistentTimerCoreApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, PersistentTimerCoreApp);
+        ShrinkHelper.exportDropinAppToServer(server, PersistentTimerCoreApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

@@ -13,6 +13,7 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -58,7 +60,7 @@ public class WC5JakartaServletTest {
     public static void before() throws Exception {
         LOG.info("Setup : add " + APP_NAME + " war to the server if not already present.");
 
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servlet5snoop.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servlet5snoop.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WC5JakartaServletTest.class.getSimpleName() + ".log");
@@ -102,35 +104,93 @@ public class WC5JakartaServletTest {
     }
 
     /**
-     * Common request helper >
      *
-     * scheme - http or https (empty will default to http)
-     * httpMethod - GET/POST/PUT .. (default is GET)
-     * uri - /ContextRoot/path?queryName=queryValue
-     * statusCode
-     * expectedResponse
-     * notExpectedResponse
+     * Ensure query param with no equals is registered as an empty string for servlet 5.0.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNoEqualsQueryParameter() throws Exception {
+        requestHelper("http", "GET", "/" + APP_NAME + "/query?test", "", "SUCCESS!", "");
+    }
+
+    /*
+     * Test default enablePostOnlyJSecurityCheck which is true for Servlet 5.0+
+     * Any method, but POST, will get a 404 status
+     *
+     * POST test to verify if the authentication process can redirect to ReLogin.jsp for form login; no login is needed.
+     */
+    @Test
+    public void test_Default_POST_j_security_check() throws Exception {
+        requestHelper("http", "POST", "/" + APP_NAME + "/j_security_check", "200", "ReLogin", "");
+    }
+
+    /*
+     * Test default enablePostOnlyJSecurityCheck not allow GET /j_security_check. Response with a 404
+     */
+    @Test
+    public void test_Default_GET_j_security_check() throws Exception {
+        requestHelper("http", "GET", "/" + APP_NAME + "/j_security_check", "404", "", "");
+    }
+
+    /*
+     * Test enablePostOnlyJSecurityCheck = "false" to allow GET /j_security_check. Redirect to ReLogin.jsp; no login is needed
+     *
+     * Load EnablePostOnlyJSecurityCheckServer.xml which contains custom property
+     */
+    @Test
+    public void test_GET_j_security_check() throws Exception {
+        server.saveServerConfiguration();
+        ServerConfiguration configuration = server.getServerConfiguration();
+        LOG.info("Server configuration that was saved: " + configuration);
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("serverConfigs/EnablePostOnlyJSecurityCheckServer.xml");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
+
+        configuration = server.getServerConfiguration();
+        LOG.info("Updated server configuration: " + configuration);
+
+        try {
+            requestHelper("http", "GET", "/" + APP_NAME + "/j_security_check", "200", "ReLogin", "");
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
+        }
+    }
+
+    /**
+     * Common request helper
+     *
+     * reqScheme - http or https (empty will default to http)
+     * reqHttpMethod - GET/POST/PUT .. (default is GET)
+     * reqURI - /ContextRoot/path?queryName=queryValue
+     *
+     * resExpectedStatus - Response expecting status code
+     * resExpectedText - Response expecting text
+     * resNotExpectedText - Response NOT expecting text
      *
      */
+    private void requestHelper(String reqScheme, String reqHttpMethod, String reqURI,
+                               String resExpectedStatus, String resExpectedText, String resNotExpectedText) throws Exception {
 
-    private void requestHelper(String scheme, String httpMethod, String uri, String expectedCode, String expectedResponse, String notExpectedResponse) throws Exception {
-        String schemeType = "http";
+        String reqSchemeType = "http";
         HttpUriRequestBase method;
 
         LOG.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         LOG.info("RequestHelper sends request. ENTER");
 
-        if (scheme != null && !scheme.isEmpty())
-            schemeType = scheme.toLowerCase();
+        if (reqScheme != null && !reqScheme.isEmpty())
+            reqSchemeType = reqScheme.toLowerCase();
 
-        String url = schemeType + "://" + server.getHostname() + ":" + server.getHttpDefaultPort() + uri;
+        String url = reqSchemeType + "://" + server.getHostname() + ":" + server.getHttpDefaultPort() + reqURI;
 
-        LOG.info(httpMethod + " [" + url + "]");
-        LOG.info("Expected response text [" + expectedResponse + "]");
-        LOG.info("NOT Expected response text [" + notExpectedResponse + "]");
-        LOG.info("Expected status code [" + expectedCode + "]");
+        LOG.info("Expecting response text [" + resExpectedText + "]");
+        LOG.info("Expecting NO response text [" + resNotExpectedText + "]");
+        LOG.info("Expecting status code [" + resExpectedStatus + "]");
+        LOG.info("Sending --> " + reqHttpMethod + " [" + url + "]");
 
-        switch (httpMethod) {
+        switch (reqHttpMethod) {
             case "POST":
                 method = new HttpPost(url);
                 break;
@@ -144,48 +204,21 @@ public class WC5JakartaServletTest {
                 String responseText = EntityUtils.toString(response.getEntity());
                 String responseCode = String.valueOf(response.getCode());
 
-                LOG.info("\n" + "Response Text \n[" + responseText + "]");
-                LOG.info("Response code [" + responseCode + "]");
+                LOG.info("\n" + "##### Response Text ##### \n[" + responseText + "]");
+                LOG.info("##### Response Code ###### [" + responseCode + "]");
 
-                if (expectedCode != null && !expectedCode.isEmpty())
-                    assertTrue("The response did not contain the status code " + expectedCode, responseCode.equals(expectedCode));
+                if (resExpectedStatus != null && !resExpectedStatus.isEmpty())
+                    assertTrue("The response did not contain the status code " + resExpectedStatus, responseCode.equals(resExpectedStatus));
 
-                if (expectedResponse != null && !expectedResponse.isEmpty())
-                    assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+                if (resExpectedText != null && !resExpectedText.isEmpty())
+                    assertTrue("The response did not contain the following text: " + resExpectedText, responseText.contains(resExpectedText));
 
-                if (notExpectedResponse != null && !notExpectedResponse.isEmpty())
-                    assertFalse("The response did not contain the following String: " + notExpectedResponse, responseText.contains(notExpectedResponse));
+                if (resNotExpectedText != null && !resNotExpectedText.isEmpty())
+                    assertFalse("The response did not contain the following text: " + resNotExpectedText, responseText.contains(resNotExpectedText));
             }
         }
 
         LOG.info("RequestHelper. RETURN");
         LOG.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    }
-
-    /**
-     * 
-     * Ensure query param with no equals is registered as an empty string for servlet 5.0.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testNoEqualsQueryParameter() throws Exception {
-        String expectedResponse = "SUCCESS!";
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/query?test";
-
-        LOG.info("url: " + url);
-        LOG.info("expectedResponse: " + expectedResponse);
-
-        HttpGet getMethod = new HttpGet(url);
-
-        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (final CloseableHttpResponse response = client.execute(getMethod)) {
-                String responseText = EntityUtils.toString(response.getEntity());
-                LOG.info("\n" + "Response Text:");
-                LOG.info("\n" + responseText);
-
-                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            }
-        }
     }
 }

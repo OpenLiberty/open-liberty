@@ -19,6 +19,8 @@ src: \
 	test-applications/EJB31AppExMixWeb.war/src, \
 	test-applications/EJB31AppExXmlBean.jar/src, \
 	test-applications/EJB31AppExXmlWeb.war/src, \
+	test-applications/Exception2xBean.jar/src, \
+	test-applications/Exception2xWeb.war/src, \
 	test-applications/ExceptionBean.jar/src, \
 	test-applications/ExceptionWeb.war/src
 
@@ -39,5 +41,7 @@ tested.features: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.websphere.javaee.transaction.1.2;version=latest, \
+	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest,\
 	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

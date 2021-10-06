@@ -10,15 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +25,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Test ServletContext.getContextPath() and HttpServletRequest.getContextPath().
@@ -55,7 +49,7 @@ public class WC5GetContextPath {
     public static void before() throws Exception {
         LOG.info("Setup : add " + APP_NAME + " war to the server's apps folder if not already present.");
 
-        ShrinkHelper.defaultApp(server, APP_NAME + ".war", "servlet5snoop.war.servlets");
+        ShrinkHelper.defaultApp(server, APP_NAME + ".war", "servlet5snoop.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WC5GetContextPath.class.getSimpleName() + ".log");
@@ -78,22 +72,6 @@ public class WC5GetContextPath {
      */
     @Test
     public void test_Servlet5_GetContextPath() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + "TestGetContextPathRoot" + "/testGetContextPath.jsp";
-
-        LOG.info("url: " + url);
-        LOG.info("expectedResponse: Verify that no FAIL in the response text");
-
-        HttpGet getMethod = new HttpGet(url);
-
-        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (final CloseableHttpResponse response = client.execute(getMethod)) {
-                String responseText = EntityUtils.toString(response.getEntity());
-                LOG.info("\n" + "Response Text:");
-                LOG.info("\n" + responseText);
-
-                assertTrue("The response did not contain the following String: ",
-                           responseText.contains("request.getContextPath()=[PASS]") && responseText.contains("servletContext.getContextPath()=[PASS]"));
-            }
-        }
+        HttpUtils.findStringInReadyUrl(server, "/TestGetContextPathRoot/testGetContextPath.jsp", "request.getContextPath()=[PASS]", "servletContext.getContextPath()=[PASS]");
     }
 }

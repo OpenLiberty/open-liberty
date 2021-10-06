@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ Export-Package: \
 Import-Package: \
    !com.ibm.ws.security.mp.jwt.v11.config.impl, \
    com.ibm.ws.security.mp.jwt, \
-   org.eclipse.microprofile.config;version="[1.0,3)", \
+   org.eclipse.microprofile.config;version="[1.0,4)", \
    org.jose4j.*;version="[0.5,1)", \
    *
 

@@ -19,11 +19,18 @@ src: \
 
 fat.project: true
 
+tested.features: javaMail-1.5, \
+  servlet-3.1, \
+  javaMail-1.6, \
+  servlet-4.0
+  
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.javaee.mail.1.6;version=latest, \
   com.ibm.websphere.appserver.thirdparty.mail-1.6;version=latest, \
+  com.ibm.ws.jmx.connector.client.rest;version=latest, \
   io.openliberty.org.apache.commons.logging;version=latest, \
   com.ibm.websphere.javaee.ejb.3.2;version=latest, \
   com.icegreen:greenmail;version=1.5.10, \

@@ -1,0 +1,29 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-RS Default Exception Mapper Registration JAX-RS 2.x
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.x.defaultexceptionmapper
+Bundle-Description: IBM JAX-RS Default Exception Mapper Registration JAX-RS 2.x; version=${bVersion}
+
+WS-TraceGroup: JAXRS
+
+-dsannotations:  \
+    com.ibm.ws.jaxrs2x.defaultexceptionmapper.*
+
+-buildpath: \
+  com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+  com.ibm.ws.jaxrs.2.0.common;version=latest,\
+  com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest,\
+  com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

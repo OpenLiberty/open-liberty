@@ -30,7 +30,7 @@ tested.features:\
 	expressionLanguage-4.0,\
 	pages-3.0,\
 	servlet-5.0,\
-	webProfile-9.0
+	webProfile-9.1
 	
 	
 test.project: true

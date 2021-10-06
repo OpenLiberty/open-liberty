@@ -21,6 +21,7 @@
 	<classpathentry kind="src" path="test-applications/jacksonJsonIgnore/src"/>
 	<classpathentry kind="src" path="test-applications/json/src"/>
 	<classpathentry kind="src" path="test-applications/linkheader/src"/>
+	<classpathentry kind="src" path="test-applications/mediatype/src"/>
 	<classpathentry kind="src" path="test-applications/multipart/src"/>
 	<classpathentry kind="src" path="test-applications/options/src"/>
 	<classpathentry kind="src" path="test-applications/paramconverter/src"/>

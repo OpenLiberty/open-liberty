@@ -26,6 +26,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AnnotationsDisabledServlet;
 
@@ -57,6 +58,8 @@ public class CDIAnnotationsDisabledTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        FATSuite.exportCDIFaultToleranceAppToServer(server);
+
         Map<String, String> envVars = new HashMap<>();
         envVars.put("MP_Fault_Tolerance_NonFallback_Enabled", "false");
         server.setAdditionalSystemProperties(envVars);

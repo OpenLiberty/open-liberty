@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Aucune action n'est requise.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Les donn\u00e9es {0} de l''outil pour l''utilisateur {1} ont \u00e9t\u00e9 charg\u00e9es depuis le stockage de persistance \u00e0 l''aide de son ancien nom de fichier qui a \u00e9t\u00e9 converti dans son nouveau nom de fichier.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Le produit a charg\u00e9 les donn\u00e9es de l'outil de l'utilisateur sp\u00e9cifi\u00e9 depuis le stockage de persistance \u00e0 l'aide de son ancien nom de fichier et en a stock\u00e9 une copie dans le nouveau nom de fichier. Cette copie sera charg\u00e9e lors du prochain acc\u00e8s au stockage de persistance.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Aucune action n'est requise.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: Le catalogue par d\u00e9faut du centre d'administration a \u00e9t\u00e9 charg\u00e9 \u00e0 partir de la persistance COLLECTIVE cr\u00e9\u00e9e par une version ant\u00e9rieure du serveur. Le catalogue est recharg\u00e9 \u00e0 l'aide d'une copie de la version actuelle du serveur.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=Le produit a converti le catalogue par d\u00e9faut du centre d'administration en version serveur en cours. La copie de la persistance COLLECTIVE est charg\u00e9e par un acc\u00e8s ult\u00e9rieur au stockage de persistance.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Aucune action n'est requise.

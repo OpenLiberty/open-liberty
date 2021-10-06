@@ -25,4 +25,4 @@ fat.project: true
 	io.openliberty.jakarta.concurrency.2.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
-	org.quartz-scheduler:quartz;version=2.2.1
+	org.quartz-scheduler:quartz;version=2.3.2

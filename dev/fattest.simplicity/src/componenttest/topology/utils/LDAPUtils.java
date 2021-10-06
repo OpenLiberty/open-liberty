@@ -46,7 +46,7 @@ public class LDAPUtils {
 
     public static String LDAP_SERVER_1_NAME;
     public static String LDAP_SERVER_2_NAME;
-    public static String LDAP_SERVER_3_NAME;
+    // public static String LDAP_SERVER_3_NAME;
     public static String LDAP_SERVER_4_NAME;
     public static String LDAP_SERVER_5_NAME;
     public static String LDAP_SERVER_6_NAME;
@@ -56,12 +56,12 @@ public class LDAPUtils {
     public static String LDAP_SERVER_10_NAME;
 //    public static String LDAP_SERVER_11_NAME;
     public static String LDAP_SERVER_12_NAME;
-    public static String LDAP_SERVER_13_NAME;
+    // public static String LDAP_SERVER_13_NAME;
     public static String LDAP_SERVER_1_PORT;
     public static String LDAP_SERVER_2_PORT;
     public static String LDAP_SERVER_2_SSL_PORT;
-    public static String LDAP_SERVER_3_PORT;
-    public static String LDAP_SERVER_3_SSL_PORT;
+    //public static String LDAP_SERVER_3_PORT;
+    //public static String LDAP_SERVER_3_SSL_PORT;
     public static String LDAP_SERVER_4_PORT;
     public static String LDAP_SERVER_4_SSL_PORT;
     public static String LDAP_SERVER_5_PORT;
@@ -75,13 +75,13 @@ public class LDAPUtils {
     public static String LDAP_SERVER_10_PORT;
 //    public static String LDAP_SERVER_11_PORT;
     public static String LDAP_SERVER_12_PORT;
-    public static String LDAP_SERVER_13_PORT;
-    public static String LDAP_SERVER_13_SSL_PORT;
+    //public static String LDAP_SERVER_13_PORT;
+    //public static String LDAP_SERVER_13_SSL_PORT;
 
     public static String LDAP_SERVER_2_BINDDN;
     public static String LDAP_SERVER_2_BINDPWD;
-    public static String LDAP_SERVER_3_BINDDN;
-    public static String LDAP_SERVER_3_BINDPWD;
+    //public static String LDAP_SERVER_3_BINDDN;
+    //public static String LDAP_SERVER_3_BINDPWD;
 
     public static String LDAP_SERVER_4_BINDDN;
     public static String LDAP_SERVER_4_BINDPWD;
@@ -98,8 +98,8 @@ public class LDAPUtils {
     public static String LDAP_SERVER_12_BINDDN;
     public static String LDAP_SERVER_12_BINDPWD;
 
-    public static String LDAP_SERVER_13_BINDDN;
-    public static String LDAP_SERVER_13_BINDPWD;
+    //public static String LDAP_SERVER_13_BINDDN;
+    //public static String LDAP_SERVER_13_BINDPWD;
 
     /** Service name for SVT's Active Directory servers. */
     private static final String CONSUL_LDAP_AD_SVT_SERVICE = "ldap-ad-svt";
@@ -113,8 +113,8 @@ public class LDAPUtils {
     /** Service name for Security's IBM / Tivoli servers. */
     private static final String CONSUL_LDAP_IBM_SECURITY_SERVICE = "ldap-ibm-security";
 
-    /** Service name for SVT's Oracle servers. */
-    private static final String CONSUL_LDAP_ORACLE_SVT_SERVICE = "ldap-oracle-svt";
+    /** Service name for SVT's Oracle servers. Servers 3 and 13 */
+    // private static final String CONSUL_LDAP_ORACLE_SVT_SERVICE = "ldap-oracle-svt";
 
     /** Key to retrieve LDAP port from Consul LDAP service. */
     private static final String CONSUL_LDAP_PORT_KEY = "ldapPort";
@@ -156,16 +156,18 @@ public class LDAPUtils {
                  */
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.startsWith("z/os")) {
-                    Log.error(c, "<clinit>", e, "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Any remote Ldap tests trying to run local will fail.");
-                }
+                    Log.error(c, "<clinit>", e,
+                              "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Some failures setting up remote LDAPs, but local ApacheDS will not run on z/OS, doing remote anyway.");
+                } else {
 
-                Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
-                                            "To run against the remote LDAP servers, ensure that the tests are being run " +
-                                            "on the IBM network, that you have added your global IBM GHE access token " +
-                                            "(global.ghe.access.token) to the user.build.properties file in your home directory " +
-                                            "and that you are a member of the 'websphere' organization in IBM GHE.");
-                CONSUL_LOOKUP_FAILED = true;
-                uselocalLDAP = true;
+                    Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
+                                                "To run against the remote LDAP servers, ensure that the tests are being run " +
+                                                "on the IBM network, that you have added your global IBM GHE access token " +
+                                                "(global.ghe.access.token) to the user.build.properties file in your home directory " +
+                                                "and that you are a member of the 'websphere' organization in IBM GHE.");
+                    CONSUL_LOOKUP_FAILED = true;
+                    uselocalLDAP = true;
+                }
             }
         }
 
@@ -282,27 +284,6 @@ public class LDAPUtils {
             releaseServices(services);
         }
 
-        services = null;
-        try {
-            services = getLdapServices(1, CONSUL_LDAP_ORACLE_SVT_SERVICE);
-
-            remoteServers[3] = new LdapServer();
-            remoteServers[3].serverName = services.get(0).getAddress();
-            remoteServers[3].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[3].ldapsPort = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[3].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[3].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
-
-            /* Server 13 is dead. Reuse server 3. */
-            remoteServers[13] = new LdapServer();
-            remoteServers[13].serverName = remoteServers[3].serverName;
-            remoteServers[13].ldapPort = remoteServers[3].ldapPort;
-            remoteServers[13].ldapsPort = remoteServers[3].ldapsPort;
-            remoteServers[13].bindDn = remoteServers[3].bindDn;
-            remoteServers[13].bindPwd = remoteServers[3].bindPwd;
-        } finally {
-            releaseServices(services);
-        }
     }
 
     private static void initializeLocalLdapServers() {
@@ -470,16 +451,6 @@ public class LDAPUtils {
         LDAP_SERVER_12_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[12] : remoteServers[12]).bindDn;
         LDAP_SERVER_12_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[12] : remoteServers[12]).bindPwd;
 
-        LDAP_SERVER_3_NAME = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).serverName;
-        LDAP_SERVER_3_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).ldapPort;
-        LDAP_SERVER_3_SSL_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).ldapsPort;
-        LDAP_SERVER_3_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).bindDn;
-        LDAP_SERVER_3_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).bindPwd;
-        LDAP_SERVER_13_NAME = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).serverName;
-        LDAP_SERVER_13_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).ldapPort;
-        LDAP_SERVER_13_SSL_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).ldapsPort;
-        LDAP_SERVER_13_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).bindDn;
-        LDAP_SERVER_13_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).bindPwd;
     }
 
     /*
@@ -521,13 +492,8 @@ public class LDAPUtils {
         Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
         Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
 
-        Log.info(c, METHOD_NAME, "Oracle WAS SVT LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_NAME=" + LDAP_SERVER_3_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_PORT=" + LDAP_SERVER_3_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_SSL_PORT=" + LDAP_SERVER_3_SSL_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_NAME=" + LDAP_SERVER_13_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_PORT=" + LDAP_SERVER_13_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_SSL_PORT=" + LDAP_SERVER_13_SSL_PORT + '\n');
+        Log.info(c, METHOD_NAME, "Oracle WAS SVT LDAP Servers -- removed");
+
     }
 
     /**

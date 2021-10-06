@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info:
+  title: "test2"
+  version: "1.0"
+paths:
+  /test:
+    get:
+      responses:
+        202:
+          description: "success"
+components:
+  securitySchemes:
+    barSecurityScheme:
+      type: apiKey
+      name: apiKey
+      in: query
+security: 
+  - barSecurityScheme: []

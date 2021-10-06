@@ -15,6 +15,9 @@ import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import componenttest.containers.ArtifactoryImageNameSubstitutor;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -97,10 +100,12 @@ public class PebbleContainer extends CAContainer {
 	 */
 	public PebbleContainer() {
 		super(new ImageFromDockerfile()
-				.withDockerfileFromBuilder(builder -> builder.from("letsencrypt/pebble")
+				.withDockerfileFromBuilder(builder -> builder
+						.from((ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST
+								? ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "/"
+								: "") + "letsencrypt/pebble")
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
-				.withFileFromFile("pebble-config.json", PEBBLE_CONFIG_JSON_FILE), 5002,
-				14000, 15000);
+				.withFileFromFile("pebble-config.json", PEBBLE_CONFIG_JSON_FILE), 5002, 14000, 15000);
 		challtestsrv.withStartupAttempts(20);
 		challtestsrv.withStartupTimeout(Duration.ofSeconds(60));
 

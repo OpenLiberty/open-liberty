@@ -414,12 +414,15 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                 // This is propagation "supported"
                 // 218872 provider is the id of the oidc client
                 //CWWKS1740W: The inbound propagation token for client [{1}] is not valid due to [{0}]. The request will be authenticated using OpenID Connect.
-                boolean suppress = oidcClientRequest.getRsFailMsg() != null && oidcClientRequest.getRsFailMsg().equals("suppress_CWWKS1704W");
-                if (!suppress) {
-                    Tr.warning(tc, "OIDC_CLIENT_BAD_RS_TOKEN", oidcClientRequest.getRsFailMsg(), provider);
-                } else {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "access token was not present, warning message was suppressed");
+                String rsFailMsg = oidcClientRequest.getRsFailMsg();
+                if (rsFailMsg != null) {
+                    boolean suppress = rsFailMsg.equals("suppress_CWWKS1704W");
+                    if (!suppress) {
+                        Tr.warning(tc, "OIDC_CLIENT_BAD_RS_TOKEN", rsFailMsg, provider);
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "access token was not present, warning message was suppressed");
+                        }
                     }
                 }
             }

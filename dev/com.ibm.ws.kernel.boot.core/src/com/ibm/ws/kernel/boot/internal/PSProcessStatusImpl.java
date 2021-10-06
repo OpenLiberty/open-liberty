@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class PSProcessStatusImpl implements ProcessStatus {
 
     /**
      * @param pid the pid, or the empty string if {@link #isPossiblyRunning} should
-     *            always return true
+     *                always return true
      */
     public PSProcessStatusImpl(String pid) {
         this.pid = pid;
@@ -62,14 +62,17 @@ public class PSProcessStatusImpl implements ProcessStatus {
             Process p = pb.start();
             in = p.getInputStream();
 
+            boolean defunct = false;
             reader = new BufferedReader(new InputStreamReader(in));
             for (String line; (line = reader.readLine()) != null;) {
                 Debug.println(line);
+                if (line.contains("<defunct>"))
+                    defunct = true;
             }
 
             p.waitFor();
             Debug.println("Exit code for 'ps' command: " + p.exitValue());
-            if (p.exitValue() == 0)
+            if (p.exitValue() == 0 && !defunct)
                 return State.YES;
             else
                 return State.NO;

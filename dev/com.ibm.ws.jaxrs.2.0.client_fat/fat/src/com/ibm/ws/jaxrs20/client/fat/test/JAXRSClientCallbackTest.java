@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.fat.test;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,9 +34,9 @@ public class JAXRSClientCallbackTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
-                                                       "com.ibm.ws.jaxrs20.client.callback.client",
-                                                       "com.ibm.ws.jaxrs20.client.callback.server");
+        ShrinkHelper.defaultDropinApp(server, appname,
+                                      "com.ibm.ws.jaxrs20.client.callback.client",
+                                      "com.ibm.ws.jaxrs20.client.callback.server");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -68,5 +67,15 @@ public class JAXRSClientCallbackTest extends AbstractTest {
     @Test
     public void testClientAPIInsideInvocationCallback() throws Exception {
         this.runTestOnServer(target, "testClientAPIInsideInvocationCallback", null, "PASS");
+    }
+
+    @Test
+    public void testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_Response() throws Exception {
+        this.runTestOnServer(target, "testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_Response", null, "completed hello");
+    }
+
+    @Test
+    public void testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_String() throws Exception {
+        this.runTestOnServer(target, "testCanReadEntityAndConsumeInvocationCallbackWithoutBuffering_String", null, "hello hello");
     }
 }

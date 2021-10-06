@@ -20,11 +20,10 @@ Bundle-SymbolicName: com.ibm.ws.security.javaeesec.1.0
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.jakartasec.2.0.internal.jar
-#JakartaEE-Bundle-Name: Jakarta Security 2.0 internal
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jakartasec.2.0.internal
-#JakartaEE-Bundle-Description: Jakarta Security 2.0 internal
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.jakartasec.2.0.internal.jar
+jakartaFinalBundleName: Jakarta Security 2.0 Internal
+jakartaFinalBundleId: io.openliberty.security.jakartasec.2.0.internal
+jakartaFinalBundleDescription: Jakarta Security 2.0 Internal
 
 WS-TraceGroup: \
   JAVAEESEC

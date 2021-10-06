@@ -100,8 +100,8 @@ public class SFRemoteImplContextServlet extends FATServlet {
     public void initializeHomes() {
         try {
 
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SFRaHome.class);
-            fhome2 = FATHelper.lookupRemoteBinding(ejbJndiName2, SFRaHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SFRaHome.class);
+            fhome2 = FATHelper.lookupRemoteHomeBinding(ejbJndiName2, SFRaHome.class);
             fejb1 = fhome1.create();
             fejb2 = fhome2.create();
 

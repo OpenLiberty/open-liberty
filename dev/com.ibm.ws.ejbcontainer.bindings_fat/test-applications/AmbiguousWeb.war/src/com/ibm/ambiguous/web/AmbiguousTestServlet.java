@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import com.ibm.ambiguous.ejb.AmbiguousName;
@@ -100,8 +99,7 @@ public class AmbiguousTestServlet extends FATServlet {
     // isAmbiguous = should we get AmbiguousEJBReferenceException or just the first bean
     private void lookupRemote(String lookup, boolean isAmbiguous) throws Exception {
         try {
-            Object lookupObj = new InitialContext().lookup(lookup);
-            AmbiguousNameRemoteHome beanHome = (AmbiguousNameRemoteHome) PortableRemoteObject.narrow(lookupObj, AmbiguousNameRemoteHome.class);
+            AmbiguousNameRemoteHome beanHome = (AmbiguousNameRemoteHome) new InitialContext().lookup(lookup);
             if (isAmbiguous) {
                 fail("lookup of " + lookup + " should have been ambiguous");
             }

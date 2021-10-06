@@ -34,6 +34,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,6 +48,7 @@ import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MaximumJavaLevel(javaLevel = 15) // TODO The current Oracle JDBC driver (ojdbc8_g.jar v21.1.0.0) only supports Java 8-15, modify/remove this line once it supports 16+
 public class OracleKerberosTest extends FATServletClient {
 
     private static final Class<?> c = OracleKerberosTest.class;

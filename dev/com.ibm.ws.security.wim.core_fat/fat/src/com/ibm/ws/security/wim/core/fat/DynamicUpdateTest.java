@@ -97,6 +97,7 @@ public class DynamicUpdateTest {
             servlet.getRealm();
         }
 
+        serverConfigurationFile = MASTER_SERVER_XML;
     }
 
     @AfterClass
@@ -131,6 +132,8 @@ public class DynamicUpdateTest {
             server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
 
             serverConfigurationFile = serverXML;
+        } else {
+            Log.info(c, "setServerConfiguration", "serverConfig already set to " + serverXML + ", no config update.");
         }
     }
 

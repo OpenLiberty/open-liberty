@@ -244,4 +244,19 @@ public interface FeatureResolver {
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes);
+
+    /**
+     * Resolves a collection of root features against a repository.
+     *
+     * @param repository              the feature repository to use
+     * @param kernelFeatures          the set of kernel features to use for auto-feature processing
+     * @param rootFeatures            the root features to resolve
+     * @param preResolved             the set of already resolved features to base the resolution delta off of
+     * @param allowedMultipleVersions the set that includes features that effectively ignore singletons (null means none, empty set means all)
+     * @param supportedProcessTypes   the supported process types to allow to be resolved
+     * @return the resolution result
+     */
+    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                                  Set<String> allowedMultipleVersions,
+                                  EnumSet<ProcessType> supportedProcessTypes);
 }

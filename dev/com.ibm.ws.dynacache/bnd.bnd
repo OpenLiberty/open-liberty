@@ -22,11 +22,10 @@ Bundle-Description: Dynacache Core cache capability in Liberty
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.dynacache.internal.jar
-#JakartaEE-Bundle-Name: Jakarta Dynacache
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.dynacache.internal
-#JakartaEE-Bundle-Description: Jakarta Dynacache Core cache capability in Liberty
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.dynacache.internal.jar
+jakartaFinalBundleName: Dynacache
+jakartaFinalBundleId: io.openliberty.dynacache.internal
+jakartaFinalBundleDescription: Dynacache Core cache capability in Liberty; Jakarta Enabled
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 

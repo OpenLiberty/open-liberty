@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: test2
+  version: "1.0"
+paths:
+  "/bar":
+    summary: "bar endpoint"
+    get:
+      summary: "get bar"
+      operationId: "getAllBar"
+      responses:
+        200:
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/bar"
+    post:
+      summary: "create a new bar"
+      operationId: "createBar"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/bar"
+          links:
+            "list":
+              operationId: getAllBar
+  "/login":
+    post:
+      summary: "user log in"
+      responses:
+        202:
+          description: "success"
+        400:
+          description: "failure"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+components:
+  schemas:
+    bar:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required: 
+        - id
+        - name
+    error:
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

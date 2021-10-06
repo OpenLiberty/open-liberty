@@ -312,14 +312,26 @@ public class RemoteTxAttrServlet extends FATServlet {
      * default InitialContext with the full corbaname (not including NameService)
      * using he secure IIOP port.
      *
+     * Note: Use of the secure port (iiops) is not currently supported, and will
+     * fail if it is the only JNDI lookup attempted. However, the lookup will
+     * succeed if a previous lookup is performed using the iiop port, though this
+     * is not supported and will likely fail in the future.
+     *
      * corbaname::localhost:<IIOPSecurePort>#ejb/global/<App>/<Module>/<Bean>!<interface>
      */
     @Test //- requires additional security configuration
     @SkipForRepeat({ EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     public void testDefaultContextLookupWithSecurePort() throws Exception {
-        // lookup the bean using default context with corbaname on secure IIOP port
-        String jndiName = CorbaNameSecure + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
+        // first, lookup the bean using default context with corbaname with iiop port.
+        // this is required or use of the secure port below will fail.
+        String jndiName = CorbaName + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
         TxAttrRemote bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
+        assertNotNull("Remote bean is null", bean);
+
+        // lookup the bean using default context with corbaname on secure IIOP port
+        // Note: not a supported scenario; likely to fail in the future.
+        jndiName = CorbaNameSecure + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
+        bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
         assertNotNull("Remote bean is null", bean);
 
         // verify the bean works

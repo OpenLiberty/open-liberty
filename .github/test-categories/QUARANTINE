@@ -6,7 +6,18 @@ com.ibm.ws.security.spnego_fat.1
 com.ibm.ws.security.spnego_fat.2
 
 # Not a fat bucket, but still has '_fat' in name
+com.ibm.ws.jpa.tests.beanvalidation_fat.common
+com.ibm.ws.jpa.tests.spec10.callback_fat.common
+com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common
 com.ibm.ws.jpa.tests.spec10.entity_fat.common
+com.ibm.ws.jpa.tests.spec10.inheritance_fat.common
+com.ibm.ws.jpa.tests.spec10.injection_fat.common
+com.ibm.ws.jpa.tests.spec10.packaging_fat.common
+com.ibm.ws.jpa.tests.spec10.query_fat.common
+com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_fat.common
+com.ibm.ws.jpa.tests.spec10.relationships.manyXone_fat.common
+com.ibm.ws.jpa.tests.spec10.relationships.oneXmany_fat.common
+com.ibm.ws.jpa.tests.spec10.relationships.oneXone_fat.common
 com.ibm.ws.repository_fat_shared
 com.ibm.ws.security.oauth.oidc_fat.common
 com.ibm.ws.security.oidc.server_fat

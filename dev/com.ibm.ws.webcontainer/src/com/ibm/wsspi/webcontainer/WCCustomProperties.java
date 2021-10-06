@@ -321,9 +321,12 @@ public class WCCustomProperties {
 
     //21.0.0.4
     public static boolean SET_HTML_CONTENT_TYPE_ON_ERROR; 
-
+    
     //21.0.0.6
     public static boolean EXCLUDE_ALL_HANDLED_TYPES_CLASSES;
+    
+    //21.0.0.12
+    public static boolean CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD; 
 
     static {
         setCustomPropertyVariables(); //initializes all the variables
@@ -419,6 +422,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("sethtmlcontenttypeonerror", "com.ibm.ws.webcontainer.sethtmlcontenttypeonerror"); //PH34054
         WCCustomProperties.FullyQualifiedPropertiesMap.put("excludeallhandledtypesclasses", "com.ibm.ws.webcontainer.excludeallhandledtypesclasses");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("closewrappedresponseoutputafterforward", "com.ibm.ws.webcontainer.closewrappedresponseoutputafterforward"); //16053
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -754,9 +758,6 @@ public class WCCustomProperties {
         EMPTY_SERVLET_MAPPINGS =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.emptyservletmappings")).booleanValue(); //PI23529
         SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.valueOf(customProps.getProperty("servlet31.private.buffersizeforlargepostdata", (new Integer(Integer.MAX_VALUE/16)).toString())).intValue();
         if (SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA < 1) SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.MAX_VALUE/16;
-       
-        //Start 8.5.5.5 CD
-        DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror")).booleanValue(); //PI26908
         
         // Start 8.5.5.6 CD
         ALLOW_EXPRESSION_FACTORY_PER_APP = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.jsp.allowexpressionfactoryperapp")).booleanValue(); // PI31922
@@ -774,7 +775,6 @@ public class WCCustomProperties {
         // Start 8.5.5.10
         PARSE_PARTS_PARAMETERS_USING_REQUEST_ENCODING = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.parsepartsparametersusingrequestencoding")).booleanValue(); //PI56833
         KEEP_SEPARATOR_IN_MULTIPART_FORM_FIELDS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.keepseparatormultipartformfield")).booleanValue(); //PI57951
-        ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck")).booleanValue();      //PI60797
         
         // Start 8.5.5.11
         INVOKE_FLUSH_AFTER_SERVICE_FOR_STATIC_FILE_RESPONSE_WRAPPER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.invokeflushafterserviceforstaticfileresponsewrapper" , "true")).booleanValue(); //PI63193
@@ -808,30 +808,41 @@ public class WCCustomProperties {
 
         //21.0.0.4
         SET_HTML_CONTENT_TYPE_ON_ERROR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.sethtmlcontenttypeonerror", "true")).booleanValue();
-
+        
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
-            //21.0.0.6
             EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "true")).booleanValue();
+
+            //21.0.0.10
+            ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck", "true")).booleanValue(); //18368
+            //21.0.0.11
+            DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "true")).booleanValue(); //PI26908
+            //21.0.0.12
+            CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.closewrappedresponseoutputafterforward", "true")).booleanValue();
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "false")).booleanValue();
-            //21.0.0.6
             EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "false")).booleanValue();
-
+            ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck", "false")).booleanValue(); 
+            DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "false")).booleanValue(); //PI26908
+            CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.closewrappedresponseoutputafterforward", "false")).booleanValue();
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
                                      "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +
                                      "DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "], " +
-                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "]");
+                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "], " +
+                                     "EXCLUDE_ALL_HANDLED_TYPES_CLASSES [" + EXCLUDE_ALL_HANDLED_TYPES_CLASSES + "], " +
+                                     "ENABLE_POST_ONLY_J_SECURITY_CHECK [" + ENABLE_POST_ONLY_J_SECURITY_CHECK + "], " + 
+                                     "DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR [" + DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR + "], " +
+                                     "CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD[" + CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD + "]");
         }
     }
 

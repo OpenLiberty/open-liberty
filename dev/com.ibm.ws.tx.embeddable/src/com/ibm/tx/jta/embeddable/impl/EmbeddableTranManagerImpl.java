@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,8 +119,9 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
 
             if (!t.isResumable()) {
                 final IllegalStateException ise;
-                if (t.getThread() != null) {
-                    ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", t.getThread().getId()));
+                Thread thread = t.getThread(); // avoid race condition where value becomes null after first check
+                if (thread != null) {
+                    ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", thread.getId()));
                 } else {
                     ise = new IllegalStateException("Transaction cannot be resumed on this thread");
                 }

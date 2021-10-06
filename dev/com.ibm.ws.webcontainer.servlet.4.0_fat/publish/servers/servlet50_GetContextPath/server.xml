@@ -20,10 +20,4 @@
  <!-- the contextRoot value is configured to PURPOSELY ending with a slash -->
   <webApplication contextRoot="TestGetContextPathRoot/" location="Servlet5TestApp.war"/>
 
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:GenericBNF=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
-
 </server>

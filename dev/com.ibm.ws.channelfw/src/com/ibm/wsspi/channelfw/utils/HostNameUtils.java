@@ -22,14 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -48,8 +41,6 @@ public class HostNameUtils {
     public static final String WILDCARD = "*";
 
     private static final boolean PREFER_IPV6 = Boolean.getBoolean("java.net.preferIPv6Addresses");
-
-    protected static final int HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS = 5000;
 
     /**
      * Try to determine the hostname of this server, one that is suitable for use in
@@ -92,7 +83,7 @@ public class HostNameUtils {
             Tr.debug(tc, "Trying to resolve hostname : " + nameToResolve + ", prefer IPv6 : " + preferIPv6);
         }
 
-        PrivilegedAction<String> action = new PrivilegedAction<String>() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             @FFDCIgnore({ SocketException.class, UnknownHostException.class })
             public String run() {
@@ -226,8 +217,7 @@ public class HostNameUtils {
                 }
                 return false;
             }
-        };
-        return doPrivilegedWithTimeoutWarning(action);
+        });
     }
 
     /**
@@ -271,14 +261,14 @@ public class HostNameUtils {
      *         is a loopback address or is associated with a {@link NetworkInterface} on this machine.
      */
     private static InetAddress findLocalHostAddress(final String nameToResolve, final boolean preferIPv6) {
-        PrivilegedAction<InetAddress> action = new PrivilegedAction<InetAddress>() {
+        return AccessController.doPrivileged(new PrivilegedAction<InetAddress>() {
             @Override
             @FFDCIgnore({ SocketException.class, UnknownHostException.class })
             public InetAddress run() {
                 InetAddressResult result = new InetAddressResult(preferIPv6);
                 try {
-                    // We are checking a configured hostname or IP address. This could be a shortname, like "bob",
-                    // or could be a qualified name like 'was.pok.ibm.com'. If it is "bob",
+                    // We are checking a configured hostname or IP address. This could be a shortname, like "bob", 
+                    // or could be a qualified name like 'was.pok.ibm.com'. If it is "bob", 
                     // there is a possibility of getting something else's ip address back
                     // with a blind getAllByName.
                     InetAddress[] addrs = InetAddress.getAllByName(nameToResolve);
@@ -288,8 +278,8 @@ public class HostNameUtils {
                         // to a nic on this machine... we don't care why or how (ipv4 vs. ipv6)...
                         for (InetAddress addr : addrs) {
                             if (addr.isLoopbackAddress()) {
-                                // On z/OS, 127.0.0.1 is not correctly matched to the loopback
-                                // network interface (the call below returns null, see RTC Java Defect 125337).
+                                // On z/OS, 127.0.0.1 is not correctly matched to the loopback 
+                                // network interface (the call below returns null, see RTC Java Defect 125337). 
                                 // If the addr is a loopback, we know that it is an address local
                                 // to this machine, so we can answer appropriately.
                                 // Try to preserve the IP address preference, for getCanonicalHostName behavior.
@@ -313,63 +303,7 @@ public class HostNameUtils {
 
                 return result.getAddress();
             }
-        };
-        // might be null
-        return doPrivilegedWithTimeoutWarning(action);
-    }
-
-    /**
-     * Execute a PrivilegedAction using the Channel Framework's ExecutorService. If the runnable does not complete
-     * within a reasonable time - HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS - then a message will be logged indicating
-     * some slowness. Note the runnable will not be canceled after HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS elapses;
-     * it will continue until completion or cancellation.
-     *
-     * @param runnable PrivilegedAction<T>
-     * @return T the result of the PrivilegedAction<T>, or null if the runnable could not complete
-     */
-    protected static <T> T doPrivilegedWithTimeoutWarning(PrivilegedAction<T> runnable) {
-        Callable<T> doPrivCall = new Callable<T>() {
-            @Override
-            public T call() throws Exception {
-                return AccessController.doPrivileged(runnable);
-            }
-        };
-        ExecutorService e = CHFWBundle.getExecutorService();
-        if (e != null && !e.isShutdown()) {
-            Future<T> future = e.submit(doPrivCall);
-            T response = null;
-            do {
-                try {
-                    response = future.get(HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException tex) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "hostname lookup has taken longer than " + HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS
-                                    + " ms - something might be wrong with the network configuration. Continuing to wait.");
-                    }
-                } catch (InterruptedException iex) {
-                    // interrupted; log a message but continue waiting for lookup completion
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "hostname lookup task was interrupted: " + iex);
-                    }
-                } catch (ExecutionException eex) {
-                    // the task was aborted; log a message and break out of the while
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "hostname lookup task was aborted: " + eex);
-                    }
-                    break;
-                }
-            } while (response == null && !future.isDone());
-            return response;
-        } else {
-            try {
-                return doPrivCall.call();
-            } catch (Exception ex) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "hostname runnable invocation failed: " + ex);
-                }
-            }
-        }
-        return null;
+        });
     }
 
     private static class InetAddressResult {

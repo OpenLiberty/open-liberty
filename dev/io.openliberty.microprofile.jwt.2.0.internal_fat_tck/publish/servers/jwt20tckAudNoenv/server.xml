@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="mp_jwt">
+
+   <include location="../fatTestPorts.xml"/>  
+   <!--  
+     <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="8010"
+                  httpsPort="8020" />
+   -->
+   
+    <!-- This prevents apps from granting themselves this permission -->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+    <featureManager>        
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-3.0</feature>
+        <feature>appSecurity-4.0</feature>
+        <feature>mpJwt-2.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>arquillian-support-jakarta-2.0</feature>
+    </featureManager>
+
+    <trustAssociation invokeForUnprotectedURI="true"/>
+
+    <mpJwt  groupNameAttribute="groups" id="myMpJwt" audiences="s6BhdRkqt3, s6BhdRkqt3.2" /> 
+  
+    <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" 
+      traceSpecification="com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all:com.ibm.ws.security.context.internal.*=info:io.openliberty.security.*=all"/> 
+    <!--  <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="com.ibm.websphere.security.*=all:com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all"/> --> 
+ 
+    <keyStore id="defaultKeyStore" password="keyspass"/> 
+	
+
+</server>

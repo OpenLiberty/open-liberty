@@ -12,13 +12,12 @@ package io.openliberty.microprofile.config.internal_fat.apps.classLoader;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Enumeration;
 
-public class CustomClassLoaderError extends URLClassLoader {
+public class CustomClassLoaderError extends ClassLoader {
 
-    public CustomClassLoaderError(URL[] urls) {
-        super(urls);
+    public CustomClassLoaderError() {
+
     }
 
     @Override

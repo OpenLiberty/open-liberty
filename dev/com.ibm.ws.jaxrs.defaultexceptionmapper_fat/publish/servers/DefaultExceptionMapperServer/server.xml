@@ -1,0 +1,11 @@
+<server description="Server for testing defaultexceptionmapper">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>test.exceptionmapper-2.0</feature> 
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+</server>

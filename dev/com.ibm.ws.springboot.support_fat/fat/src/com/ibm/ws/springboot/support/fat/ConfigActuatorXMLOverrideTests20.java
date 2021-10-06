@@ -151,13 +151,17 @@ public class ConfigActuatorXMLOverrideTests20 extends AbstractSpringTests {
         String methodName = testName.getMethodName();
         List<String> expectedEndpoints = new ArrayList<String>(super.getExpectedWebApplicationEndpoints());
         if (methodName != null) {
+
             if (methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR)) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
             } else if (methodName.equals(DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR)) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
             } else if (methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR)) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
             } else if (methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,6 +114,19 @@ public class FailoverTimersTestServlet extends FATServlet {
     public void forceRollbackForTimer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String timerName = request.getParameter("timer");
         TIMERS_TO_ROLL_BACK.add(timerName);
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        final String createTable = "CREATE TABLE TIMERLOG (TIMERNAME VARCHAR(254) NOT NULL PRIMARY KEY, COUNT INT NOT NULL, SERVERNAME VARCHAR(254) NOT NULL)";
+        boolean tableCreated = false;
+        try (Connection con = ds.getConnection(); Statement s = con.createStatement()) {
+            s.execute(createTable);
+            tableCreated = true;
+        } catch (SQLException x) {
+            System.out.println("Table might have already been created: " + x.getMessage());
+        }
+        System.out.println("Was TIMERLOG table created? " + tableCreated);
     }
 
     /**

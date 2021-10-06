@@ -1,0 +1,46 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+	<display-name>EJBInWARPackagingWeb</display-name>
+
+	<servlet>
+		<servlet-name>EJBInWARPackagingServlet</servlet-name>
+		<servlet-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.EJBInWARPackagingServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>EJBInWARPackagingServlet</servlet-name>
+		<url-pattern>/EJBInWARPackagingServlet</url-pattern>
+	</servlet-mapping>
+
+	<ejb-local-ref>
+		<ejb-ref-name>ejb/singleton</ejb-ref-name>
+		<local>com.ibm.ws.ejbcontainer.fat.beaninterfaceholderlib.EJBInWARPackagingLocal</local>
+		<ejb-link>MySingletonBean</ejb-link>
+		<injection-target>
+			<injection-target-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.EJBInWARPackagingServlet</injection-target-class>
+			<injection-target-name>singleton</injection-target-name>
+		</injection-target>
+	</ejb-local-ref>
+
+	<ejb-local-ref>
+		<ejb-ref-name>ejb/stateful</ejb-ref-name>
+		<local>com.ibm.ws.ejbcontainer.fat.beaninterfaceholderlib.EJBInWARPackagingLocal</local>
+		<ejb-link>MyStatefulBean</ejb-link>
+		<injection-target>
+			<injection-target-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.EJBInWARPackagingServlet</injection-target-class>
+			<injection-target-name>stateful</injection-target-name>
+		</injection-target>
+	</ejb-local-ref>
+
+	<ejb-local-ref>
+		<ejb-ref-name>ejb/stateless</ejb-ref-name>
+		<local>com.ibm.ws.ejbcontainer.fat.beaninterfaceholderlib.EJBInWARPackagingLocal</local>
+		<ejb-link>MyStatelessBean</ejb-link>
+		<injection-target>
+			<injection-target-class>com.ibm.ws.ejbcontainer.fat.ejbinwarpackaging.EJBInWARPackagingServlet</injection-target-class>
+			<injection-target-name>stateless</injection-target-name>
+		</injection-target>
+	</ejb-local-ref>
+
+</web-app>

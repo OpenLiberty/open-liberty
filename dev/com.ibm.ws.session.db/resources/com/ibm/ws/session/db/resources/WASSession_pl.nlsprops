@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=Wykryto wyj\u0105tek podczas pr\
 DatabaseHashMap.selectNoUpdateError.useraction=Je\u015bli wyst\u0105pi\u0142 wyj\u0105tek SQLException, poszukaj informacji w dokumentacji bazy danych odpowiedniej dla u\u017cywanego \u015brodowiska. Upewnij si\u0119 tak\u017ce, \u017ce \u017ar\u00f3d\u0142o danych dla mened\u017cera sesji zosta\u0142o poprawnie skonfigurowane.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Podj\u0119to pr\u00f3b\u0119 zapisania wi\u0119cej ni\u017c 2 MB danych w du\u017cej kolumnie.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Podj\u0119to pr\u00f3b\u0119 zapisania w kolumnie bazy danych wi\u0119kszej ilo\u015bci informacji ni\u017c dozwolona przez w\u0142a\u015bciwo\u015b\u0107 rowSizeLimit.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=Ilo\u015b\u0107 danych sesji mo\u017ce by\u0107 zbyt du\u017ca, aby mog\u0142y one zosta\u0107 zapisane w kolumnie bazy danych.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Zmniejsz wielko\u015b\u0107 tego atrybutu przed zapisaniem go w sesji.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Zmniejsz obj\u0119to\u015b\u0107 tego atrybutu przed podj\u0119ciem pr\u00f3by zapisania go w sesji lub zwi\u0119ksz warto\u015b\u0107 w\u0142a\u015bciwo\u015bci rowSizeLimit.
 
 
 ControllerSession.Initialized=SESN0126I: Us\u0142uga {0} zosta\u0142a zainicjowana pomy\u015blnie.

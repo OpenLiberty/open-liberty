@@ -193,3 +193,15 @@ config.hsts.invalid.max.age.value.useraction=Stellen Sie sicher, dass die konfig
 config.hsts.missing.max.age=CWWKT0041W: Es wurde versucht, [{0}] als Strict-Transport-Security-Header zu konfigurieren. Diese Konfiguration enth\u00e4lt nicht die obligatorische Anweisung max-age. Eine Konfiguration, die keine Anweisung max-age enth\u00e4lt, ist nicht g\u00fcltig und kann nicht verwendet werden.
 config.hsts.missing.max.age.explanation=Die angegeben Konfiguration muss eine Anweisung max-age mit einer nicht negativen ganzen Zahl enthalten.
 config.hsts.missing.max.age.useraction=Stellen Sie sicher, dass die Konfiguration eine Anweisung max-age mit einer nicht negativen ganzen Zahl enth\u00e4lt.
+
+headers.emptyName=CWWKT0042W: Beim Parsing der Konfiguration {0} wurde ein leerer Headername gefunden. Dieser Wert wird ignoriert.
+headers.emptyName.explanation=Der angegebene Headername ist eine leere Zeichenfolge. Ein Headername darf nicht leer sein. 
+headers.emptyName.useraction=Stellen Sie sicher, dass die Headernamen nicht leer sind. 
+
+headers.duplicateHeaderName=CWWKT0043W: Es wurde ein doppelter Headername im Header [{0}] mit der Konfiguration {1} gefunden. Alle Konfigurationen f\u00fcr den Header [{0}] werden ignoriert. Alle von remove-, add-, set- oder setIfMissing-Konfigurationen definierten Header m\u00fcssen in allen Konfigurationen eindeutig sein.
+headers.duplicateHeaderName.explanation=Der angegebene Headername wurde bereits von einer anderen Konfiguration des Features Headers konfiguriert.
+headers.duplicateHeaderName.useraction=Stellen Sie sicher, dass von den remove-, add-, set- oder setIfMissing-Konfigurationen definierten Header in jeweils nur einer einzigen Konfiguration enthalten sind.
+
+headers.knownDuplicateHeader=CWWKT0044W: Der als doppelter Headername markierte Header [{0}] wurde in der Konfiguration {1} gefunden. Der Header [{0}] wird ignoriert. Alle von der Konfiguration {1} definierten Header m\u00fcssen eindeutige Headernamen enthalten.
+headers.knownDuplicateHeader.explanation=Der angegebene Headername wurde bereits von den remove-, add-, set- oder setIfMissing-Konfigurationen gefunden.
+headers.knownDuplicateHeader.useraction=Stellen Sie sicher, dass in dieser Konfiguration definierte Headernamen in den remove-, add-, set- und setIfMissing-Konfigurationen eindeutig sind. 

@@ -481,7 +481,7 @@ define({
     STOP_AC_TITLE: "Parar o Admin Center",
     STOP_AC_DESCRIPTION: "O servidor {0} é um controlador coletivo que executa o Admin Center. Interrompê-lo poderia afetar as operações de gerenciamento coletivas do Liberty e indisponibilizar o Admin Center.",
     STOP_AC_MESSAGE: "Deseja parar esse controlador?",
-    STOP_STANDALONE_DESCRIPTION: "O servidor {0} executa o Admin Center. Pará-lo tornará o Amin Center indisponível.",
+    STOP_STANDALONE_DESCRIPTION: "O servidor {0} executa o Admin Center. Pará-lo tornará o Admin Center indisponível.",
     STOP_STANDALONE_MESSAGE: "Deseja parar este servidor?",
 
     STOP_CONTROLLER_TITLE: "Parar Controlador",

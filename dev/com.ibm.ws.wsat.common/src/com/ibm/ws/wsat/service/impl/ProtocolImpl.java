@@ -219,11 +219,11 @@ public class ProtocolImpl {
             participant.setResponse(WSATParticipantState.PREPARED);
         } else {
             // During participant recovery we might receive an unexpected 'prepared' if the participant
-            // wants a re-send of the final commit/rollback state.  For the moment we log this, but do
-            // nothing as regular coordinator recovery retries should take care of it.
+            // wants a re-send of the final commit/rollback state.
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}. Replaying completion", globalId, partId);
             }
+            tranService.replayCompletion(globalId);
         }
     }
 

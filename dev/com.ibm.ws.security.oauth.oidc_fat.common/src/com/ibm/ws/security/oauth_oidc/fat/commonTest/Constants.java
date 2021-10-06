@@ -838,4 +838,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     /*********************************** RP TRacking *******************************************/
     public static final String RP_TRACKING_COOKIE_NAME = "WasOAuthTrackClients";
 
+    /******************************** Test Tooling Servlets ************************************/
+    public static final String TOKEN_ENDPOINT_SERVLET = "TokenEndpointServlet";
+    public static final String USERINFO_ENDPOINT_SERVLET = "UserinfoEndpointServlet";
+
 }

@@ -48,6 +48,7 @@ IBM-API-Package:\
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2, \

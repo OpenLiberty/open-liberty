@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.tx.methodintf.web.MethodIntfServlet;
 
 import componenttest.annotation.Server;
@@ -53,7 +54,7 @@ public class MethodIntfTest {
         EnterpriseArchive MethodIntfTestApp = ShrinkWrap.create(EnterpriseArchive.class, "MethodIntfTest.ear");
         MethodIntfTestApp.addAsModule(MethodIntfEJB).addAsModule(MethodIntfWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, MethodIntfTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, MethodIntfTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

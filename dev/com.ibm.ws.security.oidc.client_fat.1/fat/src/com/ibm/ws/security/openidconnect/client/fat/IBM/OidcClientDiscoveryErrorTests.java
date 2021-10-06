@@ -96,6 +96,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
                 Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         testOPServer.addIgnoredServerException("CWOAU0039W"); // Ignore errors from the malformed discovery url
+        testOPServer.addIgnoredServerException("CWWKO0801E");
         testRPServer.addIgnoredServerException("CWWKS1859E"); //Ignore exceptions from bad client secret test
         testRPServer.addIgnoredServerException("SRVE8094W");
         testRPServer.addIgnoredServerException("SRVE0190E");
@@ -339,6 +340,8 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.GET_LOGIN_PAGE);
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
+        testRPServer.addIgnoredServerException("CWWKS1534E");
+        
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }
@@ -376,6 +379,8 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.GET_LOGIN_PAGE);
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
+        testRPServer.addIgnoredServerException("CWWKS1534E");
+        
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }

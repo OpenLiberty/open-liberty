@@ -36,6 +36,24 @@ public abstract class PortDetectionUtil {
         public String determineOwnerOfPort(int port) throws UnsupportedOperationException {
             return "";
         }
+
+        @Override
+        public String determinePidForPort(int port) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     private static class LinuxDetector extends PortDetectionUtil {
@@ -108,6 +126,24 @@ public abstract class PortDetectionUtil {
                 throw new IOException("Failed to determine owner of port " + port, ex);
             }
             return pidInfo;
+        }
+
+        @Override
+        public String determinePidForPort(int port) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 
@@ -187,6 +223,24 @@ public abstract class PortDetectionUtil {
             }
             return pidInfo;
         }
+
+        @Override
+        public String determinePidForPort(int port) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     //TODO: once we have more data on the output of these commands on AIX, Solaris, etc.
@@ -218,14 +272,30 @@ public abstract class PortDetectionUtil {
                 pidInfo += cmdOutput;
 
                 // Next get a list of all running processes on the box
-                po = machine.execute(PS_CMD, PS_PARMS);
-                cmdOutput = po.getStdout();
+                cmdOutput = listProcesses();
                 pidInfo += LS + LS + LS + cmdOutput;
 
             } catch (Exception ex) {
                 throw new IOException("Failed to determine owner of port " + port, ex);
             }
             return pidInfo;
+        }
+
+        @Override
+        public String determinePidForPort(int port) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            return machine.execute(PS_CMD, PS_PARMS).getStdout();
         }
     }
 
@@ -284,13 +354,29 @@ public abstract class PortDetectionUtil {
 //              BBON001    50397376
 //              BBOS001    50397397
 //              BBOS001    16842966
-                po = machine.execute(PS_CMD, PS_PARMS);
-                cmdOutput = po.getStdout();
+                cmdOutput = listProcesses();
                 pidInfo += LS + LS + LS + cmdOutput;
             } catch (Exception ex) {
                 throw new IOException("Failed to determine owner of port " + port, ex);
             }
             return pidInfo;
+        }
+
+        @Override
+        public String determinePidForPort(int port) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) throws Exception {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            return machine.execute(PS_CMD, PS_PARMS).getStdout();
         }
     }
 
@@ -307,56 +393,59 @@ public abstract class PortDetectionUtil {
         }
 
         @Override
-        public String determineOwnerOfPort(final int port) throws IOException {
-            final String m = "determineOwnerOfPort";
-            String pid = "";
-            String commandLine = "";
+        public String determineOwnerOfPort(final int port) throws Exception {
 
-            try {
-                ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
-                String cmdOutput = po.getStdout();
-                StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
-                String pattern = "^tcp.*:" + port + "\\s.*listen.*";
-                while (st.hasMoreTokens()) {
-                    String s = st.nextToken().trim().toLowerCase();
-                    Log.finer(c, m, s);
-                    if (s.matches(pattern)) {
-                        pid = s.substring(s.lastIndexOf(' ')).trim();
-                        break;
-                    }
-                }
+            String commandLine = determineCommandLineForPid(determinePidForPort(port));
 
-                if (!pid.isEmpty()) {
-                    Log.info(c, m, "Process holding port " + port + " is " + pid);
-
-                    po = machine.execute(PS_CMD, PS_PARMS);
-                    cmdOutput = po.getStdout();
-                    st = new StringTokenizer(cmdOutput, LS);
-                    pattern = ".*\\s" + pid + "\\s*$";
-                    Log.finer(c, m, "Looking for " + pattern);
-                    while (st.hasMoreTokens()) {
-                        String s = st.nextToken().trim();
-                        Log.finer(c, m, s);
-                        if (s.matches(pattern)) {
-                            commandLine = s;
-                            break;
-                        }
-                    }
-
-                    if (!commandLine.isEmpty()) {
-                        commandLine = commandLine.substring(0, commandLine.lastIndexOf(pid)).trim();
-                        Log.finer(c, m, commandLine);
-                    }
-                }
-            } catch (Exception e) {
-                Log.error(c, m, e);
-            }
-
-            if (commandLine.isEmpty()) {
+            if (commandLine == null || commandLine.isEmpty()) {
                 return "Couln't determine process holding port " + port;
             } else {
                 return commandLine;
             }
+        }
+
+        @Override
+        public String determinePidForPort(final int port) throws Exception {
+            final String m = "determinePidForPort";
+            ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
+            String cmdOutput = po.getStdout();
+            StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
+            String pattern = "^tcp.*:" + port + "\\s.*listen.*";
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken().trim().toLowerCase();
+                Log.finer(c, m, s);
+                if (s.matches(pattern)) {
+                    return s.substring(s.lastIndexOf(' ')).trim();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public String determineCommandLineForPid(String pid) throws Exception {
+            final String m = "determineCommandLineForPid";
+
+            if (pid != null && !pid.isEmpty()) {
+                String cmdOutput = listProcesses();
+                StringTokenizer st = new StringTokenizer(cmdOutput, LS);
+                String pattern = ".*\\s" + pid + "\\s*$";
+                Log.finer(c, m, "Looking for " + pattern);
+                while (st.hasMoreTokens()) {
+                    String s = st.nextToken().trim();
+                    Log.finer(c, m, s);
+                    if (s.matches(pattern)) {
+                        return s.substring(0, s.lastIndexOf(pid)).trim();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public String listProcesses() throws Exception {
+            return machine.execute(PS_CMD, PS_PARMS).getStdout();
         }
     }
 
@@ -394,5 +483,11 @@ public abstract class PortDetectionUtil {
      *                     no data could be collected.
      * @throws IOException - if a failure occurs while trying to detect the process
      */
-    public abstract String determineOwnerOfPort(int port) throws IOException;
+    public abstract String determineOwnerOfPort(int port) throws Exception;
+
+    public abstract String determinePidForPort(int port) throws Exception;
+
+    public abstract String determineCommandLineForPid(String pid) throws Exception;
+
+    public abstract String listProcesses() throws Exception;
 }

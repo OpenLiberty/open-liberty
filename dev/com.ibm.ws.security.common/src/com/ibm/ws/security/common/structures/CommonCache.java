@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
+import io.openliberty.security.common.osgi.SecurityOSGiUtils;
+
 public abstract class CommonCache {
+
+    private static final TraceComponent tc = Tr.register(CommonCache.class);
+
+    private final PrivilegedAction<ScheduledExecutorService> getScheduledExecutorServiceAction = new GetScheduledExecutorServiceAction();
 
     /**
      * Maximum number of entries allowed in the cache.
@@ -30,7 +41,9 @@ public abstract class CommonCache {
     /**
      * Scheduled executor to run the eviction task.
      */
-    private ScheduledThreadPoolExecutor evictionSchedule;
+    private ScheduledExecutorService evictionSchedule;
+
+    private ScheduledFuture<?> previousScheduledTask = null;
 
     public int size() {
         return this.entryLimit;
@@ -62,11 +75,21 @@ public abstract class CommonCache {
         if (newTimeoutInMillis > 0) {
             this.timeoutInMilliSeconds = newTimeoutInMillis;
         }
-        if (evictionSchedule != null) {
-            evictionSchedule.shutdownNow();
+        if (previousScheduledTask != null) {
+            previousScheduledTask.cancel(true);
         }
-        evictionSchedule = new ScheduledThreadPoolExecutor(1);
-        evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
+        if (System.getSecurityManager() == null) {
+            evictionSchedule = getScheduledExecutorService();
+        } else {
+            evictionSchedule = AccessController.doPrivileged(getScheduledExecutorServiceAction);
+        }
+        if (evictionSchedule != null) {
+            previousScheduledTask = evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to obtain a ScheduledExecutorService");
+            }
+        }
     }
 
     /**
@@ -79,6 +102,17 @@ public abstract class CommonCache {
         public void run() {
             evictStaleEntries();
         }
-
     }
+
+    private ScheduledExecutorService getScheduledExecutorService() {
+        return SecurityOSGiUtils.getService(getClass(), ScheduledExecutorService.class);
+    }
+
+    private class GetScheduledExecutorServiceAction implements PrivilegedAction<ScheduledExecutorService> {
+        @Override
+        public ScheduledExecutorService run() {
+            return getScheduledExecutorService();
+        }
+    }
+
 }

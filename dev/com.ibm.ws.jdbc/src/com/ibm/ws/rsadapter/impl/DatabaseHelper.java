@@ -1522,25 +1522,18 @@ public class DatabaseHelper {
 
             return new ConnectionResults(pConn, null);
         } catch (PrivilegedActionException pae) {
-            FFDCFilter.processException(pae.getException(), getClass().getName(), "1298");
-
+            // FFDC covered by caller
             ResourceException resX = new DataStoreAdapterException("JAVAX_CONN_ERR", pae.getException(), DatabaseHelper.class, is2Phase ? "XAConnection" : "PooledConnection");
 
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "getPooledConnection", "Exception");
             throw resX;
         } catch (ClassCastException castX) {
-            // There's a possibility this occurred because of an error in the JDBC driver
-            // itself.  The trace should allow us to determine this.
-            FFDCFilter.processException(castX, getClass().getName(), "1312");
-
-            if (tc.isDebugEnabled())
-                Tr.debug(this, tc, "Caught ClassCastException", castX);
-
+            // FFDC covered by caller
             ResourceException resX = new DataStoreAdapterException(castX.getMessage(), null, DatabaseHelper.class, is2Phase ? "NOT_A_2_PHASE_DS" : "NOT_A_1_PHASE_DS");
 
             if (tc.isEntryEnabled())
-                Tr.exit(this, tc, "getPooledConnection", "Exception");
+                Tr.exit(this, tc, "getPooledConnection", castX);
             throw resX;
         }
     }

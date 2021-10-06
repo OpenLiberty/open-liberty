@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.tx.statlesmixsec.web.AsmDescSecRolesServlet;
 import com.ibm.ws.ejbcontainer.tx.statlesmixsec.web.AsmDescTranAttrServlet;
 
@@ -50,7 +51,7 @@ public class SecureTests {
         EnterpriseArchive StatelessMixSecApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessMixSec.ear");
         StatelessMixSecApp.addAsModule(StatelessMixASMDescEJB).addAsModule(StatelessMixSecWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, StatelessMixSecApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatelessMixSecApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

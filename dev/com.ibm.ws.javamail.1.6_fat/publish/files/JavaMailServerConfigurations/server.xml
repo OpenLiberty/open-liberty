@@ -1,0 +1,13 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    
+	<featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>restConnector-2.0</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+		
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+</server>

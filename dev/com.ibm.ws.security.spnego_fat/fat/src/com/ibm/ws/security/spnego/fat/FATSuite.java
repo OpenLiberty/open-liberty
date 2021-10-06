@@ -23,8 +23,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCCommonTest;
-import com.ibm.ws.security.spnego.fat.config.ApacheKDCforSPNEGO;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;

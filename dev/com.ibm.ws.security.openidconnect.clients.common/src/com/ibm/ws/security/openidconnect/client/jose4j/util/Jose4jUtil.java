@@ -91,6 +91,7 @@ public class Jose4jUtil {
         // This is for ID Token only at the writing time
         ProviderAuthenticationResult oidcResult = null;
         String tokenStr = getIdToken(tokens, clientConfig);
+        String originalIdTokenString = tokenStr;
         String accessToken = tokens.get(Constants.ACCESS_TOKEN);
         String refreshToken = tokens.get(Constants.REFRESH_TOKEN);
         String clientId = clientConfig.getClientId();
@@ -139,7 +140,7 @@ public class Jose4jUtil {
                     Tr.debug(tc, "social login flow, storing id token in result");
                 }
                 Hashtable<String, Object> props = new Hashtable<String, Object>();
-                props.put(Constants.ID_TOKEN, tokenStr);
+                props.put(Constants.ID_TOKEN, originalIdTokenString);
                 props.put(Constants.ACCESS_TOKEN, accessToken);
                 if (idToken != null) {
                     props.put(Constants.ID_TOKEN_OBJECT, idToken);

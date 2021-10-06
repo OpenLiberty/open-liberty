@@ -30,6 +30,8 @@ import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -37,7 +39,8 @@ import componenttest.topology.utils.HttpUtils;
 // Capping this test to JDK 8, because the CXF libs checked in only work with the JDK's copy of JAX-B (which was removed in JDK 9)
 @MaximumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
-@SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
+@SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, JakartaEE9Action.ID })
+@Mode(TestMode.FULL)
 public class PureCXFTest {
 
     @Server("PureCXFTestServer")
