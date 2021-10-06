@@ -386,9 +386,11 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     protected void buildServiceFromWSDL(String url) {
         sendEvent(Event.CREATE_FROM_WSDL, url);
 
+        // Liberty Change Start
         if (LOG.isLoggable(Level.FINE)) {
             LOG.info("Creating Service " + getServiceQName() + " from WSDL: " + url);
         }
+        //Liberty Change End
         populateFromClass = false;
         WSDLServiceFactory factory = new WSDLServiceFactory(getBus(), url, getServiceQName());
         boolean setEPName = true;
