@@ -1,3 +1,6 @@
+Begin
+ <% out.flush(); %>
+End
 <!--
     Copyright (c) 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
@@ -8,7 +11,3 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
- ​
-Begin
- <% out.flush(); %>
-End

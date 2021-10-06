@@ -203,14 +203,13 @@ public class JSTLTests {
     public void testImportFlushing() throws Exception {
         WebConversation wc = new WebConversation();
 
-        // Imported file should stay together even if a flush is called 
-        // Begin
-        //
-        // End
-        // String expectedString = String.join(newLine,
-        //                "Begin",
-        //                "",
-        //                "End");
+        /**
+         *  Expected Output: 
+         *  <p> import: </p> 
+         *  <p> output: </p>  
+         *   Begin
+         *   End
+         */
 
         String url = JSPUtils.createHttpUrlString(server, IMPORT_APP_NAME, "index.jsp");
         LOG.info("url: " + url);
@@ -221,8 +220,9 @@ public class JSTLTests {
         String text =  response.getText();
         LOG.info("Servlet response : " + response.getText());
 
-        int beginIndex = text.indexOf("Begin"); // 1006
-        int endIndex = text.indexOf("End"); // 1014
+        // Multi Strings are difficult to work with; Used indicies instead to check location
+        int beginIndex = text.indexOf("Begin"); // Expected: 605
+        int endIndex = text.indexOf("End"); // Expected: 613
 
         assertTrue("Something went wrong with the flushing within the import tag", 8 == (endIndex - beginIndex));
 
