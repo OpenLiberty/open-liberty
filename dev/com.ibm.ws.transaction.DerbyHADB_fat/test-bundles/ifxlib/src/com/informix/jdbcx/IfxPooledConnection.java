@@ -125,13 +125,35 @@ public class IfxPooledConnection implements PooledConnection {
                             IfxConnection.setSimSQLCode(simsqlcodeInt);
                         }
                     }
-                } else // Test Failover at runtime
+                } else if (testTypeInt == 1) // Test Failover at runtime
                 {
                     IfxConnection.setFailoverEnabled(true);
                     IfxConnection.setFailoverCounter(0);
 
                     System.out.println(
                                        "SIMHADB: Test failover at runtime, Stored column failoverval is: " + failovervalInt);
+                    if (failovervalInt > 0)
+                        IfxConnection.setFailoverValue(failovervalInt);
+                    System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                    IfxConnection.setSimSQLCode(simsqlcodeInt);
+                } else if (testTypeInt == 2)// Test duplication in the recovery logs
+                {
+                    IfxConnection.setDuplicationEnabled(true);
+                    IfxConnection.setDuplicateCounter(0);
+
+                    System.out.println(
+                                       "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failovervalInt);
+                    if (failovervalInt > 0)
+                        IfxConnection.setFailoverValue(failovervalInt);
+                    System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                    IfxConnection.setSimSQLCode(simsqlcodeInt);
+                } else if (testTypeInt == 3)// Test "halt" - used as control for duplication test
+                {
+                    IfxConnection.setHaltEnabled(true);
+                    IfxConnection.setHaltCounter(0);
+
+                    System.out.println(
+                                       "SIMHADB: Test halt at runtime, Stored column failoverval is: " + failovervalInt);
                     if (failovervalInt > 0)
                         IfxConnection.setFailoverValue(failovervalInt);
                     System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);

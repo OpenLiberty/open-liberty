@@ -683,45 +683,55 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
-    public int getLightweightTransientErrorRetryTime() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryTime");
+    public int getLightweightLogRetryInterval() {
+        Number num = (Number) _props.get("lightweightLogRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
-    public int getLightweightTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryAttempts");
+    public int getLightweightLogRetryLimit() {
+        Number num = (Number) _props.get("lightweightLogRetryLimit");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
-    public int getStandardTransientErrorRetryTime() {
-        Number num = (Number) _props.get("standardTransientErrorRetryTime");
+    public int getLogRetryInterval() {
+        Number num = (Number) _props.get("logRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
-    public int getStandardTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
+    public int getLogRetryLimit() {
+        Number num = (Number) _props.get("logRetryLimit");
         return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
+     */
+    @Override
+    public boolean enableLogRetries() {
+        return (Boolean) _props.get("enableLogRetries");
     }
 
     @Override

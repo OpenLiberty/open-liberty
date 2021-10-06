@@ -32,7 +32,12 @@ import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * The IfxPreparedStatement and IfxStatement classes are responsible for simulating HA related exceptions.
@@ -45,6 +50,38 @@ public class IfxPreparedStatement implements PreparedStatement {
 
     static int failoverCounter = 0;
     static boolean failoverQuery = false;
+
+    /**
+     * Use the _duplicateRows object to store a set of rows that will be duplicated in the DB table
+     *
+     */
+    private Map<Integer, List> _duplicateRows;
+
+    /**
+     * Keep track of each stored row in _duplicateRows using _rowNum
+     *
+     */
+    private int _rowNum = 0;
+
+    /**
+     * Use the _columnValues object to store a list of values in a particular row to be duplicated.
+     *
+     */
+    private List<Object> _columnValues;
+
+    private int _lastIndexEntry = 0;
+
+    /**
+     * The _cachedRow object keeps a local cache of column values.
+     *
+     */
+    private Map<Integer, Object> _cachedRow;
+
+    /**
+     * Lookup string that allows character digit lookup by index value.
+     * ie _digits[9] == '9' etc.
+     */
+    private final static String _digits = "0123456789abcdef";
 
     IfxPreparedStatement(PreparedStatement realPS) {
         wrappedPS = realPS;
@@ -111,6 +148,32 @@ public class IfxPreparedStatement implements PreparedStatement {
             IfxConnection.incrementFailoverCounter();
             if (IfxConnection.getFailoverCounter() == IfxConnection.getFailoverValue())
                 failOver = true;
+        }
+
+        if (IfxConnection.isDuplicationEnabled()) {
+            System.out.println("SIMHADB: executeBatch, duplication Enabled, Counter -" + IfxConnection.getDuplicateCounter());
+            IfxConnection.incrementDuplicateCounter();
+            if (IfxConnection.getDuplicateCounter() >= IfxConnection.getFailoverValue()) {
+                IfxConnection.setDuplicateNow();
+            }
+            if (IfxConnection.getDuplicateCounter() >= IfxConnection.getFailoverValue() + 2) {
+                System.out.println("SIMHADB: executeBatch, enter halt phase with rowMap " + _duplicateRows);
+
+                //halt
+                duplicateAndHalt();
+            }
+        }
+
+        if (IfxConnection.isHaltEnabled()) {
+            System.out.println("SIMHADB: executeBatch, halt Enabled, Counter -" + IfxConnection.getHaltCounter());
+            IfxConnection.incrementHaltCounter();
+
+            if (IfxConnection.getHaltCounter() >= IfxConnection.getFailoverValue()) {
+                System.out.println("SIMHADB: executeBatch, time to halt");
+
+                //halt
+                simplyHalt();
+            }
         }
 
         if (failOver) {
@@ -370,6 +433,7 @@ public class IfxPreparedStatement implements PreparedStatement {
 
     @Override
     public void addBatch() throws SQLException {
+        System.out.println("SIMHADB: addBatch, this - " + this);
         wrappedPS.addBatch();
     }
 
@@ -464,6 +528,12 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setBytes(int parameterIndex, byte[] theBytes) throws SQLException {
         wrappedPS.setBytes(parameterIndex, theBytes);
+        String theBytesString = toHexString(theBytes, 32);
+        System.out.println("SIMHADB: setBytes, index: " + parameterIndex + " value: " + theBytesString);
+        if (IfxConnection.isDuplicateNow()) {
+            System.out.println("SIMHADB: dup phase setBytes, index: " + parameterIndex + " value: " + theBytesString);
+            collectDataForDuplicateRows(parameterIndex, theBytes);
+        }
     }
 
     @Override
@@ -504,6 +574,11 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setLong(int parameterIndex, long theLong) throws SQLException {
         wrappedPS.setLong(parameterIndex, theLong);
+        System.out.println("SIMHADB: setLong, index: " + parameterIndex + " value: " + theLong);
+        if (IfxConnection.isDuplicateNow()) {
+            System.out.println("SIMHADB: dup phase setLong, index: " + parameterIndex + " value: " + theLong);
+            collectDataForDuplicateRows(parameterIndex, theLong);
+        }
     }
 
     @Override
@@ -539,11 +614,21 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setShort(int parameterIndex, short theShort) throws SQLException {
         wrappedPS.setShort(parameterIndex, theShort);
+        System.out.println("SIMHADB: setShort, index: " + parameterIndex + " value: " + theShort);
+        if (IfxConnection.isDuplicateNow()) {
+            System.out.println("SIMHADB: dup phase setShort, index: " + parameterIndex + " value: " + theShort);
+            collectDataForDuplicateRows(parameterIndex, theShort);
+        }
     }
 
     @Override
     public void setString(int parameterIndex, String theString) throws SQLException {
         wrappedPS.setString(parameterIndex, theString);
+        System.out.println("SIMHADB: setString, index: " + parameterIndex + " value: " + theString);
+        if (IfxConnection.isDuplicateNow()) {
+            System.out.println("SIMHADB: dup phase setString, index: " + parameterIndex + " value: " + theString);
+            collectDataForDuplicateRows(parameterIndex, theString);
+        }
     }
 
     @Override
@@ -722,5 +807,141 @@ public class IfxPreparedStatement implements PreparedStatement {
     public boolean isCloseOnCompletion() throws SQLException {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    public static String toHexString(byte[] byteSource, int bytes) {
+        StringBuffer result = null;
+        boolean truncated = false;
+
+        if (byteSource != null) {
+            if (bytes > byteSource.length) {
+                // If the number of bytes to display is larger than the available number of
+                // bytes, then reset the number of bytes to display to be the available
+                // number of bytes.
+                bytes = byteSource.length;
+            } else if (bytes < byteSource.length) {
+                // If we are displaying less bytes than are available then detect this
+                // 'truncation' condition.
+                truncated = true;
+            }
+
+            result = new StringBuffer(bytes * 2);
+            for (int i = 0; i < bytes; i++) {
+                result.append(_digits.charAt((byteSource[i] >> 4) & 0xf));
+                result.append(_digits.charAt(byteSource[i] & 0xf));
+            }
+
+            if (truncated) {
+                result.append("... (" + bytes + "/" + byteSource.length + ")");
+            } else {
+                result.append("(" + bytes + ")");
+            }
+        } else {
+            result = new StringBuffer("null");
+        }
+
+        return (result.toString());
+    }
+
+    /**
+     * Assemble the data that will be duplicated in the database.
+     *
+     * @param parameterIndex
+     * @param theObject
+     * @throws SQLException
+     */
+    private void collectDataForDuplicateRows(int parameterIndex, Object theObject) throws SQLException {
+        if (!IfxConnection.isDuplicateInfraEnabled()) {
+            IfxConnection.enableDuplicateInfra();
+            System.out.println("SIMHADB: collectDataForDuplicateRows first time in setting a value, the PS: " + this);
+            _columnValues = new ArrayList();
+            _duplicateRows = new HashMap();
+            _cachedRow = new HashMap();
+            _duplicateRows.put(_rowNum, _columnValues);
+        }
+        if (_columnValues != null) {
+            // Cache this value, we may need it later
+            _cachedRow.put(parameterIndex, theObject);
+
+            // See if we are handling a new row
+            if (parameterIndex < _lastIndexEntry) {
+                _columnValues = new ArrayList();
+                _rowNum++;
+                _duplicateRows.put(_rowNum, _columnValues);
+
+                // We need to populate a complete row. If we have started processing a new row (parameterIndex < _lastIndexEntry) but
+                // the parameterIndex is greater than 1, then we need to use cached values to complete the row
+                int cachedIndex = 1;
+                while (parameterIndex > cachedIndex) {
+                    System.out.println("SIMHADB: collectDataForDuplicateRows at index " + cachedIndex + " add value: " + _cachedRow.get(cachedIndex));
+                    _columnValues.add(_cachedRow.get(cachedIndex));
+                    cachedIndex++;
+                }
+            }
+
+            _columnValues.add(theObject);
+            _lastIndexEntry = parameterIndex;
+            System.out.println("SIMHADB: collectDataForDuplicateRows has added " + theObject + " to list " + _columnValues);
+        }
+    }
+
+    /**
+     * Insert the duplicate data and crash the VM, so that the server can be restarted and handle the duplicate data.
+     *
+     * @throws SQLException
+     */
+    private void duplicateAndHalt() throws SQLException {
+        if (_duplicateRows != null) {
+            for (List valueList : _duplicateRows.values()) {
+                if (valueList != null) {
+                    System.out.println("SIMHADB: duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
+                    ListIterator<Object> listItr = valueList.listIterator();
+
+                    int theIndex = 0;
+                    while (listItr.hasNext()) {
+                        theIndex++;
+                        Object theObj = listItr.next();
+                        System.out.println("SIMHADB: duplicateAndHalt, working with object - " + theObj);
+                        if (theObj instanceof String) {
+                            String theString = (String) theObj;
+                            System.out.println("SIMHADB: duplicateAndHalt setString, index: " + theIndex + " value: " + theString);
+                            wrappedPS.setString(theIndex, theString);
+                        } else if (theObj instanceof Short) {
+                            Short theShort = (Short) theObj;
+                            System.out.println("SIMHADB: duplicateAndHalt setShort, index: " + theIndex + " value: " + theShort);
+                            wrappedPS.setShort(theIndex, theShort);
+                        } else if (theObj instanceof Long) {
+                            Long theLong = (Long) theObj;
+                            System.out.println("SIMHADB: duplicateAndHalt setLong, index: " + theIndex + " value: " + theLong);
+                            wrappedPS.setLong(theIndex, theLong);
+                        } else if (theObj instanceof byte[]) {
+                            byte[] theArray = (byte[]) theObj;
+                            String theBytesString = toHexString(theArray, 32);
+                            System.out.println("SIMHADB: setBytes, index: " + theIndex + " value: " + theBytesString);
+                            wrappedPS.setBytes(theIndex, theArray);
+                        }
+                    }
+                    addBatch();
+                    int[] ret = wrappedPS.executeBatch();
+                }
+            }
+
+            System.out.println("SIMHADB: duplicateAndHalt, now commit");
+            Connection myconn = getConnection();
+            myconn.commit();
+            System.out.println("SIMHADB: duplicateAndHalt, now HALT");
+            Runtime.getRuntime().halt(-2000);
+
+        }
+    }
+
+    /**
+     * Insert the duplicate data and crash the VM, so that the server can be restarted and handle the duplicate data.
+     *
+     * @throws SQLException
+     */
+    private void simplyHalt() throws SQLException {
+        System.out.println("SIMHADB: Now HALT");
+        Runtime.getRuntime().halt(-2000);
     }
 }

@@ -34,7 +34,7 @@ import componenttest.app.FATServlet;
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
-        STARTUP, RUNTIME
+        STARTUP, RUNTIME, DUPLICATE, HALT
     };
 
     private static int _batchSize;
@@ -59,6 +59,18 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
         setupTestParameters(request, response, TestType.STARTUP, -4498, 999);
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
+    }
+
+    public void setupForDuplication(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForDuplication");
+        setupTestParameters(request, response, TestType.DUPLICATE, 0, 10);
+        System.out.println("FAILOVERSERVLET: setupForDuplication complete");
+    }
+
+    public void setupForHalt(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForHalt");
+        setupTestParameters(request, response, TestType.HALT, 0, 12); // set the ioperation to the duplicate test value + 2
+        System.out.println("FAILOVERSERVLET: setupForHalt complete");
     }
 
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,

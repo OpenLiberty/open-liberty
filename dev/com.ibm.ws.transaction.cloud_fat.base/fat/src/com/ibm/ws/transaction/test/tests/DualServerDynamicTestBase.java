@@ -74,6 +74,8 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         // wait for 1st server to have gone away
         assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
 
+        server1.postStopServerArchive(); // must explicitly collect since crashed server
+
         // Now start server2
         if (databaseContainerType == DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server2);

@@ -90,6 +90,7 @@ import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
  * </p>
  */
 public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, HeartbeatLog {
+
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -620,6 +621,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             recover(conn);
 
                             conn.commit();
+
                             secondPhaseSuccess = true;
                         } catch (SQLException sqlex) {
                             Tr.audit(tc, "WTRN0107W: " +
@@ -2038,6 +2040,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     protected boolean isSQLErrorTransient(SQLException sqlex) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "isSQLErrorTransient ", new Object[] { sqlex, this });
+
         boolean retryBatch = false;
         int sqlErrorCode = sqlex.getErrorCode();
 
@@ -2048,7 +2051,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.event(tc, " Error code: " + sqlErrorCode);
         }
 
-        if (sqlex instanceof SQLTransientException) {
+        // If the SQLException is a transient exception or if the server has been configured to retry on all SQLExceptions return true.
+        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries() || sqlex instanceof SQLTransientException) {
             retryBatch = true;
         }
 
@@ -2085,6 +2089,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isSQLErrorTransient", retryBatch);
+
         return retryBatch;
     }
 
@@ -2169,7 +2174,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     insertStatement.setLong(4, element.getSectionId());
                     insertStatement.setShort(5, (short) element.getIndex());
                     insertStatement.setBytes(6, element.getData());
-
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Insert row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId() + " item: " + (short) element.getIndex());
                     insertStatement.addBatch();
                 }
             }
@@ -2180,7 +2187,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     updateStatement.setLong(4, element.getRuId());
                     updateStatement.setLong(5, element.getSectionId());
                     updateStatement.setBytes(1, element.getData());
-
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Update row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId());
                     updateStatement.addBatch();
                 }
             }
@@ -2189,6 +2198,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (removes > 0) {
                 for (ruForReplay element : cachedRemoves) {
                     removeStatement.setLong(3, element.getRuId());
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Delete row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId());
                     removeStatement.addBatch();
                 }
             }
@@ -4208,53 +4220,53 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryTime(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryInterval(int)
      */
     @Override
-    public void setStandardTransientErrorRetryTime(int standardTransientErrorRetryTime) {
+    public void setLogRetryInterval(int logRetryInterval) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setStandardTransientErrorRetryTime", standardTransientErrorRetryTime);
+            Tr.debug(tc, "setLogRetryInterval", logRetryInterval);
 
-        _transientRetrySleepTime = standardTransientErrorRetryTime * 1000;
+        _transientRetrySleepTime = logRetryInterval * 1000;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryAttempts(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryLimit(int)
      */
     @Override
-    public void setStandardTransientErrorRetryAttempts(int standardTransientErrorRetryAttempts) {
+    public void setLogRetryLimit(int logRetryLimit) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setStandardTransientErrorRetryAttempts", standardTransientErrorRetryAttempts);
+            Tr.debug(tc, "setLogRetryLimit", logRetryLimit);
 
-        _transientRetryAttempts = standardTransientErrorRetryAttempts;
+        _transientRetryAttempts = logRetryLimit;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryTime(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryInterval(int)
      */
     @Override
-    public void setLightweightTransientErrorRetryTime(int lightweightTransientErrorRetryTime) {
+    public void setLightweightLogRetryInterval(int lightweightLogRetryInterval) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightTransientErrorRetryTime", lightweightTransientErrorRetryTime);
+            Tr.debug(tc, "setLightweightLogRetryInterval", lightweightLogRetryInterval);
 
-        _lightweightTransientRetrySleepTime = lightweightTransientErrorRetryTime * 1000;
+        _lightweightTransientRetrySleepTime = lightweightLogRetryInterval * 1000;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryAttempts(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryLimit(int)
      */
     @Override
-    public void setLightweightTransientErrorRetryAttempts(int lightweightTransientErrorRetryAttempts) {
+    public void setLightweightLogRetryLimit(int lightweightLogRetryLimit) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightTransientErrorRetryAttempts", lightweightTransientErrorRetryAttempts);
+            Tr.debug(tc, "setLightweightLogRetryLimit", lightweightLogRetryLimit);
 
-        _lightweightTransientRetryAttempts = lightweightTransientErrorRetryAttempts;
+        _lightweightTransientRetryAttempts = lightweightLogRetryLimit;
     }
 
     /*
@@ -4345,6 +4357,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
+            if (tc.isEntryEnabled())
+                Tr.entry(tc, "ForceSectionsRetry.retryCode", new Object[] { conn });
+
             // This will confirm that this server owns this log and will invalidate the log if not.
             boolean lockSuccess = takeHADBLock(conn);
 
@@ -4352,6 +4367,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // We can go ahead and write to the Database
                 executeBatchStatements(conn);
             }
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "ForceSectionsRetry.retryCode");
         }
 
         @Override
