@@ -64,9 +64,10 @@ src: \
 fat.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.20,\
-    xml-apis:xml-apis;version=1.4.01,\
+    io.openliberty.xml-apis;version=latest,\
+    io.openliberty.org.apache.xerces;version=latest,\
     com.ibm.websphere.appserver.thirdparty.jsf-2.3;version=latest, \
     com.ibm.ws.org.apache.myfaces.2.3;version=latest, \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

@@ -49,7 +49,6 @@ com.ibm.ws.org.apache.yoko:yoko-rmi-impl:1.5.0.dc410dd7f8
 com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.dc410dd7f8
 com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.dc410dd7f8
 com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.dc410dd7f8
-com.ibm.ws.org.apache:xalan:2.7.2
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.9.13
 com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2.1

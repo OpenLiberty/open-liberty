@@ -21,8 +21,7 @@ dependencies {
     'net.sourceforge.htmlunit:webdriver:2.6',
     'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
     'org.brotli:dec:0.1.2',
-    'xerces:xercesImpl:2.11.0',
-    'xalan:xalan:2.7.2',
+    project(':io.openliberty.org.apache.xerces'),
     project(':com.ibm.ws.org.apache.commons.io'),
     'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
     'org.apache.commons:commons-lang3:3.8',
@@ -35,8 +34,8 @@ dependencies {
     'org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0',
     'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
     project(':io.openliberty.org.apache.commons.codec'),
-    project(':io.openliberty.org.apache.commons.logging'),
-    'xml-apis:xml-apis:1.4.01'
+    project(':io.openliberty.org.apache.commons.logging')
+    
   mojarra 'com.sun.faces:jsf-impl:2.2.14', 
     'com.sun.faces:jsf-api:2.2.14'
   myfaces 'org.apache.myfaces.core:myfaces-api:2.2.12',

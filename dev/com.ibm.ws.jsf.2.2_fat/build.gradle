@@ -35,9 +35,7 @@ dependencies {
       project(':io.openliberty.org.apache.commons.codec'),
       project(':io.openliberty.org.apache.commons.logging'),
       'org.apache.commons:commons-text:1.9',
-      'xerces:xercesImpl:2.11.0',
-      'xalan:xalan:2.7.2',
-      'xml-apis:xml-apis:1.4.01'
+      project(':io.openliberty.org.apache.xerces')
     }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
