@@ -60,6 +60,12 @@
 @REM              service.  The value specifies the number of seconds the script 
 @REM              waits for the service to stop before continuing.  Default is 5.
 @REM
+@REM SERVER_WORKING_DIR - The directory containing output files from the JVM.  For 
+@REM              example the javadump files.  The default value is the location
+@REM              ${WLP_OUTPUT_DIR}/serverName. If set with an absolute path 
+@REM              (ex, C:\logs), that location will be utilized, else if a relative 
+@REM              path (ex, logs) is set it will be relative to the default 
+@REM              location.
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -706,8 +712,21 @@ goto:eof
 @REM Set the current working directory for an existing server.
 @REM
 :serverWorkingDirectory
-  if not exist "%SERVER_OUTPUT_DIR%" mkdir "%SERVER_OUTPUT_DIR%"
-  cd /d "%SERVER_OUTPUT_DIR%"
+  @REM Use a default if SERVER_WORKING_DIR is not set.
+  if not defined SERVER_WORKING_DIR (
+    set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!
+    goto:checkDir
+  )
+  
+  @REM Check if we are relative or absolute path based on a : in the path string.
+  if x%SERVER_WORKING_DIR::=%==x%SERVER_WORKING_DIR% (
+    set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!\!SERVER_WORKING_DIR!
+    goto:checkDir
+  )
+  
+  :checkDir
+    if not exist "%SERVER_WORKING_DIR%" mkdir "%SERVER_WORKING_DIR%"
+    cd /d "%SERVER_WORKING_DIR%"
 goto:eof
 
 @REM
