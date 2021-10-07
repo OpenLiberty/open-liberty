@@ -41,6 +41,8 @@ Export-Package: \
                 
 Private-Package: io.openliberty.opentracing.internal.resources
 
+jakartaeeMe: true
+
 -buildpath: \
     com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
     com.ibm.ws.logging;version=latest, \
@@ -56,6 +58,7 @@ Private-Package: io.openliberty.opentracing.internal.resources
     io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1; version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
+    io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest, \
     com.ibm.ws.container.service;version=latest, \
     com.ibm.ws.microprofile.opentracing.jaeger;version=latest, \
     com.ibm.ws.classloading;version=latest, \

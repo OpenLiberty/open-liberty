@@ -24,5 +24,7 @@ Export-Package: io.opentracing;version=0.33.0, \
 
 publish.wlp.jar.suffix: dev/api/third-party
 
+jakartaeeMe: true
+
 -buildpath: \
 	io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest
