@@ -54,6 +54,9 @@ public class IfxConnection implements Connection {
     private static int _haltCounter = 0;
     private static boolean _haltEnabled = false;
 
+    private static int _failingRetries = 0;
+    private static int _failingRetryCounter = 0;
+
     private static int simSQLCode = 0;
 
     IfxConnection(Connection realConn) {
@@ -850,6 +853,34 @@ public class IfxConnection implements Connection {
      */
     public static void setSimSQLCode(int simSQLCode) {
         IfxConnection.simSQLCode = simSQLCode;
+    }
+
+    /**
+     * @return the _failingRetries
+     */
+    public static int getFailingRetries() {
+        return _failingRetries;
+    }
+
+    public static void setFailingRetries(int retries) {
+        System.out.println("SIMHADB: setFailingRetries called with value - " + retries + ", on connection");
+        IfxConnection._failingRetries = retries;
+    }
+
+    /**
+     * @param failoverCounter
+     *            the failoverCounter to set
+     */
+    public static void setFailingRetryCounter(int failingRetryCounter) {
+        IfxConnection._failingRetryCounter = failingRetryCounter;
+    }
+
+    public static int getFailingRetryCounter() {
+        return _failingRetryCounter;
+    }
+
+    public static void incrementFailingRetryCounter() {
+        IfxConnection._failingRetryCounter++;
     }
 
     /*

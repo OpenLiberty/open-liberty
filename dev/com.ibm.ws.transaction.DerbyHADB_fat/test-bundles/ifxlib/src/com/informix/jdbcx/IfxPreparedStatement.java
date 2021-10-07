@@ -149,6 +149,12 @@ public class IfxPreparedStatement implements PreparedStatement {
             IfxConnection.incrementFailoverCounter();
             if (IfxConnection.getFailoverCounter() == IfxConnection.getFailoverValue())
                 failOver = true;
+            if (IfxConnection.getFailoverCounter() > IfxConnection.getFailoverValue()
+                && IfxConnection.getFailingRetries() > 1
+                && IfxConnection.getFailingRetryCounter() <= IfxConnection.getFailingRetries()) {
+                System.out.println("SIMHADB: executeBatch, fail on the retry");
+                failOver = true;
+            }
         }
 
         if (IfxConnection.isDuplicationEnabled()) {

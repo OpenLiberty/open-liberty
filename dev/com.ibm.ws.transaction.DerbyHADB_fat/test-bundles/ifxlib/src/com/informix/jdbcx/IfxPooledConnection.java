@@ -83,15 +83,16 @@ public class IfxPooledConnection implements PooledConnection {
         ResultSet rsBasic = null;
         try {
             System.out.println("SIMHADB: Execute a query to see if we can find the table");
-            rsBasic = stmt.executeQuery("SELECT testtype, failoverval, simsqlcode" + " FROM hatable");
+            rsBasic = stmt.executeQuery("SELECT testtype, failingoperation, numberoffailures, simsqlcode" + " FROM hatable");
             if (rsBasic.next()) {
                 int testTypeInt = rsBasic.getInt(1);
                 System.out.println("SIMHADB: Stored column testtype is: " + testTypeInt);
-                int failovervalInt = rsBasic.getInt(2);
-                System.out.println("SIMHADB: Stored column failoverval is: " + failovervalInt);
-                int simsqlcodeInt = rsBasic.getInt(3);
+                int failingOperation = rsBasic.getInt(2);
+                System.out.println("SIMHADB: Stored column failingoperation is: " + failingOperation);
+                int numberOfFailuresInt = rsBasic.getInt(3);
+                System.out.println("SIMHADB: Stored column numberoffailures is: " + numberOfFailuresInt);
+                int simsqlcodeInt = rsBasic.getInt(4);
                 System.out.println("SIMHADB: Stored column simsqlcode is: " + simsqlcodeInt);
-
                 if (testTypeInt == 0) // Test Failover at startup
                 {
                     // We abuse the failovervalInt parameter. If it is set to
@@ -101,7 +102,7 @@ public class IfxPooledConnection implements PooledConnection {
                     // down. But we reset the column, so that next time (on
                     // startup) failover
                     // will be enabled
-                    if (failovervalInt == 999) {
+                    if (failingOperation == 999) {
                         IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
                         IfxConnection.setFailoverEnabled(false);
                         System.out.println("SIMHADB: update HATABLE with faoloverval 0");
@@ -116,7 +117,7 @@ public class IfxPooledConnection implements PooledConnection {
                                                "SIMHADB: Already set to test failover at startup, we don't want to change settings");
                         } else {
                             System.out.println("SIMHADB: Test failover at startup, make settings");
-                            IfxConnection.setFailoverValue(failovervalInt);
+                            IfxConnection.setFailoverValue(failingOperation);
                             IfxConnection.setQueryFailoverEnabled(true);
                             IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(true);
                             IfxConnection.setQueryFailoverCounter(0);
@@ -131,20 +132,25 @@ public class IfxPooledConnection implements PooledConnection {
                     IfxConnection.setFailoverCounter(0);
 
                     System.out.println(
-                                       "SIMHADB: Test failover at runtime, Stored column failoverval is: " + failovervalInt);
-                    if (failovervalInt > 0)
-                        IfxConnection.setFailoverValue(failovervalInt);
+                                       "SIMHADB: Test failover at runtime, Stored column failoverval is: " + failingOperation);
+                    if (failingOperation > 0)
+                        IfxConnection.setFailoverValue(failingOperation);
                     System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
                     IfxConnection.setSimSQLCode(simsqlcodeInt);
+
+                    if (numberOfFailuresInt > 1) {
+                        IfxConnection.setFailingRetries(numberOfFailuresInt);
+                        IfxConnection.setFailingRetryCounter(0);
+                    }
                 } else if (testTypeInt == 2)// Test duplication in the recovery logs
                 {
                     IfxConnection.setDuplicationEnabled(true);
                     IfxConnection.setDuplicateCounter(0);
 
                     System.out.println(
-                                       "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failovervalInt);
-                    if (failovervalInt > 0)
-                        IfxConnection.setFailoverValue(failovervalInt);
+                                       "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failingOperation);
+                    if (failingOperation > 0)
+                        IfxConnection.setFailoverValue(failingOperation);
                     System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
                     IfxConnection.setSimSQLCode(simsqlcodeInt);
                 } else if (testTypeInt == 3)// Test "halt" - used as control for duplication test
@@ -153,9 +159,9 @@ public class IfxPooledConnection implements PooledConnection {
                     IfxConnection.setHaltCounter(0);
 
                     System.out.println(
-                                       "SIMHADB: Test halt at runtime, Stored column failoverval is: " + failovervalInt);
-                    if (failovervalInt > 0)
-                        IfxConnection.setFailoverValue(failovervalInt);
+                                       "SIMHADB: Test halt at runtime, Stored column failoverval is: " + failingOperation);
+                    if (failingOperation > 0)
+                        IfxConnection.setFailoverValue(failingOperation);
                     System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
                     IfxConnection.setSimSQLCode(simsqlcodeInt);
                 }

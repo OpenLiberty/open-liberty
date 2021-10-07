@@ -45,36 +45,42 @@ public class FailoverServlet extends FATServlet {
 
     public void setupForRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailover");
-        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12);
+        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForRecoverableFailover complete");
+    }
+
+    public void setupForRecoverableFailureMultipleRetries(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailureMultipleRetries");
+        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12, 5); // Can fail up to 5 times
+        System.out.println("FAILOVERSERVLET: setupForRecoverableFailureMultipleRetries complete");
     }
 
     public void setupForNonRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableFailover");
-        setupTestParameters(request, response, TestType.RUNTIME, -3, 12);
+        setupTestParameters(request, response, TestType.RUNTIME, -3, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableFailover complete");
     }
 
     public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
-        setupTestParameters(request, response, TestType.STARTUP, -4498, 999);
+        setupTestParameters(request, response, TestType.STARTUP, -4498, 999, 1);
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
     }
 
     public void setupForDuplication(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForDuplication");
-        setupTestParameters(request, response, TestType.DUPLICATE, 0, 10);
+        setupTestParameters(request, response, TestType.DUPLICATE, 0, 10, 1);
         System.out.println("FAILOVERSERVLET: setupForDuplication complete");
     }
 
     public void setupForHalt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForHalt");
-        setupTestParameters(request, response, TestType.HALT, 0, 12); // set the ioperation to the duplicate test value + 2
+        setupTestParameters(request, response, TestType.HALT, 0, 12, 1); // set the ioperation to the duplicate test value + 2
         System.out.println("FAILOVERSERVLET: setupForHalt complete");
     }
 
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
-                                     int thesqlcode, int operationToFail) throws Exception {
+                                     int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupTestParameters");
 
         Connection con = ds.getConnection();
@@ -90,11 +96,11 @@ public class FailoverServlet extends FATServlet {
             }
             System.out.println("FAILOVERSERVLET: create hatable");
             stmt.executeUpdate(
-                               "create table hatable (testtype int not null primary key, failoverval int, simsqlcode int)");
+                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
             // was col2 varchar(20)
             System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
                                + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
-            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", "
+            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
                                + thesqlcode + ")"); // was -4498
 
             // UserTransaction Commit

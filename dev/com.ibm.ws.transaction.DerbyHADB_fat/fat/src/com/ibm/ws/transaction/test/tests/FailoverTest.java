@@ -234,6 +234,7 @@ public class FailoverTest extends FATServletClient {
         retriesServer.setServerStartTimeout(30000);
 
         Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, retriesServer);
 
         Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
@@ -262,6 +263,7 @@ public class FailoverTest extends FATServletClient {
         // string appears in the messages.log
         retriesServer.waitForStringInLog("recover\\(");
         Log.info(this.getClass(), method, "call stopserver");
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
     }
 
@@ -312,6 +314,7 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
 
         // RTC defect 170741
@@ -320,6 +323,7 @@ public class FailoverTest extends FATServletClient {
         // string appears in the messages.log
         defaultServer.waitForStringInLog("recover\\(");
         Log.info(this.getClass(), method, "call stopserver");
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
     }
 
