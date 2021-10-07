@@ -14,11 +14,13 @@
 	<oauth-roles>
 		<authenticated>
 			<user name="testuser" />
+			<user name="oidcLoginUser" />
 			<!-- <user name="user1" /> -->
 			<group name="group1" />
 		</authenticated>
 		<clientManager>
 			<user name="testuser" />
+			<user name="oidcLoginUser" />
 			<!-- <user name="user1" /> -->
 			<group name="group1" />
 		</clientManager>

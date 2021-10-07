@@ -25,18 +25,20 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                LibertyOP_BasicTests_oauth_usingSocialConfig.class,
-                LibertyOP_BasicTests_oidc_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oauth_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
-                LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
-                LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_BasicConfigTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig.class,
-                LibertyOP_Social_SamesiteTests_oauth_usingSocialConfig.class,
-                LibertyOP_Social_SamesiteTests_oidc_usingSocialConfig.class
+        AlwaysPassesTest.class,
+        LibertyOP_BasicTests_oauth_usingSocialConfig.class,
+        LibertyOP_BasicTests_oidc_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oauth_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
+        LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
+        LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_BasicConfigTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig.class,
+        LibertyOP_Social_SamesiteTests_oauth_usingSocialConfig.class,
+        LibertyOP_Social_SamesiteTests_oidc_usingSocialConfig.class,
+        LibertyOP_SignatureAlg_oidc_usingSocialConfig.class,
+        LibertyOP_Encryption_oidc_usingSocialConfig.class
 
 })
 

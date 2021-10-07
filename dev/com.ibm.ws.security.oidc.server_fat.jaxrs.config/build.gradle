@@ -161,6 +161,7 @@ autoFVT.doLast {
     copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
       include "jwtBuilderApplication.xml"
+      include "signEncryptSSLSettings.xml"
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
     }
 

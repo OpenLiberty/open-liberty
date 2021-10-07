@@ -109,6 +109,11 @@ autoFVT.doLast {
       include 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks'
     }
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'oauthRoles_1.xml'
+    }  
   }
   
   /*
@@ -140,4 +145,5 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'testFiles')
       include '**'
     }
+      
 }

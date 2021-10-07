@@ -29,9 +29,9 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.SignatureEncryptionUserinfoUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
-import com.ibm.ws.security.openidconnect.client.fat.utils.SignatureEncryptionUserinfoUtils;
 import com.meterware.httpunit.WebConversation;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -70,7 +70,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
     public static final String badTokenSegment = "1234567890123456789";
     private static final JwtTokenActions actions = new JwtTokenActions();
-    private static final SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
+    protected static SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -185,7 +185,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
         updatedTestSettings.setSignatureAlg(alg);
         updatedTestSettings.setDecryptKey(JwtKeyTools.getComplexPrivateKeyForSigAlg(testOPServer.getServer(), alg));
-        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings, isImplicit);
+        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(alg, alg, updatedTestSettings, Constants.LOGIN_USER, isImplicit);
 
         if (isImplicit) {
             updatedTestSettings.setState(".+");
@@ -312,7 +312,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
                 if (parm.getName().equals("sub") || userinfoWillBeUsed) {
                     expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                 } else {
-                    expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
+                    expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Found claimm \" + parm.getName() + \" in the response and it should not be there.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                 }
             }
         }

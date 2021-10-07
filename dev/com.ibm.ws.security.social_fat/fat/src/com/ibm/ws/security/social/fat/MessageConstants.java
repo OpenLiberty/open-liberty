@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.social.fat;
@@ -15,5 +15,8 @@ public class MessageConstants extends com.ibm.ws.security.oauth_oidc.fat.commonT
 
     public static final String CWWKS5451E_AUTH_CODE_ERROR_GETTING_TOKENS = "CWWKS5451E";
     public static final String CWWKS5476E_ERROR_EXECUTING_REQUEST = "CWWKS5476E";
+    public static final String CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG = "CWWKS5498E";
+    public static final String CWWKS6064E_TOKEN_IS_NOT_A_JWE = "CWWKS6064E";
+    public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
 
 }

@@ -256,8 +256,15 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/imports')
     include 'tokenEndpointApplication.xml'
+    include 'oauthRoles_1.xml'
   }
 
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.op/imports')
+    include 'oauthRoles_1.xml'
+  }
+  
    /*
    * Copy UserinfoEndpointServlet application and the associated keystore to the applicable test server.
    */
