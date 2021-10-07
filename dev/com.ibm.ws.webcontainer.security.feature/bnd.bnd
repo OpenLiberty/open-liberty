@@ -50,7 +50,7 @@ Service-Component: \
     locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     authenticatorFactory=com.ibm.ws.webcontainer.security.WebAuthenticatorFactory; \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
-    unprotectedResourceService=com.ibm.ws.webcontainer.security.UnprotectedResourceService; \
+    unprotectedResourceService='com.ibm.ws.webcontainer.security.UnprotectedResourceService(id=SAML20RequestTAI)'; \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner; \
     multiple:='interceptorService,webAuthenticator'; \
     greedy:='ssoAuthFilter,interceptorService,webAuthenticator,unprotectedResourceService,authenticatorFactory'; \
