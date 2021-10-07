@@ -50,13 +50,15 @@ public class RestClientTckPackageTest {
             Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
             Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
         }
+        
+        server.startServer();
     }
-
+    
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
-//            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+//            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
         }
     }
 
