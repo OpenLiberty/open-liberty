@@ -1037,9 +1037,13 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void printProcesses() {
+        printProcesses(machine);
+    }
+
+    public static void printProcesses(Machine host) {
         final String m = "printProcesses";
         try {
-            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
             Log.info(c, m, detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
@@ -2532,21 +2536,9 @@ public class LibertyServer implements LogMonitorClient {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
             }
-            if (postStopServerArchive)
-                while (true) {
-                    try {
-                        postStopServerArchive();
-                        break;
-                    } catch (Exception e) {
-                        Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
-                        printProcesses();
-                        try {
-                            Thread.sleep(500);
-                        } catch (Exception x) {
-                            Log.error(c, method, x);
-                        }
-                    }
-                }
+            if (postStopServerArchive) {
+                postStopServerArchive();
+            }
             // Delete marker for stopped server
             // deleteServerMarkerFile();
         }
@@ -2740,9 +2732,55 @@ public class LibertyServer implements LogMonitorClient {
      * This is particularly required for tWAS FAT buckets as it is not known
      * when these finish, using this method will ensure logs are collected.
      * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * The operation will be retried
      */
     public void postStopServerArchive() throws Exception {
+        postStopServerArchive(true);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry if true and the operation fails, retry
+     */
+    public void postStopServerArchive(boolean retry) throws Exception {
         final String method = "postStopServerArchive";
+        Log.entering(c, method);
+
+        while (true) {
+            try {
+                _postStopServerArchive();
+                break;
+            } catch (Exception e) {
+                Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
+                printProcesses();
+            }
+            if (retry) {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception x) {
+                    Log.error(c, method, x);
+                }
+            } else {
+                break;
+            }
+        }
+
+        Log.exiting(c, method);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     */
+    private void _postStopServerArchive() throws Exception {
+        final String method = "_postStopServerArchive";
         Log.entering(c, method);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
