@@ -245,7 +245,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -607,7 +607,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     if (extensionArchive == null) {
                         extensionArchive = newSPIExtensionArchive(sr, extensionMetaData.getService(), applicationContext);
                         runtimeExtensionMap.put(serviceID, extensionArchive);
-                    } 
+                    }
                 }
                 extensionSet.add(extensionArchive);
             }
@@ -643,7 +643,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         //The simpler SPI does not offer these properties.
-        boolean applicationBDAsVisible = false;
+        boolean applicationBDAsVisible = webSphereCDIExtensionMetaData.applicationBeansVisible();
         boolean extClassesOnly = false;
 
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
