@@ -100,6 +100,7 @@ public class Jose4jUtil {
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
+            checkJwtFormatAgainstConfigRequirements(tokenStr, clientConfig);
             if (JweHelper.isJwe(tokenStr) && isRunningBetaMode()) {
                 tokenStr = JweHelper.extractJwsFromJweToken(tokenStr, clientConfig, null);
             }
@@ -215,6 +216,17 @@ public class Jose4jUtil {
 
     boolean useAccessTokenAsIdToken(ConvergedClientConfig clientConfig) {
         return clientConfig.getUseAccessTokenAsIdToken();
+    }
+
+    void checkJwtFormatAgainstConfigRequirements(String jwtString, ConvergedClientConfig clientConfig) throws JWTTokenValidationFailedException {
+        if (JweHelper.isJwsRequired(clientConfig) && !JweHelper.isJws(jwtString)) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS", new Object[] { clientConfig.getId() });
+            throw new JWTTokenValidationFailedException(errorMsg);
+        }
+        if (JweHelper.isJweRequired(clientConfig) && !JweHelper.isJwe(jwtString)) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE", new Object[] { clientConfig.getId() });
+            throw new JWTTokenValidationFailedException(errorMsg);
+        }
     }
 
     //Just parse without validation for now
