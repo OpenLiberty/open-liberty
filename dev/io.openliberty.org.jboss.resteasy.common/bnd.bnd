@@ -67,7 +67,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors;version=${resteasy-version}, \
-  org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \

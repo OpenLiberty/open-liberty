@@ -24,7 +24,8 @@ app-resources= \
 
 -cdiannotations:
 
--dsannotations: 
+-dsannotations: \
+  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata
 
 Service-Component: \
   io.openliberty.restfulWS.mprestclient.ResourceProvider; \
@@ -38,12 +39,13 @@ Export-Package: \
   org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
 
 Import-Package: \
-  !org.jboss.resteasy.cdi.*,\
-  javax.annotation;version=!, \
-  *
+	javax.annotation;version='!',\
+	*
+#	org.eclipse.microprofile.config;version='[3,4)',\
+#	org.eclipse.microprofile.rest.client.*;version='[2,3)',\
 
-DynamicImport-Package: \
-  org.jboss.resteasy.cdi
+Private-Package: \
+  io.openliberty.microprofile.rest.client30.internal
 
 instrument.ffdc: false
 instrument.disabled: false

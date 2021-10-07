@@ -10,7 +10,10 @@ IBM-API-Package: \
   org.eclipse.microprofile.rest.client.ext; type="stable", \
   org.eclipse.microprofile.rest.client.inject; type="stable", \
   org.eclipse.microprofile.rest.client.spi; type="stable", \
-  org.reactivestreams; type="stable";
+  org.reactivestreams; type="stable", \
+  org.jboss.resteasy.client.jaxrs.internal; type="internal", \
+  org.jboss.resteasy.client.jaxrs.internal.proxy; type="internal", \
+  org.jboss.resteasy.microprofile.client; type="internal"
 IBM-ShortName: mpRestClient-3.0
 Subsystem-Name: MicroProfile Rest Client 3.0
 
