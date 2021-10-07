@@ -1909,7 +1909,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>4.0-RC2</version>
+      <version>4.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
