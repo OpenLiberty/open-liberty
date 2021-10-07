@@ -17,6 +17,8 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.common
 
 Bundle-Description: MicroProfile Metrics Common, version ${bVersion}
 
+jakartaeeMe: true
+
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
