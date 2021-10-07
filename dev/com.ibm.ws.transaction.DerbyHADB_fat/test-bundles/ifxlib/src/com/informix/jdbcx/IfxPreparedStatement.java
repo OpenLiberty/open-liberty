@@ -55,28 +55,29 @@ public class IfxPreparedStatement implements PreparedStatement {
      * Use the _duplicateRows object to store a set of rows that will be duplicated in the DB table
      *
      */
-    private Map<Integer, List> _duplicateRows;
+    private static Map<Integer, List> _duplicateRows;
 
     /**
      * Keep track of each stored row in _duplicateRows using _rowNum
      *
      */
-    private int _rowNum = 0;
+    private static int _rowNum = 0;
 
     /**
      * Use the _columnValues object to store a list of values in a particular row to be duplicated.
      *
      */
-    private List<Object> _columnValues;
+    private static List<Object> _columnValues;
 
-    private int _lastIndexEntry = 0;
+    private static int _lastIndexEntry = 0;
 
     /**
      * The _cachedRow object keeps a local cache of column values.
      *
      */
-    private Map<Integer, Object> _cachedRow;
+    private static Map<Integer, Object> _cachedRow;
 
+    private boolean _tranlogInsertFlag = false;
     /**
      * Lookup string that allows character digit lookup by index value.
      * ie _digits[9] == '9' etc.
@@ -160,7 +161,8 @@ public class IfxPreparedStatement implements PreparedStatement {
                 System.out.println("SIMHADB: executeBatch, enter halt phase with rowMap " + _duplicateRows);
 
                 //halt
-                duplicateAndHalt();
+                if (_tranlogInsertFlag)
+                    duplicateAndHalt();
             }
         }
 
@@ -172,7 +174,8 @@ public class IfxPreparedStatement implements PreparedStatement {
                 System.out.println("SIMHADB: executeBatch, time to halt");
 
                 //halt
-                simplyHalt();
+                if (_tranlogInsertFlag)
+                    simplyHalt();
             }
         }
 
@@ -851,37 +854,39 @@ public class IfxPreparedStatement implements PreparedStatement {
      * @throws SQLException
      */
     private void collectDataForDuplicateRows(int parameterIndex, Object theObject) throws SQLException {
-        if (!IfxConnection.isDuplicateInfraEnabled()) {
-            IfxConnection.enableDuplicateInfra();
-            System.out.println("SIMHADB: collectDataForDuplicateRows first time in setting a value, the PS: " + this);
-            _columnValues = new ArrayList();
-            _duplicateRows = new HashMap();
-            _cachedRow = new HashMap();
-            _duplicateRows.put(_rowNum, _columnValues);
-        }
-        if (_columnValues != null) {
-            // Cache this value, we may need it later
-            _cachedRow.put(parameterIndex, theObject);
-
-            // See if we are handling a new row
-            if (parameterIndex < _lastIndexEntry) {
+        if (_tranlogInsertFlag) {
+            if (!IfxConnection.isDuplicateInfraEnabled()) {
+                IfxConnection.enableDuplicateInfra();
+                System.out.println("SIMHADB: collectDataForDuplicateRows first time in setting a value, the PS: " + this);
                 _columnValues = new ArrayList();
-                _rowNum++;
+                _duplicateRows = new HashMap();
+                _cachedRow = new HashMap();
                 _duplicateRows.put(_rowNum, _columnValues);
-
-                // We need to populate a complete row. If we have started processing a new row (parameterIndex < _lastIndexEntry) but
-                // the parameterIndex is greater than 1, then we need to use cached values to complete the row
-                int cachedIndex = 1;
-                while (parameterIndex > cachedIndex) {
-                    System.out.println("SIMHADB: collectDataForDuplicateRows at index " + cachedIndex + " add value: " + _cachedRow.get(cachedIndex));
-                    _columnValues.add(_cachedRow.get(cachedIndex));
-                    cachedIndex++;
-                }
             }
+            if (_columnValues != null) {
+                // Cache this value, we may need it later
+                _cachedRow.put(parameterIndex, theObject);
 
-            _columnValues.add(theObject);
-            _lastIndexEntry = parameterIndex;
-            System.out.println("SIMHADB: collectDataForDuplicateRows has added " + theObject + " to list " + _columnValues);
+                // See if we are handling a new row
+                if (parameterIndex < _lastIndexEntry) {
+                    _columnValues = new ArrayList();
+                    _rowNum++;
+                    _duplicateRows.put(_rowNum, _columnValues);
+
+                    // We need to populate a complete row. If we have started processing a new row (parameterIndex < _lastIndexEntry) but
+                    // the parameterIndex is greater than 1, then we need to use cached values to complete the row
+                    int cachedIndex = 1;
+                    while (parameterIndex > cachedIndex) {
+                        System.out.println("SIMHADB: collectDataForDuplicateRows at index " + cachedIndex + " add value: " + _cachedRow.get(cachedIndex));
+                        _columnValues.add(_cachedRow.get(cachedIndex));
+                        cachedIndex++;
+                    }
+                }
+
+                _columnValues.add(theObject);
+                _lastIndexEntry = parameterIndex;
+                System.out.println("SIMHADB: collectDataForDuplicateRows has added " + theObject + " to list " + _columnValues);
+            }
         }
     }
 
@@ -892,6 +897,7 @@ public class IfxPreparedStatement implements PreparedStatement {
      */
     private void duplicateAndHalt() throws SQLException {
         if (_duplicateRows != null) {
+            System.out.println("SIMHADB: duplicateAndHalt there are - " + _duplicateRows.size() + " rows to duplicate");
             for (List valueList : _duplicateRows.values()) {
                 if (valueList != null) {
                     System.out.println("SIMHADB: duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
@@ -944,4 +950,9 @@ public class IfxPreparedStatement implements PreparedStatement {
         System.out.println("SIMHADB: Now HALT");
         Runtime.getRuntime().halt(-2000);
     }
+
+    public void setTranlogInsertFlag() {
+        _tranlogInsertFlag = true;
+    }
+
 }
