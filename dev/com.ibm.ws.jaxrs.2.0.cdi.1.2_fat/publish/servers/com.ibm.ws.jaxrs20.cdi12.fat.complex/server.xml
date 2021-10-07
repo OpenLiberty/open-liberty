@@ -5,6 +5,7 @@
     </featureManager>
 
   	<include location="../fatTestPorts.xml"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
 
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 </server>
