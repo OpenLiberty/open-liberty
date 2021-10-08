@@ -15,6 +15,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -71,12 +72,15 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
         //Append global tags to the metric
         Config config = configResolver.getConfig(getThreadContextClassLoader());
         try {
-            String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split(",");
-            String currentTags = metadataCopy.getTagsAsString();
-            for (String tag : globaltags) {
-                if (!(tag == null || tag.isEmpty() || !tag.contains("="))) {
-                    if (!currentTags.contains(tag.split("=")[0])) {
-                        metadataCopy.addTag(tag);
+            Optional<String> val = config.getOptionalValue("MP_METRICS_TAGS", String.class);
+            if (val != null && val.isPresent()) {
+                String[] globaltags = val.get().split(",");
+                String currentTags = metadataCopy.getTagsAsString();
+                for (String tag : globaltags) {
+                    if (!(tag == null || tag.isEmpty() || !tag.contains("="))) {
+                        if (!currentTags.contains(tag.split("=")[0])) {
+                            metadataCopy.addTag(tag);
+                        }
                     }
                 }
             }
