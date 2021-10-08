@@ -102,8 +102,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         setupComplete = true;
         Log.exiting(c, m, setupComplete);
     }
-        Log.info(c, "setupTestcontainersForArtifactory", "Exit", setupComplete);
-    }
 
     private static void generateTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
