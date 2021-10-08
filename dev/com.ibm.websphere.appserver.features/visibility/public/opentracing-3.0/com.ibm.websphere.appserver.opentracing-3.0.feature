@@ -12,9 +12,8 @@ IBM-API-Package: io.opentracing;  type="third-party",\
                  io.openliberty.opentracing.spi.tracer; type="ibm-spi"
 -features=com.ibm.websphere.appserver.mpConfig-3.0, \
   io.openliberty.restfulWS-3.0, \
-  io.openliberty.jakarta.cdi-3.0
--bundles=com.ibm.ws.jaxrs.defaultexceptionmapper, \
-         com.ibm.ws.jaxrs.2.x.defaultexceptionmapper, \
+  io.openliberty.cdi-3.0
+-bundles=com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta, \
          io.openliberty.opentracing.2.0.internal.jakarta, \
          io.openliberty.opentracing.2.0.internal.cdi.jakarta, \
          io.openliberty.io.opentracing.opentracing-util.0.33.0, \

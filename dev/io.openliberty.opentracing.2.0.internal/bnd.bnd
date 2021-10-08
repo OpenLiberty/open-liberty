@@ -32,6 +32,8 @@ Import-Package: \
     io.opentracing.util;version=0.33.0,\
     io.opentracing.noop;version=0.33.0,\
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
+    org.eclipse.microprofile.opentracing;version="[2.0,4)",\
+    com.ibm.ws.jaxrs.defaultexceptionmapper;resolution:=optional, \
     *
 
 Export-Package: \
@@ -40,6 +42,10 @@ Export-Package: \
 	io.openliberty.opentracing.spi.tracer;version=2.0;provide=true
                 
 Private-Package: io.openliberty.opentracing.internal.resources
+
+app-resources= \
+  META-INF/services/javax.ws.rs.ext.Providers
+
 
 jakartaeeMe: true
 
@@ -60,6 +66,7 @@ jakartaeeMe: true
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest, \
     com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.javaee.version; version=latest, \
     com.ibm.ws.microprofile.opentracing.jaeger;version=latest, \
     com.ibm.ws.classloading;version=latest, \
     com.ibm.websphere.appserver.spi.kernel.service;version=latest

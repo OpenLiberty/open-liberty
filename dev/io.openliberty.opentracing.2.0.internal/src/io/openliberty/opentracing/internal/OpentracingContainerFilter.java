@@ -60,9 +60,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
     private OpentracingFilterHelper helper;
 
-    OpentracingContainerFilter(OpentracingFilterHelper helper) {
-        setFilterHelper(helper);
+    public OpentracingContainerFilter() {
+        helper = OpentracingJaxRsProviderRegister.getInstance().getOpentracingFilterHelper();
     }
+    
+//    OpentracingContainerFilter(OpentracingFilterHelper helper) {
+//        setFilterHelper(helper);
+//    }
 
     void setFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;

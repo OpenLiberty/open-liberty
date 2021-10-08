@@ -11,8 +11,6 @@
 
 package io.openliberty.opentracing.internal;
 
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentContext;
@@ -24,14 +22,12 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 /**
  * <p>The open tracing filter service.</p>
  */
-@Component(immediate = true, service = { JaxRsProviderRegister.class, OpentracingFilterProvider.class })
-public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, OpentracingFilterProvider {
+@Component(immediate = true)
+public class OpentracingJaxRsProviderRegister {
     private static final TraceComponent tc = Tr.register(OpentracingJaxRsProviderRegister.class);
     private static final AtomicReference<OpentracingJaxRsProviderRegister> instance = new AtomicReference<OpentracingJaxRsProviderRegister>(null);
 
@@ -39,14 +35,10 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
 
     protected synchronized void activate(ComponentContext context) {
         instance.set(this);
-        setContainerFilter();
-        setClientFilter();
     }
 
     protected void deactivate(ComponentContext context) {
         instance.compareAndSet(this, null);
-        clearContainerFilter();
-        clearClientFilter();
     }
 
     public static OpentracingJaxRsProviderRegister getInstance() {
@@ -57,91 +49,18 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
     // filter, both of which are shared by all applications.  The filters are
     // stateless.
 
-    private OpentracingContainerFilter containerFilter;
-    private OpentracingClientFilter clientFilter;
     private OpentracingFilterHelper helper;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected synchronized void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
-        if (containerFilter != null) {
-            containerFilter.setFilterHelper(helper);
-        }
-        if (clientFilter != null) {
-            clientFilter.setFilterHelper(helper);
-        }
     }
 
     protected void unsetOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = null;
-        if (containerFilter != null) {
-            containerFilter.setFilterHelper(null);
-        }
-        if (clientFilter != null) {
-            clientFilter.setFilterHelper(null);
-        }
     }
 
-    @Trivial
-    protected void setContainerFilter() {
-        containerFilter = new OpentracingContainerFilter(helper);
-    }
-
-    @Trivial
-    protected void clearContainerFilter() {
-        containerFilter = null;
-    }
-
-    @Override
-    @Trivial
-    public OpentracingContainerFilter getContainerFilter() {
-        return containerFilter;
-    }
-
-    @Trivial
-    protected void setClientFilter() {
-        clientFilter = new OpentracingClientFilter(helper);
-    }
-
-    @Trivial
-    protected void clearClientFilter() {
-        clientFilter = null;
-    }
-
-    @Override
-    @Trivial
-    public OpentracingClientFilter getClientFilter() {
-        return clientFilter;
-    }
-
-    //
-
-    @Override
-    @Trivial
-    public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
-        String methodName = "installProvider";
-
-        if (clientSide) {
-            OpentracingClientFilter useClientFilter = getClientFilter();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, "Client Filter", useClientFilter);
-            }
-            if (useClientFilter != null) {
-                providers.add(useClientFilter);
-            } else {
-                // Ignore: The component is not active.
-            }
-
-        } else {
-            OpentracingContainerFilter useContainerFilter = getContainerFilter();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, "Container Filter", useContainerFilter);
-            }
-            if (useContainerFilter != null) {
-                providers.add(useContainerFilter);
-            } else {
-                // Ignore: The component is not active.
-            }
-        }
+    public OpentracingFilterHelper getOpentracingFilterHelper() {
+        return helper;
     }
 }

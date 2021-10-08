@@ -41,7 +41,8 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
                 Tr.debug(tc, "OpentracingJaxRsProviderRegister.getInstance() returned null");
             }
         } else {
-            clientFilter = jaxRsProvider.getClientFilter();
+        	clientFilter = new OpentracingClientFilter(jaxRsProvider.getOpentracingFilterHelper());
+            //clientFilter = jaxRsProvider.getClientFilter();
         }
     }
 
