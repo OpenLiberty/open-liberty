@@ -12,12 +12,15 @@ package concurrent.mp.fat.v13.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,8 +42,15 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPContextProp1_3_TestServlet")
 public class MPContextProp1_3_TestServlet extends FATServlet {
-    private static final String SUCCESS = "SUCCESS";
-    private static final String TEST_METHOD = "testMethod";
+    // Create some exceptions here to keep the test method name out of the stack.
+    // Tests can then check for the presence of their method name in the stack to verify
+    // that the completable future is including the caller stack when raising exceptions.
+
+    private static final CancellationException CANCELLATION_X_CAUSED_BY_ARRAY_X = //
+                    (CancellationException) new CancellationException("Testing cancellation")
+                                    .initCause(new ArrayIndexOutOfBoundsException("Provides a reason to cancel"));
+
+    private static final CompletionException COMPLETION_X_CAUSED_BY_NAMING_X = new CompletionException(new NamingException("Testing exceptional completion"));
 
     /**
      * 2 minutes. Maximum number of nanoseconds to wait for a task or action to complete.
@@ -135,6 +145,138 @@ public class MPContextProp1_3_TestServlet extends FATServlet {
             assertEquals(expected, executorThreadPriorities.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } finally {
             executor.shutdown();
+        }
+    }
+
+    /**
+     * When CompletionException is raised from the getNow method, it should show the
+     * stack of the getNow attempt along with the chained exception for the actual error.
+     */
+    @Test
+    public void testFailureStackShowsCallerOfGetNow() throws Exception {
+        CompletableFuture<String> future = defaultManagedExecutor.failedFuture(CANCELLATION_X_CAUSED_BY_ARRAY_X);
+
+        try {
+            String result = future.getNow("result-if-not-done");
+            fail("Got result " + result + " for a failed future");
+        } catch (CancellationException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfGetNow".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+                throw x;
+        }
+
+        future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
+
+        try {
+            String result = future.getNow("result-if-not-done");
+            fail("Got result " + result + " for a failed future");
+        } catch (CompletionException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfGetNow".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != COMPLETION_X_CAUSED_BY_NAMING_X.getCause())
+                throw x;
+        }
+    }
+
+    /**
+     * When CompletionException is raised from the join method, it should show the
+     * stack of the join attempt along with the chained exception for the actual error.
+     */
+    @Test
+    public void testFailureStackShowsCallerOfJoin() throws Exception {
+        CompletableFuture<?> future = defaultManagedExecutor.failedFuture(CANCELLATION_X_CAUSED_BY_ARRAY_X);
+
+        try {
+            Object result = future.join();
+            fail("Got result " + result + " by joining a failed future");
+        } catch (CancellationException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfJoin".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+                throw x;
+        }
+
+        future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
+
+        try {
+            Object result = future.join();
+            fail("Got result " + result + " by joining a failed future");
+        } catch (CompletionException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfJoin".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != COMPLETION_X_CAUSED_BY_NAMING_X.getCause())
+                throw x;
+        }
+    }
+
+    /**
+     * When CompletionException is raised from the timed get method, it should show the
+     * stack of the get attempt along with the chained exception for the actual error.
+     */
+    @Test
+    public void testFailureStackShowsCallerOfTimedGet() throws Exception {
+        CompletableFuture<String> future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
+
+        try {
+            String result = future.get(3, TimeUnit.MILLISECONDS);
+            fail("Got result " + result + " for a failed future");
+        } catch (ExecutionException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfTimedGet".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != COMPLETION_X_CAUSED_BY_NAMING_X.getCause())
+                throw x;
+        }
+
+        future = defaultManagedExecutor.failedFuture(CANCELLATION_X_CAUSED_BY_ARRAY_X);
+
+        try {
+            String result = future.get(4, TimeUnit.MILLISECONDS);
+            fail("Got result " + result + " for a failed future");
+        } catch (CancellationException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfTimedGet".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+                throw x;
+        }
+    }
+
+    /**
+     * When CompletionException is raised from the untimed get method, it should show the
+     * stack of the get attempt along with the chained exception for the actual error.
+     */
+    @Test
+    public void testFailureStackShowsCallerOfUntimedGet() throws Exception {
+        CompletableFuture<String> future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
+
+        try {
+            String result = future.get();
+            fail("Got result " + result + " for a failed future");
+        } catch (ExecutionException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfUntimedGet".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != COMPLETION_X_CAUSED_BY_NAMING_X.getCause())
+                throw x;
+        }
+
+        future = defaultManagedExecutor.failedFuture(CANCELLATION_X_CAUSED_BY_ARRAY_X);
+
+        try {
+            String result = future.get();
+            fail("Got result " + result + " for a failed future");
+        } catch (CancellationException x) {
+            boolean foundInStack = false;
+            for (StackTraceElement line : x.getStackTrace())
+                foundInStack |= "testFailureStackShowsCallerOfUntimedGet".equals(line.getMethodName());
+            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+                throw x;
         }
     }
 
