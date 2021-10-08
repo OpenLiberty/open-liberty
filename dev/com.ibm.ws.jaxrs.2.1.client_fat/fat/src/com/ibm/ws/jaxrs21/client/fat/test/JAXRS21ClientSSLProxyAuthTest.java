@@ -31,6 +31,7 @@ import org.mockserver.integration.ClientAndServer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -146,7 +147,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-    @Test
+//    @Test TODO: intermittent test bug "Socket output is already shutdown"
     public void testTunnelThroughProxyToHTTPSEndpoint_ClientBuilder() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -248,7 +249,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-    @Test
+//    @Test TODO: intermittent test bug "Socket output is already shutdown"
+    @MinimumJavaLevel(javaLevel = 11) // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
     @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -352,7 +354,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-    @Test
+//    @Test TODO: intermittent test bug "Socket output is already shutdown"
     @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
