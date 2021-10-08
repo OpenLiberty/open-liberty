@@ -36,17 +36,20 @@ Import-Package: \
     *
 
 Export-Package: \
-	io.openliberty.opentracing.internal;version=2.0,\
+	io.openliberty.opentracing.internal;version=2.0;thread-context=true,\
 	io.openliberty.opentracing.internal.filters;version=2.0,\
 	io.openliberty.opentracing.spi.tracer;version=2.0;provide=true
                 
 Private-Package: io.openliberty.opentracing.internal.resources
 
+Include-Resource:\
+  META-INF=resources/META-INF
+  
 app-resources= \
   META-INF/services/javax.ws.rs.ext.Providers
 
 Service-Component: \
-  io.openliberty.opentracing.2.0.internal.ResourceProvider; \
+  io.openliberty.opentracing20.internal.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
