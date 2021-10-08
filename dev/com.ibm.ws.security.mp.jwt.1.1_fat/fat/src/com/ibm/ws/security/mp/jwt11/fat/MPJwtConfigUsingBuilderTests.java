@@ -46,7 +46,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -1134,7 +1134,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @param serverAlg - the alg that should match the config -this is the sigAlg that will result in success - all other sigAlg will fail
      * @throws Exception
      */
-    public void genericSigAlgTest(String serverAlg) throws Exception {
+    public void genericSigAlgTest(LibertyServer server, String serverAlg) throws Exception {
 
         for (String sigAlg : algList) {
             // note the builder names must match the names in the algList
@@ -1146,7 +1146,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
             // we can only generate a token using a PS algorithm on Java 11 or above
             // we'd like to test that the code receiving a PS signed token fails appropriately
             // when we're running with Java 8 or 9.  So, we'll use a saved long lived JWT token
-            if (sigAlg.startsWith("PS") && (JavaInfo.JAVA_VERSION < 11)) {
+            if (sigAlg.startsWith("PS") && (JavaInfoFATUtils.forServer(server).majorVersion() < 11)) {
                 switch (sigAlg) {
                     case "PS256":
                         builtToken = SavedPS256Token;
@@ -1203,7 +1203,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES256.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES256);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_ES256);
     }
 
     /**
@@ -1219,7 +1219,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES384.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES384);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_ES384);
     }
 
     /**
@@ -1235,7 +1235,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES512.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES512);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_ES512);
     }
 
     /**
@@ -1251,7 +1251,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS256);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_RS256);
     }
 
     /**
@@ -1267,7 +1267,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS384);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_RS384);
     }
 
     /**
@@ -1283,7 +1283,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS512.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS512);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_RS512);
     }
 
     // TODO - enable once PS is supported - make sure that 1) things behave well with Java 11 and b) things fail appropriately with older java versions
@@ -1344,7 +1344,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS256.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS256);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_HS256);
     }
 
     /**
@@ -1356,7 +1356,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS384.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS384);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_HS384);
     }
 
     /**
@@ -1368,7 +1368,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS512.xml");
-        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS512);
+        genericSigAlgTest(resourceServer, MPJwt11FatConstants.SIGALG_HS512);
     }
 
     /******************************** End signatureAlgorithm (new Algorithms) ***************************************/

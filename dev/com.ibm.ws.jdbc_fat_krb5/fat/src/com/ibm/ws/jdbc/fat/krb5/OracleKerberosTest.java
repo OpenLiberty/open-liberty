@@ -38,8 +38,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
+import componenttest.topology.impl.JavaInfoFATUtils;
+import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
@@ -154,7 +154,7 @@ public class OracleKerberosTest extends FATServletClient {
             Class<?> c = desc == null ? KerberosPlatformRule.class : desc.getTestClass();
             String m = (desc == null || desc.getMethodName() == null) ? "shouldRun" : desc.getMethodName();
 
-            JavaInfo java = JavaInfo.forCurrentVM();
+            JavaInfoFATUtils java = JavaInfoFATUtils.forCurrentVM();
             if (java.majorVersion() == 8 && java.vendor() == Vendor.IBM) {
                 Log.info(c, m, "Skipping tests because Oracle JDBC driver does not work with IBM JDK 8");
                 return false;

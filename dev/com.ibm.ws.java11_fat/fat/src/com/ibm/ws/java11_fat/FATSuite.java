@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 Java16Test.class,
                 Java11CNFETest.class,
                 JavaInfoTest.class,
+                CpuInfoTest.class,
                 MultiReleaseJarTest.class
 })
 public class FATSuite {

@@ -29,7 +29,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -202,7 +202,7 @@ public class JAXBToolsTest extends FATServletClient {
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
-        String javaHome = JavaInfo.forServer(server).javaHome();
+        String javaHome = JavaInfoFATUtils.forServer(server).javaHome();
         builder.environment().put("JAVA_HOME", javaHome);
         Log.info(c, "execute", "Using JAVA_HOME=" + javaHome);
 

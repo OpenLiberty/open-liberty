@@ -28,7 +28,7 @@ public class MaximumJavaLevelRule implements TestRule {
 
     @Override
     public Statement apply(Statement arg0, Description arg1) {
-        if (maxJavaLevel < JavaInfo.JAVA_VERSION)
+        if (maxJavaLevel < JavaInfoUnitTestUtils.JAVA_VERSION)
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {}

@@ -106,7 +106,7 @@ import componenttest.custom.junit.runner.LogPolice;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
-import componenttest.topology.impl.JavaInfo.Vendor;
+import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -213,7 +213,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
     public static boolean validateApps = DEFAULT_VALIDATE_APPS;
 
-    protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
+    protected static final JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forCurrentVM();
 
     protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
@@ -1324,7 +1324,7 @@ public class LibertyServer implements LogMonitorClient {
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
         JVM_ARGS += " -Djava.security.egd=file:/dev/urandom";
 
-        JavaInfo info = JavaInfo.forServer(this);
+        JavaInfoFATUtils info = JavaInfoFATUtils.forServer(this);
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
@@ -6399,14 +6399,6 @@ public class LibertyServer implements LogMonitorClient {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();
         this.updateServerConfiguration(config);
-    }
-
-    public boolean isIBMJVM() {
-        return javaInfo.vendor() == JavaInfo.Vendor.IBM;
-    }
-
-    public boolean isOracleJVM() {
-        return javaInfo.vendor() == JavaInfo.Vendor.SUN_ORACLE;
     }
 
     public void useSecondaryHTTPPort() {

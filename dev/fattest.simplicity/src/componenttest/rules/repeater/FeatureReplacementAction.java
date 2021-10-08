@@ -33,7 +33,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -379,7 +379,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
-        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel) {
+        if (JavaInfoFATUtils.forCurrentVM().majorVersion() < minJavaLevel) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
         }

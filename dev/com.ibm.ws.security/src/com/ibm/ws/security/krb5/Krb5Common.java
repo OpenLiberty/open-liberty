@@ -154,7 +154,7 @@ public class Krb5Common {
 
     static {
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Jdk vendor: " + JavaInfo.vendor() + " and major version: " + JavaInfo.majorVersion());
+            Tr.debug(tc, "Jdk " + JavaInfo.debugString());
         }
         if (OTHER_KRB5_LOGIN_MODULE_AVAILABLE) {
             KRB5_PRINCIPAL = SUN_KRB5_PRINCIPAL;

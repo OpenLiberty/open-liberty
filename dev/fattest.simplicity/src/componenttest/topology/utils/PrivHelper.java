@@ -20,7 +20,7 @@ import java.security.PrivilegedAction;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 public class PrivHelper {
@@ -57,19 +57,20 @@ public class PrivHelper {
     /**
      * Creates a new policy file that combines the JDK's default policy set and permissions passed into this method.
      *
-     * @param server The LibertyServer to install the custom policy file for
+     * @param server           The LibertyServer to install the custom policy file for
      * @param permissionsToAdd Permission(s) to add to the JDK default policies, for example:<br>
-     *            <code>permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";</code>
+     *                             <code>permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";</code>
      */
     public static void generateCustomPolicy(LibertyServer server, String... permissionsToAdd) throws Exception {
         if (!server.isJava2SecurityEnabled() || permissionsToAdd == null || permissionsToAdd.length == 0)
             return;
 
         String policyPath;
-        if (JavaInfo.JAVA_VERSION >= 9) {
-            policyPath = JavaInfo.forServer(server).javaHome() + "/conf/security/java.policy";
+        JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forServer(server);
+        if (javaInfo.majorVersion() >= 9) {
+            policyPath = javaInfo.javaHome() + "/conf/security/java.policy";
         } else {
-            policyPath = JavaInfo.forServer(server).javaHome() + "/lib/security/java.policy";
+            policyPath = javaInfo.javaHome() + "/lib/security/java.policy";
         }
         String policyContents = FileUtils.readFile(policyPath);
 

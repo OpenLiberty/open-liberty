@@ -28,7 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.ssl.SQLServerTestSSLServlet;
@@ -85,13 +85,13 @@ public class SQLServerSSLTest extends FATServletClient {
          * since the keystore provider is SUN instead of IBMJCE.
          * Skip this test if JDK Vendor is IBM
          */
-        assumeTrue(JavaInfo.forCurrentVM().vendor() != JavaInfo.Vendor.IBM);
+        assumeTrue(JavaInfoFATUtils.forCurrentVM().vendor() != JavaInfoFATUtils.Vendor.IBM);
         /*
          * On MAC OS the IBM JDK reports a vendor of SUN_ORACLE.
          * Ensure this test is skipped in that instance as well.
          */
         assumeTrue(System.getProperty("os.name").contains("Mac OS") && //
-                   (JavaInfo.forCurrentVM().vendor() != JavaInfo.Vendor.SUN_ORACLE));
+                   (JavaInfoFATUtils.forCurrentVM().vendor() != JavaInfoFATUtils.Vendor.SUN_ORACLE));
         runTest(server, APP_NAME + '/' + SERVLET_NAME, getTestMethodSimpleName());
     }
 }

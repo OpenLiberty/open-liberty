@@ -38,7 +38,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -360,7 +360,7 @@ public class SQLJTest extends FATServletClient {
         // 3 - Run the DB2 SQLJ Customizer to "enhance" the previously generated .ser files
         List<String> args = new ArrayList<String>();
         args.add("java");
-        if (JavaInfo.JAVA_VERSION >= 9) {
+        if (JavaInfoFATUtils.forCurrentVM().majorVersion() >= 9) {
             args.add("--add-opens=java.base/java.util=ALL-UNNAMED");
             args.add("--add-opens=java.base/java.lang=ALL-UNNAMED");
             args.add("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED");

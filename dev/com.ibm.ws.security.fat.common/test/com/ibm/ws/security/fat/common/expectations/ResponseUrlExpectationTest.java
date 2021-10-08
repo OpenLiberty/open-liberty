@@ -27,7 +27,7 @@ import com.ibm.ws.security.fat.common.Constants;
 
 import componenttest.annotation.MaximumJavaLevel;
 import test.common.SharedOutputManager;
-import test.common.junit.rules.JavaInfo;
+import test.common.junit.rules.JavaInfoUnitTestUtils;
 
 public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
 
@@ -218,7 +218,7 @@ public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
     @Test
     public void test_validate_checkTypeMatches_matchSpansMultipleLines() {
         // In Java 13 trying to construct a new URL() with a line break param is rejected
-        assumeTrue(JavaInfo.JAVA_VERSION < 13);
+        assumeTrue(JavaInfoUnitTestUtils.JAVA_VERSION < 13);
         try {
             String searchForRegex = "line1.+line2";
             Expectation exp = new ResponseUrlExpectation(TEST_ACTION, Constants.STRING_MATCHES, searchForRegex, FAILURE_MESSAGE);

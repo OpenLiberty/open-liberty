@@ -26,17 +26,15 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * A class used for identifying properties of a JDK other
  * than the one that is currently being run.
  */
-public class JavaInfo {
-    private static Class<?> c = JavaInfo.class;
-    private static Map<String, JavaInfo> cache = new HashMap<String, JavaInfo>();
+public class JavaInfoFATUtils {
+    private static Class<?> c = JavaInfoFATUtils.class;
+    private static Map<String, JavaInfoFATUtils> cache = new HashMap<String, JavaInfoFATUtils>();
 
-    public static int JAVA_VERSION = JavaInfo.forCurrentVM().majorVersion();
-
-    public static JavaInfo forCurrentVM() {
+    public static JavaInfoFATUtils forCurrentVM() {
         String javaHome = System.getProperty("java.home");
-        JavaInfo info = cache.get(javaHome);
+        JavaInfoFATUtils info = cache.get(javaHome);
         if (info == null) {
-            info = new JavaInfo();
+            info = new JavaInfoFATUtils();
             cacheJavaInfo(javaHome, info);
         }
         return info;
@@ -47,8 +45,8 @@ public class JavaInfo {
      *
      * @param jdkPath The jdk path. For example: System.getProperty("java.home")
      */
-    public static JavaInfo fromPath(String jdkPath) throws IOException {
-        JavaInfo info = cache.get(jdkPath);
+    public static JavaInfoFATUtils fromPath(String jdkPath) throws IOException {
+        JavaInfoFATUtils info = cache.get(jdkPath);
         if (info == null) {
             info = runJavaVersion(jdkPath);
             cacheJavaInfo(jdkPath, info);
@@ -56,7 +54,7 @@ public class JavaInfo {
         return info;
     }
 
-    private static void cacheJavaInfo(String jdkPath, JavaInfo info) {
+    private static void cacheJavaInfo(String jdkPath, JavaInfoFATUtils info) {
         cache.put(jdkPath, info);
         if (jdkPath.contains("\\"))
             cache.put(jdkPath.replace("\\", "/"), info);
@@ -71,14 +69,17 @@ public class JavaInfo {
      * <li> JAVA_HOME returned by LibertyServer.getMachineJavaJDK()
      * </ol>
      */
-    public static JavaInfo forServer(LibertyServer server) throws IOException {
+    public static JavaInfoFATUtils forServer(LibertyServer server) throws IOException {
         String serverJava = server.getServerEnv().getProperty("JAVA_HOME");
         return fromPath(serverJava);
     }
 
     /**
-     * The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.
+     * @deprecated
+     *             The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.
+     *             Intended to only be used for debug purposes.
      */
+    @Deprecated
     public static enum Vendor {
         IBM,
         OPENJ9,
@@ -93,8 +94,9 @@ public class JavaInfo {
     final Vendor VENDOR;
     final int SERVICE_RELEASE;
     final int FIXPACK;
+    final String DEBUG;
 
-    private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
+    private JavaInfoFATUtils(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
         JAVA_HOME = jdk_home;
         MAJOR = major;
         MINOR = minor;
@@ -103,10 +105,12 @@ public class JavaInfo {
         SERVICE_RELEASE = sr;
         FIXPACK = fp;
 
+        DEBUG = "Vendor=" + VENDOR + ", Major=" + MAJOR + ", Minor=" + MINOR + ", Micro=" + MICRO + ", SR=" + SERVICE_RELEASE + ", FP=" + FIXPACK;
+
         Log.info(c, "<init>", this.toString());
     }
 
-    private JavaInfo() {
+    private JavaInfoFATUtils() {
         JAVA_HOME = System.getProperty("java.home");
 
         String version = System.getProperty("java.version");
@@ -179,6 +183,8 @@ public class JavaInfo {
         }
         FIXPACK = fp;
 
+        DEBUG = "Vendor=" + VENDOR + ", Major=" + MAJOR + ", Minor=" + MINOR + ", Micro=" + MICRO + ", SR=" + SERVICE_RELEASE + ", FP=" + FIXPACK;
+
         Log.info(c, "<init>", this.toString());
     }
 
@@ -245,6 +251,10 @@ public class JavaInfo {
      *             is a different class on one JVM that needs to be used vs another an attempt should
      *             be made to load the class and take the code path.
      *
+     *             e.g. JavaInfoFATUtils.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")
+     *
+     *             Intended to only be used for debug purposes.
+     *
      * @return     the detected vendor of the JVM
      */
     @Deprecated
@@ -270,10 +280,10 @@ public class JavaInfo {
      * @return a String containing basic info about the JDK
      */
     public String debugString() {
-        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
+        return DEBUG;
     }
 
-    private static JavaInfo runJavaVersion(String javaHome) throws IOException {
+    private static JavaInfoFATUtils runJavaVersion(String javaHome) throws IOException {
         final String m = "runJavaVersion";
 
         // output for 'java -version' is always as follows:
@@ -361,11 +371,11 @@ public class JavaInfo {
             }
         }
 
-        return new JavaInfo(javaHome, major, minor, micro, v, sr, fp);
+        return new JavaInfoFATUtils(javaHome, major, minor, micro, v, sr, fp);
     }
 
     @Override
     public String toString() {
-        return "major=" + MAJOR + "  minor=" + MINOR + " service release=" + SERVICE_RELEASE + " fixpack=" + FIXPACK + "  vendor=" + VENDOR + "  javaHome=" + JAVA_HOME;
+        return debugString();
     }
 }

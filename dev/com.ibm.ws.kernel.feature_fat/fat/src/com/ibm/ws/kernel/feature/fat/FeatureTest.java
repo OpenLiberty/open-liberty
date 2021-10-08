@@ -29,7 +29,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -202,7 +202,7 @@ public class FeatureTest {
     public void testFeatureJavaVersionDependencyCheck() throws Exception {
         final String METHOD_NAME = "testFeatureJavaVersionDependencyCheck";
 
-        if (JavaInfo.forServer(server).majorVersion() > 8)
+        if (JavaInfoFATUtils.forServer(server).majorVersion() > 8)
             return;
 
         Log.entering(c, METHOD_NAME);

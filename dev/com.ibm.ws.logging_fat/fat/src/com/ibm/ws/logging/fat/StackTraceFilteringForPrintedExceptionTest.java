@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
@@ -64,7 +64,7 @@ public class StackTraceFilteringForPrintedExceptionTest extends AbstractStackTra
                                     "at com.ibm.ws.webcontainer", traceCount);
 
         // The java.* classes used by the user code should not be trimmed
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             assertConsoleLogContains("The console stack was trimmed too aggressively of java classes.",
                                      "at java.base/java.util.HashMap.put");
             assertConsoleLogContains("The console stack was trimmed too aggressively of java classes.",

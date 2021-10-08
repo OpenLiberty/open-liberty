@@ -50,7 +50,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -81,7 +81,7 @@ public class AroundTimeoutTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        JavaInfo javaInfo = JavaInfo.forServer(server);
+        JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forServer(server);
         if (javaInfo.toString().contains("IBM")) {
             server.copyFileToLibertyServerRoot("jvm.options");
         }

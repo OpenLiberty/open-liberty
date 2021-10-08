@@ -67,7 +67,6 @@ import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.LogPolice;
 import componenttest.exception.TopologyException;
-import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -85,9 +84,6 @@ public class LibertyClient {
     protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
     protected static final boolean DEFAULT_VALIDATE_APPS = true;
     public static boolean VALIDATE_APPS = DEFAULT_VALIDATE_APPS;
-
-    protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
-    protected static final boolean J9_JVM_RUN = javaInfo.vendor() == Vendor.IBM;
 
     protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");

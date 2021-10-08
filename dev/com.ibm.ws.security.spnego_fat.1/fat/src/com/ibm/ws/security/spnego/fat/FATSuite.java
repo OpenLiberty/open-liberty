@@ -30,8 +30,8 @@ import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
+import componenttest.topology.impl.JavaInfoFATUtils;
+import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -96,7 +96,7 @@ public class FATSuite extends InitClass {
 
         private boolean isSupportJDK() throws IOException {
             String thisMethod = "isSupportJDK";
-            JavaInfo javaInfo = JavaInfo.forServer(LibertyServerFactory.getLibertyServer("DynamicSpnegoConfigTest"));
+            JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forServer(LibertyServerFactory.getLibertyServer("DynamicSpnegoConfigTest"));
 
             IBM_JDK_V8_LOWER = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() <= 8;
             SUN_ORACLE_JDK_V8_HIGHER = javaInfo.vendor() == Vendor.SUN_ORACLE && javaInfo.majorVersion() >= 8;
@@ -116,7 +116,7 @@ public class FATSuite extends InitClass {
             return RUN_TESTS;
         };
 
-        private boolean isHybridJDK(JavaInfo javaInfo) {
+        private boolean isHybridJDK(JavaInfoFATUtils javaInfo) {
             String thisMethod = "isHybridJDK";
 
             boolean hybridJdk = false;

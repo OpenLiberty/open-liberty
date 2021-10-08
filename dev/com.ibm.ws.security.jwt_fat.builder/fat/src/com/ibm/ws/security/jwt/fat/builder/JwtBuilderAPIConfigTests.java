@@ -43,7 +43,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -1223,7 +1223,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS256);
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(builderServer).majorVersion() >= 11) {
             expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         } else {
             // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)
@@ -1335,7 +1335,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS384);
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(builderServer).majorVersion() >= 11) {
             expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         } else {
             // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)
@@ -1447,7 +1447,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         // set alg value
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS512);
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(builderServer).majorVersion() >= 11) {
             expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
         } else {
             // TODO fix checks for failures once PS algs are supported (the failure will be different from it not being supported)

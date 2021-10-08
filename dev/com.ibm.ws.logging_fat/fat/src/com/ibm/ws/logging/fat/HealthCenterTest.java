@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -36,8 +36,8 @@ public class HealthCenterTest {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.healthcenter");
         ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
         // IBM JDK supports Health Center except IBM Java 11
-        Assume.assumeTrue((JavaInfo.forServer(server).vendor().equals(JavaInfo.Vendor.IBM)) &&
-                          (JavaInfo.forServer(server).majorVersion() != 11));
+        Assume.assumeTrue((JavaInfoFATUtils.forServer(server).vendor().equals(JavaInfoFATUtils.Vendor.IBM)) &&
+                          (JavaInfoFATUtils.forServer(server).majorVersion() != 11));
 
         if (!server.isStarted())
             server.startServer();

@@ -25,10 +25,10 @@ import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import com.ibm.ws.security.spnego.fat.config.CommonTest;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
 
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.ExternalTestService;
-import componenttest.topology.impl.JavaInfo.Vendor;
+import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 
 public class SpnegoCommonSetup extends InitClass {
     private static final Class<?> c = SpnegoCommonSetup.class;
@@ -76,7 +76,7 @@ public class SpnegoCommonSetup extends InitClass {
 
         private boolean isSupportJDK() throws IOException {
             String thisMethod = "isSupportJDK";
-            JavaInfo javaInfo= JavaInfo.forServer(LibertyServerFactory.getLibertyServer("com.ibm.ws.security.openidconnect.fat.spnego.setup"));
+            JavaInfoFATUtils javaInfo= JavaInfoFATUtils.forServer(LibertyServerFactory.getLibertyServer("com.ibm.ws.security.openidconnect.fat.spnego.setup"));
             IBM_JDK_V8_LOWER = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() <= 8;
             SUN_ORACLE_JDK_V8_HIGHER = javaInfo.vendor() == Vendor.SUN_ORACLE && javaInfo.majorVersion() >= 8;
             OTHER_SUPPORT_JDKS = javaInfo.majorVersion() >= 11 || SUN_ORACLE_JDK_V8_HIGHER;
@@ -99,7 +99,7 @@ public class SpnegoCommonSetup extends InitClass {
             return RUN_TESTS;
         };
 
-        private boolean isHybridJDK(JavaInfo javaInfo) {
+        private boolean isHybridJDK(JavaInfoFATUtils javaInfo) {
             String thisMethod = "isHybridJDK";
 
             boolean hybridJdk = false;

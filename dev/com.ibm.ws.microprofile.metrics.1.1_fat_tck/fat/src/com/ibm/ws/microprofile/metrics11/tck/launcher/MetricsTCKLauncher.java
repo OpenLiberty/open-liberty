@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -52,7 +52,7 @@ public class MetricsTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTck() throws Exception {
         //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
-        JavaInfo javaInfo = JavaInfo.forServer(server);
+        JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forServer(server);
         assumeTrue(!(javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
                      && javaInfo.microVersion() <= 3));
 

@@ -39,6 +39,8 @@ public class CpuInfo {
     private final static TraceComponent tc = Tr.register(CpuInfo.class);
 
     private final static CpuInfo INSTANCE = new CpuInfo();
+    //The IBM Kerberos Login Module is only ever found in IBM JVMs. This is used instead of trying to check the JVM's vendor system property.
+    private final static boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule");
 
     private final int AVAILABLE_PROCESSORS;
     // For CPU usage calculation
@@ -62,7 +64,8 @@ public class CpuInfo {
 
         int nsFactor = 1;
         // adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in Java8sr5
-        if (JavaInfo.vendor() == JavaInfo.Vendor.IBM) {
+        //The IBM Kerberos Login Module is only ever found in IBM JVMs. This is used instead of trying to check the JVM's vendor system property.
+        if (IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             int majorVersion = JavaInfo.majorVersion();
             int minorVersion = JavaInfo.minorVersion();
             int serviceRelease = JavaInfo.serviceRelease();

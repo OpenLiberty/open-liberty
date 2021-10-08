@@ -22,7 +22,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 
 /**
  * Same as {@link SimpleTest}, but uses the acme://* URI instead of an HTTPS
@@ -41,7 +41,7 @@ public class AcmeURISimpleTest extends AcmeSimpleTest {
 	@Override
 	protected void stopServer(String... msgs) throws Exception {
 		String os = System.getProperty("os.name").toLowerCase();
-		if (JavaInfo.JAVA_VERSION > 8 && !os.startsWith("z/os")) {
+		if (JavaInfoFATUtils.forServer(server).majorVersion() > 8 && !os.startsWith("z/os")) {
 			AcmeFatUtils.stopServer(server, msgs);
 		} else {
 			/*

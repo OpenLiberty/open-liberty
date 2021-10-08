@@ -23,8 +23,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
+import componenttest.topology.impl.JavaInfoFATUtils;
+import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -45,7 +45,7 @@ public class FaultToleranceTck21Launcher {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Vendor vendor = JavaInfo.forServer(server).vendor();
+        Vendor vendor = JavaInfoFATUtils.forServer(server).vendor();
         // For J9 JVMs, add JIT trace for getConfig method to diagnose crashes
         if (vendor == Vendor.IBM || vendor == Vendor.OPENJ9) {
             Map<String, String> jvmOptions = server.getJvmOptionsAsMap();

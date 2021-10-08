@@ -41,7 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -63,7 +63,7 @@ public class FeaturesStartTestAToL {
     static final Map<String, Set<String>> acceptableErrors = new HashMap<>();
     static final List<String> tempFeatureJavaLevels = new ArrayList<>();
 
-    static JavaInfo javaInfo = null;
+    static JavaInfoFATUtils javaInfo = null;
     static int JAVA_LEVEL;
 
     @Server("features.start.a.to.l.server")
@@ -76,7 +76,7 @@ public class FeaturesStartTestAToL {
     public static void setUp() throws Exception {
         String method = "setup";
 
-        javaInfo = JavaInfo.forServer(server);
+        javaInfo = JavaInfoFATUtils.forServer(server);
         JAVA_LEVEL = javaInfo.majorVersion();
         Log.info(c, method, "The java level being used by the server is: " + JAVA_LEVEL);
 
@@ -265,7 +265,7 @@ public class FeaturesStartTestAToL {
             return true;
 
         if (feature.equalsIgnoreCase("logstashCollector-1.0")) {
-            if (javaInfo.vendor() != JavaInfo.Vendor.IBM) {
+            if (javaInfo.vendor() != JavaInfoFATUtils.Vendor.IBM) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
                 return true;
             } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
