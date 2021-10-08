@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" "http://java.sun.com/dtd/application_1_3.dtd">
+
+<application id="Application_ID">
+   <display-name>MDB20TestApp</display-name>
+   <module>
+      <web>
+         <web-uri>MDB20TestWeb.war</web-uri>
+         <context-root>/MDB20TestWeb</context-root>
+      </web>
+   </module>
+   <module id="EjbModule_1049488688556">
+      <ejb>MDB20TestEJB.jar</ejb>
+   </module>
+</application>

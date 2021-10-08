@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp">
+	<display-name>MDB21TestWeb</display-name>
+	<servlet>
+		<servlet-name>MDB21Servlet</servlet-name>
+		<servlet-class>com.ibm.ws.ejbcontainer.mdb.jms.web.MDB21Servlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MDB21Servlet</servlet-name>
+		<url-pattern>/MDB21Servlet</url-pattern>
+	</servlet-mapping>
+</web-app>
