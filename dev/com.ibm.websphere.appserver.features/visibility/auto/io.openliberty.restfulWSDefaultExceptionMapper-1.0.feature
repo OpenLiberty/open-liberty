@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.restfulWS-3.0)))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core
