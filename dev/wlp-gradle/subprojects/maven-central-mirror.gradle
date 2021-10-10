@@ -25,6 +25,7 @@ repositories {
       // for fats - this repository is used *only* contains artifacts with group "biz.aQute.bnd"
       content {
         includeGroup "biz.aQute.bnd"
+        includeGroup "org.eclipse.transformer"
       }
       metadataSources {
         mavenPom()

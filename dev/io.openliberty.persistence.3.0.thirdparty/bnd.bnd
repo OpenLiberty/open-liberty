@@ -41,7 +41,7 @@ Export-Package: \
             org.eclipse.persistence.*;version="${eclVersion}"
 
 Import-Package: \
-            com.ibm.tx.jta;resolution:=optional, \
+            com.ibm.tx.jta;version="[10.0,11)";resolution:=optional, \
             com.ibm.websphere.ras, \
             com.ibm.ws.Transaction;resolution:=optional, \
             com.ibm.ws.jpa.container.eclipselink.logging;resolution:=optional, \
@@ -103,8 +103,8 @@ DynamicImport-Package: \
  jakarta.xml.bind.annotation, \
  jakarta.xml.bind.annotation.adapters, \
  jakarta.xml.bind.attachment, \
- javax.xml.bind.helpers, \
- javax.xml.bind.util
+ jakarta.xml.bind.helpers, \
+ jakarta.xml.bind.util
 
 Private-Package: io.openliberty.persistence.internal.helper
 
