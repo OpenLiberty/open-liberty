@@ -36,6 +36,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+
+
 @Component(service = {
 		DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = {
 				"service.vendor=IBM" })

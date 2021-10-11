@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+
+   <ejb-jar id="ejb-jar_ID">
+      <enterprise-beans>
+         <message-driven id="MessageDriven_1050954917281">
+            <ejb-name>BMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.BMTBeanIA</ejb-class>
+            <transaction-type>Bean</transaction-type>
+            <acknowledge-mode>Auto-acknowledge</acknowledge-mode>
+            <message-driven-destination id="MessageDrivenDestination_1050954917312">
+               <destination-type>javax.jms.Queue</destination-type>
+            </message-driven-destination>
+         </message-driven>
+         <message-driven id="MessageDriven_1050954917282">
+            <ejb-name>BMTBeanNoCommit</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.BMTBeanNoCommit</ejb-class>
+            <transaction-type>Bean</transaction-type>
+            <acknowledge-mode>Auto-acknowledge</acknowledge-mode>
+            <message-driven-destination id="MessageDrivenDestination_1050954917313">
+               <destination-type>javax.jms.Queue</destination-type>
+            </message-driven-destination>
+         </message-driven>
+         <message-driven id="MessageDriven_1050955272500">
+            <ejb-name>CMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.CMTBeanIA</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <acknowledge-mode>Auto-acknowledge</acknowledge-mode>
+         </message-driven>
+         <session id="Session_1051542150766">
+            <ejb-name>MDBSF</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SFHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SF</remote>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SFLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SFLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SFBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <message-driven id="MessageDriven_1052927711541">
+            <ejb-name>MDBBeanNonDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.MDBBeanNonDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <message-driven-destination id="MessageDrivenDestination_1052927711541">
+               <destination-type>javax.jms.Topic</destination-type>
+               <subscription-durability>NonDurable</subscription-durability>
+            </message-driven-destination>
+         </message-driven>
+         <message-driven id="MessageDriven_1052944140106">
+            <ejb-name>MDBBeanDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.MDBBeanDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <message-driven-destination id="MessageDrivenDestination_1052944140106">
+               <destination-type>javax.jms.Topic</destination-type>
+               <subscription-durability>Durable</subscription-durability>
+            </message-driven-destination>
+         </message-driven>
+         <message-driven id="MessageDriven_1053020707733">
+            <ejb-name>MDBBeanMessageSelector</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.MDBBeanMessageSelector</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <message-selector>JMSType=&apos;MCM02&apos;</message-selector>
+            <message-driven-destination id="MessageDrivenDestination_1053020707733">
+               <destination-type>javax.jms.Topic</destination-type>
+               <subscription-durability>Durable</subscription-durability>
+            </message-driven-destination>
+         </message-driven> 
+         <session id="Session_1053464348325">
+            <ejb-name>MDBSLL</ejb-name>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLLaHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLLa</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLLaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_1053491355674">
+            <ejb-name>MDBSLR</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLRaHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLRa</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <message-driven id="MessageDriven_1053531321804">
+            <ejb-name>CMTBeanNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.CMTBeanNotSupported</ejb-class>
+            <transaction-type>Container</transaction-type>
+         </message-driven>
+         <message-driven id="MessageDriven_1053615533140">
+            <ejb-name>CMTBeanRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb20.CMTBeanRequired</ejb-class>
+            <transaction-type>Container</transaction-type>
+         </message-driven> 
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_ID">
+         <container-transaction id="MethodTransaction_1052927711561">
+            <method id="MethodElement_1052927711561">
+               <ejb-name>MDBSF</ejb-name>
+               <method-intf>Local</method-intf>
+               <method-name>incrementInt</method-name>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction> 
+         <container-transaction id="MethodTransaction_1053531321924">
+            <description>CMTBeanNotSupported:+:</description>
+            <method id="MethodElement_1053531321924">
+               <ejb-name>CMTBeanNotSupported</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053551952349">
+            <description>MDBSLLSupports:+:</description>
+            <method id="MethodElement_1053551952349">
+               <ejb-name>MDBSLL</ejb-name>
+               <method-name>method2</method-name>
+               <method-params>
+                  <method-param>java.lang.String</method-param>
+               </method-params>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053615533160">
+            <description>CMTBeanRequired:+:</description>
+            <method id="MethodElement_1053615533160">
+               <ejb-name>CMTBeanRequired</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction> 
+      </assembly-descriptor>
+   </ejb-jar>

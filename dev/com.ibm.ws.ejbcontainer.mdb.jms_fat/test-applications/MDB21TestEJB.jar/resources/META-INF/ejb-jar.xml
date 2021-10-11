@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="EJBJar_1060639024453" version="2.1"
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd">
+      <enterprise-beans>
+         <message-driven id="MessageDriven_1050954917281">
+            <ejb-name>BMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.BMTBeanIA</ejb-class>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>BMTReqQueue</activation-config-property-value>
+               </activation-config-property>
+	           <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven>
+         <message-driven id="MessageDriven_1050954917282">
+            <ejb-name>BMTBeanNoCommit</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.BMTBeanNoCommit</ejb-class>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>BMTNoCommitReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+		          <activation-config-property-name>destinationType</activation-config-property-name>
+		          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven>
+         <message-driven id="MessageDriven_1050955272500">
+            <ejb-name>CMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.CMTBeanIA</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven>
+         <session id="Session_1051542150766">
+            <ejb-name>MDBSF</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SFHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SF</remote>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SFLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SFLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SFBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <message-driven id="MessageDriven_1052927711541">
+            <ejb-name>MDBBeanNonDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.MDBBeanNonDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>news</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>NonDurable</activation-config-property-value>
+               </activation-config-property>  
+            </activation-config>
+         </message-driven>
+         <message-driven id="MessageDriven_1052944140106">
+            <ejb-name>MDBBeanDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.MDBBeanDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>sports</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>Durable</activation-config-property-value>
+               </activation-config-property> 
+               <activation-config-property>
+                   <activation-config-property-name>clientId</activation-config-property-name>
+                   <activation-config-property-value>C0001</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>subscriptionName</activation-config-property-name>
+                   <activation-config-property-value>subscription1</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven>
+         <message-driven id="MessageDriven_1053020707733">
+            <ejb-name>MDBBeanMessageSelector</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.MDBBeanMessageSelector</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>select</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>Durable</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>MessageSelector</activation-config-property-name>
+                  <activation-config-property-value>JMSType=&apos;MCM02&apos;</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>clientId</activation-config-property-name>
+                   <activation-config-property-value>C0002</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>subscriptionName</activation-config-property-name>
+                   <activation-config-property-value>subscription2</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven> 
+         <session id="Session_1053464348325">
+            <ejb-name>MDBSLL</ejb-name>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLLaHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLLa</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLLaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_1053491355674">
+            <ejb-name>MDBSLR</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLRaHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLRa</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <message-driven id="MessageDriven_1053531321804">
+            <ejb-name>CMTBeanNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.CMTBeanNotSupported</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTNotSupportedReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven>
+         <message-driven id="MessageDriven_1053615533140">
+            <ejb-name>CMTBeanRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.ejb21.CMTBeanRequired</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTRequiredReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+         </message-driven> 
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_ID">
+         <container-transaction id="MethodTransaction_1052927711561">
+            <method id="MethodElement_1052927711561">
+               <ejb-name>MDBSF</ejb-name>
+               <method-intf>Local</method-intf>
+               <method-name>incrementInt</method-name>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction> 
+         <container-transaction id="MethodTransaction_1053531321924">
+            <description>CMTBeanNotSupported:+:</description>
+            <method id="MethodElement_1053531321924">
+               <ejb-name>CMTBeanNotSupported</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053551952349">
+            <description>MDBSLLSupports:+:</description>
+            <method id="MethodElement_1053551952349">
+               <ejb-name>MDBSLL</ejb-name>
+               <method-name>method2</method-name>
+               <method-params>
+                  <method-param>java.lang.String</method-param>
+               </method-params>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053615533160">
+            <description>CMTBeanRequired:+:</description>
+            <method id="MethodElement_1053615533160">
+               <ejb-name>CMTBeanRequired</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction> 
+      </assembly-descriptor>
+   </ejb-jar>

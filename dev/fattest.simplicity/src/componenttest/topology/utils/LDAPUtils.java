@@ -31,9 +31,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.common.apiservices.LocalMachine;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -137,6 +139,8 @@ public class LDAPUtils {
     /** Did we fail to find the physical LDAP servers in Consul? */
     private static boolean CONSUL_LOOKUP_FAILED = false;
 
+    private static boolean isZOS = false;
+
     static {
 
         /*
@@ -144,18 +148,24 @@ public class LDAPUtils {
          */
         boolean uselocalLDAP = isLocalLdapExpectedToBeUsed();
 
+        try {
+            isZOS = LocalMachine.getInstance().getOperatingSystem() == OperatingSystem.ZOS;
+        } catch (Exception e) {
+            Log.error(c, "<clinit>", e,
+                      "Could not detect OS, assume it is not z/OS.");
+        }
+
         /*
          * Get the remote LDAP configuration from Consul
          */
         if (!uselocalLDAP) {
             try {
-                initializeRemoteLdapServers();
+                initializeRemoteLdapServers(isZOS);
             } catch (Exception e) {
                 /*
                  * Failed to get all the remote LDAP servers, so fail back to local LDAP.
                  */
-                String os = System.getProperty("os.name").toLowerCase();
-                if (os.startsWith("z/os")) {
+                if (isZOS) {
                     Log.error(c, "<clinit>", e,
                               "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Some failures setting up remote LDAPs, but local ApacheDS will not run on z/OS, doing remote anyway.");
                 } else {
@@ -194,7 +204,15 @@ public class LDAPUtils {
         });
     }
 
-    private static void initializeRemoteLdapServers() throws Exception {
+    /**
+     * Populate with remote LDAP servers. If the run is on zOS, catch and populate any failing
+     * LDAP types with dummy values. z/OS currently doesn't run with our local failover option,
+     * ApacheDS so prefill with as many valid LDAPs as possibly.
+     *
+     * @param  isZOS
+     * @throws Exception
+     */
+    private static void initializeRemoteLdapServers(boolean isZOS) throws Exception {
         //Note: Servers 9 and 11 are dead
 
         /*
@@ -211,13 +229,21 @@ public class LDAPUtils {
             remoteServers[2].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[2].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-            /* LDAP_SERVER_6 is dead, but was duplicate of LDAP_SERVER_2 */
             remoteServers[6] = new LdapServer();
             remoteServers[6].serverName = services.get(1).getAddress();
             remoteServers[6].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
             remoteServers[6].ldapsPort = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
             remoteServers[6].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[6].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote AD LDAP servers on a z/OS run. Remote AD server tests will fail. Work on migrating tests to InMemoryADLDAPServer, if possible");
+                processForEmptyLDAPServer(2);
+                processForEmptyLDAPServer(6);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -233,6 +259,16 @@ public class LDAPUtils {
             remoteServers[5] = new LdapServer();
             remoteServers[5].serverName = services.get(1).getAddress();
             remoteServers[5].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+
+                processForEmptyLDAPServer(1);
+                processForEmptyLDAPServer(5);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -261,6 +297,17 @@ public class LDAPUtils {
             remoteServers[8].ldapsPort = services.get(2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
             remoteServers[8].bindDn = services.get(2).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[8].bindPwd = services.get(2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+
+                processForEmptyLDAPServer(4);
+                processForEmptyLDAPServer(7);
+                processForEmptyLDAPServer(8);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -280,10 +327,27 @@ public class LDAPUtils {
             remoteServers[12].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
             remoteServers[12].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[12].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+                processForEmptyLDAPServer(10);
+                processForEmptyLDAPServer(12);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
 
+    }
+
+    private static void processForEmptyLDAPServer(int position) {
+        remoteServers[position] = new LdapServer();
+        remoteServers[position].serverName = "Remote_LDAP_was_down";
+        remoteServers[position].ldapPort = "389";
+        remoteServers[position].bindDn = "fauxBindDN";
+        remoteServers[position].bindPwd = "fauxBindPwd";
     }
 
     private static void initializeLocalLdapServers() {

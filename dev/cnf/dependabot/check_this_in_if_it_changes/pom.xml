@@ -2002,6 +2002,11 @@
       <version>3.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.metrics</groupId>
+      <artifactId>microprofile-metrics-api</artifactId>
+      <version>4.0-RC4</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
       <version>1.0.1</version>
@@ -3319,12 +3324,17 @@
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
+      <version>2.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
       <version>2.7.2</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.12.1</version>
+      <version>2.11.0</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
