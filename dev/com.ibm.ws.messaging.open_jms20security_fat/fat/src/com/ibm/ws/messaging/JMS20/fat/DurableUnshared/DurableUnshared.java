@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +28,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -39,8 +42,6 @@ public class DurableUnshared {
 
     private static final int PORT = server.getHttpDefaultPort();
     private static final String HOST = server.getHostname();
-
-    private static boolean val = false;
 
     private boolean runInServlet(String test) throws IOException {
         boolean result = false;
@@ -89,7 +90,6 @@ public class DurableUnshared {
                                             "serverLTPAKeys/ltpa.keys");
         server1.copyFileToLibertyServerRoot("resources/security",
                                             "serverLTPAKeys/mykey.jks");
-
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
         server.copyFileToLibertyServerRoot("resources/security",
@@ -97,7 +97,7 @@ public class DurableUnshared {
 
         TestUtils.addDropinsWebApp(server, "DurableUnshared", "web");
 
-        startAppservers();
+        startAppServers();
     }
 
     /**
@@ -105,7 +105,7 @@ public class DurableUnshared {
      *
      * @throws Exception
      */
-    private static void startAppservers() throws Exception {
+    private static void startAppServers() throws Exception {
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
         server.startServer("DurableUnShared_Client.log");
@@ -120,67 +120,66 @@ public class DurableUnshared {
             waitFor = server1.waitForStringInLog(messageId, server1.getMatchingLogFile("messages.log"));
             assertNotNull("Server1 message " + messageId + " not found", waitFor);
         }
+        
+        // The following FFDC may be thrown at server startup because the channel framework does not become active until the CWWKF0011I message is seen, whereas MDB initialisation takes place beforehand.
+        // FFDC1015I: An FFDC Incident has been created: "com.ibm.wsspi.channelfw.exception.InvalidChainNameException: Chain configuration not found in framework, BootstrapSecureMessaging com.ibm.ws.sib.jfapchannel.richclient.framework.impl.RichClientTransportFactory.getOutboundNetworkConnectionFactoryByName 00280001" at ffdc_21.09.27_15.21.46.0.log
+        
+        // Ignore failed connection attempts between the two servers.
+        // CWSIV0782W: The creation of a connection for destination RedeliveryQueue1 on bus defaultBus for endpoint activation jmsapp/jmsmdb/RDC2MessageDrivenBean failed with exception javax.resource.ResourceException: 
+        server.addIgnoredErrors(Arrays.asList("CWSIV0782W"));
+    }
+    
+    private static void stopAppServers() throws Exception {
+        
+        if (JakartaEE9Action.isActive()) {
+            // Remove the Jakarta special case once fixed.
+            // Also remove @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
+            // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
+            // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
+            // [24/03/21 16:57:16:336 GMT] 0000004b com.ibm.ws.jca.service.EndpointActivationService             E J2CA8802E: The message endpoint activation failed for resource adapter wasJms due to exception: jakarta.resource.spi.InvalidPropertyException: CWSJR1181E: The JMS activation specification has invalid values - the reason(s) for failing to validate the JMS       
+            server.addIgnoredErrors(Arrays.asList("CWWKG0032W","J2CA8802E"));
+        }
+        server.stopServer();
+        server1.stopServer();  
     }
 
-    // 1st method
-    // Bindings and Security Off
-
+    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
+    @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException"} )
     @Test
     public void testCreateUnSharedDurable_B_SecOn() throws Exception {
 
-        boolean val1 = false;
-        boolean val2 = false;
-        val1 = runInServlet("testCreateUnSharedDurableConsumer_create");
+        boolean val = runInServlet("testCreateUnSharedDurableConsumer_create");
+        assertTrue("testCreateUnSharedDurable_B_SecOn_create failed", val);
 
-        server.stopServer();
-        server.startServer();
-        String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        stopAppServers();
+        startAppServers();
 
-        val2 = runInServlet("testCreateUnSharedDurableConsumer_consume");
-        if (val1 == true && val2 == true)
-            val = true;
-
-        assertTrue("testCreateUnSharedDurable_B_SecOn failed", val);
-
+        val = runInServlet("testCreateUnSharedDurableConsumer_consume");
+        assertTrue("testCreateUnSharedDurable_B_SecOn_consume failed", val);
     }
 
-    // TCP and Security Off
+    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
+    @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException"} )
     @Test
     public void testCreateUnSharedDurable_TCP_SecOn() throws Exception {
 
-        boolean val1 = false;
-        boolean val2 = false;
-        val1 = runInServlet("testCreateUnSharedDurableConsumer_create_TCP");
+        boolean val = runInServlet("testCreateUnSharedDurableConsumer_create_TCP");
+        assertTrue("testCreateUnSharedDurable_TCP_SecOn_create failed", val);
 
-        server.stopServer();
-        server1.stopServer();
-        startAppservers();
+        stopAppServers();
+        startAppServers();
 
-        val2 = runInServlet("testCreateUnSharedDurableConsumer_consume_TCP");
-        if (val1 == true && val2 == true)
-            val = true;
-
-        assertTrue("testCreateUnSharedDurable_TCP_SecOn failed", val);
-
+        val = runInServlet("testCreateUnSharedDurableConsumer_consume_TCP");
+        assertTrue("testCreateUnSharedDurable_TCP_SecOn_consume failed", val);
     }
-
-    // -----------------------------------------=================================================================
 
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping client server");
-            server.stopServer();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            System.out.println("Stopping engine server");
-            server1.stopServer();
-        } catch (Exception e) {
-            e.printStackTrace();
+            stopAppServers();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new RuntimeException("tearDown exception", exception);
         }
     }
 
