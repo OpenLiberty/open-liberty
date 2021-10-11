@@ -53,5 +53,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly()).andWith(new JakartaEE9Action().fullFATOnly());
 }
