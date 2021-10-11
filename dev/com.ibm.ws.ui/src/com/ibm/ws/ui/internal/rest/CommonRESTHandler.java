@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.ui.internal.rest.exceptions.MethodNotSupportedException;
 import com.ibm.ws.ui.internal.rest.exceptions.NoSuchResourceException;
 import com.ibm.ws.ui.internal.rest.exceptions.RESTException;
 import com.ibm.ws.ui.internal.v1.pojo.Message;
+import com.ibm.ws.ui.internal.v1.utils.Utils;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
@@ -79,17 +80,17 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
     /**
      * Constructor which should be called by all extenders.
      *
-     * @param handlerURL                The URL for which this handler is registered.
-     *                                      Should not end with a trailing slash. Must not be {@code null}.
-     * @param handlesChildResource      Indicate whether or not child resources are
-     *                                      expected to be handled by this handler. Note only immediate
-     *                                      children are handled when this is set to true. Deeply nested
-     *                                      children are not considered to match.
+     * @param handlerURL The URL for which this handler is registered.
+     *            Should not end with a trailing slash. Must not be {@code null}.
+     * @param handlesChildResource Indicate whether or not child resources are
+     *            expected to be handled by this handler. Note only immediate
+     *            children are handled when this is set to true. Deeply nested
+     *            children are not considered to match.
      * @param handlesGrandchildResource Indicate whether or not grandchild
-     *                                      resources are expected to be handled by this handler. Note
-     *                                      only immediate grandchildren are handled when this is set
-     *                                      to true. Deeply nested grandchildren are not considered to
-     *                                      match.
+     *            resources are expected to be handled by this handler. Note
+     *            only immediate grandchildren are handled when this is set
+     *            to true. Deeply nested grandchildren are not considered to
+     *            match.
      */
     protected CommonRESTHandler(final String handlerURL, final boolean handlesChildResource, final boolean handlesGrandchildResource) {
         this(handlerURL, handlesChildResource, handlesGrandchildResource, new Filter(), null);
@@ -98,19 +99,19 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
     /**
      * Unit test constructor.
      *
-     * @param handlerURL                The URL for which this handler is registered.
-     *                                      Should not end with a trailing slash. Must not be {@code null}.
-     * @param handlesChildResource      Indicate whether or not child resources are
-     *                                      expected to be handled by this handler. Note only immediate
-     *                                      children are handled when this is set to true. Deeply nested
-     *                                      children are not considered to match.
+     * @param handlerURL The URL for which this handler is registered.
+     *            Should not end with a trailing slash. Must not be {@code null}.
+     * @param handlesChildResource Indicate whether or not child resources are
+     *            expected to be handled by this handler. Note only immediate
+     *            children are handled when this is set to true. Deeply nested
+     *            children are not considered to match.
      * @param handlesGrandchildResource Indicate whether or not grandchild
-     *                                      resources are expected to be handled by this handler. Note
-     *                                      only immediate grandchildren are handled when this is set
-     *                                      to true. Deeply nested grandchildren are not considered to
-     *                                      match.
-     * @param filter                    Injection point for the Filter
-     * @param mapper                    Injection point for the ObjectMapper
+     *            resources are expected to be handled by this handler. Note
+     *            only immediate grandchildren are handled when this is set
+     *            to true. Deeply nested grandchildren are not considered to
+     *            match.
+     * @param filter Injection point for the Filter
+     * @param mapper Injection point for the ObjectMapper
      */
     protected CommonRESTHandler(final String handlerURL, final boolean handlesChildResource, final boolean handlesGrandchildResource, final Filter filter,
                                 final JSON json) {
@@ -350,7 +351,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -364,7 +365,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -382,7 +383,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -400,11 +401,11 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     protected final Object doGET(final RESTRequest request, final RESTResponse response) throws RESTException {
-        final String requestPath = request.getPath();
+        final String requestPath = Utils.getPath(request);
         if (isBaseResource(requestPath)) {
             return getBase(request, response);
         } else if (isChildResource(requestPath)) {
@@ -436,7 +437,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -454,11 +455,11 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     protected final POSTResponse doPOST(final RESTRequest request, final RESTResponse response) throws RESTException {
-        final String requestPath = request.getPath();
+        final String requestPath = Utils.getPath(request);
         if (isBaseResource(requestPath)) {
             return postBase(request, response);
         } else if (isChildResource(requestPath)) {
@@ -490,7 +491,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -508,11 +509,11 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     protected final Object doPUT(final RESTRequest request, final RESTResponse response) throws RESTException {
-        final String requestPath = request.getPath();
+        final String requestPath = Utils.getPath(request);
         if (isBaseResource(requestPath)) {
             return putBase(request, response);
         } else if (isChildResource(requestPath)) {
@@ -544,7 +545,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     @Override
@@ -562,11 +563,11 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * <p>By default, the method is not supported. Implementors should override
      * this implementation to provide supported behaviour.</p>
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      */
     protected final Object doDELETE(final RESTRequest request, final RESTResponse response) throws RESTException {
-        final String requestPath = request.getPath();
+        final String requestPath = Utils.getPath(request);
         if (isBaseResource(requestPath)) {
             return deleteBase(request, response);
         } else if (isChildResource(requestPath)) {
@@ -600,7 +601,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * Delegates to the appropriate HTTP method handler, or sets the RESTResponse
      * to 405 if the method is not supported.
      *
-     * @param request  The RESTRequest from handleRequest
+     * @param request The RESTRequest from handleRequest
      * @param response The RESTResponse from handleRequest
      * @throws RESTException Re-throws any exceptions thrown by the delegates
      */
@@ -639,8 +640,8 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * but we shouldn't need to do that since we should always POJO'able.</p>
      *
      * @param response The RESTResponse from handleRequest
-     * @param pojo     The POJO to convert to a JSON object and set in the response payload
-     * @param status   The desired HTTPS status to set
+     * @param pojo The POJO to convert to a JSON object and set in the response payload
+     * @param status The desired HTTPS status to set
      */
     protected final void setPlainTextResponse(final RESTResponse response, final Object obj, final int status) {
         response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, MEDIA_TYPE_TEXT_PLAIN);
@@ -666,8 +667,8 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * but we shouldn't need to do that since we should always POJO'able.</p>
      *
      * @param response The RESTResponse from handleRequest
-     * @param pojo     The POJO to convert to a JSON object and set in the response payload
-     * @param status   The desired HTTPS status to set
+     * @param pojo The POJO to convert to a JSON object and set in the response payload
+     * @param status The desired HTTPS status to set
      */
     protected final void setJSONResponse(final RESTResponse response, final Object pojo, final int status) {
         response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, MEDIA_TYPE_APPLICATION_JSON);
@@ -742,7 +743,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
      * Processes the RESTException thrown by delegateMethod().
      *
      * @param response The RESTResponse from handleRequest
-     * @param e        The RESTException thrown by the delegate doX method
+     * @param e The RESTException thrown by the delegate doX method
      * @throws IOException
      */
     protected void handleRESTException(final RESTResponse response, RESTException e) throws IOException {
@@ -778,7 +779,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
     @FFDCIgnore(RESTException.class)
     public final void handleRequest(final RESTRequest request, final RESTResponse response) throws IOException {
         try {
-            if (matchesExpectedResource(request.getPath())) {
+            if (matchesExpectedResource(Utils.getPath(request))) {
                 try {
                     delegateMethod(request, response);
                 } catch (RESTException e) {
