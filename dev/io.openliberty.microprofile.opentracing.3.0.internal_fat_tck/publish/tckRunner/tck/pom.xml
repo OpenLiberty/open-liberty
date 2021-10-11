@@ -104,70 +104,86 @@
             <artifactId>jakarta.ws.rs-api</artifactId>
         </dependency>
         
-<dependency>
-	<groupId>org.glassfish.jersey.core</groupId>
-	<artifactId>jersey-client</artifactId>
-	<version>3.0.0</version>
-</dependency>
-	<dependency>
-		<groupId>org.glassfish.jersey.inject</groupId>
-		<artifactId>jersey-hk2</artifactId>
-		<version>3.0.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.glassfish.jersey.media</groupId>
-		<artifactId>jersey-media-json-jackson</artifactId>
-		<version>3.0.0</version>
-	</dependency>
-	<dependency>
-		<groupId>jakarta.annotation</groupId>
-		<artifactId>jakarta.annotation-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>jakarta.enterprise</groupId>
-		<artifactId>jakarta.enterprise.cdi-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>jakarta.ws.rs</groupId>
-		<artifactId>jakarta.ws.rs-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>jakarta.json</groupId>
-		<artifactId>jakarta.json-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>jakarta.json.bind</groupId>
-		<artifactId>jakarta.json.bind-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.glassfish</groupId>
-		<artifactId>jakarta.json</artifactId>
-		<version>2.0.0</version>
-	</dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>org.jboss.resteasy.common</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.jboss.logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.websphere</groupId>
+            <artifactId>org.reactivestreams.reactive-streams</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+              <groupId>jakarta.activation</groupId>
+              <artifactId>jakarta.activation-api</artifactId>
+              <version>2.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.eclipse.yasson.2.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.eclipse.yasson.2.0_}</systemPath>
+         </dependency>
+         <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.restfulWS30.jsonb20provider.jakarta</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.restfulWS30.jsonb20provider.jakarta_}</systemPath>
+         </dependency>
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>2.0.0</version>
+         </dependency>  
+         
 
-<!--         <dependency> -->
-<!--             <groupId>org.apache.httpcomponents</groupId> -->
-<!--             <artifactId>httpcore</artifactId> -->
-<!--             <version>4.4.8</version> -->
-<!--         </dependency> -->
+         <dependency>
+             <groupId>jakarta.annotation</groupId>
+             <artifactId>jakarta.annotation-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.enterprise</groupId>
+             <artifactId>jakarta.enterprise.cdi-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.ws.rs</groupId>
+             <artifactId>jakarta.ws.rs-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.json</groupId>
+             <artifactId>jakarta.json-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.json.bind</groupId>
+             <artifactId>jakarta.json.bind-api</artifactId>
+         </dependency>
 
-<!--         <dependency> -->
-<!--             <groupId>org.jboss.resteasy</groupId> -->
-<!--             <artifactId>resteasy-client</artifactId> -->
-<!--             <version>4.5.3.Final</version> -->
-<!--         </dependency> -->
-
-<!--         <dependency> -->
-<!--             <groupId>org.jboss.resteasy</groupId> -->
-<!--             <artifactId>resteasy-json-binding-provider</artifactId> -->
-<!--             <version>4.5.3.Final</version> -->
-<!--         </dependency> -->
-
-<!--         <dependency> -->
-<!--             <groupId>org.jboss.shrinkwrap.resolver</groupId> -->
-<!--             <artifactId>shrinkwrap-resolver-impl-maven</artifactId> -->
-<!--             <version>2.2.4</version> -->
-<!--         </dependency> -->
 
         <!-- Include JAX-B API+Impl for Java 9+ -->
         <dependency>
