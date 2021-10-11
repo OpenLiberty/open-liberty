@@ -11,6 +11,7 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-wsdl;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.classesIncludes: org/cxf/apache/**/*.class
+instrument.ffdc: false
 cxfVersion=3.4.3
 
 -includeresource: \

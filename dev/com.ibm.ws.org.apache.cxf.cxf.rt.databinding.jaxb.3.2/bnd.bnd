@@ -23,4 +23,6 @@ cxfVersion=3.4.3
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
  
+instrument.ffdc: false
+ 
 jakartaeeMe: true
