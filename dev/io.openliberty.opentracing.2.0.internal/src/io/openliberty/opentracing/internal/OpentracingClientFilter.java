@@ -20,6 +20,7 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -43,6 +44,7 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single client filter is used by all clients.</p>
  */
+@Provider
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
 
