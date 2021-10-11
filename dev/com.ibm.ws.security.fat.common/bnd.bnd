@@ -95,7 +95,6 @@ generate.replacement: true
     org.eclipse.birt.runtime:org.w3c.css.sac;version=1.3.1.v200903091627, \
     org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer;version=2.7.1, \
     io.openliberty.org.apache.commons.logging;version=latest, \
-    xalan:xalan;version=2.7.1, \
-    xml-apis:xml-apis;version=1.4.01, \
-    xerces:xercesImpl;version=2.11.0
+    io.openliberty.org.apache.xerces;version=latest, \
+    xalan:xalan;version=2.7.2
 
