@@ -60,7 +60,7 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     private OpentracingFilterHelper helper;
 
     public OpentracingClientFilter() {
-        helper = OpentracingJaxRsProviderRegister.getInstance().getOpentracingFilterHelper();
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
         System.out.println("In Client Filter");
     }
     

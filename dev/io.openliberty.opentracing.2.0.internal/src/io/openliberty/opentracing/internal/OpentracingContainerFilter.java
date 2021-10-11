@@ -62,7 +62,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
     public OpentracingContainerFilter() {
     
-        helper = OpentracingJaxRsProviderRegister.getInstance().getOpentracingFilterHelper();
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
     	System.out.println("Container filter isNull: " + (helper == null));
     }
     

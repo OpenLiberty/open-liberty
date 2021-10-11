@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,10 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  * <p>The open tracing filter service.</p>
  */
-@Component(immediate = true)
-public class OpentracingJaxRsProviderRegister {
-    private static final TraceComponent tc = Tr.register(OpentracingJaxRsProviderRegister.class);
-    private static final AtomicReference<OpentracingJaxRsProviderRegister> instance = new AtomicReference<OpentracingJaxRsProviderRegister>(null);
+@Component(immediate = true, service = OpentracingFilterHelperProvider.class)
+public class OpentracingFilterHelperProvider {
+    private static final TraceComponent tc = Tr.register(OpentracingFilterHelperProvider.class);
+    private static final AtomicReference<OpentracingFilterHelperProvider> instance = new AtomicReference<OpentracingFilterHelperProvider>(null);
 
     // DSR activation API ...
 
@@ -41,13 +41,9 @@ public class OpentracingJaxRsProviderRegister {
         instance.compareAndSet(this, null);
     }
 
-    public static OpentracingJaxRsProviderRegister getInstance() {
+    public static OpentracingFilterHelperProvider getInstance() {
         return instance.get();
     }
-
-    // The filters.  There is a single container filter and a single client
-    // filter, both of which are shared by all applications.  The filters are
-    // stateless.
 
     private OpentracingFilterHelper helper;
 

@@ -18,7 +18,7 @@ Bundle-Description: Opentracing 2.0; version=${bVersion}
 WS-TraceGroup: OPENTRACING
 
 -dsannotations: io.openliberty.opentracing.internal.OpentracingUserFeatureAccessService, \
-                io.openliberty.opentracing.internal.OpentracingJaxRsProviderRegister, \
+                io.openliberty.opentracing.internal.OpentracingFilterHelperProvider, \
                 io.openliberty.opentracing.internal.OpentracingJaxRsEMCallbackImpl, \
                 io.openliberty.opentracing.internal.OpentracingService, \
                 io.openliberty.opentracing.internal.AppStateListener
