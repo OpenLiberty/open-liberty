@@ -327,7 +327,7 @@ public abstract class JSListImpl extends JSMessageData implements JMFList {
         if (elem == nullIndicator) {
           elem = null;
         }
-        next = element.encodeValue(frame, next, elem, indirect, master);
+        next = element.encodeValue(frame, next, elem, indirect, primaryMessage);
       }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) JmfTr.exit(this, tc, "encode", Integer.valueOf(next));
       return next;

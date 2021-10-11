@@ -54,8 +54,8 @@ public class TwoServerLogoutTests extends SAMLLogoutCommonTest {
     static String[] twoServer_allUniqueSPCookies_list = null;
     static String[] twoServer_allDuplicateSPCookies_list = null;
 
-    protected static String server1MasterConfig = "";
-    protected static String server2MasterConfig = "";
+    protected static String server1MainConfig = "";
+    protected static String server2MainConfig = "";
     protected static String server1OtherConfig = "";
     protected static String server2OtherConfig = "";
 
