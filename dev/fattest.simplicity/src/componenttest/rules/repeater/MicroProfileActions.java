@@ -205,8 +205,8 @@ public class MicroProfileActions {
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
                                                           "mpJwt-2.0",
-                                                          "mpOpenAPI-3.0" };
-//                                                          "mpMetrics-4.0",
+                                                          "mpOpenAPI-3.0",
+                                                          "mpMetrics-4.0" };
 //                                                          "mpOpenTracing-3.0",
 //                                                          "mpRestClient-3.0" };
 

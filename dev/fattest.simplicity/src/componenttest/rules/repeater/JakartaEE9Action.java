@@ -52,10 +52,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
     private static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
-    private static final Map<String,String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
-    private static final Map<String,String> TRANSFORMATION_RULES_APPEND = new HashMap();
+    private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
+    private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
 
-    static{
+    static {
         // Fill the default transformation rules for the transformer
         // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
         // the user 'autoFVT-templates' folder.
@@ -203,11 +203,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional package transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
-     * 
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
+     *
      */
     public JakartaEE9Action withLocalPackageTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tr", TRANSFORMER_RULES_APPEND_ROOT + fileName);
@@ -215,10 +215,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional selection transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE9Action withLocalSelectionTransformAppend(String fileName) {
@@ -227,10 +227,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional version transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE9Action withLocalVersionTransformAppend(String fileName) {
@@ -239,10 +239,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional bundle transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE9Action withLocalBundleTransformAppend(String fileName) {
@@ -251,10 +251,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional string transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE9Action withLocalStringTransformAppend(String fileName) {
@@ -263,10 +263,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional xml transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE9Action withLocalXMLTransformAppend(String fileName) {
@@ -311,8 +311,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     /**
      * Invoke the Jakarta transformer on an application with added transformation rules.
      *
-     * @param appPath The application path to be transformed to Jakarta
-     * @param newAppPath The application path of the transformed file (or <code>null<code>)
+     * @param appPath                   The application path to be transformed to Jakarta
+     * @param newAppPath                The application path of the transformed file (or <code>null<code>)
      * @param transformationRulesAppend The map with the additional transformation rules to add
      */
     public static void transformApp(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
@@ -363,16 +363,29 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         Path backupPath = null;
         if (newAppPath == null) {
             outputPath = appPath.resolveSibling(appPath.getFileName() + ".jakarta");
-
-            backupPath = appPath.getParent().getParent().resolve("backup");
-            try {
-                if (!Files.exists(backupPath)) {
-                    Files.createDirectory(backupPath); // throws IOException
+            Path parent1 = appPath.toAbsolutePath().getParent();
+            if (parent1 != null) {
+                Path parent2 = parent1.getParent();
+                if (parent2 != null) {
+                    backupPath = parent2.resolve("backup");
+                    try {
+                        if (!Files.exists(backupPath)) {
+                            Files.createDirectory(backupPath); // throws IOException
+                        }
+                    } catch (IOException e) {
+                        Log.info(c, m, "Unable to create backup directory.");
+                        Log.error(c, m, e);
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Log.info(c, m, "Unable to create backup directory.");
+                    FileNotFoundException fnfe = new FileNotFoundException("Parent path not found: " + parent1.toAbsolutePath().toString());
+                    Log.error(c, m, fnfe);
                 }
-            } catch (IOException e) {
+            } else {
                 Log.info(c, m, "Unable to create backup directory.");
-                Log.error(c, m, e);
-                throw new RuntimeException(e);
+                FileNotFoundException fnfe = new FileNotFoundException("Parent path not found: " + appPath.toAbsolutePath().toString());
+                Log.error(c, m, fnfe);
             }
         } else {
             outputPath = newAppPath;
@@ -403,7 +416,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[14] = DEFAULT_TRANSFORMATION_RULES.get("-tf");
 
             // Go through the additions
-            if(TRANSFORMATION_RULES_APPEND.size() > 0){
+            if (TRANSFORMATION_RULES_APPEND.size() > 0) {
                 String[] additions = new String[TRANSFORMATION_RULES_APPEND.size() * 2];
                 int index = 0;
                 for (Entry<String, String> addition : TRANSFORMATION_RULES_APPEND.entrySet()) {

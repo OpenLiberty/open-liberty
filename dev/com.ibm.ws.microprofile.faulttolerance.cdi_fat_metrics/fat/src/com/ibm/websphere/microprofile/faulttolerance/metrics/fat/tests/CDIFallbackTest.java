@@ -30,7 +30,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -46,13 +45,8 @@ public class CDIFallbackTest extends FATServletClient {
     @TestServlet(servlet = FallbackServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    //mpMetrics-4.0 isn't ready yet so can't run against MP50
-//  @ClassRule
-//  public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
-//                  .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
-
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP20)
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
                     .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     @BeforeClass
