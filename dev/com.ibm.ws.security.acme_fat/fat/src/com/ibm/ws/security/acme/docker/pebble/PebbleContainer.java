@@ -30,6 +30,8 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.ContainerNetwork;
@@ -100,10 +102,8 @@ public class PebbleContainer extends CAContainer {
 	 */
 	public PebbleContainer() {
 		super(new ImageFromDockerfile()
-				.withDockerfileFromBuilder(builder -> builder
-						.from((ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST
-								? ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "/"
-								: "") + "letsencrypt/pebble")
+				.withDockerfileFromBuilder(builder -> builder.from(
+						ImageNameSubstitutor.instance().apply(DockerImageName.parse("letsencrypt/pebble")).asCanonicalNameString())
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
 				.withFileFromFile("pebble-config.json", PEBBLE_CONFIG_JSON_FILE), 5002, 14000, 15000);
 		challtestsrv.withStartupAttempts(20);
