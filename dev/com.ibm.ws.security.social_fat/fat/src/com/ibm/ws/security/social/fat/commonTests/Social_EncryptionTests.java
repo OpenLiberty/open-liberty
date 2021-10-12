@@ -29,7 +29,6 @@ import com.ibm.ws.security.social.fat.utils.SocialCommonTest;
 import com.ibm.ws.security.social.fat.utils.SocialConstants;
 import com.ibm.ws.security.social.fat.utils.SocialTestSettings;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -131,13 +130,14 @@ public class Social_EncryptionTests extends SocialCommonTest {
                 if (SocialConstants.SIGALG_NONE.equals(encryptAlgForBuilder) || SocialConstants.SIGALG_NONE.equals(decryptAlgForSocialClient)) {
 
                     if (SocialConstants.SIGALG_NONE.equals(encryptAlgForBuilder)) {
-                        String[] errorMsgs = new String[] { MessageConstants.CWWKS6031E_JWT_CONSUMER_CANNOT_PROCESS_STRING, MessageConstants.CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG, MessageConstants.CWWKS6064E_TOKEN_IS_NOT_A_JWE, MessageConstants.CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN, };
+                        //                        String[] errorMsgs = new String[] { MessageConstants.CWWKS6031E_JWT_CONSUMER_CANNOT_PROCESS_STRING, MessageConstants.CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG, MessageConstants.CWWKS6064E_TOKEN_IS_NOT_A_JWE, MessageConstants.CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN, };
+                        String[] errorMsgs = new String[] { MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN, MessageConstants.CWWKS1537E_JWE_IS_NOT_VALID };
                         for (String msg : errorMsgs) {
                             expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Client messages.log should contain a message [" + msg + "] indicating that the JWT was a JWS and the social client expected a JWE.", msg + ".*");
                         }
                     }
                     if (SocialConstants.SIGALG_NONE.equals(decryptAlgForSocialClient)) {
-                        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Client messages.log should contain a message indicating that the JWT was a JWE and the social client expected a JWS.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + MessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING);
+                        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Client messages.log should contain a message indicating that the JWT was a JWE and the social client expected a JWS.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS1536E_TOKEN_IS_NOT_A_JWS);
                     }
                 } else {
                     // create negative expectations when signature algorithms don't match
@@ -676,7 +676,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
     /* Don't encrypt the token, but the Social Client config "expects" and */
     /* encrypted token - show that we will still consume it */
     /*****************************************************************/
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithRS256() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS256;
@@ -687,7 +686,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithRS384() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS384;
@@ -698,7 +696,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithRS512() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS512;
@@ -709,7 +706,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES256() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES256;
@@ -720,7 +716,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES384() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES384;
@@ -731,7 +726,6 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.ws.security.social.error.SocialLoginException" })
     @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES512() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES512;
