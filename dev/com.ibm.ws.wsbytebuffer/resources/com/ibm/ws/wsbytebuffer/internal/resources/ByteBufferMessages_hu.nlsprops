@@ -31,10 +31,10 @@ UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: A WsByteBuffer \u00f6sszetev\u0151h\u00
 UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Az egy\u00e9ni tulajdons\u00e1g helytelen\u00fcl lett megadva.
 UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
 
-CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: A WsByteBuffer egy NumberFormatException kiv\u00e9telt \u00e1ll\u00edtott el\u0151 a k\u00f6vetkez\u0151 tulajdons\u00e1g feldolgoz\u00e1sakor: Tulajdons\u00e1gn\u00e9v: {0}  \u00c9rt\u00e9k: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: A WsByteBuffer NumberFormatException kiv\u00e9telt \u00e1ll\u00edtott el\u0151 a k\u00f6vetkez\u0151 tulajdons\u00e1g feldolgoz\u00e1sakor: Tulajdons\u00e1gn\u00e9v: {0}  \u00c9rt\u00e9k: {1}
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=A WsByteBuffer konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9ke nem egy \u00e9rv\u00e9nyes sz\u00e1m.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
 
-POOL_MISMATCH=CWWKO0603E: A WsByteBuffer k\u00e9szlet m\u00e9ret\u00e9re \u00e9s a k\u00e9szlet m\u00e9lys\u00e9g\u00e9re vonatkoz\u00f3 specifik\u00e1ci\u00f3k elt\u00e9r\u0151 sz\u00e1m\u00fa bejegyz\u00e9st tartalmaznak. M\u00e9ret: {0}  M\u00e9lys\u00e9g: {1}
+POOL_MISMATCH=CWWKO0603E: A WsByteBuffer k\u00e9szlet m\u00e9ret\u00e9re \u00e9s a k\u00e9szlet m\u00e9lys\u00e9g\u00e9re vonatkoz\u00f3 specifik\u00e1ci\u00f3k elt\u00e9r\u0151 sz\u00e1m\u00fa bejegyz\u00e9st tartalmaznak.  M\u00e9ret: {0}  M\u00e9lys\u00e9g: {1}
 POOL_MISMATCH.explanation=A k\u00e9szlet m\u00e9retei \u00e9s a k\u00e9szlet m\u00e9lys\u00e9gei helytelen\u00fcl lettek megadva.
 POOL_MISMATCH.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.

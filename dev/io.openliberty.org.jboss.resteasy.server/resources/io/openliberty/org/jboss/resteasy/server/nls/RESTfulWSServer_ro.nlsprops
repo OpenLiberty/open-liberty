@@ -60,4 +60,6 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Mai multe map\u0103ri de s
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Un servlet REST este permis s\u0103 fie configurat doar cu o mapare de cale sau cu niciuna. Un servlet REST este orice servlet care folose\u015fte unul din urm\u0103toarele nume de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteamsy.plugins.server.servlet.HttpServletDispatcher sau org.jboss.resteamsy.plugins.server.servlet.HttpServlet30Dispatcher. Acest mesaj indic\u0103 faptul c\u0103 mai mult de o mapare este asociat\u0103 cu un servlet REST \u00een web.xml. 
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Examina\u0163i web.xml pentru map\u0103rile de servlet care sunt asociate cu servletul REST \u015fi \u00eenl\u0103tura\u0163i-le pe toate sau toate mai pu\u0163in una.
 
-
+UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: Modulul web {0} con\u0163ine o clas\u0103 de aplica\u0163ie JAX-RS, {1}, care nu este mapat\u0103. Serverul o va ignora.
+UNMAPPED_APPLICATION_CWWKW1302W.explanation=Clasa de aplica\u0163ie specificat\u0103 nu este referit\u0103 \u00een fi\u015fierul web.xml al modulului web. Fie clasa nu este adnotat\u0103 cu @ApplicationPath, fie serverul nu-i poate determina calea HTTP \u015fi va ignora clasa.
+UNMAPPED_APPLICATION_CWWKW1302W.useraction=Ad\u0103uga\u0163i o adnotare @ApplicationPath \u00een care este specificat\u0103 calea aplica\u0163iei sau specifica\u0163i calea \u00een web.xml. Sau \u00eenl\u0103tura\u0163i clasa de aplica\u0163ie, dac\u0103 nu este utilizat\u0103.

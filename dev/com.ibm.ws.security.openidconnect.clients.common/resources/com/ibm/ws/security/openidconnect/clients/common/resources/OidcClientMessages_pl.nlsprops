@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,11 @@ USERINFO_INVALID.explanation=\u017b\u0105danie sub danych informacji o u\u017cyt
 USERINFO_INVALID.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect generuje poprawne dane informacji o u\u017cytkowniku.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Klient OpenID Connect [{0}] wymaga adresu URL punktu ko\u0144cowego autoryzacji, ale ten adres nie jest ustawiony.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Adres URL punktu ko\u0144cowego autoryzacji musi by\u0107 ustawiony, aby mo\u017cna by\u0142o uzyska\u0107 kod autoryzacji lub wymagane znaczniki.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Ustaw atrybut authorizationEndpointUrl w konfiguracji klienta OpenID Connect na adres URL punktu ko\u0144cowego autoryzacji dostawcy OpenID Connect. Zamiast tego mo\u017cna ustawi\u0107 atrybut discoveryEndpointUrl w konfiguracji klienta OpenID Connect na adres URL punktu ko\u0144cowego wykrywania dostawcy OpenID Connect. 
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Klient OpenID Connect [{0}] wymaga adresu URL punktu ko\u0144cowego znacznika, ale ten adres nie jest ustawiony.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Adres URL punktu ko\u0144cowego znacznika musi by\u0107 ustawiony, aby mo\u017cna by\u0142o uzyska\u0107 wymagane znaczniki.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Ustaw atrybut tokenEndpointUrl w konfiguracji klienta OpenID Connect na adres URL punktu ko\u0144cowego znacznika dostawcy OpenID Connect. Zamiast tego mo\u017cna ustawi\u0107 atrybut discoveryEndpointUrl w konfiguracji klienta OpenID Connect na adres URL punktu ko\u0144cowego wykrywania dostawcy OpenID Connect. 
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
