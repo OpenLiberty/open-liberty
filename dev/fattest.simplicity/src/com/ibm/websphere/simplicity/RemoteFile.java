@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,12 +50,12 @@ public class RemoteFile {
      * Thread.sleep() is repeated until System.nanoTime() shows that the thread
      * has waited at least the specified time in milliseconds.
      *
-     * @param  requestedNs          The requested sleep time, in nano-seconds.
+     * @param requestedNs The requested sleep time, in nano-seconds.
      *
-     * @return                      The time slept, in nano-seconds.
+     * @return The time slept, in nano-seconds.
      *
      * @throws InterruptedException Thrown if if the sleep is
-     *                                  interrupted.
+     * interrupted.
      */
     public static long sleep(long requestedNs) throws InterruptedException {
         long startNs = System.nanoTime();
@@ -112,10 +112,10 @@ public class RemoteFile {
      * Attempt an operation. Retry the operation, possibly several times,
      * across a specified retry interval.
      *
-     * @param  op          The operation which is being performed.
-     * @param  fullRetryNs The full retry duration.
+     * @param op The operation which is being performed.
+     * @param fullRetryNs The full retry duration.
      *
-     * @return             True or false telling if the operation was successful.
+     * @return True or false telling if the operation was successful.
      *
      * @throws Exception
      */
@@ -169,9 +169,9 @@ public class RemoteFile {
      * file.
      *
      * @param host
-     *                     The {@link Machine} where this file is physically located
+     * The {@link Machine} where this file is physically located
      * @param filePath
-     *                     The fully qualified (absolute) path of the file
+     * The fully qualified (absolute) path of the file
      */
     public RemoteFile(Machine host, String filePath) {
         this(host, filePath, Charset.defaultCharset());
@@ -182,11 +182,11 @@ public class RemoteFile {
      * file.
      *
      * @param host
-     *                     The {@link Machine} where this file is physically located
+     * The {@link Machine} where this file is physically located
      * @param filePath
-     *                     The fully qualified (absolute) path of the file
+     * The fully qualified (absolute) path of the file
      * @param encoding
-     *                     The character set the file is encoded in
+     * The character set the file is encoded in
      */
     public RemoteFile(Machine host, String filePath, Charset encoding) {
         this.host = host;
@@ -200,11 +200,11 @@ public class RemoteFile {
      * Construct an instance based on the parent of the remote file.
      *
      * @param host
-     *                   The {@link Machine} where this file is physically located
+     * The {@link Machine} where this file is physically located
      * @param parent
-     *                   The remote file's parent directory
+     * The remote file's parent directory
      * @param name
-     *                   The name of the file
+     * The name of the file
      */
     public RemoteFile(Machine host, RemoteFile parent, String name) {
         this(host, parent, name, Charset.defaultCharset());
@@ -214,13 +214,13 @@ public class RemoteFile {
      * Construct an instance based on the parent of the remote file.
      *
      * @param host
-     *                     The {@link Machine} where this file is physically located
+     * The {@link Machine} where this file is physically located
      * @param parent
-     *                     The remote file's parent directory
+     * The remote file's parent directory
      * @param name
-     *                     The name of the file
+     * The name of the file
      * @param encoding
-     *                     The character set the file is encoded in
+     * The character set the file is encoded in
      */
     public RemoteFile(Machine host, RemoteFile parent, String name, Charset encoding) {
         if (parent.getAbsolutePath().endsWith("/")
@@ -240,9 +240,9 @@ public class RemoteFile {
      * Construct an instance based on the parent of the remote file. Assumes that the new instance resides on the same machine as the parent file.
      *
      * @param parent
-     *                   The remote file's parent directory
+     * The remote file's parent directory
      * @param name
-     *                   The name of the file
+     * The name of the file
      */
     public RemoteFile(RemoteFile parent, String name) {
         this(parent.getMachine(), parent, name, Charset.defaultCharset());
@@ -252,11 +252,11 @@ public class RemoteFile {
      * Construct an instance based on the parent of the remote file. Assumes that the new instance resides on the same machine as the parent file.
      *
      * @param parent
-     *                     The remote file's parent directory
+     * The remote file's parent directory
      * @param name
-     *                     The name of the file
+     * The name of the file
      * @param encoding
-     *                     The character set the file is encoded in
+     * The character set the file is encoded in
      */
     public RemoteFile(RemoteFile parent, String name, Charset encoding) {
         this(parent.getMachine(), parent, name, encoding);
@@ -290,7 +290,7 @@ public class RemoteFile {
      * Returns a RemoteFile representation of the parent directory of this file
      * or null if this pathname does not name a parent directory.
      *
-     * @return           A RemoteFile representation of the parent directory.
+     * @return A RemoteFile representation of the parent directory.
      * @throws Exception
      */
     public RemoteFile getParentFile() throws Exception {
@@ -324,19 +324,19 @@ public class RemoteFile {
      * This method is not thread-safe.
      * </p>
      *
-     * @param  prefix
-     *                                      an optional String that proceeds ordering information. All
-     *                                      characters must match: [a-zA-Z_0-9\\.]
-     * @param  digits
-     *                                      the number of digits to use for generated identifiers
-     * @param  suffix
-     *                                      the optional name of the desired file, without any numeric identifier.
-     *                                      All characters must match: [a-zA-Z_0-9\\.]
-     * @return                          a new RemoteFile representing a unique child of the parent. The file must be created before use.
+     * @param prefix
+     * an optional String that proceeds ordering information. All
+     * characters must match: [a-zA-Z_0-9\\.]
+     * @param digits
+     * the number of digits to use for generated identifiers
+     * @param suffix
+     * the optional name of the desired file, without any numeric identifier.
+     * All characters must match: [a-zA-Z_0-9\\.]
+     * @return a new RemoteFile representing a unique child of the parent. The file must be created before use.
      * @throws IllegalArgumentException
-     *                                      if this instance does not denote a directory,
-     *                                      if input arguments are invalid,
-     *                                      or if the file cannot be created
+     * if this instance does not denote a directory,
+     * if input arguments are invalid,
+     * or if the file cannot be created
      */
     public RemoteFile getOrderedChild(String prefix, int digits, String suffix) throws Exception {
         RemoteFile[] children = list(false);
@@ -397,15 +397,15 @@ public class RemoteFile {
      * number is a total of <code>width</code> digits. Truncates the input
      * number if it has more than <code>width</code> digits.
      *
-     * @param  number
-     *                    a positive integer (negative integers cause problems with odd
-     *                    widths)
-     * @param  width
-     *                    the number of characters that you want in a String
-     *                    representation of <code>number</code>; must be a positive
-     *                    integer smaller than 18 (larger numbers cause an overflow
-     *                    issue)
-     * @return        a zero-padded String representation of the input number
+     * @param number
+     * a positive integer (negative integers cause problems with odd
+     * widths)
+     * @param width
+     * the number of characters that you want in a String
+     * representation of <code>number</code>; must be a positive
+     * integer smaller than 18 (larger numbers cause an overflow
+     * issue)
+     * @return a zero-padded String representation of the input number
      */
     private String zeroPad(long number, int width) {
         long n = Math.abs(number);
@@ -423,18 +423,18 @@ public class RemoteFile {
      * Copies the file or directory represented by this instance to a remote
      * machine.
      *
-     * @param  destFile
-     *                       The location on the remote device where you want to place this
-     *                       file
-     * @param  recursive
-     *                       If this instance represents a directory, whether or not to
-     *                       recursively transfer all files and directories within this
-     *                       directory
-     * @param  overwrite
-     *                       true if files should be overwritten durin the copy. If this is
-     *                       false and a file is encountered in the destination of the
-     *                       copy, an Exception is thrown.
-     * @return           true if the copy was successful
+     * @param destFile
+     * The location on the remote device where you want to place this
+     * file
+     * @param recursive
+     * If this instance represents a directory, whether or not to
+     * recursively transfer all files and directories within this
+     * directory
+     * @param overwrite
+     * true if files should be overwritten durin the copy. If this is
+     * false and a file is encountered in the destination of the
+     * copy, an Exception is thrown.
+     * @return true if the copy was successful
      */
     public boolean copyToDest(RemoteFile destFile, boolean recursive,
                               boolean overwrite) throws Exception {
@@ -445,18 +445,18 @@ public class RemoteFile {
      * Copies the file or directory represented by this instance to a remote
      * machine.
      *
-     * @param  destFile
-     *                       The location on the remote device where you want to place this
-     *                       file
-     * @param  recursive
-     *                       If this instance represents a directory, whether or not to
-     *                       recursively transfer all files and directories within this
-     *                       directory
-     * @param  overwrite
-     *                       true if files should be overwritten durin the copy. If this is
-     *                       false and a file is encountered in the destination of the
-     *                       copy, an Exception is thrown.
-     * @return           true if the copy was successful
+     * @param destFile
+     * The location on the remote device where you want to place this
+     * file
+     * @param recursive
+     * If this instance represents a directory, whether or not to
+     * recursively transfer all files and directories within this
+     * directory
+     * @param overwrite
+     * true if files should be overwritten durin the copy. If this is
+     * false and a file is encountered in the destination of the
+     * copy, an Exception is thrown.
+     * @return true if the copy was successful
      */
     public boolean copyToDestText(RemoteFile destFile, boolean recursive,
                                   boolean overwrite) throws Exception {
@@ -468,10 +468,10 @@ public class RemoteFile {
      * machine. If this is a directory the copy is not done recursively. Files
      * are overwritten during the copy.
      *
-     * @param  destFile
-     *                       The location on the remote device where you want to place this
-     *                       file
-     * @return           true if the copy was successful
+     * @param destFile
+     * The location on the remote device where you want to place this
+     * file
+     * @return true if the copy was successful
      * @throws Exception
      */
     public boolean copyToDest(RemoteFile destFile) throws Exception {
@@ -483,10 +483,10 @@ public class RemoteFile {
      * machine. If this is a directory the copy is not done recursively. Files
      * are overwritten during the copy.
      *
-     * @param  destFile
-     *                       The location on the remote device where you want to place this
-     *                       file
-     * @return           true if the copy was successful
+     * @param destFile
+     * The location on the remote device where you want to place this
+     * file
+     * @return true if the copy was successful
      * @throws Exception
      */
     public boolean copyToDestText(RemoteFile destFile) throws Exception {
@@ -497,18 +497,18 @@ public class RemoteFile {
      * Copies the file or directory from a RemoteMachine to the path specified
      * by this instance
      *
-     * @param  srcFile
-     *                       The location on the remote device where you want to get this
-     *                       file
-     * @param  recursive
-     *                       If this srcFile represents a directory, whether or not to
-     *                       recursively transfer all files and directories within the
-     *                       source directory
-     * @param  overwrite
-     *                       true if files should be overwritten durin the copy. If this is
-     *                       false and a file is encountered in the destination of the
-     *                       copy, an Exception is thrown.
-     * @return           true if the copy was successful
+     * @param srcFile
+     * The location on the remote device where you want to get this
+     * file
+     * @param recursive
+     * If this srcFile represents a directory, whether or not to
+     * recursively transfer all files and directories within the
+     * source directory
+     * @param overwrite
+     * true if files should be overwritten durin the copy. If this is
+     * false and a file is encountered in the destination of the
+     * copy, an Exception is thrown.
+     * @return true if the copy was successful
      */
     public boolean copyFromSource(RemoteFile srcFile, boolean recursive,
                                   boolean overwrite) throws Exception {
@@ -519,18 +519,18 @@ public class RemoteFile {
      * Copies the file or directory from a RemoteMachine to the path specified
      * by this instance
      *
-     * @param  srcFile
-     *                       The location on the remote device where you want to get this
-     *                       file
-     * @param  recursive
-     *                       If this srcFile represents a directory, whether or not to
-     *                       recursively transfer all files and directories within the
-     *                       source directory
-     * @param  overwrite
-     *                       true if files should be overwritten durin the copy. If this is
-     *                       false and a file is encountered in the destination of the
-     *                       copy, an Exception is thrown.
-     * @return           true if the copy was successful
+     * @param srcFile
+     * The location on the remote device where you want to get this
+     * file
+     * @param recursive
+     * If this srcFile represents a directory, whether or not to
+     * recursively transfer all files and directories within the
+     * source directory
+     * @param overwrite
+     * true if files should be overwritten durin the copy. If this is
+     * false and a file is encountered in the destination of the
+     * copy, an Exception is thrown.
+     * @return true if the copy was successful
      */
     public boolean copyFromSourceText(RemoteFile srcFile, boolean recursive,
                                       boolean overwrite) throws Exception {
@@ -542,10 +542,10 @@ public class RemoteFile {
      * by this instance. If the source is a directory the copy is not done
      * recursively. Files are overwritten during the copy.
      *
-     * @param  srcFile
-     *                       The location on the remote device where you want to get this
-     *                       file
-     * @return           true if the copy was successful
+     * @param srcFile
+     * The location on the remote device where you want to get this
+     * file
+     * @return true if the copy was successful
      * @throws Exception
      */
     public boolean copyFromSource(RemoteFile srcFile) throws Exception {
@@ -557,12 +557,12 @@ public class RemoteFile {
      * by this instance. If the source is a directory the copy is not done
      * recursively. Files are overwritten during the copy.
      *
-     * @param  srcFile
-     *                       The location on the remote device where you want to get this
-     *                       file
-     * @param  binary
-     *                       true if you want the file transfered in binary, ascii if false
-     * @return           true if the copy was successful
+     * @param srcFile
+     * The location on the remote device where you want to get this
+     * file
+     * @param binary
+     * true if you want the file transfered in binary, ascii if false
+     * @return true if the copy was successful
      * @throws Exception
      */
     public boolean copyFromSource(RemoteFile srcFile, boolean binary) throws Exception {
@@ -590,9 +590,9 @@ public class RemoteFile {
         boolean deleted = retry(deleteOp, retryNs);
         if (!deleted) {
 
-            Log.info(c, methodName, "Failed to delete '" + filePath  + "' about to print processes");
+            Log.info(c, methodName, "Failed to delete '" + filePath + "' about to print processes");
             String[] name = convertPath(filePath).split("/");
-            LibertyServer.printProcesses(host, name[name.length-1]);
+            LibertyServer.printProcesses(host, name[name.length - 1]);
         }
         return deleted;
         // return retry( () -> basicDelete(), retryNs );
@@ -655,6 +655,9 @@ public class RemoteFile {
 
         Path localPath = useLocalFile.toPath();
         try {
+            if (!Files.exists(localPath)) {
+                return true;
+            }
             return Files.deleteIfExists(localPath);
         } catch (IOException e) {
             Log.info(c, methodName, "Failed to delete '" + localPath + "': " + e.getMessage());
@@ -672,7 +675,7 @@ public class RemoteFile {
      * Tests whether the file represented by this RemoteFile is a directory.
      *
      * @return true if and only if the file denoted by this abstract pathname
-     *         exists and is a directory; false otherwise
+     * exists and is a directory; false otherwise
      */
     public boolean isDirectory() throws Exception {
         if (!exists()) {
@@ -691,7 +694,7 @@ public class RemoteFile {
      * application is guaranteed to be a normal file.
      *
      * @return true if and only if the file denoted by this abstract pathname
-     *         exists and is a normal file; false otherwise
+     * exists and is a normal file; false otherwise
      */
     public boolean isFile() throws Exception {
         if (!exists()) {
@@ -707,7 +710,7 @@ public class RemoteFile {
      * Tests whether the file or directory denoted by this Remotefile exists
      *
      * @return if and only if the file or directory denoted by this abstract
-     *         pathname exists; false otherwise
+     * pathname exists; false otherwise
      */
     public boolean exists() throws Exception {
         if (host.isLocal())
@@ -720,14 +723,14 @@ public class RemoteFile {
      * Returns an array of RemoteFiles denoting the files in the directory
      * denoted by this RemoteFile.
      *
-     * @param  recursive
-     *                       If this instance represents a directory, whether or not to
-     *                       recursively list all files and directories
+     * @param recursive
+     * If this instance represents a directory, whether or not to
+     * recursively list all files and directories
      *
-     * @return           An array of RemoteFiles denoting the files and directories in the
-     *                   directory denoted by this RemoteFile. The array will be empty if
-     *                   the directory is empty. Returns null if this abstract pathname
-     *                   does not denote a directory
+     * @return An array of RemoteFiles denoting the files and directories in the
+     * directory denoted by this RemoteFile. The array will be empty if
+     * the directory is empty. Returns null if this abstract pathname
+     * does not denote a directory
      */
     public RemoteFile[] list(boolean recursive) throws Exception {
         final String method = "list";
@@ -785,7 +788,7 @@ public class RemoteFile {
      * may have succeeded in creating some of the necessary parent directories.
      *
      * @return true if and only if the directory was created, along with all
-     *         necessary parent directories; false otherwise
+     * necessary parent directories; false otherwise
      */
     public boolean mkdirs() throws Exception {
         if (host.isLocal())
@@ -828,7 +831,7 @@ public class RemoteFile {
     /**
      * Returns the name of the file or directory denoted by this RemoteFile
      *
-     * @return           The name of the file
+     * @return The name of the file
      * @throws Exception
      */
     public String getName() throws Exception {
@@ -867,15 +870,15 @@ public class RemoteFile {
     /**
      * Copy a RemoteFile
      *
-     * @param  srcFile
-     *                       The source RemoteFile
-     * @param  destFile
-     *                       The destination RemoteFile
-     * @param  recursive
-     *                       true if this a recursive copy
-     * @param  overwrite
-     *                       true if files should be overwritten during the copy
-     * @return           true if the copy was successful
+     * @param srcFile
+     * The source RemoteFile
+     * @param destFile
+     * The destination RemoteFile
+     * @param recursive
+     * true if this a recursive copy
+     * @param overwrite
+     * true if files should be overwritten during the copy
+     * @return true if the copy was successful
      * @throws Exception
      */
     private static boolean copy(RemoteFile srcFile, RemoteFile destFile,
@@ -945,9 +948,9 @@ public class RemoteFile {
     /**
      * Get the parent path of a file
      *
-     * @param  path
-     *                  The path of the file
-     * @return      The parent path of the file
+     * @param path
+     * The path of the file
+     * @return The parent path of the file
      */
     private String getParentPath(String path) {
         if (path.equals("/")) { // root
