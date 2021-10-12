@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.collaborator.CollaboratorHelper;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
-import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
 import com.ibm.wsspi.webcontainer.util.ServletUtil;
 
 /**
@@ -1509,31 +1508,23 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
 
             if (dispatcherType == DispatcherType.FORWARD) {
                 SRTServletResponse castResp = null;
+                if (response instanceof ChainedResponse) {
+                    ChainedResponse w = (ChainedResponse) response;
 
-                if (response instanceof SRTServletResponse) {
+                    // make sure we drill all the way down to an
+                    // SRTServletResponse...there
+                    // may be multiple proxied response objects
+                    ServletResponse sr = w.getProxiedHttpServletResponse();
+
+                    while (sr != null && sr instanceof ChainedResponse)
+                        sr = ((ChainedResponse) sr).getProxiedHttpServletResponse();
+
+                    // if we found an srt response, cast it
+                    if (sr != null && sr instanceof SRTServletResponse)
+                        castResp = (SRTServletResponse) sr;
+
+                } else if (response instanceof SRTServletResponse) {
                     castResp = (SRTServletResponse) response;
-                }
-                else {
-                    if (WCCustomProperties.CLOSE_WRAPPED_RESPONSE_OUTPUT_AFTER_FORWARD) {
-                            castResp = (SRTServletResponse) ((IExtendedResponse) ServletUtil.unwrapResponse(response)); 
-                    }
-                    else {
-                        if (response instanceof ChainedResponse) {
-                            ChainedResponse w = (ChainedResponse) response;
-
-                            // make sure we drill all the way down to an
-                            // SRTServletResponse...there
-                            // may be multiple proxied response objects
-                            ServletResponse sr = w.getProxiedHttpServletResponse();
-
-                            while (sr != null && sr instanceof ChainedResponse)
-                                sr = ((ChainedResponse) sr).getProxiedHttpServletResponse();
-
-                            // if we found an srt response, cast it
-                            if (sr != null && sr instanceof SRTServletResponse)
-                                castResp = (SRTServletResponse) sr;
-                        }
-                    }
                 }
 
                 if (castResp != null && !exception) {
@@ -1550,12 +1541,6 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                         castResp.closeResponseOutput();                        
                     }
                 }
-                else {
-                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
-                        logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "cannot closeResponseOutput at the end of forward");
-                    } 
-                }
-
             } else if (wasAsyncSupported&&wasReq!=null&&!wasReq.isAsyncSupported()){
                 //If the value of async supported changed between entry and exit, we went from async to sync.
                 //In which case, you must commite the response
