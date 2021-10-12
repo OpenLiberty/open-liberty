@@ -14,7 +14,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -23,7 +22,6 @@ public class AccessLogPort extends AccessLogData {
     /** Trace component for debugging */
     private static final TraceComponent tc = Tr.register(AccessLogPort.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    @Deprecated
     public static final String TYPE_REMOTE = "remote";
 
     public AccessLogPort() {
@@ -52,7 +50,6 @@ public class AccessLogPort extends AccessLogData {
         // Matching logic in multiple places in com.ibm.ws.http.logging.source.AccessLogSource
         if (TYPE_REMOTE.equals(data)) {
             // %{remote}p
-            betaFenceCheck();
             return getRemotePort(response, request, data);
         } else {
             // %p
@@ -84,21 +81,5 @@ public class AccessLogPort extends AccessLogData {
             remotePort = Integer.toString(requestMessageImpl.getServiceContext().getRemotePort());
         }
         return remotePort;
-    }
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
-
-    public static void betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is beta and is not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + AccessLogPort.class.getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
     }
 }
