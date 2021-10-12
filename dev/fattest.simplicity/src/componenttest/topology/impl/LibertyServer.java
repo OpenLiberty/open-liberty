@@ -35,6 +35,9 @@ import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +92,7 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.Props;
 import com.ibm.ws.fat.util.jmx.JmxException;
 import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
@@ -1041,12 +1045,33 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public static void printProcesses(Machine host) {
+        printProcesses(host, "");
+    }
+
+    public static void printProcesses(Machine host, String prefix) {
         final String m = "printProcesses";
+
+        String timeStamp = ZonedDateTime.now( ZoneId.systemDefault() ).format( DateTimeFormatter.ofPattern( "uuuu.MM.dd.HH.mm.ss" ) ).toString();
+        String fileName = "processes-" + timeStamp + ".txt";
+        if (prefix != null && ! prefix.isEmpty()) {
+            fileName = prefix + "-" + fileName;
+        }
+        PrintWriter writer = null;
+        Props properties = Props.getInstance();
+
+        Log.info(c, m, "Printing processes to file: " + fileName);
+
         try {
+            String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
             PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
-            Log.info(c, m, detector.listProcesses());
+            writer = new PrintWriter(filePath, "UTF-8");
+            writer.println(detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 
