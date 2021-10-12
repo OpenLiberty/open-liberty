@@ -15,16 +15,6 @@ Bundle-Name: org.opensaml.opensaml
 Bundle-Description: org.opensaml opensaml; version=2.6.6
 Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.2.6.1
 
-#
-# Generate an Jakarta EE compliant JAR for the bundle.
-#
-jakartaeeMe: true
-jakartaFinalJarName=io.openliberty.org.opensaml.opensaml.2.6.1.jar
-jakartaFinalBundleName: org.opensaml.opensaml
-jakartaFinalBundleId: io.openliberty.org.opensaml.opensaml.2.6.1
-jakartaFinalBundleDescription: org.opensaml.opensaml; Jakarta Enabled
-
-
 WS-TraceGroup: SAML20
 
 Export-Package: \

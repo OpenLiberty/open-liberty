@@ -15,8 +15,6 @@ Bundle-Name: WebSphere Persistence Service API
 Bundle-Description: WebSphere Persistence Service API, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.api.persistence
 
-jakartaeeMe: true
-
 Import-Package: com.ibm.websphere.persistence.mbean
 
 Export-Package: com.ibm.websphere.persistence.mbean
