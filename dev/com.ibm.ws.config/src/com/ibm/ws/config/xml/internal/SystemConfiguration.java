@@ -35,6 +35,9 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+
 /**
  * Represents the configuration of the entire system at runtime, comprising variables, all XML configuration, and all default configuration
  */
@@ -127,6 +130,17 @@ class SystemConfiguration {
         WSConfigurationHelper wsConfigHelper = new WSConfigurationHelperImpl(metatypeRegistry, ce, bundleProcessor);
         registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
 
+        // register restore hook to reprocess config if necessary
+        bc.registerService(CheckpointHookFactory.class, (p) -> new CheckpointHook() {
+            @Override
+            public void restore() {
+                try {
+                    reprocessConfig(true);
+                } catch (ConfigUpdateException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        }, null);
     }
 
     private OnError getOnError() {
@@ -174,16 +188,18 @@ class SystemConfiguration {
             serverXMLConfig.loadInitialConfiguration(variableRegistry);
         }
 
-        final boolean reprocessConfig;
+        reprocessConfig(false);
+    }
+
+    void reprocessConfig(boolean restoreHook) throws ConfigUpdateException {
         if (serverXMLConfig.isModified() || variableRegistry.variablesChanged()) {
             variableRegistry.clearVariableCache();
             changeHandler.updateAtStartup(serverXMLConfig.getConfiguration());
             serverXMLConfig.setConfigReadTime();
-            reprocessConfig = true;
-        } else {
-            reprocessConfig = false;
+            bundleProcessor.startProcessor(true);
+        } else if (!restoreHook) {
+            bundleProcessor.startProcessor(false);
         }
-        bundleProcessor.startProcessor(reprocessConfig);
     }
 
     void stop() {

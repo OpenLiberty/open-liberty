@@ -77,6 +77,7 @@ instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.filemonitor;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest
 
 -testpath: \
