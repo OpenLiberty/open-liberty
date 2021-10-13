@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.org.jboss.resteasy.common.client;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +30,23 @@ import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 
+@SuppressWarnings("unchecked")
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
+
+    private final static Class<? extends ExecutorService> MANAGED_EXECUTOR_SERVICE_CLASS;
+
+    private final List<Runnable> closeActions = new ArrayList<>();
+
+    static {
+        Class<? extends ExecutorService> clazz;
+        try {
+            clazz = (Class<? extends ExecutorService>) Class.forName("javax.enterprise.concurrent.ManagedExecutorService", false,
+                AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> Thread.currentThread().getContextClassLoader()));
+        } catch (Throwable t) {
+            clazz = null;
+        }
+        MANAGED_EXECUTOR_SERVICE_CLASS = clazz;
+    }
 
     @Override
     public ResteasyClient build() {
@@ -48,6 +68,17 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
 
         ExecutorService executor = asyncExecutor;
 
+        if (executor == null && MANAGED_EXECUTOR_SERVICE_CLASS != null) {
+           cleanupExecutor = false;
+           OsgiFacade facade = OsgiFacade.instance().orElse(null);
+           if (facade != null) {
+               Object serviceRef = facade.getServiceRef(MANAGED_EXECUTOR_SERVICE_CLASS).orElse(null);
+               if (serviceRef != null) {
+                   closeActions.add(() -> facade.ungetService(serviceRef));
+                   executor = facade.getService(serviceRef, MANAGED_EXECUTOR_SERVICE_CLASS);
+               }
+           }
+        }
         if (executor == null)
         {
            cleanupExecutor = true;
