@@ -7,7 +7,7 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: enterpriseBeansLite-4.0
 WLP-AlsoKnownAs: ejbLite-4.0
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api", \
- com.ibm.websphere.ejbcontainer; type="internal"
+ com.ibm.websphere.ejbcontainer; type="ibm-api"
 Subsystem-Category: JakartaEE9Application
 -features=io.openliberty.jakartaeePlatform-9.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
