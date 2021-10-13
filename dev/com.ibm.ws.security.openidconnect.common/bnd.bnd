@@ -29,7 +29,6 @@ Export-Package: \
 	com.ibm.ws.security.openidconnect.common.*
 		
 Import-Package: \
-    com.ibm.oauth.core.api.error.oauth20; version="[1.1,11)", \
     com.ibm.oauth.core.internal.oauth20.token, \
     com.ibm.websphere.security.openidconnect.token, \
     org.jose4j.*;version="[0.6,1)", \

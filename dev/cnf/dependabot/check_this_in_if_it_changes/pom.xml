@@ -2147,6 +2147,16 @@
       <version>3.0.2</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.cli</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <version>2.0.1</version>

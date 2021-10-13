@@ -425,6 +425,8 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.9
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.9
 org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2
+org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0
+org.eclipse.transformer:org.eclipse.transformer:0.2.0
 org.eclipse:yasson:2.0.1
 org.ehcache.modules:ehcache-107:3.8.1
 org.ektorp:org.ektorp:1.5.0
