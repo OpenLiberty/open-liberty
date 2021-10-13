@@ -21,7 +21,7 @@ Import-Package: \
    org.apache.cxf.*;version="[3.2,4)", \
    com.ibm.ws.webcontainer.security.metadata, \
    com.ibm.wsspi.webcontainer.metadata, \
-   com.ibm.wsspi.webcontainer.webapp;version="[2.0,11)", \
+   com.ibm.wsspi.webcontainer.webapp, \
    *
 
 -dsannotations: com.ibm.ws.jaxws.security.internal.JaxWsSecurityConfigurationServiceImpl
