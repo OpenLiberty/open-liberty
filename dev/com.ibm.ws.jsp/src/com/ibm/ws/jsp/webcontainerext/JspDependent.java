@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,7 @@ public class JspDependent {
                 }
                 // end 213703: add logging for isoutdated checks
             
-        } else {
+        } else if (dependentFilePath != null) {
             File dependentFile = new File(context.getRealPath(dependentFilePath));
             long ts = dependentFile.lastModified();
             if (ts == 0) {ts = getTimestamp();}
@@ -93,7 +93,12 @@ public class JspDependent {
     			}
     			// end 213703: add logging for isoutdated checks
             }
-        }                
+        } else {
+            // handle null dependentFilePath (means a referenced file doesn't exist)
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "isOutdated", "dependentFilePath is null (check for earlier file not found message)"); 
+            }
+        }
         return outdated;                
     }
         
