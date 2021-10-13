@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +42,6 @@ import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
-import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
@@ -56,7 +54,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
@@ -64,11 +61,6 @@ import componenttest.topology.impl.LibertyServer;
 public class ConfigAttributeTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = ConfigAttributeTests.class;
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -89,6 +81,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
+        transformApps(server);
         skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
     }

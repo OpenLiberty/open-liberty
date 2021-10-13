@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +34,6 @@ import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
-import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.expectations.CookieExpectation;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
@@ -46,7 +44,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -62,11 +59,6 @@ public class CookieProcessingTests extends CommonSecurityFat {
     String defaultUser = JwtFatConstants.TESTUSER;
     String defaultPassword = JwtFatConstants.TESTUSERPWD;
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
-
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
@@ -81,6 +73,7 @@ public class CookieProcessingTests extends CommonSecurityFat {
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
+        transformApps(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
 
     }
