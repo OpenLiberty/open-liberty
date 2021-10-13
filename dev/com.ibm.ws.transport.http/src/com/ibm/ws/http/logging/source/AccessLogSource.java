@@ -309,7 +309,6 @@ public class AccessLogSource implements Source {
                     } else {
                         for (Object data : fields.get("%p")) {
                             if (AccessLogPort.TYPE_REMOTE.equals(data)) {
-                                AccessLogPort.betaFenceCheck();
                                 fieldSetters.add((ald, alrd) -> ald.setRemotePort(alrd.getRemotePort()));
                             } else {
                                 fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort()));
@@ -377,7 +376,6 @@ public class AccessLogSource implements Source {
                         } else {
                             for (Object data : fields.get("%p")) {
                                 if (AccessLogPort.TYPE_REMOTE.equals(data)) {
-                                    AccessLogPort.betaFenceCheck();
                                     builder.add(addRemotePortField(format));
                                 } else {
                                     builder.add(addRequestPortField(format));
