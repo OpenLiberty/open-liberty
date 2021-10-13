@@ -20,7 +20,6 @@
 package org.apache.wss4j.common.cache;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 
@@ -45,8 +44,8 @@ public class EHCacheReplayCache implements ReplayCache {
     private static final org.slf4j.Logger LOG =
             org.slf4j.LoggerFactory.getLogger(EHCacheReplayCache.class);
 
-    private  Cache<String, EHCacheValue> cache; //@AV999
-    private  CacheManager cacheManager; //@AV999
+    private  Cache<String, EHCacheValue> cache;
+    private  CacheManager cacheManager;
     private final String key;
     private final Path diskstorePath;
     private final boolean persistent;
@@ -56,8 +55,7 @@ public class EHCacheReplayCache implements ReplayCache {
     }
 
     public EHCacheReplayCache(String key, Path diskstorePath) throws WSSecurityException {
-        //this(key, diskstorePath, 50, 10000, false);
-        this(key, diskstorePath, 5, 10000, false); //@AV999
+        this(key, diskstorePath, 50, 10000, false); //TODO: get this information from the config?
     }
 
     public EHCacheReplayCache(String key, Path diskstorePath, long diskSize, long heapEntries, boolean persistent)
@@ -76,16 +74,17 @@ public class EHCacheReplayCache implements ReplayCache {
         if (heapEntries < 100) {
             throw new IllegalArgumentException("The heapEntries parameter must be greater than 100 (entries)");
         }
-
+        
+        ResourcePoolsBuilder resourcePoolsBuilder = null;
+        CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder = null;
         try {
-            ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+            resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
                     .heap(heapEntries, EntryUnit.ENTRIES);
             if (diskstorePath != null) {
-                LOG.warn("@AV999 , 0, configuring EHCacheReplayCache, disk size = ", diskSize); //@AV999
                 resourcePoolsBuilder = resourcePoolsBuilder.disk(diskSize, MemoryUnit.MB, persistent);
             }
 
-            CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder =
+            configurationBuilder =
                     CacheConfigurationBuilder.newCacheConfigurationBuilder(
                             String.class, EHCacheValue.class, resourcePoolsBuilder)
                             .withExpiry(new EHCacheExpiry());
@@ -100,15 +99,16 @@ public class EHCacheReplayCache implements ReplayCache {
                         .withCache(key, configurationBuilder)
                         .build();
             }
+            
             cacheManager.init();
             cache = cacheManager.getCache(key, String.class, EHCacheValue.class);
-        } catch (Exception ex) {
-            LOG.error("@AV999 , 1, Error configuring EHCacheReplayCache", ex.getMessage());
-            //@AV999
+        } catch (Exception ex) {  
+            // Liberty Change
+            LOG.debug("Error configuring EHCacheReplayCache (will try again without disk params) : " + ex.getMessage());
             try {
-                ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+                resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
                                 .heap(heapEntries, EntryUnit.ENTRIES);
-                CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
+                configurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
                                         String.class, EHCacheValue.class, resourcePoolsBuilder)
                                         .withExpiry(new EHCacheExpiry());
                 cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
@@ -116,14 +116,11 @@ public class EHCacheReplayCache implements ReplayCache {
                                 .build();
                 cacheManager.init();
                 cache = cacheManager.getCache(key, String.class, EHCacheValue.class);
-                
             } catch (Exception ex2) {
-                LOG.error("@AV999 , 2, Error configuring EHCacheReplayCache", ex2.getMessage());
+                LOG.error("Error configuring EHCacheReplayCache " + ex2.getMessage());
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex2, "replayCacheError");  
             }
-            //@AV999
-            //LOG.error("Error configuring EHCacheReplayCache", ex.getMessage()); //@AV999
-            //throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex, "replayCacheError"); //@AV999
+            // End Liberty Change
         }
     }
 
