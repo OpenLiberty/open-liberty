@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,8 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
     @SuppressWarnings("unchecked")
     @Override
     public void addWebApplication(DeployedModule deployedModule, List extensionFactories) throws WebAppNotLoadedException {
-       
+
+        dhostConfig.incrementAppStartingCount();
         com.ibm.ws.webcontainer.osgi.container.DeployedModule deployedModuleImpl = (com.ibm.ws.webcontainer.osgi.container.DeployedModule) deployedModule;
         String ct = deployedModuleImpl.getProperContextRoot();
         String contextRoot = deployedModuleImpl.getMappingContextRoot();
@@ -125,6 +126,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
                 originalName = originalWebApp.getWebAppName();
             }
             logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
+            dhostConfig.decrementAppStartingCount();
             throw new WebAppNotLoadedException("Context root " + contextRoot + " is already bound. Cannot start application " + displayName);
             // end 296368 Nested exceptions lost for problems during application
             // startup WAS.webcontainer
@@ -161,7 +163,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             webGroup.destroy();  //preventing the classLoader memory leak
             webGroup = null;
             //PI58875 end 
-
+            dhostConfig.decrementAppStartingCount();
             // requestMapper.removeMapping(contextRoot);
             // Do not need to remove mapping because we wait until we're sure we should add it!
             // PK67698 removeMapping(contextRoot);
@@ -172,14 +174,15 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
         // PK67698 Start
         try {
             addMapping(contextRoot, webGroup);
-
             webGroup.notifyStart();
+            dhostConfig.decrementAppStartingCount();
         } catch (Exception exc) {
             // begin 296368 Nested exceptions lost for problems during
             // application startup WAS.webcontainer
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                 logger.logp(Level.FINE, CLASS_NAME, "addWebApplication", "error adding mapping ", exc); /* @283348.1 */
             }
+            dhostConfig.decrementAppStartingCount();
             webGroup.destroy();
             throw new WebAppNotLoadedException("Context root " + contextRoot + " mapping unable to be bound. Application " + displayName + " unavailable.", exc);
             // end 296368 Nested exceptions lost for problems during application

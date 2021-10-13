@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer.osgi;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ejs.ras.Traceable;
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +31,9 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
     final String name;
     final HashSet<String> activeContexts = new HashSet<String>();
 
+    // keep track of the number of apps bound to this config that are in the process of starting
+    private AtomicInteger appStartingCount;
+
     /**
      * Construct the VirtualHostConfiguration object: use this when the
      * associated VirtualHost is unknown or unavailable at construction time.
@@ -37,6 +41,7 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
     public DynamicVirtualHostConfiguration(String name) {
         super(name);
         this.name = name;
+        this.appStartingCount = new AtomicInteger(0);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "DynamicVirtualHostConfiguration", "name ->"+ this.name);
         }
@@ -66,7 +71,7 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
             }
             activeContexts.add(contextRoot);
         }
-        com.ibm.wsspi.http.VirtualHost local = this.config;
+        VirtualHost local = this.config;
         if (local != null) {
             local.addContextRoot(contextRoot, container);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -90,7 +95,7 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
             }
             activeContexts.remove(contextRoot);
         }
-        com.ibm.wsspi.http.VirtualHost local = this.config;
+        VirtualHost local = this.config;
         if (local != null) {
             local.removeContextRoot(contextRoot, container);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -121,5 +126,30 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
                + "[name=" + name
                + "," + config
                + "]";
+    }
+
+    /**
+     * Increment this config's app starting count by one
+     */
+    protected void incrementAppStartingCount() {
+        appStartingCount.incrementAndGet();
+    }
+
+    /**
+     * Decrement this config's app starting count by one
+     */
+    protected void decrementAppStartingCount() {
+        appStartingCount.decrementAndGet();
+    }
+
+    /**
+     * Get the number of apps (which depend on this vhost config) that are currently initializing.
+     * This can be used to prevent a scenario where an app that's being uninstalled destroys this
+     * config while some other dependent app is starting.
+     *
+     * @return the number of apps depending on this config that are starting
+     */
+    protected int getAppStartingCount() {
+        return appStartingCount.get();
     }
 }
