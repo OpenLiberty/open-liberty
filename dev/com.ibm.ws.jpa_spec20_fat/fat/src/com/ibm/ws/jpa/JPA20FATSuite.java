@@ -26,6 +26,8 @@ import com.ibm.ws.jpa.spec20.JPA20QueryLockMode_EJB;
 import com.ibm.ws.jpa.spec20.JPA20QueryLockMode_WEB;
 import com.ibm.ws.jpa.spec20.JPA20Query_EJB;
 import com.ibm.ws.jpa.spec20.JPA20Query_WEB;
+import com.ibm.ws.jpa.spec20.JPA20Util_EJB;
+import com.ibm.ws.jpa.spec20.JPA20Util_WEB;
 
 /**
  * Test cases for functionality introduced with JPA 2.0.
@@ -34,6 +36,7 @@ import com.ibm.ws.jpa.spec20.JPA20Query_WEB;
 @SuiteClasses({
 //                JPA20Example_EJB.class,
 //                JPA20Example_WEB.class,
+
                 JPA20Cache_WEB.class,
                 JPA20CriteriaQuery_EJB.class,
                 JPA20CriteriaQuery_WEB.class,
@@ -44,7 +47,9 @@ import com.ibm.ws.jpa.spec20.JPA20Query_WEB;
                 JPA20Query_EJB.class,
                 JPA20Query_WEB.class,
                 JPA20QueryLockMode_EJB.class,
-                JPA20QueryLockMode_WEB.class
+                JPA20QueryLockMode_WEB.class,
+                JPA20Util_EJB.class,
+                JPA20Util_WEB.class
 })
 public class JPA20FATSuite {
 
