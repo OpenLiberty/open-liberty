@@ -26,5 +26,3 @@ Import-Package: \
  !com.sun.security.jgss, \
  !org.bouncycastle.asn1.*, \
  * 
-
-jakartaeeMe: true
