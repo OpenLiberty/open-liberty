@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 
@@ -36,6 +34,18 @@ public class CxfWssTemplatesTests extends CommonTests {
 
 //    static private UpdateWSDLPortNum newWsdl = null;
 
+    //issue 18363
+    static private String featureVersion = "";
+
+    //issue 18363
+    public static String getFeatureVersion() {
+        return featureVersion;
+    }
+
+    public static void setFeatureVersion(String version) {
+        featureVersion = version;
+    } //End of issue 18363
+
     /**
      * TestDescription:
      *
@@ -53,7 +63,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
 
         genericTest(
@@ -94,7 +104,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -136,7 +146,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
@@ -182,12 +191,18 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+    public void testCXFUsernameTokenAsEndorsingAndX509Symmetric() throws Exception {
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only",
+                    "testCXFUsernameTokenAsEndorsingAndX509Symmetric",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -209,43 +224,12 @@ public class CxfWssTemplatesTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSSTemplatesService3",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSSTemplate3",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSTemplateWebSvc3 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a successful message from the server.");
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
 
     }
 
@@ -263,12 +247,18 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFX509SymmetricAndEndorsingEE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+    public void testCXFX509SymmetricAndEndorsing() throws Exception {
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFX509SymmetricAndEndorsingEE7Only",
+                    "testCXFX509SymmetricAndEndorsing",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -290,42 +280,12 @@ public class CxfWssTemplatesTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCXFX509SymmetricAndEndorsingEE8Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFX509SymmetricAndEndorsingEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSSTemplatesService5",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSSTemplate5",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSTemplateWebSvc5 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a successful message from the server.");
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
 
     }
 
@@ -350,12 +310,18 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFX509SymmetricForMessageAndUntForClientEE7Only() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+    public void testCXFX509SymmetricForMessageAndUntForClient() throws Exception {
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
-                    "testCXFX509SymmetricForMessageAndUntForClientEE7Only",
+                    "testCXFX509SymmetricForMessageAndUntForClient",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -377,43 +343,12 @@ public class CxfWssTemplatesTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
 
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-
-    }
-
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    public void testCXFX509SymmetricForMessageAndUntForClientEE8Only() throws Exception {
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    "testCXFX509SymmetricForMessageAndUntForClientEE8Only",
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSSTemplatesService6",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSSTemplate6",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is WSSTemplateWebSvc6 Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a successful message from the server.");
-
-        //Added to resolve RTC 285305
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
 
     }
 
