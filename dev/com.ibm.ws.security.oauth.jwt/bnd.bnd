@@ -32,6 +32,7 @@ Private-Package: \
 	com.ibm.ws.security.oauth20.jwt.resources
 
 Import-Package: \
+  com.ibm.oauth.core.api.error.oauth20; version="[1.1,11)", \
   com.ibm.oauth.core.internal.oauth20.granttype, \
   com.ibm.oauth.core.internal.oauth20.token, \
   *        
