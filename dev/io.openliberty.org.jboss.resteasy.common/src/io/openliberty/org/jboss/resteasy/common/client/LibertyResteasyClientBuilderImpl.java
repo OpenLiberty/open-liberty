@@ -13,6 +13,7 @@ package io.openliberty.org.jboss.resteasy.common.client;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,8 +35,6 @@ import io.openliberty.restfulWS.client.ClientBuilderListener;
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
 
     private final static Class<? extends ExecutorService> MANAGED_EXECUTOR_SERVICE_CLASS;
-
-    private final List<Runnable> closeActions = new ArrayList<>();
 
     static {
         Class<? extends ExecutorService> clazz;
@@ -67,6 +66,7 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
         }
 
         ExecutorService executor = asyncExecutor;
+        List<Runnable> closeActions = new ArrayList<>();
 
         if (executor == null && MANAGED_EXECUTOR_SERVICE_CLASS != null) {
            cleanupExecutor = false;
@@ -95,7 +95,7 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
         if (resetProxy) {
            this.defaultProxy = null;
         }
-        ResteasyClient client = createResteasyClient(null, executor, cleanupExecutor, scheduledExecutorService, config);
+        ResteasyClient client = createResteasyClient(null, executor, cleanupExecutor, scheduledExecutorService, config, closeActions);
 
         key.ifPresent(tupleKey -> OsgiFacade.instance().ifPresent(facade -> 
             facade.invoke(tupleKey, ClientBuilderListener.class, cbl -> cbl.built(client))));
@@ -103,9 +103,17 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
     }
 
     @Override
-    protected ResteasyClient createResteasyClient(ClientHttpEngine engine,ExecutorService executor, boolean cleanupExecutor, ScheduledExecutorService scheduledExecutorService, ClientConfiguration config ) {
+    protected ResteasyClient createResteasyClient(ClientHttpEngine engine, ExecutorService executor, boolean cleanupExecutor,
+                                                  ScheduledExecutorService scheduledExecutorService, ClientConfiguration config) {
+        return createResteasyClient(engine, executor, cleanupExecutor, scheduledExecutorService, config, Collections.emptyList());
+    }
 
-        return new LibertyResteasyClientImpl(() -> new LibertyClientHttpEngineBuilder43().resteasyClientBuilder(this).build(), executor, cleanupExecutor, scheduledExecutorService, config, this);
+    protected ResteasyClient createResteasyClient(ClientHttpEngine engine, ExecutorService executor, boolean cleanupExecutor,
+                                                  ScheduledExecutorService scheduledExecutorService, ClientConfiguration config,
+                                                  List<Runnable> closeActions) {
+
+        return new LibertyResteasyClientImpl(() -> new LibertyClientHttpEngineBuilder43().resteasyClientBuilder(this).build(),
+                                             executor, cleanupExecutor, scheduledExecutorService, config, closeActions, this);
     }
 
 
