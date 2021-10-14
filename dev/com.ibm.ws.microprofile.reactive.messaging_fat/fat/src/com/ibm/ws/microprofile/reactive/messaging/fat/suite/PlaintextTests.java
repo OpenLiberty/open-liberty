@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import java.time.Duration;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -64,5 +66,8 @@ public class PlaintextTests {
     public static Network network = Network.newNetwork();
 
     @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer().withNetwork(network);
+    public static KafkaContainer kafkaContainer = new KafkaContainer()
+                    .withNetwork(network)
+                    .withStartupTimeout(Duration.ofMinutes(2))
+                    .withStartupAttempts(3);
 }

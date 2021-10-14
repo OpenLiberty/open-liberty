@@ -17,4 +17,8 @@
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="listen,connect,resolve"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+
 </server>

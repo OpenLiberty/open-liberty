@@ -22,6 +22,9 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken1.common.CxfSSLSAMLBasicTests;
 
+//issue 18363
+import java.util.Set;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerWrapper;
 import componenttest.annotation.SkipForRepeat;
@@ -101,7 +104,6 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
         testSettings.setIdpUserPwd("security");
         testSettings.setSpTargetApp(testSAMLServer.getHttpsString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
-
         
     }
 

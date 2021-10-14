@@ -58,8 +58,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
                            File.separator +
                            server.getPathToAutoFVTNamedServer() +
                            "server_customize.xml";
-        }
-        if (features.contains("jaxws-2.3")) {
+        } else if (features.contains("jaxws-2.3")) {
             copyFromFile = System.getProperty("user.dir") +
                            File.separator +
                            server.getPathToAutoFVTNamedServer() +

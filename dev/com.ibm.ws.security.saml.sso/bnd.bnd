@@ -15,15 +15,6 @@ Bundle-Name: WAS Security SAML Web SSO 2.0
 Bundle-SymbolicName: com.ibm.ws.security.saml.sso.2.0
 Bundle-Description: WAS Security SAML WebSso 2.0, version=${bVersion}
 
-#
-# Generate an Jakarta EE compliant JAR for the bundle.
-#
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.saml.internal.sso.2.0.jar
-jakartaFinalBundleName: Liberty Security SAML Web SSO 2.0
-jakartaFinalBundleId: io.openliberty.security.saml.internal.sso.2.0
-jakartaFinalBundleDescription: Liberty Security SAML Web SSO 2.0; Jakarta Enabled
-
 WS-TraceGroup: SAML20
 
 # For each exported package, create (in that package) a package-info.java...

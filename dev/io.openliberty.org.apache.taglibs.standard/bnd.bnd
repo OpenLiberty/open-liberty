@@ -31,4 +31,7 @@ Export-Package: \
   com.oracle.wls.shaded.*
 
 -buildpath: \
-  org.glassfish.web:jakarta.servlet.jsp.jstl;version=2.0
+  org.glassfish.web:jakarta.servlet.jsp.jstl;version=2.0, \
+  io.openliberty.jakarta.servlet.5.0;version=latest,\
+  io.openliberty.jakarta.pages.3.0;version=latest
+

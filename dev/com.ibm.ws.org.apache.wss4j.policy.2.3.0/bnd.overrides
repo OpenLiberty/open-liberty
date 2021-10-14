@@ -20,5 +20,3 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.policy.*
- 
-jakartaeeMe: true

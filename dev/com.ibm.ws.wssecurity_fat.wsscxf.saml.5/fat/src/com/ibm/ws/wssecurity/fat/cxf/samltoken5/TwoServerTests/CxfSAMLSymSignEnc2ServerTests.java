@@ -15,6 +15,8 @@ import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.util.ArrayList;
 import java.util.List;
+//issue 18363
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -106,7 +108,14 @@ public class CxfSAMLSymSignEnc2ServerTests extends CxfSAMLSymSignEncTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
-                
+        //issue 18363
+        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            setFeatureVersion("EE7");
+        } else if (features.contains("jaxws-2.3")) {
+            setFeatureVersion("EE8");
+        } // End of 18363
+        
     }
 
 }

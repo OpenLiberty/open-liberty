@@ -580,6 +580,7 @@ public class RemoteFile {
     }
 
     public boolean delete(long retryNs) throws Exception {
+        final String methodName = "delete";
         Operation deleteOp = new Operation() {
             @Override
             public boolean act() throws Exception {
@@ -588,7 +589,10 @@ public class RemoteFile {
         };
         boolean deleted = retry(deleteOp, retryNs);
         if (!deleted) {
-            LibertyServer.printProcesses(host);
+
+            Log.info(c, methodName, "Failed to delete '" + filePath  + "' about to print processes");
+            String[] name = convertPath(filePath).split("/");
+            LibertyServer.printProcesses(host, name[name.length-1]);
         }
         return deleted;
         // return retry( () -> basicDelete(), retryNs );

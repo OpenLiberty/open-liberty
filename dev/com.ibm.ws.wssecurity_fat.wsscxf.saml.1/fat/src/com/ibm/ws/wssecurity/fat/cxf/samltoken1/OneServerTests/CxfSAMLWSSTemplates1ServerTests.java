@@ -22,6 +22,9 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken1.common.CxfSAMLWSSTemplatesTests;
 
+//issue 18363
+import java.util.Set;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -82,7 +85,6 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
         startSPWithIDPServer("com.ibm.ws.wssecurity_fat.saml.wssTemplates", "server_2_in_1.xml", SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, SAMLConstants.EXAMPLE_CALLBACK, SAMLConstants.EXAMPLE_CALLBACK_FEATURE);
 
-        //3/2021
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         
         servicePort = Integer.toString(testSAMLServer.getServerHttpPort());
@@ -94,7 +96,14 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlwsstemplatesclient/CxfWssSAMLTemplatesSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
-                
+        //issue 18363
+        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            setFeatureVersion("EE7");
+        } else if (features.contains("jaxws-2.3")) {
+            setFeatureVersion("EE8");
+        } // End of 18363
+        
     }
 
 }

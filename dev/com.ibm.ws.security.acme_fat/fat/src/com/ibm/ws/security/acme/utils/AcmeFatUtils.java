@@ -882,8 +882,9 @@ public class AcmeFatUtils {
 		String javaVersion = System.getProperty("java.version");
 		Log.info(AcmeFatUtils.class, methodName,
 				"Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
+
 		if (os.startsWith("win") && (javaVendor.contains("openjdk") || javaVendor.contains(("oracle")))
-				&& (javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
+				&& (javaVersion.equals("11.0.11") || javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
 						|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17"))) {
 			/*
 			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
