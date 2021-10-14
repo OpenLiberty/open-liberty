@@ -426,7 +426,7 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.9
 org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2
 org.eclipse:yasson:2.0.1
-org.ehcache.modules:ehcache-107:3.8.1
+org.ehcache:ehcache:3.8.1
 org.ektorp:org.ektorp:1.5.0
 org.fusesource.jansi:jansi:1.18
 org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10
