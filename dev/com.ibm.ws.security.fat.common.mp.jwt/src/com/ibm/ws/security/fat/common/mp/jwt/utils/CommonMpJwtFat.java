@@ -89,12 +89,14 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     public boolean isVersion12OrAbove(LibertyServer server) throws Exception {
 
+        String baseNameInLowerCase = "mpjwt-";
         ServerConfiguration serverconfig = server.getServerConfiguration();
         FeatureManager fm = serverconfig.getFeatureManager();
         Set<String> features = fm.getFeatures();
         for (String feature : features) {
-            if (feature.contains("mpJwt-")) {
-                if (feature.contains("mpJwt-1.1")) {
+            Log.info(thisClass, "isVersion120rAbove", feature);
+            if (feature.toLowerCase().contains(baseNameInLowerCase)) {
+                if (feature.toLowerCase().contains(baseNameInLowerCase + "1.1")) {
                     return false;
                 } else {
                     return true;
