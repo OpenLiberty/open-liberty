@@ -30,6 +30,7 @@ import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 
 import io.openliberty.restfulWS.client.ClientBuilderListener;
+import io.openliberty.restfulWS.client.internal.AsyncClientExecutorService;
 
 @SuppressWarnings("unchecked")
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
@@ -84,6 +85,8 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
            cleanupExecutor = true;
            executor = Executors.newCachedThreadPool();
         }
+        
+        executor = new AsyncClientExecutorService(executor);
 
         boolean resetProxy = false;
         if (this.defaultProxy == null) {
