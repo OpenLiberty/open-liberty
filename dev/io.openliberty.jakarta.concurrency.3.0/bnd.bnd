@@ -11,15 +11,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-src: \
-	fat/src,\
-	test-applications/ConcurrencyTestApp/src
+Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
-fat.project: true
+Export-Package: \
+  jakarta.enterprise.concurrent;version="3.0.0"
+
+Include-Resource: \
+  @${repo;io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0.20211013;EXACT}!/META-INF/NOTICE
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	com.ibm.ws.componenttest.2.0;version=latest,\
-	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.concurrency.3.0;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest,\
-	io.openliberty.jakarta.transaction.2.0;version=latest
+  io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0.20211013
+  
