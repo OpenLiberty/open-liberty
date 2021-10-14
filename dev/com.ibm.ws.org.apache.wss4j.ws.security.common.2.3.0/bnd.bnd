@@ -13,9 +13,7 @@
    @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/maven/*, \
    messages/wss4j_errors.properties=resources/wss4j_errors.properties, \
    org/apache/wss4j=${bin}/org/apache/wss4j
-instrument.classesExcludes: org/apache/wss4j/common/cache/*.class
 -buildpath: org.apache.wss4j:wss4j-ws-security-common;version=2.3.0, \
    com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
    com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
-   com.ibm.websphere.appserver.spi.logging;version=latest, \
-   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest
+   com.ibm.websphere.appserver.spi.logging;version=latest
