@@ -47,7 +47,7 @@ public class CxfEndSupTokensSym2Tests extends CommonTests {
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
-        //orig from CL:
+
         commonSetUp(serverName, "server_sym2.xml", true,
                     "/endsuptokensclient/CxfEndSupTokensSvcClient");
     }
