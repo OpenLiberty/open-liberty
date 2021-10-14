@@ -10,19 +10,12 @@
  -->
 <server description="Server for testing the stopAppStartUponListenerException">
 
-    <include location="../fatTestCommon.xml"/>
+    <include location="../fatTestPorts.xml"/>
 
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>jsp-2.3</feature>
     </featureManager>
-
-    <!-- FAT framework expects to start with the usual port  -->
-    <httpEndpoint id="defaultHttpEndpoint"
-                  host="*"
-                  httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}">
-    </httpEndpoint>
 
      <!-- Webcontainer custom property -->
      <webContainer stopAppStartUponListenerException="true"/>
