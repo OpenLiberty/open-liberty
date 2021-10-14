@@ -588,32 +588,34 @@ public class ContextServiceImpl implements ContextService, //
         Executor executor;
         if (MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1)) {
             if ((executor = managedExecutorRef.get()) == null) {
-                lock.readLock().lock();
-                try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
-                    if (properties == null)
-                        throw new IllegalStateException(name);
-                    String parentPid = (String) properties.get("config.parentPID");
-                    if (parentPid != null) {
-                        String filter = FilterUtils.createPropertyFilter("service.pid", parentPid);
-                        BundleContext bc = priv.getBundleContext(componentContext);
-                        Collection<ServiceReference<ManagedExecutorService>> refs = //
-                                        priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, filter + " found:", refs);
-                        Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
-                        if (it.hasNext()) {
-                            ServiceReference<ManagedExecutorService> ref = refs.iterator().next();
-                            executor = priv.getService(bc, ref);
-                            if (executor == null)
-                                throw new IllegalStateException(filter);
-                            else
-                                managedExecutorRef.set(executor);
-                        } // else parent pid might be something other than a managed executor service
+                if (mpBuilderConfig == null) {
+                    lock.readLock().lock();
+                    try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
+                        if (properties == null)
+                            throw new IllegalStateException(name);
+                        String parentPid = (String) properties.get("config.parentPID");
+                        if (parentPid != null) {
+                            String filter = FilterUtils.createPropertyFilter("service.pid", parentPid);
+                            BundleContext bc = priv.getBundleContext(componentContext);
+                            Collection<ServiceReference<ManagedExecutorService>> refs = //
+                                            priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, filter + " found:", refs);
+                            Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
+                            if (it.hasNext()) {
+                                ServiceReference<ManagedExecutorService> ref = refs.iterator().next();
+                                executor = priv.getService(bc, ref);
+                                if (executor == null)
+                                    throw new IllegalStateException(filter);
+                                else
+                                    managedExecutorRef.set(executor);
+                            } // else parent pid might be something other than a managed executor service
+                        }
+                    } catch (InvalidSyntaxException x) {
+                        throw new RuntimeException(x); // internal error - this should never happen
+                    } finally {
+                        lock.readLock().unlock();
                     }
-                } catch (InvalidSyntaxException x) {
-                    throw new RuntimeException(x); // internal error - this should never happen
-                } finally {
-                    lock.readLock().unlock();
                 }
                 if (executor == null)
                     executor = new ContextualDefaultExecutor(this);
