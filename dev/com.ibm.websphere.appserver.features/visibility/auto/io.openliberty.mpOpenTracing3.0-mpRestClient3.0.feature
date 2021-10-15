@@ -4,7 +4,7 @@ visibility=private
 IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpOpenTracing-3.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpRestClient-3.0))"
--bundles=io.openliberty.microprofile.opentracing.3.0.internal.rest.client.jakarta
+-bundles=io.openliberty.microprofile.opentracing.2.0.internal.rest.client.jakarta
 IBM-Install-Policy: when-satisfied
 kind=noship
 edition=core
