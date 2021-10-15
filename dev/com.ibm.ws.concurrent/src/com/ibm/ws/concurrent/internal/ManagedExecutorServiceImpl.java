@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
@@ -166,7 +167,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     /**
      * Available only on the MicroProfile code path (CDI injection or ManagedExecutorBuilder).
      */
-    private final WSContextService mpContextService;
+    private final ContextServiceImpl mpContextService;
 
     /**
      * Reference to the name of this managed executor service.
@@ -178,6 +179,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Executor that runs tasks against the general concurrency policy for this managed executor.
      */
     volatile PolicyExecutor policyExecutor;
+
+    /**
+     * The service.pid of the managed executor service config.
+     * Null if created by a MicroProfile builder or not activated yet.
+     */
+    private String servicePid;
 
     /**
      * Reference to the transaction context provider.
@@ -207,7 +214,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         this.mpContextService = mpThreadContext;
         this.tranContextProviderRef = tranContextProviderRef;
         allowLifeCycleMethods = true;
-        mpThreadContext.managedExecutor = this;
+        mpThreadContext.managedExecutorRef.set(this);
     }
 
     /**
@@ -218,6 +225,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         contextSvcRef.activate(context);
         tranContextProviderRef.activate(context);
+
+        servicePid = (String) properties.get("service.pid");
 
         String jndiName = (String) properties.get("jndiName");
         jndiNameRef.set(jndiName);
@@ -431,22 +440,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         return null;
     }
 
-    @Deprecated // being replaced with captureThreadContext so that this method signature can change to spec
-    @Trivial
-    public WSContextService getContextService() {
-        WSContextService contextSvc;
-        if (mpContextService == null)
-            try {
-                contextSvc = contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
-            } catch (IllegalStateException x) {
-                throw new RejectedExecutionException(x);
-            }
-        else
-            contextSvc = mpContextService;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getContextService: " + contextSvc);
-        return contextSvc;
+    // Concurrency 3.0 / Jakarta EE 10
+    public ContextService getContextService() {
+        return mpContextService == null //
+                        ? ((ContextServiceImpl) contextSvcRef.getServiceWithException()).forManagedExecutor(this, servicePid) //
+                        : mpContextService;
     }
 
     @Override
@@ -537,7 +535,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
         else
-            return (org.eclipse.microprofile.context.ThreadContext) mpContextService;
+            return mpContextService;
     }
 
     @Override
@@ -652,6 +650,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * @param ref reference to the service
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    //     protected void setContextService(ServiceReference<ContextServiceImpl> ref) {
     protected void setContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.setReference(ref);
     }
