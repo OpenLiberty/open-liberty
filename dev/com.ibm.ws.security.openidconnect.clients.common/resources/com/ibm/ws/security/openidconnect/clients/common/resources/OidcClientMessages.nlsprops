@@ -218,4 +218,15 @@ OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: The OpenID Connect client [{0}] requ
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=A token endpoint URL must be set to obtain the required tokens.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Set the tokenEndpointUrl attribute in the OpenID Connect client configuration to the token endpoint URL of the OpenID Connect provider. Alternatively, set the discoveryEndpointUrl attribute in the OpenID Connect client configuration to the discovery endpoint URL of the OpenID Connect provider.
 
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: The token is not in JSON Web Signature (JWS) format because it does not contain three parts, but the [{0}] OpenID Connect client only accepts tokens that are in JWS format.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The token might be malformed or might be in JSON Web Encryption (JWE) format. Tokens must be in JWS format if the keyManagementKeyAlias attribute is not configured.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, configure the keyManagementKeyAlias attribute in the OpenID Connect client configuration. Otherwise, ensure that only JWS tokens are sent to this resource.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: The token is not in JSON Web Encryption (JWE) format because it does not contain five parts, but the [{0}] OpenID Connect client only accepts tokens that are in JWE format.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=The token might be malformed or might be in JSON Web Signature (JWS) format. Tokens must be in JWE format if the keyManagementKeyAlias attribute is configured.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=To accept JWS tokens instead of JWE tokens, remove the keyManagementKeyAlias attribute in the OpenID Connect client configuration. Otherwise, ensure that only JWE tokens are sent to this resource.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

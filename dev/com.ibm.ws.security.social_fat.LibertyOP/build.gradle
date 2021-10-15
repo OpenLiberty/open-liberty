@@ -62,6 +62,7 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
 autoFVT.doLast {
 
   def servers = [
