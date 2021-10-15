@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,12 @@ package test.server.transport.http2;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -101,49 +107,50 @@ public class MultiSessionTests extends FATServletClient {
     //     see test.server.transport.http2.Utils.java for how parameters are set up to run this test.
     @Test
     public void testMultipleConnectionStress() throws Exception {
-        Thread[] ta = new Thread[Utils.STRESS_CONNECTIONS];
-
+        Queue<Future<Boolean>> futures = new LinkedList<Future<Boolean>>();
+        ExecutorService es = Executors.newFixedThreadPool(Utils.STRESS_CONNECTIONS);
         for (int i = 0; i < Utils.STRESS_CONNECTIONS; i++) {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "Starting Next Connection");
             }
-            Thread t = new Thread(new H2FATStressRunnable());
-            ta[i] = t;
+
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "starting thread iteration: " + i);
+                LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "submitting H2FATStressCallable number: " + i);
             }
-            t.start();
+            Future<Boolean> f = es.submit(new H2FATStressCallable());
+            futures.offer(f);
             try {
                 Thread.sleep(Utils.STRESS_DELAY_BETWEEN_CONN_STARTS);
             } catch (Exception x) {
             }
         }
-
-        for (int i = 0; i < Utils.STRESS_CONNECTIONS; i++) {
+        while (!futures.isEmpty()) {
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "joining thread iteration: " + i);
+                LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "waiting for future");
             }
-            ta[i].join();
+            Future<Boolean> current = futures.poll();
+            assertTrue(current.get());
         }
+
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "join complete");
+            LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "futures complete");
         }
     }
 
-    class H2FATStressRunnable implements Runnable {
+    class H2FATStressCallable implements Callable<Boolean> {
 
         @Override
-        public void run() {
+        public Boolean call() throws Exception {
             try {
                 runStressTest();
+                return true;
             } catch (Exception e) {
-                // TODO How to handle this? We cannot throw due to Runnable.run() not defining the Exception
                 if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "There was an exception during H2FATStressRunnable.run(): e");
+                    LOGGER.logp(Level.INFO, CLASS_NAME, "testMultipleConnectionStress", "There was an exception during H2FATStressCallable.call(): e");
                 }
+                throw e;
             }
         }
-
     }
 
 }
