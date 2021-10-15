@@ -43,6 +43,40 @@ class OsgiFacade {
         }
     }
 
+    <T> Optional<ServiceReference<T>> getServiceRef(Class<T> serviceClass) {
+        BundleContext ctx = getBundleContext();
+        if (isSecurityManagerPresent) {
+            try {
+                return Optional.ofNullable(AccessController.doPrivileged((PrivilegedExceptionAction<ServiceReference<T>>) () -> {
+                    return ctx.getServiceReference(serviceClass);
+                }));
+            } catch (PrivilegedActionException e) {
+                // Auto FFDC
+                return Optional.empty();
+            }
+        }
+        return Optional.ofNullable(ctx.getServiceReference(serviceClass));
+    }
+
+    /**
+     * 
+     * @param <T>
+     * @param serviceRef
+     * @param serviceClass
+     * @throws ClassCastException if anything other than a ServiceReference is passed as serviceRef
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    <T> T getService(Object serviceRef, Class<T> serviceClass) {
+        return serviceClass.cast(getService(getBundleContext(), (ServiceReference<T>) serviceRef));
+    }
+
+    void ungetService(Object o) {
+        if (o instanceof ServiceReference) {
+            getBundleContext().ungetService((ServiceReference<?>)o);
+        }
+    }
+
     <T> Integer invoke(Class<T> service, Consumer<T> consumer) {
         BundleContext ctx = getBundleContext();
         Tuple<T> tuple = new Tuple<>(ctx, getServiceRefs(service, ctx).orElse(Collections.emptyList()));
