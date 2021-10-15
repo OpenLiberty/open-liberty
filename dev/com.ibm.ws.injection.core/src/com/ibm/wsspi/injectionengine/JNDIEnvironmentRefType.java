@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,13 @@ public enum JNDIEnvironmentRefType {
         @Override
         public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
             return refs.getPersistenceUnitRefs();
+        }
+    },
+
+    ContextService(com.ibm.ws.javaee.dd.common.ContextService.class, "context-service", "name", "ContextServiceDefinition", null) {
+        @Override
+        public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
+            return refs.getContextServices();
         }
     },
 

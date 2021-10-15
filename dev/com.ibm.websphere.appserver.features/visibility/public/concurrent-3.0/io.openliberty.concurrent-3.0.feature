@@ -23,7 +23,8 @@ Subsystem-Name: Jakarta Concurrency 3.0
 -bundles=\
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
-  com.ibm.ws.resource
+  com.ibm.ws.resource, \
+  io.openliberty.concurrent
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
