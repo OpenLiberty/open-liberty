@@ -34,6 +34,7 @@ import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
+import com.unboundid.ldap.sdk.OperationType;
 import com.unboundid.ldap.sdk.schema.Schema;
 import com.unboundid.util.ssl.KeyStoreKeyManager;
 import com.unboundid.util.ssl.SSLUtil;
@@ -73,27 +74,46 @@ public class InMemoryLDAPServer {
      * Creates a new instance of the in memory LDAP server. It initializes the directory
      * service.
      *
-     * @param useWimSchema      Asking the user if they want to use the default WIM schema
-     * @param bases             The base entries to create for this in-memory LDAP servers
-     * @param useSecureListener Use the LDAPS listener
+     * <p/>
+     * The LDAP and LDAPS ports will use available ephemeral ports and anonymous operations are allowed.
+     *
+     * @param useWimSchema Asking the user if they want to use the default WIM schema
+     * @param baseEntries  The base entries to create for this in-memory LDAP servers
      * @throws Exception If something went wrong
      */
-    public InMemoryLDAPServer(boolean useWimSchema, String... bases) throws Exception {
-        this(useWimSchema, 0, 0, bases);
+    public InMemoryLDAPServer(boolean useWimSchema, String... baseEntries) throws Exception {
+        this(useWimSchema, 0, 0, baseEntries);
     }
 
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
      * service.
      *
-     * @param useWimSchema      Asking the user if they want to use the default WIM schema
-     * @param ldapPort          The LDAP port to use. 0 to indicate the server should choose an available port.
-     * @param ldapsPort         The LDAPS port to use. 0 to indicate the server should choose an available port.
-     * @param baseEntries       The base entries to create for this in-memory LDAP servers
-     * @param useSecureListener Use the LDAPS listener
+     * <p/>
+     * Anonymous operations are allowed.
+     *
+     * @param useWimSchema Asking the user if they want to use the default WIM schema
+     * @param ldapPort     The LDAP port to use. 0 to indicate the server should choose an available port.
+     * @param ldapsPort    The LDAPS port to use. 0 to indicate the server should choose an available port.
+     * @param baseEntries  The base entries to create for this in-memory LDAP servers
      * @throws Exception If something went wrong
      */
     public InMemoryLDAPServer(boolean useWimSchema, int ldapPort, int ldapsPort, String... baseEntries) throws Exception {
+        this(useWimSchema, ldapPort, ldapsPort, true, baseEntries);
+    }
+
+    /**
+     * Creates a new instance of the in memory LDAP server. It initializes the directory
+     * service.
+     *
+     * @param useWimSchema Asking the user if they want to use the default WIM schema
+     * @param ldapPort     The LDAP port to use. 0 to indicate the server should choose an available port.
+     * @param ldapsPort    The LDAPS port to use. 0 to indicate the server should choose an available port.
+     * @param allowAnonOps Whether the server should allow anonymous operations.
+     * @param baseEntries  The base entries to create for this in-memory LDAP servers
+     * @throws Exception If something went wrong.
+     */
+    public InMemoryLDAPServer(boolean useWimSchema, int ldapPort, int ldapsPort, boolean allowAnonOps, String... baseEntries) throws Exception {
         /*
          * Enable required protocols and cipher suites.
          */
@@ -108,6 +128,13 @@ public class InMemoryLDAPServer {
          */
         config = new InMemoryDirectoryServerConfig(baseEntries);
         config.addAdditionalBindCredentials(getBindDN(), getBindPassword());
+
+        /*
+         * Disable anonymous operations if requested.
+         */
+        if (!allowAnonOps) {
+            config.setAuthenticationRequiredOperationTypes(OperationType.values());
+        }
 
         /*
          * The keystore is stored within the JAR. Extract it to a temporary directory
