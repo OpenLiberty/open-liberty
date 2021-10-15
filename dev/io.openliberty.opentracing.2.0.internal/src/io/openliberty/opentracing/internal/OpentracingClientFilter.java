@@ -63,11 +63,9 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
     public OpentracingClientFilter() {
         helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
-        System.out.println("In Client Filter");
     }
     
     public OpentracingClientFilter(OpentracingFilterHelper helper) {
-    	System.out.println("Is helper null: " + (helper == null));
     	this.helper = helper;
     }
 
@@ -91,7 +89,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
      */
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
-    	System.out.println("In request filter");
         String methodName = "filter(outgoing)";
 
         Tracer tracer = OpentracingTracerManager.getTracer();
@@ -174,7 +171,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext,
                        ClientResponseContext clientResponseContext) throws IOException {
-    	System.out.println("In response filter");
     	
         String methodName = "filter(incoming)";
 

@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing-3.0
+symbolicName=io.openliberty.org.eclipse.microprofile.opentracing-3.0
 visibility=private
 singleton=true
 -features=io.openliberty.mpCompatible-5.0

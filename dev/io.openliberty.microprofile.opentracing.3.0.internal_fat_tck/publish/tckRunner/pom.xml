@@ -33,9 +33,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>javax.enterprise</groupId>
-                <artifactId>cdi-api</artifactId>
-                <version>1.2</version>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>

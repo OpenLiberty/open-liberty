@@ -50,7 +50,7 @@ public class OpentracingTCKLauncherMicroProfile {
     public void launchOpentracingTckMP() throws Exception {
         // Use default tck-suite.xml
         
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.opentracing.2.0.internal_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.runTCKMvnCmd(server, "io.openliberty.opentracing.3.0.internal_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
 
     }
 }

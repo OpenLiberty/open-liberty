@@ -5,7 +5,7 @@
     Corporation - initial API and implementation -->
 <server>
     <featureManager>
-        <feature>componenttest-1.0</feature>
+        <feature>componenttest-2.0</feature>
         <feature>webProfile-9.1</feature>
         <feature>localConnector-1.0</feature>
         <feature>mpOpenTracing-3.0</feature>
