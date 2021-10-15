@@ -132,14 +132,20 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
      * Increment this config's app starting count by one
      */
     protected void incrementAppStartingCount() {
-        appStartingCount.incrementAndGet();
+        int count = appStartingCount.incrementAndGet();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "incrementAppStartingCount new count:", count);
+        }
     }
 
     /**
      * Decrement this config's app starting count by one
      */
     protected void decrementAppStartingCount() {
-        appStartingCount.decrementAndGet();
+        int count = appStartingCount.decrementAndGet();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "decrementAppStartingCount new count:", count);
+        }
     }
 
     /**
@@ -150,6 +156,9 @@ public class DynamicVirtualHostConfiguration extends VirtualHostConfiguration im
      * @return the number of apps depending on this config that are starting
      */
     protected int getAppStartingCount() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getAppStartingCount count:", appStartingCount.get());
+        }
         return appStartingCount.get();
     }
 }
