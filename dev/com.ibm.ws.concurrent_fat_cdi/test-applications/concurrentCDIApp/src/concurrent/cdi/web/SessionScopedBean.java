@@ -11,7 +11,6 @@
 package concurrent.cdi.web;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -48,15 +47,8 @@ public class SessionScopedBean implements Serializable {
             ManagedExecutorService executor = InitialContext.doLookup("java:module/env/concurrent/timeoutExecutorRef");
             lookedUpResources.add(executor);
 
-            // TODO invoke directly once Concurrency 3.0 interface is available
-            //return executor.completedFuture(blocker.await(time, unit));
-            @SuppressWarnings("unchecked")
-            CompletableFuture<Boolean> future = (CompletableFuture<Boolean>) executor.getClass()
-                            .getMethod("completedFuture", Object.class)
-                            .invoke(executor, blocker.await(time, unit));
-            return future;
-        } catch (InterruptedException | NamingException // TODO remove the following execeptions along with above
-                        | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException x) {
+            return executor.completedFuture(blocker.await(time, unit));
+        } catch (InterruptedException | NamingException x) {
             throw new CompletionException(x);
         }
     }
