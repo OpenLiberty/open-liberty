@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.introspector;
 
-public interface LibertyResteasyEndpointLoggingIntrospector {
+public interface RESTfulEndpointLoggingIntrospector {
 
     public String addEndpoint(String appName, String httpMethod, String endpoint, String className, String methodName);
 }
