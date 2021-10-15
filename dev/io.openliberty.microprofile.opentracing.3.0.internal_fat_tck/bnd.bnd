@@ -19,7 +19,7 @@ src: \
 
 fat.project: true
 
-tested.features: opentracing-2.0, mprestclient-1.4
+tested.features: opentracing-3.0, mprestclient-3.0
 
 -buildpath: \
     io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest,\

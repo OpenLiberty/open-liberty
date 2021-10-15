@@ -33,8 +33,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 public class FATSuite {
     private static final String FEATURE_NAME = "io.openliberty.opentracing.mock-3.0.mf";
-    private static final String BUNDLE_NAME = "io.openliberty.opentracing.mock-2.0.jar";
-    private static final String[] ALL_VERSIONS_OF_MP_REST_CLIENT = {"1.4"};
+    private static final String BUNDLE_NAME = "io.openliberty.opentracing.mock-3.0.jar";
+    private static final String[] ALL_VERSIONS_OF_MP_REST_CLIENT = {"3.0"};
 
     @BeforeClass
     public static void setUp() throws Exception {

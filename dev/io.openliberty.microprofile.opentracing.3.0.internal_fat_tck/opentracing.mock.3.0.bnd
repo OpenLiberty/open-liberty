@@ -14,8 +14,8 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: io.openliberty.opentracing.mock-2.0
-Bundle-SymbolicName: io.openliberty.opentracing.mock-2.0
+Bundle-Name: io.openliberty.opentracing.mock-3.0
+Bundle-SymbolicName: io.openliberty.opentracing.mock-3.0
 Bundle-Description: Opentracing mock Tracer 0.33.0, version ${bVersion}
 
 -dsannotations: io.openliberty.opentracing.internal.mock.OpentracingMockTracerFactory
