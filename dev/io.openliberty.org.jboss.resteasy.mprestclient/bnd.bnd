@@ -44,8 +44,6 @@ Import-Package: \
   javax.ws.rs.core,\
   org.eclipse.microprofile.rest.client.*;version='!',\
   *
-#  org.eclipse.microprofile.config;version='[3,4)',\
-#  org.eclipse.microprofile.rest.client.*;version='[2,3)',\
 
 Private-Package: \
   io.openliberty.microprofile.rest.client30.internal

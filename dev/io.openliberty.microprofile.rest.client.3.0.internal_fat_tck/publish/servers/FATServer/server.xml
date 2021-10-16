@@ -8,7 +8,7 @@
 -->
 <server>
     <featureManager>
-        <feature>componenttest-1.0</feature>
+        <feature>componenttest-2.0</feature>
         <feature>localConnector-1.0</feature>
         <feature>cdi-3.0</feature>
         <feature>restfulWSClient-3.0</feature>
