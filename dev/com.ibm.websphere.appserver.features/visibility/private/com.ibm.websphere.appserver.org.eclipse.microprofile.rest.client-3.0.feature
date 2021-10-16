@@ -9,5 +9,5 @@ singleton=true
   io.openliberty.org.eclipse.microprofile.config-3.0
 -bundles=io.openliberty.org.eclipse.microprofile.rest.client.3.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.rest.client:microprofile-rest-client-api:3.0"
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

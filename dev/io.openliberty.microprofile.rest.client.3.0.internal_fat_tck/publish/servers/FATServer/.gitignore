@@ -1,0 +1,6 @@
+wiremock-standalone-2.14.0.jar
+jetty-http-9.4.31.v10100723.jar
+jetty-io-9.4.31.v10100723.jar
+jetty-server-9.4.31.v10100723.jar
+jetty-util-9.4.31.v10100723.jar
+lib/global/*jar

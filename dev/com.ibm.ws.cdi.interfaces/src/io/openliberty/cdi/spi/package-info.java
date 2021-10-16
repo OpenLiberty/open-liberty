@@ -11,9 +11,8 @@
 /**
  * @version 1.1
  */
-@org.osgi.annotation.versioning.Version("1.1")
+@org.osgi.annotation.versioning.Version("1.2")
 @TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.internal.resources.CDI")
 package io.openliberty.cdi.spi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-

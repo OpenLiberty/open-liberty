@@ -280,6 +280,7 @@ org.apache.httpcomponents:httpclient:4.5.4
 org.apache.httpcomponents:httpclient:4.5.7
 org.apache.httpcomponents:httpcore-nio:4.4.13
 org.apache.httpcomponents:httpcore:4.1.2
+org.apache.httpcomponents:httpcore:4.4.11
 org.apache.httpcomponents:httpcore:4.4.13
 org.apache.httpcomponents:httpmime:4.1.2
 org.apache.httpcomponents:httpmime:4.3.1
@@ -356,10 +357,14 @@ org.eclipse.jetty.websocket:websocket-common:9.4.39.v20210325
 org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502
 org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0
 org.eclipse.jetty:jetty-client:9.4.39.v20210325
+org.eclipse.jetty:jetty-http:9.4.31.v20200723
 org.eclipse.jetty:jetty-http:9.4.39.v20210325
 org.eclipse.jetty:jetty-io:9.2.2.v20140723
+org.eclipse.jetty:jetty-io:9.4.31.v20200723
 org.eclipse.jetty:jetty-io:9.4.39.v20210325
+org.eclipse.jetty:jetty-server:9.4.31.v20200723
 org.eclipse.jetty:jetty-util:9.2.2.v20140723
+org.eclipse.jetty:jetty-util:9.4.31.v20200723
 org.eclipse.jetty:jetty-util:9.4.39.v20210325
 org.eclipse.jetty:jetty-util:9.4.7.RC0
 org.eclipse.jetty:jetty-websocket:8.2.0.v20160908

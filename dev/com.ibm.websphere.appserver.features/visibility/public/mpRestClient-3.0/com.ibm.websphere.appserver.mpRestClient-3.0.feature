@@ -29,5 +29,5 @@ Subsystem-Name: MicroProfile Rest Client 3.0
   io.openliberty.org.jboss.resteasy.cdi.jakarta; apiJar=false; location:="lib/", \
   io.openliberty.org.jboss.resteasy.mprestclient.jakarta; apiJar=false; location:="lib/"
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
