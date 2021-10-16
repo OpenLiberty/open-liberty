@@ -100,6 +100,26 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>3.0-RC5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.smallrye</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.io.smallrye.common.jakarta_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.smallrye.config</groupId>
+            <artifactId>smallrye-config</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.ibm.websphere.org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
             <version>${reactive.streams.version}</version>
@@ -112,7 +132,15 @@
             <artifactId>common</artifactId>
             <version>4.7.0.Final</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.common_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.org.jboss.resteasy</groupId>
+            <artifactId>mprestclient</artifactId>
+            <version>4.7.0.Final</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.mprestclient.jakarta_}</systemPath>
         </dependency>
 
         <dependency>
@@ -123,7 +151,21 @@
             <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider_}</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>com.ibm.ws.org.jboss</groupId>
+            <artifactId>logging</artifactId>
+            <version>4.7.0.Final</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath>
+        </dependency>
 
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>osgi</artifactId>
+            <version>4.7.0.Final</version>
+            <scope>system</scope>
+            <systemPath>${org.eclipse.osgi_}</systemPath>
+        </dependency>
         <!-- - - - - - - - - ????? - - - - - - - - - - - - -->
         <!-- 
         <dependency>
@@ -168,13 +210,19 @@
             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath>
         </dependency>
 
-        <!-- - - - - - - - - ????? - - - - - - - - - - - - -->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.1.2</version>
+            <artifactId>jakarta.json</artifactId>
+            <version>2.0.1</version>
         </dependency>
-        <!-- - - - - - - - - ????? - - - - - - - - - - - - -->
+
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>2.0.1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.activation.2.0_}</systemPath>
+        </dependency>
 
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -217,6 +265,14 @@
         </dependency>
 
         <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.servlet.5.0_}</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.4.0</version>
@@ -224,9 +280,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
             <version>${arquillian.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -235,22 +299,6 @@
             <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- 
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.2.11</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>javax.activation-api</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
-         -->
 
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
@@ -264,6 +312,11 @@
             <version>4.4.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>

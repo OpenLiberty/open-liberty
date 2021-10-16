@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.org.jboss.resteasy.common.component;
+package io.openliberty.org.jboss.resteasy.server.component;
 
 import java.util.Collection;
 import java.util.HashSet;

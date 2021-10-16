@@ -25,6 +25,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -44,16 +46,21 @@ public class RestClientTckPackageTest {
         Log.info(RestClientTckPackageTest.class, "setup", "javaVersion: " + javaVersion);
         System.out.println("java.version = " + javaVersion);
         if (javaVersion.startsWith("1.8")) {
-            Path cwd = Paths.get(".");
-            Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
-            Path java8File = Paths.get("publish/tckRunner/tck/tck-suite.xml-java8");
-            Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
-            Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+            useTCKSuite("java8");
+        } else if (TestModeFilter.shouldRun(TestMode.FULL)) {
+            useTCKSuite("FULL");
         }
-        
         server.startServer();
     }
-    
+
+    private static void useTCKSuite(String id) throws Exception {
+        Path cwd = Paths.get(".");
+        Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
+        Path java8File = Paths.get("publish/tckRunner/tck/tck-suite.xml-" + id);
+        Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
+        Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
