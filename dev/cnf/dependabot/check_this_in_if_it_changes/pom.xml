@@ -2544,12 +2544,12 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>3.1.8.Final</version>
+      <version>4.0.2.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>4.0.1.SP1</version>
+      <version>4.0.2.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
