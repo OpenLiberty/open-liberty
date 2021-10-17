@@ -567,11 +567,6 @@
       <version>4.1.68.Final</version>
     </dependency>
     <dependency>
-      <groupId>io.openliberty.jakarta.enterprise.concurrent</groupId>
-      <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.0.20211013</version>
-    </dependency>
-    <dependency>
       <groupId>io.opentracing</groupId>
       <artifactId>opentracing-api</artifactId>
       <version>0.30.0</version>
@@ -2549,7 +2544,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>3.1.7.SP1</version>
+      <version>3.1.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -2564,7 +2559,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>3.1.7.SP1</version>
+      <version>3.1.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
