@@ -19,13 +19,15 @@ import org.jboss.resteasy.microprofile.client.RestClientExtension;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
+
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 
 /**
  * Registers the RestEasy MP Rest Client extension
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
-public class RestClientCdiExtensionMetadata implements CDIExtensionMetadata {
+public class RestClientCdiExtensionMetadata implements CDIExtensionMetadata, CDIExtensionMetadataInternal {
 
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
