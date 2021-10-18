@@ -117,6 +117,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         fatUtils.updateFeatureFiles(server, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()), "mpConfigFeatures", "rsFeatures");
 
         serverTracker.addServer(server);
+        transformApps(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MPJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH, MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
@@ -152,6 +153,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
         baseSetupUtils.deployMicroProfileApp(rs_server);
         serverTracker.addServer(rs_server);
+        transformApps(rs_server);
         rs_server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(rs_server, MPJwt11FatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         rs_server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));

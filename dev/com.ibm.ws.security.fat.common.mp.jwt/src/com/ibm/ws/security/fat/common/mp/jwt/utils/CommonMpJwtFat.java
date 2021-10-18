@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean skipRestoreBetweenTests, boolean jwtEnabled) throws Exception {
         bootstrapUtils.writeBootstrapProperty(server, "oidcJWKEnabled", String.valueOf(jwtEnabled));
         serverTracker.addServer(server);
+        transformApps(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MPJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
@@ -88,12 +89,14 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     public boolean isVersion12OrAbove(LibertyServer server) throws Exception {
 
+        String baseNameInLowerCase = "mpjwt-";
         ServerConfiguration serverconfig = server.getServerConfiguration();
         FeatureManager fm = serverconfig.getFeatureManager();
         Set<String> features = fm.getFeatures();
         for (String feature : features) {
-            if (feature.contains("mpJwt-")) {
-                if (feature.contains("mpJwt-1.1")) {
+            Log.info(thisClass, "isVersion120rAbove", feature);
+            if (feature.toLowerCase().contains(baseNameInLowerCase)) {
+                if (feature.toLowerCase().contains(baseNameInLowerCase + "1.1")) {
                     return false;
                 } else {
                     return true;
@@ -119,7 +122,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      */
     public static String setActionInstance(String repeatActions) throws Exception {
 
-        String[] supportedActions = { MPJwtFatConstants.MP_JWT_11, MPJwtFatConstants.MP_JWT_12 };
+        String[] supportedActions = { MPJwtFatConstants.MP_JWT_11, MPJwtFatConstants.MP_JWT_12, MPJwtFatConstants.MP_JWT_20 };
         String currentAction = null;
 
         if (repeatActions != null) {

@@ -10,12 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureRepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests;
@@ -106,12 +110,26 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
+    private static final Set<String> REMOVE = new HashSet<String>();
+    //    private static final Set<String> INSERT = new HashSet<String>();
+
+    static {
+        /*
+         * List of testing features that need to be removed and replaced.
+         */
+        REMOVE.add("jwtSso-1.0");
+
+    }
 
     /*
-     * Run the mpJwt 1.2 tests in lite mode ONLY
+     * Run the mpJwt 1.2 and 2.0 tests in lite mode ONLY
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_11))
-                    .andWith(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12).liteFATOnly());
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_11).fullFATOnly())
+            .andWith(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12).liteFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config").removeFeatures(REMOVE).liteFATOnly());
+    //    public static RepeatTests repeat = RepeatTests
+    //            .with(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config")
+    //                    .removeFeatures(REMOVE));
 
 }

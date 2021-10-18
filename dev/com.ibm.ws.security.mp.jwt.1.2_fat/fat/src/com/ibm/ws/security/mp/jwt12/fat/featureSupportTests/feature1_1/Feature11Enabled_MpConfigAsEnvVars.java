@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt12.fat.featureSupportTests.feature1_1;
 
@@ -15,9 +15,11 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.sharedTests.Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_20 }) // tests purposely skipped as we want the server.xml using 1.1 to prove that the function isn't accidentally allowed.
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class Feature11Enabled_MpConfigAsEnvVars extends Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests {
