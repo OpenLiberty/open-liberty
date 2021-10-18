@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpRestClient-3.0
+symbolicName=io.openliberty.mpRestClient-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -22,7 +22,7 @@ Subsystem-Name: MicroProfile Rest Client 3.0
   io.openliberty.restfulWSClient-3.0, \
   io.openliberty.mpConfig-3.0, \
   io.openliberty.mpCompatible-5.0, \
-  com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-3.0, \
+  io.openliberty.org.eclipse.microprofile.rest.client-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
   
 -bundles=\

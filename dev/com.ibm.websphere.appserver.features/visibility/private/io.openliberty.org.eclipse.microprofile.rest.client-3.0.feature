@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-3.0
+symbolicName=io.openliberty.org.eclipse.microprofile.rest.client-3.0
 singleton=true
 -features=\
   io.openliberty.jakarta.annotation-2.0, \
