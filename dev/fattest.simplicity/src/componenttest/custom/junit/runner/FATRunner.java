@@ -472,6 +472,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Map<String, FFDCInfo> retrieveFFDCCounts() {
         HashMap<String, FFDCInfo> ffdcPrimaryInfo = new LinkedHashMap<String, FFDCInfo>();
 
+        Log.info(c, "retrieveFFDCCounts", "Entering");
+
         try {
             for (LibertyServer server : getRunningLibertyServers()) {
 
@@ -534,6 +536,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             //Exception obtaining Liberty servers
             Log.error(c, "retrieveFFDCCounts", e);
         }
+        Log.info(c, "retrieveFFDCCounts", "Exiting: " + ffdcPrimaryInfo.toString());
         return ffdcPrimaryInfo;
     }
 
