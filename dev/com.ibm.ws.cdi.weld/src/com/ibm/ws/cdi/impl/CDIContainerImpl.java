@@ -38,6 +38,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
@@ -643,8 +644,13 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         //The simpler SPI does not offer these properties.
-        boolean applicationBDAsVisible = webSphereCDIExtensionMetaData.applicationBeansVisible();
+        boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;
+
+        if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
+            CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
+            applicationBDAsVisible = internalExtension.applicationBeansVisible();
+        }
 
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                     applicationBDAsVisible,
