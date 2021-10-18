@@ -21,18 +21,10 @@ Private-Package: \
   io.openliberty.concurrent.processor
 
 -dsannotations: \
-  io.openliberty.concurrent.processor.ContextServiceDefinitionProvider
-	
-Service-Component: \
-  io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder; \
-    implementation:=io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder; \
-    provide:=com.ibm.ws.resource.ResourceFactoryBuilder; \
-    configAdmin=org.osgi.service.cm.ConfigurationAdmin; \
-    variableRegistry=com.ibm.wsspi.kernel.service.location.VariableRegistry; \
-    wsConfigurationHelper=com.ibm.websphere.config.WSConfigurationHelper; \
-    metaTypeService=org.osgi.service.metatype.MetaTypeService; \
-    immediate:=true; \
-    properties:='creates.objectClass=jakarta.enterprise.concurrent.ContextService'
+  io.openliberty.concurrent.processor.ContextServiceDefinitionProvider,\
+  io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder,\
+  io.openliberty.concurrent.processor.ManagedExecutorDefinitionProvider,\
+  io.openliberty.concurrent.processor.ManagedExecutorResourceFactoryBuilder
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

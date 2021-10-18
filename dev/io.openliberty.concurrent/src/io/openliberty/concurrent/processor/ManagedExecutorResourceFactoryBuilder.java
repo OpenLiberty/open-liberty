@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.concurrent.processor;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,15 +31,14 @@ import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
-import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 
 @Component(service = ResourceFactoryBuilder.class,
-           property = "creates.objectClass=jakarta.enterprise.concurrent.ContextService")
+           property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService") //  TODO more types?
 /**
- * Creates, modifies, and removes ContextService resource factories that are defined via ContextServiceDefinition.
+ * Creates, modifies, and removes ManagedExecutorService resource factories that are defined via ManagedExecutorDefinition.
  */
-public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuilder {
-    private static final TraceComponent tc = Tr.register(ContextServiceResourceFactoryBuilder.class);
+public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBuilder {
+    private static final TraceComponent tc = Tr.register(ManagedExecutorResourceFactoryBuilder.class);
 
     /**
      * Name of property used by config service to uniquely identify a component instance.
@@ -106,12 +104,11 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
     public ResourceFactory createResourceFactory(Map<String, Object> props) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "createResourceFactory", toString(props));
+            Tr.entry(tc, "createResourceFactory", props);
 
-        Hashtable<String, Object> contextSvcProps = new Hashtable<String, Object>();
-        contextSvcProps.put(OnErrorUtil.CFG_KEY_ON_ERROR, "WARN"); // default value from metatype
+        Hashtable<String, Object> execSvcProps = new Hashtable<String, Object>();
 
-        // Initially copy everything into contextService properties and expand any variables
+        // Initially copy everything into managedExecutorService properties and expand any variables
         VariableRegistry variableRegistry = variableRegistryRef.getServiceWithException();
         for (Map.Entry<String, Object> prop : props.entrySet()) {
             Object value = prop.getValue();
@@ -123,53 +120,54 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                 for (int i = 0; i < v.length; i++)
                     s[i] = variableRegistry.resolveRawString(v[i]);
             }
-            contextSvcProps.put(prop.getKey(), value);
+            execSvcProps.put(prop.getKey(), value);
         }
 
-        String declaringApplication = (String) contextSvcProps.remove(DECLARING_APPLICATION);
-        String application = (String) contextSvcProps.get("application");
-        String module = (String) contextSvcProps.get("module");
-        String component = (String) contextSvcProps.get("component");
-        String jndiName = (String) contextSvcProps.get(ResourceFactory.JNDI_NAME);
+        String declaringApplication = (String) execSvcProps.remove(DECLARING_APPLICATION);
+        String application = (String) execSvcProps.get("application");
+        String module = (String) execSvcProps.get("module");
+        String component = (String) execSvcProps.get("component");
+        String jndiName = (String) execSvcProps.get(ResourceFactory.JNDI_NAME);
 
-        String contextServiceID = getContextServiceID(application, module, component, jndiName);
+        String managedExecutorServiceID = getManagedExecutorServiceID(application, module, component, jndiName);
 
-        StringBuilder filter = new StringBuilder(FilterUtils.createPropertyFilter(ID, contextServiceID));
+        StringBuilder filter = new StringBuilder(FilterUtils.createPropertyFilter(ID, managedExecutorServiceID));
         filter.insert(filter.length() - 1, '*');
         // Fail if server.xml is already using the id
         if (!removeExistingConfigurations(filter.toString()))
-            throw new IllegalArgumentException(contextServiceID); // internal error, shouldn't ever have been permitted in server.xml
+            throw new IllegalArgumentException(managedExecutorServiceID); // internal error, shouldn't ever have been permitted in server.xml
 
-        contextSvcProps.put(ID, contextServiceID);
-        contextSvcProps.put(CONFIG_DISPLAY_ID, contextServiceID);
+        execSvcProps.put(ID, managedExecutorServiceID);
+        execSvcProps.put(CONFIG_DISPLAY_ID, managedExecutorServiceID);
         // Use the unique identifier because jndiName is not always unique for app-defined data sources
-        contextSvcProps.put(UNIQUE_JNDI_NAME, contextServiceID);
+        execSvcProps.put(UNIQUE_JNDI_NAME, managedExecutorServiceID);
 
-        // baseContextRef is not supported in app-defined context service. Avoid matching a random contextService
-        contextSvcProps.put("baseInstance.target", "(service.pid=unbound)");
-        contextSvcProps.put("baseInstance.cardinality.minimum", 0);
+        // TODO use configured values instead of defaulting
+        execSvcProps.put("ConcurrencyPolicy.target", "(id=defaultConcurrencyPolicy)");
+        execSvcProps.put("ConcurrencyPolicy.target.minimum", 1);
+        execSvcProps.put("ContextService.target", "(id=DefaultContextService)");
+        execSvcProps.put("ContextService.target.minimum", 1);
+        execSvcProps.put("LongRunningPolicy.target", "(service.pid=unbound)");
+        execSvcProps.put("LongRunningPolicy.cardinality.minimum", 0);
 
         // TODO process these
-        // corresponding metatype entry for nested thread context is:
-        // <AD id="threadContextConfigRef" type="String" ibm:type="pid" ibm:reference="com.ibm.wsspi.threadcontext.config" ibm:flat="true" cardinality="1000"
-        String[] cleared = (String[]) contextSvcProps.remove("cleared");
-        String[] propagated = (String[]) contextSvcProps.remove("propagated");
-        String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
-        String[] properties = (String[]) contextSvcProps.remove("properties");
+        Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
+        Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
+        String[] properties = (String[]) execSvcProps.remove("properties");
 
         BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
 
-        StringBuilder contextServiceFilter = new StringBuilder(200);
-        contextServiceFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, contextServiceID));
-        contextServiceFilter.append("(component.name=com.ibm.ws.context.service))");
+        StringBuilder managedExecutorSvcFilter = new StringBuilder(200);
+        managedExecutorSvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedExecutorServiceID));
+        managedExecutorSvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, contextServiceID, contextServiceFilter.toString(), declaringApplication);
+        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, managedExecutorServiceID, managedExecutorSvcFilter.toString(), declaringApplication);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
 
-            Configuration contextServiceConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.context.service", bundleLocation);
-            contextServiceConfig.update(contextSvcProps);
+            Configuration managedExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedExecutorService", bundleLocation);
+            managedExecutorSvcConfig.update(execSvcProps);
         } catch (Exception x) {
             factory.destroy();
             throw x;
@@ -205,7 +203,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
      * @param jndiName    configured JNDI name for the data source. For example, java:module/env/jca/cf1
      * @return the unique identifier
      */
-    private static final String getContextServiceID(String application, String module, String component, String jndiName) {
+    private static final String getManagedExecutorServiceID(String application, String module, String component, String jndiName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
         if (application != null) {
             sb.append("application[").append(application).append("]/");
@@ -215,7 +213,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                     sb.append("component[").append(component).append("]/");
             }
         }
-        return sb.append("contextService").append('[').append(jndiName).append(']').toString();
+        return sb.append("managedExecutorService").append('[').append(jndiName).append(']').toString();
     }
 
     /**
@@ -297,27 +295,5 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "unsetVariableRegistry", ref);
         variableRegistryRef.unsetReference(ref);
-    }
-
-    /**
-     * Convert map to text, fully expanding String[] values to make them visible in trace.
-     */
-    private static final String toString(Map<String, Object> map) {
-        boolean first = true;
-        StringBuilder b = new StringBuilder(200).append('{');
-        if (map != null)
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                if (first)
-                    first = false;
-                else
-                    b.append(", ");
-                b.append(entry.getKey()).append('=');
-                Object val = entry.getValue();
-                if (val instanceof String[])
-                    b.append(Arrays.toString((String[]) val));
-                else
-                    b.append(val);
-            }
-        return b.append('}').toString();
     }
 }

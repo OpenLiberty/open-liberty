@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
@@ -53,10 +54,13 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-@ContextServiceDefinition(name = "java:app/concurrent/appContextSvcRef",
+@ContextServiceDefinition(name = "java:app/concurrent/appContextSvc",
                           propagated = APPLICATION,
                           cleared = { TRANSACTION, SECURITY },
                           unchanged = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
+                           hungTaskThreshold = 300000,
+                           maxAsync = 1) // TODO add context once annotation is fixed
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -91,7 +95,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testContextServiceDefinition() throws Exception {
-        assertNotNull(InitialContext.doLookup("java:app/concurrent/appContextSvcRef"));
+        assertNotNull(InitialContext.doLookup("java:app/concurrent/appContextSvc"));
     }
 
     /**
@@ -161,6 +165,14 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     */
+    @Test
+    public void testManagedExecutorDefinition() throws Exception {
+        assertNotNull(InitialContext.doLookup("java:module/concurrent/executor5"));
+    }
+
+    /**
      * Verify that it is possible to use nested ContextService without ever having obtained the
      * managed executor that it is nested under, and that is possible to use the withContextCapture
      * methods which create completion stages that are backed by that managed executor.
@@ -171,10 +183,7 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void testNestedContextService2WithContextCapture() throws Exception {
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
 
-        // TODO CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
-        CompletableFuture<String> stage1copy = (CompletableFuture<String>) contextSvc2.getClass()
-                        .getMethod("withContextCapture", CompletableFuture.class)
-                        .invoke(contextSvc2, stage1);
+        CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
 
         // block the managed executor's 2 threads
         CountDownLatch blocker = new CountDownLatch(1);

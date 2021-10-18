@@ -127,6 +127,27 @@ public enum JNDIEnvironmentRefType {
         }
     },
 
+    ManagedExecutor(com.ibm.ws.javaee.dd.common.ManagedExecutor.class, "managed-executor", "name", "ManagedExecutorDefinition", null) {
+        @Override
+        public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
+            return refs.getManagedExecutors();
+        }
+    },
+
+    ManagedScheduledExecutor(com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor.class, "managed-scheduled-executor", "name", "ManagedScheduledExecutorDefinition", null) {
+        @Override
+        public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
+            return refs.getManagedScheduledExecutors();
+        }
+    },
+
+    ManagedThreadFactory(com.ibm.ws.javaee.dd.common.ManagedThreadFactory.class, "managed-thread-factory", "name", "ManagedThreadFactory", null) {
+        @Override
+        public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
+            return refs.getManagedThreadFactories();
+        }
+    },
+
     ConnectionFactory(com.ibm.ws.javaee.dd.common.ConnectionFactory.class, "connection-factory", "name", "ConnectionFactoryDefinition", null) {
         @Override
         public List<? extends JNDIEnvironmentRef> getRefs(JNDIEnvironmentRefs refs) {
@@ -148,7 +169,7 @@ public enum JNDIEnvironmentRefType {
      * already has objects for a type, the new objects are appended to the list.
      *
      * @param allRefs the map of objects to update
-     * @param refs the source of new objects
+     * @param refs    the source of new objects
      */
     public static void addAllRefs(Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs, JNDIEnvironmentRefs refs) {
         for (JNDIEnvironmentRefType refType : VALUES) {
@@ -160,7 +181,7 @@ public enum JNDIEnvironmentRefType {
      * Update {@code allRefs} with the objects in {@code compNSConfig}. If the map
      * already has objects for a type, the new objects are appended to the list.
      *
-     * @param allRefs the map of objects to update
+     * @param allRefs      the map of objects to update
      * @param compNSConfig the source of new objects
      */
     public static void addAllRefs(Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs, ComponentNameSpaceConfiguration compNSConfig) {
@@ -175,7 +196,7 @@ public enum JNDIEnvironmentRefType {
      * with the objects in the map.
      *
      * @param allRefs the map of objects
-     * @param refs the configuration to update
+     * @param refs    the configuration to update
      */
     @SuppressWarnings("unchecked")
     public static void setAllRefs(ComponentNameSpaceConfiguration compNSConfig, Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs) {
@@ -238,7 +259,7 @@ public enum JNDIEnvironmentRefType {
      * Add {@code ref} to {@code allRefs}.
      *
      * @param allRefs the map of objects to update
-     * @param ref the ref to add
+     * @param ref     the ref to add
      * @throws ClassCastException if the new object is of the wrong type
      */
     @SuppressWarnings("unchecked")
@@ -261,7 +282,7 @@ public enum JNDIEnvironmentRefType {
      * Add {@code refs} to {@code allRefs}.
      *
      * @param allRefs the map of objects to update
-     * @param ref the new objects to add
+     * @param ref     the new objects to add
      * @throws ClassCastException if a new object is of the wrong type
      */
     @SuppressWarnings("unchecked")
