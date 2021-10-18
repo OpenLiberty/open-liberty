@@ -9,6 +9,6 @@ IBM-API-Package: jakarta.transaction;  type="spec", \
 -bundles=io.openliberty.jakarta.transaction.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.transaction:jakarta.transaction-api:2.0.0"
 -jars=io.openliberty.transaction; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.transaction_1.1-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

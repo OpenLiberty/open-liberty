@@ -13,5 +13,5 @@ visibility = private
   io.openliberty.oauth; location:=dev/api/ibm/
 -files=\
   dev/api/ibm/javadoc/io.openliberty.oauth_1.2-javadoc.zip
-kind=beta
+kind=ga
 edition=core

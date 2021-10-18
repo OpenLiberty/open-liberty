@@ -6,5 +6,5 @@ singleton=true
   io.openliberty.servlet.api-5.0; apiJar=false, \
   com.ibm.websphere.appserver.builtinAuthentication-2.0, \
   io.openliberty.securityAPI.jakarta-1.0
-kind=beta
+kind=ga
 edition=core

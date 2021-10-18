@@ -28,7 +28,7 @@ IBM-API-Package: \
  bin/xmlWS/tools/ws-wsimport.jar, \
  bin/xmlWS/wsgen.bat, \
  bin/xmlWS/tools/ws-wsgen.jar
-kind=beta
+kind=ga
 edition=base
 WLP-AlsoKnownAs: jaxws-3.0
 WLP-Activation-Type: parallel

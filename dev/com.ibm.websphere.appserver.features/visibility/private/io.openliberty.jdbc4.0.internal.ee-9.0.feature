@@ -4,5 +4,5 @@ singleton=true
 -features=\
  com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jdbc.jakarta
-kind=beta
+kind=ga
 edition=core

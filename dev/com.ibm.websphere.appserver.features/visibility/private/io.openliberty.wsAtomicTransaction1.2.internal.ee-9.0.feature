@@ -12,5 +12,5 @@ visibility = private
   com.ibm.ws.wsat.webservice.3.2.jakarta
 -jars=io.openliberty.wsat.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.wsat.spi_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=base

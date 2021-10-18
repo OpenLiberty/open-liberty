@@ -20,6 +20,6 @@ Subsystem-Name: Jakarta Concurrency 2.0
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

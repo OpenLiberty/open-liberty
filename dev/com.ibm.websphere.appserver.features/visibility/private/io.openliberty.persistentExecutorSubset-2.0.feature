@@ -11,6 +11,6 @@ visibility=private
  io.openliberty.jakarta.concurrency.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0", \
  com.ibm.ws.resource, \
  com.ibm.ws.concurrent.persistent.jakarta
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

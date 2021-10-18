@@ -17,6 +17,6 @@ Subsystem-Category: JakartaEE9Application
 -bundles=com.ibm.ws.ejbcontainer.mdb.jakarta, \
  io.openliberty.ejbcontainer.v40.internal
 Subsystem-Name: Jakarta Enterprise Beans 4.0 Message-Driven Beans
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

@@ -11,5 +11,5 @@ visibility = private
   com.ibm.ws.security.audit.file.jakarta,\
   com.ibm.ws.request.probe.audit.servlet.jakarta
 
-kind=beta
+kind=ga
 edition=core

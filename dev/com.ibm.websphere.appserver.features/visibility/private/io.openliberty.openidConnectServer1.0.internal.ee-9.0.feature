@@ -9,5 +9,5 @@ visibility = private
   io.openliberty.security.common.internal, \
   io.openliberty.security.openidconnect.internal.clients.common, \
   io.openliberty.security.openidconnect.internal.server
-kind=beta
+kind=ga
 edition=core

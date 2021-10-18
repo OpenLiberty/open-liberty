@@ -13,6 +13,6 @@ Subsystem-Name: Jakarta Enterprise Beans 4.0 Remote
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.ejbcontainer.remote.jakarta
 -files=clients/ejbRemotePortable.jakarta.jar
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

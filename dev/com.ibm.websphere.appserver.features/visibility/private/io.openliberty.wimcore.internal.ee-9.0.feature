@@ -10,5 +10,5 @@ visibility = private
   io.openliberty.security.wim.internal.base
 -jars=io.openliberty.federatedRepository.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.federatedRepository.spi_1.2-javadoc.zip
-kind=beta
+kind=ga
 edition=core

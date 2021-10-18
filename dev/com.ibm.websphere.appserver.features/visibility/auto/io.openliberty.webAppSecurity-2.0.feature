@@ -16,5 +16,5 @@ IBM-Install-Policy: when-satisfied
  io.openliberty.security.sso.internal
 -jars=io.openliberty.webcontainer.security.app; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.webcontainer.security.app_1.4-javadoc.zip
-kind=beta
+kind=ga
 edition=core

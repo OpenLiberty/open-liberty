@@ -9,5 +9,5 @@ visibility = private
 
 -bundles= com.ibm.ws.jmx.connector.server.rest.jakarta
 
-kind=beta
+kind=ga
 edition=core

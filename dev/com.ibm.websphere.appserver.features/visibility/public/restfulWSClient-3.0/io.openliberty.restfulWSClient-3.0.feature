@@ -47,6 +47,6 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   com.ibm.ws.org.jboss.logging, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
   io.openliberty.restfulWS.internal.globalhandler.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
