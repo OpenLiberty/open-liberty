@@ -12,6 +12,6 @@ visibility = private
 -jars=\
   io.openliberty.oauth; location:=dev/api/ibm/
 -files=\
-  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oauth_1.2-javadoc.zip
+  dev/api/ibm/javadoc/io.openliberty.oauth_1.2-javadoc.zip
 kind=beta
 edition=core
