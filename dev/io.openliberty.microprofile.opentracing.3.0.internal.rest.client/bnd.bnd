@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.microprofile.opentracing.3.0.internal.rest.client
+
+Import-Package: *
+
+Export-Package: \
+    io.openliberty.microprofile.opentracing30.internal.rest.client;thread-context=true
+    
+Include-Resource: \
+    META-INF/services=resources/META-INF/services
+
+-sourcepath: src, resources
+
+-dsannotations:
+
+app-resources= \
+    META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientListener
+
+Service-Component: \
+    io.openliberty.microprofile.opentracing.rest.client.ResourceProvider; \
+        implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+        provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+        configuration-policy:=optional; \
+    properties:="resources=${app-resources}" 
+
+-buildpath: \
+    com.ibm.ws.logging.core,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest, \
+    io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest, \
+    io.openliberty.jakarta.restfulWS.3.0;version=latest, \
+    io.openliberty.jakarta.annotation.2.0;version=latest, \
+    io.openliberty.opentracing.2.0.internal;version=latest

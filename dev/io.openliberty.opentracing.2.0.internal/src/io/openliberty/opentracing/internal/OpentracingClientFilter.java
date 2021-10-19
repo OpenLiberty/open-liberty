@@ -56,6 +56,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     public static final String CLIENT_CONTINUATION_PROP_ID = OpentracingClientFilter.class.getName() + ".Span";
 
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
+    
+    public static final String CLIENT_FILTER_ENABLED_ID = OpentracingClientFilter.class.getName() + ".Enabled";
 
     private static final String TAG_COMPONENT_JAXRS = "jaxrs";
 
@@ -90,6 +92,13 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
         String methodName = "filter(outgoing)";
+        
+        if (!isEnabled(clientRequestContext)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, methodName + " trace disabled for method");
+            }
+            return;
+        }
 
         Tracer tracer = OpentracingTracerManager.getTracer();
         if (tracer == null) {
@@ -173,6 +182,13 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                        ClientResponseContext clientResponseContext) throws IOException {
     	
         String methodName = "filter(incoming)";
+        
+        if (!isEnabled(clientRequestContext)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, methodName + " trace disabled for method");
+            }
+            return;
+        }
 
         Boolean skip = (Boolean) clientRequestContext.getProperty(CLIENT_SPAN_SKIPPED_ID);
         if ((skip != null) && skip) {
@@ -221,6 +237,11 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " finish span", span);
         }
+    }
+    
+    private boolean isEnabled(ClientRequestContext requestContext) {
+        Object traceMethod = requestContext.getProperty(CLIENT_FILTER_ENABLED_ID);
+        return (traceMethod == null || traceMethod == Boolean.TRUE);
     }
 
     private class MultivaluedMapToTextMap implements TextMap {
