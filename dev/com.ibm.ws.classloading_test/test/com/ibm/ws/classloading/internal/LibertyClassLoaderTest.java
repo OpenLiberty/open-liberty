@@ -67,7 +67,7 @@ public class LibertyClassLoaderTest {
     public void testClassFormatError() throws Exception {
         Container c = buildMockContainer("testClasses", getOtherClassesURL(ClassSource.A));
 
-        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
+        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration(), Collections.emptyList()) {
             @Override
             protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findClassBytes(String className, String resourceName,
                                                                                                              ClassLoaderHook hook) throws IOException {
@@ -85,7 +85,7 @@ public class LibertyClassLoaderTest {
 
     /**
      * Validates that we only load the Manifest one time for a particular jar.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -93,7 +93,7 @@ public class LibertyClassLoaderTest {
         Container c = buildMockContainer("testJar", TestUtil.getTestJarURL());
 
         List<Manifest> manifests = new ArrayList<>();
-        loader = new AppClassLoader(null, loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
+        loader = new AppClassLoader(null, loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration(), Collections.emptyList()) {
             @Override
             public Package definePackage(String name, Manifest manifest, URL sealBase) throws IllegalArgumentException {
                 manifests.add(manifest);
