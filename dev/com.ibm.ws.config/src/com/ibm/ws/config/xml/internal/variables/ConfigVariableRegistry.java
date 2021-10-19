@@ -343,6 +343,13 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      */
     public synchronized void updateVariableCache(Map<String, Object> variables) {
         boolean dirty = false;
+
+        String variableSrcDirsKey = WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS;
+        if (variableCache.get(variableSrcDirsKey) == null) {
+            Object variableSrcDirsValue = lookupVariable(variableSrcDirsKey);
+            variableCache.put(variableSrcDirsKey, variableSrcDirsValue);
+            dirty = true;
+        }
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             String variableName = entry.getKey();
             // skip any variables defined with values in server.xml
