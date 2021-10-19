@@ -25,9 +25,6 @@
                 <exclude name=".*" />
             </methods>
         </class>
-<!--         <class name="org.eclipse.microprofile.rest.client.tck.InvokeSimpleGetOperationTest"/> -->
-<!--         <class name="org.eclipse.microprofile.rest.client.tck.cditests.CDIInvokeSimpleGetOperationTest"/> -->
-<!--         <class name="org.eclipse.microprofile.rest.client.tck.cditests.HasSingletonScopeTest"/> -->
         </classes>
     </test>
 </suite>
