@@ -42,8 +42,10 @@ import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -61,6 +63,11 @@ import componenttest.app.FATServlet;
 @ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
                            hungTaskThreshold = 300000,
                            maxAsync = 1) // TODO add context once annotation is fixed
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/executor6",
+                                    hungTaskThreshold = 360000,
+                                    maxAsync = 2) // TODO add context once annotation is fixed
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
+                                priority = 3) // TODO add context once annotation is fixed
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -83,8 +90,14 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(name = "java:global/env/concurrent/executor4Ref", lookup = "concurrent/executor4")
     ManagedScheduledExecutorService executor4;
 
+    @Resource(lookup = "java:comp/concurrent/executor6")
+    ManagedScheduledExecutorService executor6;
+
     @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
     ForkJoinWorkerThreadFactory forkJoinThreadFactory;
+
+    @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
+    ManagedThreadFactory lowPriorityThreads;
 
     @Override
     public void init() throws ServletException {
@@ -170,6 +183,22 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Test
     public void testManagedExecutorDefinition() throws Exception {
         assertNotNull(InitialContext.doLookup("java:module/concurrent/executor5"));
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     */
+    @Test
+    public void testManagedScheduledExecutorDefinition() throws Exception {
+        assertNotNull(executor6);
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     */
+    @Test
+    public void testManagedThreadFactoryDefinition() throws Exception {
+        assertNotNull(lowPriorityThreads);
     }
 
     /**

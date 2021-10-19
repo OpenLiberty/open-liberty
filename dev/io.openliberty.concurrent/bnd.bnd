@@ -24,7 +24,11 @@ Private-Package: \
   io.openliberty.concurrent.processor.ContextServiceDefinitionProvider,\
   io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder,\
   io.openliberty.concurrent.processor.ManagedExecutorDefinitionProvider,\
-  io.openliberty.concurrent.processor.ManagedExecutorResourceFactoryBuilder
+  io.openliberty.concurrent.processor.ManagedExecutorResourceFactoryBuilder,\
+  io.openliberty.concurrent.processor.ManagedScheduledExecutorDefinitionProvider,\
+  io.openliberty.concurrent.processor.ManagedScheduledExecutorResourceFactoryBuilder,\
+  io.openliberty.concurrent.processor.ManagedThreadFactoryDefinitionProvider,\
+  io.openliberty.concurrent.processor.ManagedThreadFactoryResourceFactoryBuilder
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

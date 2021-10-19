@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.ws.javaee.dd.common.Description;
-import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
 import com.ibm.ws.javaee.dd.common.Property;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
@@ -26,14 +26,14 @@ import com.ibm.wsspi.injectionengine.InjectionConfigurationException;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.JNDIEnvironmentRefType;
 
-import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 /**
- * Injection binding for ManagedExecutorDefinition annotation
- * and managed-executor deployment descriptor element.
+ * Injection binding for ManagedScheduledExecutorDefinition annotation
+ * and managed-scheduled-executor deployment descriptor element.
  */
-public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedExecutorDefinition> {
+public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<ManagedScheduledExecutorDefinition> {
     private static final String KEY_CONTEXT = "context";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_HUNG_TASK_THRESHOLD = "hungTaskThreshold";
@@ -54,36 +54,36 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
 
-    public ManagedExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
+    public ManagedScheduledExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
     }
 
     @Override
     public Class<?> getAnnotationType() {
-        return ManagedExecutorDefinition.class;
+        return ManagedScheduledExecutorDefinition.class;
     }
 
     @Override
     protected JNDIEnvironmentRefType getJNDIEnvironmentRefType() {
-        return JNDIEnvironmentRefType.ManagedExecutor;
+        return JNDIEnvironmentRefType.ManagedScheduledExecutor;
     }
 
     @Override
-    public void merge(ManagedExecutorDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
+    public void merge(ManagedScheduledExecutorDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
         if (member != null) {
-            // ManagedExecutorDefinition is a class-level annotation only.
+            // ManagedScheduledExecutorDefinition is a class-level annotation only.
             throw new IllegalArgumentException(member.toString());
         }
 
         contextServiceJndiName = mergeAnnotationValue(contextServiceJndiName, XMLContextServiceRef, annotation.context().name(), KEY_CONTEXT, "java:comp/DefaultContextService");
-        description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedExecutorDefinition has no description attribute
+        description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedScheduledExecutorDefinition has no description attribute
         hungTaskThreshold = mergeAnnotationValue(hungTaskThreshold, XMLHungTaskThreshold, annotation.hungTaskThreshold(), KEY_HUNG_TASK_THRESHOLD, -1L);
         maxAsync = mergeAnnotationValue(maxAsync, XMLMaxAsync, annotation.maxAsync(), KEY_MAX_ASYNC, -1);
-        properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedExecutorDefinition has no properties attribute
+        properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedScheduledExecutorDefinition has no properties attribute
     }
 
-    void mergeXML(ManagedExecutor mxd) throws InjectionConfigurationException {
+    void mergeXML(ManagedScheduledExecutor mxd) throws InjectionConfigurationException {
         List<Description> descriptionList = mxd.getDescriptions();
 
         String contextServiceRefValue = mxd.getContextServiceRef();
@@ -112,14 +112,14 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     }
 
     @Override
-    public void mergeSaved(InjectionBinding<ManagedExecutorDefinition> injectionBinding) throws InjectionException {
-        ManagedExecutorDefinitionBinding managedExecutorBinding = (ManagedExecutorDefinitionBinding) injectionBinding;
+    public void mergeSaved(InjectionBinding<ManagedScheduledExecutorDefinition> injectionBinding) throws InjectionException {
+        ManagedScheduledExecutorDefinitionBinding managedScheduledExecutorBinding = (ManagedScheduledExecutorDefinitionBinding) injectionBinding;
 
-        mergeSavedValue(contextServiceJndiName, managedExecutorBinding.contextServiceJndiName, "context-service-ref");
-        mergeSavedValue(description, managedExecutorBinding.description, "description");
-        mergeSavedValue(hungTaskThreshold, managedExecutorBinding.hungTaskThreshold, "hung-task-threshold");
-        mergeSavedValue(maxAsync, managedExecutorBinding.maxAsync, "max-async");
-        mergeSavedValue(properties, managedExecutorBinding.properties, "properties");
+        mergeSavedValue(contextServiceJndiName, managedScheduledExecutorBinding.contextServiceJndiName, "context-service-ref");
+        mergeSavedValue(description, managedScheduledExecutorBinding.description, "description");
+        mergeSavedValue(hungTaskThreshold, managedScheduledExecutorBinding.hungTaskThreshold, "hung-task-threshold");
+        mergeSavedValue(maxAsync, managedScheduledExecutorBinding.maxAsync, "max-async");
+        mergeSavedValue(properties, managedScheduledExecutorBinding.properties, "properties");
     }
 
     void resolve() throws InjectionException {
@@ -135,6 +135,6 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
         addOrRemoveProperty(props, KEY_HUNG_TASK_THRESHOLD, hungTaskThreshold);
         addOrRemoveProperty(props, KEY_MAX_ASYNC, maxAsync);
 
-        setObjects(null, createDefinitionReference(null, ManagedExecutorService.class.getName(), props));
+        setObjects(null, createDefinitionReference(null, ManagedScheduledExecutorService.class.getName(), props));
     }
 }
