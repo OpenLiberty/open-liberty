@@ -33,7 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.restfulWS.introspector.LibertyResteasyEndpointLoggingIntrospector;
+import io.openliberty.restfulWS.introspector.RESTfulEndpointLoggingIntrospector;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.HttpMethod;
@@ -379,16 +379,16 @@ public class ResourceMethodRegistry implements Registry
    @FFDCIgnore(NoClassDefFoundError.class)
    private void logEndpoint(Method method, String endpoint) {
 
-       LibertyResteasyEndpointLoggingIntrospector introspector = AccessController.doPrivileged(new PrivilegedAction<LibertyResteasyEndpointLoggingIntrospector>(){
+       RESTfulEndpointLoggingIntrospector introspector = AccessController.doPrivileged(new PrivilegedAction<RESTfulEndpointLoggingIntrospector>(){
 
            @Override
-           public LibertyResteasyEndpointLoggingIntrospector run() {
+           public RESTfulEndpointLoggingIntrospector run() {
                try {
                Bundle b = FrameworkUtil.getBundle(ResourceMethodRegistry.class);
                if(b != null) {
                    BundleContext bc = b.getBundleContext();
-                   ServiceReference<LibertyResteasyEndpointLoggingIntrospector> sr = bc.getServiceReference(LibertyResteasyEndpointLoggingIntrospector.class);
-                   return (LibertyResteasyEndpointLoggingIntrospector)bc.getService(sr);
+                   ServiceReference<RESTfulEndpointLoggingIntrospector> sr = bc.getServiceReference(RESTfulEndpointLoggingIntrospector.class);
+                   return (RESTfulEndpointLoggingIntrospector)bc.getService(sr);
                }
                } catch (NoClassDefFoundError ncdfe) {
                    // ignore - return null

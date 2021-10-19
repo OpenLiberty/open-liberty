@@ -26,13 +26,13 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { ApplicationStateListener.class, Introspector.class, LibertyResteasyEndpointLoggingIntrospector.class },
+@Component(service = { ApplicationStateListener.class, Introspector.class, RESTfulEndpointLoggingIntrospector.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
-public class LibertyResteasyEndpointIntrospector implements ApplicationStateListener, Introspector, LibertyResteasyEndpointLoggingIntrospector {
+public class ResteasyEndpointIntrospector implements ApplicationStateListener, Introspector, RESTfulEndpointLoggingIntrospector {
 
-    private static final TraceComponent tc = Tr.register(LibertyResteasyEndpointIntrospector.class);
+    private static final TraceComponent tc = Tr.register(ResteasyEndpointIntrospector.class);
 
     private static final Map<String, List<String>> applicationEndpoints = new ConcurrentHashMap<String, List<String>>();
 
@@ -56,12 +56,12 @@ public class LibertyResteasyEndpointIntrospector implements ApplicationStateList
 
     @Override
     public String getIntrospectorName() {
-        return "LibertyResteasyEndpointIntrospector";
+        return "ResteasyEndpointIntrospector";
     }
 
     @Override
     public String getIntrospectorDescription() {
-        return "Log the JAX-RS endpoints for each Application.";
+        return "Log the RESTful endpoints for each Application.";
     }
 
     @Override
