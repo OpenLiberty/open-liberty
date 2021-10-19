@@ -29,36 +29,10 @@ Export-Package: \
   org.jboss.resteasy.cdi;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.cdi.i18n;version=${resteasy-version}
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
-#Import-Package: \
-  javax.activation;version=!, \
-  javax.annotation;version=!, \
-  javax.annotation.security;version=!, \
-  javax.xml.bind;version=!, \
-  javax.xml.bind.annotation;version=!, \
-  javax.xml.bind.annotation.adapters;version=!, \
-  javax.xml.bind.attachment;version=!, \
-  javax.xml.bind.helpers;version=!, \
-  javax.xml.bind.util;version=!, \
-  !javax.json.bind, \
-  !javax.json.bind.spi, \
-  !javax.mail, \
-  !javax.mail.internet, \
-  !javax.mail.util, \
-  !com.sun.xml.bind.marshaller, \
-  !org.apache.james.mime4j.*, \
-  !org.jboss.resteasy.plugins.providers.jaxb, \
-  !sun.misc, \
-  org.jboss.resteasy.plugins.server.servlet, \
-  *
-
-
 
 Private-Package: \
   io.openliberty.org.jboss.resteasy.common.component
-  
+
 instrument.ffdc: false
 instrument.disabled: false
 
