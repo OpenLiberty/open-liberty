@@ -10,23 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+
+import io.openliberty.security.common.osgi.SecurityOSGiUtils;
 
 public abstract class CommonCache {
 
     private static final TraceComponent tc = Tr.register(CommonCache.class);
+
+    private final PrivilegedAction<ScheduledExecutorService> getScheduledExecutorServiceAction = new GetScheduledExecutorServiceAction();
 
     /**
      * Maximum number of entries allowed in the cache.
@@ -78,7 +78,11 @@ public abstract class CommonCache {
         if (previousScheduledTask != null) {
             previousScheduledTask.cancel(true);
         }
-        evictionSchedule = getScheduledExecutorService();
+        if (System.getSecurityManager() == null) {
+            evictionSchedule = getScheduledExecutorService();
+        } else {
+            evictionSchedule = AccessController.doPrivileged(getScheduledExecutorServiceAction);
+        }
         if (evictionSchedule != null) {
             previousScheduledTask = evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
         } else {
@@ -86,34 +90,6 @@ public abstract class CommonCache {
                 Tr.debug(tc, "Failed to obtain a ScheduledExecutorService");
             }
         }
-    }
-
-    ScheduledExecutorService getScheduledExecutorService() {
-        BundleContext executorServiceBundle = getBundleContext();
-        return getService(executorServiceBundle, ScheduledExecutorService.class);
-    }
-
-    private BundleContext getBundleContext() {
-        BundleContext context = null;
-        if (FrameworkState.isValid()) {
-            Bundle bundle = FrameworkUtil.getBundle(getClass());
-            if (bundle != null) {
-                context = bundle.getBundleContext();
-            }
-        }
-        return context;
-    }
-
-    private <T> T getService(BundleContext bundleContext, Class<T> serviceClass) {
-        if (!FrameworkState.isValid() || bundleContext == null) {
-            return null;
-        }
-        ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
-        T service = null;
-        if (ref != null) {
-            service = bundleContext.getService(ref);
-        }
-        return service;
     }
 
     /**
@@ -127,4 +103,16 @@ public abstract class CommonCache {
             evictStaleEntries();
         }
     }
+
+    private ScheduledExecutorService getScheduledExecutorService() {
+        return SecurityOSGiUtils.getService(getClass(), ScheduledExecutorService.class);
+    }
+
+    private class GetScheduledExecutorServiceAction implements PrivilegedAction<ScheduledExecutorService> {
+        @Override
+        public ScheduledExecutorService run() {
+            return getScheduledExecutorService();
+        }
+    }
+
 }

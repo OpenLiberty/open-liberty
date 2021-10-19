@@ -12,9 +12,9 @@ package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.PublicKey;
 import java.util.HashMap;
@@ -30,6 +30,7 @@ import org.junit.Test;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -205,6 +206,154 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void test_useAccessTokenAsIdToken_true() {
         mockUseAccessTokenAsIdTokenValue(true);
         assertTrue("Result did not match the expected value.", util.useAccessTokenAsIdToken(clientConfig));
+    }
+
+    /************************************** checkJwtFormatAgainstConfigRequirements **************************************/
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_nullJwt_nullKeyAlias() {
+        String jwtString = null;
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue(null));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1536E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_nullJwt_withKeyAlias() {
+        String jwtString = null;
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue("someAlias"));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1537E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_emptyJwt_nullKeyAlias() {
+        String jwtString = "";
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue(null));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1536E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_emptyJwt_withKeyAlias() {
+        String jwtString = "";
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue("someAlias"));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1537E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jws_nullKeyAlias() {
+        String jwtString = "xxx.yyy.zzz";
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue(null));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+        } catch (JWTTokenValidationFailedException e) {
+            fail("Should not have thrown a JWTTokenValidationFailedException exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jws_withKeyAlias() {
+        String jwtString = "xxx.yyy.zzz";
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue("someAlias"));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1537E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jwe_nullKeyAlias() {
+        String jwtString = "xxx.yyy.zzz.aaa.bbb";
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue(null));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+            fail("Should have thrown a JWTTokenValidationFailedException exception but did not.");
+        } catch (JWTTokenValidationFailedException e) {
+            verifyException(e, "CWWKS1536E");
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jwe_withKeyAlias() {
+        String jwtString = "xxx.yyy.zzz.aaa.bbb";
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue("someAlias"));
+            }
+        });
+        try {
+            util.checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
+        } catch (JWTTokenValidationFailedException e) {
+            fail("Should not have thrown a JWTTokenValidationFailedException exception but did: " + e);
+        }
     }
 
     /************************************** getVerifyKey **************************************/

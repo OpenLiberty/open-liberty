@@ -29,7 +29,7 @@ tested.features: jpa-2.2, jpaContainer-2.2, beanValidation-2.0
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
-    com.ibm.ws.jpa.tests.beanvalidation;version=latest,\
+    com.ibm.ws.jpa.tests.beanvalidation_fat.common;version=latest,\
     fattest.simplicity;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

@@ -17,8 +17,8 @@ src: \
   test-applications/jmsmdb/src, \
   test-applications/DurableUnshared/src, \
   test-applications/JMSContextInject/src, \
-  test-applications/JMSDCFSecurity/src, \
-  test-applications/mdbapp/src
+  test-applications/mdbapp/src, \
+  test-applications/JMSDCFSecurity/src  
 
 fat.project: true
 

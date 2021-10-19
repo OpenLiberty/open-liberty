@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applicationext:ApplicationExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:applicationext="applicationext.xmi" xmlns:application="application.xmi" xmi:id="ApplicationExtension_1">
+   <moduleExtensions xmi:type="applicationext:EjbModuleExtension" xmi:id="EjbModuleExtension_1" altRoot="ALT-INF/MDB20TestEJB.jar">
+      <module xmi:type="application:EjbModule" href="META-INF/application.xml#EjbModule_1049488688556"/>
+   </moduleExtensions>
+   <application href="META-INF/application.xml#Application_ID"/>
+</applicationext:ApplicationExtension>

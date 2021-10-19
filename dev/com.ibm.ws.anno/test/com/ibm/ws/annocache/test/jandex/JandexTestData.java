@@ -20,7 +20,8 @@ public class JandexTestData {
         "com.ibm.websphere.appserver.api.basics-jar.idx", // V2
 
         "petclinic.idx",
-        "hibernate.idx"
+        "hibernate.idx",
+        "typeannotation-test-1.8-jar-v10.idx" // v10
       };
 
     public static final int[] INDEX_SIZES = {
@@ -31,7 +32,8 @@ public class JandexTestData {
         158,
         38,
         47,
-        456
+        456,
+        113
     };
 
     public static Collection<Object[]> data() {

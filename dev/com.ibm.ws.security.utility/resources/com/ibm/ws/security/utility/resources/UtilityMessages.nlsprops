@@ -86,6 +86,17 @@ encode.option-desc.custom.description=\
 # encryption is enabled.
 no.custom.encyption=The custom password encryption is not detected.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=The {0} label does not exist in the {1} keyring. Unable to find a valid key for AES password encryption.
+saf.cert.is.not.key=The {0} certificate is not a key entry. The certificate must be a key entry to use it as an AES password encryption key.
+saf.cert.expired=The {0} certificate is expired and cannot be used as an AES password encryption key.
+saf.keyring.does.not.exist=The {0} keystore does not exist. No certificate can be retrieved from the keystore to use as the AES password encryption key.
+saf.arg.not.onZ=The --keyring, --keyringType, and --keyLabel arguments can be used only on z/OS.
+saf.arg.not.aes=The --keyring, --keyringType, and --keyLabel arguments can be used with only with AES encoding. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

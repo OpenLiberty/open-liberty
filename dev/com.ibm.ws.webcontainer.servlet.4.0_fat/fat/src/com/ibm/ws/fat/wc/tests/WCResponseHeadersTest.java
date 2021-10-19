@@ -453,7 +453,7 @@ public class WCResponseHeadersTest {
      *
      * @throws Exception
      */
-    @Test  
+    @Test
     @Mode(TestMode.FULL)
     public void testHeaderMisconfiguration_PreviouslyDuplicatedHeaderName() throws Exception {
 
@@ -950,19 +950,18 @@ public class WCResponseHeadersTest {
         expectations.evaluate(headers);
     }
 
-
     /**
      *
      * Tests the "remove" configuration of the <headers> element by specifying
-     * a header that will not be present in the response. 
+     * a header that will not be present in the response.
      *
      * The application will add the [appVerificationHeader] header to the response. No further
      * application interaction is expected.
      *
-     * The header [undefinedHeader] will be configured in the remove option, but will not be 
-     * present on the response. A status 200 is expected with no [undefinedHeader] added 
-     * to the response. 
-     * 
+     * The header [undefinedHeader] will be configured in the remove option, but will not be
+     * present on the response. A status 200 is expected with no [undefinedHeader] added
+     * to the response.
+     *
      * Expected present headers: [appVerificationHeader]
      * Expected missing headers: [undefinedHeader]
      *
@@ -1218,29 +1217,29 @@ public class WCResponseHeadersTest {
     }
 
     /**
-     * Tests that the configuration is applied to all responses in the process of authenticating 
-     * an end-user to a secure application. The server configuration will configure the "add" attribute 
+     * Tests that the configuration is applied to all responses in the process of authenticating
+     * an end-user to a secure application. The server configuration will configure the "add" attribute
      * with the header [foo:bar].
-     * 
-     * First Request: 
+     *
+     * First Request:
      * Expected response code: 302
      * Expected response header: [foo:bar]
-     * 
+     *
      * Second Request: Login Page
      * Expected response code: 200
      * Expected response header: [foo:bar]
-     * 
+     *
      * Third Request: Perform Login
      * Expected response code: 302
      * Expected response header: [foo:bar]
-     * 
+     *
      * Fourth Request: Application Servlet
      * Expected response code: 200
      * Expected response header: [foo:bar]
      *
      * @throws Exception
      */
-    @Test   
+    @Test
     @Mode(TestMode.FULL)
     public void testHeadersDuringLogin() throws Exception {
 
@@ -1258,10 +1257,17 @@ public class WCResponseHeadersTest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("serverConfigs/ResponseHeadersServer.xml");
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SECURE_APP), true, "CWWKT0016I:.*SameSiteSecurityTest.*");
+
         // Wait for LTPA key to be available to avoid CWWKS4000E
         // CWWKS4105I: LTPA configuration is ready after x seconds
         assertNotNull("CWWKS4105I LTPA configuration message not found.",
                       server.waitForStringInLogUsingMark("CWWKS4105I.*"));
+
+        // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for
+        // requests on host * (IPv6) port 8020.
+        assertNotNull("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl message was not found",
+                      server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
+
         configuration = server.getServerConfiguration();
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 

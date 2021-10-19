@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbext:EJBJarExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbext="ejbext.xmi" xmlns:ejb="ejb.xmi" xmi:id="EJBJarExtension_1">
+    <ejbExtensions xmi:type="ejbext:MessageDrivenExtension" xmi:id="MessageDrivenExtension_1">
+        <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050954917281"/>
+        <structure xmi:id="BeanStructure_1" inheritenceRoot="false"/>
+        <resourceRefExtensions xmi:id="ResourceRefExtension_1">
+            <resourceRef href="META-INF/ejb-jar.xml#ResourceRef_1050954917312"/>
+        </resourceRefExtensions>
+        <localTransaction xmi:id="LocalTransaction_1" resolver="Application" unresolvedAction="Rollback"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:MessageDrivenExtension" xmi:id="MessageDrivenExtension_3">
+        <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050954917282"/>
+        <structure xmi:id="BeanStructure_1" inheritenceRoot="false"/>
+        <resourceRefExtensions xmi:id="ResourceRefExtension_1">
+            <resourceRef href="META-INF/ejb-jar.xml#ResourceRef_1050954917313"/>
+        </resourceRefExtensions>
+        <localTransaction xmi:id="LocalTransaction_1" resolver="Application" unresolvedAction="Rollback"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:MessageDrivenExtension" xmi:id="MessageDrivenExtension_2">
+        <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050955272500"/>
+        <structure xmi:id="BeanStructure_2" inheritenceRoot="false"/>
+        <resourceRefExtensions xmi:id="ResourceRefExtension_2">
+            <resourceRef href="META-INF/ejb-jar.xml#ResourceRef_1050955272500"/>
+        </resourceRefExtensions>
+        <localTransaction xmi:id="LocalTransaction_2" resolver="Application" unresolvedAction="Rollback"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_1" timeout="600">
+        <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1051542150766"/>
+        <structure xmi:id="BeanStructure_3" inheritenceRoot="false"/>
+        <beanCache xmi:id="BeanCache_1" activateAt="TRANSACTION"/>
+        <localTransaction xmi:id="LocalTransaction_3" boundary="BeanMethod" resolver="Application" unresolvedAction="Rollback"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_1053464349116">
+        <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1053464348325"/>
+        <structure xmi:id="BeanStructure_1053464349116" inheritenceRoot="false"/>
+        <beanCache xmi:id="BeanCache_1053464349116" activateAt="TRANSACTION"/>
+        <localTransaction xmi:id="LocalTransaction_1053464349116" boundary="BeanMethod" resolver="Application" unresolvedAction="Commit"/>
+    </ejbExtensions>
+        <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_1053491356114">
+        <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1053491355674"/>
+        <structure xmi:id="BeanStructure_1053491356114" inheritenceRoot="false"/>
+        <beanCache xmi:id="BeanCache_1053491356114" activateAt="TRANSACTION"/>
+        <localTransaction xmi:id="LocalTransaction_1053491356114" boundary="BeanMethod" resolver="Application" unresolvedAction="Commit"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:MessageDrivenExtension" xmi:id="MessageDrivenExtension_1053531508493">
+        <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1053531321804"/>
+        <structure xmi:id="BeanStructure_1053531508493" inheritenceRoot="false"/>
+        <resourceRefExtensions xmi:id="ResourceRefExtension_1053531508493">
+            <resourceRef href="META-INF/ejb-jar.xml#ResourceRef_1053531508082"/>
+        </resourceRefExtensions>
+        <localTransaction xmi:id="LocalTransaction_1053531508493" resolver="Application" unresolvedAction="Commit"/>
+    </ejbExtensions>
+    <ejbExtensions xmi:type="ejbext:MessageDrivenExtension" xmi:id="MessageDrivenExtension_1053615534652">
+        <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1053615533140"/>
+        <structure xmi:id="BeanStructure_1053615534652" inheritenceRoot="false"/>
+        <resourceRefExtensions xmi:id="ResourceRefExtension_1053615534652">
+            <resourceRef href="META-INF/ejb-jar.xml#ResourceRef_1053615533140"/>
+        </resourceRefExtensions>
+        <localTransaction xmi:id="LocalTransaction_1053615534652" resolver="Application" unresolvedAction="Commit"/>
+    </ejbExtensions>
+    <ejbJar href="META-INF/ejb-jar.xml#EJBJar_1060639024453"/>
+</ejbext:EJBJarExtension>

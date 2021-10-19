@@ -85,12 +85,11 @@ public class CxfX509MigTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             errMsgVersion = "EE7";
-        }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        } else if ((features.contains("jaxws-2.3")) || (features.contains("xmlWS-3.0"))) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -321,7 +320,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testCxfX509AsymIssuerSerialMigService";
         methodFull = "testCxfX509AsymIssuerSerialMigService";
@@ -514,7 +512,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymThumbprintMigService() throws Exception {
         String thisMethod = "testCxfX509AsymThumbprintMigService";
         methodFull = "testCxfX509AsymThumbprintMigService";
@@ -724,7 +721,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymProtectTokensMigService() throws Exception {
         String thisMethod = "testCxfX509AsymProtectTokensMigService";
         methodFull = "testCxfX509AsymProtectTokensMigService";
@@ -895,7 +891,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingMigService";
         methodFull = "testCxfX509TransportEndorsingMigServiceHttps";
@@ -1081,7 +1076,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportEndrosingSP11MigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingSP11MigService";
         methodFull = "testCxfX509TransportEndorsingSP11MigServiceHttps";
@@ -1250,7 +1244,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportSignedEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSignedEndorsingMigService";
         methodFull = "testCxfX509TransportSignedEndorsingMigServiceHttps";
@@ -1419,7 +1412,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportEndrosingEncryptedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingEncryptedMigService";
         methodFull = "testCxfX509TransportEndorsingEncryptedMigServiceHttps";
@@ -1589,7 +1581,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportSignedEndrosingEncryptedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSignedEndorsingEncryptedMigService";
         methodFull = "testCxfX509TransportSignedEndorsingEncryptedMigServiceHttps";
@@ -1816,7 +1807,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509TransportSupportingSignedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSupportingSignedMigService";
         methodFull = "testCxfX509TransportSupportingSignedMigServiceHttps";
@@ -2156,7 +2146,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymmetricSignatureMigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureMigService";
         methodFull = "testCxfX509AsymmetricSignatureMigService";
@@ -2188,7 +2177,7 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -2375,7 +2364,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymmetricSignatureSP11MigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureSP11MigService";
         methodFull = "testCxfX509AsymmetricSignatureSP11MigService";
@@ -2558,7 +2546,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymmetricEncryptionMigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricEncryptionMigService";
         methodFull = "testCxfX509AsymmetricEncryptionMigService";
@@ -2634,7 +2621,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testWsComplexService() throws Exception {
         String thisMethod = "testWsComplexService";
         methodFull = "testWsComplexService";
@@ -2665,7 +2651,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testWsComplexSP11Service() throws Exception {
         String thisMethod = "testWsComplexSP11Service";
         methodFull = "testWsComplexSP11Service";
@@ -2705,7 +2690,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testAsymmetricBasic256Service() throws Exception {
         String thisMethod = "testAsymmetricBasic256Service";
         methodFull = "testAsymmetricBasic256Service";
@@ -2751,7 +2735,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testAsymSignatureConfirmService() throws Exception {
         String thisMethod = "testAsymSignatureConfirmService";
         methodFull = "testAsymSignatureConfirmService";
@@ -2790,7 +2773,6 @@ public class CxfX509MigTests {
      **/
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testAsymEncSignService() throws Exception {
         String thisMethod = "testAsymEncSignService";
         methodFull = "testAsymEncSignService";
@@ -2851,7 +2833,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testTripleDesService() throws Exception {
         String thisMethod = "testTripleDesService";
         methodFull = "testTripleDesService";
@@ -2884,7 +2865,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBasic128Service() throws Exception {
         String thisMethod = "testBasic128Service";
         methodFull = "testBasic128Service";
@@ -3508,7 +3488,7 @@ public class CxfX509MigTests {
      * It expects to fail
      **/
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";

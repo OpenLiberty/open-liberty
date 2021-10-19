@@ -16,8 +16,7 @@ import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import org.jose4j.base64url.SimplePEMEncoder;
+import java.util.Base64;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -66,7 +65,7 @@ public class KeyTools {
 
         String base64 = privateKeyString.substring(beginIndex, endIndex).trim();
         System.out.println("getPrivateKeyFromPem - base64: " + base64 + " end");
-        byte[] decode = SimplePEMEncoder.decode(base64);
+        byte[] decode = Base64.getDecoder().decode(base64);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
 
@@ -90,7 +89,7 @@ public class KeyTools {
 
         String base64 = publicKeyString.substring(beginIndex, endIndex).trim();
         System.out.println("getPublicKeyFromPem - base64: " + base64 + " end");
-        byte[] decode = SimplePEMEncoder.decode(base64);
+        byte[] decode = Base64.getDecoder().decode(base64);
 
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decode);
 

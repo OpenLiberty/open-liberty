@@ -37,7 +37,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	public static void beforeClassSetup() throws Exception {
 		final String methodName = "beforeClassSetup";
         /* Enable tests only if running on a zOS machine, otherwise skip class */
-        Assume.assumeTrue(!isZos);
+		Assume.assumeTrue(!isZos);
 		Log.entering(c, methodName);
 		setupEnv();
 		Log.exiting(c, methodName);
@@ -59,9 +59,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	@AfterClass
 	public static void cleanUp() throws Exception {
 		// TODO
-		resetOriginalWlpProps();
-		cleanUpTempFiles();
-		deleteRepo("AfterClassCleanUp");
+		if (!isZos) {
+			resetOriginalWlpProps();
+			cleanUpTempFiles();
+			deleteRepo("AfterClassCleanUp");
+		}
+
 	}
 
 	protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear)

@@ -4,6 +4,7 @@
 		<feature>cdi-1.2</feature>
         <feature>beanValidation-1.1</feature>
     </featureManager>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
 
   	<include location="../fatTestPorts.xml"/>
 

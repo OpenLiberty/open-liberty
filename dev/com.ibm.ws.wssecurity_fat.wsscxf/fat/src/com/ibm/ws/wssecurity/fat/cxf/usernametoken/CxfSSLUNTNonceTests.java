@@ -45,7 +45,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceOnlySSL() throws Exception {
 
         genericTest("testCxfUntNonceOnlySSL", untSSLClientUrl,
@@ -68,7 +68,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceAndCreatedSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedSSL", untSSLClientUrl,
@@ -92,7 +92,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceAndCreatedNoIdSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedNoIdSSL", untSSLClientUrl,
@@ -163,7 +163,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     }
 
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "java.net.MalformedURLException" },
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" },
                  repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntOldExtFutureTimestampSSL() throws Exception {
 
@@ -194,7 +194,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntReqTimestampSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampSSL", untSSLClientUrl,

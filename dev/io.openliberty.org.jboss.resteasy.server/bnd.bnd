@@ -32,7 +32,7 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-  com.ibm.websphere.jaxrs.server;version=3.0.0;thread-local=true, \
+  com.ibm.websphere.jaxrs.server;version=3.0.0;thread-context=true, \
   io.openliberty.org.jboss.resteasy.common.cdi;thread-context=true, \
   org.jboss.resteasy.cdi;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.cdi.i18n;version=${resteasy-version}, \

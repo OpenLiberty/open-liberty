@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import org.apache.cxf.message.Message;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.context.service.serializable.ContextualRunnable;
 import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(name = "com.ibm.ws.jaxrs2x.concurrent.component.ManagedExecutorRunnableWrapper",
            service = AsyncClientRunnableWrapper.class,
@@ -30,8 +30,7 @@ public class ManagedExecutorRunnableWrapper implements AsyncClientRunnableWrappe
     public void prepare(Message message) {
         Executor executor = message.getExchange().get(Executor.class);
         if (executor instanceof WSManagedExecutorService) {
-            WSContextService contextService = ((WSManagedExecutorService) executor).getContextService();
-            final ThreadContextDescriptor tcd = contextService.captureThreadContext(null, null);
+            final ThreadContextDescriptor tcd = ((WSManagedExecutorService) executor).captureThreadContext(null);
             message.put(ThreadContextDescriptor.class, tcd);
         }
     }
@@ -43,8 +42,7 @@ public class ManagedExecutorRunnableWrapper implements AsyncClientRunnableWrappe
         if (executor instanceof WSManagedExecutorService) {
             ThreadContextDescriptor tcd = message.get(ThreadContextDescriptor.class);
             if (tcd != null) {
-                WSContextService contextService = ((WSManagedExecutorService) executor).getContextService();
-                ret = contextService.createContextualProxy(tcd, runnable, Runnable.class);
+                ret = new ContextualRunnable(tcd, runnable, null);
             }
 
         }

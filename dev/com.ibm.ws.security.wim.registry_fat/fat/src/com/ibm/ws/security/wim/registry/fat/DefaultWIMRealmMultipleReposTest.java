@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemoryADLDAPServer;
 import com.ibm.ws.com.unboundid.InMemorySunLDAPServer;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
@@ -52,6 +53,7 @@ public class DefaultWIMRealmMultipleReposTest {
     private static UserRegistryServletConnection servlet;
 
     private static InMemorySunLDAPServer sunLdapServer;
+    private static InMemoryADLDAPServer adLdapServer;
 
     /**
      * Configure the embedded LDAP server.
@@ -60,6 +62,7 @@ public class DefaultWIMRealmMultipleReposTest {
      */
     private static void setupLdapServer() throws Exception {
         sunLdapServer = new InMemorySunLDAPServer();
+        adLdapServer = new InMemoryADLDAPServer();
     }
 
     /**
@@ -70,17 +73,25 @@ public class DefaultWIMRealmMultipleReposTest {
     public static void setUp() throws Exception {
         setupLdapServer();
         /*
-         * Update LDAP configuration with In-Memory Server
+         * Update LDAP configuration with default ldap config In-Memory Server (UnboundID)
          */
         ServerConfiguration serverConfig = server.getServerConfiguration();
         for (LdapRegistry ldap : serverConfig.getLdapRegistries()) {
-            if (ldap.getRealm().equals("SUN_LDAP")) {
+            Log.info(c, "setUp", ldap.getRealm());
+            if (ldap.getId().equals("SUN_LDAP")) {
                 ldap.setHost("localhost");
                 ldap.setPort(String.valueOf(sunLdapServer.getLdapPort()));
                 ldap.setBindDN(InMemorySunLDAPServer.getBindDN());
                 ldap.setBindPassword(InMemorySunLDAPServer.getBindPassword());
                 server.updateServerConfiguration(serverConfig);
-                break;
+                Log.info(c, "setUp", "Updated the SUN_LDAP to unboundID");
+            } else if (ldap.getId().equals("AD_LDAP")) {
+                ldap.setHost("localhost");
+                ldap.setPort(String.valueOf(adLdapServer.getLdapPort()));
+                ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
+                ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
+                server.updateServerConfiguration(serverConfig);
+                Log.info(c, "setUp", "Updated the AD_LDAP to unboundID");
             }
         }
 
@@ -121,6 +132,9 @@ public class DefaultWIMRealmMultipleReposTest {
             try {
                 if (sunLdapServer != null) {
                     sunLdapServer.shutDown(true);
+                }
+                if (adLdapServer != null) {
+                    adLdapServer.shutDown(true);
                 }
             } catch (Exception e) {
                 Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());

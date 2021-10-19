@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -32,13 +34,14 @@ class UnusableExecutor implements Executor, WSManagedExecutorService {
     }
 
     @Override
-    public void execute(Runnable command) {
-        throw new UnsupportedOperationException();
+    @SuppressWarnings("unchecked")
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        return contextService.captureThreadContext(props);
     }
 
     @Override
-    public WSContextService getContextService() {
-        return contextService;
+    public void execute(Runnable command) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

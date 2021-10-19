@@ -35,6 +35,7 @@ tested.features: mpfaulttolerance-1.0,\
                  mpMetrics-2.0,\
                  mpMetrics-2.3,\
                  mpMetrics-3.0,\
+                 mpmetrics-4.0,\
                  servlet-5.0
 
 -buildpath: \

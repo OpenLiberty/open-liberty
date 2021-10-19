@@ -156,7 +156,7 @@ public class NpTimerConfigRetryTest extends FATServletClient {
         setNonPersistentTimerRetryConfiguration(RETRY_INTERVAL_NORMAL, RETRY_COUNT_ZERO);
         server.setMarkToEndOfLog();
         runTest();
-        assertEquals("Max retries 0 was not reached (CNTR0179W)", 2, server.findStringsInLogsUsingMark("CNTR0179W:.*0", server.getDefaultLogFile()).size());
+        assertEquals("Max retries 0 was not reached (CNTR0179W)", 2, server.waitForMultipleStringsInLogUsingMark(2, "CNTR0179W:.*0"));
     }
 
     /**
@@ -169,7 +169,7 @@ public class NpTimerConfigRetryTest extends FATServletClient {
         setNonPersistentTimerRetryConfiguration(RETRY_INTERVAL_NORMAL, RETRY_COUNT_TWO);
         server.setMarkToEndOfLog();
         runTest();
-        assertEquals("Max retries 2 was not reached (CNTR0179W)", 2, server.findStringsInLogsUsingMark("CNTR0179W:.*2", server.getDefaultLogFile()).size());
+        assertEquals("Max retries 2 was not reached (CNTR0179W)", 2, server.waitForMultipleStringsInLogUsingMark(2, "CNTR0179W:.*2"));
     }
 
     /**
@@ -182,7 +182,7 @@ public class NpTimerConfigRetryTest extends FATServletClient {
         setNonPersistentTimerRetryConfiguration(RETRY_INTERVAL_NORMAL, RETRY_COUNT_TWO);
         server.setMarkToEndOfLog();
         runTest();
-        assertEquals("Max retries 2 was not reached (CNTR0179W)", 2, server.findStringsInLogsUsingMark("CNTR0179W:.*2", server.getDefaultLogFile()).size());
+        assertEquals("Max retries 2 was not reached (CNTR0179W)", 2, server.waitForMultipleStringsInLogUsingMark(2, "CNTR0179W:.*2"));
     }
 
     /**

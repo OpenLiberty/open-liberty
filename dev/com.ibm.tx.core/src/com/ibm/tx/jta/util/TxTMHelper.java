@@ -674,7 +674,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void unsetUOWEventListener(UOWEventListener el) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetUOWEventListener", el);
-        ((UOWCurrent) TranManagerSet.instance()).unsetUOWEventListener(el);
+        try {
+            ((UOWCurrent) TranManagerSet.instance()).unsetUOWEventListener(el);
+        } catch (IllegalStateException e) {
+            // Server is on the way down
+        }
     }
 
     protected TxRecoveryAgentImpl createRecoveryAgent(RecoveryDirector recoveryDirector) throws Exception {

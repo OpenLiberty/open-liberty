@@ -31,9 +31,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.common.apiservices.LocalMachine;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -46,7 +48,7 @@ public class LDAPUtils {
 
     public static String LDAP_SERVER_1_NAME;
     public static String LDAP_SERVER_2_NAME;
-    public static String LDAP_SERVER_3_NAME;
+    // public static String LDAP_SERVER_3_NAME;
     public static String LDAP_SERVER_4_NAME;
     public static String LDAP_SERVER_5_NAME;
     public static String LDAP_SERVER_6_NAME;
@@ -56,12 +58,12 @@ public class LDAPUtils {
     public static String LDAP_SERVER_10_NAME;
 //    public static String LDAP_SERVER_11_NAME;
     public static String LDAP_SERVER_12_NAME;
-    public static String LDAP_SERVER_13_NAME;
+    // public static String LDAP_SERVER_13_NAME;
     public static String LDAP_SERVER_1_PORT;
     public static String LDAP_SERVER_2_PORT;
     public static String LDAP_SERVER_2_SSL_PORT;
-    public static String LDAP_SERVER_3_PORT;
-    public static String LDAP_SERVER_3_SSL_PORT;
+    //public static String LDAP_SERVER_3_PORT;
+    //public static String LDAP_SERVER_3_SSL_PORT;
     public static String LDAP_SERVER_4_PORT;
     public static String LDAP_SERVER_4_SSL_PORT;
     public static String LDAP_SERVER_5_PORT;
@@ -75,13 +77,13 @@ public class LDAPUtils {
     public static String LDAP_SERVER_10_PORT;
 //    public static String LDAP_SERVER_11_PORT;
     public static String LDAP_SERVER_12_PORT;
-    public static String LDAP_SERVER_13_PORT;
-    public static String LDAP_SERVER_13_SSL_PORT;
+    //public static String LDAP_SERVER_13_PORT;
+    //public static String LDAP_SERVER_13_SSL_PORT;
 
     public static String LDAP_SERVER_2_BINDDN;
     public static String LDAP_SERVER_2_BINDPWD;
-    public static String LDAP_SERVER_3_BINDDN;
-    public static String LDAP_SERVER_3_BINDPWD;
+    //public static String LDAP_SERVER_3_BINDDN;
+    //public static String LDAP_SERVER_3_BINDPWD;
 
     public static String LDAP_SERVER_4_BINDDN;
     public static String LDAP_SERVER_4_BINDPWD;
@@ -98,8 +100,8 @@ public class LDAPUtils {
     public static String LDAP_SERVER_12_BINDDN;
     public static String LDAP_SERVER_12_BINDPWD;
 
-    public static String LDAP_SERVER_13_BINDDN;
-    public static String LDAP_SERVER_13_BINDPWD;
+    //public static String LDAP_SERVER_13_BINDDN;
+    //public static String LDAP_SERVER_13_BINDPWD;
 
     /** Service name for SVT's Active Directory servers. */
     private static final String CONSUL_LDAP_AD_SVT_SERVICE = "ldap-ad-svt";
@@ -113,8 +115,8 @@ public class LDAPUtils {
     /** Service name for Security's IBM / Tivoli servers. */
     private static final String CONSUL_LDAP_IBM_SECURITY_SERVICE = "ldap-ibm-security";
 
-    /** Service name for SVT's Oracle servers. */
-    private static final String CONSUL_LDAP_ORACLE_SVT_SERVICE = "ldap-oracle-svt";
+    /** Service name for SVT's Oracle servers. Servers 3 and 13 */
+    // private static final String CONSUL_LDAP_ORACLE_SVT_SERVICE = "ldap-oracle-svt";
 
     /** Key to retrieve LDAP port from Consul LDAP service. */
     private static final String CONSUL_LDAP_PORT_KEY = "ldapPort";
@@ -137,6 +139,8 @@ public class LDAPUtils {
     /** Did we fail to find the physical LDAP servers in Consul? */
     private static boolean CONSUL_LOOKUP_FAILED = false;
 
+    private static boolean isZOS = false;
+
     static {
 
         /*
@@ -144,18 +148,24 @@ public class LDAPUtils {
          */
         boolean uselocalLDAP = isLocalLdapExpectedToBeUsed();
 
+        try {
+            isZOS = LocalMachine.getInstance().getOperatingSystem() == OperatingSystem.ZOS;
+        } catch (Exception e) {
+            Log.error(c, "<clinit>", e,
+                      "Could not detect OS, assume it is not z/OS.");
+        }
+
         /*
          * Get the remote LDAP configuration from Consul
          */
         if (!uselocalLDAP) {
             try {
-                initializeRemoteLdapServers();
+                initializeRemoteLdapServers(isZOS);
             } catch (Exception e) {
                 /*
                  * Failed to get all the remote LDAP servers, so fail back to local LDAP.
                  */
-                String os = System.getProperty("os.name").toLowerCase();
-                if (os.startsWith("z/os")) {
+                if (isZOS) {
                     Log.error(c, "<clinit>", e,
                               "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Some failures setting up remote LDAPs, but local ApacheDS will not run on z/OS, doing remote anyway.");
                 } else {
@@ -194,7 +204,15 @@ public class LDAPUtils {
         });
     }
 
-    private static void initializeRemoteLdapServers() throws Exception {
+    /**
+     * Populate with remote LDAP servers. If the run is on zOS, catch and populate any failing
+     * LDAP types with dummy values. z/OS currently doesn't run with our local failover option,
+     * ApacheDS so prefill with as many valid LDAPs as possibly.
+     *
+     * @param  isZOS
+     * @throws Exception
+     */
+    private static void initializeRemoteLdapServers(boolean isZOS) throws Exception {
         //Note: Servers 9 and 11 are dead
 
         /*
@@ -211,13 +229,21 @@ public class LDAPUtils {
             remoteServers[2].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[2].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-            /* LDAP_SERVER_6 is dead, but was duplicate of LDAP_SERVER_2 */
             remoteServers[6] = new LdapServer();
             remoteServers[6].serverName = services.get(1).getAddress();
             remoteServers[6].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
             remoteServers[6].ldapsPort = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
             remoteServers[6].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[6].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote AD LDAP servers on a z/OS run. Remote AD server tests will fail. Work on migrating tests to InMemoryADLDAPServer, if possible");
+                processForEmptyLDAPServer(2);
+                processForEmptyLDAPServer(6);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -233,6 +259,16 @@ public class LDAPUtils {
             remoteServers[5] = new LdapServer();
             remoteServers[5].serverName = services.get(1).getAddress();
             remoteServers[5].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+
+                processForEmptyLDAPServer(1);
+                processForEmptyLDAPServer(5);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -261,6 +297,17 @@ public class LDAPUtils {
             remoteServers[8].ldapsPort = services.get(2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
             remoteServers[8].bindDn = services.get(2).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[8].bindPwd = services.get(2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+
+                processForEmptyLDAPServer(4);
+                processForEmptyLDAPServer(7);
+                processForEmptyLDAPServer(8);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
@@ -280,31 +327,27 @@ public class LDAPUtils {
             remoteServers[12].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
             remoteServers[12].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
             remoteServers[12].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+        } catch (Exception e) {
+            if (isZOS) {
+                Log.error(c, "<clinit>", e,
+                          "*******Could not fetch remote Tivoli LDAP servers on a z/OS run. Remote Tivoli server tests will fail. Work on migrating tests to InMemoryTDSLDAPServer, if possible.");
+                processForEmptyLDAPServer(10);
+                processForEmptyLDAPServer(12);
+            } else {
+                throw e;
+            }
         } finally {
             releaseServices(services);
         }
 
-        services = null;
-        try {
-            services = getLdapServices(1, CONSUL_LDAP_ORACLE_SVT_SERVICE);
+    }
 
-            remoteServers[3] = new LdapServer();
-            remoteServers[3].serverName = services.get(0).getAddress();
-            remoteServers[3].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[3].ldapsPort = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[3].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[3].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
-
-            /* Server 13 is dead. Reuse server 3. */
-            remoteServers[13] = new LdapServer();
-            remoteServers[13].serverName = remoteServers[3].serverName;
-            remoteServers[13].ldapPort = remoteServers[3].ldapPort;
-            remoteServers[13].ldapsPort = remoteServers[3].ldapsPort;
-            remoteServers[13].bindDn = remoteServers[3].bindDn;
-            remoteServers[13].bindPwd = remoteServers[3].bindPwd;
-        } finally {
-            releaseServices(services);
-        }
+    private static void processForEmptyLDAPServer(int position) {
+        remoteServers[position] = new LdapServer();
+        remoteServers[position].serverName = "Remote_LDAP_was_down";
+        remoteServers[position].ldapPort = "389";
+        remoteServers[position].bindDn = "fauxBindDN";
+        remoteServers[position].bindPwd = "fauxBindPwd";
     }
 
     private static void initializeLocalLdapServers() {
@@ -472,16 +515,6 @@ public class LDAPUtils {
         LDAP_SERVER_12_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[12] : remoteServers[12]).bindDn;
         LDAP_SERVER_12_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[12] : remoteServers[12]).bindPwd;
 
-        LDAP_SERVER_3_NAME = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).serverName;
-        LDAP_SERVER_3_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).ldapPort;
-        LDAP_SERVER_3_SSL_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).ldapsPort;
-        LDAP_SERVER_3_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).bindDn;
-        LDAP_SERVER_3_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[3] : remoteServers[3]).bindPwd;
-        LDAP_SERVER_13_NAME = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).serverName;
-        LDAP_SERVER_13_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).ldapPort;
-        LDAP_SERVER_13_SSL_PORT = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).ldapsPort;
-        LDAP_SERVER_13_BINDDN = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).bindDn;
-        LDAP_SERVER_13_BINDPWD = (USE_LOCAL_LDAP_SERVER ? localServers[13] : remoteServers[13]).bindPwd;
     }
 
     /*
@@ -523,13 +556,8 @@ public class LDAPUtils {
         Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
         Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
 
-        Log.info(c, METHOD_NAME, "Oracle WAS SVT LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_NAME=" + LDAP_SERVER_3_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_PORT=" + LDAP_SERVER_3_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_3_SSL_PORT=" + LDAP_SERVER_3_SSL_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_NAME=" + LDAP_SERVER_13_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_PORT=" + LDAP_SERVER_13_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_13_SSL_PORT=" + LDAP_SERVER_13_SSL_PORT + '\n');
+        Log.info(c, METHOD_NAME, "Oracle WAS SVT LDAP Servers -- removed");
+
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
  * This class is designed to hold utility methods that different parts of the server side UI will need to use.
@@ -43,7 +44,7 @@ public class Utils {
 
     /**
      * Encodes the specified String using URL encoding.
-     * 
+     *
      * @param toEncode The String to URL encode
      * @return The URL encoded String
      */
@@ -64,8 +65,31 @@ public class Utils {
     }
 
     /**
+     * Returns a deterministic already encoded path since Jakarta EE9 switch the default value of decodeUrlPlusSign we can no longer tell if getPath() is
+     * returning a string that is encoded or decoded.
+     *
+     * @param request The request to get the path from
+     * @return The URL encoded String
+     */
+    public static String getPath(final RESTRequest request) {
+        String path = request.getURI();
+
+        try {
+            //take off context path
+            String contextPath = request.getContextPath();
+            path = path.substring(path.indexOf(contextPath) + contextPath.length());
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception while trying to get urlencoded path from request.", e);
+            }
+            return request.getPath();
+        }
+        return path;
+    }
+
+    /**
      * This method returns a URL object for the supplied url name.
-     * 
+     *
      * @param url The String urlName that we should turn into a URL Object.
      * @return The URL object.
      * @throws MalformedURLException
@@ -90,7 +114,7 @@ public class Utils {
 
     /**
      * Generates the md5 checksum of the given string
-     * 
+     *
      * @param str The input string
      * @return The MD5 checksum of the given string.
      * @throws UnsupportedEncodingException

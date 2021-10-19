@@ -147,7 +147,7 @@ public class PathUtils {
      * Copy the path, replacing backward slashes ('\\') with forward slashes ('/').
      *
      * @param path The path in which to replace slashes. An exception
-     *            will be thrown if the path is null.
+     *                 will be thrown if the path is null.
      *
      * @return The path with backward slashes replaced with forward slashes.
      *         Answer the initial file path if no backward slashes are present.
@@ -194,7 +194,7 @@ public class PathUtils {
      * The normalized path is an absolute path according to the rules implemented by {@link #pathIsAbsolute(String)}.
      *
      * @param relativePath The relative path which is to be normalized. An exception will
-     *            be thrown if the path is null.
+     *                         be thrown if the path is null.
      *
      * @return The normalized path.
      *
@@ -230,7 +230,7 @@ public class PathUtils {
      * Otherwise, the path is not absolute.
      *
      * @param normalizedPath The normalized path which is to be tested.
-     *            An exception will be thrown if the path is null.
+     *                           An exception will be thrown if the path is null.
      *
      * @return True or false telling if the path is absolute.
      */
@@ -276,7 +276,7 @@ public class PathUtils {
     public static String normalize(String path) {
         // We don't want to normalize if this is not a file name. This could be improved, but
         // might involve some work.
-        if ((path.startsWith("http:") || (path.startsWith("https:")) || (path.startsWith("ftp:")))) {
+        if ((path.startsWith("http:") || (path.startsWith("https:")) || (path.startsWith("safkeyring:")) || (path.startsWith("ftp:")))) {
             return path;
         }
         boolean slash_change = false;
@@ -553,7 +553,7 @@ public class PathUtils {
      * Answer the path itself if the path has no trailing forward slash.
      *
      * @param path The path from which to remove the trailing slash. An exception will
-     *            be thrown if the path is null.
+     *                 be thrown if the path is null.
      *
      * @return The path with any trailing forward slash removed.
      */
@@ -582,9 +582,9 @@ public class PathUtils {
      * (a non-reflexive parent-child relationship test is implemented).
      *
      * @param candidateParent The file which is tested as a parent. An exception will be
-     *            thrown if the path is null.
-     * @param candidateChild The file which is tested as a child. An exception will result
-     *            if the path is null.
+     *                            thrown if the path is null.
+     * @param candidateChild  The file which is tested as a child. An exception will result
+     *                            if the path is null.
      *
      * @return True or false telling if candidate child is a child of the candidate parent.
      */
@@ -657,9 +657,9 @@ public class PathUtils {
          * "parent" is less than "parentAlt".
          *
          * @param path1 The first relative path which is to be compared.
-         *            An exception will result if the path is null.
+         *                  An exception will result if the path is null.
          * @param path2 The second second path which is to be compared.
-         *            An exception will result if the path is null.
+         *                  An exception will result if the path is null.
          *
          * @return A integer value which corresponds to the comparison result.
          *         A value less than zero indicates that the first path is less than
@@ -724,7 +724,7 @@ public class PathUtils {
      * For "" answer null.
      *
      * @param path The path with the last file named removed. An exception
-     *            will be thrown if the path is null.
+     *                 will be thrown if the path is null.
      *
      * @return The path with the last file name removed.
      */
@@ -798,7 +798,7 @@ public class PathUtils {
      * For "/" answer "".
      *
      * @param path The path from which to answer the first file name.
-     *            An exception will be thrown if the path is null.
+     *                 An exception will be thrown if the path is null.
      *
      * @return The first file name of the path.
      */
@@ -841,7 +841,7 @@ public class PathUtils {
      * path. An exception will be thrown if the leading path is longer
      * than the target path.
      *
-     * @param path The path from which to obtain a path element.
+     * @param path        The path from which to obtain a path element.
      * @param leadingPath A leading sub-path of the target path.
      *
      * @return The first path element of the target path following the
@@ -914,7 +914,7 @@ public class PathUtils {
      * @return The normalized path. An exception will result if the path is null.
      *
      * @throws IllegalArgumentException If the resolved path is empty or has just a single slash,
-     *             or if the resolved path reaches above target locations.
+     *                                      or if the resolved path reaches above target locations.
      */
     public static String checkAndNormalizeRootPath(String path) throws IllegalArgumentException {
         path = PathUtils.normalizeUnixStylePath(path);
@@ -1234,7 +1234,7 @@ public class PathUtils {
      * file.getCanonicalFile() returns the path using the case of the file on disk, if it exists.
      * If the file doesn't exist then it returns the path using the case of the java.io.File itself.
      *
-     * @param file The existing file to compare against
+     * @param file       The existing file to compare against
      * @param pathToTest The path to test if it is the same
      * @return <code>true</code> if the case is the same in the file and the pathToTest
      */
@@ -1276,13 +1276,13 @@ public class PathUtils {
      *
      * Trailing slashes on either the file or the path are ignored.
      *
-     * @param file The file which is to be tested.
+     * @param file         The file which is to be tested.
      * @param trailingPath The path which is to be tested.
      *
      * @return True or false telling if the path reaches the file.
      *
      * @throws PrivilegedActionException Thrown if the caller does not
-     *             have privileges to access the file or its ascending path.
+     *                                       have privileges to access the file or its ascending path.
      */
     private static boolean checkCaseCanonical(final File file, String pathToTest) throws PrivilegedActionException {
         // The canonical path returns the actual path on the file system so get this
@@ -1325,13 +1325,13 @@ public class PathUtils {
      *
      * Ignore a leading slash of the path.
      *
-     * @param file The file which is to be tested.
+     * @param file         The file which is to be tested.
      * @param trailingPath The path which is to be tested.
      *
      * @return True or false telling if the path reaches the file.
      *
      * @throws PrivilegedActionException Thrown if the caller does not
-     *             have privileges to access the file or its ascending path.
+     *                                       have privileges to access the file or its ascending path.
      */
     private static boolean checkCaseSymlink(File file, String pathToTest) throws PrivilegedActionException {
         // java.nio.Path.toRealPath(LinkOption.NOFOLLOW_LINKS) in java 7 seems to do what
@@ -1376,14 +1376,14 @@ public class PathUtils {
      * Then compares that canonical form of the file to the "Absolute" file. If
      * it doesn't match, then it is a symbolic link.
      *
-     * @param candidateChildFile The file to test as a symbolic link.
+     * @param candidateChildFile  The file to test as a symbolic link.
      * @param candidateParentFile The immediate parent of the target file.
      *
      * @return True or false telling if the child file is a symbolic link
      *         from the parent file.
      *
      * @throws PrivilegedActionException Thrown in case of a failure to
-     *             obtain a canonical file.
+     *                                       obtain a canonical file.
      */
     private static boolean isSymbolicLink(final File file, File parentFile) throws PrivilegedActionException {
         File canonicalParentDir = getCanonicalFile(parentFile);
@@ -1421,9 +1421,9 @@ public class PathUtils {
      * a call to {@link File#list()}, which can return null.
      *
      * @param fileNames The file names to test against. The array may
-     *            be null, but may not contain null elements.
+     *                      be null, but may not contain null elements.
      *
-     * @param fileName The file name to test. May be null.
+     * @param fileName  The file name to test. May be null.
      *
      * @return True or false telling if the file name matches any of
      *         the file names. False if the file names array is null.
@@ -1466,7 +1466,7 @@ public class PathUtils {
      * file name is "." or "..".
      *
      * @param name The file name in which to replace restricted characters. An exception
-     *            will be thrown if the file name is null.
+     *                 will be thrown if the file name is null.
      *
      * @return The copy of the file name with all restricted characters replaced. Null
      *         if all characters were replaced or of the replaced file name is "." or "..".

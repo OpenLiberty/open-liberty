@@ -1,0 +1,17 @@
+openapi: 3.0.3
+info:
+  title: "test2"
+  version: "1.0"
+paths:
+  /testC:
+    get:
+      responses:
+        202:
+          description: "success"
+  /testD:
+    get:
+      responses:
+        202:
+          description: "success"
+servers:
+  - url: http://example.org/test2

@@ -84,6 +84,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1520E_MISSING_SAMESITE_COOKIE = "CWWKS1520E";
     public static final String CWWKS1532E_MALFORMED_URL_IN_COOKIE = "CWWKS1532E";
+    public static final String CWWKS1533E_SIGNATURE_MISMATCH = "CWWKS1533E";
+    public static final String CWWKS1534E_MISSING_AUTH_ENDPOINT = "CWWKS1534E";
     public static final String CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT = "CWWKS1524E";
     public static final String CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED = "CWWKS1525E";
 
@@ -139,7 +141,13 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS5000I_SAML_CONFIG_PROCESSED = "CWWKS5000I";
     public static final String CWWKS5002I_SAML_SERVICE_ACTIVATED = "CWWKS5002I";
+    public static final String CWWKS1536E_TOKEN_IS_NOT_A_JWS = "CWWKS1536E";
+    public static final String CWWKS1537E_JWE_IS_NOT_VALID = "CWWKS1537E";
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
+
+    public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
+    public static final String CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG = "CWWKS5498E";
+    public static final String CWWKS6064E_TOKEN_IS_NOT_A_JWE = "CWWKS6064E";
 
     public static final String CWWKS6005E_BAD_CONFIG_ID = "CWWKS6005E";
     public static final String CWWKS6007E_BAD_KEY_ALIAS = "CWWKS6007E";

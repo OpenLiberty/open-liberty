@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  "/test1/foo":
+    get:
+      responses:
+        202:
+          description: "success"
+    post:
+      responses:
+        202:
+          description: "success"
+      servers:
+        - description: operation level server
+          url: http://example.org/oplevel
+    servers:
+     - description: path level server
+       url: http://example.org/pathlevel
+  "/test1/bar":
+    get:
+      responses:
+        202:
+          description: "success"
+  "/test2/foo":
+    get:
+      responses:
+        202:
+          description: "success"
+    post:
+      responses:
+        202:
+          description: "success"
+      servers:
+        - description: operation level server
+          url: http://example.org/oplevel
+    servers:
+     - description: path level server
+       url: http://example.org/pathlevel
+  "/test2/bar":
+    get:
+      responses:
+        202:
+          description: "success"
+servers:
+ - description: top level server
+   url: http://example.org/toplevel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.security.wim.adapter.ldap.fat;
 import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static componenttest.topology.utils.LDAPFatUtils.createADLdapRegistry;
 import static componenttest.topology.utils.LDAPFatUtils.createFederatedRepository;
-import static componenttest.topology.utils.LDAPFatUtils.createSunLdapRegistry;
 import static componenttest.topology.utils.LDAPFatUtils.createTDSLdapRegistry;
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertEquals;
@@ -26,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,6 +45,7 @@ import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.RealmPropertyMapping;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemorySunLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -55,6 +54,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.LDAPFatUtils;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
@@ -74,12 +74,24 @@ public class LDAPRegistryDynamicUpdateTest {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
+    private static InMemorySunLDAPServer sunLdapServer;
+
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        sunLdapServer = new InMemorySunLDAPServer();
+    }
+
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
      * If this test is failing, check this path is correct.
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        setupLdapServer();
         // Add LDAP variables to bootstrap properties file
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
@@ -115,6 +127,13 @@ public class LDAPRegistryDynamicUpdateTest {
         try {
             server.stopServer("CWIMK0004E", "CWIML4537E", "CWIML4538E");
         } finally {
+            try {
+                if (sunLdapServer != null) {
+                    sunLdapServer.shutDown(true);
+                }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+            }
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }
     }
@@ -196,6 +215,20 @@ public class LDAPRegistryDynamicUpdateTest {
         assertEquals("vmmldaprealm", servlet.getRealm());
     }
 
+    /**
+     * Helper method to fill in the InMemorySunLDAPServer info
+     *
+     * @param serverConfiguration
+     * @param id
+     * @param realm
+     * @param name
+     * @return
+     */
+    private static LdapRegistry createSunLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm, String name) {
+        return LDAPFatUtils.createSunLdapRegistry(serverConfiguration, id, realm, name, String.valueOf(sunLdapServer.getLdapPort()), InMemorySunLDAPServer.getBindDN(),
+                                                  InMemorySunLDAPServer.getBindPassword());
+    }
+
     /*
      * Test dynamic changes for LDAP registry configuration
      * 1. Change the configuration to have 1 LDAP registry with config for ldapEntityType, attribute, cache and context pool defined
@@ -221,7 +254,7 @@ public class LDAPRegistryDynamicUpdateTest {
 
         ldap.setContextPool(new ContextPool(true, 1, 0, 3, "0s", "3000s"));
         ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4000, 2000, "1200s"), new SearchResultsCache(true, 2000, 1000, "600s")));
-        ldap.setFailoverServer(new FailoverServers("failoverLdapServers", new String[][] { { "${ldap.server.3.name}", "${ldap.server.3.port}" } }));
+        ldap.setFailoverServer(new FailoverServers("failoverLdapServers", new String[][] { { "localhost", String.valueOf(sunLdapServer.getLdapPort()) } }));
 
         FederatedRepository federatedRepository = createFederatedRepository(clone, "vmmldaprealm", new String[] { ldap.getName() });
         federatedRepository.getPrimaryRealm().setUserDisplayNameMapping(new RealmPropertyMapping("principalName", "cn"));
@@ -565,7 +598,7 @@ public class LDAPRegistryDynamicUpdateTest {
     public void testExternalId() throws Exception {
         Log.info(c, "testExternalId", "Entering test testExternalId");
 
-        Assume.assumeTrue(LDAPUtils.USE_LOCAL_LDAP_SERVER);
+        // Assume.assumeTrue(LDAPUtils.USE_LOCAL_LDAP_SERVER);
 
         /*
          * No external ID mapping.

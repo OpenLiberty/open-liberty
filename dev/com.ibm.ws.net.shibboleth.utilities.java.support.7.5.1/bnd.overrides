@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,7 +47,8 @@ Import-Package: \
  
  Include-Resource: \
   @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
-  @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}, \
-  @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT}
+  @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}, \
+  @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},
+  @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT}
 
 jakartaeeMe: true
