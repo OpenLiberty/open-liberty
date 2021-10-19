@@ -20,6 +20,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -118,6 +119,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
 
+    private final AtomicBoolean decrementNeeded = new AtomicBoolean(false);
+
+    private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
+
     /**
      * Constructor.
      *
@@ -158,6 +163,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection must be already closed since vc is null");
             }
+
+            // closeCompleted check is for the close, destroy, close order scenario. 
+            // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error. 
+            if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
+                //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrementNeeded is true: decrement active connection");
+                }
+                this.myChannel.decrementActiveConns();
+            }
+
             return;
         }
 
@@ -248,6 +264,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
                 this.myChannel.decrementActiveConns();
             }
+            closeCompleted.compareAndSet(false, true);
         }
     }
 
@@ -262,31 +279,39 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         linkIsReady = false;
 
+        String upgraded = null;
         // if this was an http upgrade connection, then tell it to close also.
         VirtualConnection vc = getVC();
         if (vc != null) {
-            String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
-            if (upgraded != null) {
-                if (upgraded.compareToIgnoreCase("true") == 0) {
-                    Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
-                    if (webConnectionObject != null) {
-                        if (webConnectionObject instanceof TransportConnectionAccess) {
-                            TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
-                            try {
-                                tWebConn.close();
-                            } catch (Exception webConnectionCloseException) {
-                                //continue closing other resources
-                                //I don't believe the close operation should fail - but record trace if it does
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
-                                }
-                            }
-                        } else {
+            upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+            if ("true".equalsIgnoreCase(upgraded)) {
+                Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+                if (webConnectionObject != null) {
+                    if (webConnectionObject instanceof TransportConnectionAccess) {
+                        TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
+                        try {
+                            tWebConn.close();
+                        } catch (Exception webConnectionCloseException) {
+                            //continue closing other resources
+                            //I don't believe the close operation should fail - but record trace if it does
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "call application destroy if not done yet");
+                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
                             }
                         }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "call application destroy if not done yet");
+                        }
                     }
+                }
+            }
+        }
+
+        // set decrementNeeded to true only for wsoc upgrade requests
+        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+            if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrementNeeded set to true");
                 }
             }
         }
@@ -712,7 +737,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request the inbound request
+     * @param request        the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -743,8 +768,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request the inbound request
-     * @param localPort the server port where the client connection was accepted on.
+     * @param request        the inbound request
+     * @param localPort      the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
