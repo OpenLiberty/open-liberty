@@ -49,7 +49,7 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testUntWssecSvcClientSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientSSL", untSSLClientUrl,
@@ -171,7 +171,7 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testUntWssecSvcClientSSLManaged() throws Exception {
 
         genericTest("testUntWssecSvcClientSSLManaged", untSSLClientUrl,

@@ -62,16 +62,15 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
   	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\

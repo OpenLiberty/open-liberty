@@ -14,11 +14,15 @@ cxfVersion=3.4.3
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/*-INF/*, \
-   META-INF=resources/META-INF
+   META-INF=resources/META-INF, \
+   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=${cxfVersion},\
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
+ 
+instrument.ffdc: false
  
 jakartaeeMe: true

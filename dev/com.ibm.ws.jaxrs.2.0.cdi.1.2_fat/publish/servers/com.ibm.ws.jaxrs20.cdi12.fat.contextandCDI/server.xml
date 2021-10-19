@@ -5,6 +5,7 @@
     </featureManager>
 
   	<include location="../fatTestPorts.xml"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
 
   	<jndiURLEntry jndiName="url" value="http://www-01.ibm.com/support/knowledgecenter/"/>
 

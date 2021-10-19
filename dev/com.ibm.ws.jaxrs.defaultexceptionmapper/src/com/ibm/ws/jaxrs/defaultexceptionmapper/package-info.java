@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "JaxRsCommon" )
+@TraceOptions(traceGroup = "JaxRsCommon")
 package com.ibm.ws.jaxrs.defaultexceptionmapper;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

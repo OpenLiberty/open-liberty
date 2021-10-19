@@ -16,6 +16,10 @@ Bundle-Description: wimregistry service, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.wim.registry
 
 Private-Package: com.ibm.ws.security.wim.registry.util.resources 
+
+Import-Package: \
+ com.ibm.wsspi.security.wim.model; version="[1.1,11)", \
+ *
    
 Export-Package: \
   !com.ibm.ws.security.wim.registry.util.resources,\

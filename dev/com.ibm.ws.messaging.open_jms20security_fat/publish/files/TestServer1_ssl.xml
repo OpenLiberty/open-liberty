@@ -18,11 +18,7 @@
         <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
     </iiopEndpoint>
 
-  <logging
-    traceSpecification="*=info:logservice=all:SIBMessageTrace=all:com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain=all:com.ibm.ws.messaging.security.RuntimeSecurityServiceImpl=all:com.ibm.ws.app.manager.internal.lifecycle.*=all"
- maxFileSize="200"
-  />
-
+<!--   <logging traceSpecification="*=info:logservice=all:SIBMessageTrace=all:com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain=all:com.ibm.ws.messaging.security.RuntimeSecurityServiceImpl=all:com.ibm.ws.app.manager.internal.lifecycle.*=all" maxFileSize="200" /> -->
 
   <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
   <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}" />
@@ -52,10 +48,11 @@
     <queue id="QUEUE2"/>
     <queue id="QUEUE3"/>
     <queue id="QUEUE4"/>
+    <queue id="RedeliveryQueue1" maxRedeliveryCount="2" />
 
     <topicSpace id="NewTopic1"/>
     <topicSpace id="NewTopic2"/>
-    <topicSpace id="NewTopic3"/>
+    <topicSpace id="TestTopicSpace"/>
 
     <messagingSecurity>
       <role name="developer">
@@ -82,6 +79,12 @@
           <action>BROWSE</action>
           <action>RECEIVE</action>
         </queuePermission>
+        
+        <queuePermission queueRef="RedeliveryQueue1">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
 
         <topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
           <action>ALL</action>
@@ -91,7 +94,10 @@
           <action>ALL</action>
         </topicPermission>
 
-        <topicPermission topicSpaceRef="NewTopic3" topicName="testTopic3">
+        <topicPermission topicName="remoteTopicNonDurableMDB" topicSpaceRef="TestTopicSpace" id="remoteTopicNonDurableMDB">
+          <action>ALL</action>
+        </topicPermission>
+        <topicPermission topicName="remoteTopicDurableMDB" topicSpaceRef="TestTopicSpace" id="remoteTopicDurableMDB">
           <action>ALL</action>
         </topicPermission>
 

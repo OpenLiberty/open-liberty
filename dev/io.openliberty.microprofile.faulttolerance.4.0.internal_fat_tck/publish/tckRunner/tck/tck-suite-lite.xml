@@ -113,8 +113,7 @@
             <class name="org.eclipse.microprofile.fault.tolerance.tck.config.FallbackConfigTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.config.FallbackSkipOnConfigTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.interceptor.FaultToleranceInterceptorTest"></class>
-            <!-- Metrics integration is not yet implemented -->
-            <!-- <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.AllMetricsTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest">
                 <methods>
                     <include name="bulkheadMetricTest"/>
@@ -130,7 +129,7 @@
                 <methods>
                     <include name="testTimeoutMetric"/>
                 </methods>
-            </class>-->
+            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.visibility.retry.RetryVisibilityTest"></class>
         </classes>
     </test>

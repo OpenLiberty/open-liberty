@@ -56,7 +56,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     QUERY_TIMEOUT = "queryTimeout",
                     RECOVERY_AUTH_DATA_REF = "recoveryAuthDataRef",
                     REPLACE_EXCEPTIONS = "heritage.0.replaceExceptions", // from flattened heritage config
-                    SEND_GSS_CREDENTIAL_ON_ORACLE_BUILDER = "sendGSSCredentialOnOracleBuilder",
                     STATEMENT_CACHE_SIZE = "statementCacheSize",
                     SUPPLEMENTAL_JDBC_TRACE = "supplementalJDBCTrace",
                     SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT = "syncQueryTimeoutWithTransactionTimeout",
@@ -82,7 +81,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
                                                                ON_CONNECT,
                                                                QUERY_TIMEOUT,
                                                                RECOVERY_AUTH_DATA_REF,
-                                                               SEND_GSS_CREDENTIAL_ON_ORACLE_BUILDER,                                                           
                                                                STATEMENT_CACHE_SIZE,
                                                                SUPPLEMENTAL_JDBC_TRACE,
                                                                SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT,
@@ -233,12 +231,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * enabled. Default value is null (no default query timeout).
      */
     public final Integer queryTimeout;
-    
-    /**
-     * Use the connection builder API during Kerberos connections for Oracle to avoid an issue
-     * between the IBM Java SDK and Oracle Driver.
-     */
-    public final boolean sendGSSCredentialOnOracleBuilder;
 
     /**
      * Maximum cached statements per connection.
@@ -323,7 +315,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
-        sendGSSCredentialOnOracleBuilder = remove(SEND_GSS_CREDENTIAL_ON_ORACLE_BUILDER, false);
         statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null);
         supplementalJDBCTrace = remove(SUPPLEMENTAL_JDBC_TRACE, (Boolean) null);
         syncQueryTimeoutWithTransactionTimeout = remove(SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT, false);

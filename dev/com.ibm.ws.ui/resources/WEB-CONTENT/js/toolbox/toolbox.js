@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -177,7 +177,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
       });
 
       xhrDef.then(function handleAppState(tool) {
-        deferred.resolve(bookmarkProps, true);
+        deferred.resolve(tool, true);
       }, function(err) {
         deferred.reject(err, true);
       }, function(evt) {

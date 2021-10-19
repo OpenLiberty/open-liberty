@@ -8,6 +8,8 @@
 		<feature>jwt-1.0</feature>
 		<feature>jwtSso-1.0</feature>
 		<feature>ldapRegistry-3.0</feature>
+		<feature>jsonp-1.0</feature>
+		<feature>appSecurity-2.0</feature>
 		<!-- feature>jaxrs-2.0</feature --> 
 		<!-- jaxrs-1.1 is not required. Testing defect 152627 -->
 	</featureManager>

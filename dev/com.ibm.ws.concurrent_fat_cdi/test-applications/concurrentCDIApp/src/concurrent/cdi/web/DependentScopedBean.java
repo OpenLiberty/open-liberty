@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class DependentScopedBean {
      */
     @Async
     public CompletionStage<String> lookupAndConvertToString(String jndiName) {
-        CompletableFuture<String> future = Async.Result.getFuture(String.class);
+        CompletableFuture<String> future = Async.Result.getFuture();
         try {
             future.complete(InitialContext.doLookup(jndiName).toString());
         } catch (NamingException x) {

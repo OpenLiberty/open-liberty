@@ -95,6 +95,8 @@ public class LogFieldConstants {
     public static final String ACCESSLOGDATETIME = "accessLogDatetime";
     public static final String IBM_REMOTEUSERID = "ibm_remoteUserID";
     public static final String REMOTEUSERID = "remoteUserID";
+    public static final String IBM_REMOTEPORT = "ibm_remotePort";
+    public static final String REMOTEPORT = "remotePort";
 
     //liberty_ffdc
     //fields that contain 'XXXXXXX' are not expected to be used

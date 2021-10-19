@@ -1,0 +1,116 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSigningEncrypting"
+		scope="myScopeSample"
+		jwkEnabled="false"
+		oauthProviderRef="OAuthConfigSigningEncrypting"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAliasName="rs256"
+		 />
+
+	<oauthProvider
+		id="OAuthConfigSigningEncrypting"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+<!-- 		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAliasName="rs256" -->
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptRS384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptRS512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS256EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS384EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignHS512EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptES256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptES384,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512EncryptES512,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/invalidKeyManagementKeyAlias,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/nonExistantKeyManagementKeyAlias,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/omittedKeyManagementKeyAlias,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS384Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS512Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES256Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES384Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignES512Encryptnone,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptShortRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptPublicRS256,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/RP_trustStoreRefOmitted,
+					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/RP_sslRefOmitted"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+							
+</server>
+

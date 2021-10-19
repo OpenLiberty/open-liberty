@@ -35,7 +35,7 @@
 	<include location="imports/goodSSLSettings.xml" />
 	<include location="imports/samlcallertoken_testApp.xml" />
 	<include
-		location="imports/securityProviderWithCaller_mapToUserRegistry_Group_realmIdentifierBad.xml" />
+		location="imports/securityProviderWithCaller_mapToUserRegistry_Group_realmIdentifierBad_ee8.xml" />
     <include location="imports/java2Permissions.xml" />
     
 </server>

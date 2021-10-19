@@ -129,6 +129,8 @@ import com.ibm.wsspi.logprovider.TrService;
  */
 public class BaseTraceService implements TrService {
 
+    protected boolean isCaptureSystemStreamsExecuted = false;
+
     static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
 
@@ -1649,6 +1651,8 @@ public class BaseTraceService implements TrService {
      * when the special trace components are created.
      */
     protected void captureSystemStreams() {
+        isCaptureSystemStreamsExecuted = true;
+
         teeOut = new TeePrintStream(new TrOutputStream(systemOut, this), true);
         System.setOut(teeOut);
 

@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: "test1"
+  version: "1.0"
+paths:
+  /test:
+    get:
+      responses:
+        202:
+          description: "success"
+    post:
+      responses:
+        202:
+          description: "success"
+components:
+  securitySchemes:
+    fooSecurityScheme:
+      type: apiKey
+      name: apiKey
+      in: query
+security: 
+  - fooSecurityScheme: []

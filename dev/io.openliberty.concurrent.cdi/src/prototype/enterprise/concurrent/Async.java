@@ -255,13 +255,12 @@ public @interface Async {
          * <p>
          * This method must only be invoked by the asynchronous method implementation.
          *
-         * @param <T>  type of result returned by the asynchronous method's <code>CompletableFuture</code>.
-         * @param type type of result returned by the asynchronous method's <code>CompletableFuture</code>.
+         * @param <T> type of result returned by the asynchronous method's <code>CompletableFuture</code>.
          * @return the same <code>CompletableFuture</code> that the container returns to the caller.
          * @throws IllegalStateException if the <code>CompletableFuture</code> for an asynchronous
          *                                   method is not present on the thread.
          */
-        public static <T> CompletableFuture<T> getFuture(Class<T> type) {
+        public static <T> CompletableFuture<T> getFuture() {
             @SuppressWarnings("unchecked")
             CompletableFuture<T> future = (CompletableFuture<T>) futures.get();
             if (future == null)
@@ -281,9 +280,10 @@ public @interface Async {
          * <p>
          * This method must only be invoked by the Jakarta EE Product Provider.
          *
+         * @param <T>    type of result returned by the asynchronous method's <code>CompletableFuture</code>.
          * @param future
          */
-        public static void setFuture(CompletableFuture<?> future) {
+        public static <T> void setFuture(CompletableFuture<T> future) {
             if (future == null)
                 futures.remove();
             else

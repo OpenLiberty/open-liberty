@@ -16,7 +16,8 @@
 
     <properties>
         <microprofile.config.version>3.0-RC5</microprofile.config.version>
-        <microprofile.faulttolerance.version>4.0-RC2</microprofile.faulttolerance.version>
+        <microprofile.faulttolerance.version>4.0-RC3</microprofile.faulttolerance.version>
+        <microprofile.metrics.version>4.0-RC4</microprofile.metrics.version>
 
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
 
@@ -78,11 +79,11 @@
             <artifactId>microprofile-config-api</artifactId>
             <version>${microprofile.config.version}</version>
         </dependency>
-        <!-- <dependency>
+        <dependency>
             <groupId>org.eclipse.microprofile.metrics</groupId>
             <artifactId>microprofile-metrics-api</artifactId>
-            <version>2.3</version>
-        </dependency>-->
+            <version>${microprofile.metrics.version}</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>

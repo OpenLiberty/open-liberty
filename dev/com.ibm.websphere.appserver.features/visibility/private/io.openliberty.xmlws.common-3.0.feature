@@ -34,12 +34,12 @@ IBM-API-Package:\
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.core.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2.jakarta, \
- com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2.jakarta, \
- com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2.jakarta, \

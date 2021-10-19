@@ -73,6 +73,14 @@ public class JweHelper {
     }
 
     /**
+     * Returns whether the given configuration must only accept JWS tokens. If the keyManagementKeyAlias config attribute is NOT
+     * set, then we must only accept JWS tokens; tokens in JWE format should be rejected.
+     */
+    public static boolean isJwsRequired(JwtConsumerConfig config) {
+        return !isJweRequired(config);
+    }
+
+    /**
      * Returns whether the current request must only accept JWS tokens, per the MP JWT 1.2 specification. Per the spec, if the
      * {@value MpConfigProperties.DECRYPT_KEY_LOCATION} MP Config property (or, in our case, the keyManagementKeyAlias config
      * attribute) is NOT set, then we must only accept JWS tokens; tokens in JWE format should be rejected.
@@ -82,6 +90,15 @@ public class JweHelper {
      */
     public static boolean isJwsRequired(JwtConsumerConfig config, MpConfigProperties mpConfigProps) {
         return !isJweRequired(config, mpConfigProps);
+    }
+
+    /**
+     * Returns whether the given configuration must only accept JWE tokens. If the keyManagementKeyAlias config attribute is set,
+     * then we must only accept JWE tokens; tokens in JWS format should be rejected.
+     */
+    public static boolean isJweRequired(JwtConsumerConfig config) {
+        String keyAlias = config.getKeyManagementKeyAlias();
+        return (keyAlias != null);
     }
 
     /**

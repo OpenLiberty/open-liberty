@@ -285,7 +285,7 @@ public class JspFileManager extends ForwardingJavaFileManager<JavaFileManager> {
             if (isDirectory) { 
                 // useful for when there are references to classes in WEB-INF/classes
                 return processDir(packageName, directory, recursive);
-            } else if (packageFolderURL.getProtocol().equals("bundleresource")) {
+            } else if (packageFolderURL.getProtocol().equals("bundleresource") || packageFolderURL.getProtocol().equals("jarentry")) {
                 // meaning that this URL is a bundle
                 return processBundle(packageName, recursive);
             } else { 

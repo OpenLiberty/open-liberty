@@ -32,6 +32,9 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
 // For testFormatTags
 import java.util.Date;
 import java.text.DateFormat;
@@ -45,7 +48,10 @@ import java.util.Locale;
 @RunWith(FATRunner.class)
 public class JSTLTests {
     private static final String APP_NAME = "TestJSTL";
+    private static final String IMPORT_APP_NAME = "TestJSTLImport";
     private static final Logger LOG = Logger.getLogger(JSTLTests.class.getName());
+
+    private String newLine = System.getProperty("line.separator");
 
     @Server("jstlServer")
     public static LibertyServer server;
@@ -53,6 +59,7 @@ public class JSTLTests {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
+        ShrinkHelper.defaultDropinApp(server, IMPORT_APP_NAME + ".war");
 
         server.startServer(JSTLTests.class.getSimpleName() + ".log");
     }
@@ -181,6 +188,43 @@ public class JSTLTests {
         assertTrue("Something went wrong with the parse tags!",
             response.getText().contains("Sat Jan 01 00:00:00")); 
 
+
+    }
+
+    /**
+     * Flushes during an import. See below for more details. 
+     *  
+     * https://github.com/eclipse-ee4j/jstl-api/issues/153
+     *
+     * @throws Exception if something goes horribly wrong
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testImportFlushing() throws Exception {
+        WebConversation wc = new WebConversation();
+
+        /**
+         *  Expected Output: 
+         *  <p> import: </p> 
+         *  <p> output: </p>  
+         *   Begin
+         *   End
+         */
+
+        String url = JSPUtils.createHttpUrlString(server, IMPORT_APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+
+        String text =  response.getText();
+        LOG.info("Servlet response : " + response.getText());
+
+        // Multi Strings are difficult to work with; Used indicies instead to check location
+        int beginIndex = text.indexOf("Begin"); // Expected: 605
+        int endIndex = text.indexOf("End"); // Expected: 613
+
+        assertTrue("Something went wrong with the flushing within the import tag", 8 == (endIndex - beginIndex));
 
     }
 }

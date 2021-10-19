@@ -1,0 +1,91 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+        
+        
+		signatureAlgorithm="${oidcSignAlg}"
+ -->
+ 
+<server>
+
+
+	<openidConnectProvider
+		id="OidcConfigSigning"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAliasName="rs256"
+		oauthProviderRef="OAuthConfigSigning" />
+
+	<oauthProvider
+		id="OAuthConfigSigning"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256Implicit,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es512"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigHSSigning"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="HS256"
+		oauthProviderRef="OAuthConfigHSSigning" />
+
+	<oauthProvider
+		id="OAuthConfigHSSigning"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs256Implicit"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+															
+</server>

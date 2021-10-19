@@ -112,6 +112,17 @@ autoFVT.doLast {
       include 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks'
     }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'oauthRoles_1.xml'
+    }
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
+      include 'signEncryptSSLSettings.xml'
+    }    
   }
   
   /*
@@ -156,18 +167,58 @@ autoFVT.doLast {
   }
   
    /*
-   * Copy TokenEndpointServlet application and the associated keystore to the applicable test server.
+   * Copy TokenEndpointServlet and UserinfoEndpointServlet applications and the associated keystore to the applicable test server.
    */
   copy {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testTokenEndpoint.zip')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
     rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
   }
-   copy {
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testUserinfoEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
+    rename 'testUserinfoEndpoint.zip', 'testUserinfoEndpoint.war'
+  }
+  copy {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/imports')
     include 'tokenEndpointApplication.xml'
+    include 'userinfoEndpointApplication.xml'
+    include 'signingBuilders.xml'
+    include 'signingEncryptingBuilders.xml'
+    include 'oauthRoles_1.xml'
   }
+  copy {
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/imports')
+    include 'jwtBuilderApplication.xml'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
+  }
+
+  copy {
+    from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/test-apps')
+  }
+   
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testUserinfoEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/test-apps')
+    rename 'testUserinfoEndpoint.zip', 'testUserinfoEndpoint.war'
+  }
+  copy {
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/imports')
+    include 'jwtBuilderApplication.xml'
+  }
+   copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/imports')
+    include 'userinfoEndpointApplication.xml'
+    include 'signingBuilders.xml'
+    include 'signingEncryptingBuilders.xml'  } 
  /*
   * Copy the pem files that are needed to use with the TokenEndpointServlet
   */
@@ -177,6 +228,11 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub')
       include '*.pem'
     }
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/')
+     include '*.pem'
+    }  	
      
   /*
    * Copy some other testing artifacts to the root autofvt directory.

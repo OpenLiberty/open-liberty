@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2021 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-v10.html 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ibm.ws.microprofile.mpjwt20</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>2.0-RC2-SNAPSHOT</version>
+    <name>MicroProfile JWT 2.0 TCK Runner TCK Module</name>
+
+    <properties>
+        <microprofile.config.version>3.0</microprofile.config.version>
+        <arquillian.version>1.7.0.Alpha9</arquillian.version>
+
+        <!-- the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+   
+               <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            <!-- This doesn't exist for JEE 9 so leaving it out for now, will have to see what happens on ZOS -->
+            <!-- <dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> 
+            </dependency> -->
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <version>2.0-RC2</version>
+        </dependency>
+        
+        <!--  impl -->
+        <!-- https://mvnrepository.com/artifact/org.glassfish/javax.json  -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>2.0.0</version>
+        </dependency>  
+        
+        <!-- This is the MP-JWT TCK base extension and utility classes -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-tck</artifactId>
+            <version>2.0-RC2</version>
+        </dependency>
+       
+        <!-- This is the actual MP-JWT TCK test classes -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-tck</artifactId>
+            <version>2.0-RC2</version>
+            <type>test-jar</type>        
+            <!--   <systemPath>/Users/mypath/microprofile-jwt-auth-2.0-RC2/tck/target/microprofile-jwt-auth-tck-2.0-RC2-SNAPSHOT-tests.jar</systemPath>   -->
+            <!--   <scope>system</scope>   -->
+        </dependency>
+        
+        <!-- You need to specify your JAX-RS client implementation as the unit
+        tests make use of that API, but do not specify the implementation. -->
+        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>org.jboss.resteasy.common</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
+         </dependency>
+        
+        
+        <dependency>
+              <groupId>jakarta.annotation</groupId>
+              <artifactId>jakarta.annotation-api</artifactId>
+              <version>2.0.0</version>
+              <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+ 
+      
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        <!--   Additional dependencies for RESTEasy -->        
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.jboss.logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.websphere</groupId>
+            <artifactId>org.reactivestreams.reactive-streams</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+              <groupId>jakarta.activation</groupId>
+              <artifactId>jakarta.activation-api</artifactId>
+              <version>2.0.1</version>
+        </dependency>                  
+           <!-- End Additional dependencies -->
+         
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>1.7.0.Alpha9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                    </systemPropertyVariables>
+                    <environmentVariables>
+                        <my_int_property>45</my_int_property>
+                        <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
+                        <my_string_property>haha</my_string_property>
+                        <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+                    </environmentVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

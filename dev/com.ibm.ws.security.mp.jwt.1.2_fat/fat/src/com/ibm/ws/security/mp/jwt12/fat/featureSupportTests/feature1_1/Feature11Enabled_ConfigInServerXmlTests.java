@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt12.fat.featureSupportTests.feature1_1;
 
@@ -20,6 +20,7 @@ import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -58,7 +59,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_20 }) // tests purposely skipped as we want the server.xml using 1.1 to prove that the function isn't accidentally allowed.
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)

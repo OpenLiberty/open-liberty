@@ -20,6 +20,7 @@ src: \
   test-applications/jaxrs21clientssl/src,\
   test-applications/jaxrs21clienttimeout/src,\
   test-applications/jaxrs21complexclient/src,\
+  test-applications/jaxrs21executors/src,\
   test-applications/jaxrs21reactivesample/src
 
 

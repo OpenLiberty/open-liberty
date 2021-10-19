@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import java.time.Duration;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -46,6 +48,8 @@ public class SaslPlainTests {
     }
 
     @ClassRule
-    public static KafkaSaslPlainContainer kafkaContainer = new KafkaSaslPlainContainer();
+    public static KafkaSaslPlainContainer kafkaContainer = new KafkaSaslPlainContainer()
+                    .withStartupTimeout(Duration.ofMinutes(2))
+                    .withStartupAttempts(3);
 
 }

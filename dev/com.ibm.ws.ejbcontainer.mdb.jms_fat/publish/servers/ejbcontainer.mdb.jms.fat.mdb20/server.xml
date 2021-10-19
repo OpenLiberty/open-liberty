@@ -1,0 +1,104 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <messagingEngine>
+        <queue id="TestResultQueue"/>
+        <queue id="BMTReqQueue"/>
+        <queue id="BMTNoCommitReqQueue"/>
+        <queue id="CMTReqQueue"/>
+        <queue id="CMTNotSupportedReqQueue"/>
+        <queue id="CMTRequiredReqQueue"/>
+        <topicSpace id="Default.Topic.Space"/>
+    </messagingEngine>
+    
+    <jmsQueueConnectionFactory id="TestQCF" jndiName="jms/TestQCF">
+        <properties.wasJms/>
+    </jmsQueueConnectionFactory>
+    
+    <jmsQueue id="TestResultQueue" jndiName="jms/TestResultQueue">
+        <properties.wasJms queueName="TestResultQueue"/>
+    </jmsQueue>
+    
+    <jmsQueue id="BMTReqQueue" jndiName="jms/BMTReqQueue">
+        <properties.wasJms queueName="BMTReqQueue"/>
+    </jmsQueue>
+    
+    <jmsActivationSpec id="mdb20/BMTReqQueue">
+        <properties.wasJms destinationRef="BMTReqQueue"/>
+    </jmsActivationSpec>
+    
+    <jmsQueue id="BMTNoCommitReqQueue" jndiName="jms/BMTNoCommitReqQueue">
+        <properties.wasJms queueName="BMTNoCommitReqQueue"/>
+    </jmsQueue>
+    
+    <jmsActivationSpec id="mdb20/BMTNoCommitReqQueue">
+        <properties.wasJms destinationRef="BMTNoCommitReqQueue"/>
+    </jmsActivationSpec>
+    
+    <jmsQueue id="CMTReqQueue" jndiName="jms/CMTReqQueue">
+        <properties.wasJms queueName="CMTReqQueue"/>
+    </jmsQueue>    
+
+    <jmsActivationSpec id="mdb20/CMTReqQueue">
+        <properties.wasJms destinationRef="CMTReqQueue"/>
+    </jmsActivationSpec>
+        
+    <jmsQueue id="CMTNotSupportedReqQueue" jndiName="jms/CMTNotSupportedReqQueue">
+        <properties.wasJms queueName="CMTNotSupportedReqQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="mdb20/CMTNotSupportedReqQueue">
+        <properties.wasJms destinationRef="CMTNotSupportedReqQueue"/>
+    </jmsActivationSpec>
+        
+    <jmsQueue id="CMTRequiredReqQueue" jndiName="jms/CMTRequiredReqQueue">
+        <properties.wasJms queueName="CMTRequiredReqQueue"/>
+    </jmsQueue>
+    
+    <jmsActivationSpec id="mdb20/CMTRequiredReqQueue">
+        <properties.wasJms destinationRef="CMTRequiredReqQueue"/>
+    </jmsActivationSpec>
+    
+   
+    <jmsTopicConnectionFactory id="TestTCF" jndiName="jms/TestTCF">
+        <properties.wasJms/>
+    </jmsTopicConnectionFactory>
+    
+    <jmsTopic id="news" jndiName="jms/news">
+        <properties.wasJms topicSpace="Default.Topic.Space" topicName="news"/>
+    </jmsTopic>
+    
+    <jmsActivationSpec id="mdb20/TestTopicListenerPort">
+        <properties.wasJms destinationRef="news"/>
+    </jmsActivationSpec>
+    
+    <jmsTopic id="select" jndiName="jms/select">
+        <properties.wasJms topicSpace="Default.Topic.Space" topicName="select"/>
+    </jmsTopic>
+    
+    <jmsActivationSpec id="mdb20/TestMessageSelectorTopicListenerPort">
+        <properties.wasJms destinationRef="select"
+                           clientID="C0002"
+                           subscriptionName="subscription2"/>
+    </jmsActivationSpec>
+    
+    <jmsTopic id="sports" jndiName="jms/sports">
+        <properties.wasJms topicSpace="Default.Topic.Space" topicName="sports"/>
+    </jmsTopic>
+    
+    <jmsActivationSpec id="mdb20/TestDurableTopicListenerPort">
+        <properties.wasJms destinationRef="sports"
+                           clientID="C0001"
+                           subscriptionName="subscription1"/>
+    </jmsActivationSpec>
+</server>

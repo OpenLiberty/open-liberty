@@ -1,0 +1,740 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+	<authFilter id="authFilterHS256IO">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/rest/helloworldHS256introspect_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256IO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O/introspect"
+		userInfoEndpointEnabled="true"
+		validationMethod="introspect"
+		authFilterRef="authFilterHS256IO"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS256IJ">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/rest/helloworldHS256introspect_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256IJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J/introspect"
+		userInfoEndpointEnabled="true"
+		validationMethod="introspect"
+		authFilterRef="authFilterHS256IJ"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS256UO">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/rest/helloworldHS256userinfo_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256UO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS256UO"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS256UJ">
+		<requestUrl
+			id="requestUrlHS256"
+			urlPattern="/rest/helloworldHS256userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs256UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS256UJ"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS384UO">
+		<requestUrl
+			id="requestUrlHS384"
+			urlPattern="/rest/helloworldHS384userinfo_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs384UO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS384UO"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs384"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS384O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS384UJ">
+		<requestUrl
+			id="requestUrlHS384"
+			urlPattern="/rest/helloworldHS384userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs384UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS384UJ"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs384"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS384J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="authFilterHS512UO">
+		<requestUrl
+			id="requestUrlHS512"
+			urlPattern="/rest/helloworldHS512userinfo_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs512UO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS512UO"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs512"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS512O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS512UJ">
+		<requestUrl
+			id="requestUrlHS512"
+			urlPattern="/rest/helloworldHS512userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="hs512UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterHS512UJ"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="hs512"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigHS512J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+	<authFilter id="authFilterRS256IO">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/rest/helloworldRS256introspect_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256IO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O/introspect"
+		userInfoEndpointEnabled="true"
+		validationMethod="introspect"
+		authFilterRef="authFilterRS256IO"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS256IJ">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/rest/helloworldRS256introspect_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256IJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J/introspect"
+		userInfoEndpointEnabled="true"
+		validationMethod="introspect"
+		authFilterRef="authFilterRS256IJ"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS256UO">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/rest/helloworldRS256userinfo_opaque"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256UO"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS256UO"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256O"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS256UJ">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/rest/helloworldRS256userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rs256UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS256UJ"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS384UJ">
+		<requestUrl
+			id="requestUrlRS384"
+			urlPattern="/rest/helloworldRS384userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="rs384UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS384UJ"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS384J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS512UJ">
+		<requestUrl
+			id="requestUrlRS512"
+			urlPattern="/rest/helloworldRS512userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="rs512UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS512UJ"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS512J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+		
+	<authFilter id="authFilterES256UJ">
+		<requestUrl
+			id="requestUrlES256"
+			urlPattern="/rest/helloworldES256userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="ES256UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES256UJ"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+		
+	<authFilter id="authFilterES384UJ">
+		<requestUrl
+			id="requestUrlES384"
+			urlPattern="/rest/helloworldES384userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="ES384UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES384UJ"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES384"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES384J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterES512UJ">
+		<requestUrl
+			id="requestUrlES512"
+			urlPattern="/rest/helloworldES512userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="ES512UJ"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES512UJ"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES512"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES512J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>			
+		
+<!--  RS encryption variations -->	
+
+	<authFilter id="authFilterRS256RS256">
+		<requestUrl
+			id="requestUrlRS256RS256"
+			urlPattern="/rest/helloworldSignRS256EncryptRS256userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignRS256EncryptRS256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS256RS256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS384RS384">
+		<requestUrl
+			id="requestUrlRS384RS384"
+			urlPattern="/rest/helloworldSignRS384EncryptRS384userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignRS384EncryptRS384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS384RS384"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS384J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+	
+	
+	<authFilter id="authFilterRS512RS512">
+		<requestUrl
+			id="requestUrlRS512RS512"
+			urlPattern="/rest/helloworldSignRS512EncryptRS512userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignRS512EncryptRS512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterRS512RS512"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigRS512J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+	
+<!-- ES encryption variations -->
+	
+	<authFilter id="authFilterES256ES256">
+		<requestUrl
+			id="requestUrlES256ES256"
+			urlPattern="/rest/helloworldSignES256EncryptES256userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignES256EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES256ES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES256J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+		
+	<authFilter id="authFilterES384ES384">
+		<requestUrl
+			id="requestUrlES384ES384"
+			urlPattern="/rest/helloworldSignES384EncryptES384userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignES384EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES384ES384"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES384J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>	
+		
+	<authFilter id="authFilterES512ES512">
+		<requestUrl
+			id="requestUrlES512ES512"
+			urlPattern="/rest/helloworldSignES512EncryptES512userinfo_jwt"
+			matchType="contains" />
+	</authFilter>
+
+<!-- Doesn't use an OP at the current time - extra entry in issuerIdentifier is for future use -->
+	<openidConnectClient
+		id="SignES512EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		inboundPropagation="supported"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="authFilterES512ES512"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet,http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigES512J"
+		audiences="ALL_AUDIENCES"
+		jwtAccessTokenRemoteValidation="require"
+	>
+	</openidConnectClient>		
+						
+</server>
+

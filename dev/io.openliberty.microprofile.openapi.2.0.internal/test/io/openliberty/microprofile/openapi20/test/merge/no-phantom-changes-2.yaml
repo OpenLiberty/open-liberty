@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: "test-breakage"
+  version: "1.0"
+paths:
+  /testA:
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme: []
+      callbacks:
+        test-breakage:
+          $ref: "#/components/callbacks/fooCallback"
+  /testB:
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/barParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/barRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/barResponse"
+        202:
+          description: "success"
+      security:
+        - barSecurityScheme: []
+      callbacks:
+        test-breakage:
+          $ref: "#/components/callbacks/barCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org/test-breakage
+  description: test-breakage docs
+components:
+  schemas:
+    fooSchema:
+      type: string
+      description: test-breakage
+    barSchema:
+      type: string
+      description: test-breakage
+  responses:
+    fooResponse:
+      description: test-breakage
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/fooSchema"
+          examples: 
+            foo:
+              $ref: "#/components/examples/fooExample"
+      headers:
+        foo: 
+          $ref: "#/components/headers/fooHeader"
+      links:
+        foo:
+          $ref: "#/components/links/fooLink"
+    barResponse:
+      description: test-breakage
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/barSchema"
+          examples: 
+            bar:
+              $ref: "#/components/examples/barExample"
+      headers:
+        bar:
+          $ref: "#/components/headers/barHeader"
+      links:
+        bar:
+          $ref: "#/components/links/barLink"
+  parameters:
+    fooParameter:
+      name: foo
+      description: test-breakage
+      in: query
+      required: true
+      schema:
+        type: string
+    barParameter:
+      name: bar
+      description: test-breakage
+      in: query
+      required: true
+      schema:
+        type: string
+  examples:
+    fooExample:
+      value: test-breakage
+    barExample:
+      value: test-breakage
+  requestBodies:
+    fooRequestBody:
+      description: test-breakage
+      content: {}
+    barRequestBody:
+      description: test-breakage
+      content: {}
+  headers:
+    fooHeader:
+      description: test-breakage
+      schema:
+        type: string
+    barHeader:
+      description: test-breakage
+      schema:
+        type: string
+  securitySchemes:
+    fooSecurityScheme:
+      name: test-breakage
+      type: apiKey
+      in: query
+    barSecurityScheme:
+      name: test-breakage
+      type: apiKey
+      in: query
+  links:
+    fooLink: 
+      description: test-breakage
+    barLink:
+      description: test-breakage
+  callbacks:
+    fooCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test-breakage
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test-breakage
+    barCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test-breakage
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test-breakage

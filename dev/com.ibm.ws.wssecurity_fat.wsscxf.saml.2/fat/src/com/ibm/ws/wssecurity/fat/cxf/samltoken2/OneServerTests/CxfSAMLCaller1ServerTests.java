@@ -13,6 +13,7 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken2.OneServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -88,6 +89,15 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         
+        //issue 18363
+        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
+		if (features.contains("jaxws-2.2")) {
+            setFeatureVersion("EE7");
+        } else if (features.contains("jaxws-2.3")) {
+            setFeatureVersion("EE8");
+        } else if (features.contains("xmlWS-3.0")) {
+            setFeatureVersion("EE9");
+        }// End of 18363
         
     }
 }

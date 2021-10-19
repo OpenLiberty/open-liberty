@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -161,8 +161,9 @@ Include-Resource: \
  @${repo;org.opensaml:opensaml-xacml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  @${repo;org.opensaml:opensaml-xacml-saml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  @${repo;io.dropwizard.metrics:metrics-core;4.1.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
- @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
+ @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
+ @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
+ @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
  META-INF=resources/META-INF
 
 jakartaeeMe: true

@@ -17,5 +17,5 @@
     </featureManager>
 
     <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/>
-
+    <applicationManager autoExpand="false"/> <!-- for TestTLD -->
 </server>

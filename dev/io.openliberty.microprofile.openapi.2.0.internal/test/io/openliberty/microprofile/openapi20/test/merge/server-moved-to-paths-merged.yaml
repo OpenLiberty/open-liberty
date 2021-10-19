@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  /testA:
+    servers:
+      - url: http://example.org/test1
+    get:
+      responses:
+        202:
+          description: "success"
+  /testB:
+    servers:
+      - url: http://example.org/test1
+    get:
+      responses:
+        202:
+          description: "success"
+  /testC:
+    servers:
+      - url: http://example.org/test2
+    get:
+      responses:
+        202:
+          description: "success"
+  /testD:
+    servers:
+      - url: http://example.org/test2
+    get:
+      responses:
+        202:
+          description: "success"

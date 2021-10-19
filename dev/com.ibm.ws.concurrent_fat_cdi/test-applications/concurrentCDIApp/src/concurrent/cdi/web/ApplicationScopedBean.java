@@ -11,8 +11,6 @@
 package concurrent.cdi.web;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -48,14 +46,8 @@ public class ApplicationScopedBean implements Serializable {
     public CompletionStage<String> appendThreadNameStage(String part1) {
         try {
             ManagedExecutorService executor = InitialContext.doLookup("java:comp/env/concurrent/executorRef");
-            // TODO invoke directly once added to spec:
-            // return executor.completedStage(part1 + getCharacter() + Thread.currentThread().getName());
-            Method completedStage = executor.getClass().getMethod("completedStage", Object.class);
-            @SuppressWarnings("unchecked")
-            CompletionStage<String> stage = (CompletionStage<String>) completedStage //
-                            .invoke(executor, part1 + getCharacter() + Thread.currentThread().getName());
-            return stage;
-        } catch (NamingException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException x) {
+            return executor.completedStage(part1 + getCharacter() + Thread.currentThread().getName());
+        } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }

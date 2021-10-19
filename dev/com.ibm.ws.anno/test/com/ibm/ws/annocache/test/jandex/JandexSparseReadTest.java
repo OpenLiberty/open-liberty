@@ -76,6 +76,11 @@ public class JandexSparseReadTest {
 	public void testReadsVersion9() throws IOException {
 		testReads(SAMPLE_CLASS_NAMES, SAMPLE_RESOURCE_NAMES, 9); // throws IOException
 	}
+	
+	@Test
+	public void testReadsVersion10() throws IOException {
+		testReads(SAMPLE_CLASS_NAMES, SAMPLE_RESOURCE_NAMES, 10); // throws IOException
+	}
 
 	//
 

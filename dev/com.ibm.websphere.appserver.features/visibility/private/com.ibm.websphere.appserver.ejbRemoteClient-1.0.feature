@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.ejbRemoteClient-1.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
-IBM-API-Package: com.ibm.websphere.ejbcontainer; type="internal"
+IBM-API-Package: com.ibm.websphere.ejbcontainer; type="ibm-api"
 -features=com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.ejbCore-1.0, \
   com.ibm.websphere.appserver.iiopclient-1.0, \

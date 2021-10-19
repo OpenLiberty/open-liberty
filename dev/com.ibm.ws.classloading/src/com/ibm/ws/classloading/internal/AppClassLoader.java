@@ -26,6 +26,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.Permission;
+import java.security.PermissionCollection;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -38,10 +40,13 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
+
+import javax.security.auth.Policy;
 
 import org.osgi.framework.Bundle;
 
@@ -394,9 +399,27 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
 
+        final ProtectionDomain fpd = pd;
+        java.security.PermissionCollection pc = null;
+        if (pd.getPermissions() == null) {
+            try {
+                pc = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.PermissionCollection>() {
+                    @Override
+                    public java.security.PermissionCollection run() {
+                        java.security.Policy p = java.security.Policy.getPolicy();
+                        java.security.PermissionCollection fpc = p.getPermissions(fpd.getCodeSource());
+                        return fpc;
+                    }
+                });
+            } catch (PrivilegedActionException paex) {
+            } 
+            pd = new ProtectionDomain(pd.getCodeSource(), pc);
+        }
+
         Class<?> clazz = null;
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
+
         } finally {
             final TraceComponent cltc;
             if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
@@ -419,6 +442,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 }
             }
         }
+        
         return clazz;
     }
 
@@ -458,15 +482,16 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
             String containerUrlString = containerUrl.toString();
             pd = protectionDomains.get(containerUrlString);
+            
             if (pd == null) {
                 ProtectionDomain pdFromConfig = config.getProtectionDomain();
                 CodeSource cs = new CodeSource(containerUrl, pdFromConfig.getCodeSource().getCertificates());
                 pd = new ProtectionDomain(cs, pdFromConfig.getPermissions());
-                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);
+                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);                
                 if (oldPD != null) {
                     pd = oldPD;
                 }
-            }
+            } 
         } catch (IOException ex) {
             // Auto-FFDC - and then use the protection domain from the classloader configuration
             pd = config.getProtectionDomain();
@@ -557,8 +582,67 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             if (bytes != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "defining generated class " + name);
-                generatedClass = defineClass(name, bytes, 0, bytes.length, config.getProtectionDomain());
-            }
+
+
+                String remoteInterfaceClassName = null;
+                ProtectionDomain pd = null;
+
+                if (name != null && name.endsWith("_Stub") && !name.endsWith("._Stub"))
+                {
+
+                    StringBuilder nameBuilder = new StringBuilder(name);
+                    nameBuilder.setLength(nameBuilder.length() - 5);
+
+                    int packageOffset = nameBuilder.lastIndexOf(".") + 1;
+                    if (nameBuilder.charAt(packageOffset) == '_')
+                        nameBuilder.deleteCharAt(packageOffset);
+
+
+                    remoteInterfaceClassName = nameBuilder.toString();
+
+                    try {
+                        Class<?> remoteClass = super.loadClass(remoteInterfaceClassName, false);
+
+                        pd = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.ProtectionDomain>() {
+                            @Override
+                            public java.security.ProtectionDomain run() {
+                                return remoteClass.getProtectionDomain();
+                            }
+                        });
+                    } catch (PrivilegedActionException paex) {                 
+                    }
+
+                    CodeSource cs = pd.getCodeSource();
+
+                    final ProtectionDomain fpd = pd;
+                    java.security.PermissionCollection pc = null;
+                    if (pd.getPermissions() == null) {
+                        try {
+                            pc = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.PermissionCollection>() {
+                                @Override
+                                public java.security.PermissionCollection run() {
+                                    java.security.Policy p = java.security.Policy.getPolicy();
+
+                                    java.security.PermissionCollection fpc = p.getPermissions(fpd.getCodeSource());
+
+                                 return fpc;
+                                }
+                            });
+
+                            pd = new ProtectionDomain(pd.getCodeSource(), pc);
+                            generatedClass = defineClass(name, bytes, 0, bytes.length, pd);
+
+                        } catch (PrivilegedActionException paex) {
+                        } 
+
+                    } else {
+                        generatedClass = defineClass(name, bytes, 0, bytes.length, pd);
+                    }
+
+                } else {
+                    generatedClass = defineClass(name, bytes, 0, bytes.length, config.getProtectionDomain());
+                }
+          }
         }
         return generatedClass;
     }
@@ -694,7 +778,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
         });
         return fExists &&
-               (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
+                        (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
     }
 
     @Override
@@ -731,7 +815,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     public String toDiagString() {
         StringBuilder sb = new StringBuilder();
         sb.append(config).append(LS);
-        
+
         sb.append("    API Visibility: ");
         for (ApiType type : apiAccess.getApiTypeVisibility()) {
             sb.append(type).append(" ");
@@ -751,7 +835,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         sb.append("    CodeSources: ");
         for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
             sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
-              .append(entry.getValue().getCodeSource().getLocation());
+            .append(entry.getValue().getCodeSource().getLocation());
         }
         sb.append(LS);
 

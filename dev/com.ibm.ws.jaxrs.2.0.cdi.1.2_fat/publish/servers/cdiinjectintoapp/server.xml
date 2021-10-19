@@ -6,6 +6,7 @@
         <feature>cdi-1.2</feature>
     </featureManager>
     <include location="../fatTestPorts.xml"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
     
     <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
     <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cdiinjectintoapp/app/-" actions="GET:"/>

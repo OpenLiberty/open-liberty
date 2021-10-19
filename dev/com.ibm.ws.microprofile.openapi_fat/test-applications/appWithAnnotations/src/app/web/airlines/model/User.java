@@ -15,7 +15,9 @@ package app.web.airlines.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-@Schema(maxProperties = 1024, minProperties = 1, requiredProperties = { "id", "username", "password" })
+@Schema(maxProperties = 1024, minProperties = 1, requiredProperties = {
+    "id", "username", "password"
+})
 public class User {
 
     @Schema(example = "3456")
@@ -48,22 +50,26 @@ public class User {
     @Schema(required = true, example = "1")
     private int status;
 
+    // Note, multipleof=0.1 caused parsing errors in earlier versions of jandex
+    @Schema(required = false, example = "170.1", multipleOf = 0.1, description = "Height in cm")
+    private double height;
+
     /**
      * Creates a User instance with the parameters specified.
      *
-     * @param id the unique id for this User instance
-     * @param userName the unique username for this User instance
-     * @param password the unique password for this User instance
+     * @param id        the unique id for this User instance
+     * @param userName  the unique username for this User instance
+     * @param password  the unique password for this User instance
      * @param firstName the first name for this User instance
-     * @param lastName the last name for this User instance
-     * @param sex the sex for this User instance
-     * @param age the age value for this User instance
-     * @param email the email associated with this User instance
-     * @param phone the phone number associated with this User instance
-     * @param status the status associated with this User instance
+     * @param lastName  the last name for this User instance
+     * @param sex       the sex for this User instance
+     * @param age       the age value for this User instance
+     * @param email     the email associated with this User instance
+     * @param phone     the phone number associated with this User instance
+     * @param status    the status associated with this User instance
      */
     public User(int id, String userName, String password, String firstName,
-                String lastName, String sex, int age, String email, String phone, int status) {
+        String lastName, String sex, int age, String email, String phone, int status) {
         super();
         this.id = id;
         this.userName = userName;
@@ -91,7 +97,8 @@ public class User {
      *
      * @param id the unique id for this User instance
      */
-    public void setId(int id) {
+    public void setId(
+        int id) {
         this.id = id;
     }
 
@@ -109,7 +116,8 @@ public class User {
      *
      * @param userName the user name for this User instance
      */
-    public void setUsername(String userName) {
+    public void setUsername(
+        String userName) {
         this.userName = userName;
     }
 
@@ -127,7 +135,8 @@ public class User {
      *
      * @param password the password associated with this User instance
      */
-    public void setPassword(String password) {
+    public void setPassword(
+        String password) {
         this.password = password;
     }
 
@@ -145,7 +154,8 @@ public class User {
      *
      * @param firstName the first name for this User instance
      */
-    public void setFirstName(String firstName) {
+    public void setFirstName(
+        String firstName) {
         this.firstName = firstName;
     }
 
@@ -163,7 +173,8 @@ public class User {
      *
      * @param lastName the last name for this User instance
      */
-    public void setLastName(String lastName) {
+    public void setLastName(
+        String lastName) {
         this.lastName = lastName;
     }
 
@@ -181,7 +192,8 @@ public class User {
      *
      * @param sex the sex for this User instance
      */
-    public void setSex(String sex) {
+    public void setSex(
+        String sex) {
         this.sex = sex;
     }
 
@@ -199,7 +211,8 @@ public class User {
      *
      * @param age the age value for this User instance
      */
-    public void setAge(int age) {
+    public void setAge(
+        int age) {
         this.age = age;
     }
 
@@ -217,7 +230,8 @@ public class User {
      *
      * @param email the email associated with this User instance
      */
-    public void setEmail(String email) {
+    public void setEmail(
+        String email) {
         this.email = email;
     }
 
@@ -235,13 +249,12 @@ public class User {
      *
      * @param phone the phone number associated with this User instance
      */
-    public void setPhone(String phone) {
+    public void setPhone(
+        String phone) {
         this.phone = phone;
     }
 
-    @Schema(
-        name = "status",
-        title = "User Status")
+    @Schema(name = "status", title = "User Status")
 
     /**
      * Returns the status of this User instance.
@@ -257,8 +270,24 @@ public class User {
      *
      * @param status an integer representing the status of this User instance
      */
-    public void setUserStatus(int status) {
+    public void setUserStatus(
+        int status) {
         this.status = status;
+    }
+
+    /**
+     * @return the height
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * @param height the height to set
+     */
+    public void setHeight(
+        double height) {
+        this.height = height;
     }
 
 }

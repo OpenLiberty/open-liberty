@@ -54,12 +54,11 @@ public class LibertyOP_BasicTests_oidc_usingSocialConfig extends Social_BasicTes
         List<String> extraApps = new ArrayList<String>();
         extraApps.add(SocialConstants.HELLOWORLD_SERVLET);
 
-        // TODO fix
         List<String> opStartMsgs = new ArrayList<String>();
         //        opStartMsgs.add("CWWKS1600I.*" + SocialConstants.OIDCCONFIGMEDIATOR_APP);
         opStartMsgs.add("CWWKS1631I.*");
 
-        // TODO fix
+
         List<String> opExtraApps = new ArrayList<String>();
         opExtraApps.add(SocialConstants.OP_SAMPLE_APP);
 

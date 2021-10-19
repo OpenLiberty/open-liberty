@@ -41,6 +41,18 @@ public class TestUtils {
         }
     }
 
+    public static void assertContains(String searchFor, String searchWithin) {
+        if (searchFor == null) {
+            throw new IllegalArgumentException("You cannot search for a null");
+        }
+        if (searchWithin == null ) {
+            throw new AssertionError("Attempting to look for string \"" + searchFor + "\" but the string to search within was null");
+        }
+        if (searchWithin != null && !searchWithin.contains(searchFor)) {
+            throw new AssertionError("\"" + searchWithin + "\" does not contain \"" + searchFor + "\"");
+        }
+    }
+
     public static void assertNotContains(Config config, String key) {
         assertNotContains(config, key, String.class);
     }

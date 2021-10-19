@@ -157,6 +157,10 @@ public class ServiceIOTest {
                         .append("&service=").append("SimpleEcho")
                         .append("&war=simpleTestService");
         server.waitForStringInLog("CWWKZ0001I.*simpleTestService");
+        // Adding an additional log check, as Servlet doesn't seem to have deploy by the time 
+        // the test is run on certain builds.
+        server.waitForStringInLog("SRVE0242I.*simpleTestService");
+        
         String urlStr = sBuilder.toString();
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr),
                                                             HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);

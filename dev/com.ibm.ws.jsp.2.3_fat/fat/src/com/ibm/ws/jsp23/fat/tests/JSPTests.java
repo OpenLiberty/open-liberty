@@ -10,17 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -64,6 +64,8 @@ public class JSPTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
+
         ShrinkHelper.defaultDropinApp(server,
                                       TestEL_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testel.beans",
@@ -77,8 +79,6 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PI44611_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
-
-        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
 
         server.startServer(JSPTests.class.getSimpleName() + ".log");
     }
@@ -769,6 +769,38 @@ public class JSPTests {
     }
 
     /**
+     * Verify TLD file check per issue 18411.
+     * Run with applicationManager autoExpand="false" (default)
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTLD() throws Exception {
+        // Use TestEDR app but just call index.jsp twice.
+        // 2nd call should not have SRVE0253I message if issue 18411 is fixed
+        // and no other files included in the JSP are updated.
+        String orgEdrFile = "headerEDR1.jsp";
+        String relEdrPath = "../../shared/config/ExtendedDocumentRoot/";
+        server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
+        String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+        server.setMarkToEndOfLog();
+        WebConversation wc1 = new WebConversation();
+        WebRequest request1 = new GetMethodWebRequest(url);
+        wc1.getResponse(request1);
+
+        Thread.sleep(5000L); // sleep necessary to insure sufficient time delta for epoch timestamp comparisons
+        WebConversation wc2 = new WebConversation();
+        WebRequest request2 = new GetMethodWebRequest(url);
+        wc2.getResponse(request2);
+        assertNull("Log should not contain SRVE0253I: Destroy successful.",
+                   server.verifyStringNotInLogUsingMark("SRVE0253I", 1200));
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        Thread.sleep(500L); // ensure file is deleted
+    }
+
+    /**
      * This test verifies that a included JSP in the extended document root when
      * updated will cause the parent JSP to recompile.
      *
@@ -777,7 +809,7 @@ public class JSPTests {
     @Mode(TestMode.FULL)
     @Test
     public void testEDR() throws Exception {
-        // Tests on index page    
+        // Tests on index page
         String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
         LOG.info("url: " + url);
 
@@ -785,15 +817,15 @@ public class JSPTests {
     }
 
     /**
-     * Same test as above, but this test verifies that the dependentsList 
-     * is populated when proccessing multiple requests concurrently. 
+     * Same test as above, but this test verifies that the dependentsList
+     * is populated when proccessing multiple requests concurrently.
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
     public void testConcurrentRequestsForTrackDependencies() throws Exception {
-        // Tests on trackDependencies page     
+        // Tests on trackDependencies page
         String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "trackDependencies.jsp");
         LOG.info("url: " + url);
 
@@ -813,8 +845,8 @@ public class JSPTests {
         WebConversation wc1 = new WebConversation();
         WebRequest request1 = new GetMethodWebRequest(url);
 
-        if(makeConcurrentRequests) {
-            // Make 2 requests. 
+        if (makeConcurrentRequests) {
+            // Make 2 requests.
             makeConcurrentRequests(wc1, request1, 2);
         }
 
@@ -854,7 +886,7 @@ public class JSPTests {
                 }
             }));
         }
-        
+
         // check runs completed successfully
         for (Future<Boolean> task : tasks) {
             try {

@@ -127,7 +127,7 @@ public class TokenEndpointServlet extends HttpServlet {
      * @throws IOException
      */
     protected void handleReturnTokenRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Returning token: " + token);
+        System.out.println("Token Endpoint Returning token: " + token);
 
         JSONObject theResponse = new JSONObject();
         theResponse.put("access_token", token);

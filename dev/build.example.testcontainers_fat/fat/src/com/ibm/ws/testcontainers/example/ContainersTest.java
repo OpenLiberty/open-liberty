@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.testcontainers.example;
 
-import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
-
 import java.time.Duration;
 
 import org.junit.AfterClass;
@@ -27,7 +25,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.generic.ContainersTestServlet;
@@ -37,7 +34,6 @@ import web.generic.ContainersTestServlet;
  * TestContainer for use to test against.
  */
 @RunWith(FATRunner.class)
-@Mode(FULL)
 public class ContainersTest extends FATServletClient {
 
     public static final String APP_NAME = "containerApp";

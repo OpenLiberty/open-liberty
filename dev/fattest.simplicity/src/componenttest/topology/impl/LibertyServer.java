@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -35,6 +37,9 @@ import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +94,7 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.Props;
 import com.ibm.ws.fat.util.jmx.JmxException;
 import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
@@ -1037,13 +1043,32 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void printProcesses() {
+        printProcesses(machine);
+    }
+
+    public static void printProcesses(Machine host) {
+        printProcesses(host, "");
+    }
+
+    public static void printProcesses(Machine host, String prefix) {
         final String m = "printProcesses";
-        try {
-            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
-            Log.info(c, m, detector.listProcesses());
+
+        String timeStamp = ZonedDateTime.now( ZoneId.systemDefault() ).format( DateTimeFormatter.ofPattern( "uuuu.MM.dd.HH.mm.ss" ) ).toString();
+        String fileName = "processes-" + timeStamp + ".txt";
+        if (prefix != null && ! prefix.isEmpty()) {
+            fileName = prefix + "-" + fileName;
+        }
+        Props properties = Props.getInstance();
+
+        Log.info(c, m, "Printing processes to file: " + fileName);
+
+        String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
+        try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
+            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
+            stream.print(detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
-        }
+        } 
     }
 
     public void printProcessHoldingPort(int port) {
@@ -2532,21 +2557,9 @@ public class LibertyServer implements LogMonitorClient {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
             }
-            if (postStopServerArchive)
-                while (true) {
-                    try {
-                        postStopServerArchive();
-                        break;
-                    } catch (Exception e) {
-                        Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
-                        printProcesses();
-                        try {
-                            Thread.sleep(500);
-                        } catch (Exception x) {
-                            Log.error(c, method, x);
-                        }
-                    }
-                }
+            if (postStopServerArchive) {
+                postStopServerArchive();
+            }
             // Delete marker for stopped server
             // deleteServerMarkerFile();
         }
@@ -2740,9 +2753,55 @@ public class LibertyServer implements LogMonitorClient {
      * This is particularly required for tWAS FAT buckets as it is not known
      * when these finish, using this method will ensure logs are collected.
      * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * The operation will be retried
      */
     public void postStopServerArchive() throws Exception {
+        postStopServerArchive(true);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry if true and the operation fails, retry
+     */
+    public void postStopServerArchive(boolean retry) throws Exception {
         final String method = "postStopServerArchive";
+        Log.entering(c, method);
+
+        while (true) {
+            try {
+                _postStopServerArchive();
+                break;
+            } catch (Exception e) {
+                Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
+                printProcesses();
+            }
+            if (retry) {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception x) {
+                    Log.error(c, method, x);
+                }
+            } else {
+                break;
+            }
+        }
+
+        Log.exiting(c, method);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     */
+    private void _postStopServerArchive() throws Exception {
+        final String method = "_postStopServerArchive";
         Log.entering(c, method);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
@@ -5718,7 +5777,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
-        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins").mkdir();
     }
 
     /**
@@ -6364,7 +6423,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void clearAdditionalSystemProperties() {
-        this.additionalSystemProperties.clear();
+        this.additionalSystemProperties = null;
     }
 
     /**

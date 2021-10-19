@@ -239,7 +239,9 @@ public class ServiceBindingVarTests extends ServletRunner {
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDirectoryFromLibertyServerRoot("variables/conflicts");
-            // No need to wait -- there are no functional changes.
+            // there are no functional changes, but we need to wait because other tests directly reference variables in the
+            // registry rather than using them through config
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         }
     }
