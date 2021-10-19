@@ -47,6 +47,8 @@ import io.opentracing.tag.Tags;
 @Provider
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
+    
+    private static ThreadLocal<Tracer> currentTracer = new ThreadLocal<>();
 
     /**
      * <p>The property used to store the continuation for the outgoing request.</p>
@@ -100,7 +102,10 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             return;
         }
 
-        Tracer tracer = OpentracingTracerManager.getTracer();
+        Tracer tracer = currentTracer.get();
+        if (tracer == null) {
+            tracer = OpentracingTracerManager.getTracer();
+        }
         if (tracer == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " no tracer");
@@ -237,6 +242,20 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " finish span", span);
         }
+    }
+    
+    /**
+     * Directly provide the current tracer for this thread
+     * <p>
+     * If set, this will be used in preference to finding a tracer for the current application using the thread context
+     * 
+     * @param tracer the new current tracer, or {@code null} to clear the current tracer
+     * @return the old current tracer, or {@code null} if no current tracer is set
+     */
+    public static Tracer setCurrentTracer(Tracer tracer) {
+        Tracer oldTracer = currentTracer.get();
+        currentTracer.set(tracer);
+        return oldTracer;
     }
     
     private boolean isEnabled(ClientRequestContext requestContext) {

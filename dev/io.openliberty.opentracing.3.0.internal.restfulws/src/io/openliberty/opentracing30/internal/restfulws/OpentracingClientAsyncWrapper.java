@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import io.openliberty.opentracing.internal.OpentracingClientFilter;
 import io.openliberty.opentracing.internal.OpentracingTracerManager;
 import io.openliberty.restfulWS.client.ClientAsyncTaskWrapper;
 import io.opentracing.Scope;
@@ -41,7 +42,12 @@ public class OpentracingClientAsyncWrapper implements ClientAsyncTaskWrapper {
         
         return () -> {
             try (Scope scope = tracer.activateSpan(activeSpan)) {
-                r.run();
+                Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
+                try {
+                    r.run();
+                } finally {
+                    OpentracingClientFilter.setCurrentTracer(oldTracer);
+                }
             }
         };
     }
@@ -60,7 +66,12 @@ public class OpentracingClientAsyncWrapper implements ClientAsyncTaskWrapper {
         
         return () -> {
             try (Scope scope = tracer.activateSpan(activeSpan)) {
-                return c.call();
+                Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
+                try {
+                    return c.call();
+                } finally {
+                    OpentracingClientFilter.setCurrentTracer(oldTracer);
+                }
             }
         };
     }

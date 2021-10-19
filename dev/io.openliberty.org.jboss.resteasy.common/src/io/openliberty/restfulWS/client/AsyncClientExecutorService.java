@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS.client.internal;
+package io.openliberty.restfulWS.client;
 
 import static io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent.wrap;
 
@@ -21,6 +21,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+
+import io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent;
 
 /**
  * An executor which wraps tasks using {@link ClientAsyncTaskWrapperComponent} before delegating to another executor to run them.

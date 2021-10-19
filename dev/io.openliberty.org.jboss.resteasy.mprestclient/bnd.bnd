@@ -25,7 +25,8 @@ app-resources= \
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata
+  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata, \
+  io.openliberty.microprofile.rest.client30.internal.OsgiServices
 
 Service-Component: \
   io.openliberty.restfulWS.mprestclient.ResourceProvider; \
@@ -72,6 +73,7 @@ Include-Resource:\
   com.ibm.websphere.javaee.jsonp.1.1,\
   com.ibm.websphere.javaee.servlet.4.0,\
   com.ibm.websphere.javaee.validation.2.0;version=latest,\
+  com.ibm.websphere.javaee.concurrent.1.0,\
   io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
   io.openliberty.org.eclipse.microprofile.rest.client.2.0;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\

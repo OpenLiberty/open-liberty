@@ -19,8 +19,9 @@ Import-Package: *
     io.openliberty.opentracing30.internal.restfulws.OpentracingClientAsyncWrapper
 
 -buildpath: \
-    com.ibm.ws.logging.core,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-    io.openliberty.org.jboss.resteasy.common;version=latest,\
-    io.openliberty.opentracing.2.0.internal;version=latest,\
-    io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest
+	com.ibm.ws.logging.core,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.org.jboss.resteasy.common;version=latest,\
+	io.openliberty.opentracing.2.0.internal;version=latest,\
+	io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest

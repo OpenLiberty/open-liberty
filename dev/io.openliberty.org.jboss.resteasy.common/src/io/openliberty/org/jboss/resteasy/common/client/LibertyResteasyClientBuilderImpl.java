@@ -29,8 +29,8 @@ import org.jboss.resteasy.client.jaxrs.i18n.Messages;
 import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 
+import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
-import io.openliberty.restfulWS.client.internal.AsyncClientExecutorService;
 
 @SuppressWarnings("unchecked")
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {

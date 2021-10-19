@@ -43,6 +43,9 @@ import org.jboss.resteasy.microprofile.client.publisher.MpPublisherMessageBodyRe
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ResteasyUriBuilder;
 
+import io.openliberty.microprofile.rest.client30.internal.OsgiServices;
+import io.openliberty.restfulWS.client.AsyncClientExecutorService;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.net.ssl.HostnameVerifier;
@@ -310,10 +313,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
 
         if (this.executorService != null) {
-            resteasyClientBuilder.executorService(this.executorService);
+            resteasyClientBuilder.executorService(new AsyncClientExecutorService(this.executorService));
         } else {
-            this.executorService = Executors.newCachedThreadPool();
-            resteasyClientBuilder.executorService(executorService, true);
+            this.executorService = OsgiServices.getManagedExecutorService().orElseGet(Executors::newCachedThreadPool);
+            resteasyClientBuilder.executorService(new AsyncClientExecutorService(executorService), true);
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
