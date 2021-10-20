@@ -18,9 +18,9 @@ Subsystem-Name: MicroProfile 5.0
   io.openliberty.mpFaultTolerance-4.0, \
   io.openliberty.mpHealth-4.0, \
   io.openliberty.mpJwt-2.0,\
-  io.openliberty.mpOpenAPI-3.0
+  io.openliberty.mpOpenAPI-3.0, \
+  io.openliberty.mpOpenTracing-3.0, \
+  io.openliberty.mpRestClient-3.0
   #io.openliberty.mpMetrics-4.0, \
-  #io.openliberty.mpOpenTracing-3.0, \
-  #io.openliberty.mpRestClient-3.0
 kind=noship
 edition=full
