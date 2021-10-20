@@ -150,50 +150,26 @@ public class JMSConsumerServlet extends HttpServlet {
         }
     }
 
-    public void testCloseConsumer_B(HttpServletRequest request,
-                                    HttpServletResponse response) throws Throwable {
-
-        exceptionFlag = false;
-        try {
-
-            JMSContext jmsContext = jmsQCFBindings.createContext();
-            JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-            jmsConsumer.close();
-            jmsConsumer.receive();
-
-        } catch (JMSRuntimeException ex) {
-
-            exceptionFlag = true;
-
-        }
-
-        if (!exceptionFlag)
-            throw new WrongException("testCloseConsumer_B failed: Expected exception was not seen");
-
-        jmsContext.close();
-
+    public void testCloseConsumer_B(HttpServletRequest request, HttpServletResponse response) throws TestException {
+        testCloseConsumer(jmsQCFBindings);
+    }
+    
+    public void testCloseConsumer_TCP(HttpServletRequest request, HttpServletResponse response) throws TestException {
+        testCloseConsumer(jmsQCFTCP);
     }
 
-    public void testCloseConsumer_TCP(HttpServletRequest request,
-                                      HttpServletResponse response) throws Throwable {
+    private void testCloseConsumer(QueueConnectionFactory queueConnectionFactory) throws TestException {
+        try (JMSContext jmsContext = queueConnectionFactory.createContext();) {
 
-        exceptionFlag = false;
-        try {
-
-            JMSContext jmsContext = jmsQCFTCP.createContext();
             JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
             jmsConsumer.close();
             jmsConsumer.receive();
+            // Should not reach here.
+            throw new TestException("Called receive() after close() without throwing JMSRuntimeException");
 
-        } catch (JMSRuntimeException ex) {
-
-            exceptionFlag = true;
-
+        } catch (JMSRuntimeException jmsRuntimeException) {
+            Tr.debug(tc, "Expected jmsRuntimeException was found:" + jmsRuntimeException);
         }
-        if (!exceptionFlag)
-            throw new WrongException("testCloseConsumer_B failed: Expected exception was not seen");
-        jmsContext.close();
-
     }
 
     public void testReceive_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
@@ -1140,26 +1116,23 @@ public class JMSConsumerServlet extends HttpServlet {
         }
     }
 
-    public void testBasicMDBTopicDurShared(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        jmsContext = jmsTCFBindings.createContext();
-        jmsConsumer = jmsContext.createConsumer(jmsTopic2);
-        jmsProducer = jmsContext.createProducer();
-        int msgs = 3;
-
-        for (int i = 0; i < msgs; i++) {
-            jmsProducer.send(jmsTopic2, "testBasicMDBTopic:" + i);
+    public void testBasicMDBTopicDurShared(HttpServletRequest request, HttpServletResponse response) throws NamingException {
+        try (JMSContext jmsContext = jmsTCFBindings.createContext()) {
+            Topic jmsTopic = getTopic("eis/localTopicDurableMDB");
+            jmsProducer = jmsContext.createProducer();
+            for (int i = 0; i < 3; i++) {
+                jmsProducer.send(jmsTopic, "testBasicMDBTopic:" + i);
+            }
         }
     }
 
-    public void testBasicMDBTopicDurShared_TCP(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
-        jmsContext = jmsTCFTCP.createContext();
-        jmsProducer = jmsContext.createProducer();
-        int msgs = 3;
-
-        for (int i = 0; i < msgs; i++) {
-            jmsProducer.send(jmsTopic2, "testBasicMDBTopic_TCP:" + i);
+    public void testBasicMDBTopicDurShared_TCP(HttpServletRequest request, HttpServletResponse response) throws NamingException {
+        try (JMSContext jmsContext = jmsTCFTCP.createContext()) {
+            Topic jmsTopic = getTopic("eis/remoteTopicDurableMDB");
+            jmsProducer = jmsContext.createProducer();
+            for (int i = 0; i < 3; i++) {
+                jmsProducer.send(jmsTopic, "testBasicMDBTopic_TCP:" + i);
+            }
         }
     }
 
