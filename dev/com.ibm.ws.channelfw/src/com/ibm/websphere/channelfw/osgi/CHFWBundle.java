@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,8 +95,9 @@ public class CHFWBundle implements ServerQuiesceListener {
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
 
-    private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
-    private static Queue<Callable<?>> serverStartedTasks = new LinkedBlockingQueue<>();
+    private static final AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
+    private static final AtomicBoolean useServerStartingTaskQueue = new AtomicBoolean(true);
+    private static final Queue<Callable<?>> serverStartedTasks = new LinkedBlockingQueue<>();
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
@@ -242,11 +243,11 @@ public class CHFWBundle implements ServerQuiesceListener {
         // set will be called when the ServerStarted service has been registered (by the FeatureManager as of 9/2015).  This is a signal that
         // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server startup
-
         Callable<?> task;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "CHFW signaled- Server Completely Started signal received");
         }
+        useServerStartingTaskQueue.set(false);
         while ((task = serverStartedTasks.poll()) != null) {
             try {
                 task.call();
@@ -256,7 +257,6 @@ public class CHFWBundle implements ServerQuiesceListener {
                 }
             }
         }
-
         synchronized (syncStarted) {
             serverCompletelyStarted.set(true);
             syncStarted.notifyAll();
@@ -273,7 +273,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     public static <T> T runWhenServerStarted(Callable<T> callable) throws Exception {
         synchronized (syncStarted) {
-            if (!serverCompletelyStarted.get()) {
+            if (useServerStartingTaskQueue.get()) {
                 serverStartedTasks.add(callable);
                 return null;
             }
