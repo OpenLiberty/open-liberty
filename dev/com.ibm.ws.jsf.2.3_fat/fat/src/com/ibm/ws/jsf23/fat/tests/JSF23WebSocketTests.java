@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,27 +49,27 @@ public class JSF23WebSocketTests {
     public TestName name = new TestName();
 
     @Server("jsf23CDIWSOCServer")
-    public static LibertyServer jsf23CDIWSOCServer;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIWSOCServer, "WebSocket.war", "com.ibm.ws.jsf23.fat.websocket");
+        ShrinkHelper.defaultDropinApp(server, "WebSocket.war", "com.ibm.ws.jsf23.fat.websocket");
 
         // Start the server and use the class name so we can find logs easily.
-        jsf23CDIWSOCServer.startServer(JSF23WebSocketTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23WebSocketTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIWSOCServer != null && jsf23CDIWSOCServer.isStarted()) {
-            jsf23CDIWSOCServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
     @Before
     public void setupPerTest() throws Exception {
-        jsf23CDIWSOCServer.setMarkToEndOfLog();
+        server.setMarkToEndOfLog();
     }
 
     /**
@@ -87,7 +87,7 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "PushWebSocketTest.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
 
             HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
 
@@ -99,7 +99,7 @@ public class JSF23WebSocketTests {
             assertContains(testPushWebSocketPage.asText(), "JSF 2.3 WebSocket - Test message pushed from server to client");
             assertContains(testPushWebSocketPage.asText(), "Called onopen listener");
 
-            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+            String result1 = server.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
             // Verify that the correct message is found in the logs
             assertNotNull("Message not found. Channel was not opened succesfully.", result1);
@@ -122,7 +122,7 @@ public class JSF23WebSocketTests {
             assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
             assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
 
-            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+            String result2 = server.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
             // Verify that the correct message is found in the logs
             assertNotNull("Message not found. Channel was not closed succesfully.", result2);
@@ -143,7 +143,7 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "OpenCloseWebSocketTest.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
 
             HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
 
@@ -168,7 +168,7 @@ public class JSF23WebSocketTests {
 
             assertContains(openPage.asText(), "Called onopen listener");
 
-            String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
+            String result1 = server.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
             // Verify that the correct message is found in the logs
             assertNotNull("Message not found. Channel was not opened succesfully.", result1);
@@ -179,7 +179,7 @@ public class JSF23WebSocketTests {
 
             assertContains(closePage.asText(), "Called onclose listener");
 
-            String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
+            String result2 = server.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
             // Verify that the correct message is found in the logs
             assertNotNull("Message not found. Channel was not closed succesfully.", result2);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ import junit.framework.Assert;
  * We're extending CDITestBase, which has common test code.
  */
 @RunWith(FATRunner.class)
-public class CDIInjectionTests extends CDITestBase {
-    private static final Logger LOG = Logger.getLogger(CDIInjectionTests.class.getName());
+public class JSF23CDIInjectionTests extends CDITestBase {
+    private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
 
     @Server("jsf23CDIServer")
     public static LibertyServer jsf23CDIServer;
@@ -67,7 +67,7 @@ public class CDIInjectionTests extends CDITestBase {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        jsf23CDIServer.startServer(CDIInjectionTests.class.getSimpleName() + ".log");
+        jsf23CDIServer.startServer(JSF23CDIInjectionTests.class.getSimpleName() + ".log");
 
     }
 

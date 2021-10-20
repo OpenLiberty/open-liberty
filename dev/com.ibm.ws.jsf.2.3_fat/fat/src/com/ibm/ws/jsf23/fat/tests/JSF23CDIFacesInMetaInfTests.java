@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,20 +26,20 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is one of four CDI test applications, with configuration loaded in the following manner:
- * CDIFacesInWebXML - web.xml param that points to two faces-config files.
+ * CDIFacesInMetaInf - META-INF/faces-config.xml
  *
  * We're extending CDITestBase, which has common test code.
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class CDIFacesInWebXMLTests extends CDITestBase {
+public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
 
-    @Server("jsfCDIFacesInWebXMLServer")
-    public static LibertyServer jsfCDIFacesInWebXMLServer;
+    @Server("jsf23CDIFacesInMetaInfServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfCDIFacesInWebXMLServer, "CDIFacesInWebXML.war",
+        ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
@@ -48,15 +48,15 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
         // Start the server and use the class name so we can find logs easily.
-        jsfCDIFacesInWebXMLServer.startServer(CDIFacesInWebXMLTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23CDIFacesInMetaInfTests.class.getSimpleName() + ".log");
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsfCDIFacesInWebXMLServer != null && jsfCDIFacesInWebXMLServer.isStarted()) {
-            jsfCDIFacesInWebXMLServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -69,21 +69,21 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      *
      */
     @Test
-    public void testNavigationHandlerInjection_CDIFacesInWebXML() throws Exception {
-        testNavigationHandlerInjectionByApp("CDIFacesInWebXML", jsfCDIFacesInWebXMLServer);
+    public void testNavigationHandlerInjection_CDIFacesInMetaInf() throws Exception {
+        testNavigationHandlerInjectionByApp("CDIFacesInMetaInf", server);
     }
 
     /**
      * Test to ensure that CDI 2.0 injection works for a custom EL Resolver
-     * Field and Method injection but no Constructor Injection.
-     * Also tested are use of request scope and use of qualifiers.
+     * Field and Method injection, but no Constructor injection.
+     * Also tested are use of request and session scope and use of qualifiers.
      *
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
     @Test
-    public void testELResolverInjection_CDIFacesInWebXML() throws Exception {
-        testELResolverInjectionByApp("CDIFacesInWebXML", jsfCDIFacesInWebXMLServer);
+    public void testELResolverInjection_CDIFacesInMetaInf() throws Exception {
+        testELResolverInjectionByApp("CDIFacesInMetaInf", server);
     }
 
     /**
@@ -94,8 +94,8 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomResourceHandlerInjections_CDIFacesInWebXML() throws Exception {
-        testCustomResourceHandlerInjectionsByApp("CDIFacesInWebXML", jsfCDIFacesInWebXMLServer);
+    public void testCustomResourceHandlerInjections_CDIFacesInMetaInf() throws Exception {
+        testCustomResourceHandlerInjectionsByApp("CDIFacesInMetaInf", server);
 
     }
 
@@ -107,8 +107,8 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomStateManagerInjections_CDIFacesInWebXML() throws Exception {
-        testCustomStateManagerInjectionsByApp("CDIFacesInWebXML", jsfCDIFacesInWebXMLServer);
+    public void testCustomStateManagerInjections_CDIFacesInMetaInf() throws Exception {
+        testCustomStateManagerInjectionsByApp("CDIFacesInMetaInf", server);
     }
 
     /**
@@ -123,8 +123,8 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testFactoryAndOtherScopeInjections_CDIFacesInWebXML() throws Exception {
-        testFactoryAndOtherAppScopedInjectionsByApp("CDIFacesInWebXML", jsfCDIFacesInWebXMLServer);
+    public void testFactoryAndOtherScopeInjections_CDIFacesInMetaInf() throws Exception {
+        testFactoryAndOtherAppScopedInjectionsByApp("CDIFacesInMetaInf", server);
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,48 +26,37 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is one of four CDI test applications, with configuration loaded in the following manner:
- * CDIConfigByACP - Application Configuration Populator loading of the class files
+ * CDIFacesInWebXML - web.xml param that points to two faces-config files.
  *
  * We're extending CDITestBase, which has common test code.
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class CDIConfigByACPTests extends CDITestBase {
+public class JSF23CDIFacesInWebXMLTests extends CDITestBase {
 
-    @Server("jsfCDIConfigByACPServer")
-    public static LibertyServer jsfCDIConfigByACPServer;
+    @Server("jsf23CDIFacesInWebXMLServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-
-        // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war,
-        JavaArchive cdiConfigByACPJar = ShrinkWrap.create(JavaArchive.class, "CDIConfigByACP.jar");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.factory");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop");
-        ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACP.jar" + "/resources");
-
-        // Create the CDIConfigByACP.war application
-        WebArchive cdiConfigByACPWar = ShrinkWrap.create(WebArchive.class, "CDIConfigByACP.war");
-        cdiConfigByACPWar.addAsLibrary(cdiConfigByACPJar);
-        cdiConfigByACPWar.addPackage("com.ibm.ws.jsf23.fat.cdi.appconfigpop");
-        ShrinkHelper.addDirectory(cdiConfigByACPWar, "test-applications/" + "CDIConfigByACP.war" + "/resources");
-        ShrinkHelper.exportToServer(jsfCDIConfigByACPServer, "dropins", cdiConfigByACPWar);
+        ShrinkHelper.defaultDropinApp(server, "CDIFacesInWebXML.war",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
         // Start the server and use the class name so we can find logs easily.
-        jsfCDIConfigByACPServer.startServer(CDIConfigByACPTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23CDIFacesInWebXMLTests.class.getSimpleName() + ".log");
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsfCDIConfigByACPServer != null && jsfCDIConfigByACPServer.isStarted()) {
-            jsfCDIConfigByACPServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -83,21 +69,21 @@ public class CDIConfigByACPTests extends CDITestBase {
      *
      */
     @Test
-    public void testNavigationHandlerInjection_CDIConfigByACP() throws Exception {
-        testNavigationHandlerInjectionByApp("CDIConfigByACP", jsfCDIConfigByACPServer);
+    public void testNavigationHandlerInjection_CDIFacesInWebXML() throws Exception {
+        testNavigationHandlerInjectionByApp("CDIFacesInWebXML", server);
     }
 
     /**
      * Test to ensure that CDI 2.0 injection works for a custom EL Resolver
-     * Field and Method injection, but no Constructor injection.
-     * Also tested are use of request and session scope and use of qualifiers.
+     * Field and Method injection but no Constructor Injection.
+     * Also tested are use of request scope and use of qualifiers.
      *
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
     @Test
-    public void testELResolverInjection_CDIConfigByACP() throws Exception {
-        testELResolverInjectionByApp("CDIConfigByACP", jsfCDIConfigByACPServer);
+    public void testELResolverInjection_CDIFacesInWebXML() throws Exception {
+        testELResolverInjectionByApp("CDIFacesInWebXML", server);
     }
 
     /**
@@ -108,8 +94,8 @@ public class CDIConfigByACPTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomResourceHandlerInjections_CDIConfigByACP() throws Exception {
-        testCustomResourceHandlerInjectionsByApp("CDIConfigByACP", jsfCDIConfigByACPServer);
+    public void testCustomResourceHandlerInjections_CDIFacesInWebXML() throws Exception {
+        testCustomResourceHandlerInjectionsByApp("CDIFacesInWebXML", server);
 
     }
 
@@ -121,8 +107,8 @@ public class CDIConfigByACPTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomStateManagerInjections_CDIConfigByACP() throws Exception {
-        testCustomStateManagerInjectionsByApp("CDIConfigByACP", jsfCDIConfigByACPServer);
+    public void testCustomStateManagerInjections_CDIFacesInWebXML() throws Exception {
+        testCustomStateManagerInjectionsByApp("CDIFacesInWebXML", server);
     }
 
     /**
@@ -137,8 +123,8 @@ public class CDIConfigByACPTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testFactoryAndOtherScopeInjections_CDIConfigByACP() throws Exception {
-        testFactoryAndOtherAppScopedInjectionsByApp("CDIConfigByACP", jsfCDIConfigByACPServer);
+    public void testFactoryAndOtherScopeInjections_CDIFacesInWebXML() throws Exception {
+        testFactoryAndOtherAppScopedInjectionsByApp("CDIFacesInWebXML", server);
     }
 
 }

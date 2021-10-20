@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,37 +29,48 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is one of four CDI test applications, with configuration loaded in the following manner:
- * CDIFacesInMetaInf - META-INF/faces-config.xml
+ * CDIConfigByACP - Application Configuration Populator loading of the class files
  *
  * We're extending CDITestBase, which has common test code.
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class CDIFacesInMetaInfTests extends CDITestBase {
+public class JSF23CDIConfigByACPTests extends CDITestBase {
 
-    @Server("jsfCDIFacesInMetaInfServer")
-    public static LibertyServer jsfCDIFacesInMetaInfServer;
+    @Server("jsf23CDIConfigByACPServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfCDIFacesInMetaInfServer, "CDIFacesInMetaInf.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+
+        // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war,
+        JavaArchive cdiConfigByACPJar = ShrinkWrap.create(JavaArchive.class, "CDIConfigByACP.jar");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.factory");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop");
+        ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACP.jar" + "/resources");
+
+        // Create the CDIConfigByACP.war application
+        WebArchive cdiConfigByACPWar = ShrinkWrap.create(WebArchive.class, "CDIConfigByACP.war");
+        cdiConfigByACPWar.addAsLibrary(cdiConfigByACPJar);
+        cdiConfigByACPWar.addPackage("com.ibm.ws.jsf23.fat.cdi.appconfigpop");
+        ShrinkHelper.addDirectory(cdiConfigByACPWar, "test-applications/" + "CDIConfigByACP.war" + "/resources");
+        ShrinkHelper.exportToServer(server, "dropins", cdiConfigByACPWar);
 
         // Start the server and use the class name so we can find logs easily.
-        jsfCDIFacesInMetaInfServer.startServer(CDIFacesInMetaInfTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23CDIConfigByACPTests.class.getSimpleName() + ".log");
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsfCDIFacesInMetaInfServer != null && jsfCDIFacesInMetaInfServer.isStarted()) {
-            jsfCDIFacesInMetaInfServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -69,8 +83,8 @@ public class CDIFacesInMetaInfTests extends CDITestBase {
      *
      */
     @Test
-    public void testNavigationHandlerInjection_CDIFacesInMetaInf() throws Exception {
-        testNavigationHandlerInjectionByApp("CDIFacesInMetaInf", jsfCDIFacesInMetaInfServer);
+    public void testNavigationHandlerInjection_CDIConfigByACP() throws Exception {
+        testNavigationHandlerInjectionByApp("CDIConfigByACP", server);
     }
 
     /**
@@ -82,8 +96,8 @@ public class CDIFacesInMetaInfTests extends CDITestBase {
      *
      */
     @Test
-    public void testELResolverInjection_CDIFacesInMetaInf() throws Exception {
-        testELResolverInjectionByApp("CDIFacesInMetaInf", jsfCDIFacesInMetaInfServer);
+    public void testELResolverInjection_CDIConfigByACP() throws Exception {
+        testELResolverInjectionByApp("CDIConfigByACP", server);
     }
 
     /**
@@ -94,8 +108,8 @@ public class CDIFacesInMetaInfTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomResourceHandlerInjections_CDIFacesInMetaInf() throws Exception {
-        testCustomResourceHandlerInjectionsByApp("CDIFacesInMetaInf", jsfCDIFacesInMetaInfServer);
+    public void testCustomResourceHandlerInjections_CDIConfigByACP() throws Exception {
+        testCustomResourceHandlerInjectionsByApp("CDIConfigByACP", server);
 
     }
 
@@ -107,8 +121,8 @@ public class CDIFacesInMetaInfTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testCustomStateManagerInjections_CDIFacesInMetaInf() throws Exception {
-        testCustomStateManagerInjectionsByApp("CDIFacesInMetaInf", jsfCDIFacesInMetaInfServer);
+    public void testCustomStateManagerInjections_CDIConfigByACP() throws Exception {
+        testCustomStateManagerInjectionsByApp("CDIConfigByACP", server);
     }
 
     /**
@@ -123,8 +137,8 @@ public class CDIFacesInMetaInfTests extends CDITestBase {
      * @throws Exception
      */
     @Test
-    public void testFactoryAndOtherScopeInjections_CDIFacesInMetaInf() throws Exception {
-        testFactoryAndOtherAppScopedInjectionsByApp("CDIFacesInMetaInf", jsfCDIFacesInMetaInfServer);
+    public void testFactoryAndOtherScopeInjections_CDIConfigByACP() throws Exception {
+        testFactoryAndOtherAppScopedInjectionsByApp("CDIConfigByACP", server);
     }
 
 }
