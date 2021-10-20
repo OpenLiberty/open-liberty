@@ -28,8 +28,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
     OpentracingTCKLauncher.class,
-//    OpentracingTCKLauncherMicroProfile.class,
-//    OpentracingRestClientTCKLauncher.class
+    OpentracingTCKLauncherMicroProfile.class,
+    OpentracingRestClientTCKLauncher.class
 })
 public class FATSuite {
     private static final String FEATURE_NAME = "io.openliberty.opentracing.mock-3.0.mf";
