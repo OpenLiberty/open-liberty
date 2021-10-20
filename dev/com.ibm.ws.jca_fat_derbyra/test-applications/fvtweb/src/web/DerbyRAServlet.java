@@ -644,34 +644,71 @@ public class DerbyRAServlet extends FATServlet {
 
     public void testErrorInFreeConn() throws Exception {
         DataSource ds = (DataSource) new InitialContext().lookup("eis/ds4");
-        Object managedConn = null;
-        Connection con = null;
-        Class<?> derbyConnClass = null;
+        Object managedConn1 = null;
+        Connection con1 = null;
+        Class<?> derbyConnClass1 = null;
         try {
-            con = ds.getConnection();
-            derbyConnClass = con.getClass();
-            Field f = derbyConnClass.getDeclaredField("mc");
-            managedConn = f.get(con);
-            Statement stmt = con.createStatement();
+            con1 = ds.getConnection();
+            derbyConnClass1 = con1.getClass();
+            Field f = derbyConnClass1.getDeclaredField("mc");
+            managedConn1 = f.get(con1);
+            Statement stmt = con1.createStatement();
             stmt.close();
         } finally {
-            con.close();
+            con1.close();
         }
 
         SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
 
-        Class<?> c = managedConn.getClass();
-        Method m = c.getMethod("notify", int.class, derbyConnClass, Exception.class);
-        m.invoke(managedConn, 5, con, sqe); //5 indicates connection error
+        Class<?> c = managedConn1.getClass();
+        Method m = c.getMethod("notify", int.class, derbyConnClass1, Exception.class);
+        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
 
         String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
         int begin = contents.indexOf("size=");
         int end = contents.indexOf(System.lineSeparator(), begin);
         int poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
 
-        //After the error, there should be 0 connections in the pool.
-        if (poolSizeAfterError != 0)
-            throw new Exception("Unexpected number of connections found.  Expected 0 but found " + poolSizeAfterError);
+        //After the error, there should be 1 connections in the pool.  Delaying the remove of a free managed connection.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
+
+        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
+        begin = contents.indexOf("size=");
+        end = contents.indexOf(System.lineSeparator(), begin);
+        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+
+        //After the error, there should be 1 connections in the pool.  Its not safe to remove the managed connection if its free.
+        //The free connection is only marked to not be reused.  Next use will remove this managed connection.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+
+        Object managedConn2 = null;
+        Connection con2 = null;
+        Class<?> derbyConnClass2 = null;
+        try {
+            con2 = ds.getConnection();
+            derbyConnClass2 = con2.getClass();
+            Field f = derbyConnClass2.getDeclaredField("mc");
+            managedConn2 = f.get(con2);
+            Statement stmt = con2.createStatement();
+            stmt.close();
+        } finally {
+            con2.close();
+        }
+        if (managedConn2 == managedConn1)
+            throw new Exception("We must have a new managed connection, review trace log");
+
+        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
+        begin = contents.indexOf("size=");
+        end = contents.indexOf(System.lineSeparator(), begin);
+        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+
+        //After the failing connection is removed and a new one is created, there should be 1 connections in the pool.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+
     }
 
     private int getMonitorData(ObjectName name, String attribute) throws Exception {
