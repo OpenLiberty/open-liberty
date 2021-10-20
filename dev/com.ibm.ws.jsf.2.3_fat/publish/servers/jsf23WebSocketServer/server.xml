@@ -10,14 +10,12 @@
  -->
 <server description="Server for testing JavaServer Faces 2.3 and CDI and WebSockets">
     <include location="../fatTestPorts.xml"/>
-    
+
     <featureManager>
         <feature>jsf-2.3</feature>
         <feature>cdi-2.0</feature>
         <feature>websocket-1.1</feature>
     </featureManager>
-    
+
     <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
- 
-    
 </server>

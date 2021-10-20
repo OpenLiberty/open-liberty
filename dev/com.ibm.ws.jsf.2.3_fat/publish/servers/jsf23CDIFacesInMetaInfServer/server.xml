@@ -21,5 +21,4 @@
     </featureManager>
 
     <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all:com.ibm.ws.cdi.web*:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:org.jboss.*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
-
 </server>

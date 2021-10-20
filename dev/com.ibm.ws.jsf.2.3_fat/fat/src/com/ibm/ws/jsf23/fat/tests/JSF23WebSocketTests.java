@@ -48,7 +48,7 @@ public class JSF23WebSocketTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIWSOCServer")
+    @Server("jsf23WebSocketServer")
     public static LibertyServer server;
 
     @BeforeClass
