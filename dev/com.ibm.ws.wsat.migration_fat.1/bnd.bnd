@@ -27,17 +27,18 @@ tested.features: \
 	servlet-5.0, expressionlanguage-4.0, xmlws-3.0, cdi-3.0, pages-3.0, connectors-2.0
 
 -buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.websphere.javaee.jws.1.0;version=latest,\
-  com.ibm.tx.jta;version=latest,\
-  javax.activation:activation;version=1.1,\
-  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.websphere.org.osgi.service.component,\
-  com.ibm.ws.transaction.test.util;version=latest,\
-  com.ibm.ws.tx.embeddable;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	javax.activation:activation;version='1.1',\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.transaction.fat.util
