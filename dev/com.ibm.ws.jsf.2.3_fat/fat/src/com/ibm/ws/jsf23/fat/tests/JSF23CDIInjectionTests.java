@@ -43,12 +43,12 @@ import junit.framework.Assert;
 public class JSF23CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23CDIInjectionServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "CDIInjectionTests.war",
+        ShrinkHelper.defaultDropinApp(server, "CDIInjectionTests.war",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans",
@@ -58,7 +58,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ActionListenerInjection.war",
+        ShrinkHelper.defaultDropinApp(server, "ActionListenerInjection.war",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
@@ -67,15 +67,15 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        jsf23CDIServer.startServer(JSF23CDIInjectionTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23CDIInjectionTests.class.getSimpleName() + ".log");
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -89,7 +89,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testActionListenerInjection_CDIInjectionTests() throws Exception {
-        testActionListenerInjectionByApp("ActionListenerInjection", jsf23CDIServer);
+        testActionListenerInjectionByApp("ActionListenerInjection", server);
     }
 
     /**
@@ -102,7 +102,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testNavigationHandlerInjection_CDIInjectionTests() throws Exception {
-        testNavigationHandlerInjectionByApp("CDIInjectionTests", jsf23CDIServer);
+        testNavigationHandlerInjectionByApp("CDIInjectionTests", server);
     }
 
     /**
@@ -115,7 +115,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testELResolverInjection_CDIInjectionTests() throws Exception {
-        testELResolverInjectionByApp("CDIInjectionTests", jsf23CDIServer);
+        testELResolverInjectionByApp("CDIInjectionTests", server);
     }
 
     /**
@@ -127,7 +127,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testCustomResourceHandlerInjections_CDIInjectionTests() throws Exception {
-        testCustomResourceHandlerInjectionsByApp("CDIInjectionTests", jsf23CDIServer);
+        testCustomResourceHandlerInjectionsByApp("CDIInjectionTests", server);
 
     }
 
@@ -140,7 +140,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testCustomStateManagerInjections_CDIInjectionTests() throws Exception {
-        testCustomStateManagerInjectionsByApp("CDIInjectionTests", jsf23CDIServer);
+        testCustomStateManagerInjectionsByApp("CDIInjectionTests", server);
     }
 
     /**
@@ -156,7 +156,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testFactoryAndOtherScopeInjections_CDIInjectionTests() throws Exception {
-        testFactoryAndOtherAppScopedInjectionsByApp("CDIInjectionTests", jsf23CDIServer);
+        testFactoryAndOtherAppScopedInjectionsByApp("CDIInjectionTests", server);
     }
 
     /**
@@ -176,15 +176,15 @@ public class JSF23CDIInjectionTests extends CDITestBase {
         // for MyFaces 2.3.7 and newer versions. The original message was "MyFaces CDI support enabled".
         String msgToSearchFor2 = "MyFaces Core CDI support enabled";
 
-        this.verifyResponse("CDIInjectionTests", "index.xhtml", "Hello Worldy world", jsf23CDIServer);
+        this.verifyResponse("CDIInjectionTests", "index.xhtml", "Hello Worldy world", server);
 
         // Check the trace.log to see if the proper InjectionProvider is being used.
-        String isInjectionProviderBeingLoaded = jsf23CDIServer.waitForStringInTrace(msgToSearchFor1, 30 * 1000);
+        String isInjectionProviderBeingLoaded = server.waitForStringInTrace(msgToSearchFor1, 30 * 1000);
 
         // Reset the log search offset position to avoid conflict with other searches
-        jsf23CDIServer.resetLogOffsets();
+        server.resetLogOffsets();
 
-        String isCDISupportEnabled = jsf23CDIServer.waitForStringInLog(msgToSearchFor2, 30 * 1000);
+        String isCDISupportEnabled = server.waitForStringInLog(msgToSearchFor2, 30 * 1000);
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor1,
@@ -204,7 +204,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testBeanInjection() throws Exception {
-        this.verifyResponse("CDIInjectionTests", "TestBean.jsf", jsf23CDIServer,
+        this.verifyResponse("CDIInjectionTests", "TestBean.jsf", server,
                             ":TestBean:", "class com.ibm.ws.jsf23.fat.cdi.common.beans.injected.TestBeanFieldBean",
                             "com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean",
                             ":PostConstructCalled:");
@@ -221,7 +221,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
         try (WebClient webClient = new WebClient(); WebClient webClient2 = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "ViewScope.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -258,7 +258,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
             webClient2.getCookieManager().clearCookies();
 
             // Construct the URL for the test
-            url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "ViewScope.jsf");
+            url = JSFUtils.createHttpUrl(server, contextRoot, "ViewScope.jsf");
             HtmlPage page2 = (HtmlPage) webClient2.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -298,48 +298,48 @@ public class JSF23CDIInjectionTests extends CDITestBase {
         String contextRootActionListenerInjection = "ActionListenerInjection";
 
         // Drive requests to ensure all injected objected are created.
-        this.verifyStatusCode(contextRootCDIInjectionTests, "index.xhtml", 200, jsf23CDIServer);
-        this.verifyStatusCode(contextRootCDIInjectionTests, "index.xhtml", 200, jsf23CDIServer);
-        this.verifyStatusCode(contextRootCDIInjectionTests, "TestBean.jsf", 200, jsf23CDIServer);
-        this.verifyStatusCode(contextRootActionListenerInjection, "ActionListener.jsf", 200, jsf23CDIServer);
+        this.verifyStatusCode(contextRootCDIInjectionTests, "index.xhtml", 200, server);
+        this.verifyStatusCode(contextRootCDIInjectionTests, "index.xhtml", 200, server);
+        this.verifyStatusCode(contextRootCDIInjectionTests, "TestBean.jsf", 200, server);
+        this.verifyStatusCode(contextRootActionListenerInjection, "ActionListener.jsf", 200, server);
 
         // Restart the app so that preDestory gets called;
         // make sure we reset log offsets correctly
-        jsf23CDIServer.setMarkToEndOfLog();
-        Assert.assertTrue("The CDIInjectionTests.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("CDIInjectionTests.war"));
-        Assert.assertTrue("The ActionListenerInjection.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("ActionListenerInjection.war"));
+        server.setMarkToEndOfLog();
+        Assert.assertTrue("The CDIInjectionTests.war application was not restarted.", server.restartDropinsApplication("CDIInjectionTests.war"));
+        Assert.assertTrue("The ActionListenerInjection.war application was not restarted.", server.restartDropinsApplication("ActionListenerInjection.war"));
 
-        jsf23CDIServer.resetLogOffsets();
+        server.resetLogOffsets();
 
         // Now check the preDestoys
-        assertFalse("CustomActionListener preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomActionListener preDestroy called.").isEmpty());
-        assertFalse("CustomELResolver preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomELResolver preDestroy called.").isEmpty());
-        assertFalse("CustomNavigationHandler preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomNavigationHandler preDestroy called").isEmpty());
-        assertFalse("TestBean preDestroy not called", jsf23CDIServer.findStringsInLogs("TestBean preDestroy called.").isEmpty());
+        assertFalse("CustomActionListener preDestroy not called", server.findStringsInLogs("CustomActionListener preDestroy called.").isEmpty());
+        assertFalse("CustomELResolver preDestroy not called", server.findStringsInLogs("CustomELResolver preDestroy called.").isEmpty());
+        assertFalse("CustomNavigationHandler preDestroy not called", server.findStringsInLogs("CustomNavigationHandler preDestroy called").isEmpty());
+        assertFalse("TestBean preDestroy not called", server.findStringsInLogs("TestBean preDestroy called.").isEmpty());
 
-        assertFalse("CustomStateManager preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomStateManager preDestroy called").isEmpty());
-        assertFalse("CustomResourceHandler preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomResourceHandler preDestroy called.").isEmpty());
+        assertFalse("CustomStateManager preDestroy not called", server.findStringsInLogs("CustomStateManager preDestroy called").isEmpty());
+        assertFalse("CustomResourceHandler preDestroy not called", server.findStringsInLogs("CustomResourceHandler preDestroy called.").isEmpty());
 
-        assertFalse("CustomApplicationFactory preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomApplicationFactory preDestroy called.").isEmpty());
-        assertFalse("CustomLifecycleFactory preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomLifecycleFactory preDestroy called.").isEmpty());
+        assertFalse("CustomApplicationFactory preDestroy not called", server.findStringsInLogs("CustomApplicationFactory preDestroy called.").isEmpty());
+        assertFalse("CustomLifecycleFactory preDestroy not called", server.findStringsInLogs("CustomLifecycleFactory preDestroy called.").isEmpty());
         assertFalse("CustomExceptionHandlerFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomExceptionHandlerFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomExceptionHandlerFactory preDestroy called.").isEmpty());
         assertFalse("CustomExternalContextFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomExternalContextFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomExternalContextFactory preDestroy called.").isEmpty());
         assertFalse("CustomFacesContextFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomFacesContextFactory preDestroy called.").isEmpty());
-        assertFalse("CustomRenderKitFactory preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomRenderKitFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomFacesContextFactory preDestroy called.").isEmpty());
+        assertFalse("CustomRenderKitFactory preDestroy not called", server.findStringsInLogs("CustomRenderKitFactory preDestroy called.").isEmpty());
         assertFalse("CustomViewDeclarationLanguageFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomViewDeclarationLanguageFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomViewDeclarationLanguageFactory preDestroy called.").isEmpty());
         assertFalse("CustomTagHandlerDelegateFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomTagHandlerDelegateFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomTagHandlerDelegateFactory preDestroy called.").isEmpty());
         assertFalse("CustomPartialViewContextFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomPartialViewContextFactory preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomPartialViewContextFactory preDestroy called.").isEmpty());
         assertFalse("CustomVisitContextFactory preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomVisitContextFactory preDestroy called.").isEmpty());
-        assertFalse("CustomPhaseListener preDestroy not called", jsf23CDIServer.findStringsInLogs("CustomPhaseListener preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomVisitContextFactory preDestroy called.").isEmpty());
+        assertFalse("CustomPhaseListener preDestroy not called", server.findStringsInLogs("CustomPhaseListener preDestroy called.").isEmpty());
         assertFalse("CustomSystemEventListener preDestroy not called",
-                    jsf23CDIServer.findStringsInLogs("CustomSystemEventListener preDestroy called.").isEmpty());
+                    server.findStringsInLogs("CustomSystemEventListener preDestroy called.").isEmpty());
     }
 
 }
