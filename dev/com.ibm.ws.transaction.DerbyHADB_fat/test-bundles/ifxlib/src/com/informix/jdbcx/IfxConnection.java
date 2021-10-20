@@ -732,8 +732,8 @@ public class IfxConnection implements Connection {
         IfxConnection._duplicateCounter++;
     }
 
-    public static void setDuplicateNow() {
-        IfxConnection._duplicateNow = true;
+    public static void setDuplicateNow(boolean dupNow) {
+        IfxConnection._duplicateNow = dupNow;
     }
 
     public static boolean isDuplicateNow() {

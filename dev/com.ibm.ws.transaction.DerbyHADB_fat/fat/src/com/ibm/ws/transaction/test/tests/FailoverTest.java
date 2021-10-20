@@ -490,7 +490,9 @@ public class FailoverTest extends FATServletClient {
         StringBuilder sb = null;
 
         Log.info(this.getClass(), method, "call setupForStartupFailover");
+
         FATUtils.startServers(runner, defaultServer);
+
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForStartupFailover");
 
         Log.info(this.getClass(), method, "call stopserver");
@@ -501,8 +503,10 @@ public class FailoverTest extends FATServletClient {
         FATUtils.startServers(runner, defaultServer);
         Log.info(this.getClass(), method, "call driveTransactions");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+
         Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "complete");
     }
 
@@ -517,7 +521,9 @@ public class FailoverTest extends FATServletClient {
     public void testDuplicationInRecoveryLogsRestart() throws Exception {
         final String method = "testDuplicationInRecoveryLogsRestart";
         StringBuilder sb = null;
+
         FATUtils.startServers(runner, defaultServer);
+
         Log.info(this.getClass(), method, "call setupForDuplicationRestart");
 
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRestart");
@@ -605,6 +611,57 @@ public class FailoverTest extends FATServletClient {
         Assert.assertFalse("Unexpectedly found duplicates on test completion", lines.size() > numDups);
         Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "complete");
+    }
+
+    /**
+     * Drive a set of transactions and inject duplicate recovery log entries into a database log, check that the duplicate records are
+     * in the database, drive more transactions and check that the duplicate records have been deleted by the runtime.
+     *
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testDuplicationInRecoveryLogsRuntime() throws Exception {
+        final String method = "testDuplicationInRecoveryLogsRuntime";
+        StringBuilder sb = null;
+        startServers(defaultServer);
+        Log.info(this.getClass(), method, "call setupForDuplicationRuntime");
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRuntime");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        defaultServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        startServers(defaultServer);
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        List<String> lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
+
+        Log.info(this.getClass(), method, "call driveSixTransactions");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertTrue("Unexpectedly found no duplicates", lines.size() > 0);
+        int numDups = lines.size();
+
+        Log.info(this.getClass(), method, "call driveSixTransactions");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertFalse("Unexpectedly found duplicates on test completion", lines.size() > numDups);
+
         Log.info(this.getClass(), method, "complete");
     }
 

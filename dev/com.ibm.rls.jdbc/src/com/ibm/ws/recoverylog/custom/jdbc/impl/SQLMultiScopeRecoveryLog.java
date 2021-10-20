@@ -2032,8 +2032,26 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     // Method: SQLMultiScopeRecoveryLog.isSQLErrorTransient
     //------------------------------------------------------------------------------
     /**
-     * Determine whether we have encountered a potentially transient
-     * SQL error condition. If so we can retry the SQL.
+     * Determine whether we have encountered a potentially transient SQL error condition. If so we can retry the SQL.
+     *
+     * This method is at the heart of the design for retrying SQL operations. If a SQL call receives a SQLTransientException, then we will re-execute the call (acquiring a new
+     * Connection on each occasion) a configured number of times with a configured time interval until the call succeeds or we give up, report the exception and invalidate the
+     * recovery log.
+     *
+     * This design has been (optionally) extended to retry on any SQLException if the server.xml enableLogRetries parameter has been set.
+     *
+     * Note that we have considered the specific situation where a call receives a SQLException on commit() and the call is re-executed. It is not possible to know whether the
+     * commit operation failed or succeeded, so failure is assumed. The impact on this situation occurring in forceSections() is as follows.
+     *
+     * In the forceSections() code an RMLT may comprise a set of inserts, updates and deletes. In the (potential) case where a SQLException was thrown but the commit operation
+     * was completed by the RDBMS, then, after acquiring a new Connection and taking the HADB lock...
+     *
+     * - re-execution of the inserts would result in a set of duplicate rows in the db table
+     * - re-execution of the updates would be a no-op, ie setting columns in a row to identical values
+     * - re-execution of the deletes would also be a no-op, the second attempt would simply delete no rows.
+     *
+     * The potentially sticky thing here is the duplicate rows in the db table. In practice, this does not appear to be an issue - recovery will create one set of runtime
+     * objects from the duplicate rows and deletion at runtime will clear out all appropriate rows.
      *
      * @return true if the error is transient.
      */

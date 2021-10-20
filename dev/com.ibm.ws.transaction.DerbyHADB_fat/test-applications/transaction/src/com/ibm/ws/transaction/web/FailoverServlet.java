@@ -12,8 +12,13 @@ package com.ibm.ws.transaction.web;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -34,11 +39,14 @@ import componenttest.app.FATServlet;
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE, HALT
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT
     };
 
-    private static int _batchSize;
-    private static int _resources;
+    /**
+     * Lookup string that allows character digit lookup by index value.
+     * ie _digits[9] == '9' etc.
+     */
+    private final static String _digits = "0123456789abcdef";
 
     @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds;
@@ -67,10 +75,16 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
     }
 
-    public void setupForDuplication(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForDuplication");
-        setupTestParameters(request, response, TestType.DUPLICATE, 0, 10, 1);
-        System.out.println("FAILOVERSERVLET: setupForDuplication complete");
+    public void setupForDuplicationRestart(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForDuplicationRestart");
+        setupTestParameters(request, response, TestType.DUPLICATE_RESTART, 0, 10, 1);
+        System.out.println("FAILOVERSERVLET: setupForDuplicationRestart complete");
+    }
+
+    public void setupForDuplicationRuntime(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForDuplicationRuntime");
+        setupTestParameters(request, response, TestType.DUPLICATE_RUNTIME, 0, 10, 1);
+        System.out.println("FAILOVERSERVLET: setupForDuplicationRuntime complete");
     }
 
     public void setupForHalt(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -126,16 +140,35 @@ public class FailoverServlet extends FATServlet {
     public void driveTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: driveTransactions");
 
-        // Get the test parameters
-        _batchSize = 10;
-        _resources = 2;
-
+        // Set the test parameters
+        int batchSize = 10;
+        int resources = 2;
         try {
             // Drive the transactions
-            System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + _resources + ", batchSize: "
-                               + _batchSize);
+            System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + resources + ", batchSize: "
+                               + batchSize);
 
-            simulateTransactions(request, response);
+            simulateTransactions(request, response, batchSize, resources);
+
+        } catch (Exception e) {
+            System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
+            throw new Exception();
+        }
+
+    }
+
+    public void driveSixTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: driveSixTransactions");
+
+        // Set the test parameters
+        int batchSize = 6;
+        int resources = 2;
+        try {
+            // Drive the transactions
+            System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + resources + ", batchSize: "
+                               + batchSize);
+
+            simulateTransactions(request, response, batchSize, resources);
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
@@ -147,16 +180,16 @@ public class FailoverServlet extends FATServlet {
     public void driveTransactionsWithFailure(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: driveTransactionsWithFailure");
 
-        // Get the test parameters
-        _batchSize = 10;
-        _resources = 2;
+        // Set the test parameters
+        int batchSize = 10;
+        int resources = 2;
 
         try {
             // Drive the transactions
-            System.out.println("FAILOVERSERVLET: drive a batch of transactions, resources: " + _resources + ", batchSize: "
-                               + _batchSize);
+            System.out.println("FAILOVERSERVLET: drive a batch of transactions, resources: " + resources + ", batchSize: "
+                               + batchSize);
 
-            simulateTransactions(request, response);
+            simulateTransactions(request, response, batchSize, resources);
             System.out.println("FAILOVERSERVLET: failed to throw SystemException");
             throw new Exception();
         } catch (javax.transaction.SystemException sysex) {
@@ -167,7 +200,7 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
-    private void simulateTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void simulateTransactions(HttpServletRequest request, HttpServletResponse response, int batchSize, int resources) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
         System.out.println("FAILOVERSERVLET: Starting simulateTransactions");
@@ -188,11 +221,12 @@ public class FailoverServlet extends FATServlet {
          * and the total number of transactions to attempt to drive.
          */
 
-        for (int i = 0; i < _batchSize; i++) {
+        for (int i = 0; i < batchSize; i++) {
+            System.out.println("FAILOVERSERVLET: Begin Transaction - " + i);
             tm.begin();
 
-            if (_resources > 0) {
-                for (int j = 0; j < _resources; j++) {
+            if (resources > 0) {
+                for (int j = 0; j < resources; j++) {
                     tm.enlist(new XAResourceImpl(), recoveryId);
                 }
             }
@@ -200,5 +234,94 @@ public class FailoverServlet extends FATServlet {
         }
         System.out.println("FAILOVERSERVLET: simulateTransactions main loop has completed successfully");
 
+    }
+
+    public void checkForDuplicates(HttpServletRequest request,
+                                   HttpServletResponse response) throws Exception {
+        Connection conn = ds.getConnection();
+        conn.setAutoCommit(false);
+        Set<List> resultSet;
+        List row;
+        Statement recoveryStmt = null;
+        ResultSet recoveryRS = null;
+
+        try {
+            recoveryStmt = conn.createStatement();
+            String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
+                                 " FROM WAS_TRAN_LOG" +
+                                 " WHERE SERVER_NAME='com.ibm.ws.transaction'" +
+                                 " AND SERVICE_ID=1";
+            System.out.println("Retrieve all rows from table using - " + queryString);
+
+            recoveryRS = recoveryStmt.executeQuery(queryString);
+
+            resultSet = new HashSet<List>();
+
+            while (recoveryRS.next()) {
+                final long ruId = recoveryRS.getLong(1);
+                final long sectId = recoveryRS.getLong(2);
+                final int index = recoveryRS.getInt(3);
+                final byte[] data = recoveryRS.getBytes(4);
+                String theBytesString = toHexString(data, 32);
+                System.out.println("SQL TRANLOG: ruId: " + ruId + " sectionId: " + sectId + " item: " + index + " data: " + theBytesString);
+                row = new ArrayList();
+                row.add(ruId);
+                row.add(sectId);
+                row.add(index);
+                if (resultSet.add(row)) {
+                    System.out.println("SQL TRANLOG: UNIQUE row");
+                } else {
+                    System.out.println("SQL TRANLOG: Found DUPLICATE row");
+                }
+            }
+
+            // UserTransaction Commit
+            conn.setAutoCommit(false);
+
+            System.out.println("FAILOVERSERVLET: commit changes to database");
+            conn.commit();
+        } catch (Exception ex) {
+            System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+        } finally {
+            if (recoveryRS != null && !recoveryRS.isClosed())
+                recoveryRS.close();
+            if (recoveryStmt != null && !recoveryStmt.isClosed())
+                recoveryStmt.close();
+        }
+
+    }
+
+    public static String toHexString(byte[] byteSource, int bytes) {
+        StringBuffer result = null;
+        boolean truncated = false;
+
+        if (byteSource != null) {
+            if (bytes > byteSource.length) {
+                // If the number of bytes to display is larger than the available number of
+                // bytes, then reset the number of bytes to display to be the available
+                // number of bytes.
+                bytes = byteSource.length;
+            } else if (bytes < byteSource.length) {
+                // If we are displaying less bytes than are available then detect this
+                // 'truncation' condition.
+                truncated = true;
+            }
+
+            result = new StringBuffer(bytes * 2);
+            for (int i = 0; i < bytes; i++) {
+                result.append(_digits.charAt((byteSource[i] >> 4) & 0xf));
+                result.append(_digits.charAt(byteSource[i] & 0xf));
+            }
+
+            if (truncated) {
+                result.append("... (" + bytes + "/" + byteSource.length + ")");
+            } else {
+                result.append("(" + bytes + ")");
+            }
+        } else {
+            result = new StringBuffer("null");
+        }
+
+        return (result.toString());
     }
 }

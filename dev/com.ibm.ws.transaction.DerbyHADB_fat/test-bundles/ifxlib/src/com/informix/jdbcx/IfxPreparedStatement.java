@@ -160,19 +160,21 @@ public class IfxPreparedStatement implements PreparedStatement {
         if (IfxConnection.isDuplicationEnabled()) {
             System.out.println("SIMHADB: executeBatch, duplication Enabled, Counter -" + IfxConnection.getDuplicateCounter());
             IfxConnection.incrementDuplicateCounter();
+
+            // Check to see if we should start accumulating the data that will be duplicated in the recovery log.
             if (IfxConnection.getDuplicateCounter() >= IfxConnection.getFailoverValue()) {
-                IfxConnection.setDuplicateNow();
+                IfxConnection.setDuplicateNow(true);
             }
+            // Check to see if it is time to add the duplicate rows to the database and halt the VM.
+            // "+2" accumulates 2 sets of duplicate data
             if (IfxConnection.getDuplicateCounter() >= IfxConnection.getFailoverValue() + 2) {
                 System.out.println("SIMHADB: executeBatch, enter halt phase with rowMap " + _duplicateRows);
 
-                //halt
+                // Duplicate and halt provided this prepared statement is for an "INSERT INTO WAS_TRAN_LOG"
                 if (_tranlogInsertFlag)
                     duplicateAndHalt();
             }
-        }
-
-        if (IfxConnection.isHaltEnabled()) {
+        } else if (IfxConnection.isHaltEnabled()) {
             System.out.println("SIMHADB: executeBatch, halt Enabled, Counter -" + IfxConnection.getHaltCounter());
             IfxConnection.incrementHaltCounter();
 
@@ -899,6 +901,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     /**
      * Insert the duplicate data and crash the VM, so that the server can be restarted and handle the duplicate data.
      *
+     * Duplicate data has been accumulated in the _duplicateRows Map. In this method it is set into the wrapped PreparedStatement
+     * using the PreparedStatement.set<Type> methods, added to a batch, executed and committed.
+     *
      * @throws SQLException
      */
     private void duplicateAndHalt() throws SQLException {
@@ -941,14 +946,22 @@ public class IfxPreparedStatement implements PreparedStatement {
             System.out.println("SIMHADB: duplicateAndHalt, now commit");
             Connection myconn = getConnection();
             myconn.commit();
-            System.out.println("SIMHADB: duplicateAndHalt, now HALT");
-            Runtime.getRuntime().halt(-2000);
+            if (IfxConnection.isHaltEnabled()) {
+                System.out.println("SIMHADB: duplicateAndHalt, now HALT");
+                Runtime.getRuntime().halt(-2000);
+            } else {
+                System.out.println("SIMHADB: duplicateAndHalt, HALT is disabled");
+
+                // At this point reset the duplication parameters
+                IfxConnection.setDuplicationEnabled(false);
+                IfxConnection.setDuplicateNow(false);
+            }
 
         }
     }
 
     /**
-     * Insert the duplicate data and crash the VM, so that the server can be restarted and handle the duplicate data.
+     * Simply crash the VM.
      *
      * @throws SQLException
      */
