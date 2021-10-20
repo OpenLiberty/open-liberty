@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,13 @@ USERINFO_INVALID.explanation=Je vy\u017eadov\u00e1na shoda d\u00edl\u010d\u00edh
 USERINFO_INVALID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect generuje platn\u00e1 data s informacemi o u\u017eivateli.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu autorizace, ale nen\u00ed nastavena.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu autorizace mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du nebo po\u017eadovan\u00fdch token\u016f.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Nastavte atribut authorizationEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu autorizace poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu tokenu, ale nen\u00ed nastavena.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu tokenu mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed po\u017eadovan\u00fdch token\u016f.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Nastavte atribut tokenEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu tokenu poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

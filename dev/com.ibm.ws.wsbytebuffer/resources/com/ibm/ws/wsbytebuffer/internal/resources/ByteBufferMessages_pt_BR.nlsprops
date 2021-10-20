@@ -35,6 +35,6 @@ CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: O componente WsByteBuffer gerou uma ex
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Um valor da propriedade de configura\u00e7\u00e3o WsByteBuffer n\u00e3o \u00e9 um n\u00famero v\u00e1lido.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrija o erro de configura\u00e7\u00e3o.
 
-POOL_MISMATCH=CWWKO0603E: As especifica\u00e7\u00f5es de tamanhos de conjunto e profundidades de conjunto WsByteBuffer n\u00e3o possuem o mesmo n\u00famero de entradas. Tamanhos: {0}  Profundidades: {1}
+POOL_MISMATCH=CWWKO0603E: As especifica\u00e7\u00f5es de tamanhos de conjunto e profundidades de conjunto WsByteBuffer n\u00e3o possuem o mesmo n\u00famero de entradas.  Tamanhos: {0}  Profundidades: {1}
 POOL_MISMATCH.explanation=Os tamanhos de conjunto ou as profundidades de conjunto foram especificadas incorretamente.
 POOL_MISMATCH.useraction=Corrija o erro de configura\u00e7\u00e3o.

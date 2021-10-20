@@ -293,4 +293,6 @@ OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Clientul O
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=R\u0103spunsul web trebuie s\u0103 fie un JWT \u00een formatul JWE (JSON Web Encryption) sau JWS (JWS Web Signature). R\u0103spunsul ar putea fi formatat gre\u015fit sau clientul OpenID Connect a \u00eent\u00e2lnit o alt\u0103 eroare la procesarea r\u0103spunsului.
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 r\u0103spunsul este \u00een format JWT.
 
+#1534, 1535 used in clients.common bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

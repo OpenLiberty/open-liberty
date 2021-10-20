@@ -35,6 +35,6 @@ CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: Le composant WsByteBuffer a g\u00e9n\u
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=La valeur d'une propri\u00e9t\u00e9 de configuration WsByteBuffer n'est pas un nombre valide.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrigez l'erreur de configuration.
 
-POOL_MISMATCH=CWWKO0603E: Les sp\u00e9cifications de profondeurs de pool et de tailles de pool du composant WsByteBuffer n''ont pas le m\u00eame nombre d''entr\u00e9es. Tailles : {0}  Profondeurs : {1}
+POOL_MISMATCH=CWWKO0603E: Les sp\u00e9cifications de profondeurs de pool et de tailles de pool du composant WsByteBuffer n''ont pas le m\u00eame nombre d''entr\u00e9es.  Tailles : {0}  Profondeurs : {1}
 POOL_MISMATCH.explanation=Les tailles et profondeurs de pool ont \u00e9t\u00e9 sp\u00e9cifi\u00e9es de mani\u00e8re incorrecte.
 POOL_MISMATCH.useraction=Corrigez l'erreur de configuration.

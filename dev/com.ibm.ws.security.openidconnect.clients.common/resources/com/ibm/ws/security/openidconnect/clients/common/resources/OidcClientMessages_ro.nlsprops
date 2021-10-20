@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,13 @@ USERINFO_INVALID.explanation=Subcererea datelor de informa\u0163ii utilizator tr
 USERINFO_INVALID.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Connect genereaz\u0103 informa\u0163ii de utilizator valide.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Clientul OpenID Connect [{0}] necesit\u0103 un URL de punct final de autorizare, dar nu este setat.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Trebuie s\u0103 fie setat un URL de punct final de autorizare pentru a ob\u0163ine un cod de autorizare sau jetoanele necesare.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Seta\u0163i atributul authorizationEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de autorizare al furnizorului OpenID Connect. Sau seta\u0163i atributul discoveryEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de descoperire al furnizorului OpenID Connect.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Clientul OpenID Connect [{0}] necesit\u0103 un URL de punct final de jeton, dar nu este setat.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Trebuie s\u0103 fie setat un URL de punct final de jeton pentru a ob\u0163ine jetoanele necesare.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Seta\u0163i atributul tokenEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de jeton al furnizorului OpenID Connect. Sau seta\u0163i atributul discoveryEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de descoperire al furnizorului OpenID Connect.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
