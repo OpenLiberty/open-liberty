@@ -22,16 +22,17 @@ tested.features: \
 	servlet-4.0, servlet-5.0, jaxb-2.3, jaxws-2.3, expressionlanguage-4.0, xmlws-3.0, cdi-3.0, pages-3.0
 
 -buildpath: \
-  com.ibm.tx.jta;version=latest,\
-  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.websphere.org.osgi.service.component,\
-  com.ibm.ws.transaction.test.util;version=latest,\
-  com.ibm.ws.tx.embeddable;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.wsat.recovery_fat.single;version=latest
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.transaction.fat.util;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.wsat.recovery_fat.single;version=latest
 
 -sub: *.bnd

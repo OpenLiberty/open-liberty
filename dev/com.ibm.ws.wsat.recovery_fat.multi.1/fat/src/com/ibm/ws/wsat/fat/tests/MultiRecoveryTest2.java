@@ -10,50 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.tests;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest2 extends MultiRecoveryTest{
 
-	@Server("WSATRecovery1")
-	public static LibertyServer server;
-
-	@Server("WSATRecovery2")
-	public static LibertyServer server2;
-
-	@BeforeClass
-	public static void beforeTests() throws Exception {
-		beforeTests(server, server2);
-	}
-
-	@Before
-	public void beforeTest() throws Exception {
-		startServers(server, server2);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		stopServers(server, server2);
-	}
-	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR005AFVT() throws Exception {
-		recoveryTest(server, server2, "501","server1");
+		recoveryTest(server1, server2, "501","server1");
 	}
 	
 	@Test
@@ -64,37 +38,37 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	// Expect XAException and RollbackException
 	// Report javax.transaction.SystemException 
 	public void WSTXMPR005BFVT() throws Exception {
-		recoveryTest(server, server2, "502","server2");
+		recoveryTest(server1, server2, "502","server2");
 	}
 	
 	@Test
 	//@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR005CFVT() throws Exception {
-		recoveryTest(server, server2, "503","both");
+		recoveryTest(server1, server2, "503","both");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR006AFVT() throws Exception {
-		recoveryTest(server, server2, "601","server1");
+		recoveryTest(server1, server2, "601","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void WSTXMPR006BFVT() throws Exception {
-		recoveryTest(server, server2, "602","server2");
+		recoveryTest(server1, server2, "602","server2");
 	}
 	
 	@Test
 	public void WSTXMPR006CFVT() throws Exception {
-		recoveryTest(server, server2, "603","both");
+		recoveryTest(server1, server2, "603","both");
 	}
 	
 	@Test
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR007AFVT() throws Exception {
-		recoveryTest(server, server2, "701","server1");
+		recoveryTest(server1, server2, "701","server1");
 	}
 	
 	@Test
@@ -102,7 +76,7 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR007BFVT() throws Exception {
-		recoveryTest(server, server2, "702","server2");
+		recoveryTest(server1, server2, "702","server2");
 	}
 	
   @Mode(TestMode.LITE)
@@ -116,13 +90,13 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	// Report javax.transaction.SystemException
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR007CFVT() throws Exception {
-		recoveryTest(server, server2, "703","both");
+		recoveryTest(server1, server2, "703","both");
 	}
 	
 	@Test
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
 	public void WSTXMPR008AFVT() throws Exception {
-		recoveryTest(server, server2, "801","server1");
+		recoveryTest(server1, server2, "801","server1");
 	}
 	
 	@Test
@@ -130,7 +104,7 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR008BFVT() throws Exception {
-		recoveryTest(server, server2, "802","server2");
+		recoveryTest(server1, server2, "802","server2");
 	}
 	
 	@Test
@@ -143,6 +117,6 @@ public class MultiRecoveryTest2 extends MultiRecoveryTest{
 	// Report javax.transaction.SystemException
 	// JDK8: Allow HeuristicHazardException
 	public void WSTXMPR008CFVT() throws Exception {
-		recoveryTest(server, server2, "803","both");
+		recoveryTest(server1, server2, "803","both");
 	}
 }

@@ -12,17 +12,21 @@ package com.ibm.ws.wsat.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
+import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -35,6 +39,28 @@ public class MultiRecoveryTest {
 	
 	private final static String recoveryClient = "recoveryClient";
 	private final static String recoveryServer = "recoveryServer";
+
+
+	@Server("WSATRecovery1")
+	public static LibertyServer server1;
+
+	@Server("WSATRecovery2")
+	public static LibertyServer server2;
+
+	@BeforeClass
+	public static void beforeTests() throws Exception {
+		beforeTests(server1, server2);
+	}
+
+	@Before
+	public void beforeTest() throws Exception {
+		FATUtils.startServers(server1, server2);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		FATUtils.stopServers(server1, server2);
+	}
 
 	public static void beforeTests(LibertyServer server, LibertyServer server2) throws Exception {
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
@@ -50,108 +76,7 @@ public class MultiRecoveryTest {
 		server2.setServerStartTimeout(START_TIMEOUT);
 	}
 
-    protected void startServers(LibertyServer... servers) throws Exception {
-        final String method = "startServers";
-
-        for (LibertyServer server : servers) {
-            assertNotNull("Attempted to start a null server", server);
-            int attempt = 0;
-            int maxAttempts = 5;
-
-            do {
-                if (attempt++ > 0) {
-                    Log.info(getClass(), method, "Waiting 5 seconds after start failure before making attempt " + attempt);
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception e) {
-                        Log.error(getClass(), method, e);
-                    }
-                }
-
-                if (server.resetStarted() == 0) {
-                    String pid = server.getPid();
-                    Log.info(getClass(), method,
-                             "Server " + server.getServerName() + " is already running." + ((pid != null ? "(pid:" + pid + ")" : "")) + " Maybe it is on the way down.");
-                    server.printProcesses();
-                    continue;
-                }
-
-                ProgramOutput po = null;
-                try {
-                    po = server.startServerAndValidate(false, false, true);
-                } catch (Exception e) {
-                    Log.error(getClass(), method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
-                }
-
-                if (po != null) {
-                    String s;
-                    int rc = po.getReturnCode();
-
-                    Log.info(getClass(), method, "ReturnCode: " + rc);
-
-                    s = server.getPid();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(getClass(), method, "Pid: " + s);
-
-                    s = po.getStdout();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(getClass(), method, "Stdout: " + s.trim());
-
-                    s = po.getStderr();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(getClass(), method, "Stderr: " + s.trim());
-
-                    if (rc == 0) {
-                        break;
-                    } else {
-                        String pid = server.getPid();
-                        Log.info(getClass(), method,
-                                 "Non zero return code starting server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : ""))
-                                                     + " Maybe it is on the way down.");
-                        server.printProcessHoldingPort(server.getHttpDefaultPort());
-                    }
-                }
-            } while (attempt < maxAttempts);
-
-            if (!server.isStarted()) {
-                server.postStopServerArchive();
-                throw new Exception("Failed to start " + server.getServerName() + " after " + attempt + " attempts");
-            }
-        }
-    }
-	
-	protected void stopServers(LibertyServer ... servers) {
-		final String method = "stopServers";
-
-		for (LibertyServer server : servers) {
-			if (server == null) {
-				Log.info(getClass(), method, "Attempted to stop a null server");
-				continue;
-			}
-
-			try {
-				final ProgramOutput po = server.stopServer(true, true, "WTRN0046E", "WTRN0048W", "WTRN0049W", "WTRN0094W");
-				if (po == null) {
-					Log.info(getClass(), method, "Attempt to stop " + server.getServerName() + " returned null");
-					continue;
-				}
-				if (po.getReturnCode() != 0) {
-					Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-					Log.info(getClass(), method, "Stdout: " + po.getStdout());
-					Log.info(getClass(), method, "Stderr: " + po.getStderr());
-					Exception ex = new Exception("Server stop failed for "  + server.getServerName());
-					throw ex;
-				}
-			} catch (Exception e) {
-				Log.error(getClass(), method, e);
-			}
-		}
-	}
-
-	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String startServer) throws Exception {
+    protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String startServer) throws Exception {
         final String method = "recoveryTest";
         String result = null;
         final long LOG_SEARCH_TIMEOUT = 10 * 60 * 1000; // 10 minutes
@@ -169,13 +94,13 @@ public class MultiRecoveryTest {
         final String failMsg = " did not perform recovery";
         //restart server in three modes
         if(startServer.equals("server1")){
-        		startServers(server);
+        		FATUtils.startServers(server);
                 assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("server2")){
-        		startServers(server2);
+        		FATUtils.startServers(server2);
                 assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("both")){
-        		startServers(server, server2);
+        		FATUtils.startServers(server, server2);
                 assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
                 assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         }
