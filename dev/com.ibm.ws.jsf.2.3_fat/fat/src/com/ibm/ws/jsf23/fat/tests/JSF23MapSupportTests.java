@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,23 +42,23 @@ public class JSF23MapSupportTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23Server")
-    public static LibertyServer jsf23Server;
+    @Server("jsf23MapSupportServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23Server, "ImportConstantsTag.war", "com.ibm.ws.jsf23.fat.constants");
+        ShrinkHelper.defaultDropinApp(server, "ImportConstantsTag.war", "com.ibm.ws.jsf23.fat.constants");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        jsf23Server.startServer(JSF23MapSupportTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23MapSupportTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23Server != null && jsf23Server.isStarted()) {
-            jsf23Server.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -75,7 +75,7 @@ public class JSF23MapSupportTests {
             String value;
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "uiRepeatSupportForMap.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "uiRepeatSupportForMap.jsf");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -116,7 +116,7 @@ public class JSF23MapSupportTests {
             String value;
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "uiDataSupportForMap.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "uiDataSupportForMap.jsf");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
