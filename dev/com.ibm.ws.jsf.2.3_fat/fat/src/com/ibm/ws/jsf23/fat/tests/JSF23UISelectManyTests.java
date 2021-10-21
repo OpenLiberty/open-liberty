@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,23 +50,23 @@ public class JSF23UISelectManyTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23UISelectManyServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23UISelectMany.war", "com.ibm.ws.jsf23.fat.uiselectmany");
+        ShrinkHelper.defaultDropinApp(server, "JSF23UISelectMany.war", "com.ibm.ws.jsf23.fat.uiselectmany");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        jsf23CDIServer.startServer(JSF23UISelectManyTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23UISelectManyTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -82,7 +82,7 @@ public class JSF23UISelectManyTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxEnum.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectManyCheckboxEnum.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -139,7 +139,7 @@ public class JSF23UISelectManyTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxSelectItems.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectManyCheckboxSelectItems.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -192,7 +192,7 @@ public class JSF23UISelectManyTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectManyCheckboxStatic.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectManyCheckboxStatic.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 

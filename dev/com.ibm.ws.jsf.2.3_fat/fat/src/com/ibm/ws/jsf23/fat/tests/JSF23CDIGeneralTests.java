@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,24 +65,24 @@ public class JSF23CDIGeneralTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23CDIGeneralServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "PostRenderViewEvent.war", "com.ibm.ws.jsf23.fat.postrenderview.events");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "CDIManagedProperty.war", "com.ibm.ws.jsf23.fat.cdi.managedproperty");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ELImplicitObjectsViaCDI.war", "com.ibm.ws.jsf23.fat.elimplicit.cdi.beans");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23Spec1300.war", "com.ibm.ws.jsf23.fat.spec1300");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ResourceRendering.war", "com.ibm.ws.jsf23.fat.resourcerendering");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23Spec217.war", "com.ibm.ws.jsf23.fat.spec217");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23Spec790.war", "com.ibm.ws.jsf23.fat.spec790");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConvertDateTime.war", "com.ibm.ws.jsf23.fat.convertdatetime.beans");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConverterValidatorBehaviorInjectionTarget.war", "com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23CDITests.war",
+        ShrinkHelper.defaultDropinApp(server, "PostRenderViewEvent.war", "com.ibm.ws.jsf23.fat.postrenderview.events");
+        ShrinkHelper.defaultDropinApp(server, "CDIManagedProperty.war", "com.ibm.ws.jsf23.fat.cdi.managedproperty");
+        ShrinkHelper.defaultDropinApp(server, "ELImplicitObjectsViaCDI.war", "com.ibm.ws.jsf23.fat.elimplicit.cdi.beans");
+        ShrinkHelper.defaultDropinApp(server, "JSF23Spec1300.war", "com.ibm.ws.jsf23.fat.spec1300");
+        ShrinkHelper.defaultDropinApp(server, "ResourceRendering.war", "com.ibm.ws.jsf23.fat.resourcerendering");
+        ShrinkHelper.defaultDropinApp(server, "JSF23Spec217.war", "com.ibm.ws.jsf23.fat.spec217");
+        ShrinkHelper.defaultDropinApp(server, "JSF23Spec790.war", "com.ibm.ws.jsf23.fat.spec790");
+        ShrinkHelper.defaultDropinApp(server, "ConvertDateTime.war", "com.ibm.ws.jsf23.fat.convertdatetime.beans");
+        ShrinkHelper.defaultDropinApp(server, "ConverterValidatorBehaviorInjectionTarget.war", "com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans");
+        ShrinkHelper.defaultDropinApp(server, "JSF23CDITests.war",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "CDIIntegrationTest.war",
+        ShrinkHelper.defaultDropinApp(server, "CDIIntegrationTest.war",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.application",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.beans",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.viewhandler");
@@ -95,31 +95,31 @@ public class JSF23CDIGeneralTests {
         WebArchive spec1433TrueWar = ShrinkWrap.create(WebArchive.class, "JSF23Spec1433True.war");
         spec1433TrueWar.addAsLibrary(spec1433Jar);
         ShrinkHelper.addDirectory(spec1433TrueWar, "test-applications/" + "JSF23Spec1433True.war" + "/resources");
-        ShrinkHelper.exportToServer(jsf23CDIServer, "dropins", spec1433TrueWar);
+        ShrinkHelper.exportToServer(server, "dropins", spec1433TrueWar);
 
         // Create the JSF231433SpecFalse WAR and add the JSF23Spec1433 JAR to it
         WebArchive spec1433FalseWar = ShrinkWrap.create(WebArchive.class, "JSF23Spec1433False.war");
         spec1433FalseWar.addAsLibrary(spec1433Jar);
         ShrinkHelper.addDirectory(spec1433FalseWar, "test-applications/" + "JSF23Spec1433False.war" + "/resources");
-        ShrinkHelper.exportToServer(jsf23CDIServer, "dropins", spec1433FalseWar);
+        ShrinkHelper.exportToServer(server, "dropins", spec1433FalseWar);
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        jsf23CDIServer.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
     }
 
     @Before
     public void startServer() throws Exception {
-        if (jsf23CDIServer != null && !jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+        if (server != null && !server.isStarted()) {
+            server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
         }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -140,7 +140,7 @@ public class JSF23CDIGeneralTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -156,16 +156,16 @@ public class JSF23CDIGeneralTests {
             String postRenderView = "Processing PostRenderViewEvent";
 
             assertNotNull("The following String was not found in the trace log: " + beforeRenderResponse,
-                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(beforeRenderResponse));
+                          server.waitForStringInTraceUsingLastOffset(beforeRenderResponse));
 
             assertNotNull("The following String was not found in the trace log: " + preRenderView,
-                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(preRenderView));
+                          server.waitForStringInTraceUsingLastOffset(preRenderView));
 
             assertNotNull("The following String was not found in the trace log: " + postRenderView,
-                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(postRenderView));
+                          server.waitForStringInTraceUsingLastOffset(postRenderView));
 
             assertNotNull("The following String was not found in the trace log: " + afterRenderResponse,
-                          jsf23CDIServer.waitForStringInTraceUsingLastOffset(afterRenderResponse));
+                          server.waitForStringInTraceUsingLastOffset(afterRenderResponse));
         }
 
     }
@@ -189,11 +189,11 @@ public class JSF23CDIGeneralTests {
     @Mode(TestMode.FULL)
     @Test
     public void testFacesConfigVersion23() throws Exception {
-        String appStarted = jsf23CDIServer.waitForStringInLog("CWWKZ0001I.*" + "Application PostRenderViewEvent", jsf23CDIServer.getConsoleLogFile());
+        String appStarted = server.waitForStringInLog("CWWKZ0001I.*" + "Application PostRenderViewEvent", server.getConsoleLogFile());
 
         assertTrue("The PostRenderViewEvent application did not start.", appStarted != null);
         assertTrue("The CWWKC2262E exception was found in the trace.log when it should not have been.",
-                   jsf23CDIServer.findStringsInTrace("CWWKC2262E").isEmpty());
+                   server.findStringsInTrace("CWWKC2262E").isEmpty());
     }
 
     /**
@@ -225,7 +225,7 @@ public class JSF23CDIGeneralTests {
                                 + "com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -276,7 +276,7 @@ public class JSF23CDIGeneralTests {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
             // restart the app and test again
-            Assert.assertTrue("The ELImplicitObjectsViaCDI.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("ELImplicitObjectsViaCDI.war"));
+            Assert.assertTrue("The ELImplicitObjectsViaCDI.war application was not restarted.", server.restartDropinsApplication("ELImplicitObjectsViaCDI.war"));
             checkInjectableELImplicitObjects(webClient);
         }
     }
@@ -288,7 +288,7 @@ public class JSF23CDIGeneralTests {
 
         // Construct the URL for the test
         String contextRoot = "ELImplicitObjectsViaCDI";
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+        URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
         HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
@@ -357,7 +357,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "implicit_objects.xhtml?message=Hello World");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "implicit_objects.xhtml?message=Hello World");
 
             HtmlPage testELResolutionImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
@@ -396,7 +396,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "flow_index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "flow_index.xhtml");
 
             HtmlPage testELResolutionOfFlowScopePage = (HtmlPage) webClient.getPage(url);
 
@@ -439,38 +439,38 @@ public class JSF23CDIGeneralTests {
 
         // Set the mark to the end of the logs and install the application.
         // Use the ELImplicitObjectsViaCDIErrorAppServer.xml server configuration file.
-        jsf23CDIServer.setMarkToEndOfLog();
-        jsf23CDIServer.saveServerConfiguration();
-        ShrinkHelper.defaultApp(jsf23CDIServer, appName, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
-        jsf23CDIServer.setServerConfigurationFile("ELImplicitObjectsViaCDIErrorAppServer.xml");
+        server.setMarkToEndOfLog();
+        server.saveServerConfiguration();
+        ShrinkHelper.defaultApp(server, appName, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
+        server.setServerConfigurationFile("ELImplicitObjectsViaCDIErrorAppServer.xml");
 
         // Make sure the application doesn't start
         String expectedCWWKZ0002E = "CWWKZ0002E: An exception occurred while starting the application ELImplicitObjectsViaCDIErrorApp";
-        jsf23CDIServer.addIgnoredErrors(Arrays.asList(expectedCWWKZ0002E));
-        assertNotNull("The app started and did not throw an error", jsf23CDIServer.waitForStringInLog(expectedCWWKZ0002E));
+        server.addIgnoredErrors(Arrays.asList(expectedCWWKZ0002E));
+        assertNotNull("The app started and did not throw an error", server.waitForStringInLog(expectedCWWKZ0002E));
 
         // Search for the expected exception
         String message = "The exception message was: com.ibm.ws.container.service.state.StateChangeException: "
                          + "org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type FacesContext with qualifiers @Default";
         assertNotNull("The following String was not found in the logs: " + message,
-                      jsf23CDIServer.waitForStringInLog(message));
+                      server.waitForStringInLog(message));
 
         // Move the mark to the end of the log so we can ensure we wait for the correct server
         // configuration message to be output before uninstalling the application
-        jsf23CDIServer.setMarkToEndOfLog();
+        server.setMarkToEndOfLog();
 
         // Stop the server but don't archive the logs.
-        jsf23CDIServer.stopServer(false);
+        server.stopServer(false);
 
         // Restore the original server configuration and uninstall the application
-        jsf23CDIServer.restoreServerConfiguration();
+        server.restoreServerConfiguration();
 
         // Ensure that the server configuration has completed before uninstalling the application
-        jsf23CDIServer.waitForConfigUpdateInLogUsingMark(null);
+        server.waitForConfigUpdateInLogUsingMark(null);
 
         // Now uninstall the application and archive the logs.
-        jsf23CDIServer.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));
-        jsf23CDIServer.postStopServerArchive();
+        server.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));
+        server.postStopServerArchive();
     }
 
     /**
@@ -484,7 +484,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -524,7 +524,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -566,7 +566,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -606,7 +606,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSFArtifactsInjection.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "JSFArtifactsInjection.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -640,7 +640,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ConvertDateTime";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -729,7 +729,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec1300";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -743,7 +743,7 @@ public class JSF23CDIGeneralTests {
 
             // No look at the logs to ensure that the PostConstructViewMapEventListener was invoked
             String listenerString = "PostConstructViewMapEventListener processEvent invoked for PostConstructViewMapEvent!!";
-            String listenerInvoked = jsf23CDIServer.waitForStringInLog(listenerString);
+            String listenerInvoked = server.waitForStringInLog(listenerString);
 
             // Ensure the string was found, otherwise the test should fail.
             assertNotNull("The following string was not found in the logs: " + listenerString, listenerInvoked);
@@ -775,7 +775,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec217";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -833,7 +833,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23CDITests";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "FactoryInfo.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "FactoryInfo.jsf");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -846,14 +846,14 @@ public class JSF23CDIGeneralTests {
             assertTrue("Did not find " + expectedText + " in response", page.asText().contains(expectedText));
 
             // Stop the server but don't archive the logs (this should shutdown the app and trigger preDestroy)
-            jsf23CDIServer.stopServer(false);
+            server.stopServer(false);
 
             // Verify that PreDestroy is being called
             assertTrue("PreDestroy was not called",
-                       jsf23CDIServer.findStringsInLogs("CustomClientWindowFactory preDestroy called").size() == 1);
+                       server.findStringsInLogs("CustomClientWindowFactory preDestroy called").size() == 1);
 
             // Archive the logs
-            jsf23CDIServer.postStopServerArchive();
+            server.postStopServerArchive();
         }
     }
 
@@ -885,7 +885,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec790";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test1.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "test1.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -950,7 +950,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec790";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "test2.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "test2.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -996,7 +996,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec1433True";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1045,7 +1045,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec1433True";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1098,7 +1098,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec1433False";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1147,7 +1147,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "JSF23Spec1433False";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1195,7 +1195,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "ResourceRendering";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1246,7 +1246,7 @@ public class JSF23CDIGeneralTests {
 
             // Construct the URL for the test
             String contextRoot = "CDIIntegrationTest";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -1259,16 +1259,16 @@ public class JSF23CDIGeneralTests {
             assertTrue("Page does not contain expected response.", responseText.contains("CDI Integration Test"));
 
             assertTrue("The Custom ApplicationFactory was not invoked.",
-                       !jsf23CDIServer.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
+                       !server.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
 
             assertTrue("The Custom Application was not invoked.",
-                       !jsf23CDIServer.findStringsInTrace("CustomApplication was invoked!").isEmpty());
+                       !server.findStringsInTrace("CustomApplication was invoked!").isEmpty());
 
             assertTrue("The Custom ViewHandler was not invoked.",
-                       !jsf23CDIServer.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
+                       !server.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
 
             assertTrue("The IBMViewHandler was not used.",
-                       !jsf23CDIServer.findStringsInTrace("set ViewHandler =.*IBMViewHandler").isEmpty());
+                       !server.findStringsInTrace("set ViewHandler =.*IBMViewHandler").isEmpty());
         }
     }
 }
