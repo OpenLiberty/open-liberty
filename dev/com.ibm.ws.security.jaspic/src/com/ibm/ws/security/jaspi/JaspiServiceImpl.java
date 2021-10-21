@@ -414,7 +414,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private AuthenticationResult processAuthStatus(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
                                                    MessageInfo msgInfo, boolean isJSR375) throws WSLoginFailedException {
         AuthenticationResult authResult;
-        if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
+        if (AuthStatus.SUCCESS == status) {
             // if the provider asked that the subject be used on subsequent
             // invocations then indicate that in the request object. later we will
             // create an ltpa token cookie for the jaspi session
@@ -456,7 +456,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
             authResult = mapToAuthenticationResult(status, jaspiRequest, callerSubject);
             setRequestAuthType(msgInfo, jaspiRequest);
-        } else {
+        } 
+	else {
             authResult = mapToAuthenticationResult(status, jaspiRequest, null);
         }
         return authResult;
@@ -696,8 +697,9 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         String pretty = "FAILURE";
         if (AuthStatus.SEND_SUCCESS == status) {
 	    if (tc.isDebugEnabled()) Tr.debug(tc, "SEND_SUCCES received. Returning without going to the service."); 
-            authResult = new AuthenticationResult(AuthResult.RETURN, clientSubject);
-            pretty = "SEND_SUCCESS";
+	    int responseStatus = getResponseStatus(jaspiRequest.getHttpServletResponse());
+	    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authenticated with status: " + responseStatus);
+	    pretty = "SEND_SUCCESS";
 	}
         if (AuthStatus.SUCCESS == status) {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, clientSubject);
