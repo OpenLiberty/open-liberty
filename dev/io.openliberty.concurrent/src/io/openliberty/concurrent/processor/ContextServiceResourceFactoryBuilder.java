@@ -205,7 +205,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
      * @param jndiName    configured JNDI name for the data source. For example, java:module/env/jca/cf1
      * @return the unique identifier
      */
-    private static final String getContextServiceID(String application, String module, String component, String jndiName) {
+    static final String getContextServiceID(String application, String module, String component, String jndiName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
         if (application != null) {
             sb.append("application[").append(application).append("]/");

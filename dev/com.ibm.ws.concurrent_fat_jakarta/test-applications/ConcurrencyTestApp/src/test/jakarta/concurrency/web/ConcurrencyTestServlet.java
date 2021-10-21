@@ -14,6 +14,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -33,6 +34,7 @@ import jakarta.enterprise.concurrent.ZonedTrigger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
@@ -67,7 +70,8 @@ import componenttest.app.FATServlet;
                                     hungTaskThreshold = 360000,
                                     maxAsync = 2) // TODO add context once annotation is fixed
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
-                                priority = 3) // TODO add context once annotation is fixed
+                                context = @ContextServiceDefinition(name = "java:app/concurrent/appContextSvc"), // TODO switch to String type once annotation is fixed
+                                priority = 3)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -194,11 +198,33 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     * Verify that a ManagedThreadFactory that is injected from a ManagedThreadFactoryDefinition
+     * creates threads that run with the configured priority and with the configured thread context
+     * that makes it possible to look up resource references in the application component's namespace.
      */
     @Test
     public void testManagedThreadFactoryDefinition() throws Exception {
         assertNotNull(lowPriorityThreads);
+
+        int priority = Thread.currentThread().getPriority();
+
+        ForkJoinPool pool = new ForkJoinPool(2, lowPriorityThreads, null, false);
+        try {
+            ForkJoinTask<Long> task = pool.submit(new Factorial(5)
+                            // TODO once ContextServiceDefinition honors config: .assertAvailable("java:comp/env/concurrent/executor3Ref")
+                            .assertPriority(3));
+
+            assertEquals(Long.valueOf(120), task.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            pool.shutdown();
+        }
+
+        assertEquals(priority, Thread.currentThread().getPriority());
+
+        Thread managedThread = lowPriorityThreads.newThread(() -> {
+        });
+        assertEquals(3, managedThread.getPriority());
+        assertTrue(managedThread.getClass().getName(), managedThread instanceof ManageableThread);
     }
 
     /**
