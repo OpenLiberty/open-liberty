@@ -13,6 +13,7 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.wsat.recovery_fat.single"),
+               project(":com.ibm.ws.transaction.fat.util"),
                project(':io.openliberty.org.apache.commons.logging')
 }
 

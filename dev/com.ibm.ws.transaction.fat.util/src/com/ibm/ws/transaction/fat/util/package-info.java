@@ -8,8 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-dependencies {
-  requiredLibs project(":com.ibm.ws.transaction.fat.util")
-}
-
-addRequiredLibraries.dependsOn addJakartaTransformer
+/**
+ * using a package-info file here is kinda silly, but using a packageinfo file doesn't seem to work.
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+package com.ibm.ws.transaction.fat.util;

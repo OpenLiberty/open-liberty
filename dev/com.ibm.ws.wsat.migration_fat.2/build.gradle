@@ -13,9 +13,9 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.wsat.migration_fat.1"),
+  			   project(":com.ibm.ws.transaction.fat.util"),
                project(':io.openliberty.org.apache.commons.logging')
 }
-
 
 task copyFAT {
     copy {
