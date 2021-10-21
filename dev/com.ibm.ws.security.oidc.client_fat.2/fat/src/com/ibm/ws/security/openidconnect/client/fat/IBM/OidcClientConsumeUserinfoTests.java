@@ -34,6 +34,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -71,6 +72,12 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public static final String badTokenSegment = "1234567890123456789";
     private static final JwtTokenActions actions = new JwtTokenActions();
     protected static SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
+    //private final String jwtContentType = "application/jwt";
+    private final String jsonContentType = "application/json";
+
+    protected enum ExpectedBehavior {
+        USE_USERINFO, DO_NO_USE_USERINFO, CONTENT_TYPE_MISMATCH, SUBJECT_MISMATCH, SIGN_MISMATCH, ENCRYPT_MISMATCH
+    }
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -130,11 +137,11 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     public void genericConsumeJWSUserinfoTest(String alg) throws Exception {
-        genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), alg);
+        genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), alg, ExpectedBehavior.USE_USERINFO);
     }
 
     public void genericImplicitConsumeJWSUserinfoTest(String alg) throws Exception {
-        genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), "implicit" + alg);
+        genericConsumeJWTUserinfoTest(alg, setJWSBuilderName(alg), setJWSBuilderName(alg), "implicit" + alg, ExpectedBehavior.USE_USERINFO);
     }
 
     /**
@@ -148,7 +155,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     public void genericConsumeJWEUserinfoTest(String alg) throws Exception {
-        genericConsumeJWTUserinfoTest(alg, setJWEBuilderName(alg, alg), setJWEBuilderName(alg, alg), setJWEAppName(alg, alg));
+        genericConsumeJWTUserinfoTest(alg, setJWEBuilderName(alg, alg), setJWEBuilderName(alg, alg), setJWEAppName(alg, alg), ExpectedBehavior.USE_USERINFO);
     }
 
     /**
@@ -172,7 +179,12 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *            - the name of the app to invoke to test access
      * @throws Exception
      */
-    public void genericConsumeJWTUserinfoTest(String alg, String tokenEndpointBuilderId, String userinfoBuilderId, String appName) throws Exception {
+    public void genericConsumeJWTUserinfoTest(String alg, String tokenEndpointBuilderId, String userinfoBuilderId, String appName, ExpectedBehavior expectedBehavior) throws Exception {
+        genericConsumeJWTUserinfoTest(alg, tokenEndpointBuilderId, userinfoBuilderId, appName, null, null, expectedBehavior);
+
+    }
+
+    public void genericConsumeJWTUserinfoTest(String alg, String tokenEndpointBuilderId, String userinfoBuilderId, String appName, List<NameValuePair> overrideParms, String contentType, ExpectedBehavior expectedBehavior) throws Exception {
 
         boolean isImplicit = appName.contains("implicit");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
@@ -198,15 +210,20 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             //  (That url is:  http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken)
             genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, expectations);
         }
-        // let's create a similar JWT token, but make sure that it has an additional claim - we'll check to make sure that the extra claim
-        // shows up in the subject that our protected test app sees
-        // 3rd parm tells createTokenWithSubjectAndExpectations whether the userinfo token will or will not match the config so it can determine whether to set
-        //  expectations for things that should be found, or things that should NOT be found
-        // 4th parm tells createTokenWithSubjectAndExpectations whether we're using JWS or JWE tokens (messages we're searching for will be different) - the check
-        //  in the call determines token type because the test app names match the signature alg for JWS tests - for JWE, the appNames are more complex.
-        String token = createTokenWithSubjectAndExpectations(userinfoBuilderId, expectations, tokenEndpointBuilderId.equals(userinfoBuilderId), appName.replace("implicit", "").equals(alg));
+        // let's create a similar JWT token (that userinfo will return), but make sure that it has an additional claim - we'll check to make sure that the extra claim
+        // shows up in the subject that our protected test app sees (when the userinfo reponse is "valid" and make sure that the extra claims DO NOT show up
+        // when the userinfo response is "invalid"
+        List<NameValuePair> usernnfoTokenParms = createUserinfoTokenParms(overrideParms);
+        String userinfoToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), userinfoBuilderId, usernnfoTokenParms);
+
+        // create the proper expectations - expect extra claims to be or not to be in the subject as well as possible extra error messages in the logs
+        expectations = updateExpectationsForTest(expectations, expectedBehavior, usernnfoTokenParms);
+
         // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
-        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", token);
+        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", userinfoToken);
+        if (contentType != null) {
+            userinfParms = eSettings.addEndpointSettings(userinfParms, "contentType", contentType);
+        }
         //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
         genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
 
@@ -260,74 +277,96 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         return "Sign" + sigAlg + "Encrypt" + decryptAlg;
     }
 
-    /**
-     * Calls createTokenWithSubjectAndExpectations and include a null list of extra parms to add
-     *
-     * @param builderId
-     *            - the builder id to use to create the token
-     * @param expectations
-     *            - alrady set expectations - we'll add to these
-     * @param userinfoWillBeUsed
-     *            - flag indicating if we should set expectations that make sure the claims are in or are not in the subject
-     * @param isJWS
-     *            - flag indicating if the test usins JWS token (false indicates JWE)
-     * @return the created token
-     * @throws Exception
-     */
-    private String createTokenWithSubjectAndExpectations(String builderId, List<validationData> expectations, boolean userinfoWillBeUsed, boolean isJWS) throws Exception {
-        return createTokenWithSubjectAndExpectations(builderId, null, expectations, userinfoWillBeUsed, isJWS);
-
-    }
-
-    /**
-     * Create a token from the specified build and add a few specific parms that we'll check for in the subject.
-     * Set expectations for the new parms - if the test expects this token to be valid case (the rp config matches this tokens
-     * contents), we'll set expectations that validate the extra claims are in the subject, if it won't be valid, we'll set
-     * expectations that validate that the extra claims are NOT in the subject
-     *
-     * @param builderId
-     *            - the builder id to use to create the token
-     * @param parms
-     *            - extra parms that the caller wants to add
-     * @param expectations
-     *            - alrady set expectations - we'll add to these
-     * @param userinfoWillBeUsed
-     *            - flag indicating if we should set expectations that make sure the claims are in or are not in the subject
-     * @param isJWS
-     *            - flag indicating if the test usins JWS token (false indicates JWE)
-     * @return the created token
-     * @throws Exception
-     */
-    private String createTokenWithSubjectAndExpectations(String builderId, List<NameValuePair> parms, List<validationData> expectations, boolean userinfoWillBeUsed, boolean isJWS) throws Exception {
+    private List<NameValuePair> createUserinfoTokenParms(List<NameValuePair> parms) throws Exception {
 
         if (parms == null) {
             parms = new ArrayList<NameValuePair>();
+            parms.add(new NameValuePair("sub", "testuser"));
+            parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
         }
-        parms.add(new NameValuePair("sub", "testuser"));
-        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
-        Log.info(thisClass, _testName, jwtToken);
-        if (expectations != null) {
-            for (NameValuePair parm : parms) {
-                if (parm.getName().equals("sub") || userinfoWillBeUsed) {
+
+        return parms;
+    }
+
+    /**
+     * Create expectations for unique parms contained in the userinfo response. We will confirm that the unique claims in the
+     * userinfo response are NOT contained in the subject
+     * in the cases where the userinfo response is not considered valid and should NOT be used.
+     * "sub" is a special case - when we do use the userinfo response, we would expect a different value for sub - in the case
+     * where we do NOT use the userinfo response, we
+     * should check for the value that the ID token provided - currenlty "testuser", so add an expectation to validate that
+     * "testuser" is the sub.
+     *
+     * @param expectations
+     * @param parms
+     * @return
+     * @throws Exception
+     */
+    private List<validationData> setNotUsedUserinfoData(List<validationData> expectations, List<NameValuePair> parms) throws Exception {
+        for (NameValuePair parm : parms) {
+            if (parm.getName().equals("sub")) {
+                if (parm.getValue().equals("testuser")) {
                     expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                 } else {
-                    expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Found claimm \" + parm.getName() + \" in the response and it should not be there.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
+                    expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_MATCH, "Found claim " + parm.getName() + " in the response and it should not be there.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
                 }
             }
         }
-        if (!userinfoWillBeUsed) {
-            if (isJWS) {
-                // TODO - update message checked once (issue 18256) is resolved
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH);
-            } else {
-                // TODO - update log checked once (issue 18256) is resolved
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        return expectations;
+    }
+
+    /**
+     * Set expectations for the expected behavior of each specific test case. The test case specifies what type of behavior to
+     * expect.
+     *
+     * @param expectations
+     *            - already set expectations
+     * @param expectedBehavior
+     *            - the type of behavior the current test case expects
+     * @param parms
+     *            - the parms that were used to create claims in the userinfo response token - we'll either expect them to be in
+     *            the app output or NOT be in the app output
+     * @return - an updated list of expectations
+     * @throws Exception
+     */
+    private List<validationData> updateExpectationsForTest(List<validationData> expectations, ExpectedBehavior expectedBehavior, List<NameValuePair> parms) throws Exception {
+
+        switch (expectedBehavior) {
+        case DO_NO_USE_USERINFO:
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        // The signature algorithm in the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
+        case SIGN_MISMATCH:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch.", MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH);
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        // The encryption of the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
+        case ENCRYPT_MISMATCH:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem extracting the payload.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        // The sub in the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
+        case SUBJECT_MISMATCH:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN);
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        // The content type of the response does not match the format of the actual response look for error message and for extra claims to NOT exist in the app output)
+        case CONTENT_TYPE_MISMATCH:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN);
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        // The userinfo response is valid (for the ID token/openidconnect client) - its content should be used and the subject in the response should reflect the userinfo claims
+        case USE_USERINFO:
+        default:
+            for (NameValuePair parm : parms) {
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the claim " + parm.getName() + " in the response.", null, "\"" + parm.getName() + "\":\"" + parm.getValue() + "\"");
             }
+            break;
         }
 
-        return jwtToken;
+        return expectations;
     }
+
     /******************************* tests *******************************/
 
     /************************** JSON Response ***************************/
@@ -470,7 +509,20 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
 
     }
 
+    /**
+     * Test shows that the RP can handle a JWS response that is NOT signed from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved
+    public void OidcClientConsumeUserinfoTests_JWSResponse_notSigned() throws Exception {
+
+        genericConsumeJWSUserinfoTest(Constants.SIGALG_NONE);
+
+    }
+
     /****** userinfo returns responses that do NOT match the RP config **********/
+    // TODO - when 19028 is resolved, update the Constant ALL_TEST_SIGALG to include NONE - need to see where it is used and may need a client list of suppoeted algs and a server list since our OP probably won't support none.
     /**
      * Test shows that the RP will fail to be able to consume the JWS token returned by the userinfo
      * endpoint. This will result in an error message being logged to the RP server logs. Processing will
@@ -486,7 +538,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
 
         for (String alg : Constants.ALL_TEST_SIGALGS) {
             if (!alg.equals(Constants.SIGALG_RS256)) {
-                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), Constants.SIGALG_RS256);
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), Constants.SIGALG_RS256, ExpectedBehavior.SIGN_MISMATCH);
             }
         }
     }
@@ -496,7 +548,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
 
         for (String alg : Constants.ALL_TEST_SIGALGS) {
             if (!alg.equals(Constants.SIGALG_RS256)) {
-                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_RS256);
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_RS256, ExpectedBehavior.SIGN_MISMATCH);
             }
         }
     }
@@ -506,12 +558,10 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
 
         for (String alg : Constants.ALL_TEST_SIGALGS) {
             if (!alg.equals(Constants.SIGALG_HS256)) {
-                genericConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_HS256);
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_HS256, setJWSBuilderName(Constants.SIGALG_HS256), setJWSBuilderName(alg), "implicit" + Constants.SIGALG_HS256, ExpectedBehavior.SIGN_MISMATCH);
             }
         }
     }
-
-    // TODO - do we really need to test all variations
 
     /************************** JWE Response ****************************/
 
@@ -615,8 +665,183 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         for (String alg : Constants.ALL_TEST_ENCRYPTALGS) {
             // TODO skip ES Algs for encryption until (issue 17485) is resolved
             if (!(alg.equals(Constants.SIGALG_RS256) || alg.startsWith("ES"))) {
-                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(alg, alg), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256));
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(alg, alg), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), ExpectedBehavior.ENCRYPT_MISMATCH);
             }
         }
     }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with RS256
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS256() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with RS384
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS384() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with RS512
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS512() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with ES256
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES256() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with ES384
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES384() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with ES512
+     *
+     * @throws Exception
+     */
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES512() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), ExpectedBehavior.USE_USERINFO);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that contains a different sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWS.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_misMatchSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("sub", "bob"));
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that contains a different sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWE.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_misMatchSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("sub", "bob"));
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that does not contain a sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWS.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_missingSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that does not contain a sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWE.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_missingSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test that we will not accept userinfo data that is contained in a response with content-type set to json when it actually
+     * contains a JWS.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_contentTypeJson() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH);
+
+    }
+
+    /**
+     * Test that we will not accept userinfo data that is contained in a response with content-type set to json when it actually
+     * contains a JWS.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_contentTypeJson() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH);
+
+    }
+
 }
