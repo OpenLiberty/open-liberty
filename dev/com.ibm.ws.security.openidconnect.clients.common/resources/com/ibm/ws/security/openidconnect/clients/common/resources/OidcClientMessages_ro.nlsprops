@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Con
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Clientul OpenID Connect {0} nu poate extrage revendic\u0103rile JWT (JSON Web Token) din r\u0103spunsul web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=R\u0103spunsul web trebuie s\u0103 fie un JWT \u00een formatul JWE (JSON Web Encryption) sau JWS (JWS Web Signature). R\u0103spunsul ar putea fi formatat gre\u015fit sau clientul OpenID Connect a \u00eent\u00e2lnit o alt\u0103 eroare la procesarea r\u0103spunsului.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 r\u0103spunsul este \u00een format JWT.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Clientul OpenID Connect [{0}] necesit\u0103 un URL de punct final de autorizare, dar nu este setat.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Trebuie s\u0103 fie setat un URL de punct final de autorizare pentru a ob\u0163ine un cod de autorizare sau jetoanele necesare.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Seta\u0163i atributul authorizationEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de autorizare al furnizorului OpenID Connect. Sau seta\u0163i atributul discoveryEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de descoperire al furnizorului OpenID Connect.

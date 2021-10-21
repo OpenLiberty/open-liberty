@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: El cliente de {0} OpenID Connect no puede extraer reclamaciones de la se\u00f1al web JSON (JWT) de la respuesta de la web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La respuesta de la web debe ser una JWT en formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Es posible que la respuesta no est\u00e9 bien formada o que el cliente de OpenID Connect haya encontrado otro error al procesar la respuesta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la respuesta est\u00e1 en formato JWT.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: El cliente OpenID Connect [{0}] necesita un URL de punto final de autorizaci\u00f3n, pero no se ha establecido.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Se debe establecer un URL de punto final de autorizaci\u00f3n para obtener un c\u00f3digo de autorizaci\u00f3n o las se\u00f1ales necesarias.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Establezca el atributo authorizationEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de autorizaci\u00f3n del proveedor de OpenID Connect. Como alternativa, establezca el atributo discoveryEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de descubrimiento del proveedor de OpenID Connect.

@@ -30,13 +30,16 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -45,7 +48,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 
 import test.common.SharedOutputManager;
 
-public class UserInfoHelperTest {
+public class UserInfoHelperTest extends CommonTestClass {
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -98,6 +101,11 @@ public class UserInfoHelperTest {
 
     }
 
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
     @Before
     public void before() {
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig); // for MockOidcClientRequest
@@ -105,7 +113,14 @@ public class UserInfoHelperTest {
 
     @After
     public void after() {
+        outputMgr.resetStreams();
         mock.assertIsSatisfied();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.dumpStreams();
+        outputMgr.restoreStreams();
     }
 
     void setExpectations() {
@@ -324,7 +339,8 @@ public class UserInfoHelperTest {
         });
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
         String result = uihm.extractClaimsFromResponse(httpResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1539E");
     }
 
     @Test
@@ -342,16 +358,24 @@ public class UserInfoHelperTest {
 
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
         String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1539E");
     }
 
     @Test
     public void testExtractClaimsFromJwtResponse_jwsMalformed() throws Exception {
         String rawResponse = "aaa.bbb.ccc";
+        mock.checking(new Expectations() {
+            {
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
 
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
         String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1533E");
     }
 
     @Test
@@ -372,6 +396,7 @@ public class UserInfoHelperTest {
         });
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
         String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1533E" + ".+" + "CWWKS6056E");
     }
 }

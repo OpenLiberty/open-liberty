@@ -144,6 +144,7 @@ public class UserInfoHelper {
         try {
             jobj = JSONObject.parse(userInfo);
         } catch (Exception e) { // ffdc
+            Tr.error(tc, "USERINFO_CLAIMS_FORMAT_NOT_VALID", new Object[] { userInfo, e.getMessage() });
         }
         return jobj == null ? null : (String) jobj.get("sub");
     }
@@ -219,7 +220,7 @@ public class UserInfoHelper {
     }
 
     @FFDCIgnore({ Exception.class })
-    String extractClaimsFromJwtResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) {
+    public String extractClaimsFromJwtResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
         if (responseString == null || responseString.isEmpty()) {
             return null;
         }
@@ -234,11 +235,12 @@ public class UserInfoHelper {
             } else if (isJwe) {
                 // JWE payloads can be either JWS or JSON, so allow falling back to returning JSON in the case of a JWE response
                 return responseString;
+            } else {
+                // We expect to be extracting claims from a JWT, but the response string isn't a JWS or a JWE
+                Tr.error(tc, "JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT", new Object[] { responseString });
             }
         } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Error extracting jwt claims from web response: ", e.getMessage());
-            }
+            Tr.error(tc, "OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE", new Object[] { clientConfig.getId(), e.getMessage() });
         }
         return null;
     }

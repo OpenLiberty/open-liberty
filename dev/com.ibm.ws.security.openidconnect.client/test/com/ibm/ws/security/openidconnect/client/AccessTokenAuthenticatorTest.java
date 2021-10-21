@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -1187,7 +1186,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
             }
         });
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1539E");
     }
 
     @Test
@@ -1201,9 +1201,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_notJwt() throws Exception {
         String rawResponse = "This is not in JWT format";
-
         JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1539E");
     }
 
     @Test
@@ -1215,12 +1215,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue("configId"));
             }
         });
-        try {
-            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-            fail("Should have thrown an exception, but got " + result + ".");
-        } catch (Exception e) {
-            verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.jwt.consumer.InvalidJwtException"));
-        }
+        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.json.internal.json_simple.parser.ParseException"));
     }
 
     @Test
@@ -1239,12 +1236,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue("configId"));
             }
         });
-        try {
-            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-            fail("Should have thrown an exception, but got " + result + ".");
-        } catch (Exception e) {
-            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
-        }
+        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        assertNull("Result should be null but was [" + result + "].", result);
+        verifyLogMessage(outputMgr, "CWWKS1533E" + ".+" + "CWWKS6056E");
     }
 
     /**
