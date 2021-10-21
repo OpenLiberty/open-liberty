@@ -1,23 +1,13 @@
-// /I/ /W/ /G/ /U/   <-- CMVC Keywords, replace / with %
-// %I% %W% %G% %U%
-//
-// IBM Confidential OCO Source Material
-// 5724-I63, 5724-H88 (C) COPYRIGHT International Business Machines Corp. 2009
-//
-// The source code for this program is not published or otherwise divested
-//  of its trade secrets, irrespective of what has been deposited with the
-//  U.S. Copyright Office.
-//
-// Module  :  Util1xmLf
-//
-// Source File Description:
-//
-// Change Activity:
-//
-// Reason          Version   Date     Userid    Change Description
-// --------------- --------- -------- --------- -----------------------------------------
-// S9091.13261     WASX      11132009 leealber  Initial release
-// --------------- --------- -------- --------- -----------------------------------------
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 
 package com.ibm.ws.jpa.fvt.util.entities;
 
@@ -38,7 +28,7 @@ public class Util1xmLf {
     private int version;
 
     private String firstName;
-    
+
     public Collection<Util1xmRt> uniRight = new HashSet<Util1xmRt>();
 
     public Collection<Util1xmRt> uniRightEgr = new HashSet<Util1xmRt>();
@@ -65,11 +55,11 @@ public class Util1xmLf {
     public String getFirstName() {
         return firstName;
     }
-    
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    
+
     @OneToMany
     public Collection<Util1xmRt> getUniRight() {
         return uniRight;
@@ -82,8 +72,8 @@ public class Util1xmLf {
     public void addUniRight(Util1xmRt uniRight) {
         this.uniRight.add(uniRight);
     }
-    
-    @OneToMany(fetch=FetchType.EAGER)
+
+    @OneToMany(fetch = FetchType.EAGER)
     public Collection<Util1xmRt> getUniRightEgr() {
         return uniRightEgr;
     }
@@ -95,7 +85,8 @@ public class Util1xmLf {
     public void addUniRightEgr(Util1xmRt uniRightEgr) {
         this.uniRightEgr.add(uniRightEgr);
     }
-    
+
+    @Override
     public String toString() {
         return "Util1xmLf[id=" + id + ",ver=" + version + "]";
     }

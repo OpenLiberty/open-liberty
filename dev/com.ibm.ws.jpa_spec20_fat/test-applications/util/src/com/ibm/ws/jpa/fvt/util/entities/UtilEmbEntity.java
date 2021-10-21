@@ -1,23 +1,13 @@
-// /I/ /W/ /G/ /U/   <-- CMVC Keywords, replace / with %
-// %I% %W% %G% %U%
-//
-// IBM Confidential OCO Source Material
-// 5724-I63, 5724-H88 (C) COPYRIGHT International Business Machines Corp. 2009
-//
-// The source code for this program is not published or otherwise divested
-//  of its trade secrets, irrespective of what has been deposited with the
-//  U.S. Copyright Office.
-//
-// Module  :  UtilEntity
-//
-// Source File Description:
-//
-// Change Activity:
-//
-// Reason          Version   Date     Userid    Change Description
-// --------------- --------- -------- --------- -----------------------------------------
-// S9091.13261     WASX      11132009 leealber  Initial release
-// --------------- --------- -------- --------- -----------------------------------------
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 
 package com.ibm.ws.jpa.fvt.util.entities;
 
@@ -82,9 +72,9 @@ public class UtilEmbEntity {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name="embName",      column=@Column(name="emb1Name")),
-        @AttributeOverride(name="embNotLoaded", column=@Column(name="emb1NotLoaded"))
-        })
+                          @AttributeOverride(name = "embName", column = @Column(name = "emb1Name")),
+                          @AttributeOverride(name = "embNotLoaded", column = @Column(name = "emb1NotLoaded"))
+    })
     public UtilEmbeddable getEmb1() {
         return emb1;
     }
@@ -102,6 +92,7 @@ public class UtilEmbEntity {
         this.initNullEmb = initNullEmb;
     }
 
+    @Override
     public String toString() {
         return "UtilEmbEntity[id=" + id + ",ver=" + version + "]";
     }

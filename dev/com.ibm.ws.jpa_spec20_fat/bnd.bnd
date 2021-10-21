@@ -16,6 +16,7 @@ src: \
     test-applications/cache/src,\
     test-applications/common/src,\
     test-applications/criteriaquery/src,\
+    test-applications/derivedIdentity/src,\
     test-applications/entitymanager/src,\
     test-applications/example/src,\
     test-applications/olgh9018/src,\

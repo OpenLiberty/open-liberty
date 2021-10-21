@@ -18,6 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.spec20.JPA20Cache_WEB;
 import com.ibm.ws.jpa.spec20.JPA20CriteriaQuery_EJB;
 import com.ibm.ws.jpa.spec20.JPA20CriteriaQuery_WEB;
+import com.ibm.ws.jpa.spec20.JPA20DerivedIdentity_EJB;
+import com.ibm.ws.jpa.spec20.JPA20DerivedIdentity_WEB;
 import com.ibm.ws.jpa.spec20.JPA20EntityManager_EJB;
 import com.ibm.ws.jpa.spec20.JPA20EntityManager_WEB;
 import com.ibm.ws.jpa.spec20.JPA20OrderColumn_EJB;
@@ -49,7 +51,10 @@ import com.ibm.ws.jpa.spec20.JPA20Util_WEB;
                 JPA20QueryLockMode_EJB.class,
                 JPA20QueryLockMode_WEB.class,
                 JPA20Util_EJB.class,
-                JPA20Util_WEB.class
+                JPA20Util_WEB.class,
+
+                JPA20DerivedIdentity_EJB.class,
+                JPA20DerivedIdentity_WEB.class
 })
 public class JPA20FATSuite {
 
