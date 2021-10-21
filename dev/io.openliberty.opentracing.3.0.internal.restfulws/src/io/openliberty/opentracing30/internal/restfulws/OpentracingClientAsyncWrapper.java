@@ -34,20 +34,21 @@ public class OpentracingClientAsyncWrapper implements ClientAsyncTaskWrapper {
         if (tracer == null) {
             return r;
         }
-        
+
         Span activeSpan = tracer.activeSpan();
-        if (activeSpan == null) {
-            return r;
-        }
-        
+
         return () -> {
-            try (Scope scope = tracer.activateSpan(activeSpan)) {
-                Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
-                try {
+            Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
+            try {
+                if (activeSpan != null) {
+                    try (Scope scope = tracer.activateSpan(activeSpan)) {
+                        r.run();
+                    }
+                } else {
                     r.run();
-                } finally {
-                    OpentracingClientFilter.setCurrentTracer(oldTracer);
                 }
+            } finally {
+                OpentracingClientFilter.setCurrentTracer(oldTracer);
             }
         };
     }
@@ -58,20 +59,21 @@ public class OpentracingClientAsyncWrapper implements ClientAsyncTaskWrapper {
         if (tracer == null) {
             return c;
         }
-        
+
         Span activeSpan = tracer.activeSpan();
-        if (activeSpan == null) {
-            return c;
-        }
-        
+
         return () -> {
-            try (Scope scope = tracer.activateSpan(activeSpan)) {
-                Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
-                try {
+            Tracer oldTracer = OpentracingClientFilter.setCurrentTracer(tracer);
+            try {
+                if (activeSpan != null) {
+                    try (Scope scope = tracer.activateSpan(activeSpan)) {
+                        return c.call();
+                    }
+                } else {
                     return c.call();
-                } finally {
-                    OpentracingClientFilter.setCurrentTracer(oldTracer);
                 }
+            } finally {
+                OpentracingClientFilter.setCurrentTracer(oldTracer);
             }
         };
     }

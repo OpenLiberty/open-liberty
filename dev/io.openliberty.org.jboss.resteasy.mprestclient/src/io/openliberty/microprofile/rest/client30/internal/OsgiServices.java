@@ -25,18 +25,14 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- *
+ * Provides access to OSGi services to non-osgi components
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OsgiServices {
 
-    private static Optional<OsgiServices> instance = Optional.empty();
+    private static volatile Optional<OsgiServices> instance = Optional.empty();
 
-    @Reference(service = ManagedExecutorService.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    private volatile ManagedExecutorService executorService;
+    private volatile Optional<ManagedExecutorService> executorService = Optional.empty();
 
     @Activate
     protected void activate() {
@@ -50,8 +46,26 @@ public class OsgiServices {
         }
     }
 
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setExecutorService(ManagedExecutorService executor) {
+        executorService = Optional.of(executor);
+    }
+
+    protected void unsetExecutorService(ManagedExecutorService executor) {
+        if (executorService.isPresent() && executorService.get() == executor) {
+            executorService = Optional.empty();
+        }
+    }
+
+    /**
+     * Get a ManagedExecutorService, if one is available
+     * <p>
+     * @return an Optional containing a ManagedExecutorService, or an empty Optional if one is not available
+     */
     public static Optional<ExecutorService> getManagedExecutorService() {
-        return instance.flatMap(tracker -> Optional.ofNullable(tracker.executorService));
+        return instance.flatMap(tracker -> tracker.executorService);
     }
 
 }
