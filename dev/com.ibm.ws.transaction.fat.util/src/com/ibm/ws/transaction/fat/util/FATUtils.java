@@ -22,6 +22,10 @@ public class FATUtils {
 	private static final Class<FATUtils> c = FATUtils.class;
 
     public static void startServers(LibertyServer... servers) throws Exception {
+    	startServers((Runner)null, servers);
+    }
+
+    public static void startServers(Runner r, LibertyServer... servers) throws Exception {
         final String method = "startServers";
 
         for (LibertyServer server : servers) {
@@ -55,6 +59,9 @@ public class FATUtils {
 
                 ProgramOutput po = null;
                 try {
+                    if (r != null) {
+                        r.run(server);
+                    }
                     po = server.startServerAndValidate(false, false, true);
                 } catch (Exception e) {
                     Log.error(c, method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
@@ -170,7 +177,7 @@ public class FATUtils {
         }
     }
 
-	public static void stopServers(LibertyServer s1, LibertyServer s2) throws Exception {
-		stopServers((String[])null, s1, s2);
+	public static void stopServers(LibertyServer... servers) throws Exception {
+		stopServers((String[])null, servers);
 	}
 }

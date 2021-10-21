@@ -41,4 +41,5 @@ tested.features:\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.transaction.fat.util;version=latest,\
 	com.ibm.ws.transaction.cloud_fat.base;version=latest
