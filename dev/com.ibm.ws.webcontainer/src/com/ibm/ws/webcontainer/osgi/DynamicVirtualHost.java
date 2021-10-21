@@ -109,8 +109,8 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
 
             String displayName = deployedModule.getDisplayName();
 
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME,"addWebApplication",  "enter ["+ displayName +"]");
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)){
+                logger.logp(Level.FINE, CLASS_NAME,"addWebApplication", "enter ["+ displayName +"]");
             }
 
             WebGroup webGroup = (WebGroup) requestMapper.map(contextRoot);
@@ -124,12 +124,14 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
                     WebApp originalWebApp = (WebApp) list.get(0);
                     originalName = originalWebApp.getWebAppName();
                 }
-                logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.SEVERE)){
+                    logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
+                }
                 throw new WebAppNotLoadedException("Context root " + contextRoot + " is already bound. Cannot start application " + displayName);
                 // end 296368 Nested exceptions lost for problems during application
                 // startup WAS.webcontainer
             }
-            // The following is used by/for Liberty: requred to create the webgroup & 
+            // The following is used by/for Liberty: required to create the webgroup &
             // webgroup configuration
             webGroup = new WebGroup(contextRoot, this);
             WebGroupConfiguration wgConfig = new WebGroupConfiguration(deployedModule.getName());
@@ -152,10 +154,12 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             try {
                 webGroup.addWebApplication(deployedModule, extensionFactories);
                 Object[] args = { displayName, vHostConfig.toString() };
-                logger.logp(Level.INFO, CLASS_NAME, "addWebApplication", "module.[{0}].successfully.bound.to.virtualhost.[{1}]", args);
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)){
+                    logger.logp(Level.INFO, CLASS_NAME, "addWebApplication", "module.[{0}].successfully.bound.to.virtualhost.[{1}]", args);
+                }
             } catch (Throwable t) {
                 //PI58875
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)){
                     logger.logp(Level.FINE, CLASS_NAME,"addWebApplication",  "error adding web app ["+ displayName +"]");
                 }
                 webGroup.destroy();  //preventing the classLoader memory leak
