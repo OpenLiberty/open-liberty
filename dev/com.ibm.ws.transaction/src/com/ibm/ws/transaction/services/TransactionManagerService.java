@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -209,7 +209,11 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
 
     @Override
     public void unsetUOWEventListener(UOWEventListener el) {
-        ((UOWCurrent) etm()).unsetUOWEventListener(el);
+        try {
+            ((UOWCurrent) etm()).unsetUOWEventListener(el);
+        } catch (IllegalStateException e) {
+            // Server is on the way down
+        }
     }
 
     @Override

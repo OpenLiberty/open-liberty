@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,23 +45,23 @@ public class JSF23ViewParametersTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIBVServer")
-    public static LibertyServer jsf23CDIBVServer;
+    @Server("jsf23ViewParamertersServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIBVServer, "JSF23ViewParameters.war", "com.ibm.ws.jsf23.fat.viewparameters.beans");
+        ShrinkHelper.defaultDropinApp(server, "JSF23ViewParameters.war", "com.ibm.ws.jsf23.fat.viewparameters.beans");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        jsf23CDIBVServer.startServer(JSF23ViewParametersTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23ViewParametersTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIBVServer != null && jsf23CDIBVServer.isStarted()) {
-            jsf23CDIBVServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -78,7 +78,7 @@ public class JSF23ViewParametersTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=&textParam2=test2&textParam3=test3");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "ViewParameters.xhtml?textParam1=&textParam2=test2&textParam3=test3");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -104,7 +104,7 @@ public class JSF23ViewParametersTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=&textParam3=test3");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=&textParam3=test3");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -130,7 +130,7 @@ public class JSF23ViewParametersTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=test2&textParam3=");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "ViewParameters.xhtml?textParam1=test1&textParam2=test2&textParam3=");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 

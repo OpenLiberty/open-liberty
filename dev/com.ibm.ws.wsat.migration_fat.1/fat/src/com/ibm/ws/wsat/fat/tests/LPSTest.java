@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -56,36 +57,21 @@ public class LPSTest extends WSATTest {
 		server2.setHttpDefaultPort(9992);
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
-		if (server != null && server.isStarted()){
-			server.stopServer();
-		}
-		
-		if (server2 != null && server2.isStarted()){
-			server2.stopServer();
-		}
-
- 		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server);
 		DBTestBase.initWSATTest(server2);
-		
-    ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
-    ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
-    ShrinkHelper.defaultDropinApp(server2, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
 
-       if (server != null && !server.isStarted()){
-        	 server.setServerStartTimeout(600000);
-             server.startServer(true);
-		}
-		
-		if (server2 != null && !server2.isStarted()){
-			 server2.setServerStartTimeout(600000);
-		     server2.startServer(true);
-		}
+		ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
+		ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
+		ShrinkHelper.defaultDropinApp(server2, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
+
+		server.setServerStartTimeout(START_TIMEOUT);
+		server2.setServerStartTimeout(START_TIMEOUT);
+		FATUtils.startServers(server, server2);
 	}
 
 	@AfterClass
     public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server);
-		ServerUtils.stopServer(server2);
+		FATUtils.stopServers(server, server2);
 
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);

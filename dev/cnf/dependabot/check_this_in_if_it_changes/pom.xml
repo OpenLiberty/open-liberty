@@ -704,7 +704,7 @@
     <dependency>
       <groupId>jakarta.inject</groupId>
       <artifactId>jakarta.inject-api</artifactId>
-      <version>2.0.1.RC1</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.interceptor</groupId>
@@ -2097,6 +2097,11 @@
       <version>2.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.rest.client</groupId>
+      <artifactId>microprofile-rest-client-api</artifactId>
+      <version>3.0-RC3</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.antlr</artifactId>
       <version>2.7.9</version>
@@ -2152,8 +2157,8 @@
       <version>2.0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.ehcache.modules</groupId>
-      <artifactId>ehcache-107</artifactId>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
       <version>3.8.1</version>
     </dependency>
     <dependency>
@@ -2483,6 +2488,16 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client-microprofile-base</artifactId>
+      <version>4.7.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client-microprofile</artifactId>
+      <version>4.7.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
       <version>4.7.0.Final</version>
     </dependency>
@@ -2544,7 +2559,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>3.1.7.SP1</version>
+      <version>3.1.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -2559,7 +2574,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>3.1.7.SP1</version>
+      <version>3.1.8.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>

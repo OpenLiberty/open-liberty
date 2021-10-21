@@ -13,6 +13,7 @@ package web.war.annotatedbasic.deferred;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -34,7 +35,8 @@ public class LdapSettingsBean {
 
     private Properties props;
 
-    public LdapSettingsBean() {}
+    public LdapSettingsBean() {
+    }
 
     public String getBindDn() throws IOException {
         refreshConfiguration();
@@ -223,7 +225,7 @@ public class LdapSettingsBean {
         if (resultsSet.size() > 0) {
             results = resultsSet.toArray(new ValidationType[resultsSet.size()]);
         }
-        System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
+        System.out.println(CLASS_NAME + ".getUseFor() returns: " + Arrays.toString(results));
         return results;
     }
 

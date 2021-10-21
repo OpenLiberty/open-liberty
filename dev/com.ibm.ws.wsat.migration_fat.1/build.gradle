@@ -8,5 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+dependencies {
+  requiredLibs project(":com.ibm.ws.transaction.fat.util")
+}
 
 addRequiredLibraries.dependsOn addJakartaTransformer

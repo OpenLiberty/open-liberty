@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/JonHawkes/.m2/repository/com/ibm/ws/componenttest/public.api/1.0.0/public.api-1.0.0.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.componenttest:public.api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="build.example.testcontainers_fat"/>
+			<attribute name="version" value="1.0.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

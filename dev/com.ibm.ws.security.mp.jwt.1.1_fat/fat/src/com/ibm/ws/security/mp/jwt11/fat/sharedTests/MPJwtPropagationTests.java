@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,6 +111,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSClientApps(server);
         serverTracker.addServer(server);
+        transformApps(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MPJwt11FatConstants.BVT_SERVER_3_PORT_NAME_ROOT);
     }
@@ -122,6 +123,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerPropagationApps(server);
         serverTracker.addServer(server);
+        transformApps(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MPJwt11FatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
     }

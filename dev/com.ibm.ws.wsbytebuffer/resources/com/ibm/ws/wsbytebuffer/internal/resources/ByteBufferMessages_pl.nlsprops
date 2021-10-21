@@ -35,6 +35,6 @@ CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: Komponent WsByteBuffer wygenerowa\u014
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci konfiguracyjnej komponentu WsByteBuffer nie jest poprawn\u0105 liczb\u0105.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Popraw b\u0142\u0105d konfiguracji.
 
-POOL_MISMATCH=CWWKO0603E: Specyfikacje wielko\u015bci i g\u0142\u0119boko\u015bci puli komponentu WsByteBuffer maj\u0105 r\u00f3\u017cne liczby wpis\u00f3w. Wielko\u015bci: {0}, g\u0142\u0119boko\u015bci: {1}
+POOL_MISMATCH=CWWKO0603E: Specyfikacje wielko\u015bci i g\u0142\u0119boko\u015bci puli komponentu WsByteBuffer maj\u0105 r\u00f3\u017cne liczby wpis\u00f3w.  Wielko\u015bci: {0}, g\u0142\u0119boko\u015bci: {1}
 POOL_MISMATCH.explanation=Warto\u015bci dotycz\u0105ce wielko\u015bci lub g\u0142\u0119boko\u015bci puli zosta\u0142y okre\u015blone niepoprawnie.
 POOL_MISMATCH.useraction=Popraw b\u0142\u0105d konfiguracji.

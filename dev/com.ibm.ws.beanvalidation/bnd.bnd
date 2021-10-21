@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2020 IBM Corporation and others.
+# Copyright (c) 2017,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,13 +40,16 @@ Private-Package: \
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.OSGiBeanValidationImpl, \
   com.ibm.ws.beanvalidation.BeanValidationJavaColonHelper, \
   com.ibm.ws.beanvalidation.ValidatorFactoryObjectFactoryInfo, \
   com.ibm.ws.beanvalidation.ValidatorObjectFactoryInfo, \
-  com.ibm.ws.beanvalidation.config.internal.ValidationConfigurationFactoryImpl
+  com.ibm.ws.beanvalidation.config.internal.ValidationConfigurationFactoryImpl, \
+  com.ibm.ws.beanvalidation.LoadConfigImpl
 
 instrument.classesExcludes: com/ibm/ws/beanvalidation/resources/nls/*.class
 

@@ -32,7 +32,7 @@ app-resources= \
   io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig,\
   io.openliberty.org.jboss.resteasy.common.client.JAXRSAppSecurity,\
   io.openliberty.restfulWS.client.security.OAuthPropagationHelper,\
-  io.openliberty.restfulWS.introspector.LibertyResteasyEndpointIntrospector
+  io.openliberty.restfulWS.introspector.ResteasyEndpointIntrospector
 
 Service-Component: \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
@@ -59,6 +59,7 @@ Export-Package: \
   org.jboss.resteasy.annotations.providers.img;version=${resteasy-version}, \
   org.jboss.resteasy.annotations;version=${resteasy-version}, \
   org.jboss.resteasy.api.validation;version=${resteasy-version}, \
+  org.jboss.resteasy.client.exception;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.cache;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.engines;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.i18n;version=${resteasy-version}, \
@@ -66,7 +67,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors;version=${resteasy-version}, \
-  org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
@@ -161,6 +162,7 @@ instrument.classesExcludes: \
   org/jboss/resteasy/core/interception/jaxrs/ContainerResponseContextImpl.class, \
   org/jboss/resteasy/core/providerfactory/ResteasyProviderFactoryImpl.class, \
   org/jboss/resteasy/core/ResteasyContext.class, \
+  org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
   org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
   org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
   org/jboss/resteasy/util/snapshot/SnapshotMap.class, \

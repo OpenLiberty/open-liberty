@@ -293,4 +293,6 @@ OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: {0} OpenID
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=\uc6f9 \uc751\ub2f5\uc740 JWE(JSON Web Encryption) \ub610\ub294 JWS(JSON Web Signature) \ud615\uc2dd\uc758 JWT\uc5ec\uc57c \ud569\ub2c8\ub2e4. \uc751\ub2f5 \ud615\uc2dd\uc774 \uc798\ubabb\ub418\uc5c8\uac70\ub098 OpenID Connect \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0\uc11c \uc751\ub2f5\uc744 \ucc98\ub9ac\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \uba54\uc2dc\uc9c0\uc5d0 \uc788\ub294 \uc624\ub958\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc751\ub2f5\uc774 JWT \ud615\uc2dd\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
+#1534, 1535 used in clients.common bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

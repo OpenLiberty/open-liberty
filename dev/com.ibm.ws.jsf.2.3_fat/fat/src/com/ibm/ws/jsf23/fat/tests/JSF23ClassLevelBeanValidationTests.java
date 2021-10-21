@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,22 +48,22 @@ public class JSF23ClassLevelBeanValidationTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIBVServer")
-    public static LibertyServer jsf23CDIBVServer;
+    @Server("jsf23ClassLevelBeanValidationServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIBVServer, "ClassLevelBeanValidation.war", "com.ibm.ws.jsf23.fat.classlevel.bval.beans");
+        ShrinkHelper.defaultDropinApp(server, "ClassLevelBeanValidation.war", "com.ibm.ws.jsf23.fat.classlevel.bval.beans");
 
         // Start the server and use the class name so we can find logs easily.
-        jsf23CDIBVServer.startServer(JSF23ClassLevelBeanValidationTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23ClassLevelBeanValidationTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIBVServer != null && jsf23CDIBVServer.isStarted()) {
-            jsf23CDIBVServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -82,7 +82,7 @@ public class JSF23ClassLevelBeanValidationTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanSerialized.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanSerialized.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -143,7 +143,7 @@ public class JSF23ClassLevelBeanValidationTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCloneable.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanCloneable.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -204,7 +204,7 @@ public class JSF23ClassLevelBeanValidationTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyConstructor.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanCopyConstructor.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -269,7 +269,7 @@ public class JSF23ClassLevelBeanValidationTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanIllegalAccess.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanIllegalAccess.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -326,7 +326,7 @@ public class JSF23ClassLevelBeanValidationTests {
              * com/ibm/ws/jsf23/fat/beans/TestPasswordBeanIllegalAccess
              */
 
-            String illegalAccessException = jsf23CDIBVServer
+            String illegalAccessException = server
                             .waitForStringInTraceUsingLastOffset("java.lang.IllegalAccessException:.*WholeBeanValidator.*TestPasswordBeanIllegalAccess.*");
             assertTrue("The IllegalAccessException was not logged in the trace file.", illegalAccessException != null);
         }
@@ -349,10 +349,10 @@ public class JSF23ClassLevelBeanValidationTests {
 
             // Ensure the test does not fail due to the error condition we are creating
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-            jsf23CDIBVServer.addIgnoredErrors(Arrays.asList("SRVE0777E.*"));
+            server.addIgnoredErrors(Arrays.asList("SRVE0777E.*"));
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanCopyFailure.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanCopyFailure.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -392,7 +392,7 @@ public class JSF23ClassLevelBeanValidationTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIBVServer, contextRoot, "validateWholeBeanDisabled.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "validateWholeBeanDisabled.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 

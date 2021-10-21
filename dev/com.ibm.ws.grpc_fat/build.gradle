@@ -62,6 +62,17 @@ repositories {
             url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
         }
     } else {
+        maven {
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            content {
+                includeGroup "biz.aQute.bnd"
+                includeGroup "org.eclipse.transformer"
+            }
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
         mavenCentral()
     }
 }

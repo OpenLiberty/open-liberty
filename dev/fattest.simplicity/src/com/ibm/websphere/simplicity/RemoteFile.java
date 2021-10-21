@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.websphere.simplicity;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -590,9 +591,9 @@ public class RemoteFile {
         boolean deleted = retry(deleteOp, retryNs);
         if (!deleted) {
 
-            Log.info(c, methodName, "Failed to delete '" + filePath  + "' about to print processes");
+            Log.info(c, methodName, "Failed to delete '" + filePath + "' about to print processes");
             String[] name = convertPath(filePath).split("/");
-            LibertyServer.printProcesses(host, name[name.length-1]);
+            LibertyServer.printProcesses(host, name[name.length - 1]);
         }
         return deleted;
         // return retry( () -> basicDelete(), retryNs );
@@ -655,6 +656,9 @@ public class RemoteFile {
 
         Path localPath = useLocalFile.toPath();
         try {
+            if (!Files.exists(localPath)) {
+                return true;
+            }
             return Files.deleteIfExists(localPath);
         } catch (IOException e) {
             Log.info(c, methodName, "Failed to delete '" + localPath + "': " + e.getMessage());
@@ -884,9 +888,9 @@ public class RemoteFile {
         Log.entering(c, method, new Object[] { srcFile, destFile, recursive, overwrite });
 
         if (!srcFile.exists()) {
-            throw new Exception("Cannot copy a file or directory that does not exist: "
-                                + srcFile.getAbsolutePath() + ": "
-                                + srcFile.getMachine().getHostname());
+            throw new FileNotFoundException("Cannot copy a file or directory that does not exist: "
+                                            + srcFile.getAbsolutePath() + ": "
+                                            + srcFile.getMachine().getHostname());
         }
 
         boolean destExists = destFile.exists();

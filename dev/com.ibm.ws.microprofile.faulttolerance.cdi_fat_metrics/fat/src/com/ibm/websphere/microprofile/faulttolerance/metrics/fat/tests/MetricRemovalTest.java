@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
@@ -32,12 +31,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -50,13 +48,8 @@ public class MetricRemovalTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    //mpMetrics-4.0 isn't ready yet so can't run against MP50
-//    @ClassRule
-//    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
-//                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
-
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP20)
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
                     .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     // FT 1.x, 2.x & Metrics 2.0+
@@ -125,10 +118,8 @@ public class MetricRemovalTest {
      * undeploying while the server is running.
      */
     private void deployApp(Archive<?> archive) throws Exception {
-        ShrinkHelper.exportArtifact(archive, ".");
-        System.out.println("I'm putting the archive here: " + new File(".").getAbsolutePath());
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot(".", "dropins", archive.getName());
+        ShrinkHelper.exportDropinAppToServer(server, archive, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
         assertNotNull(archive.getName() + " started message not found", server.waitForStringInLog("CWWKZ000[13]I.*" + getAppName(archive)));
     }
 

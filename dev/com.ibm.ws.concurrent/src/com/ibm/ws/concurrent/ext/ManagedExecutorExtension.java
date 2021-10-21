@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -35,7 +36,6 @@ import com.ibm.ws.threading.CompletionStageExecutor;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Extend this interface to intercept and replace resource reference lookups for
@@ -99,8 +99,7 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
         return ((ManagedExecutor) executor).failedStage(x);
     }
 
-    @Deprecated // being replaced with captureThreadContext so that this method signature can change to spec
-    public final WSContextService getContextService() {
+    public final ContextService getContextService() {
         return ((ManagedExecutorServiceImpl) executor).getContextService();
     }
 

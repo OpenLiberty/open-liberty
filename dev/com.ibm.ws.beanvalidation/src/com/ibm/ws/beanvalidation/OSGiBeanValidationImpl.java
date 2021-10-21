@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
 import com.ibm.ws.beanvalidation.service.ConstrainedHelper;
+import com.ibm.ws.beanvalidation.service.LoadConfig;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -83,6 +84,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
     private static final String REFERENCE_VALIDATOR_FACTORY_BUILDER = "ValidatorFactoryBuilder";
     private static final String REFERENCE_CONSTRAINED_HELPER = "ConstrainedHelper";
+    private static final String REFERENCE_LOAD_CONFIG = "LoadConfig";
 
     private MetaDataSlot ivModuleMetaDataSlot;
 
@@ -93,6 +95,8 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private final AtomicServiceReference<ValidatorFactoryBuilder> validatorFactoryBuilderSR = new AtomicServiceReference<ValidatorFactoryBuilder>(REFERENCE_VALIDATOR_FACTORY_BUILDER);
 
     private final AtomicServiceReference<ConstrainedHelper> constrainedHelperSR = new AtomicServiceReference<ConstrainedHelper>(REFERENCE_CONSTRAINED_HELPER);
+
+    private final AtomicServiceReference<LoadConfig> loadConfigSR = new AtomicServiceReference<LoadConfig>(REFERENCE_LOAD_CONFIG);
 
     private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
     private Version runtimeVersion = DEFAULT_VERSION;
@@ -523,6 +527,16 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     protected void unsetValidationConfigFactory(ServiceReference<ValidationConfigurationFactory> factoryRef) {
         validationConfigFactorySR.unsetReference(factoryRef);
+    }
+
+    @Reference(cardinality = ReferenceCardinality.AT_LEAST_ONE,
+               target = "(id=unbound)")
+    protected void setLoadConfig(ServiceReference<LoadConfig> ref) {
+        loadConfigSR.setReference(ref);
+    }
+
+    protected void unsetLoadConfig(ServiceReference<LoadConfig> ref) {
+        loadConfigSR.unsetReference(ref);
     }
 
     private boolean isBeanValidationVersion11OrGreater() {
