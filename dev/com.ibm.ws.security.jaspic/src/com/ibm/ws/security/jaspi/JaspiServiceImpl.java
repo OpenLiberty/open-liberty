@@ -414,10 +414,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private AuthenticationResult processAuthStatus(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
                                                    MessageInfo msgInfo, boolean isJSR375) throws WSLoginFailedException {
         AuthenticationResult authResult;
-        if (AuthStatus.SEND_SUCCESS == status) {
-	    AuthResult.RETURN;
-	}
-        if (AuthStatus.SUCCESS == status) {
+        if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
             // if the provider asked that the subject be used on subsequent
             // invocations then indicate that in the request object. later we will
             // create an ltpa token cookie for the jaspi session
@@ -698,9 +695,10 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         AuthenticationResult authResult = null;
         String pretty = "FAILURE";
         if (AuthStatus.SEND_SUCCESS == status) {
-	    authResult = AuthResult.RETURN; 
+            authResult = new AuthenticationResult(AuthResult.RETURN, clientSubject);
+            pretty = "SEND_SUCCESS";
 	}
-        if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
+        if (AuthStatus.SUCCESS == status) {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, clientSubject);
             pretty = "SUCCESS";
 
