@@ -695,6 +695,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         AuthenticationResult authResult = null;
         String pretty = "FAILURE";
         if (AuthStatus.SEND_SUCCESS == status) {
+	    if (tc.isDebugEnabled()) Tr.debug(tc, "SEND_SUCCES received. Returning without going to the service."); 
             authResult = new AuthenticationResult(AuthResult.RETURN, clientSubject);
             pretty = "SEND_SUCCESS";
 	}
