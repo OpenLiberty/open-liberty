@@ -415,6 +415,7 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.2.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.3.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.4.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0
+org.eclipse.microprofile.rest.client:microprofile-rest-client-api:3.0-RC3
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.9
 org.eclipse.persistence:org.eclipse.persistence.asm:9.1.0
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.9
@@ -492,6 +493,8 @@ org.jboss.narayana.rts:narayana-lra:5.10.6.Final
 org.jboss.narayana:common:5.10.6.Final
 org.jboss.resteasy:resteasy-cdi:4.7.0.Final
 org.jboss.resteasy:resteasy-client-api:4.7.0.Final
+org.jboss.resteasy:resteasy-client-microprofile-base:4.7.0.Final
+org.jboss.resteasy:resteasy-client-microprofile:4.7.0.Final
 org.jboss.resteasy:resteasy-client:4.7.0.Final
 org.jboss.resteasy:resteasy-core-spi:4.7.0.Final
 org.jboss.resteasy:resteasy-core:4.7.0.Final
