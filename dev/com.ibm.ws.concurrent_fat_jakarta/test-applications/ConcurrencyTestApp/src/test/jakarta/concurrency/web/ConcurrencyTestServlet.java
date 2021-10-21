@@ -18,6 +18,14 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicReference;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import jakarta.enterprise.concurrent.LastExecution;
+import jakarta.enterprise.concurrent.ZonedTrigger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
@@ -244,6 +252,78 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
         } finally {
             blocker.countDown();
+        }
+    }
+
+    /**
+     * Schedule a one-shot timer with a ZonedTrigger that implements only getZoneId and the
+     * getNextRunTime method that accepts a ZonedDateTime. Record the LastExecution and ensure
+     * that the methods which specify a ZoneId are working and return times that are consistent
+     * with what the ZonedTrigger asks for.
+     */
+    @Test
+    public void testOneShotTimerWithZonedTrigger() throws Exception {
+        final AtomicReference<LastExecution> lastExecRef = new AtomicReference<LastExecution>();
+        final AtomicReference<ZonedDateTime> scheduledAtRef = new AtomicReference<ZonedDateTime>();
+        final ZoneId USCentral = ZoneId.of("America/Chicago");
+        final ZoneId USMountain = ZoneId.of("America/Denver");
+        final ZoneId NewZealand = ZoneId.of("Pacific/Auckland");
+        final long TOLERANCE_NS = TimeUnit.MILLISECONDS.toNanos(500);
+
+        ZonedDateTime beforeScheduled = ZonedDateTime.now(USCentral);
+        ScheduledFuture<Integer> future = executor4.schedule(() -> 400, new ZonedTrigger() {
+            @Override
+            public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime scheduledAt) {
+                if (lastExecution == null)
+                    return scheduledAt.plusSeconds(4);
+                lastExecRef.set(lastExecution);
+                scheduledAtRef.set(scheduledAt);
+                return null;
+            }
+
+            @Override
+            public ZoneId getZoneId() {
+                return USCentral;
+            }
+        });
+        try {
+            ZonedDateTime afterScheduled = ZonedDateTime.now(USCentral);
+
+            assertEquals(Integer.valueOf(400), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(future.isDone());
+            assertFalse(future.isCancelled());
+
+            // Is the scheduledAt time within the range of when we actually scheduled it?
+            ZonedDateTime scheduledAt = scheduledAtRef.get();
+            assertEquals(USCentral, scheduledAt.getZone()); // must supply scheduledAt time in same zone
+            assertTrue(beforeScheduled + " must be less or equal to " + scheduledAt,
+                       beforeScheduled.minusNanos(TOLERANCE_NS).isBefore(scheduledAt));
+            assertTrue(afterScheduled + " must be greater or equal to " + scheduledAt,
+                       afterScheduled.plusNanos(TOLERANCE_NS).isAfter(scheduledAt));
+
+            // Does the target start time of the last execution match what the trigger asked for?
+            LastExecution lastExec = lastExecRef.get();
+            ZonedDateTime targetStartAt = lastExec.getScheduledStart(USCentral);
+            assertEquals(USCentral, targetStartAt.getZone());
+            ZonedDateTime targetStartAtExpected = scheduledAt.plusSeconds(4);
+            assertTrue(targetStartAt + " must be equal to " + targetStartAtExpected,
+                       targetStartAt.isAfter(targetStartAtExpected.minusNanos(TOLERANCE_NS)) &&
+                       targetStartAt.isBefore(targetStartAtExpected.plusNanos(TOLERANCE_NS)));
+
+            // Is the actual start time after (or equal to) the expected?
+            ZonedDateTime startAt = lastExec.getRunStart(USMountain);
+            assertEquals(USMountain, startAt.getZone());
+            assertTrue(startAt + " must be greater or equal to " + targetStartAt,
+                       startAt.isAfter(targetStartAt.minusNanos(TOLERANCE_NS)));
+
+            // Is the actual end time after (or equal to) the actual start time?
+            ZonedDateTime endAt = lastExec.getRunEnd(NewZealand);
+            assertEquals(NewZealand, endAt.getZone());
+            assertTrue(endAt + " must be greater or equal to " + startAt,
+                       endAt.isAfter(startAt.minusNanos(TOLERANCE_NS)));
+        } finally {
+            if (!future.isDone())
+                future.cancel(true);
         }
     }
 
