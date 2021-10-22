@@ -32,7 +32,7 @@ public class OsgiServices {
 
     private static volatile Optional<OsgiServices> instance = Optional.empty();
 
-    private volatile Optional<ManagedExecutorService> executorService = Optional.empty();
+    private volatile Optional<ExecutorService> executorService = Optional.empty();
 
     @Activate
     protected void activate() {
