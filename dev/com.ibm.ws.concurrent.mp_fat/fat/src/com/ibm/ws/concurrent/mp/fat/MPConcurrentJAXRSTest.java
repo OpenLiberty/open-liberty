@@ -45,7 +45,7 @@ import componenttest.topology.utils.HttpUtils;
 public class MPConcurrentJAXRSTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentJAXRSTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentJAXRSTestServer", MPContextPropActions.CTX10);
 
     private static final String APP_NAME = "MPConcurrentJAXRSApp";
 
