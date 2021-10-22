@@ -46,14 +46,15 @@ public class OsgiServices {
         }
     }
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+    @Reference(service = ManagedExecutorService.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected void setExecutorService(ManagedExecutorService executor) {
+    protected void setExecutorService(ExecutorService executor) {
         executorService = Optional.of(executor);
     }
 
-    protected void unsetExecutorService(ManagedExecutorService executor) {
+    protected void unsetExecutorService(ExecutorService executor) {
         if (executorService.isPresent() && executorService.get() == executor) {
             executorService = Optional.empty();
         }

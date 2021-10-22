@@ -40,6 +40,7 @@ Export-Package: \
   org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
 
 Import-Package: \
+  !javax.enterprise.concurrent,\
   javax.annotation;version='!',\
   javax.inject,\
   javax.ws.rs.core,\
