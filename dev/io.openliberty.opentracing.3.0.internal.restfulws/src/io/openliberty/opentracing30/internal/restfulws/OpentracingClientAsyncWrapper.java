@@ -23,7 +23,7 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 
 /**
- * Wraps the restfulWS client task to capture and apply the current span
+ * Wraps the restfulWS client task to capture and apply the current tracer and span
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OpentracingClientAsyncWrapper implements ClientAsyncTaskWrapper {
