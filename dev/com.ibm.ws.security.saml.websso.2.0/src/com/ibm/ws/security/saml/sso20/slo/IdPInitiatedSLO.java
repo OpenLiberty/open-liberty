@@ -77,6 +77,7 @@ public class IdPInitiatedSLO {
 
     SsoSamlService ssoService = null;
     BasicMessageContext<?, ?> basicMsgCtx;
+    String idpRelayState = null;
     final static String SINDEX = "sessionIndex";
 
     /**
@@ -86,6 +87,20 @@ public class IdPInitiatedSLO {
     public IdPInitiatedSLO(SsoSamlService service, BasicMessageContext<?, ?> msgCtx) {
         ssoService = service;
         basicMsgCtx = msgCtx;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "IdPInitiatedSLO(" + service.getProviderId() + ")");
+        }
+    }
+    
+    /**
+     * @param ssoService2
+     * @param msgCtx
+     * @param externalRelayState
+     */
+    public IdPInitiatedSLO(SsoSamlService service, BasicMessageContext<?, ?> msgCtx, String externalRelayState) {
+        ssoService = service;
+        basicMsgCtx = msgCtx;
+        idpRelayState = externalRelayState;
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "IdPInitiatedSLO(" + service.getProviderId() + ")");
         }
@@ -335,7 +350,11 @@ public class IdPInitiatedSLO {
 
         ForwardRequestInfo requestInfo = new ForwardRequestInfo(idpUrl);
         // requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId()); //TODO
-        // requestInfo.setParameter("RelayState", new String[] { relayState }); // IdP did not send one in the Logout request
+        // If IdP sends the relaystate, then add it back into response
+        if (this.idpRelayState != null) {
+         requestInfo.setParameter("RelayState", new String[] { this.idpRelayState }); // IdP sent one in the Logout request
+        }
+        
         requestInfo.setParameter("SAMLResponse", new String[] { samlResponse });
         requestInfo.redirectPostRequest(req,
                                         resp,
