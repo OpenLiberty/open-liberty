@@ -15,6 +15,7 @@ Subsystem-Name: Password Utilities 1.0
  com.ibm.websphere.appserver.api.passwordUtil; location:=dev/api/ibm/, \
  com.ibm.websphere.appserver.api.authData; location:=dev/api/ibm/
 -files=\
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.authData_1.0-javadoc.zip, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.passwordUtil_1.0-javadoc.zip
 kind=ga
 edition=base

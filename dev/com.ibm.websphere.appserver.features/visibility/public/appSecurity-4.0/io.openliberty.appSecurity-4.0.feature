@@ -28,5 +28,5 @@ Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
   io.openliberty.security.jaspic.2.0.internal
 kind=beta
 edition=core
--jars=io.openliberty.jaspic.2.0.spi; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
+-jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
+-files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
