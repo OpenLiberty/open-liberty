@@ -63,13 +63,8 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     private OpentracingFilterHelper helper;
 
     public OpentracingContainerFilter() {
-    
         helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
     }
-    
-//    OpentracingContainerFilter(OpentracingFilterHelper helper) {
-//        setFilterHelper(helper);
-//    }
 
     void setFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
@@ -152,7 +147,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public void filter(ContainerRequestContext incomingRequestContext,
                        ContainerResponseContext outgoingResponseContext) throws IOException {
-    	
+
         String methodName = "filter(outgoing)";
 
         Boolean skipped = (Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);

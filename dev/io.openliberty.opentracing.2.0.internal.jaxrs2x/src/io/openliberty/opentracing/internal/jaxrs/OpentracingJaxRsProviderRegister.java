@@ -42,14 +42,14 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
 
     // DSR activation API ...
 
-    protected synchronized void activate(ComponentContext context) {
-        setContainerFilter();
-        setClientFilter();
+    protected void activate(ComponentContext context) {
+        containerFilter = new OpentracingContainerFilter();
+        clientFilter = new OpentracingClientFilter();
     }
 
     protected void deactivate(ComponentContext context) {
-        clearContainerFilter();
-        clearClientFilter();
+        containerFilter = null;
+        clientFilter = null;
     }
 
     // The filters.  There is a single container filter and a single client
@@ -59,30 +59,10 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
     private OpentracingContainerFilter containerFilter;
     private OpentracingClientFilter clientFilter;
 
-    @Trivial
-    protected void setContainerFilter() {
-        containerFilter = new OpentracingContainerFilter();
-    }
-
-    @Trivial
-    protected void clearContainerFilter() {
-        containerFilter = null;
-    }
-
     @Override
     @Trivial
     public OpentracingContainerFilter getContainerFilter() {
         return containerFilter;
-    }
-
-    @Trivial
-    protected void setClientFilter() {
-        clientFilter = new OpentracingClientFilter();
-    }
-
-    @Trivial
-    protected void clearClientFilter() {
-        clientFilter = null;
     }
 
     @Override
@@ -90,8 +70,6 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
     public OpentracingClientFilter getClientFilter() {
         return clientFilter;
     }
-
-    //
 
     @Override
     @Trivial
