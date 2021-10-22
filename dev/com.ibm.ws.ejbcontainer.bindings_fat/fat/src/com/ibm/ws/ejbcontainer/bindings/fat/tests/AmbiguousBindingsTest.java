@@ -32,7 +32,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.EjbOnError;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE7;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.repeataction.RepeatOnErrorEE9;
 
-import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -72,7 +72,9 @@ public class AmbiguousBindingsTest extends FATServletClient {
     public static void setUp() throws Exception {
         server.deleteAllDropinApplications();
         server.removeAllInstalledAppsForValidation();
+    }
 
+    private static void addAppsAndStartServer() throws Exception {
         // Use ShrinkHelper to build the ears
         JavaArchive AmbiguousEJB = ShrinkHelper.buildJavaArchive("AmbiguousEJB.jar", "com.ibm.ambiguous.ejb.");
         ShrinkHelper.addDirectory(AmbiguousEJB, "test-applications/AmbiguousEJB.jar/resources");
@@ -91,7 +93,6 @@ public class AmbiguousBindingsTest extends FATServletClient {
         } else {
             server.startServer();
         }
-
     }
 
     @AfterClass
@@ -109,8 +110,10 @@ public class AmbiguousBindingsTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC("javax.naming.NamingException")
+    @ExpectedFFDC(value = { "javax.naming.NamingException", "com.ibm.ws.container.service.state.StateChangeException" },
+                  repeatAction = { "EE7_FEATURES_EjbOnErr_FAIL", "EE8_FEATURES_EjbOnErr_FAIL", "EE9_FEATURES_EjbOnErr_FAIL" })
     public void testAmbiguousBindings() throws Exception {
+        addAppsAndStartServer();
 
         if (RepeatOnErrorEE7.isActive(EjbOnError.FAIL) || RepeatOnErrorEE9.isActive(EjbOnError.FAIL)) {
             // make sure application stopped with correct error
