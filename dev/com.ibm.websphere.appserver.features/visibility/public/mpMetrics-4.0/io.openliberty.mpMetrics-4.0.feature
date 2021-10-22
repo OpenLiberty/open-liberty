@@ -8,7 +8,6 @@ IBM-ShortName: mpMetrics-4.0
 Subsystem-Name: MicroProfile Metrics 4.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
   io.openliberty.mpConfig-3.0, \
-  com.ibm.websphere.appserver.adminSecurity-2.0, \
   io.openliberty.jakarta.annotation-2.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.mpCompatible-5.0, \
