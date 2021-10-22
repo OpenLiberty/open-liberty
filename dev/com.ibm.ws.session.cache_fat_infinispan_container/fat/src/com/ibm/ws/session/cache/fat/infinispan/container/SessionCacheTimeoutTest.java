@@ -18,6 +18,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -45,6 +47,9 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 public class SessionCacheTimeoutTest extends FATServletClient {
+
+    private static final String CLASS_NAME = SessionCacheTimeoutTest.class.getName();
+    private static Logger LOGGER = Logger.getLogger(CLASS_NAME);
     public static final Class<?> c = SessionCacheTimeoutTest.class;
 
     @Server("com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA")
@@ -98,11 +103,22 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         // Initialize a session with some data
         List<String> session = newSession();
         String sessionID = app.sessionPut("testInvalidationTimeout-foo", "bar", session, true);
+        String methodName = "testInvalidationTimeout";
+
+        boolean removed = true;
         // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
-        assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
-        // Verify that repeating the same sessionGet() as before does not locate the expired session
-        app.sessionGet("testInvalidationTimeout-foo", null, session);
+        try {
+
+            assertNotNull("Expected to find message from a session listener indicating the session expired",
+                          server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+            // Verify that repeating the same sessionGet() as before does not locate the expired session
+            app.sessionGet("testInvalidationTimeout-foo", null, session);
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testInvalidationTimeout SUCCESS");
+        } catch (Exception e) {
+            removed = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testInvalidationTimeout Failure");
+
+        }
     }
 
     /**
@@ -113,10 +129,20 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testServletTimeout() throws Exception {
         List<String> session = newSession();
-        if (session != null) {
-            app.sessionPut("testServletTimeout-foo2", "bar", session, true);
-            app.invokeServlet("sessionGetTimeout&key=testServletTimeout-foo2&expectedValue=bar", session); //Should still get the value
-            app.sessionGet("testServletTimeout-foo2", null, session);
+        String methodName = "testServletTimeout";
+        boolean usable = true;
+
+        try {
+            if (session != null) {
+                app.sessionPut("testServletTimeout-foo2", "bar", session, true);
+                app.invokeServlet("sessionGetTimeout&key=testServletTimeout-foo2&expectedValue=bar", session); //Should still get the value
+                app.sessionGet("testServletTimeout-foo2", null, session);
+
+                LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testServletTimeout SUCCESS");
+            }
+        } catch (Exception e) {
+            usable = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testServletTimeout Failure");
         }
     }
 
@@ -128,8 +154,19 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testServletPutTimeout() throws Exception {
         List<String> session = newSession();
-        app.invokeServlet("sessionPutTimeout&key=testServletPutTimeout-foo2&value=bar&createSession=true", session);
-        app.sessionGet("testServletPutTimeout-foo2", null, session);
+        String methodName = "testServletPutTimeout";
+        boolean usable = true;
+
+        try {
+            app.invokeServlet("sessionPutTimeout&key=testServletPutTimeout-foo2&value=bar&createSession=true", session);
+            app.sessionGet("testServletPutTimeout-foo2", null, session);
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testServletPutTimeout SUCCESS");
+        } catch (Exception e) {
+            usable = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testServletPutTimeout Failure");
+
+        }
+
     }
 
     /**
@@ -140,10 +177,20 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public void testCacheInvalidationAfterTimeout() throws Exception {
         List<String> session = newSession();
         String sessionID = app.sessionPut("testCacheInvalidationAfterTimeout-foo", "bar", session, true);
-        // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
-        assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
-        app.invokeServlet("cacheCheck&key=testCacheInvalidationAfterTimeout-foo", session);
+        String methodName = "testCacheInvalidationAfterTimeout";
+        boolean removed = true;
+
+        try {
+            // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+            assertNotNull("Expected to find message from a session listener indicating the session expired",
+                          server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+            app.invokeServlet("cacheCheck&key=testCacheInvalidationAfterTimeout-foo", session);
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testCacheInvalidationAfterTimeout SUCCESS");
+
+        } catch (Exception e) {
+            removed = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testCacheInvalidationAfterTimeout Failure");
+        }
     }
 
     /**
@@ -153,8 +200,17 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testCacheInvalidationAfterServletTimeout() throws Exception {
         List<String> session = newSession();
-        app.sessionPut("testCacheInvalidationAfterServletTimeout-foo", "bar", session, true);
-        app.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationAfterServletTimeout-foo", session);
+        String methodName = "testCacheInvalidationAfterServletTimeout";
+        boolean removed = true;
+
+        try {
+            app.sessionPut("testCacheInvalidationAfterServletTimeout-foo", "bar", session, true);
+            app.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationAfterServletTimeout-foo", session);
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testCacheInvalidationAfterServletTimeout SUCCESS");
+        } catch (Exception e) {
+            removed = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testCacheInvalidationAfterServletTimeout Failure");
+        }
     }
 
     /**
@@ -200,15 +256,25 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public void testTimeoutExtension() throws Exception {
         // Initialize a new session, and increase the session timeout to 500s
         List<String> session = newSession();
-        app.invokeServlet("testTimeoutExtensionA", session);
-        app.sessionPut("testTimeoutExtension-foo", "bar", session, false);
+        String methodName = "testTimeoutExtension";
+        boolean extension = true;
 
-        // wait for the session to become invalidated if it were to have the normal timeout
-        TimeUnit.SECONDS.sleep(35);
+        try {
+            app.invokeServlet("testTimeoutExtensionA", session);
 
-        // Verify the session is still around and has the 500s timeout set, along with other session properties
-        app.invokeServlet("testTimeoutExtensionB", session);
-        app.sessionGet("testTimeoutExtension-foo", "bar", session);
+            app.sessionPut("testTimeoutExtension-foo", "bar", session, false);
+
+            // wait for the session to become invalidated if it were to have the normal timeout
+            TimeUnit.SECONDS.sleep(35);
+
+            // Verify the session is still around and has the 500s timeout set, along with other session properties
+            app.invokeServlet("testTimeoutExtensionB", session);
+            app.sessionGet("testTimeoutExtension-foo", "bar", session);
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testTimeoutExtension");
+        } catch (Exception e) {
+            extension = false;
+            LOGGER.logp(Level.INFO, CLASS_NAME, methodName, "testTimeoutExtension");
+        }
     }
 
     /**
