@@ -304,4 +304,261 @@ public class ConcurrencyTestServlet extends FATServlet {
             pool.shutdown();
         }
     }
+
+    /**
+     * Verify that it is possible to obtain a ContextService that is referenced by
+     * multiple managed executors, and that is possible to use the withContextCapture methods
+     * which create completion stages that are backed by the respective managed executor.
+     * Verify that the completion stages run on the managed executor, subject to its concurrency
+     * constraints, and runs tasks under the context propagation settings of the ContextService.
+     * Part 1 - This test covers usage of the managedScheduledExecutorService concurrent/executor3.
+     */
+    @Test
+    public void testReferencedContextServiceWithContextCapture3() throws Exception {
+        CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+        ContextService contextSvc3 = executor3.getContextService();
+
+        CompletableFuture<String> stage1copy = contextSvc3.withContextCapture(stage1);
+
+        // block the managed executor's 3 threads
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blocking = new CountDownLatch(3);
+        try {
+            CompletableFuture<Object> stage2a = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2b = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2c = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage1.complete("java:comp/env/concurrent/executor3Ref");
+            assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // fill the managed executor's 3 queue slots
+            CompletableFuture<Object> stage2d = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2e = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2f = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // attempt to exceed the managed executor's maximum queue size
+            CompletableFuture<String> stage2g = stage1copy.thenApplyAsync(s -> s);
+            try {
+                String result = stage2g.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to queue another completion stage " + stage2g + ", with result: " + result);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException)
+                    ; // expected
+                else
+                    throw x;
+            }
+
+            blocker.countDown();
+
+            Object result;
+            assertNotNull(result = stage2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2d.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2e.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2f.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
+     * Verify that it is possible to obtain a ContextService that is referenced by
+     * multiple managed executors, and that is possible to use the withContextCapture methods
+     * which create completion stages that are backed by the respective managed executor.
+     * Verify that the completion stages run on the managed executor, subject to its concurrency
+     * constraints, and runs tasks under the context propagation settings of the ContextService.
+     * Part 2 - This test covers usage of the managedScheduledExecutorService concurrent/executor4.
+     */
+    @Test
+    public void testReferencedContextServiceWithContextCapture4() throws Exception {
+        CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+        ContextService contextSvc4 = executor4.getContextService();
+
+        CompletableFuture<String> stage1copy = contextSvc4.withContextCapture(stage1);
+
+        // block the managed executor's 4 threads
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blocking = new CountDownLatch(4);
+        try {
+            CompletableFuture<Object> stage2a = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2b = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2c = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2d = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            stage1.complete("java:comp/env/concurrent/executor3Ref");
+            assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // fill the managed executor's 4 queue slots
+            CompletableFuture<Object> stage2e = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2f = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2g = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2h = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // attempt to exceed the managed executor's maximum queue size
+            CompletableFuture<String> stage2i = stage1copy.thenApplyAsync(s -> s);
+            try {
+                String result = stage2i.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to queue another completion stage " + stage2i + ", with result: " + result);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException)
+                    ; // expected
+                else
+                    throw x;
+            }
+
+            blocker.countDown();
+
+            Object result;
+            assertNotNull(result = stage2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2d.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2e.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2f.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2g.get());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2h.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+        } finally {
+            blocker.countDown();
+        }
+    }
 }
