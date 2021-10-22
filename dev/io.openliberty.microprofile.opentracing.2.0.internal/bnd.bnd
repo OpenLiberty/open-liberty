@@ -53,7 +53,6 @@ jakartaeeMe: true
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     com.ibm.websphere.org.osgi.service.cm;version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
-    io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest, \
     com.ibm.websphere.javaee.cdi.2.0;version=latest, \
     com.ibm.ws.cdi.interfaces;version=latest, \
     com.ibm.websphere.javaee.annotation.1.2;version=latest, \

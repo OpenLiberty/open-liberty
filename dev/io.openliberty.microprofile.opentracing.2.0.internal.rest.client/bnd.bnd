@@ -46,6 +46,5 @@ jakartaeeMe: true
     com.ibm.ws.jaxrs.2.0.common;version=latest, \
     com.ibm.ws.logging;version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
-    io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest, \
     com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest
 	
