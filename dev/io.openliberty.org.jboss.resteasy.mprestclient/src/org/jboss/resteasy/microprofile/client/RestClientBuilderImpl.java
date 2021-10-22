@@ -27,6 +27,7 @@ import org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactor
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.eclipse.microprofile.rest.client.spi.RestClientListener;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -42,6 +43,8 @@ import org.jboss.resteasy.specimpl.ResteasyUriBuilderImpl;
 import org.jboss.resteasy.microprofile.client.publisher.MpPublisherMessageBodyReader;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ResteasyUriBuilder;
+
+import com.ibm.ws.kernel.service.util.SecureAction;
 
 import io.openliberty.microprofile.rest.client30.internal.OsgiServices;
 import io.openliberty.restfulWS.client.AsyncClientExecutorService;
@@ -76,6 +79,7 @@ import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -104,6 +108,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
     public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
+    
+    private static final SecureAction SECURE_ACTION = AccessController.doPrivileged(SecureAction.get());
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
@@ -236,7 +242,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @Override
     public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
 
-        RestClientListeners.get().forEach(listener -> listener.onNewClient(aClass, this));
+        Collection<RestClientListener> listeners;
+        if (System.getSecurityManager() == null) {
+            listeners = RestClientListeners.get();
+        } else {
+            // RestClientListeners.get() gets the TCCL
+            listeners = AccessController.doPrivileged((PrivilegedAction<Collection<RestClientListener>>) () -> RestClientListeners.get());
+        }
+        listeners.forEach(listener -> listener.onNewClient(aClass, this));
 
         // Interface validity
         verifyInterface(aClass);
@@ -259,9 +272,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
         builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
 
-        ClassLoader classLoader = aClass.getClassLoader();
-
-
+        ClassLoader classLoader = SECURE_ACTION.getClassLoader(aClass);
 
         T actualClient;
         ResteasyClient client;
@@ -381,7 +392,13 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     private Optional<InetSocketAddress> selectHttpProxy() {
-        return ProxySelector.getDefault().select(baseURI).stream()
+        ProxySelector proxySelector;
+        if (System.getSecurityManager() == null) {
+            proxySelector = ProxySelector.getDefault();
+        } else {
+            proxySelector = AccessController.doPrivileged((PrivilegedAction<ProxySelector>) () -> ProxySelector.getDefault());
+        }
+        return proxySelector.select(baseURI).stream()
                 .filter(proxy -> proxy.type() == java.net.Proxy.Type.HTTP)
                 .map(java.net.Proxy::address)
                 .map(InetSocketAddress.class::cast)
@@ -749,7 +766,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     public void registerLocalProviderInstance(Object provider, Map<Class<?>, Integer> contracts) {
         for (Object registered : getLocalProviderInstances()) {
             if (registered == provider) {
-                // System.out.println("Provider already registered " + provider.getClass().getName());
                 return;
             }
         }
