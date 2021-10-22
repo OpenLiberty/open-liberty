@@ -37,12 +37,11 @@ public class OpentracingRestClient30Filter implements ClientRequestFilter {
         if (invokedMethod != null) {
             Method method = (Method) invokedMethod;
             Traced traced = method.getAnnotation(Traced.class);
+            
             if ((traced != null) && (!traced.value())) { //@Traced(false)
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "@Traced(false) on method " + method.getName());
                 }
-                
-                // Property read by OpentracingClientFilter
                 clientRequestContext.setProperty(OpentracingClientFilter.CLIENT_FILTER_ENABLED_ID, false);
             }
         }

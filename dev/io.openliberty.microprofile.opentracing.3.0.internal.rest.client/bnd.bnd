@@ -23,8 +23,6 @@ Include-Resource: \
 
 -sourcepath: src, resources
 
--dsannotations:
-
 app-resources= \
     META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientListener
 
