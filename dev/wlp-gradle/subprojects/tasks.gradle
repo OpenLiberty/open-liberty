@@ -448,6 +448,7 @@ if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp
 
         def transformerArgs = [
           initialJavadocZipName, finalJavadocZipName,
+          '-q', // quiet output
           '-tf', transformProject.getFile('rules/jakarta-javadoc.properties').path ]
 
         javaexec {
