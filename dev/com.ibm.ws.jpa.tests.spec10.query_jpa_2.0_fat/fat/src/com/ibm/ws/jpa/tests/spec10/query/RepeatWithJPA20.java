@@ -12,11 +12,10 @@
 package com.ibm.ws.jpa.tests.spec10.query;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import componenttest.common.apiservices.Bootstrap;
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 
 /**
@@ -26,16 +25,9 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
     public static final String ID = "JPA20_FEATURES";
 
     public RepeatWithJPA20() {
-        super(EE7FeatureReplacementAction.EE7_FEATURE_SET, featuresToAdd());
+        super(EE8FeatureReplacementAction.EE8_FEATURE_SET, EE6FeatureReplacementAction.EE6_FEATURE_SET);
         forceAddFeatures(false);
         this.withID(ID);
-    }
-
-    private static Set<String> featuresToAdd() {
-        Set<String> addFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
-        addFeatures.remove("jpa-2.1");
-        addFeatures.add("jpa-2.0");
-        return addFeatures;
     }
 
     @Override
