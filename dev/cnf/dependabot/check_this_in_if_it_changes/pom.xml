@@ -3864,16 +3864,6 @@
     <dependency>
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
-      <version>0.5.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>0.6.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
       <version>0.6.5</version>
     </dependency>
     <dependency>

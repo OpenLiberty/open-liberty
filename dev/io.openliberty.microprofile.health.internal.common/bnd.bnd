@@ -11,13 +11,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 Bundle-Name: io.openliberty.microprofile.health.internal.common
 Bundle-SymbolicName: io.openliberty.microprofile.health.internal.common
 Bundle-Description:MicroProfile Health common Implementation, version ${bVersion}
 
-WS-TraceGroup: HEALTH
+publish.wlp.jar.disabled: true
 
+WS-TraceGroup: HEALTH
 
 Import-Package: \
   javax.enterprise.context.spi; version="[1.1,3)",\

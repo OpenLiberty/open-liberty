@@ -17,7 +17,7 @@ src: \
 
 test.project: true
 fat.project: true
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 generate.replacement: true
 
 -buildpath: \
