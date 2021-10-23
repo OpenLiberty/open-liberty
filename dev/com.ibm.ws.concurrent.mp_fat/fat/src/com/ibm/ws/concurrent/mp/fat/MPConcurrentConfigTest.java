@@ -49,7 +49,7 @@ public class MPConcurrentConfigTest extends FATServletClient {
     private static final String APP_NAME = "MPConcurrentConfigApp";
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentConfigTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentConfigTestServer", MPContextPropActions.CTX12);
 
     @Server("MPConcurrentConfigTestServer")
     @TestServlet(servlet = MPConcurrentConfigTestServlet.class, contextRoot = APP_NAME)

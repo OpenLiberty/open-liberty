@@ -25,24 +25,23 @@ import javax.naming.NamingException;
 import prototype.enterprise.concurrent.Async;
 
 @ApplicationScoped
-@Async
 public class ApplicationScopedBean implements Serializable {
     private static final long serialVersionUID = -2075274815197982538L;
 
     private char character;
 
     /**
-     * This method should run async because of the class level annotation
-     * and its return type of CompletableFuture.
+     * An asynchronous method with return type of CompletableFuture.
      */
+    @Async
     public CompletableFuture<String> appendThreadNameFuture(String part1) {
         return Async.Result.complete(part1 + getCharacter() + Thread.currentThread().getName());
     }
 
     /**
-     * This method should run async because of the class level annotation
-     * and its return type of CompletableFuture.
+     * An asynchronous method with return type of CompletionStage.
      */
+    @Async
     public CompletionStage<String> appendThreadNameStage(String part1) {
         try {
             ManagedExecutorService executor = InitialContext.doLookup("java:comp/env/concurrent/executorRef");
@@ -55,6 +54,7 @@ public class ApplicationScopedBean implements Serializable {
     /**
      * Asynchronous method that intentionally raises an error, for testing purposes.
      */
+    @Async
     public CompletableFuture<Integer> forceError() {
         throw new Error("Intentionally raising this error.");
     }
@@ -66,6 +66,7 @@ public class ApplicationScopedBean implements Serializable {
     /**
      * Looks up a resource in JNDI, asynchronously to the calling thread.
      */
+    @Async
     public CompletableFuture<?> lookup(String jndiName) {
         try {
             return CompletableFuture.completedFuture(InitialContext.doLookup(jndiName));
@@ -75,8 +76,7 @@ public class ApplicationScopedBean implements Serializable {
     }
 
     /**
-     * This is not an async method despite the class level annotation
-     * because its return type is void.
+     * This is not an asynchronous method.
      *
      * @param threadNameRef reference into which to put the name of the
      *                          thread where this method runs.
