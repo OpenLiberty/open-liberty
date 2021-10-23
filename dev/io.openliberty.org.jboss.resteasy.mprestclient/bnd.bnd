@@ -15,7 +15,7 @@ Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.mprestclient
 
 resteasy-version=4.7.0.Final
 
-src: src, resources
+src: src
 
 app-resources= \
  META-INF/services/javax.enterprise.inject.spi.Extension | \

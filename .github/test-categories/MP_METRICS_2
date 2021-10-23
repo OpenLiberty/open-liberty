@@ -8,3 +8,4 @@ com.ibm.ws.security.mp.jwt.1.2_fat
 io.openliberty.microprofile.jwt.1.2.internal_fat_tck
 io.openliberty.microprofile.metrics.internal.3.0_fat_tck
 io.openliberty.microprofile.metrics.internal.3.x.monitor_fat
+io.openliberty.microprofile.metrics.internal.4.0_fat_tck
