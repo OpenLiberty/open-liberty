@@ -12,10 +12,11 @@ package componenttest.topology.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,11 +26,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -37,11 +39,11 @@ import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
-import java.time.ZonedDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -112,6 +114,7 @@ import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.ServerFileUtils;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -448,6 +451,10 @@ public class LibertyServer implements LogMonitorClient {
     private final LogMonitor logMonitor;
 
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
+    /**
+     * checkpointPhase defaults to null meaning no checkpoint taken
+     */
+    private Phase checkpointPhase = null;
 
     /**
      * @param serverCleanupProblem the serverCleanupProblem to set
@@ -596,6 +603,35 @@ public class LibertyServer implements LogMonitorClient {
         logMonitor = new LogMonitor(this);
 
         setup(deleteServerDirIfExist, usePreviouslyConfigured);
+        // Check if criu supported. Needed to run checkpoint/restore tests.
+        boolean chkPtSupported = false;
+        TopologyException chkPtSupportedException = null;
+        if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
+            Log.info(c, method, "Checkpoint: testing for CRIU support");
+            try {
+                Class<?> criuSupport = Class.forName("org.eclipse.openj9.criu.CRIUSupport");
+                Log.info(c, method, "Checkpoint: CRIUSupport present in jdk");
+                try {
+                    // Check is supported. To be true, JVM must have been started with switch
+                    // --XX:+EnableCRIUSupport and criu shared libraries must be available to
+                    // be loaded by JVM
+                    Method supported = criuSupport.getDeclaredMethod("isCRIUSupportEnabled");
+                    chkPtSupported = ((Boolean) supported.invoke(criuSupport));
+                } catch (Exception e) {
+                    // An exception here probably means the JDK CRIU API is deprecated or some other incompatible change
+                    // has occurred. We can't reliably determine if this server should be targeted for criu tests.
+                    chkPtSupportedException = new TopologyException(e);
+                    Log.error(c, "LibertyServer<init>", e);
+                }
+            } catch (Exception e) {
+                // Exception here implies we are running on a jvm lacking criu support
+                //   and we should not run checkpoint/restore tests.
+                Log.info(c, method, "Ecception " + e + " Checkpoint: CRIUSupport NOT found in jdk");
+            }
+        }
+        checkpointSupported = chkPtSupported;
+        Log.info(c, method, "Checkpoint: checkpointSupported=" + checkpointSupported +
+                            ", checkpointSupportException=" + chkPtSupportedException);
         Log.exiting(c, method);
     }
 
@@ -780,6 +816,7 @@ public class LibertyServer implements LogMonitorClient {
         //Now we need to copy file overwriting existing server.xml and delete the temp
         tempServerXML.copyToDest(serverXML, false, true);
         tempServerXML.delete();
+
     }
 
     /**
@@ -1053,9 +1090,9 @@ public class LibertyServer implements LogMonitorClient {
     public static void printProcesses(Machine host, String prefix) {
         final String m = "printProcesses";
 
-        String timeStamp = ZonedDateTime.now( ZoneId.systemDefault() ).format( DateTimeFormatter.ofPattern( "uuuu.MM.dd.HH.mm.ss" ) ).toString();
+        String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss")).toString();
         String fileName = "processes-" + timeStamp + ".txt";
-        if (prefix != null && ! prefix.isEmpty()) {
+        if (prefix != null && !prefix.isEmpty()) {
             fileName = prefix + "-" + fileName;
         }
         Props properties = Props.getInstance();
@@ -1068,7 +1105,7 @@ public class LibertyServer implements LogMonitorClient {
             stream.print(detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
-        } 
+        }
     }
 
     public void printProcessHoldingPort(int port) {
@@ -1297,6 +1334,16 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         parametersList.addAll(extraArgs);
+        ArrayList<String> checkpointParams = new ArrayList<String>();
+        if (doCheckpoint()) {
+            //set up params to take checkpoint.
+            for (String param : parametersList) {
+                if (param.equals("start") || param.equals("run") || param.equals("debug")) {
+                    param = "checkpoint";
+                }
+                checkpointParams.add(param);
+            }
+        }
 
         //Setup the server logs assuming the default setting.
         messageAbsPath = logsRoot + messageFileName;
@@ -1342,6 +1389,13 @@ public class LibertyServer implements LogMonitorClient {
         //passed in via the system property
         if (MAC_RUN != null && !!!MAC_RUN.equalsIgnoreCase(Boolean.toString(false))) {
             JVM_ARGS += " " + MAC_RUN;
+        }
+
+        if (doCheckpoint()) {
+            JVM_ARGS += " " + "-XX:+EnableCRIUSupport";
+            Log.info(c, method, "Checkpoint: is on for server " + this.getServerName());
+        } else {
+            Log.info(c, method, "Checkpoint: is off for server " + this.getServerName());
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
@@ -1424,10 +1478,18 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.info(c, method, "Using additional env props: " + envVars.toString());
 
-        Log.finer(c, method, "Starting Server with command: " + cmd);
+        Log.info(c, method, "Starting Server with command: " + cmd);
+        for (String param : parameters) {
+            Log.info(c, method, "Starting Server with parameter: " + param);
+        }
+        for (String param : checkpointParams) {
+            Log.info(c, method, "Checkpoint parameter: " + param);
+        }
 
         // Create a marker file to indicate that we're trying to start a server
         createServerMarkerFile();
+
+        Log.info(c, method, "Starting with executeAsync: " + executeAsync);
 
         ProgramOutput output;
         if (executeAsync) {
@@ -1446,21 +1508,27 @@ public class LibertyServer implements LogMonitorClient {
             output = null;
         } else {
             if (machine instanceof LocalMachine) {
+                Log.info(c, method, "LocalMachine is : " + machine);
                 // Running the server start asynchronously because it appears that the start
                 // process is hanging from time to time. We can probably remove this when we fix
                 // the issue causing the process to hang.
                 final BlockingQueue<ProgramOutput> outputQueue = new LinkedBlockingQueue<ProgramOutput>();
 
                 Runnable execServerCmd = null;
-
+                final boolean isCheckpoint = doCheckpoint();
                 if (this.runAsAWindowService == false) {
 
                     execServerCmd = new Runnable() {
 
                         @Override
                         public void run() {
+                            String[] params = doCheckpoint() ? checkpointParams.toArray(new String[checkpointParams.size()]) : parameters;
+                            Log.info(c, method, "cmd in runnable: " + cmd);
+                            for (String p : params) {
+                                Log.info(c, method, "Param in runnable: " + p);
+                            }
                             try {
-                                outputQueue.put(machine.execute(cmd, parameters, envVars));
+                                outputQueue.put(machine.execute(cmd, params, envVars));
                             } catch (Exception e) {
                                 Log.info(c, method, "Exception while attempting to start a server: " + e.getMessage());
                             }
@@ -1472,6 +1540,7 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
+
                         @Override
                         public void run() {
                             try {
@@ -1494,11 +1563,11 @@ public class LibertyServer implements LogMonitorClient {
                 t.start();
                 // Way more than we really need to wait -- in normal circumstances this will return immediately as
                 // we're just kicking off the server script.
-                final int SCRIPT_TIMEOUT_IN_MINUTES = 5;
-                output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+                final int scriptTimeout_seconds = doCheckpoint() ? 30 : 5 * 60;
+                output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
                 if (runAsAWindowService == true) {
                     // wait for "register" to complete first, and now wait for "start" to complete
-                    output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+                    output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
                 }
 
                 if (output == null) {
@@ -1518,10 +1587,10 @@ public class LibertyServer implements LogMonitorClient {
                         // If at first you don't succeed...
                         Thread tryAgain = new Thread(cmd);
                         tryAgain.start();
-                        output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+                        output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
                         if (runAsAWindowService == true) {
                             // wait for "register" to complete first, and now wait for "start" to complete
-                            output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+                            output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
                         }
                         if (output == null) {
                             Log.warning(c, "The second attempt to start the server also timed out. The server may or may not have actually started");
@@ -1548,18 +1617,119 @@ public class LibertyServer implements LogMonitorClient {
                     Log.info(c, method, "Return code from script is: " + rc);
                 }
             }
+            if (doCheckpoint()) {
+                checkpointValidate(output);
+                checkpointRestore(output);
+            }
         }
 
         // Validate the server and apps started - if they didn't, that
         // method will throw an appropriate exception
 
-        if ("start".equals(serverCmd)) {
+        if ("start".equals(serverCmd))
+
+        {
             validateServerStarted(output, validateApps, expectStartFailure, validateTimedExit);
             isStarted = true;
         }
 
         Log.exiting(c, method);
         return output;
+    }
+
+    /**
+     * After a checkpoint image has been created and basic valida
+     *
+     * @param output
+     */
+    private void checkpointRestore(ProgramOutput output) {
+        String method = "checkpointRestore";
+        //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
+        // polling timeout on the launch
+        String cmd = installRoot + "/bin/server start " + serverToUse;
+        final BlockingQueue<ProgramOutput> restoreProgramOutputQueue = new LinkedBlockingQueue<ProgramOutput>();
+        Runnable execRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //Launch the execute without any environment or JDK options. The restore should manage the
+                    //  process creation with all the original env/option in effect
+                    restoreProgramOutputQueue.put(machine.execute(cmd));
+                } catch (Exception e) {
+                    Log.info(c, method, "Exception while attempting to restore a server: " + e.getMessage());
+                }
+            }
+        };
+        new Thread(execRunnable).start();
+        //Poll for script completion
+        final int scriptTimeout_seconds = 5 * 60;
+        try {
+            output = restoreProgramOutputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (output == null) {
+            // what a pain
+        }
+    }
+
+    /**
+     * After a checkpoint the server should be stopped, There should be no errors and the
+     * checkpoint dir should look normal
+     *
+     * @param output
+     */
+    private void checkpointValidate(ProgramOutput output) throws Exception {
+        assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+        // validate server not started
+        resetStarted();
+        if (isStarted) {
+            Exception fail = new Exception("Server should not be started after a checkpoint operation");
+            Log.error(c, "Server should not be started after a checkpoint operation", fail);
+            throw fail;
+        }
+        assertCheckpointDirAsExpected();
+    }
+
+    /**
+     * Check for obvious missing files or structural problems with checkpoint dir layout.
+     * expected layout is
+     *
+     * <pre>
+     *     workarea/
+     *         checkpoint/
+     *             image/
+     *                 inventory.img
+     *                 fdinfo*.img
+     *                 core-*.img
+     *                 ...
+     *             workarea/
+     *                 osgi.eclipse/
+     *                 platform/
+     *         osgi.eclipse/
+     *         platform/
+     * </pre>
+     */
+    public void assertCheckpointDirAsExpected() throws Exception {
+        RemoteFile workarea = machine.getFile(serverRoot + "/workarea");
+        assertTrue("Missing top level workarea dir", workarea.isDirectory());
+        RemoteFile cpDir = new RemoteFile(machine, workarea, "checkpoint");
+        assertTrue("Missing checkpoint dir", cpDir.isDirectory());
+        RemoteFile workareaCheckpoint = new RemoteFile(machine, cpDir, "workarea");
+        assertTrue("Missing workarea backup dir", workareaCheckpoint.isDirectory());
+        assertTrue("checkpoint workarea dir has no files",
+                   workareaCheckpoint.list(false).length > 1 /* a somewhat arbitrary min count */);
+        RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
+        assertTrue("checkpoint image dir has no files",
+                   workareaCheckpoint.list(false).length > 2 /* a somewhat arbitrary min count */);
+    }
+
+    /**
+     * @return
+     */
+    private boolean doCheckpoint() {
+        return (checkpointPhase != null) && checkpointSupported;
     }
 
     /**
@@ -6093,6 +6263,11 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
+    public void setCheckpointPhase(Phase checkpointPhase) {
+        //Force a checkpoint and server restart at the designated phase.
+        this.checkpointPhase = checkpointPhase;
+    }
+
     public void setupForRestConnectorAccess() throws Exception {
         if (isStarted) {
             throw new IllegalStateException("Must call setupForRestConnectorAccess BEFORE starting the server");
@@ -6527,4 +6702,13 @@ public class LibertyServer implements LogMonitorClient {
     public String toString() {
         return serverToUse + " : " + super.toString();
     }
+
+    /**
+     * True if the server has requisite support for the following operations
+     * bin/server start --checkpoint==<PHASE> and
+     * bin/server restore
+     * False otherwise.
+     */
+    public final boolean checkpointSupported;
+
 }
