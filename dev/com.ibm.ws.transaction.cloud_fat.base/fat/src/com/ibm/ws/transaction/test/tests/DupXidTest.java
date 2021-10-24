@@ -108,7 +108,7 @@ public class DupXidTest extends FATServletClient {
         assertNotNull(server1.waitForStringInLog("Dump State:"));
 
         // Now start dupXid2
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
+        ProgramOutput po = server2.startServerAndValidate(true, true, true);
 
         if (po.getReturnCode() != 0) {
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
@@ -118,7 +118,7 @@ public class DupXidTest extends FATServletClient {
             // It may be that we attempted to restart the server too soon.
             Log.info(this.getClass(), method, "start server failed, sleep then retry");
             Thread.sleep(30000); // sleep for 30 seconds
-            po = server2.startServerAndValidate(false, true, true);
+            po = server2.startServerAndValidate(true, true, true);
 
             // If it fails again then we'll report the failure
             if (po.getReturnCode() != 0) {
@@ -142,7 +142,7 @@ public class DupXidTest extends FATServletClient {
         assertNotNull(server2.waitForStringInLog("Dump State:"));
 
         // Now start dupXid1
-        ProgramOutput po1 = server1.startServerAndValidate(false, true, true);
+        ProgramOutput po1 = server1.startServerAndValidate(true, true, true);
         if (po1.getReturnCode() != 0) {
             Log.info(this.getClass(), method, po1.getCommand() + " returned " + po1.getReturnCode());
             Log.info(this.getClass(), method, "Stdout: " + po1.getStdout());
@@ -151,7 +151,7 @@ public class DupXidTest extends FATServletClient {
             // It may be that we attempted to restart the server too soon.
             Log.info(this.getClass(), method, "start server failed, sleep then retry");
             Thread.sleep(30000); // sleep for 30 seconds
-            po1 = server1.startServerAndValidate(false, true, true);
+            po1 = server1.startServerAndValidate(true, true, true);
 
             // If it fails again then we'll report the failure
             if (po1.getReturnCode() != 0) {
