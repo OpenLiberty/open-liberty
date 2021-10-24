@@ -11,48 +11,22 @@
 package io.openliberty.restfulWS.introspector;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
+import javax.servlet.ServletConfig;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { ApplicationStateListener.class, Introspector.class, RESTfulEndpointLoggingIntrospector.class },
+@Component(service = { Introspector.class, RESTfulEndpointLoggingIntrospector.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
-public class ResteasyEndpointIntrospector implements ApplicationStateListener, Introspector, RESTfulEndpointLoggingIntrospector {
+public class ResteasyEndpointIntrospector implements Introspector, RESTfulEndpointLoggingIntrospector {
 
-    private static final TraceComponent tc = Tr.register(ResteasyEndpointIntrospector.class);
-
-    private static final Map<String, List<String>> applicationEndpoints = new ConcurrentHashMap<String, List<String>>();
-
-    @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-        // add the application to the map
-        applicationEndpoints.put(appInfo.getName(), new ArrayList<String>());
-    }
-
-    @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {}
-
-    @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
-
-    @Override
-    public void applicationStopped(ApplicationInfo appInfo) {
-        // remove all endpoints for the application to prevent a memory leak
-        applicationEndpoints.remove(appInfo.getName());
-    }
+    private static final Map<ServletConfig, StringBuffer> applicationEndpoints = new WeakHashMap<ServletConfig, StringBuffer>();
 
     @Override
     public String getIntrospectorName() {
@@ -66,37 +40,13 @@ public class ResteasyEndpointIntrospector implements ApplicationStateListener, I
 
     @Override
     public void introspect(PrintWriter out) throws Exception {
-        for (String key : applicationEndpoints.keySet()) {
-            out.println(key + " endpoints:");
-            for (String ep : applicationEndpoints.get(key)) {
-                out.println(ep);
-            }
-            out.println();
+        for (ServletConfig app : applicationEndpoints.keySet()) {
+            out.print(applicationEndpoints.get(app));
         }
     }
 
     @Override
-    public String addEndpoint(String appName, String httpMethod, String endpoint, String className, String methodName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("- ");
-        sb.append(httpMethod);
-        sb.append(" ");
-        sb.append(endpoint);
-        sb.append(" - ");
-        sb.append(className);
-        sb.append("#");
-        sb.append(methodName);
-        sb.append("()");
-        String endpointInfo = sb.toString();
-        
-        // appName key and it's List should always exist because we initialized during applicationStarting
-        List<String> endpoints = applicationEndpoints.get(appName);
-        if (endpoints != null) {
-            endpoints.add(endpointInfo);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Attempting to add endpoint to unknown application: " + appName + ". Known apps: " + applicationEndpoints.keySet());
-        }
-        
-        return endpointInfo;
+    public void addEndpoints(ServletConfig servletConfig, StringBuffer sb) {
+        applicationEndpoints.put(servletConfig, sb);
     }
 }
