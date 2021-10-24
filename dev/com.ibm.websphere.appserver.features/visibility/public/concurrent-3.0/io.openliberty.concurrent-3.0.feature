@@ -3,7 +3,8 @@ symbolicName=io.openliberty.concurrent-3.0
 visibility=public
 singleton=true
 IBM-ShortName: concurrent-3.0
-IBM-API-Package: jakarta.enterprise.concurrent; type="spec"
+IBM-API-Package: jakarta.enterprise.concurrent; type="spec",\
+  jakarta.enterprise.concurrent.spi; type="spec"
 IBM-API-Service: jakarta.enterprise.concurrent.ContextService; id="DefaultContextService", \
   jakarta.enterprise.concurrent.ManagedExecutorService; id="DefaultManagedExecutorService", \
   jakarta.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"

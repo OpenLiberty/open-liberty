@@ -14,15 +14,25 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
 Export-Package: \
-  jakarta.enterprise.concurrent;version="3.0.0"
+  jakarta.enterprise.concurrent;version="3.0.0",\
+  jakarta.enterprise.concurrent.spi;version="3.0.0"
+
+DynamicImport-Package: \
+  jakarta.enterprise.util,\
+  jakarta.interceptor
+
+Import-Package:
+  !jakarta.enterprise.util,\
+  !jakarta.interceptor,\
+  *
 
 Include-Resource: \
-  @${repo;io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0.20211013;EXACT}!/META-INF/NOTICE
+  @${repo;io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0.20211022;EXACT}!/META-INF/NOTICE
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0.20211013
+  io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0.20211022
   
