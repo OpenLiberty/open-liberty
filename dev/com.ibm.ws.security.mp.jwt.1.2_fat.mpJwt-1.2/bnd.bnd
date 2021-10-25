@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2018,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,21 +11,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+
 src: \
-    src, \
-    fat/src
-    
+    fat/src    
 
 test.project: true
 
 -dependson: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common.jwt,\
-    com.ibm.ws.security.fat.common.mp.jwt
+    com.ibm.ws.security.fat.common.mp.jwt,\
+    com.ibm.ws.security.mp.jwt.1.2_fat.shared
     
-tested.features:\
-        jwtsso-1.0, pages-3.0, servlet-5.0
-
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
@@ -59,6 +56,7 @@ tested.features:\
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.ws.security.fat.common.mp.jwt;version=latest,\
+	com.ibm.ws.security.mp.jwt.1.2_fat.shared;version=latest,\
 	com.ibm.ws.security.mp.jwt;version=latest,\
 	com.ibm.ws.security.jwt;version=latest,\
 	com.ibm.ws.security;version=latest,\
@@ -72,7 +70,5 @@ tested.features:\
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	javax.j2ee.jcdi;version=latest,\
 	org.eclipse.microprofile.jwt;version=latest,\
-	com.ibm.ws.common.encoder,\
-	com.ibm.ws.org.jose4j;version=latest,\
-    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
+	com.ibm.ws.common.encoder
 	
