@@ -70,7 +70,7 @@ import componenttest.app.FATServlet;
                                     hungTaskThreshold = 360000,
                                     maxAsync = 2) // TODO add context once annotation is fixed
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
-                                context = @ContextServiceDefinition(name = "java:app/concurrent/appContextSvc"), // TODO switch to String type once annotation is fixed
+                                context = "java:app/concurrent/appContextSvc",
                                 priority = 3)
 @SuppressWarnings("serial")
 @WebServlet("/*")
