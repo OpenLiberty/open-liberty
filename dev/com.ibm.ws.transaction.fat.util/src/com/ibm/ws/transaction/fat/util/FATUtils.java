@@ -22,10 +22,10 @@ public class FATUtils {
 	private static final Class<FATUtils> c = FATUtils.class;
 
     public static void startServers(LibertyServer... servers) throws Exception {
-    	startServers((Runner)null, servers);
+    	startServers((SetupRunner)null, servers);
     }
 
-    public static void startServers(Runner r, LibertyServer... servers) throws Exception {
+    public static void startServers(SetupRunner r, LibertyServer... servers) throws Exception {
         final String method = "startServers";
 
         for (LibertyServer server : servers) {
@@ -34,10 +34,6 @@ public class FATUtils {
             int maxAttempts = 5;
             
             Log.info(c, method, "Starting " + server.getServerName());
-
-            int status = server.resetStarted();
-
-            Log.info(c, method, "ResetStarted returned " + status);
 
             do {
                 if (attempt++ > 0) {
@@ -49,12 +45,16 @@ public class FATUtils {
                     }
                 }
 
-                if (server.isStarted()) {
+                if (server.resetStarted() == 0) {
                     String pid = server.getPid();
                     Log.info(c, method,
-                             "Server " + server.getServerName() + " is already running." + ((pid != null ? "(pid:" + pid + ")" : "")) + " Maybe it is on the way down.");
+                             "Server " + server.getServerName() + " is already running. (pid: " + ((pid != null ? pid : "unknown")) + ")");
                     server.printProcesses();
-                    continue;
+                    
+                    if (attempt == 1) {
+                    	throw new Exception(server.getServerName() + " was already started.");
+                    }
+                    break;
                 }
 
                 ProgramOutput po = null;

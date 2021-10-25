@@ -12,6 +12,6 @@ package com.ibm.ws.transaction.fat.util;
 
 import componenttest.topology.impl.LibertyServer;
 
-public interface Runner {
+public interface SetupRunner {
 	void run(LibertyServer s) throws Exception;
 }

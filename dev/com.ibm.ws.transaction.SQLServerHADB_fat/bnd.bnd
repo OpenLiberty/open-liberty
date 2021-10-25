@@ -31,4 +31,5 @@ tested.features: cdi-3.0, servlet-5.0
 	fattest.simplicity;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.transaction.fat.util;version=latest,\
 	com.ibm.ws.transaction.DerbyHADB_fat;version=latest

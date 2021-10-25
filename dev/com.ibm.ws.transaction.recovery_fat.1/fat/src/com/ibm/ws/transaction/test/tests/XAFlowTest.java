@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.XAFlowServlet;
 
 import componenttest.annotation.Server;
@@ -84,12 +85,12 @@ public class XAFlowTest extends FATServletClient {
                    server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.tx.test.impl.jar"));
 
         server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
-        server.startServer();
+        FATUtils.startServers(server);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        TestUtils.stopServer(server);
+        FATUtils.stopServers(server);
 
         AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
             @Override

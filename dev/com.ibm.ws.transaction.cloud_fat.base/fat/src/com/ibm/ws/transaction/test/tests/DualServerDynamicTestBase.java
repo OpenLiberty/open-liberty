@@ -16,12 +16,11 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.Runner;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -46,9 +45,9 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     public static String servletName;
     public static String cloud1RecoveryIdentity;
 
-    private static DatabaseContainerType databaseContainerType = DatabaseContainerType.Postgres;
+    private static DatabaseContainerType databaseContainerType;
 
-    private Runner runner = new Runner() {
+    private SetupRunner runner = new SetupRunner() {
         @Override
         public void run(LibertyServer s) throws Exception {
             setUp(s);
