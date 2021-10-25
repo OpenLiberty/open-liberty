@@ -10,6 +10,6 @@ visibility = private
 -jars=\
   io.openliberty.jwt; location:=dev/api/ibm/
 -files=\
-  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jwt_1.1-javadoc.zip
+  dev/api/ibm/javadoc/io.openliberty.jwt_1.1-javadoc.zip
 kind=beta
 edition=core

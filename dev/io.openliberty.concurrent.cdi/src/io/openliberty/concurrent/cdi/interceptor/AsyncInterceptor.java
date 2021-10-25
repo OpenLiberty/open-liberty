@@ -21,10 +21,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.annotation.Priority;
-import javax.enterprise.concurrent.AbortedException;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
-import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -35,9 +31,13 @@ import javax.transaction.Transactional;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedTaskListener;
 import prototype.enterprise.concurrent.Async;
 
-@Async
+@Async // TODO replace with spec Asynchronous once we have a snapshot build with it
 @Interceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 5)
 public class AsyncInterceptor implements Serializable {
@@ -48,27 +48,28 @@ public class AsyncInterceptor implements Serializable {
     public Object intercept(InvocationContext context) throws Exception {
         Method method = context.getMethod();
         validateTransactional(method);
-        Async methodAnno = method.getAnnotation(Async.class);
-        Async anno = methodAnno == null ? method.getDeclaringClass().getAnnotation(Async.class) : methodAnno;
+        if (method.getDeclaringClass().getAnnotation(Async.class) != null)
+            throw new UnsupportedOperationException("@Asynchronous " + method.getDeclaringClass()); // TODO NLS?
+
+        Async anno = method.getAnnotation(Async.class);
+
+        // @Asynchronous must be on a method that returns completion stage or void
         Class<?> returnType = method.getReturnType();
-        boolean returnsCompletionStage = returnType.equals(CompletableFuture.class)
-                                         || returnType.equals(CompletionStage.class);
-        // Class level @Async only applies to methods that return completion stages
-        if (methodAnno == null && !returnsCompletionStage)
-            return context.proceed();
-        // Method level @Async must be on a method that returns completion stage or void
-        if (!returnsCompletionStage && !returnType.equals(Void.class))
-            throw new UnsupportedOperationException("@Async with return type " + returnType.getName());
+        if (!returnType.equals(CompletableFuture.class)
+            && !returnType.equals(CompletionStage.class)
+            && !returnType.equals(Void.class))
+            throw new UnsupportedOperationException("@Asynchronous " + returnType.getName() + " " + method.getName()); // TODO NLS?
 
         ManagedExecutorService executor;
         try {
             executor = InitialContext.doLookup(anno.executor());
         } catch (ClassCastException x) {
-            throw new RejectedExecutionException("executor: " + anno.executor(), x);
+            throw new RejectedExecutionException("executor: " + anno.executor(), x); // TODO NLS?
         } catch (NamingException x) {
             throw new RejectedExecutionException(x);
         }
 
+        // TODO allow join and untimed get to run the method inline if not already started?
         AsyncMethod asyncMethod = new AsyncMethod(executor, context);
         Future<?> policyTaskFuture = executor.submit(asyncMethod, asyncMethod);
         // If caller cancels the future, cancel the policy executor task that will run it
@@ -108,9 +109,8 @@ public class AsyncInterceptor implements Serializable {
 
         @Trivial
         private AsyncMethod(ManagedExecutorService executor, InvocationContext invocation) throws Exception {
-            execProps = Collections.singletonMap(ManagedTask.IDENTITY_NAME, "@Async " + invocation.getMethod().getName());
-            // TODO directly invoke executor.newIncompleteFuture() when v3.0 interface is added
-            future = (CompletableFuture<Object>) executor.getClass().getMethod("newIncompleteFuture").invoke(executor);
+            execProps = Collections.singletonMap(ManagedTask.IDENTITY_NAME, "@Asynchronous " + invocation.getMethod().getName());
+            future = executor.newIncompleteFuture();
             this.invocation = invocation;
         }
 
@@ -129,7 +129,7 @@ public class AsyncInterceptor implements Serializable {
         /**
          * Runs the async method.
          */
-        @FFDCIgnore(Throwable.class) // application errors are raised directly to the appliaction
+        @FFDCIgnore(Throwable.class) // application errors are raised directly to the application
         @Override
         public void run() {
             Async.Result.setFuture(future);
@@ -148,7 +148,7 @@ public class AsyncInterceptor implements Serializable {
                     } else if (returnVal == null) {
                         future.complete(null);
                     } else { // returned object is not a CompletionStage or CompletableFuture
-                        throw new UnsupportedOperationException("@Async with result type " + returnVal.getClass().getName());
+                        throw new UnsupportedOperationException("@Asynchronous with result type " + returnVal.getClass().getName());
                     }
             } catch (Throwable x) {
                 future.completeExceptionally(x);

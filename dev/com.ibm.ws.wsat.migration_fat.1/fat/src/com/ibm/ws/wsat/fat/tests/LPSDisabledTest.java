@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,7 +43,7 @@ public class LPSDisabledTest extends WSATTest {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		
+
 		server = LibertyServerFactory
 				.getLibertyServer("LPSDisabled");
 		BASE_URL = "http://" + server.getHostname() + ":"
@@ -50,22 +51,16 @@ public class LPSDisabledTest extends WSATTest {
 
 		DBTestBase.initWSATTest(server);
 
-   ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
-   ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
+		ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
+		ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
 
-		if (server != null && server.isStarted()){
-			server.stopServer();
-		}
-
-        if (server != null && !server.isStarted()){
-        	 server.setServerStartTimeout(600000);
-             server.startServer(true);
-		}
+		server.setServerStartTimeout(START_TIMEOUT);
+		FATUtils.startServers(server);
 	}
 
 	@AfterClass
     public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server, "WTRN0062E", "WTRN0063E");
+		FATUtils.stopServers(new String[] {"WTRN0062E", "WTRN0063E"}, server);
 
 		DBTestBase.cleanupWSATTest(server);
     }
@@ -81,9 +76,9 @@ public class LPSDisabledTest extends WSATTest {
 	public void testWSTXLPS002FVT() {
 		callServlet("WSTXLPS002FVT");
 	}
-	
+
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS003FVT() {
 		callServlet("WSTXLPS003FVT");
@@ -102,7 +97,7 @@ public class LPSDisabledTest extends WSATTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void testWSTXLPS006FVT() {
 		callServlet("WSTXLPS006FVT");
 	}
@@ -118,7 +113,7 @@ public class LPSDisabledTest extends WSATTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void testWSTXLPS009FVT() {
 		callServlet("WSTXLPS009FVT");
 	}

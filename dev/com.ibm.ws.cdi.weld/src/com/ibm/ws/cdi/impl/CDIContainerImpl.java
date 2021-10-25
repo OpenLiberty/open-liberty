@@ -38,6 +38,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
@@ -245,7 +246,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -607,7 +608,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     if (extensionArchive == null) {
                         extensionArchive = newSPIExtensionArchive(sr, extensionMetaData.getService(), applicationContext);
                         runtimeExtensionMap.put(serviceID, extensionArchive);
-                    } 
+                    }
                 }
                 extensionSet.add(extensionArchive);
             }
@@ -645,6 +646,11 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         //The simpler SPI does not offer these properties.
         boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;
+
+        if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
+            CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
+            applicationBDAsVisible = internalExtension.applicationBeansVisible();
+        }
 
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                     applicationBDAsVisible,

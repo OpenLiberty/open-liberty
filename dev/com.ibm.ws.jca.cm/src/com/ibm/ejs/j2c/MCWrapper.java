@@ -2532,6 +2532,9 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         if (isStale()) {
             buf.append("[STALE]  ");
         }
+        if (do_not_reuse_mcw) {
+            buf.append("[REMOVING]  ");
+        }
 
         buf.append("MCWrapper id ");
         buf.append(mcWrapperObject_hexString);

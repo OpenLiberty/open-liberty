@@ -20,5 +20,3 @@ Subsystem-Name: Jakarta Authentication 2.0
   io.openliberty.security.jaspic.2.0.internal
 kind=beta
 edition=core
--jars=io.openliberty.jaspic.2.0.spi; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip

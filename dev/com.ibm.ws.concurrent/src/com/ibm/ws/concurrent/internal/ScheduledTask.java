@@ -205,12 +205,12 @@ public class ScheduledTask<T> implements Callable<T> {
      * Construct and schedule a task which also serves as a future.
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
-     * @param task task
-     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
-     * @param initialDelay indicates when the task should first run
-     * @param fixedDelay fixed delay between executions of the task. Null if not using fixed delay.
-     * @param fixedRate fixed period between the start of executions of the task. Null if not using fixed rate.
-     * @param unit unit of time.
+     * @param task           task
+     * @param isCallable     indicates whether task is submitted as a Callable or Runnable.
+     * @param initialDelay   indicates when the task should first run
+     * @param fixedDelay     fixed delay between executions of the task. Null if not using fixed delay.
+     * @param fixedRate      fixed period between the start of executions of the task. Null if not using fixed rate.
+     * @param unit           unit of time.
      */
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable,
                   long initialDelay, Long fixedDelay, Long fixedRate, TimeUnit unit) {
@@ -275,9 +275,9 @@ public class ScheduledTask<T> implements Callable<T> {
      * Construct and schedule a task which also serves as a future.
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
-     * @param task task
-     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
-     * @param trigger indicates when the task should run
+     * @param task           task
+     * @param isCallable     indicates whether task is submitted as a Callable or Runnable.
+     * @param trigger        indicates when the task should run
      */
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Trigger trigger) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -354,7 +354,7 @@ public class ScheduledTask<T> implements Callable<T> {
      * Callable.call is invoked by the executor to run this task some time (hopefully soon)
      * after the scheduled execution time has been reached.
      */
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore({ Throwable.class, NullPointerException.class })
     @Override
     public T call() throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -450,7 +450,17 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (trigger == null)
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
-                            nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
+                            try {
+                                nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
+                            } catch (NullPointerException x) {
+                                // TODO remove NullPtr handling (and FFDCIgnore for it above)
+                                // after fix for https://github.com/eclipse-ee4j/concurrency-api/pull/152
+                                // Limit workaround to new 3.0 spec class so that we don't interfere with existing usage
+                                if (x.getStackTrace()[0].getClassName().equals("jakarta.enterprise.concurrent.ZonedTrigger"))
+                                    nextExecutionDate = null;
+                                else
+                                    throw x;
+                            }
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
                                          "taskScheduled " + Utils.toString(taskScheduledTime),

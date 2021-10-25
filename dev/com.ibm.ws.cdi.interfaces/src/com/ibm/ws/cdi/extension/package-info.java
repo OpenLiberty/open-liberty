@@ -11,9 +11,8 @@
 /**
  * @version 1.0
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("1.1")
 @TraceOptions(traceGroup = "JCDI")
 package com.ibm.ws.cdi.extension;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-
