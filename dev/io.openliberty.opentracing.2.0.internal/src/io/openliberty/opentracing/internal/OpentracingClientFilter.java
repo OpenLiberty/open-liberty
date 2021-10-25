@@ -66,11 +66,11 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     private OpentracingFilterHelper helper;
 
     public OpentracingClientFilter() {
-        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
+      //helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
     }
     
     public OpentracingClientFilter(OpentracingFilterHelper helper) {
-    	this.helper = helper;
+       this.helper = helper;
     }
 
     void setFilterHelper(OpentracingFilterHelper helper) {
@@ -94,7 +94,9 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
         String methodName = "filter(outgoing)";
-        
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
+
+
         if (!isEnabled(clientRequestContext)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, methodName + " trace disabled for method");
@@ -187,7 +189,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                        ClientResponseContext clientResponseContext) throws IOException {
     	
         String methodName = "filter(incoming)";
-        
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
+
         if (!isEnabled(clientRequestContext)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, methodName + " trace disabled for method");
