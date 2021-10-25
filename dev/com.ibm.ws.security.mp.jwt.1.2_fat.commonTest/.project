@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.security.mp.jwt.1.2_fat.shared</name>
+	<name>com.ibm.ws.security.mp.jwt.1.2_fat.commonTest</name>
 	<comment></comment>
 	<projects>
 	</projects>
