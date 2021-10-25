@@ -51,6 +51,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jpa.JPAComponent;
 import com.ibm.ws.jpa.JPAProviderIntegration;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -897,6 +898,11 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         // ivClassloader is used to create dynamic proxies for hibernate integration.
         getJPAComponent().addIntegrationProperties(xmlSchemaVersion,
                                                    integrationProperties, ivClassLoader);
+
+        if (ProductInfo.getBetaEdition()) {
+            // Add default persistence properties supplied from JPAComponent configuration
+            getJPAComponent().addDefaultProperties(integrationProperties);
+        }
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "createContainerEMF properties:" + this.toString());

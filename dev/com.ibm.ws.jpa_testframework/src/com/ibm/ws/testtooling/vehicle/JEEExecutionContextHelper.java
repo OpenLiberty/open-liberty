@@ -274,10 +274,11 @@ public class JEEExecutionContextHelper {
                     emf = (EntityManagerFactory) obj;
                     em = null;
 
-                    if (pcCtxInfo.getEmMap() == null || pcCtxInfo.getEmMap().isEmpty()) {
+                    Map<?, ?> map = pcCtxInfo.getEmMap();
+                    if (map == null || map.isEmpty()) {
                         em = emf.createEntityManager();
                     } else {
-                        emf.createEntityManager(pcCtxInfo.getEmMap());
+                        em = emf.createEntityManager(map);
                     }
 
                     if (pcCtxInfo.getPcType() == PersistenceContextType.APPLICATION_MANAGED_JTA) {
