@@ -18,18 +18,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.context.RequestScoped;
-
-import prototype.enterprise.concurrent.Async;
 
 @RequestScoped
 public class RequestScopedBean {
     private int number;
 
     /**
-     * Async method that awaits the specified latch for up to the timeout.
+     * Asynchronous method that awaits the specified latch for up to the timeout.
      */
-    @Async(executor = "java:module/env/concurrent/timeoutExecutorRef")
+    @Asynchronous(executor = "java:module/env/concurrent/timeoutExecutorRef")
     public CompletionStage<Boolean> await(CountDownLatch latch, long timeout, TimeUnit unit) {
         try {
             return CompletableFuture.completedFuture(latch.await(timeout, unit));
@@ -41,9 +40,9 @@ public class RequestScopedBean {
     /**
      * Annotatively specify the executor of an asynchronous method. Return the executor that is actually used.
      */
-    @Async(executor = "java:app/env/concurrent/sampleExecutorRef")
+    @Asynchronous(executor = "java:app/env/concurrent/sampleExecutorRef")
     public CompletableFuture<Executor> getExecutorOfAsyncMethods() throws Exception {
-        CompletableFuture<Executor> future = Async.Result.getFuture();
+        CompletableFuture<Executor> future = Asynchronous.Result.getFuture();
         // CompletatbleFuture.defaultExecutor() is unavailable on Java 8 CompletableFuture
         Method CompletableFuture_defaultExecutor;
         try {
