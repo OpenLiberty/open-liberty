@@ -75,21 +75,7 @@ public class RemoteFile {
     }
 
     /**
-     * The standard retry interval for delete and rename operations.
-     *
-     * This is based on the artifact file system minimum
-     * retry interval of 200 milliseconds, per
-     * <code>
-     * open-liberty/dev/com.ibm.ws.artifact.zip/src/
-     * com/ibm/ws/artifact/zip/cache/
-     * ZipCachingProperties.java
-     * </code>
-     *
-     * The default largest pending close time is specified
-     * by property <code>zip.reaper.slow.pend.max</code>.
-     *
-     * The current largest pend time is 200 milliseconds. For
-     * extra safety, the retry interval is set to twice this value.
+     * The maximum wait time to retry an operation
      *
      * Note: This does not handle when the server is prevented
      * from running. In a typical case, where application files
@@ -98,12 +84,15 @@ public class RemoteFile {
      * pending close, the usual pend time may be exceeded without
      * the file being closed.
      */
-    public static final long STANDARD_RETRY_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(200 * 2);
+    public static final long STANDARD_RETRY_MAX_INTERVAL_NS = TimeUnit.SECONDS.toNanos(10);
 
     // Increase this to 0.1s instead of 0.05s.  The sleep granularity
     // on windows is too small to reliably handle 0.05s.
 
-    public static final long STANDARD_RETRY_PARTIAL_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(100); // 0.1s
+    /**
+     * The amount of time to wait before retrying
+     */
+    public static final long STANDARD_RETRY_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(100); // 0.1s
 
     public interface Operation {
         public boolean act() throws Exception;
@@ -147,7 +136,7 @@ public class RemoteFile {
 
         long finalNs = System.nanoTime() + fullRetryNs;
         do {
-            sleep(STANDARD_RETRY_PARTIAL_INTERVAL_NS); // throws InterruptedException
+            sleep(STANDARD_RETRY_INTERVAL_NS); // throws InterruptedException
             if (op.act()) {
                 return true;
             }
@@ -573,7 +562,7 @@ public class RemoteFile {
     // Delete ...
 
     public boolean delete() throws Exception {
-        return delete(STANDARD_RETRY_INTERVAL_NS);
+        return delete(STANDARD_RETRY_MAX_INTERVAL_NS);
     }
 
     public boolean deleteNoRetry() throws Exception {
@@ -600,7 +589,7 @@ public class RemoteFile {
     }
 
     public boolean deleteLocalDirectory(File localDir) throws Exception {
-        return deleteLocalDirectory(localDir, STANDARD_RETRY_INTERVAL_NS);
+        return deleteLocalDirectory(localDir, STANDARD_RETRY_MAX_INTERVAL_NS);
     }
 
     public boolean deleteLocalDirectoryNoRetry(File localDir) throws Exception {
@@ -801,7 +790,7 @@ public class RemoteFile {
     //
 
     public boolean rename(RemoteFile newFile) throws Exception {
-        return rename(newFile, STANDARD_RETRY_INTERVAL_NS);
+        return rename(newFile, STANDARD_RETRY_MAX_INTERVAL_NS);
     }
 
     public boolean renameNoRetry(RemoteFile newFile) throws Exception {
