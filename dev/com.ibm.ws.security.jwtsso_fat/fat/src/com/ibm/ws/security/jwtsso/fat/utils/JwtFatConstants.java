@@ -46,4 +46,5 @@ public class JwtFatConstants extends JwtConstants {
     public static final String MPJWT_VERSION_12 = "mpJwt12";
     public static final String MPJWT_VERSION_20 = "mpJwt20";
     public static final String NO_MPJWT = "noMpJwt";
+    public static final String NO_MPJWT_EE9 = "noMpJwt_ee9";
 }

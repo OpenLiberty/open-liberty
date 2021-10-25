@@ -138,7 +138,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
-        incompatibleValueAddFeatures.add("jwtSso-1.0"); // depends on mpJWT
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
         incompatibleValueAddFeatures.add("openapi-3.1"); // depends on mpOpenAPI
         incompatibleValueAddFeatures.add("opentracing-1.0"); // opentracing depends on mpConfig
