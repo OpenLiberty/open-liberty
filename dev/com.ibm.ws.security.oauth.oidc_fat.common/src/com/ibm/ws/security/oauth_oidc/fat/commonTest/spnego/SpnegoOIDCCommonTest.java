@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -620,7 +620,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 		List<endpointSettings> headers = null;
 
 		settings.printTestSettings();
-		msgUtils.printOAuthOidcExpectations(expectations);
+		msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
 		try {
 
@@ -675,7 +675,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 		String thisMethod = "invokeEndpointWithBody";
 
 		msgUtils.printMethodName(thisMethod);
-		msgUtils.printOAuthOidcExpectations(expectations);
+		msgUtils.printOAuthOidcExpectations(expectations, new String[] {action}, null);
 
 		try {
 			com.gargoylesoftware.htmlunit.WebRequest requestSettings = null;
@@ -782,7 +782,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 	        msgUtils.printMethodName(thisMethod);
 
 	        settings.printTestSettings();
-	        msgUtils.printOAuthOidcExpectations(expectations, testActions);
+	        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
 	        Object thePage = null;
 	        List<endpointSettings> headers = null;
