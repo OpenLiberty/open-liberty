@@ -10,16 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureRepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests;
@@ -56,80 +52,69 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Ported list of tests (some already renamed)
-                AlwaysRunAndPassTest.class,
-                // Basic Functional tests
-                // -- These tests will run 3 times - tests that pass the token in the Authorization header
-                // -- will run using "Bearer <token>", "Token <token>", and "misc <token>" - the use of
-                // -- the config attribute authorizationHeaderPrefix will tell runtime what prefix to look for
-                MPJwtBasicTests.class,
-                // More targeted tests
-                MPJwtConfigUsingBuilderTests.class,
-                MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
-                MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
-                MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
-                MPJwtNoMpJwtConfig.class,
-                MPJwtPropagationTests_usingWebTarget.class,
-                MPJwtPropagationTests_notUsingWebTarget.class,
-                // mp-config specified in the applications
-                MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
-                MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests.class,
-                MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class,
-                MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
-                MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,
-                MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests.class,
-                // mp-config specified as system properties
-                MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK.class,
-                MPJwtBadMPConfigAsSystemProperties.class,
-                MPJwtGoodMPConfigAsSystemProperties_UseRS384PublicKey_NoKeyLoc.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES2564Url.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES384File.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES512RelativeFile.class,
-                MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri.class,
-                // mp-config specified as env vars
-                MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc.class,
-                MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS384Url.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS512File.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509.class,
-                MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
-                MPJwtBadMPConfigAsEnvVars.class,
+        // Ported list of tests (some already renamed)
+        AlwaysRunAndPassTest.class,
+        // Basic Functional tests
+        // -- These tests will run 3 times - tests that pass the token in the Authorization header
+        // -- will run using "Bearer <token>", "Token <token>", and "misc <token>" - the use of
+        // -- the config attribute authorizationHeaderPrefix will tell runtime what prefix to look for
+        MPJwtBasicTests.class,
+        // More targeted tests
+        MPJwtConfigUsingBuilderTests.class,
+        MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
+        MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
+        MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
+        MPJwtNoMpJwtConfig.class,
+        MPJwtPropagationTests_usingWebTarget.class,
+        MPJwtPropagationTests_notUsingWebTarget.class,
+        // mp-config specified in the applications
+        MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
+        MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests.class,
+        MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests.class,
+        MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
+        MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,
+        MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests.class,
+        // mp-config specified as system properties
+        MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK.class,
+        MPJwtBadMPConfigAsSystemProperties.class,
+        MPJwtGoodMPConfigAsSystemProperties_UseRS384PublicKey_NoKeyLoc.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES2564Url.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES384File.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES512RelativeFile.class,
+        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri.class,
+        // mp-config specified as env vars
+        MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc.class,
+        MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS384Url.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS512File.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509.class,
+        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
+        MPJwtBadMPConfigAsEnvVars.class,
 
-                MPJwtJwkTokenCacheTests.class
+        MPJwtJwkTokenCacheTests.class
 
 // the mpJwt-1.2 project contains tests that validate the behavior of 1.2
 // it will run these same tests, but enable the 1.2 feature instead of the 1.1 feature
 })
 
+@SuppressWarnings("restriction")
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
-    private static final Set<String> REMOVE = new HashSet<String>();
-    //    private static final Set<String> INSERT = new HashSet<String>();
 
-    static {
-        /*
-         * List of testing features that need to be removed and replaced.
-         */
-        REMOVE.add("jwtSso-1.0");
-
-    }
-
-    /*
-     * Run the mpJwt 1.2 and 2.0 tests in lite mode ONLY
+    /**
+     * Tests were written to use repeat to run the tests with each version of the mpJwt feature. Now that the project has been
+     * split to run each instance of the feature from a different project, I'd like to remove the use of repeat, but, ...
+     * The test tooling is expecting the feature version to be set in the repeat variables. The tooling uses that info to
+     * copy/use the proper version of some config files.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_11).fullFATOnly())
-            .andWith(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12).liteFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config").removeFeatures(REMOVE).liteFATOnly());
-    //    public static RepeatTests repeat = RepeatTests
-    //            .with(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config")
-    //                    .removeFeatures(REMOVE));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12));
 
 }
