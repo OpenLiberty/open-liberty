@@ -15,7 +15,7 @@ src: \
   fat/src
 
 fat.project: true
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 
 tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
     appsecurity-4.0, expressionlanguage-4.0, pages-3.0
