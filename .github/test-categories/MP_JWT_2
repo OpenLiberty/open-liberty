@@ -1,2 +1,3 @@
 com.ibm.ws.security.jwtsso_fat
 com.ibm.ws.security.mp.jwt_fat_tck
+io.openliberty.microprofile.jwt.2.0.internal_fat_tck

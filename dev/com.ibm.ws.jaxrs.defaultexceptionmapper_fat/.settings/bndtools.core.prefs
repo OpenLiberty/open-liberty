@@ -1,2 +1,2 @@
-compileErrorAction=skip
+compileErrorAction=build
 eclipse.preferences.version=1

@@ -1,3 +1,4 @@
+com.ibm.ws.ejbcontainer.mdb.jms_fat
 com.ibm.ws.ejbcontainer.remote.client_fat
 com.ibm.ws.ejbcontainer.remote_fat
 com.ibm.ws.ejbcontainer.security.jacc_fat
