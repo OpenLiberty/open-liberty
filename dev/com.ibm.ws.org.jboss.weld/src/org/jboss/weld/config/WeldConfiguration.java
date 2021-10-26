@@ -14,9 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+//We modified this file to backport a small change from later releases of weld to the 2.4.8 branch, closing the properties stream in a final block.
+
 package org.jboss.weld.config;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
@@ -45,8 +49,6 @@ import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents an immutable per-deployment Weld configuration.
@@ -299,7 +301,6 @@ public class WeldConfiguration implements Service {
         return null;
     }
 
-    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Set<URL> findPropertiesFiles(Deployment deployment, String fileName) {
         Set<ResourceLoader> resourceLoaders = new HashSet<ResourceLoader>();
         Set<URL> files = new HashSet<URL>();
@@ -368,7 +369,6 @@ public class WeldConfiguration implements Service {
      * @param resourceLoader
      * @return all the properties from the weld.properties file
      */
-    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Map<ConfigurationKey, Object> readFileProperties(Set<URL> files) {
         Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (URL file : files) {
@@ -381,7 +381,6 @@ public class WeldConfiguration implements Service {
         return found;
     }
 
-    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Map<ConfigurationKey, Object> readObsoleteFileProperties(Set<URL> files, Map<String, ConfigurationKey> nameToKeyMap) {
         if (files.isEmpty()) {
             return Collections.emptyMap();
@@ -481,12 +480,18 @@ public class WeldConfiguration implements Service {
     private Properties loadProperties(URL url) {
         Properties properties = new Properties();
         try {
-            properties.load(url.openStream());
+            //IBM changes begin here.
+            InputStream propertiesStream = url.openStream();
+            try {
+                properties.load(propertiesStream);
+            } finally {
+                propertiesStream.close();
+            }
+            //IBM changes end here.
         } catch (IOException e) {
             throw new ResourceLoadingException(e);
         }
         return properties;
     }
-
 }
 
