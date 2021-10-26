@@ -24,12 +24,13 @@ import java.util.Properties;
 
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.OracleContainer;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
 public class OracleKerberosContainer extends OracleContainer {
@@ -37,15 +38,20 @@ public class OracleKerberosContainer extends OracleContainer {
     private static final Class<?> c = OracleKerberosContainer.class;
     private static final Path reuseCache = Paths.get("..", "..", "cache", "oracle.properties");
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "kyleaure/krb5-oracle:2.0";
+    //TODO update this image to be built on top of gvenzl/oracle-xe
+    private static final String IMAGE_NAME_STRING = "kyleaure/krb5-oracle:2.0";
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     private boolean reused = false;
     private String reused_hostname;
     private int reused_port;
 
     public OracleKerberosContainer(Network network) {
-        super(IMAGE);
-        withNetwork(network);
+        super(IMAGE_NAME);
+        super.withPassword("oracle"); //Tell superclass the hardcoded password
+        super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+        super.withNetwork(network);
+        super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-Krb5"));
     }
 
     @Override
@@ -56,19 +62,10 @@ public class OracleKerberosContainer extends OracleContainer {
         });
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC);
-        withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*DONE: Executing user defined scripts.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
-        withLogConsumer(OracleKerberosContainer::log);
         withReuse(true);
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(OracleKerberosContainer.class, "[Oracle]", msg);
     }
 
     @Override

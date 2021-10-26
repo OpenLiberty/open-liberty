@@ -14,6 +14,7 @@ import java.time.Duration;
 
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
@@ -25,19 +26,20 @@ import componenttest.custom.junit.runner.FATRunner;
  */
 public class OracleSSLContainer extends OracleContainer {
 
-    private static final int TCP_PORT = 1521;
     private static final int TCPS_PORT = 1522;
-    private static final int OEM_EXPRESS_PORT = 5500;
-    private static final int HTTP_PORT = 8080;
     private static final String WALLET_PASS = "WalletPasswd123";
 
-    private static final String IMAGE_NAME = "kyleaure/oracle-ssl-18.4.0-xe-prebuilt:2.0";
+    //TODO update this image to be built on top of gvenzl/oracle-xe
+    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-ssl-18.4.0-xe-prebuilt:2.0";
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe:18.4.0-slim");
 
     public OracleSSLContainer() {
         super(IMAGE_NAME);
+        super.addExposedPort(TCPS_PORT);
+        super.withPassword("oracle"); //Tell superclass the hardcoded password
+        super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
         super.waitingFor(Wait.forLogMessage(".*DONE: Executing user defined scripts.*", 1)
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
-        super.withExposedPorts(TCP_PORT, TCPS_PORT, OEM_EXPRESS_PORT, HTTP_PORT);
         super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-SSL"));
     }
 
@@ -63,5 +65,10 @@ public class OracleSSLContainer extends OracleContainer {
 
     public String getWalletPassword() {
         return WALLET_PASS;
+    }
+
+    @Override
+    protected void configure() {
+        //DO NOTHING
     }
 }
