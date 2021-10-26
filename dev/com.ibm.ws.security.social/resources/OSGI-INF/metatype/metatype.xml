@@ -447,7 +447,7 @@
         <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />
         <AD id="forwardLoginParameter" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
         <AD id="createSession" name="%createSession" description="%createSession.desc" required="false" type="Boolean" default="false" />
-        <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" ibm:beta="true" />
+        <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
     </OCD>
     
      <OCD id="com.ibm.ws.security.social.client.param.metatype" name="%oidcClientCustomRequestParam" description="%oidcClientCustomRequestParam.desc" 

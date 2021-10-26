@@ -42,7 +42,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
@@ -74,8 +73,6 @@ public class AccessTokenAuthenticator {
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
-
-    private static boolean issuedBetaMessage = false;
 
     public AccessTokenAuthenticator() {
     }
@@ -402,7 +399,7 @@ public class AccessTokenAuthenticator {
         JSONObject jobj = null;
         if (contentType.contains("application/json")) {
             jobj = extractClaimsFromJsonResponse(jresponse, clientConfig, oidcClientRequest);
-        } else if (contentType.contains("application/jwt") && isRunningBetaMode()) {
+        } else if (contentType.contains("application/jwt")) {
             jobj = extractClaimsFromJwtResponse(jresponse, clientConfig, oidcClientRequest);
         }
         return jobj;
@@ -452,19 +449,6 @@ public class AccessTokenAuthenticator {
             }
         }
         return null;
-    }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     /**

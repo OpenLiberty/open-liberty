@@ -3,4 +3,3 @@
 -Dhttp.proxyHost=1.2.3.4
 -Dhttps.proxyPort=34567
 -Dhttps.proxyHost=1.2.3.4
--Dcom.ibm.ws.beta.edition=true

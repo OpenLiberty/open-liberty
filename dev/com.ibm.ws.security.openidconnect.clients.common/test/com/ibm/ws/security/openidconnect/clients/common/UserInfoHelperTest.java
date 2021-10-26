@@ -94,12 +94,6 @@ public class UserInfoHelperTest extends CommonTestClass {
             mockUpdateResult = userInfoStr;
             updateAuthResultCalled = true;
         }
-
-        @Override
-        boolean isRunningBetaMode() {
-            return true;
-        }
-
     }
 
     @BeforeClass
