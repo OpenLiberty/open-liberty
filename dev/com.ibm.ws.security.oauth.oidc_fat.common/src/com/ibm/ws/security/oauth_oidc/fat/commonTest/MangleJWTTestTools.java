@@ -204,7 +204,7 @@ public class MangleJWTTestTools extends JwtCommonTest {
      */
     public WebResponse positiveTest(TestSettings settings, String jwtToken) throws Exception {
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         WebConversation wc = new WebConversation();
 
         if (settings.getUseJwtConsumer()) {
@@ -258,7 +258,7 @@ public class MangleJWTTestTools extends JwtCommonTest {
 
     public WebResponse negativeTest(TestSettings settings, String jwtToken, String[] msgs) throws Exception {
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         WebConversation wc = new WebConversation();
 
         List<validationData> expectations = null;

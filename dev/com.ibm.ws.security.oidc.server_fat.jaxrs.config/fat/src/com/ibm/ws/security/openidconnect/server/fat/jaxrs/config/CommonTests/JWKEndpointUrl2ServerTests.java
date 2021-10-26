@@ -68,7 +68,7 @@ public class JWKEndpointUrl2ServerTests extends CommonTest {
 
         List<validationData> expectations = commonTools.getValidHelloWorldExpectations(updatedTestSettings, realmName);
 
-        updatedTestSettings.printTestSettings();
+        msgUtils.printTestSettings(updatedTestSettings);
         msgUtils.printOAuthOidcExpectations(expectations, settings);
 
         return expectations;

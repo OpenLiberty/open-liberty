@@ -701,7 +701,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
@@ -827,7 +827,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         Object thePage = null;
@@ -956,7 +956,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
@@ -1034,7 +1034,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
@@ -1139,7 +1139,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeEndpoint";
 
         msgUtils.printMethodName(thisMethod);
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
@@ -1235,7 +1235,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         Page thePage = null;
 
         msgUtils.printMethodName(thisMethod);
-        settings.printTestSettings();
+        msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {

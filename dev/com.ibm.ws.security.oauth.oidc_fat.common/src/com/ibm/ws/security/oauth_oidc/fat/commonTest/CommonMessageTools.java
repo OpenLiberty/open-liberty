@@ -44,4 +44,9 @@ public class CommonMessageTools extends com.ibm.ws.security.fat.common.CommonMes
         }
     }
 
+    public void printTestSettings(TestSettings settings) throws Exception {
+        if (settings != null) {
+            settings.printTestSettings();
+        }
+    }
 }

@@ -619,7 +619,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
 		List<endpointSettings> headers = null;
 
-		settings.printTestSettings();
+		msgUtils.printTestSettings(settings);
 		msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
 		try {
@@ -781,7 +781,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 	        String thisMethod = "genericOP";
 	        msgUtils.printMethodName(thisMethod);
 
-	        settings.printTestSettings();
+	        msgUtils.printTestSettings(settings);
 	        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
 	        Object thePage = null;

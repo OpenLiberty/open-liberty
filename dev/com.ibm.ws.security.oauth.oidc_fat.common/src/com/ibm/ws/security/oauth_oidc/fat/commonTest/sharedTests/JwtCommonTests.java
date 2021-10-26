@@ -231,7 +231,7 @@ public class JwtCommonTests extends MangleJWTTestTools {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.FORBIDDEN_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating issue with the JWT token", MessageConstants.CWWKS1106A_AUTHENTICATION_FAILED);
 
-        testSettings.printTestSettings();
+        msgUtils.printTestSettings(testSettings);
         msgUtils.printOAuthOidcExpectations(expectations, new String[] { Constants.INVOKE_RS_PROTECTED_RESOURCE }, testSettings);
 
         WebConversation wc = new WebConversation();
