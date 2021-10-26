@@ -352,6 +352,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             break;
         // The content type of the response does not match the format of the actual response look for error message and for extra claims to NOT exist in the app output)
         case CONTENT_TYPE_MISMATCH:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1538E_CONTENT_NOT_JSON);
             expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN);
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
