@@ -49,7 +49,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -818,7 +818,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
         // PS sig alg only valid with java 11 or above
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forCurrentVM().majorVersion() >= 11) {
 
             // build a jwt token with the "default" test claims
             Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS256);
@@ -850,7 +850,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
         // PS sig alg only valid with java 11 or above
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forCurrentVM().majorVersion() >= 11) {
 
             // build a jwt token with the "default" test claims
             Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS384);
@@ -882,7 +882,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
         // PS sig alg only valid with java 11 or above
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forCurrentVM().majorVersion() >= 11) {
 
             // build a jwt token with the "default" test claims
             Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS512);

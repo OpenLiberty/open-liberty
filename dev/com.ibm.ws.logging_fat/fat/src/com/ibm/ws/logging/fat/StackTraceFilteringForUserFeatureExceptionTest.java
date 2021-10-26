@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
@@ -68,7 +68,7 @@ public class StackTraceFilteringForUserFeatureExceptionTest extends AbstractStac
         assertConsoleLogCountEquals("The console stack was apparently trimmed, but the SCR classes got left in it",
                                     "at org.apache.felix.scr.impl", 1);
         // We want a Java line, but only one
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             assertConsoleLogCountEquals("The console stack should have one Java lines in it.",
                                         "at java.base/java.", 1);
         } else {

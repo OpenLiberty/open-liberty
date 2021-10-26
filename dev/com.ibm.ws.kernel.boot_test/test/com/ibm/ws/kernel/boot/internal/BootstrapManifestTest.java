@@ -33,7 +33,7 @@ import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.SharedBootstrapConfig;
 
 import test.common.SharedOutputManager;
-import test.common.junit.rules.JavaInfo;
+import test.common.junit.rules.JavaInfoUnitTestUtils;
 import test.shared.Constants;
 import test.shared.TestUtils;
 
@@ -130,7 +130,7 @@ public class BootstrapManifestTest {
         m.prepSystemPackages(config);
         String sysPkgs = initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
 
-        int javaVersion = JavaInfo.JAVA_VERSION;
+        int javaVersion = JavaInfoUnitTestUtils.JAVA_VERSION;
 
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "

@@ -24,7 +24,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import java11.multirelease.web.MultiReleaseJarTestServlet;
@@ -60,7 +60,7 @@ public class MultiReleaseJarTest extends FATServletClient {
 
         server.startServer();
 
-        EXPECTED_JAVA = JavaInfo.forServer(server).majorVersion();
+        EXPECTED_JAVA = JavaInfoFATUtils.forServer(server).majorVersion();
         if (EXPECTED_JAVA > 17)
             // don't bother updating past Java 17, we get the point after that many releases
             EXPECTED_JAVA = 17;

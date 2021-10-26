@@ -44,7 +44,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -827,7 +827,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = null;
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(consumerServer).majorVersion() >= 11) {
             jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
             expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_PS256);
         } else {
@@ -913,7 +913,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = null;
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(consumerServer).majorVersion() >= 11) {
             jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
             expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_PS384);
 
@@ -1000,7 +1000,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = null;
         Expectations expectations = null;
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if (JavaInfoFATUtils.forServer(consumerServer).majorVersion() >= 11) {
             jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
             expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_PS512);
         } else {

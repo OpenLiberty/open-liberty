@@ -54,7 +54,7 @@ import com.ibm.ws.logging.hpel.FormatSet;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -166,7 +166,7 @@ public class BinaryLogExec {
         // In Java 9 the default date format added a comma between the date and time
         // [9/25/18 7:49:24:078 UTC]  ===>  [9/25/18, 7:49:24:078 UTC]
         // Different Locale settings have different default date format for Java version >= 9
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             if (localeSettingStr.equalsIgnoreCase("en_CA")) {
                 formatterDefault = FormatSet.customizeDateFormat(new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss:SSS"));
             } else if (localeSettingStr.equalsIgnoreCase("en_GB")) {
@@ -258,7 +258,7 @@ public class BinaryLogExec {
         // In Java 9 the default date format added a comma between the date and time
         // [9/25/18 7:49:24:078 UTC]  ===>  [9/25/18, 7:49:24:078 UTC]
         // Different Locale settings have different default date format for Java version >= 9
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             if (localeSettingStr.equalsIgnoreCase("en_CA")) {
                 p1 = Pattern.compile("\\d{1,4}-\\d{1,2}-\\d{1,2}, \\d{1,2}:\\d{1,2}:\\d{1,2}:\\d\\d\\d");
             } else if (localeSettingStr.equalsIgnoreCase("en_GB")) {
@@ -355,7 +355,7 @@ public class BinaryLogExec {
         // In Java 9 the default date format added a comma between the date and time
         // [9/25/18 7:49:24:078 UTC]  ===>  [9/25/18, 7:49:24:078 UTC]
         // Different Locale settings have different default date format for Java version >= 9
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             if (localeSettingStr.equalsIgnoreCase("en_CA")) {
                 p1 = Pattern.compile("\\d{1,4}-\\d{1,2}-\\d{1,2}, \\d{1,2}:\\d{1,2}:\\d{1,2}:\\d\\d\\d");
             } else if (localeSettingStr.equalsIgnoreCase("en_GB")) {
@@ -418,7 +418,7 @@ public class BinaryLogExec {
         // In Java 9 the default date format added a comma between the date and time
         // [9/25/18 7:49:24:078 UTC]  ===>  [9/25/18, 7:49:24:078 UTC]
         // Different Locale settings have different default date format for Java version >= 9
-        if (JavaInfo.forServer(server).majorVersion() >= 9) {
+        if (JavaInfoFATUtils.forServer(server).majorVersion() >= 9) {
             if (localeSettingStr.equalsIgnoreCase("en_CA")) {
                 p1 = Pattern.compile("\\d{1,4}-\\d{1,2}-\\d{1,2}, \\d{1,2}:\\d{1,2}:\\d{1,2}:\\d\\d\\d");
             } else if (localeSettingStr.equalsIgnoreCase("en_GB")) {

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -33,6 +34,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -215,8 +217,8 @@ public class CustomizedTagTest extends LogstashCollectorTest {
         server.startServer();
     }
 
-    private boolean isGCSupported() {
-        Log.info(c, testName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + System.getProperty("java.vendor"));
+    private boolean isGCSupported() throws IOException {
+        Log.info(c, testName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + JavaInfoFATUtils.forServer(server).debugString());
         String JAVA_HOME = System.getenv("JAVA_HOME");
         Log.info(c, testName, "JAVA_HOME: " + JAVA_HOME);
         boolean healthCenterInstalled = false;

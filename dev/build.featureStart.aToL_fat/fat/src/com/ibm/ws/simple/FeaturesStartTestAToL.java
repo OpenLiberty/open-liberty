@@ -41,7 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -63,7 +63,7 @@ public class FeaturesStartTestAToL {
     static final Map<String, Set<String>> acceptableErrors = new HashMap<>();
     static final List<String> tempFeatureJavaLevels = new ArrayList<>();
 
-    static JavaInfo javaInfo = null;
+    static JavaInfoFATUtils javaInfo = null;
     static int JAVA_LEVEL;
 
     @Server("features.start.a.to.l.server")
@@ -76,7 +76,7 @@ public class FeaturesStartTestAToL {
     public static void setUp() throws Exception {
         String method = "setup";
 
-        javaInfo = JavaInfo.forServer(server);
+        javaInfo = JavaInfoFATUtils.forServer(server);
         JAVA_LEVEL = javaInfo.majorVersion();
         Log.info(c, method, "The java level being used by the server is: " + JAVA_LEVEL);
 
@@ -227,6 +227,11 @@ public class FeaturesStartTestAToL {
         allowError("batchSMFLogging-1.0", "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging");
 
         allowError("logAnalysis-1.0", "CWWKE0702E: .* com.ibm.ws.loganalysis"); // requires binaryLogging-1.0 to be enabled via bootstrap.properties
+
+        if (!JavaInfoFATUtils.isSystemClassAvailable("com.ibm.ws.health.center.proxy.HCConnectorImpl")) {
+            allowError("logstashCollector-1.0", "TRAS4352W"); //TRAS4352W: Health Center agent was not found, so JVM monitoring and diagnostic information will not be available.
+        }
+
         allowError("rtcomm-1.0", "CWRTC0002E"); // The Rtcomm service is not able to connect to tcp://localhost:1883.
         allowError("rtcommGateway-1.0", "CWRTC0002E"); // // The Rtcomm service is not able to connect to tcp://localhost:1883.
         allowError("samlWeb-2.0", "CWWKS5207W: .* inboundPropagation"); // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
@@ -265,10 +270,7 @@ public class FeaturesStartTestAToL {
             return true;
 
         if (feature.equalsIgnoreCase("logstashCollector-1.0")) {
-            if (javaInfo.vendor() != JavaInfo.Vendor.IBM) {
-                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
-                return true;
-            } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
+            if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
                 return true;
             }

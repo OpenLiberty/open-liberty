@@ -15,13 +15,19 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * API for reading information related to the JDK
  */
+@Trivial
 public class JavaInfo {
 
+    /**
+     * Intended to only be used for debug purposes.
+     */
+    @Deprecated
     public static enum Vendor {
         IBM,
         OPENJ9,
@@ -37,6 +43,7 @@ public class JavaInfo {
     private final int SERVICE_RELEASE;
     private final int FIXPACK;
     private final Vendor VENDOR;
+    private final String DEBUG;
 
     private JavaInfo() {
         String version = getSystemProperty("java.version");
@@ -107,6 +114,8 @@ public class JavaInfo {
             }
         }
         FIXPACK = fp;
+
+        DEBUG = "Vendor=" + VENDOR + ", Major=" + MAJOR + ", Minor=" + MINOR + ", Micro=" + MICRO + ", SR=" + SERVICE_RELEASE + ", FP=" + FIXPACK;
     }
 
     private static final String getSystemProperty(final String propName, final String defaultValue) {
@@ -196,6 +205,8 @@ public class JavaInfo {
      * is a different class on one JVM that needs to be used vs another an attempt should
      * be made to load the class and take the code path.
      *
+     * e.g. JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")
+     *
      * <p>This method is intended to only be used for debug purposes.</p>
      *
      * @return the detected vendor of the JVM
@@ -218,7 +229,7 @@ public class JavaInfo {
      * @return a String containing basic info about the JDK
      */
     public static String debugString() {
-        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
+        return instance().DEBUG;
     }
 
     /**

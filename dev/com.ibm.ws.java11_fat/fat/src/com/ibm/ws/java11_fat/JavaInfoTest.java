@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.utils.FATServletClient;
 
 /**
@@ -35,7 +37,7 @@ public class JavaInfoTest extends FATServletClient {
 
     private static final Class<?> c = JavaInfoTest.class;
 
-    private static componenttest.topology.impl.JavaInfo fatJavaInfo = componenttest.topology.impl.JavaInfo.forCurrentVM();
+    private static componenttest.topology.impl.JavaInfoFATUtils fatJavaInfo = componenttest.topology.impl.JavaInfoFATUtils.forCurrentVM();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -46,40 +48,39 @@ public class JavaInfoTest extends FATServletClient {
             if (prop.getKey().toString().startsWith("java."))
                 log("  " + prop.getKey() + '=' + prop.getValue());
 
-        log("JavaInfo dump:");
-        log("  vendor=" + JavaInfo.vendor());
-        log("  major=" + JavaInfo.majorVersion());
-        log("  minor=" + JavaInfo.minorVersion());
-        log("  micro=" + JavaInfo.microVersion());
-        log("  sr=" + JavaInfo.serviceRelease());
-        log("  fp=" + JavaInfo.fixPack());
+        log("JavaInfo dump: " + JavaInfo.debugString());
     }
 
     private static void log(String msg) {
         Log.info(c, "setup", msg);
     }
 
+    /**
+     * Vendor is deprecated and should only be used for debug purposes ... but we'll test it anyway
+     */
     @Test
     public void testJavaVendor() {
+        Vendor vendor = JavaInfo.vendor();
+
         assertTrue("Found an unknown java vendor java.vendor=" + System.getProperty("java.vendor"),
-                   JavaInfo.Vendor.UNKNOWN != JavaInfo.vendor());
+                   Vendor.UNKNOWN != vendor);
 
         // Verify that the Kernel's copy of JavaInfo.vendor() is consistent with the FAT framework's
-        switch (JavaInfo.vendor()) {
+        switch (vendor) {
             case IBM:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.IBM,
+                assertEquals(JavaInfoFATUtils.Vendor.IBM,
                              fatJavaInfo.vendor());
                 break;
             case OPENJ9:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.OPENJ9,
+                assertEquals(JavaInfoFATUtils.Vendor.OPENJ9,
                              fatJavaInfo.vendor());
                 break;
             case ORACLE:
-                assertEquals(componenttest.topology.impl.JavaInfo.Vendor.SUN_ORACLE,
+                assertEquals(JavaInfoFATUtils.Vendor.SUN_ORACLE,
                              fatJavaInfo.vendor());
                 break;
             default:
-                fail("Got unknown java vendor: " + JavaInfo.vendor());
+                fail("Got unknown java vendor: " + vendor);
         }
     }
 

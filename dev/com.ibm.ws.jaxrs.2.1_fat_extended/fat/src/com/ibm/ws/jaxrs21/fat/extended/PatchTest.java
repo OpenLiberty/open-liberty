@@ -20,7 +20,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.patch.PatchTestServlet;
@@ -37,7 +37,7 @@ public class PatchTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        JavaInfo java = JavaInfo.forCurrentVM();
+        JavaInfoFATUtils java = JavaInfoFATUtils.forCurrentVM();
         int javaVersion = java.majorVersion();
         if (javaVersion > 8) {
             Log.info(c, "setup()", "Detected Java version (" + javaVersion + ") is 9 or higher, adding additional jvm.options file to compensate for strong encapsulation");
