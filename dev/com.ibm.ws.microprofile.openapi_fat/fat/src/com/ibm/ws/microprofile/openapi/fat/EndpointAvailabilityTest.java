@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,6 +24,8 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -32,8 +35,15 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class EndpointAvailabilityTest extends FATServletClient {
 
-    @Server("EndpointAvailabilityServer")
+    private static final String SERVER_NAME = "EndpointAvailabilityServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
+        MicroProfileActions.MP41,
+        MicroProfileActions.MP33, MicroProfileActions.MP22);
 
     @BeforeClass
     public static void setUp() throws Exception {

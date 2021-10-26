@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +15,8 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -24,8 +27,16 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestThree {
 
-    @Server("validationServerThree")
+    private static final String SERVER_NAME = "validationServerThree";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
+        MicroProfileActions.MP41,
+        MicroProfileActions.MP33, MicroProfileActions.MP22);
+
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
     @BeforeClass
@@ -57,7 +68,9 @@ public class OpenAPIValidationTestThree {
     }
 
     @Test
-    @SkipForRepeat("mpOpenAPI-2.0")
+    @SkipForRepeat({
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID
+    })
     public void testBlankInfo() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
@@ -67,7 +80,9 @@ public class OpenAPIValidationTestThree {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "mpOpenAPI-1.1" })
+    @SkipForRepeat({
+        MicroProfileActions.MP22_ID, MicroProfileActions.MP33_ID
+    })
     public void testBlankInfo20() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);

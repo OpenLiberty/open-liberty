@@ -13,16 +13,20 @@ package com.ibm.ws.microprofile.openapi.fat;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -41,14 +45,24 @@ public class ProxySupportTest extends FATServletClient {
 
     private static final String APP_NAME_1 = "appWithStaticDoc";
 
-    @Server("ProxySupportServer")
+    private static final String SERVER_NAME = "ProxySupportServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
+        MicroProfileActions.MP41,
+        MicroProfileActions.MP33, MicroProfileActions.MP22);
 
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        ShrinkHelper.defaultApp(server, APP_NAME_1);
+        DeployOptions[] opts = {
+            DeployOptions.SERVER_ONLY
+        };
+        ShrinkHelper.defaultApp(server, APP_NAME_1, opts);
 
         LibertyServer.setValidateApps(false);
 
