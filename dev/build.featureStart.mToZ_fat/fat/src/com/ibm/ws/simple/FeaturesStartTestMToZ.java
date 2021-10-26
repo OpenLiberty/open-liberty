@@ -35,7 +35,6 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.Machine;
-import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -264,20 +263,6 @@ public class FeaturesStartTestMToZ {
         // This feature is grandfathered in on not starting cleanly on its own. Fixing it could potentially break existing configurations
         if (feature.equalsIgnoreCase("wsSecurity-1.1"))
             return true;
-
-        // Needs to be enabled in conjunction with spnego-1.0 or OIDC
-        if (feature.equalsIgnoreCase("constrainedDelegation-1.0"))
-            return true;
-
-        if (feature.equalsIgnoreCase("logstashCollector-1.0")) {
-            if (javaInfo.vendor() != JavaInfoFATUtils.Vendor.IBM) {
-                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
-                return true;
-            } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
-                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
-                return true;
-            }
-        }
 
         if (feature.equalsIgnoreCase("wmqMessagingClient-3.0")) // wmqJmsClient.rar.location variable has not been set
             return true;

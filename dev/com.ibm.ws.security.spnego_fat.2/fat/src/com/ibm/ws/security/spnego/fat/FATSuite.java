@@ -93,7 +93,7 @@ public class FATSuite extends InitClass {
             OTHER_SUPPORT_JDKS = javaInfo.majorVersion() >= 11 || SUN_ORACLE_JDK_V8_HIGHER;
             IBM_HYBRID_JDK = isHybridJDK(javaInfo);
 
-            Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor());
+            Log.info(c, thisMethod, "The JDK is " + javaInfo.debugString());
             if (!IBM_JDK_V8_LOWER && !OTHER_SUPPORT_JDKS && !SUN_ORACLE_JDK_V8_HIGHER) {
                 Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor() +
                                         ". Because only IBM JDK version 8 or less, Oracle and Open JDK version 8 and higher and JDK version 11 are currently supported, no tests will be run.");
@@ -102,7 +102,7 @@ public class FATSuite extends InitClass {
             if (IBM_HYBRID_JDK) {
                 RUN_TESTS = false;
             }
-            Log.info(c, thisMethod, "The JDK vendor used is " + javaInfo.vendor() + " and version: " + javaInfo.majorVersion());
+
             return RUN_TESTS;
         };
 

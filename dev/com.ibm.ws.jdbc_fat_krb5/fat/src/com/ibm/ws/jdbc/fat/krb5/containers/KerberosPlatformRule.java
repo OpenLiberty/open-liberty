@@ -24,8 +24,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.DB2KerberosTest;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfoFATUtils;
-import componenttest.topology.impl.JavaInfoFATUtils.Vendor;
 
 /**
  * Rule that automatically skips tests if we are running on a platform that does NOT
@@ -62,18 +60,15 @@ public class KerberosPlatformRule implements TestRule {
         }
 
         // Make sure the JDK we are on supports the keytab encryption type
-        JavaInfoFATUtils java = JavaInfoFATUtils.forCurrentVM();
-        if (java.majorVersion() == 8 && java.vendor() == Vendor.SUN_ORACLE) {
-            File keytabFile = new File(System.getProperty("user.dir") + "/publish/servers/com.ibm.ws.jdbc.fat.krb5/security/krb5.keytab");
-            KerberosPrincipal princ = new KerberosPrincipal(DB2KerberosTest.KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
-            KeyTab kt = KeyTab.getInstance(princ, keytabFile);
-            Log.info(c, m, "Loaded keytab: " + kt);
-            KerberosKey[] kks = kt.getKeys(princ);
-            Log.info(c, m, "Loaded " + kks.length + " Kerberos keys");
-            if (kks.length == 0) {
-                Log.info(c, m, "Skipping test because this JVM does not support the keytab encoding we are using");
-                return false;
-            }
+        File keytabFile = new File(System.getProperty("user.dir") + "/publish/servers/com.ibm.ws.jdbc.fat.krb5/security/krb5.keytab");
+        KerberosPrincipal princ = new KerberosPrincipal(DB2KerberosTest.KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+        KeyTab kt = KeyTab.getInstance(princ, keytabFile);
+        Log.info(c, m, "Loaded keytab: " + kt);
+        KerberosKey[] kks = kt.getKeys(princ);
+        Log.info(c, m, "Loaded " + kks.length + " Kerberos keys");
+        if (kks.length == 0) {
+            Log.info(c, m, "Skipping test because this JVM does not support the keytab encoding we are using");
+            return false;
         }
 
         return true;

@@ -10,24 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.java2sec;
 
-import java.lang.String;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.io.Reader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.security.AccessController;
-import java.security.Permission;
 import java.security.PrivilegedAction;
-import java.security.UnresolvedPermission;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 
 
 /**
@@ -53,24 +49,12 @@ public class ParseJavaPolicy {
             return System.getProperty("java.home");
         }
     });
-    String javaVersion = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
     String javaSecurityPolicy = AccessController.doPrivileged(new PrivilegedAction<String>() {
         public String run() {
             return System.getProperty("java.security.policy");
         }
     });
-    String javaVendor = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        public String run() {
-            return System.getProperty("java.vendor");
-        }
-    });
-
-
-
+    
 
     public ParseJavaPolicy(boolean expandProp) throws FileNotFoundException, IOException, ParserException {
 
@@ -81,7 +65,7 @@ public class ParseJavaPolicy {
         
         
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "java.home: " + javaHome + " javaVendor: " + javaVendor + " javaSecurityPolicy: " + javaSecurityPolicy + " javaVersion: " + javaVersion);
+            Tr.debug(tc, "java.home: " + javaHome + " javaInfo: " + JavaInfo.debugString() + " javaSecurityPolicy: " + javaSecurityPolicy);
         }
         
         try {
@@ -101,28 +85,7 @@ public class ParseJavaPolicy {
                     // first let's check if this is version 9 or up, where the java.policy file would 
                     // be under java.home/conf/security
                     
-                    
-                    String[] versionElements = javaVersion.split("\\D"); // split on non-digits
-
-                    // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
-                    // Post-JDK 9 the java.version is MAJOR.MINOR
-                    int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
-                    Integer MAJOR = Integer.valueOf(versionElements[i++]);
-
-                    Integer MINOR;
-                    if (i < versionElements.length)
-                        MINOR = Integer.valueOf(versionElements[i++]);
-                    else
-                        MINOR = 0;
-
-                    Integer MICRO;
-                    if (i < versionElements.length)
-                        MICRO = Integer.valueOf(versionElements[i]);
-                    else
-                        MICRO = 0;
-
-                    
-                    if (9 <= MAJOR.intValue()) {
+                    if (9 <= JavaInfo.majorVersion()) {
                             file = javaHome.concat("/conf/security/java.policy");
                             File fileToCheck = new File(file);
                             if (!fileToCheck.exists()) {

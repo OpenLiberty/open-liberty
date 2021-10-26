@@ -203,6 +203,19 @@ public class JavaInfoFATUtils {
     private static final Map<String, Boolean> systemClassAvailability = new ConcurrentHashMap<>();
 
     /**
+     * Return true if running on IBM SDK, Java Technology Edition 8
+     *
+     * This is implemented by trying to load "com.ibm.security.auth.module.Krb5LoginModule" because querying for the JVM vendor
+     * string is not a reliable method. The Krb5LoginModule class was only available in IBM SDK, Java Technology Edition 8 (and earlier
+     * but earlier versions are not supported anyway).
+     *
+     * @return true if running on IBM SDK, Java Technology Edition 8
+     */
+    public static boolean isIBMSDKJava8() {
+        return isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule");
+    }
+
+    /**
      * In rare cases where different behaviour is performed based on the JVM vendor
      * this method should be used to test for a unique JVM class provided by the
      * vendor rather than using the vendor method. For example if on JVM provides a

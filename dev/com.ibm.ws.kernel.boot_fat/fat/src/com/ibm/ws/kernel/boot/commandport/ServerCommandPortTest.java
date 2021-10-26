@@ -162,15 +162,16 @@ public class ServerCommandPortTest {
         // validate server javadump command on all platforms except mac (and any hotspot vm),
         // because javadump is unreliable on hotspot jvms.  Note some of the jdks combinations
         // do not contain the hotspot indicator (ex, sun_oracle).
-        if (!isMac && !isHotspotVM && JavaInfoFATUtils.forServer(server).vendor() != Vendor.SUN_ORACLE) {
+        JavaInfoFATUtils javaInfo = JavaInfoFATUtils.forServer(server);
+        if (!isMac && !isHotspotVM && javaInfo.vendor() != Vendor.SUN_ORACLE) {
             Log.info(c, method, "Server javadump command is being executed/validated due to isMac = " + isMac + " and isHotspotVM = " + isHotspotVM + " and vendor = "
-                                + JavaInfoFATUtils.forServer(server).vendor());
+                                + javaInfo.vendor());
             output = server.executeServerScript("javadump", null).getStdout();
             assertTrue(output.contains("Server " + server.getServerName() + " dump complete in"));
             validateDumpFile(output, server, COMMAND_PORT_ENABLED_SERVER_NAME);
         } else {
             Log.info(c, method, "Server javadump command is NOT being executed/validated due to isMac = " + isMac + " and isHotspotVM = " + isHotspotVM + " and vendor = "
-                                + JavaInfoFATUtils.forServer(server).vendor());
+                                + javaInfo.vendor());
         }
 
         // validate server dump command

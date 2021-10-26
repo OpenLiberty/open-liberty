@@ -39,6 +39,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfoFATUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -65,9 +66,9 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         Log.info(c, "setUp", "os.name = " + os);
         Log.info(c, "setUp", "runTest = " + runTest);
-        
+
         Assume.assumeTrue(runTest); // runTest must be true to run test
-        
+
         clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
@@ -85,7 +86,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         if (!checkGcSpecialCase()) {
             found_liberty_gc_at_startup = waitForStringInContainerOutput(LIBERTY_GC) != null;
         }
-        
+
         assertNotNull("The application is not ready", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
         assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
         clearContainerOutput();
@@ -432,7 +433,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
          * by checking 1. whether the operating system is Mac or linux 2. whether the machine is running IBM JDK
          * if both checks pass, this is the case
          **/
-        Log.info(c, methodName, "os_name: " + os + "\t java_jdk: " + System.getProperty("java.vendor"));
+        Log.info(c, methodName, "os_name: " + os + "\t java_jdk: " + JavaInfoFATUtils.forServer(server).debugString());
         String JAVA_HOME = System.getenv("JAVA_HOME");
         Log.info(c, methodName, "JAVA_HOME: " + JAVA_HOME);
         boolean healthCenterInstalled = false;
