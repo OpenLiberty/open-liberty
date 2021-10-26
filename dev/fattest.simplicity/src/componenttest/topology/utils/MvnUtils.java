@@ -317,10 +317,12 @@ public class MvnUtils {
         stringArrayList.add(MVN_TEST);
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
+        stringArrayList.add("-Dtck_hostname=" + getServerHostName());
         stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
         stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
         stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
         stringArrayList.add("-Dtck_port=" + getPort());
+        stringArrayList.add("-Dtck_port_secure=" + getPortSecure());
         stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
         stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
         stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
@@ -359,10 +361,12 @@ public class MvnUtils {
         stringArrayList.add(MVN_DEPENDENCY);
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
+        stringArrayList.add("-Dtck_hostname=" + getServerHostName());
         stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
         stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
         stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
         stringArrayList.add("-Dtck_port=" + getPort());
+        stringArrayList.add("-Dtck_port_secure=" + getPortSecure());
         stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
         stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
         stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
@@ -428,12 +432,30 @@ public class MvnUtils {
     }
 
     /**
+     * Get the standard http port for the Liberty server
+     *
+     * @return the http port number
+     */
+    private int getPortSecure() throws Exception {
+        return server.getPort(PortType.WC_defaulthost_secure);
+    }
+
+    /**
      * Get the name of the Liberty Server being used to test
      *
      * @return The Liberty Server name
      */
     private String getServerName() {
         return this.server.getServerName();
+    }
+
+    /**
+     * Get the name of the Liberty Server hostName being used to test
+     *
+     * @return The Liberty Server hostName
+     */
+    private String getServerHostName() {
+        return this.server.getHostname();
     }
 
     /**
