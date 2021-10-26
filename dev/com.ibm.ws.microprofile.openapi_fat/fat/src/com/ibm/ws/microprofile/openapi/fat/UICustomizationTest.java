@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,26 +26,38 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Tests to ensure OpenAPI UI bundles are updated with custom CSS files provided by users
+ * Tests to ensure OpenAPI UI bundles are updated with custom CSS files provided
+ * by users
  *
- * - Set a valid CSS file and ensure that the UI is updated with customized value
- * - Set an empty CSS file and server should produce a warning because it does not contain .swagger-ui .headerbar
- * - Set an invalid CSS file where the value of background-image property is not valid and ensure that the right message shows up in the server logs and the CSS content must revert
- * to default
- * - Ensure there are no caching issues. First set customization, then stop the server. When the server is offline, remove the customization. Then start the server and verify
- * customization is no longer applied.
+ * - Set a valid CSS file and ensure that the UI is updated with customized
+ * value - Set an empty CSS file and server should produce a warning because it
+ * does not contain .swagger-ui .headerbar - Set an invalid CSS file where the
+ * value of background-image property is not valid and ensure that the right
+ * message shows up in the server logs and the CSS content must revert to
+ * default - Ensure there are no caching issues. First set customization, then
+ * stop the server. When the server is offline, remove the customization. Then
+ * start the server and verify customization is no longer applied.
  *
  */
 @RunWith(FATRunner.class)
 public class UICustomizationTest extends FATServletClient {
 
-    @Server("UICustomizationServer")
+    private static final String SERVER_NAME = "UICustomizationServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
+        MicroProfileActions.MP41,
+        MicroProfileActions.MP33, MicroProfileActions.MP22);
 
     private final static int TIMEOUT = 10000; // in ms
     private final static int START_TIMEOUT = 60000; // in ms

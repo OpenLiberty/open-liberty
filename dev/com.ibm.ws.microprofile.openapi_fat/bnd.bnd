@@ -24,7 +24,7 @@ fat.project: true
 
 fat.minimum.java.level: 1.8
 
-tested.features=mpOpenAPI-1.0,mpOpenAPI-1.1,mpOpenAPI-2.0
+tested.features=mpOpenAPI-1.0,mpOpenAPI-1.1,mpOpenAPI-2.0,mpOpenAPI-3.0
 
 -buildpath: \
     com.ibm.ws.microprofile.openapi;version=latest, \

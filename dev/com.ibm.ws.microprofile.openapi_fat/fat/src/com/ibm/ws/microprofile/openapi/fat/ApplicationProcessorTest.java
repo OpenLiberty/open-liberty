@@ -25,11 +25,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
@@ -38,19 +40,23 @@ import app.web.pure.jaxrs.JAXRSApp;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Test to ensure exercise Application Processor. Here's summary of all the scenarios being tested:
- * - Deploy a single app and ensure it's documentation shows up in /openapi
- * - Deploy two apps and ensure one app's documentation shows up in /openapi
- * - Remove the app that was picked from the above scenario and ensure that the other app's documentation now shows up in /openapi
- * - Remove all apps and ensure no documentation (for any endpoint) is shown in /openapi
- * - Scenarios involving context root, host/port, servers
- * - Make a pure JAX-RS app with the ApplicationPath annotation and ensure that the annotations are scanned and a document is generated
- * - Complete flow: model, static, annotation, filter in order
+ * Test to ensure exercise Application Processor. Here's summary of all the
+ * scenarios being tested: - Deploy a single app and ensure it's documentation
+ * shows up in /openapi - Deploy two apps and ensure one app's documentation
+ * shows up in /openapi - Remove the app that was picked from the above scenario
+ * and ensure that the other app's documentation now shows up in /openapi -
+ * Remove all apps and ensure no documentation (for any endpoint) is shown in
+ * /openapi - Scenarios involving context root, host/port, servers - Make a pure
+ * JAX-RS app with the ApplicationPath annotation and ensure that the
+ * annotations are scanned and a document is generated - Complete flow: model,
+ * static, annotation, filter in order
  */
 @RunWith(FATRunner.class)
 public class ApplicationProcessorTest extends FATServletClient {
@@ -67,18 +73,28 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final String APP_NAME_10 = "pure-jaxrs";
     private static final String APP_NAME_11 = "complete-flow";
 
-    @Server("ApplicationProcessorServer")
+    private static final String SERVER_NAME = "ApplicationProcessorServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
+        MicroProfileActions.MP41,
+        MicroProfileActions.MP33, MicroProfileActions.MP22);
 
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        ShrinkHelper.defaultApp(server, APP_NAME_1, "app.web.airlines.*");
-        ShrinkHelper.defaultApp(server, APP_NAME_2);
-        ShrinkHelper.defaultApp(server, APP_NAME_3, "app.web.servlet");
-        ShrinkHelper.defaultApp(server, APP_NAME_10, "app.web.pure.jaxrs");
-        ShrinkHelper.defaultApp(server, APP_NAME_11, "app.web.complete.flow.*");
+        DeployOptions[] opts = {
+            DeployOptions.SERVER_ONLY
+        };
+        ShrinkHelper.defaultApp(server, APP_NAME_1, opts, "app.web.airlines.*");
+        ShrinkHelper.defaultApp(server, APP_NAME_2, opts);
+        ShrinkHelper.defaultApp(server, APP_NAME_3, opts, "app.web.servlet");
+        ShrinkHelper.defaultApp(server, APP_NAME_10, opts, "app.web.pure.jaxrs");
+        ShrinkHelper.defaultApp(server, APP_NAME_11, opts, "app.web.complete.flow.*");
 
         LibertyServer.setValidateApps(false);
 
@@ -380,7 +396,9 @@ public class ApplicationProcessorTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat("mpOpenAPI-2.0")
+    @SkipForRepeat({
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID
+    })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
