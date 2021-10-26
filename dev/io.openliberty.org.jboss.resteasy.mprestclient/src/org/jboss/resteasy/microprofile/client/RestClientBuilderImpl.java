@@ -326,8 +326,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (this.executorService != null) {
             resteasyClientBuilder.executorService(new AsyncClientExecutorService(this.executorService));
         } else {
-            this.executorService = OsgiServices.getManagedExecutorService().orElseGet(Executors::newCachedThreadPool);
-            resteasyClientBuilder.executorService(new AsyncClientExecutorService(executorService), true);
+            Optional<ExecutorService> managedExecutor = OsgiServices.getManagedExecutorService();
+            this.executorService = managedExecutor.orElseGet(Executors::newCachedThreadPool);
+            boolean cleanupExecutor = managedExecutor.isPresent() ? false : true;
+            resteasyClientBuilder.executorService(new AsyncClientExecutorService(executorService), cleanupExecutor);
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
