@@ -5,7 +5,8 @@ singleton=true
 visibility = private
 
 -features=\
-  com.ibm.websphere.appserver.servlet-5.0
+  com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.securityAPI.jakarta-1.0
 
 -bundles= com.ibm.ws.rest.handler.jakarta
 

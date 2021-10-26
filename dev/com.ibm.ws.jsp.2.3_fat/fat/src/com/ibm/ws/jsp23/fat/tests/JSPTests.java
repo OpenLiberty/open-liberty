@@ -785,11 +785,11 @@ public class JSPTests {
         server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
         String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
         LOG.info("url: " + url);
-        server.setMarkToEndOfLog();
         WebConversation wc1 = new WebConversation();
         WebRequest request1 = new GetMethodWebRequest(url);
         wc1.getResponse(request1);
 
+        server.setMarkToEndOfLog(); // mark after 1st call to index.jsp since it might have compiled and caused a SRVE0253I
         Thread.sleep(5000L); // sleep necessary to insure sufficient time delta for epoch timestamp comparisons
         WebConversation wc2 = new WebConversation();
         WebRequest request2 = new GetMethodWebRequest(url);

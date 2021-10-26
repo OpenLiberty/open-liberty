@@ -15,6 +15,9 @@ Bundle-Name: FasterXML Jackson JaxRS Providers
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson.jaxrs
 Bundle-Description: Provides Jackson JaxRS Providers as a bundle
 
+publish.wlp.jar.disabled: true
+test.project: true
+
 -includeresource: \
   @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.11.2;EXACT},\
   @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.11.2;EXACT},\

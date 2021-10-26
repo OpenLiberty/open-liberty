@@ -10,6 +10,11 @@
  *******************************************************************************/
 package test.jakarta.concurrency.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,16 +34,21 @@ import jakarta.enterprise.concurrent.ZonedTrigger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
-import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManageableThread;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -49,6 +59,19 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@ContextServiceDefinition(name = "java:app/concurrent/appContextSvc",
+                          propagated = APPLICATION,
+                          cleared = { TRANSACTION, SECURITY },
+                          unchanged = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
+                           hungTaskThreshold = 300000,
+                           maxAsync = 1) // TODO add context once annotation is fixed
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/executor6",
+                                    hungTaskThreshold = 360000,
+                                    maxAsync = 2) // TODO add context once annotation is fixed
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
+                                context = "java:app/concurrent/appContextSvc",
+                                priority = 3)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -71,26 +94,25 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(name = "java:global/env/concurrent/executor4Ref", lookup = "concurrent/executor4")
     ManagedScheduledExecutorService executor4;
 
-    // TODO @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+    @Resource(lookup = "java:comp/concurrent/executor6")
+    ManagedScheduledExecutorService executor6;
+
+    @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
     ForkJoinWorkerThreadFactory forkJoinThreadFactory;
+
+    @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
+    ManagedThreadFactory lowPriorityThreads;
 
     @Override
     public void init() throws ServletException {
-        // TODO remove this temporary code once the 3.0 ManagedThreadFactory class
-        // is available which implements ForkJoinWorkerThreadFactory
-        forkJoinThreadFactory = new ForkJoinWorkerThreadFactory() {
-            @Override
-            public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-                try {
-                    java.lang.reflect.Method newThread = defaultThreadFactory.getClass()
-                                    .getMethod("newThread", ForkJoinPool.class);
-                    newThread.setAccessible(true);
-                    return (ForkJoinWorkerThread) newThread.invoke(defaultThreadFactory, pool);
-                } catch (Exception x) {
-                    throw new RuntimeException(x);
-                }
-            }
-        };
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     */
+    @Test
+    public void testContextServiceDefinition() throws Exception {
+        assertNotNull(InitialContext.doLookup("java:app/concurrent/appContextSvc"));
     }
 
     /**
@@ -101,15 +123,11 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testGetContextService1WithContextCapture() throws Exception {
-        // TODO ContextService contextSvc = executor1.getContextService();
-        ContextService contextSvc = (ContextService) executor1.getClass().getMethod("getContextService").invoke(executor1);
+        ContextService contextSvc = executor1.getContextService();
 
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
 
-        // TODO CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
-        CompletableFuture<String> stage1copy = (CompletableFuture<String>)
-                        contextSvc.getClass().getMethod("withContextCapture", CompletableFuture.class)
-                                             .invoke(contextSvc, stage1);
+        CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
 
         // block the managed executor's only thread
         CountDownLatch blocker = new CountDownLatch(1);
@@ -164,6 +182,52 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     */
+    @Test
+    public void testManagedExecutorDefinition() throws Exception {
+        assertNotNull(InitialContext.doLookup("java:module/concurrent/executor5"));
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     */
+    @Test
+    public void testManagedScheduledExecutorDefinition() throws Exception {
+        assertNotNull(executor6);
+    }
+
+    /**
+     * Verify that a ManagedThreadFactory that is injected from a ManagedThreadFactoryDefinition
+     * creates threads that run with the configured priority and with the configured thread context
+     * that makes it possible to look up resource references in the application component's namespace.
+     */
+    @Test
+    public void testManagedThreadFactoryDefinition() throws Exception {
+        assertNotNull(lowPriorityThreads);
+
+        int priority = Thread.currentThread().getPriority();
+
+        ForkJoinPool pool = new ForkJoinPool(2, lowPriorityThreads, null, false);
+        try {
+            ForkJoinTask<Long> task = pool.submit(new Factorial(5)
+                            // TODO once ContextServiceDefinition honors config: .assertAvailable("java:comp/env/concurrent/executor3Ref")
+                            .assertPriority(3));
+
+            assertEquals(Long.valueOf(120), task.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            pool.shutdown();
+        }
+
+        assertEquals(priority, Thread.currentThread().getPriority());
+
+        Thread managedThread = lowPriorityThreads.newThread(() -> {
+        });
+        assertEquals(3, managedThread.getPriority());
+        assertTrue(managedThread.getClass().getName(), managedThread instanceof ManageableThread);
+    }
+
+    /**
      * Verify that it is possible to use nested ContextService without ever having obtained the
      * managed executor that it is nested under, and that is possible to use the withContextCapture
      * methods which create completion stages that are backed by that managed executor.
@@ -174,10 +238,7 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void testNestedContextService2WithContextCapture() throws Exception {
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
 
-        // TODO CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
-        CompletableFuture<String> stage1copy = (CompletableFuture<String>)
-                        contextSvc2.getClass().getMethod("withContextCapture", CompletableFuture.class)
-                                              .invoke(contextSvc2, stage1);
+        CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
 
         // block the managed executor's 2 threads
         CountDownLatch blocker = new CountDownLatch(1);

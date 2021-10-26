@@ -16,6 +16,10 @@ Bundle-SymbolicName: com.ibm.ws.jpa.container.v30
 Bundle-Description: JPA 3.0 Container Runtime; version=${bVersion}
 
 jakartaeeMe: true
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: com.ibm.ws.jpa.container.v30.jakarta.jar
+
 WS-TraceGroup: JPA
 
 Private-Package: \
