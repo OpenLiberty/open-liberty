@@ -24,10 +24,10 @@ Subsystem-Name: MicroProfile Rest Client 3.0
   io.openliberty.mpCompatible-5.0, \
   io.openliberty.org.eclipse.microprofile.rest.client-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
-  
+
 -bundles=\
   io.openliberty.org.jboss.resteasy.cdi.jakarta; apiJar=false; location:="lib/", \
   io.openliberty.org.jboss.resteasy.mprestclient.jakarta; apiJar=false; location:="lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

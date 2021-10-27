@@ -2099,7 +2099,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
-      <version>3.0-RC3</version>
+      <version>3.0-RC5</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
