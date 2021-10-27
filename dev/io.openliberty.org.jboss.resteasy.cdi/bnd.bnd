@@ -16,7 +16,7 @@ Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.cdi
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.cdi.jakarta.jar
 
-resteasy-version=4.7.0.Final
+resteasy-version=4.7.2.Final
 
 src: src, resources
 
