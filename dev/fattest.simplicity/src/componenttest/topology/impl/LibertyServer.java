@@ -31,7 +31,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -603,35 +602,6 @@ public class LibertyServer implements LogMonitorClient {
         logMonitor = new LogMonitor(this);
 
         setup(deleteServerDirIfExist, usePreviouslyConfigured);
-        // Check if criu supported. Needed to run checkpoint/restore tests.
-        boolean chkPtSupported = false;
-        TopologyException chkPtSupportedException = null;
-        if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
-            Log.info(c, method, "Checkpoint: testing for CRIU support");
-            try {
-                Class<?> criuSupport = Class.forName("org.eclipse.openj9.criu.CRIUSupport");
-                Log.info(c, method, "Checkpoint: CRIUSupport present in jdk");
-                try {
-                    // Check is supported. To be true, JVM must have been started with switch
-                    // --XX:+EnableCRIUSupport and criu shared libraries must be available to
-                    // be loaded by JVM
-                    Method supported = criuSupport.getDeclaredMethod("isCRIUSupportEnabled");
-                    chkPtSupported = ((Boolean) supported.invoke(criuSupport));
-                } catch (Exception e) {
-                    // An exception here probably means the JDK CRIU API is deprecated or some other incompatible change
-                    // has occurred. We can't reliably determine if this server should be targeted for criu tests.
-                    chkPtSupportedException = new TopologyException(e);
-                    Log.error(c, "LibertyServer<init>", e);
-                }
-            } catch (Exception e) {
-                // Exception here implies we are running on a jvm lacking criu support
-                //   and we should not run checkpoint/restore tests.
-                Log.info(c, method, "Ecception " + e + " Checkpoint: CRIUSupport NOT found in jdk");
-            }
-        }
-        checkpointSupported = chkPtSupported;
-        Log.info(c, method, "Checkpoint: checkpointSupported=" + checkpointSupported +
-                            ", checkpointSupportException=" + chkPtSupportedException);
         Log.exiting(c, method);
     }
 
@@ -1515,14 +1485,12 @@ public class LibertyServer implements LogMonitorClient {
                 final BlockingQueue<ProgramOutput> outputQueue = new LinkedBlockingQueue<ProgramOutput>();
 
                 Runnable execServerCmd = null;
-                final boolean isCheckpoint = doCheckpoint();
                 if (this.runAsAWindowService == false) {
-
+                    String[] params = doCheckpoint() ? checkpointParams.toArray(new String[checkpointParams.size()]) : parameters;
                     execServerCmd = new Runnable() {
 
                         @Override
                         public void run() {
-                            String[] params = doCheckpoint() ? checkpointParams.toArray(new String[checkpointParams.size()]) : parameters;
                             Log.info(c, method, "cmd in runnable: " + cmd);
                             for (String p : params) {
                                 Log.info(c, method, "Param in runnable: " + p);
@@ -1728,8 +1696,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * @return
      */
-    private boolean doCheckpoint() {
-        return (checkpointPhase != null) && checkpointSupported;
+    private boolean doCheckpoint() throws Exception {
+        return (checkpointPhase != null) && getCheckpointSupported();
     }
 
     /**
@@ -6703,12 +6671,36 @@ public class LibertyServer implements LogMonitorClient {
         return serverToUse + " : " + super.toString();
     }
 
-    /**
-     * True if the server has requisite support for the following operations
-     * bin/server start --checkpoint==<PHASE> and
-     * bin/server restore
-     * False otherwise.
-     */
-    public final boolean checkpointSupported;
+    private Boolean checkpointSupported;
 
+    /**
+     *
+     *
+     * @return           true if the server has requisite support for the following operations
+     *
+     *                   <pre>
+     *   bin/server start --checkpoint==[PHASE];
+     *   bin/server restore
+     *                   </pre>
+     *
+     *                   false otherwise.
+     * @throws Exception we may attempt to fork a new jvm to test for support. An exception typically
+     *                       means a Failure around forking the new process.
+     */
+    public boolean getCheckpointSupported() throws Exception {
+        if (checkpointSupported == null) {
+            // Check if criu supported. Needed to run checkpoint/restore tests.
+            if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
+                JavaInfo jinfo = JavaInfo.forCurrentVM();
+                if (jinfo.VENDOR == Vendor.OPENJ9 && jinfo.isCriuSupported()) {
+                    checkpointSupported = true;
+                } else {
+                    checkpointSupported = false;
+                }
+            } else {
+                checkpointSupported = false;
+            }
+        }
+        return checkpointSupported;
+    }
 }
