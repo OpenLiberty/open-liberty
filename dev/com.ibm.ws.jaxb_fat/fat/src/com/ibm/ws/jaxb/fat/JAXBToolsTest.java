@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -46,6 +47,8 @@ public class JAXBToolsTest extends FATServletClient {
     private static File xjcTargetDir;
     private static File schemagenSourceDir;
     private static File schemagenTargetDir;
+    private static File jakartaSchemagenSourceDir;
+    private static File jakartaSchemagenTargetDir;
 
     /**
      * True if running on Windows and the .bat file should be used.
@@ -65,8 +68,12 @@ public class JAXBToolsTest extends FATServletClient {
         schemagenSourceDir = new File(serverRoot + "/temp/schemagenSourceDir");
         schemagenTargetDir = new File(serverRoot + "/temp/schemagenTargetDir");
 
+        jakartaSchemagenSourceDir = new File(serverRoot + "/temp/jakartaSchemagenSourceDir");
+        jakartaSchemagenTargetDir = new File(serverRoot + "/temp/jakartaSchemagenTargetDir");
+
         xjcTargetDir.mkdirs();
         schemagenTargetDir.mkdirs();
+        jakartaSchemagenTargetDir.mkdirs();
     }
 
     @Test
@@ -79,11 +86,21 @@ public class JAXBToolsTest extends FATServletClient {
                         .append(File.separator)
                         .append("purchaseOrder.xsd")
                         .toString();
-        RemoteFile xjc = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc");
-        RemoteFile xjcBat = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc.bat");
+        RemoteFile xjc;
+        RemoteFile xjcBat;
+        if (JakartaEE9Action.isActive()) {
+            xjc = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc");
+            xjcBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc.bat");
 
-        assertTrue("The file bin/xjc does not exist.", xjc.exists());
-        assertTrue("The file bin/xjc.bat does not exist.", xjcBat.exists());
+            assertTrue("The file bin/xmlBinding/xjc does not exist.", xjc.exists());
+            assertTrue("The file bin/xmlBinding/xjc.bat does not exist.", xjcBat.exists());
+        } else {
+            xjc = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc");
+            xjcBat = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc.bat");
+
+            assertTrue("The file bin/jaxb/xjc does not exist.", xjc.exists());
+            assertTrue("The file bin/jaxb/xjc.bat does not exist.", xjcBat.exists());
+        }
 
         StringBuilder commandBuilder = new StringBuilder();
         if (isWindows && WLP_CYGWIN_HOME == null) {
@@ -106,19 +123,38 @@ public class JAXBToolsTest extends FATServletClient {
 
     @Test
     public void testXJCTool() throws Exception {
-        String xjcArgs = new StringBuilder().append("-p po")
-                        .append(" -d ")
-                        .append(xjcTargetDir.getAbsolutePath())
-                        .append(" -target 2.2 ")
-                        .append(xjcSourceDir.getAbsolutePath())
-                        .append(File.separator)
-                        .append("purchaseOrder.xsd")
-                        .toString();
-        RemoteFile xjc = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc");
-        RemoteFile xjcBat = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc.bat");
+        String xjcArgs;
+        RemoteFile xjc;
+        RemoteFile xjcBat;
+        if (JakartaEE9Action.isActive()) {
+            xjcArgs = new StringBuilder().append("-p po")
+                            .append(" -d ")
+                            .append(xjcTargetDir.getAbsolutePath())
+                            .append(" -target 3.0 ")
+                            .append(xjcSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("purchaseOrder.xsd")
+                            .toString();
+            xjc = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc");
+            xjcBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc.bat");
 
-        assertTrue("The file bin/xjc does not exist.", xjc.exists());
-        assertTrue("The file bin/xjc.bat does not exist.", xjcBat.exists());
+            assertTrue("The file bin/xmlBinding/xjc does not exist.", xjc.exists());
+            assertTrue("The file bin/xmlBinding/xjc.bat does not exist.", xjcBat.exists());
+        } else {
+            xjcArgs = new StringBuilder().append("-p po")
+                            .append(" -d ")
+                            .append(xjcTargetDir.getAbsolutePath())
+                            .append(" -target 2.2 ")
+                            .append(xjcSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("purchaseOrder.xsd")
+                            .toString();
+            xjc = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc");
+            xjcBat = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc.bat");
+
+            assertTrue("The file bin/jaxb/xjc does not exist.", xjc.exists());
+            assertTrue("The file bin/jaxb/xjc.bat does not exist.", xjcBat.exists());
+        }
 
         StringBuilder commandBuilder = new StringBuilder();
         if (isWindows && WLP_CYGWIN_HOME == null) {
@@ -147,26 +183,52 @@ public class JAXBToolsTest extends FATServletClient {
 
     @Test
     public void testSchemaGenTool() throws Exception {
-        String schemagenArgs = new StringBuilder().append("-d ")
-                        .append(schemagenTargetDir.getAbsolutePath())
-                        .append(" ")
-                        .append(schemagenSourceDir.getAbsolutePath())
-                        .append(File.separator)
-                        .append("Items.java")
-                        .append(" ")
-                        .append(schemagenSourceDir.getAbsolutePath())
-                        .append(File.separator)
-                        .append("PurchaseOrderType.java")
-                        .append(" ")
-                        .append(schemagenSourceDir.getAbsolutePath())
-                        .append(File.separator)
-                        .append("ShippingAddress.java")
-                        .toString();
-        RemoteFile schemagen = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen");
-        RemoteFile schemagenBat = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen.bat");
+        String schemagenArgs;
+        RemoteFile schemagen;
+        RemoteFile schemagenBat;
+        if (JakartaEE9Action.isActive()) {
+            schemagenArgs = new StringBuilder().append("-d ")
+                            .append(jakartaSchemagenTargetDir.getAbsolutePath())
+                            .append(" ")
+                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("Items.java")
+                            .append(" ")
+                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("PurchaseOrderType.java")
+                            .append(" ")
+                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("ShippingAddress.java")
+                            .toString();
+            schemagen = server.getFileFromLibertyInstallRoot("bin/xmlBinding/schemagen");
+            schemagenBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/schemagen.bat");
 
-        assertTrue("The file bin/schemagen does not exist.", schemagen.exists());
-        assertTrue("The file bin/schemagen.bat does not exist.", schemagenBat.exists());
+            assertTrue("The file bin/xmlBinding/schemagen does not exist.", schemagen.exists());
+            assertTrue("The file bin/xmlBinding/schemagen.bat does not exist.", schemagenBat.exists());
+        } else {
+            schemagenArgs = new StringBuilder().append("-d ")
+                            .append(schemagenTargetDir.getAbsolutePath())
+                            .append(" ")
+                            .append(schemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("Items.java")
+                            .append(" ")
+                            .append(schemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("PurchaseOrderType.java")
+                            .append(" ")
+                            .append(schemagenSourceDir.getAbsolutePath())
+                            .append(File.separator)
+                            .append("ShippingAddress.java")
+                            .toString();
+            schemagen = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen");
+            schemagenBat = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen.bat");
+
+            assertTrue("The file bin/jaxb/schemagen does not exist.", schemagen.exists());
+            assertTrue("The file bin/jaxb/schemagen.bat does not exist.", schemagenBat.exists());
+        }
 
         StringBuilder commandBuilder = new StringBuilder();
         if (isWindows && WLP_CYGWIN_HOME == null) {
@@ -183,10 +245,22 @@ public class JAXBToolsTest extends FATServletClient {
         commandBuilder.append(" ").append(schemagenArgs);
         execute(commandBuilder.toString());
 
-        RemoteFile xsdFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/schema1.xsd");
-        RemoteFile itemsClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/Items.class");
-        RemoteFile purchaseOrderTypeClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/PurchaseOrderType.class");
-        RemoteFile shippingAddressClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/ShippingAddress.class");
+        RemoteFile xsdFile;
+        RemoteFile itemsClassFile;
+        RemoteFile purchaseOrderTypeClassFile;
+        RemoteFile shippingAddressClassFile;
+
+        if (JakartaEE9Action.isActive()) {
+            xsdFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/schema1.xsd");
+            itemsClassFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/po/Items.class");
+            purchaseOrderTypeClassFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/po/PurchaseOrderType.class");
+            shippingAddressClassFile = server.getFileFromLibertyServerRoot("temp/jakartaSchemagenTargetDir/po/ShippingAddress.class");
+        } else {
+            xsdFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/schema1.xsd");
+            itemsClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/Items.class");
+            purchaseOrderTypeClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/PurchaseOrderType.class");
+            shippingAddressClassFile = server.getFileFromLibertyServerRoot("temp/schemagenTargetDir/po/ShippingAddress.class");
+        }
         assertTrue("schema1.xsd does not exist.", xsdFile.exists());
         assertTrue("Items.class does not exist.", itemsClassFile.exists());
         assertTrue("PurchaseOrderType.class does not exist.", purchaseOrderTypeClassFile.exists());
