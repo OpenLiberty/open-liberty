@@ -23,6 +23,7 @@ import java.security.PrivilegedExceptionAction;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -95,8 +96,8 @@ public class TestUtils {
 
     private static void restartServer(LibertyServer s) {
         try {
-            s.stopServer(".*");
-            s.startServerAndValidate(false, false, true, false);
+            FATUtils.stopServers(new String[] { ".*" }, s);
+            FATUtils.startServers(s);
             s.printProcessHoldingPort(s.getHttpDefaultPort());
         } catch (Exception e) {
             Log.error(TestUtils.class, "restartServer", e);
@@ -143,16 +144,6 @@ public class TestUtils {
         } finally {
             con.disconnect();
         }
-    }
-
-    public static void stopServer(LibertyServer server) throws Exception {
-        AccessController.doPrivileged(new PrivilegedExceptionAction<ProgramOutput>() {
-
-            @Override
-            public ProgramOutput run() throws Exception {
-                return server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E");
-            }
-        });
     }
 
 }

@@ -22,6 +22,10 @@ public class FATUtils {
 	private static final Class<FATUtils> c = FATUtils.class;
 
     public static void startServers(LibertyServer... servers) throws Exception {
+    	startServers((SetupRunner)null, servers);
+    }
+
+    public static void startServers(SetupRunner r, LibertyServer... servers) throws Exception {
         final String method = "startServers";
 
         for (LibertyServer server : servers) {
@@ -30,10 +34,6 @@ public class FATUtils {
             int maxAttempts = 5;
             
             Log.info(c, method, "Starting " + server.getServerName());
-
-            int status = server.resetStarted();
-
-            Log.info(c, method, "ResetStarted returned " + status);
 
             do {
                 if (attempt++ > 0) {
@@ -45,16 +45,23 @@ public class FATUtils {
                     }
                 }
 
-                if (server.isStarted()) {
+                if (server.resetStarted() == 0) {
                     String pid = server.getPid();
                     Log.info(c, method,
-                             "Server " + server.getServerName() + " is already running." + ((pid != null ? "(pid:" + pid + ")" : "")) + " Maybe it is on the way down.");
+                             "Server " + server.getServerName() + " is already running. (pid: " + ((pid != null ? pid : "unknown")) + ")");
                     server.printProcesses();
-                    continue;
+                    
+                    if (attempt == 1) {
+                    	throw new Exception(server.getServerName() + " was already started.");
+                    }
+                    break;
                 }
 
                 ProgramOutput po = null;
                 try {
+                    if (r != null) {
+                        r.run(server);
+                    }
                     po = server.startServerAndValidate(false, false, true);
                 } catch (Exception e) {
                     Log.error(c, method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
@@ -170,7 +177,7 @@ public class FATUtils {
         }
     }
 
-	public static void stopServers(LibertyServer s1, LibertyServer s2) throws Exception {
-		stopServers((String[])null, s1, s2);
+	public static void stopServers(LibertyServer... servers) throws Exception {
+		stopServers((String[])null, servers);
 	}
 }

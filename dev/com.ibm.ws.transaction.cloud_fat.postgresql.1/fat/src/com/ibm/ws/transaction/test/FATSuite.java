@@ -10,14 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
@@ -56,14 +53,13 @@ public class FATSuite {
     public static DatabaseContainerType type = DatabaseContainerType.Postgres;
     public static JdbcDatabaseContainer<?> testContainer;
 
-    @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         /*
-            The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
-            The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
-            With the resulting image being pushed to docker hub.
+         * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
+         * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
+         * With the resulting image being pushed to docker hub.
          */
         testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
                         .withDatabaseName(POSTGRES_DB)
@@ -75,17 +71,8 @@ public class FATSuite {
         testContainer.start();
     }
 
-    @AfterClass
     public static void afterSuite() {
         Log.info(FATSuite.class, "afterSuite", "stop test container");
         testContainer.stop();
-    }
-
-    //Private Method: used to setup logging for containers to this class.
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "dbrotation", msg);
     }
 }
