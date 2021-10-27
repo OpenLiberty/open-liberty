@@ -276,17 +276,8 @@ public class JavaInfo {
         return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
     }
 
-    public Boolean isCriuSupported() throws Exception {
-        return criuSupported.orElseGet(() -> {
-            try {
-                return probeCriuSupport();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                e.printStackTrace();
-            }
-            return Boolean.FALSE;
-        });
+    synchronized public Boolean isCriuSupported() {
+        return criuSupported.orElseGet(() -> probeCriuSupport());
     }
 
     /**
@@ -295,7 +286,7 @@ public class JavaInfo {
      *
      * @return Boolean indicating if criu is supported.
      */
-    private Boolean probeCriuSupport() throws Exception {
+    private Boolean probeCriuSupport() {
         final String method = "probeCriuSupport";
         try {
             //Find path to fattest.simplicity.jar jar on file system (the jar containing this class).

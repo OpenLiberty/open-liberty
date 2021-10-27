@@ -6691,7 +6691,7 @@ public class LibertyServer implements LogMonitorClient {
         if (checkpointSupported == null) {
             // Check if criu supported. Needed to run checkpoint/restore tests.
             if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
-                JavaInfo jinfo = JavaInfo.forCurrentVM();
+                JavaInfo jinfo = JavaInfo.fromPath(machineJava);
                 if (jinfo.VENDOR == Vendor.OPENJ9 && jinfo.isCriuSupported()) {
                     checkpointSupported = true;
                 } else {
