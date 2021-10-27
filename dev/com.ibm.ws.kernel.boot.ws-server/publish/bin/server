@@ -922,7 +922,7 @@ javaCmd()
     # trap on the signals here to ensure the background tail process ends.
     trap "exit" INT TERM
     trap "killIfRunning $TAIL_PID" EXIT
-    "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1
+    "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     rc=$?
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
