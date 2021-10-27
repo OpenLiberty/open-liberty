@@ -65,16 +65,10 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
     private OpentracingFilterHelper helper;
 
-    public OpentracingClientFilter() {
-      //helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
-    }
+    public OpentracingClientFilter() {}
     
     public OpentracingClientFilter(OpentracingFilterHelper helper) {
        this.helper = helper;
-    }
-
-    void setFilterHelper(OpentracingFilterHelper helper) {
-        this.helper = helper;
     }
 
     /**

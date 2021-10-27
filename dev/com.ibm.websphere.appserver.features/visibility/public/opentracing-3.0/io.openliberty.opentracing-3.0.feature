@@ -25,5 +25,5 @@ IBM-API-Package: io.opentracing;  type="third-party",\
 -jars=io.openliberty.opentracing.2.0.spi; location:=dev/spi/ibm/
 -files= dev/spi/ibm/javadoc/io.openliberty.opentracing.2.0.spi_1.0-javadoc.zip
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

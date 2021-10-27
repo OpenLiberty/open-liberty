@@ -15,5 +15,5 @@ IBM-API-Package: \
 -bundles=\
     io.openliberty.microprofile.opentracing.2.0.internal.jakarta; apiJar=false; location:="lib/"
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

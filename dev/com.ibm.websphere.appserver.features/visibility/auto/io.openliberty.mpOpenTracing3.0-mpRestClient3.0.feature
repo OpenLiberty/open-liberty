@@ -7,4 +7,4 @@ IBM-Provision-Capability: \
 -bundles=io.openliberty.microprofile.opentracing.3.0.internal.rest.client
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full
