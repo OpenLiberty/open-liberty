@@ -40,6 +40,7 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMappingTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
+import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -93,8 +94,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSCIHandlesTypesTest.class,
                 WCResponseHeadersTest.class,
                 WCServerMiscTest.class,
-                WCServerPropertyTest.class
-
+                WCServerPropertyTest.class,
+                WCTestEncodedX590.class
 })
 
 public class FATSuite {
