@@ -27,7 +27,6 @@ import com.ibm.testapp.g3store.restProducer.client.ProducerEndpointFATServlet;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -37,7 +36,6 @@ import componenttest.topology.utils.FATServletClient;
  * @author anupag
  *
  */
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 public class StoreServicesRESTClientTests extends FATServletClient {
 
