@@ -15,13 +15,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.transaction.TransactionScoped;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import prototype.enterprise.concurrent.Async;
 
 @TransactionScoped
 public class TransactionScopedBean implements Serializable {
@@ -37,7 +36,7 @@ public class TransactionScopedBean implements Serializable {
         return intRef.addAndGet(amount);
     }
 
-    @Async
+    @Asynchronous
     public CompletableFuture<Integer> incrementAsync(int amount) {
         try {
             // Requires application component's context:
@@ -45,7 +44,7 @@ public class TransactionScopedBean implements Serializable {
             if (executor == null)
                 throw new AssertionError("Null result of resource reference lookup.");
 
-            return Async.Result.complete(intRef.addAndGet(amount));
+            return Asynchronous.Result.complete(intRef.addAndGet(amount));
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
