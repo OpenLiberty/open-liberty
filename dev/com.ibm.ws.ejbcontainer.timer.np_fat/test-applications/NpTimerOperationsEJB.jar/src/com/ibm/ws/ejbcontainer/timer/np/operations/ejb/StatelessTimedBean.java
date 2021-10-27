@@ -644,6 +644,14 @@ public class StatelessTimedBean implements StatelessTimedLocal {
         }
 
         // -------------------------------------------------------------------
+        // Wait up to MAX_TIMER_WAIT for interval timers to expire
+        // -------------------------------------------------------------------
+        timerIntervalWaitLatch.countDown(); // allow 2nd interval to run
+        waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
+        timerIntervalWaitLatch = new CountDownLatch(1);
+        timerIntervalLatch = new CountDownLatch(2);
+
+        // -------------------------------------------------------------------
         // 20 - Verify Timer.getNextTimeout() on repeating Timer works
         // -------------------------------------------------------------------
         logger.info("testTimerService: Calling Timer.getNextTimeout()");
@@ -653,9 +661,9 @@ public class StatelessTimedBean implements StatelessTimedLocal {
                           remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
 
         // -------------------------------------------------------------------
-        // Wait up to MAX_TIMER_WAIT for interval timers to expire
+        // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
         // -------------------------------------------------------------------
-        timerIntervalWaitLatch.countDown(); // allow 2nd interval to run
+        timerIntervalWaitLatch.countDown(); // allow 3rd interval to run
         waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
 
         // -------------------------------------------------------------------
@@ -669,9 +677,9 @@ public class StatelessTimedBean implements StatelessTimedLocal {
             switch (i) {
                 case 2:
                 case 4:
-                    if (timeoutCounts[i] != 2) {
+                    if (timeoutCounts[i] != 3) {
                         successful = false;
-                        logger.info("Timer[" + i + "] not executed twice: " +
+                        logger.info("Timer[" + i + "] not executed thrice: " +
                                     timer[i]);
                     }
                     break;
@@ -851,8 +859,10 @@ public class StatelessTimedBean implements StatelessTimedLocal {
 
             if (timeoutCounts[timerIndex] == 1) {
                 timerLatch.countDown();
-            } else if (timeoutCounts[timerIndex] > 1) {
+            } else if (timeoutCounts[timerIndex] > 2) {
                 timer.cancel();
+                timerIntervalLatch.countDown();
+            } else if (timeoutCounts[timerIndex] > 1) {
                 timerIntervalLatch.countDown();
             }
 
