@@ -209,10 +209,9 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
 
     @Override
     public void unsetUOWEventListener(UOWEventListener el) {
-        try {
+        // Do nothing if we're deactivated
+        if (ConfigurationProviderManager.getConfigurationProvider() != null) {
             ((UOWCurrent) etm()).unsetUOWEventListener(el);
-        } catch (IllegalStateException e) {
-            // Server is on the way down
         }
     }
 
