@@ -18,9 +18,11 @@ Bundle-Description: Jakarta Concurrency 3.0+ implementation; version=${bVersion}
 WS-TraceGroup: concurrent
 
 Private-Package: \
+  io.openliberty.concurrent.context,\
   io.openliberty.concurrent.processor
 
 -dsannotations: \
+  io.openliberty.concurrent.context.ThirdPartyContextCoordinator,\
   io.openliberty.concurrent.processor.ContextServiceDefinitionProvider,\
   io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder,\
   io.openliberty.concurrent.processor.ManagedExecutorDefinitionProvider,\
@@ -38,6 +40,7 @@ Private-Package: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.wsspi.org.osgi.service.metatype;version=latest,\
+  com.ibm.ws.context;version=latest,\
   com.ibm.ws.concurrent;version=latest,\
   com.ibm.ws.config;version=latest,\
   com.ibm.ws.container.service;version=latest,\
