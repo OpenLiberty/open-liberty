@@ -15,33 +15,37 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.atomic.AtomicReference;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import jakarta.enterprise.concurrent.LastExecution;
-import jakarta.enterprise.concurrent.ZonedTrigger;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -49,6 +53,8 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.ZonedTrigger;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -58,11 +64,18 @@ import javax.naming.NamingException;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.context.list.ListContext;
+import test.context.location.ZipCode;
+import test.context.timing.Timestamp;
 
 @ContextServiceDefinition(name = "java:app/concurrent/appContextSvc",
                           propagated = APPLICATION,
                           cleared = { TRANSACTION, SECURITY },
                           unchanged = ALL_REMAINING)
+@ContextServiceDefinition(name = "java:module/concurrent/ZLContextSvc",
+                          propagated = { ZipCode.CONTEXT_NAME, ListContext.CONTEXT_NAME },
+                          cleared = "Priority",
+                          unchanged = { APPLICATION, TRANSACTION })
 @ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
                            hungTaskThreshold = 300000,
                            maxAsync = 1) // TODO add context once annotation is fixed
@@ -103,16 +116,137 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
     ManagedThreadFactory lowPriorityThreads;
 
+    private ExecutorService unmanagedThreads;
+
     @Override
-    public void init() throws ServletException {
+    public void destroy() {
+        unmanagedThreads.shutdownNow();
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        unmanagedThreads = Executors.newFixedThreadPool(5);
     }
 
     /**
-     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     * Look up an application-defined ContextService that is configured to propagate the
+     * application component's name space. Verify that the ContextService provides access to
+     * the application component's name space by attempting a lookup from a contextualized
+     * completion stage action.
      */
     @Test
-    public void testContextServiceDefinition() throws Exception {
-        assertNotNull(InitialContext.doLookup("java:app/concurrent/appContextSvc"));
+    public void testContextServiceDefinitionPropagatesApplicationContext() throws Exception {
+        ContextService appContextSvc = InitialContext.doLookup("java:app/concurrent/appContextSvc");
+        Callable<?> contextualLookup = appContextSvc.contextualCallable(() -> {
+            try {
+                return InitialContext.doLookup("java:app/concurrent/appContextSvc");
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        });
+        Future<?> future = unmanagedThreads.submit(contextualLookup);
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(result);
+        assertTrue(result.toString(), result instanceof ContextService);
+    }
+
+    /**
+     * Look up an application-defined ContextService that is configured to
+     * propagate some third-party context (ZipCode and List),
+     * clear other third-party context (Priority and Timestamp),
+     * and lave other types of context, such as Application, unchanged.
+     * Verify that the ContextService behaves as configured.
+     */
+    @Test
+    public void testContextServiceDefinitionPropagatesThirdPartyContext() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvc");
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55901);
+        ListContext.newList();
+        ListContext.add(10);
+        ListContext.add(28);
+        Thread.currentThread().setPriority(7);
+        Long ts0 = Timestamp.get();
+        Thread.sleep(100); // ensure we progress from the current timestamp
+
+        try {
+            // Contextualize a Supplier with the above context:
+            Supplier<Object[]> contextualSupplier = contextSvc.contextualSupplier(() -> {
+                // The Supplier records the context
+                Object lookupResult;
+                try {
+                    lookupResult = InitialContext.doLookup("java:app/concurrent/appContextSvc");
+                } catch (NamingException x) {
+                    lookupResult = x;
+                }
+                ListContext.add(46); // verify this change is included
+                return new Object[] {
+                                      lookupResult,
+                                      ZipCode.get(),
+                                      ListContext.asString(),
+                                      Thread.currentThread().getPriority(),
+                                      Timestamp.get()
+                };
+            });
+
+            // Alter soem of the context on the current thread
+            ZipCode.set(55906);
+            ListContext.newList();
+            ListContext.add(5);
+
+            // Run with the captured context:
+            Object[] results = contextualSupplier.get();
+
+            // Application context was configured to be left unchanged, so the java:app name must be found:
+            if (results[0] instanceof Throwable)
+                throw new AssertionError(results[0]);
+            assertTrue(results[0].toString(), results[0] instanceof ContextService);
+
+            // Zip code context was configured to be propagated
+            assertEquals(Integer.valueOf(55901), results[1]);
+
+            // List context was configured to be propagated
+            assertEquals("[10, 28, 46]", results[2]);
+
+            // Priority context was configured to be cleared
+            assertEquals(Integer.valueOf(5), results[3]);
+
+            // Timestamp context was implicitly configured to be cleared
+            assertNull(results[4]);
+
+            // Verify that context is restored on the current thread:
+            assertEquals(55906, ZipCode.get());
+            assertEquals("[5]", ListContext.asString());
+            assertEquals(7, Thread.currentThread().getPriority());
+            assertEquals(ts0, Timestamp.get());
+
+            // Run the supplier on another thread
+            CompletableFuture<Object[]> future = CompletableFuture.supplyAsync(contextualSupplier);
+            results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // Application context was configured to be left unchanged, so the java:app name must not be found:
+            assertTrue(results[0].toString(), results[0] instanceof NamingException);
+
+            // Zip code context was configured to be propagated
+            assertEquals(Integer.valueOf(55901), results[1]);
+
+            // List context was configured to be propagated
+            assertEquals("[10, 28, 46, 46]", results[2]);
+
+            // Priority context was configured to be cleared
+            assertEquals(Integer.valueOf(5), results[3]);
+
+            // Timestamp context was implicitly configured to be cleared
+            assertNull(results[4]);
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
     }
 
     /**
@@ -211,7 +345,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         ForkJoinPool pool = new ForkJoinPool(2, lowPriorityThreads, null, false);
         try {
             ForkJoinTask<Long> task = pool.submit(new Factorial(5)
-                            // TODO once ContextServiceDefinition honors config: .assertAvailable("java:comp/env/concurrent/executor3Ref")
+                            .assertAvailable("java:comp/env/concurrent/executor3Ref")
                             .assertPriority(3));
 
             assertEquals(Long.valueOf(120), task.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -369,7 +503,7 @@ public class ConcurrencyTestServlet extends FATServlet {
             ZonedDateTime targetStartAtExpected = scheduledAt.plusSeconds(4);
             assertTrue(targetStartAt + " must be equal to " + targetStartAtExpected,
                        targetStartAt.isAfter(targetStartAtExpected.minusNanos(TOLERANCE_NS)) &&
-                       targetStartAt.isBefore(targetStartAtExpected.plusNanos(TOLERANCE_NS)));
+                                                                                     targetStartAt.isBefore(targetStartAtExpected.plusNanos(TOLERANCE_NS)));
 
             // Is the actual start time after (or equal to) the expected?
             ZonedDateTime startAt = lastExec.getRunStart(USMountain);

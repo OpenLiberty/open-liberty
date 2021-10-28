@@ -19,6 +19,21 @@
     
   <include location="../fatTestPorts.xml"/>
 
+  <application location="ConcurrencyTestApp.war">
+    <classloader commonLibraryRef="ThirdPartyLibrariesWithCustomContext"/>
+  </application>
+
+  <!-- third-party context provider that is available to all applications -->
+  <bell>
+    <library id="PriorityContextLib">
+      <file name="${server.config.dir}/lib/priority-context.jar"/>
+    </library>
+  </bell>
+
+  <library id="ThirdPartyLibrariesWithCustomContext">
+    <fileset dir="${server.config.dir}/lib" include="location-utils.jar,stat-utils.jar"/>
+  </library>
+
   <contextService id="AppContext" jndiName="concurrent/appContext">
     <classloaderContext/>
     <jeeMetadataContext/>
@@ -49,9 +64,9 @@
   </managedScheduledExecutorService>
 
   <!-- needed by ForkJoinPool, which the test application uses -->
-  <javaPermission codebase="${server.config.dir}/dropins/ConcurrencyTestApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
 
   <!-- TODO remove once 3.0 ManagedThreadFactory interfaces is available -->
-  <javaPermission codebase="${server.config.dir}/dropins/ConcurrencyTestApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 
 </server>
