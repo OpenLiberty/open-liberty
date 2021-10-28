@@ -290,8 +290,15 @@ public class ZipCachingServiceImpl implements ZipCachingService {
             "ns");
 
         introspectProperty(output,
+            "Assume valid",
+            ZipCachingProperties.ZIP_CACHE_REAPER_ASSUME_VALID_PROPERTY_NAME,
+            Boolean.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_ASSUME_VALID),
+            Boolean.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_ASSUME_VALID_DEFAULT_VALUE),
+            "true/false");        
+        
+        introspectProperty(output,
             "State debugging",
-            ZipCachingProperties.ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME,
+            ZipCachingProperties.ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME,
             (ZipCachingProperties.ZIP_REAPER_DEBUG_STATE ? "enabled" : "disabled"),
             (ZipCachingProperties.ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE ? "enabled" : "disabled"),
             "enabled/disabled");

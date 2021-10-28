@@ -610,71 +610,85 @@ ZipFile [Path]
     protected ZipFile reacquireZipFile() throws IOException, ZipException {
         String methodName = "reacquireZipFile";
 
+        // 'ASSUME_VALID' tells us that the zip data won't change.
+        // Don't checkthe length or last modified values.
+
+        if ( ZipCachingProperties.ZIP_CACHE_REAPER_ASSUME_VALID ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " Zip [ " + path + " ]: Assumed valid");
+            }
+            return zipFile;
+        }
+
+        // Check for modifications of an open zip file.
+        //
+        // Modifications are expected (occasionally) when the
+        // zip file is in a pending close state.  Modifications
+        // should never happen when the zip file is an open
+        // state.
+        //
+        // 'OPEN' means (openCount > closeCount).
+        // 'PENDING' means (openCount == closeCount)
+
+        boolean unexpectedChange = ( openCount > closeCount );
+
+        // Obtain local copies of the old values ... give the
+        // compiler less to figure out to synchronize access to these.
+
+        long oldZipLength = zipLength;
+        long oldZipLastModified = zipLastModified; 
+
+        // Get the new values ...
+
         File rawZipFile = new File(path);
         long newZipLength = FileUtils.fileLength(rawZipFile);
         long newZipLastModified = FileUtils.fileLastModified(rawZipFile);
 
-        boolean zipFileChanged = false;
+        // Nothing has changed ... just answer the old zip file.
+
+        if ( (newZipLength == oldZipLength) && (newZipLastModified == oldZipLastModified) ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName +
+                         " Zip [ " + path + " ]:" +
+                         " Unchanged length [ " + Long.valueOf(oldZipLength) + " ]" +
+                         " Unchanged last modified [ " + Long.valueOf(oldZipLastModified) + " ]");
+            }
+            return zipFile;            
+        }
 
         if ( newZipLength != zipLength ) {
-            zipFileChanged = true;
-            
-            if ( openCount > closeCount ) {
-                // Tr.warning(tc, methodName +
-                //    " Zip [ " + path + " ]:" +
-                //    " Update length from [ " + Long.valueOf(zipLength) + " ]" +
-                //    " to [ " + Long.valueOf(newZipLength) + " ]");
+            if ( unexpectedChange ) {
                 Tr.warning(tc, "reaper.unexpected.length.change",
-                           path, Long.valueOf(zipLength), Long.valueOf(newZipLength));
+                           path, Long.valueOf(oldZipLength), Long.valueOf(newZipLength));
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
-                        " Zip [ " + path + " ]:" +
-                        " Update length from [ " + Long.valueOf(zipLength) + " ]" +
-                        " to [ " + Long.valueOf(newZipLength) + " ]");
+                             " Zip [ " + path + " ]:" +
+                             " Update length from [ " + Long.valueOf(oldZipLength) + " ]" +
+                             " to [ " + Long.valueOf(newZipLength) + " ]");
                 }
             }
         }
 
         if ( newZipLastModified != zipLastModified ) {
-            zipFileChanged = true;
-
-            if ( openCount > closeCount ) {
-                // Tr.warning(tc, methodName +
-                //    " Zip [ " + path + " ]:" +
-                //    " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-                //    " to [ " + Long.valueOf(newZipLastModified) + " ]");
+            if ( unexpectedChange ) {
                 Tr.warning(tc, "reaper.unexpected.lastmodified.change",
-                           path, Long.valueOf(zipLastModified), Long.valueOf(newZipLastModified));
+                           path, Long.valueOf(oldZipLastModified), Long.valueOf(newZipLastModified));
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
-                        " Zip [ " + path + " ]:" +
-                        " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-                        " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                             " Zip [ " + path + " ]:" +
+                             " Update last modified from [ " + Long.valueOf(oldZipLastModified) + " ]" +
+                             " to [ " + Long.valueOf(newZipLastModified) + " ]");
                 }
             }
         }
+        
+        @SuppressWarnings("unused")
+        ZipFile oldZipFile = closeZipFile();
 
-        if ( zipFileChanged ) {
-            if ( openCount > closeCount ) {
-                // Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
-                Tr.warning(tc, "reaper.reopen.active", path);
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, methodName + " Reopen [ " + path + " ]");
-                }
-            }
-
-            @SuppressWarnings("unused")
-            ZipFile oldZipFile = closeZipFile();
-
-            @SuppressWarnings("unused")
-            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified);
-            // throws IOException, ZipException
-        }
-
-        return zipFile;
+        return openZipFile(newZipLength, newZipLastModified);
+        // throws IOException, ZipException
     }
 
     /**
