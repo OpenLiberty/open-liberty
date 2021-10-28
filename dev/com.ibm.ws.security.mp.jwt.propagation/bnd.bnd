@@ -16,15 +16,6 @@ Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.propagation
 Bundle-Description: Security MicroProfile JWT Propagation service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-#
-# Generate a Jakarta EE compliant JAR for the bundle.
-#
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.mp.jwt.propagation.internal.jar
-jakartaFinalBundleName: Liberty Security MP JWT Propagation
-jakartaFinalBundleId: io.openliberty.security.mp.jwt.propagation.internal
-jakartaFinalBundleDescription: Liberty Security MP JWT Propagation; Jakarta Enabled
-
 WS-TraceGroup: \
   Security
 
