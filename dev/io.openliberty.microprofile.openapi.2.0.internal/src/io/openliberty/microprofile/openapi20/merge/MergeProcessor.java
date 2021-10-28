@@ -374,6 +374,14 @@ public class MergeProcessor {
         if (contextRoot == null) {
             return;
         }
+        
+        if (contextRoot.endsWith("/")) {
+            contextRoot = contextRoot.substring(0, contextRoot.length()-1);
+        }
+        
+        if (contextRoot.isEmpty()) {
+            return;
+        }
 
         Paths paths = model.getPaths();
         if (paths == null) {
