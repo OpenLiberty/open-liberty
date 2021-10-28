@@ -20,8 +20,7 @@ src: src, resources
 app-resources= \
  META-INF/services/javax.enterprise.inject.spi.Extension | \
  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver | \
- META-INF/services/org.jboss.resteasy.microprofile.client.header.HeaderFillerFactory
-
+ META-INF/services/org.jboss.resteasy.microprofile.client.header.HeaderFillerFactory 
 -cdiannotations:
 
 -dsannotations: \
@@ -37,6 +36,7 @@ Service-Component: \
 
 Export-Package: \
   org.jboss.resteasy.microprofile.client;version=1.0;thread-context=true,\
+  org.jboss.resteasy.microprofile.client.ot;version=1.0;thread-context=true,\
   org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
 
 Import-Package: \
@@ -57,6 +57,7 @@ Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-client-microprofile-base;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-client-microprofile;${resteasy-version};EXACT}, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
+  META-INF=resources/META-INF
 
 
 -buildpath: \
