@@ -23,8 +23,8 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.dd.app.Module;
+// import com.ibm.ws.javaee.dd.app.Application;
+// import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
@@ -199,7 +199,8 @@ public abstract class BndExtAdapter<ConfigType>
             return null;
         }
 
-        NestedConfigHelper configHelper = ((ExtendedApplicationInfo) appInfo).getConfigHelper();
+        ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
+        NestedConfigHelper configHelper = extAppInfo.getConfigHelper();
         if ( configHelper == null ) {
             return null;
         }
@@ -212,7 +213,6 @@ public abstract class BndExtAdapter<ConfigType>
         } else {
             Map<String, ConfigType> configs =
                 getConfigOverrides(appInfo, ddOverlay, appServicePid, appExtendsPid);
-
             return ( (configs == null) ? null : configs.get( moduleInfo.getName() ) );
         }
     }
@@ -248,12 +248,71 @@ public abstract class BndExtAdapter<ConfigType>
         }
         return null;
     }
+  
+     // TFB:
+    //
+    // Retrieval of module names, as implemented, is unreliable.
+    // The implementation relies on the application descriptor, which
+    // may be absent.  
+    //
+    // The completed modules list is computed by the deployed application. See:
+    //
+    // open-liberty/dev/com.ibm.ws.app.manager.module/src/
+    //         com/ibm/ws/app/manager/module/internal/
+    //             DeployedAppInfoBase.java
+    //             SimpleDeployedAppInfoBase.java
+    //
+    // open-liberty/dev/com.ibm.ws.app.manager.war/src/
+    //         com/ibm/ws/app/manager/ear/internal/
+    //             EARDeployedAppInfo.java
+    //
+    // In particular, see:
+    //         DeployedAppInfoBase.moduleContainerInfos
+    //         EARDeployedAppInfo.createModuleContainerInfo
+    //
+    //         SimpleDeployedAppInfoBase.preDeployApp
+    //         SimpleDeployedAppInfoBase$ModuleContainerInfoBase.createModuleMetaData
+    //         ModuleHandlerBase.createModuleMetaData
+    //
+    // The current implementation fails with a NullPointerException for an application which
+    // does not have a application deployment descriptor (META-INF/application.xml):
+    //
+    // Stack Dump = java.lang.NullPointerException
+    //         at com.ibm.ws.javaee.ddmodel.common.BndExtAdapter.getModuleNames(BndExtAdapter.java:369)
+    //         at com.ibm.ws.javaee.ddmodel.common.BndExtAdapter.getConfigOverrides(BndExtAdapter.java:344)
+    //         at com.ibm.ws.javaee.ddmodel.common.BndExtAdapter.getConfigOverrides(BndExtAdapter.java:214)
+    //         at com.ibm.ws.javaee.ddmodel.common.BndExtAdapter.process(BndExtAdapter.java:119)
+    //         at com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndAdapter.adapt(EJBJarBndAdapter.java:81)
+    //         at com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndAdapter.adapt(EJBJarBndAdapter.java:41)
+    //         at com.ibm.ws.adaptable.module.internal.AdapterFactoryServiceImpl.adapt(AdapterFactoryServiceImpl.java:200)
+    //         at com.ibm.ws.adaptable.module.internal.AdaptableContainerImpl.adapt(AdaptableContainerImpl.java:174)
+    //         at com.ibm.ws.adaptable.module.internal.InterpretedContainerImpl.adapt(InterpretedContainerImpl.java:203)
+    //         at com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataFactory.createModuleInitData(ModuleInitDataFactory.java:559)
+    //         at com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataAdapter.createModuleInitData(ModuleInitDataAdapter.java:181)
+    //         at com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataAdapter.adapt(ModuleInitDataAdapter.java:122)
+    //         at com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataAdapter.adapt(ModuleInitDataAdapter.java:41)
+    //         at com.ibm.ws.adaptable.module.internal.AdapterFactoryServiceImpl.adapt(AdapterFactoryServiceImpl.java:200)
+    //         at com.ibm.ws.adaptable.module.internal.AdaptableContainerImpl.adapt(AdaptableContainerImpl.java:174)
+    //         at com.ibm.ws.adaptable.module.internal.InterpretedContainerImpl.adapt(InterpretedContainerImpl.java:203)
+    //         at com.ibm.ws.ejbcontainer.osgi.internal.EJBModuleRuntimeContainerImpl.createModuleMetaData(EJBModuleRuntimeContainerImpl.java:103)
+    //         at com.ibm.ws.app.manager.module.internal.ModuleHandlerBase.createModuleMetaData(ModuleHandlerBase.java:63)
+    //         at com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase$ModuleContainerInfoBase.createModuleMetaData(SimpleDeployedAppInfoBase.java:189)
+    //         at com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase.preDeployApp(SimpleDeployedAppInfoBase.java:532)
+    //         at com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase.installApp(SimpleDeployedAppInfoBase.java:508)
+    //         at com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase.deployApp(DeployedAppInfoBase.java:349)
+    //         at com.ibm.ws.app.manager.ear.internal.EARApplicationHandlerImpl.install(EARApplicationHandlerImpl.java:77)
+    //         at com.ibm.ws.app.manager.internal.statemachine.StartAction.execute(StartAction.java:149)
+    //         at com.ibm.ws.app.manager.internal.statemachine.ApplicationStateMachineImpl.enterState(ApplicationStateMachineImpl.java:1352)
+    //
+    // A correct implementation would provide the complete modules list.  That would introduce a new type
+    // and new dependencies, and is not done at this time.
     
     public static final String MODULE_NAME_CHECKS = "module.name.checks";
     public static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
-    public static final String MODULE_NAME_NOT_FOUND = "module.name.not.found";
     public static final String MODULE_NAME_DUPLICATED = "module.name.duplicated";
 
+    // public static final String MODULE_NAME_NOT_FOUND = "module.name.not.found";
+    
     /**
      * Retrieve the configuration override for a module descriptor.
      * 
@@ -289,6 +348,7 @@ public abstract class BndExtAdapter<ConfigType>
      *
      * @return The matching configuration.  Null if no matching configuration is found.
      */    
+    @SuppressWarnings("unused")
     protected Map<String, ConfigType> getConfigOverrides(
             ApplicationInfo appInfo, OverlayContainer ddOverlay,
             String appServicePid, String appExtendsPid)
@@ -340,39 +400,45 @@ public abstract class BndExtAdapter<ConfigType>
                 Tr.error(tc, MODULE_NAME_DUPLICATED, appName, elementTag, dupModuleNames);
             }
 
-            if ( selectedConfigs != null ) {
-                Set<String> appModuleNames = getModuleNames(appInfo);
-
-                Set<String> missingModuleNames = null;
-                for ( String moduleName : selectedConfigs.keySet() ) {
-                    if ( !appModuleNames.contains(moduleName) ) {
-                        if ( missingModuleNames == null ) {
-                            missingModuleNames = new HashSet<String>(1);
-                        }
-                        missingModuleNames.add(moduleName);
-                    }
-                }
-                if ( missingModuleNames != null ) {
-                    if ( appName == null ) {
-                        appName = getSimpleName(appInfo);
-                    }
-                    Tr.error(tc, MODULE_NAME_NOT_FOUND, appName, elementTag, missingModuleNames, appModuleNames);
-                }
-            }
+// TFB:See the comment, above.
+//            
+//            if ( selectedConfigs != null ) {
+//                Set<String> appModuleNames = getModuleNames(appInfo);
+//
+//                Set<String> missingModuleNames = null;
+//                for ( String moduleName : selectedConfigs.keySet() ) {
+//                    if ( !appModuleNames.contains(moduleName) ) {
+//                        if ( missingModuleNames == null ) {
+//                            missingModuleNames = new HashSet<String>(1);
+//                        }
+//                        missingModuleNames.add(moduleName);
+//                    }
+//                }
+//                if ( missingModuleNames != null ) {
+//                    if ( appName == null ) {
+//                        appName = getSimpleName(appInfo);
+//                    }
+//                    Tr.error(tc, MODULE_NAME_NOT_FOUND, appName, elementTag, missingModuleNames, appModuleNames);
+//                }
+//            }
         }
 
         return selectedConfigs;
     }
 
-    protected Set<String> getModuleNames(ApplicationInfo appInfo) throws UnableToAdaptException {
-        Application app = appInfo.getContainer().adapt(Application.class);
-        List<Module> modules = app.getModules();        
-        Set<String> moduleNames = new HashSet<String>( modules.size() );
-        for ( Module module : modules ) {
-            moduleNames.add( stripExtension( module.getModulePath() ) );
-        }
-        return moduleNames;
-    }
+//    protected Set<String> getModuleNames(ApplicationInfo appInfo) throws UnableToAdaptException {
+//        Application app = appInfo.getContainer().adapt(Application.class);
+//        if ( app == null ) {
+//            Tr.error(tc,  "BndExtAdapter.getModuleNames: Null application [ " + appInfo.getName() + " ]");
+//            return new HashSet<>();
+//        }
+//        List<Module> modules = app.getModules();        
+//        Set<String> moduleNames = new HashSet<String>( modules.size() );
+//        for ( Module module : modules ) {
+//            moduleNames.add( stripExtension( module.getModulePath() ) );
+//        }
+//        return moduleNames;
+//    }
 
     protected String stripExtension(String moduleName) {
         if ( moduleName.endsWith(".war") || moduleName.endsWith(".jar") ) {
