@@ -49,7 +49,8 @@ Export-Package: \
 	
 Private-Package: \
 	componenttest.annotation.processor,\
-	componenttest.depchain
+	componenttest.depchain,\
+	componenttest.topology.impl.probe
 
 Include-Resource: \
     resources/init-sqlserver.sql=resources/init-sqlserver.sql, \

@@ -11,12 +11,14 @@
 package componenttest.topology.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -93,6 +95,7 @@ public class JavaInfo {
     final Vendor VENDOR;
     final int SERVICE_RELEASE;
     final int FIXPACK;
+    Optional<Boolean> criuSupported = Optional.empty();
 
     private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
         JAVA_HOME = jdk_home;
@@ -271,6 +274,58 @@ public class JavaInfo {
      */
     public String debugString() {
         return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
+    }
+
+    synchronized public Boolean isCriuSupported() {
+        return criuSupported.orElseGet(() -> probeCriuSupport());
+    }
+
+    /**
+     * Check for criu support by invoking a criu operation in a forked jvm.
+     * As a side effect, update this instance of JavaInfo with the result of the check.
+     *
+     * @return Boolean indicating if criu is supported.
+     */
+    private Boolean probeCriuSupport() {
+        final String method = "probeCriuSupport";
+        try {
+            //Find path to fattest.simplicity.jar jar on file system (the jar containing this class).
+            String simplicityJar;
+            simplicityJar = new File(componenttest.topology.impl.probe.CriuSupport.class.getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()).getPath();
+            ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
+                            "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
+            Process proc;
+            try {
+                proc = procBuilder.start();
+                proc.waitFor();
+            } catch (InterruptedException e) {
+                Log.info(c, method, "Can't probe for criu support: " + e);
+                return Boolean.FALSE;
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            String line;
+            int lines = 0;
+            //If there is any error output then criu support not present (or could not be determined).
+            while ((line = br.readLine()) != null) {
+                if (lines == 0) {
+                    Log.info(c, method, "STDERROR from probeCRIUSupport: ");
+                }
+                lines++;
+                Log.info(c, method, "STDERR: " + line);
+            }
+            if (lines == 0) {
+                criuSupported = Optional.of(Boolean.TRUE);
+            } else {
+                criuSupported = Optional.of(Boolean.FALSE);
+            }
+        } catch (Exception ex) {
+            Log.info(c, method, "Exception launching process to probe for criu support:" + ex);
+            criuSupported = Optional.of(Boolean.FALSE);
+        }
+        return criuSupported.get();
     }
 
     private static JavaInfo runJavaVersion(String javaHome) throws IOException {
