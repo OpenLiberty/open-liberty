@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1999 IBM Corporation and others.
+ * Copyright (c) 1999, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,33 +13,32 @@ package com.ibm.ejs.container.activator;
 import com.ibm.ejs.container.BeanId;
 
 /**
- * A <code>MasterKey</code> is a specialized <code>TransactionKey</code>
- * used to lookup the master instance of a BeanO in the cache. The
- * master instance of a BeanO is identified by its <code>BeanId</code>
+ * A <code>MainKey</code> is a specialized <code>TransactionKey</code>
+ * used to lookup the main instance of a BeanO in the cache. The
+ * main instance of a BeanO is identified by its <code>BeanId</code>
  * and a null <code>ContainerTx</code>.
  * <p>
- * 
+ *
  */
 
-class MasterKey extends TransactionKey
-{
+class MainKey extends TransactionKey {
 
     /**
-     * Create new <code>MasterKey</code> instance associated with
+     * Create new <code>MainKey</code> instance associated with
      * given bean id.
      */
 
-    MasterKey(BeanId id) {
+    MainKey(BeanId id) {
 
         super(null, id);
 
-    } // MasterKey
+    } // MainKey
 
+    @Override
     public String toString() {
 
-        return "MasterKey(" + id + ")";
+        return "MainKey(" + id + ")";
 
     } // toString
 
-} // MasterKey
-
+} // MainKey

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 @RequestScoped
 @RunAs("chef")
-public class SecureMasterChef {
+public class SecurePrimaryChef {
 
     @Inject
     Event<RecipeArrival> recipe;

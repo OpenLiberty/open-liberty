@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * This is the "master" suite. It loads the 'all' suites for all of our components.
+ * This is the "primary" suite. It loads the 'all' suites for all of our components.
  */
 define([
          "unittest/backgroundtasks/bgtasksTests"
