@@ -9,9 +9,5 @@ visibility = private
   io.openliberty.security.oauth.internal.2.0, \
   io.openliberty.security.jwt.internal, \
   io.openliberty.security.common.internal
--jars=\
-  io.openliberty.oauth; location:=dev/api/ibm/
--files=\
-  dev/api/ibm/javadoc/io.openliberty.oauth_1.2-javadoc.zip
 kind=ga
 edition=core
