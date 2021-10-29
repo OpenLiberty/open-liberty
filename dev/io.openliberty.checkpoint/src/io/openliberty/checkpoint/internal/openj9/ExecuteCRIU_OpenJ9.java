@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.openj9.internal;
+package io.openliberty.checkpoint.internal.openj9;
 
 import java.io.File;
 

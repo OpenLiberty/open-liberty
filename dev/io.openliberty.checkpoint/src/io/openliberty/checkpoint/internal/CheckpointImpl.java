@@ -51,6 +51,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
+import io.openliberty.checkpoint.internal.openj9.J9CRIUSupport;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
@@ -74,8 +75,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
     private final ServiceRegistration<ClassFileTransformer> transformerReg;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
-    private volatile ExecuteCRIU criu;
+    private final ExecuteCRIU criu;
 
     private static volatile CheckpointImpl INSTANCE = null;
 
@@ -89,7 +89,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     // only for unit tests
     CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin) {
         this.cc = cc;
-        this.criu = criu;
+        if (criu == null) {
+            this.criu = J9CRIUSupport.create();
+        } else {
+            this.criu = criu;
+        }
         this.locAdmin = locAdmin;
         String phase = cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
         this.checkpointAt = phase == null ? null : Phase.getPhase(phase);
