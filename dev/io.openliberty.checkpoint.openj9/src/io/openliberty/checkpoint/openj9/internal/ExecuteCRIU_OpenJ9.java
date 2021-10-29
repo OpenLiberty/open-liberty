@@ -29,11 +29,6 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
     public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
-        if (!CRIUSupport.isCRIUSupportEnabled()) {
-            // TODO log appropriate message
-            System.out.println("Must set the JVM option: -XX:+EnableCRIUSupport");
-            throw new CheckpointFailedException(Type.UNSUPPORTED, "Must set the JVM option: -XX:+EnableCRIUSupport", null, 50);
-        }
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
         criuSupport.setShellJob(true);
         criuSupport.setFileLocks(true);
@@ -56,7 +51,8 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     }
 
     @Override
-    public boolean isCheckpointSupported() {
-        return CRIUSupport.isCRIUSupportEnabled();
+    public void checkpointSupported() {
+        //This service implementation is only registered after support for CRIU is confirmed
+        // so do nothing here.
     }
 }

@@ -18,7 +18,28 @@ public class CheckpointFailedException extends Exception {
     private static final long serialVersionUID = -669718085413549145L;
 
     public enum Type {
+        /**
+         * CRIU not supported. The JVM we are running does not offer the org.eclipse.openj9.criu package.
+         */
+        UNSUPPORTED_IN_JVM,
+
+        /**
+         * CRIU not supported. We are running a JVM with support but the VM was not launched with the option--XX:+EnableCRIUSupport.
+         */
+        UNSUPPORTED_DISABLED_IN_JVM,
+
+        /**
+         * We are running a jvm with support enabled but criu appears not to be installed on the platform
+         */
+        //TODO or we are running on non-linux? Need to confirm this
+        UNSUPPORTED_CRIU_NOT_INSTALLED,
+
+        /**
+         * CRIU unsupported for a reason not specifically enumerated. Probably because an unanticipated ERROR was
+         * encountered while testing for support.
+         */
         UNSUPPORTED,
+
         PREPARE_ABORT,
         JVM_CHECKPOINT_FAILED,
         SYSTEM_CHECKPOINT_FAILED,
@@ -30,7 +51,7 @@ public class CheckpointFailedException extends Exception {
     private final int errorCode;
     private final Type type;
 
-    public CheckpointFailedException(Type type, String msg, Exception cause, int errorCode) {
+    public CheckpointFailedException(Type type, String msg, Throwable cause, int errorCode) {
         super(msg, cause);
         this.type = type;
         this.errorCode = errorCode;

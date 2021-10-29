@@ -105,8 +105,7 @@ public class CheckpointImplTest {
         }
 
         @Override
-        public boolean isCheckpointSupported() {
-            return true;
+        public void checkpointSupported() {
         }
     }
 

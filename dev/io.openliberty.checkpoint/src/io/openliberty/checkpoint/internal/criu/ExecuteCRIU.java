@@ -16,5 +16,11 @@ public interface ExecuteCRIU {
 
     void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException;
 
-    boolean isCheckpointSupported();
+    /**
+     * Asserts that the current JVM and platform has CRIU support which is needed to checkpoint/restore.
+     *
+     * @throws CheckpointFailedException with details of the platform or jvm incompatibility if CRIU is not supported
+     * @see io.openliberty.checkpoint.internal.criu.CheckpointFailedException.TYPE
+     */
+    void checkpointSupported() throws CheckpointFailedException;
 }
