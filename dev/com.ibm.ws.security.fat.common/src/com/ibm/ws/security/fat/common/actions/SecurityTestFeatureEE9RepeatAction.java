@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -23,11 +25,23 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
 
     protected static String complexId = JakartaEE9Action.ID;
     private TestMode testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
+    private boolean notAllowedOnWindows = false;
+
+    public SecurityTestFeatureEE9RepeatAction() {
+
+        complexId = JakartaEE9Action.ID;
+        Log.info(thisClass, "instance", complexId);
+        testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
+        notAllowedOnWindows = false;
+        withID(complexId);
+    }
 
     public SecurityTestFeatureEE9RepeatAction(String inNameExtension) {
 
         complexId = JakartaEE9Action.ID + "_" + inNameExtension;
+        Log.info(thisClass, "instance", complexId);
         testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
+        notAllowedOnWindows = false;
         withID(complexId);
     }
 
@@ -47,6 +61,18 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
                     " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
             return false;
         }
+        OperatingSystem currentOS = null;
+        try {
+            currentOS = Machine.getLocalMachine().getOperatingSystem();
+        } catch (Exception e) {
+            Log.info(thisClass, "isEnabled", "Encountered and exception trying to determine OS type - assume we'll need to run: " + e.getMessage());
+        }
+        Log.info(thisClass, "isEnabled", "OS: " + currentOS.toString());
+        if (OperatingSystem.WINDOWS == currentOS && notAllowedOnWindows) {
+            Log.info(thisClass, "isEnabled", "Skipping action '" + toString() + "' because the tests are disabled on Windows");
+            return false;
+        }
+
         return true;
     }
 
@@ -55,14 +81,21 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
     }
 
     @Override
-    public JakartaEE9Action liteFATOnly() {
+    public SecurityTestFeatureEE9RepeatAction liteFATOnly() {
         testRunMode = TestMode.LITE;
         return this;
     }
 
     @Override
-    public JakartaEE9Action fullFATOnly() {
+    public SecurityTestFeatureEE9RepeatAction fullFATOnly() {
         testRunMode = TestMode.FULL;
+        return this;
+    }
+
+    public SecurityTestFeatureEE9RepeatAction notOnWindows() {
+
+        Log.info(thisClass, "notOnWindows", "set disallow on windows");
+        notAllowedOnWindows = true;
         return this;
     }
 

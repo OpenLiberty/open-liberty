@@ -19,6 +19,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonRemoteLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCInvokeNonexistentPathTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCPublicClientAuthCodeTest;
@@ -48,7 +50,6 @@ import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -102,11 +103,15 @@ public class FATSuite extends CommonRemoteLDAPServerSuite {
     }
 
     /*
-     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     * Run EE9 tests in only LITE mode on all but Windows - the transforms just run too slowly on the Windows OS.
+     * So, we'll run without EE9 in LIte mode on Windows.
+     * We'll run EE7/EE8 tests everywhere in FULL mode.
      *
      * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-                    .andWith(new JakartaEE9Action().removeFeatures(REMOVE).addFeatures(INSERT).fullFATOnly());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new SecurityTestRepeatAction().onlyOnWindows().liteFATOnly())
+                    .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).liteFATOnly());
+
 }
