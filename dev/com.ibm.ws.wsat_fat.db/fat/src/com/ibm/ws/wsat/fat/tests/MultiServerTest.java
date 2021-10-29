@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -47,7 +49,7 @@ public class MultiServerTest extends WSATTest {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		
+
 		server = LibertyServerFactory
 				.getLibertyServer("WSATBasic");
 		BASE_URL = "http://" + server.getHostname() + ":"
@@ -65,62 +67,37 @@ public class MultiServerTest extends WSATTest {
 		DBTestBase.initWSATTest(server2);
 		DBTestBase.initWSATTest(server3);
 
-		if (server != null && server.isStarted()){
-			server.stopServer();
-		}
-		
-		if (server2 != null && server2.isStarted()){
-			server2.stopServer();
-		}
-		if (server3 != null && server3.isStarted()){
-      server3.stopServer();
-		}
+		ShrinkHelper.defaultDropinApp(server, "oneway", "com.ibm.ws.wsat.oneway.*");
+		ShrinkHelper.defaultDropinApp(server, "endtoend", "com.ibm.ws.wsat.endtoend.*");
+		ShrinkHelper.defaultDropinApp(server2, "endtoend", "com.ibm.ws.wsat.endtoend.*");
+		ShrinkHelper.defaultDropinApp(server3, "endtoend", "com.ibm.ws.wsat.endtoend.*");
 
-    ShrinkHelper.defaultDropinApp(server, "oneway", "com.ibm.ws.wsat.oneway.*");
-    ShrinkHelper.defaultDropinApp(server, "endtoend", "com.ibm.ws.wsat.endtoend.*");
-    ShrinkHelper.defaultDropinApp(server2, "endtoend", "com.ibm.ws.wsat.endtoend.*");
-    ShrinkHelper.defaultDropinApp(server3, "endtoend", "com.ibm.ws.wsat.endtoend.*");
-
-    if (server != null && !server.isStarted()){
-       server.setServerStartTimeout(600000);
-       server.startServer(true);
-		}
-		
-		if (server2 != null && !server2.isStarted()){
-			 server2.setServerStartTimeout(600000);
-       server2.startServer(true);
-		}
-		
-		if (server3 != null && !server3.isStarted()){
-			 server3.setServerStartTimeout(600000);
-		     server3.startServer(true);
-		}
+		FATUtils.startServers(server, server2, server3);
 	}
 
 	@AfterClass
-    public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server);
-		ServerUtils.stopServer(server2);
-		ServerUtils.stopServer(server3);
+	public static void tearDown() throws Exception {
+		FATUtils.stopServers(server, server2, server3);
 
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
 		DBTestBase.cleanupWSATTest(server3);
-    }
-	
+	}
+
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void testOneway() {
+		String method = "testOneway";
 		try {
 			String urlStr = BASE_URL + "/oneway/OnewayClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testOneway URL: " + urlStr);
+			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
-							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testOneway");
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testOneway");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testOneway Result : " + result);
+			Log.info(getClass(), method, "Result : " + result);
 			// The fault exception can start with jakarta or jaxa depending
 			// on if EE9 or before.
 			assertTrue(
@@ -134,291 +111,299 @@ public class MultiServerTest extends WSATTest {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void testTwoServerCommit() {
+		String method = "testTwoServerCommit";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
-			System.out.println("testTwoServerCommit URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommit");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommit");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Finish Twoway message"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException"})
 	public void testTwoServerCommitClientVotingRollback() {
+		String method = "testTwoServerCommitClientVotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
-			System.out.println("testTwoServerCommitClientVotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitClientVotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerCommitClientVotingRollback Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitClientVotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testTwoServerCommitProviderVotingRollback() {
+		String method = "testTwoServerCommitProviderVotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
-			System.out.println("testTwoServerCommitProviderVotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitProviderVotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerCommitProviderVotingRollback Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerCommitProviderVotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void testTwoServerRollback() {
+		String method = "testTwoServerRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
-			System.out.println("testTwoServerRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Finish Twoway message"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	public void testTwoServerTwoCallCommit() {
+		String method = "testTwoServerTwoCallCommit";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL;
-			System.out.println("testTwoServerTwoCallCommit URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCommit");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCommit");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	public void testTwoServerTwoCallRollback() {
+		String method = "testTwoServerTwoCallRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL;
-			System.out.println("testTwoServerTwoCallRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	public void testThreeServerTwoCallCommit() {
+		String method = "testThreeServerTwoCallCommit";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL3;
-			System.out.println("testThreeServerTwoCallCommit URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	public void testThreeServerTwoCallRollback() {
+		String method = "testThreeServerTwoCallRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL3;
-			System.out.println("testThreeServerTwoCallCommit URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerBasic Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Get expected result in the second call."));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException"})
 	public void testTwoServerTwoCallCoordinatorVotingRollback() {
+		String method = "testTwoServerTwoCallCoordinatorVotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
-			System.out.println("testTwoServerTwoCallCoordinatorVotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCoordinatorVotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("testTwoServerTwoCallCoordinatorVotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallCoordinatorVotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException"})
 	public void testThreeServerTwoCallCoordinatorVotingRollback() {
+		String method = "testThreeServerTwoCallCoordinatorVotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
-			System.out.println("threeServerTwoCallCoordinatorVotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCoordinatorVotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("threeServerTwoCallCoordinatorVotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCoordinatorVotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testTwoServerTwoCallParticipant1VotingRollback() {
+		String method = "testTwoServerTwoCallParticipant1VotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
-			System.out.println("twoServerTwoCallParticipant1VotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant1VotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("twoServerTwoCallParticipant1VotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant1VotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testThreeServerTwoCallParticipant1VotingRollback() {
+		String method = "testThreeServerTwoCallParticipant1VotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
-			System.out.println("threeServerTwoCallParticipant1VotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant1VotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("threeServerTwoCallParticipant1VotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant1VotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException", "java.lang.IllegalStateException"})
 	public void testTwoServerTwoCallParticipant2VotingRollback() {
+		String method = "testTwoServerTwoCallParticipant2VotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
-			System.out.println("twoServerTwoCallParticipant2VotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant2VotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("twoServerTwoCallParticipant2VotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testTwoServerTwoCallParticipant2VotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-	
+
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testThreeServerTwoCallParticipant2VotingRollback() {
+		String method = "testThreeServerTwoCallParticipant2VotingRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
-			System.out.println("threeServerTwoCallParticipant2VotingRollback URL: " + urlStr);
-            HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-            		HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant2VotingRollback");
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String result = br.readLine();
-            assertNotNull(result);
-			System.out.println("threeServerTwoCallParticipant2VotingRollback"
-					+ " Result : " + result);
+			Log.info(getClass(), method, "URL: " + urlStr);
+			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallParticipant2VotingRollback");
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			String result = br.readLine();
+			assertNotNull(result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
 		} catch (Exception e) {

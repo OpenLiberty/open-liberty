@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -59,22 +60,12 @@ public class DBWithoutAssertionTest extends DBTestBase {
 		Server2_URL = "http://" + server2.getHostname() + ":"
 				+ server2.getHttpDefaultPort();
 		
-		if (client != null && !client.isStarted()) {
-			client.startServer();
-		}
-		if (server1 != null && !server1.isStarted()) {
-			server1.startServer();
-		}
-		if (server2 != null && !server2.isStarted()) {
-			server2.startServer();
-		}
+		FATUtils.startServers(client, server1, server2);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		ServerUtils.stopServer(client);
-		ServerUtils.stopServer(server1);
-		ServerUtils.stopServer(server2);
+		FATUtils.stopServers(client, server1, server2);
 
 		DBTestBase.cleanupWSATTest(client);
 		DBTestBase.cleanupWSATTest(server1);

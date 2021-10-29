@@ -95,7 +95,6 @@ public class genericWebClientAuthCodeTest extends CommonTest {
     @MinimumJavaLevel(javaLevel = 8)
     @Mode(TestMode.LITE)
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO jwtSso-1.0 feature not supported by EE9 yet.
     public void testAuthCodeBasicFlow_withJwtSsoFeature() throws Exception {
         testOPServer.reconfigServer("server_withJwtSsoFeature.xml", _testName, Constants.JUNIT_REPORTING, null);
 

@@ -1,6 +1,7 @@
-import { OrderedMap } from "immutable"
+import { OrderedMap, Map, List } from "immutable"
 import { isOAS3 as isOAS3Helper } from "./helpers"
-
+import { getDefaultRequestBodyValue } from "./components/request-body"
+import { stringify } from "../../utils"
 
 // Helpers
 
@@ -15,6 +16,35 @@ function onlyOAS3(selector) {
   }
 }
 
+function validateRequestBodyIsRequired(selector) {
+  return (...args) => (system) => {
+    const specJson = system.getSystem().specSelectors.specJson()
+    const argsList = [...args]
+    // expect argsList[0] = state
+    let pathMethod = argsList[1] || []
+    let isOas3RequestBodyRequired = specJson.getIn(["paths", ...pathMethod, "requestBody", "required"])
+
+    if (isOas3RequestBodyRequired) {
+      return selector(...args)
+    } else {
+      // validation pass b/c not required
+      return true
+    }
+  }
+}
+
+const validateRequestBodyValueExists = (state, pathMethod) => {
+  pathMethod = pathMethod || []
+  let oas3RequestBodyValue = state.getIn(["requestData", ...pathMethod, "bodyValue"])
+  // context: bodyValue can be a String, or a Map
+  if (!oas3RequestBodyValue) {
+    return false
+  }
+  // validation pass if String is not empty, or if Map exists
+  return true
+}
+
+
 export const selectedServer = onlyOAS3((state, namespace) => {
     const path = namespace ? [namespace, "selectedServer"] : ["selectedServer"]
     return state.getIn(path) || ""
@@ -23,6 +53,53 @@ export const selectedServer = onlyOAS3((state, namespace) => {
 
 export const requestBodyValue = onlyOAS3((state, path, method) => {
     return state.getIn(["requestData", path, method, "bodyValue"]) || null
+  }
+)
+
+export const shouldRetainRequestBodyValue = onlyOAS3((state, path, method) => {
+    return state.getIn(["requestData", path, method, "retainBodyValue"]) || false
+  }
+)
+
+export const hasUserEditedBody = (state, path, method) => (system) => {
+  const {oas3Selectors, specSelectors} = system.getSystem()
+  const spec = specSelectors.specJson()
+  if(isOAS3Helper(spec)) {
+    let userHasEditedBody = false
+    const currentMediaType = oas3Selectors.requestContentType(path, method)
+    let userEditedRequestBody = oas3Selectors.requestBodyValue(path, method)
+    if (Map.isMap(userEditedRequestBody)) {
+      // context is not application/json media-type
+      userEditedRequestBody = stringify(userEditedRequestBody.mapEntries((kv) => Map.isMap(kv[1]) ? [kv[0], kv[1].get("value")] : kv).toJS())
+    }
+    if(List.isList(userEditedRequestBody)) {
+      userEditedRequestBody = stringify(userEditedRequestBody)
+    }
+    if (currentMediaType) {
+      const currentMediaTypeDefaultBodyValue = getDefaultRequestBodyValue(
+        specSelectors.specResolvedSubtree(["paths", path, method, "requestBody"]),
+        currentMediaType,
+        oas3Selectors.activeExamplesMember(
+          path, method,
+          "requestBody",
+          "requestBody",
+        )
+      )
+      userHasEditedBody = !!userEditedRequestBody && userEditedRequestBody !== currentMediaTypeDefaultBodyValue
+    }
+    return userHasEditedBody
+  } else {
+    return null
+  }
+}
+
+export const requestBodyInclusionSetting = onlyOAS3((state, path, method) => {
+    return state.getIn(["requestData", path, method, "bodyInclusion"]) || Map()
+  }
+)
+
+export const requestBodyErrors = onlyOAS3((state, path, method) => {
+    return state.getIn(["requestData", path, method, "errors"]) || null
   }
 )
 
@@ -111,3 +188,34 @@ export const serverEffectiveValue = onlyOAS3((state, locationData) => {
     return str
   }
 )
+
+export const validateBeforeExecute = validateRequestBodyIsRequired(
+  (state, pathMethod) => validateRequestBodyValueExists(state, pathMethod)
+)
+
+export const validateShallowRequired = (state, { oas3RequiredRequestBodyContentType, oas3RequestContentType, oas3RequestBodyValue} ) => {
+  let missingRequiredKeys = []
+  // context: json => String; urlencoded, form-data => Map
+  if (!Map.isMap(oas3RequestBodyValue)) {
+    return missingRequiredKeys
+  }
+  let requiredKeys = []
+  // Cycle through list of possible contentTypes for matching contentType and defined requiredKeys
+  Object.keys(oas3RequiredRequestBodyContentType.requestContentType).forEach((contentType) => {
+    if (contentType === oas3RequestContentType) {
+      let contentTypeVal = oas3RequiredRequestBodyContentType.requestContentType[contentType]
+      contentTypeVal.forEach((requiredKey) => {
+        if (requiredKeys.indexOf(requiredKey) < 0 ) {
+          requiredKeys.push(requiredKey)
+        }
+      })
+    }
+  })
+  requiredKeys.forEach((key) => {
+    let requiredKeyValue = oas3RequestBodyValue.getIn([key, "value"])
+    if (!requiredKeyValue) {
+      missingRequiredKeys.push(key)
+    }
+  })
+  return missingRequiredKeys
+}

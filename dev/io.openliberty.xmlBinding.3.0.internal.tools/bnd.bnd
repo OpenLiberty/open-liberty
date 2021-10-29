@@ -8,7 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
 
 bVersion=1.0.${libertyBundleMicroVersion}
 bSymbolicName=io.openliberty.xmlBinding.3.0.internal.tools
@@ -38,7 +39,7 @@ Service-Component: \
 
 
 Import-Package: \
-  jakarta.activation,\
+  jakarta.activation.*,\
   jakarta.xml.bind.*; version="[3.0,4.0]", \
   com.sun.xml.tools.*, \
   com.ibm.wsspi.classloading, \

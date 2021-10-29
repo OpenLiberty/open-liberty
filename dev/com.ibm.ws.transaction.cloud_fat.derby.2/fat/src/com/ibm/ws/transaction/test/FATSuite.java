@@ -50,7 +50,6 @@ public class FATSuite {
     public static DatabaseContainerType type = DatabaseContainerType.Derby;
     public static JdbcDatabaseContainer<?> testContainer;
 
-    @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
@@ -60,7 +59,6 @@ public class FATSuite {
         DualServerDynamicTestBase.setDBType(DatabaseContainerType.Derby);
     }
 
-    @AfterClass
     public static void afterSuite() {
         Log.info(FATSuite.class, "afterSuite", "stop test container");
         testContainer.stop();

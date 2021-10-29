@@ -52,7 +52,6 @@ public class FATSuite {
     public static DatabaseContainerType type = DatabaseContainerType.SQLServer;
     public static JdbcDatabaseContainer<?> testContainer;
 
-    @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
@@ -61,17 +60,8 @@ public class FATSuite {
         testContainer.start();
     }
 
-    @AfterClass
     public static void afterSuite() {
         Log.info(FATSuite.class, "afterSuite", "stop test container");
         testContainer.stop();
-    }
-
-    //Private Method: used to setup logging for containers to this class.
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "dbrotation", msg);
     }
 }

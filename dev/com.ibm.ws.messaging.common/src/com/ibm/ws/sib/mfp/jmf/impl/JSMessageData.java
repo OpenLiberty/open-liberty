@@ -58,14 +58,14 @@ import com.ibm.ws.sib.mfp.util.ArrayUtil;
  * </P><P>
  * 1) JSMessages are built in instance hierarchies. Links away from the root of the tree are built
  * using the data described by the schema of a given JSMessageData instance, whilst links towards the root are
- * maintained by the 'parentMessage', 'containinggMessage' and 'master' instance members.
+ * maintained by the 'parentMessage', 'containinggMessage' and 'primaryMessage' instance members.
  * The key concurrency issue here is that methods such as unassemble call out to 'parent'
  * to unassemble themselves, whilst other 'methods' call down to their children. A locking
  * policy based on synchronized methods would therefore give the opportunity for deadlock.
- * To avoid deadlock we use the 'master' object to make threadsafe changes
- * to the state of 'this'. The client sees a state invariant that the 'master' is never
- * null (and iff the 'parent' JSMessageImpl is null then 'master' == 'compatabilityWrapperOrSelf'). Internally we may see states
- * where master is null, and if so we use 'comaptabilityWrapperOrSelf' to lock on (to cover the case when setting master).
+ * To avoid deadlock we use the 'primaryMessageData' object to make threadsafe changes
+ * to the state of 'this'. The client sees a state invariant that the 'primary' is never
+ * null (and iff the 'parent' JSMessageImpl is null then 'primary' == 'compatabilityWrapperOrSelf'). Internally we may see states
+ * where primary is null, and if so we use 'comaptabilityWrapperOrSelf' to lock on (to cover the case when setting primary).
  * </P><P>
  * 2) Lazy copying establishes the state where multiple JSMessageData instances share a subset of their
  * state. Once a stable consistent 'client visible' state associated with lazy copying is established
@@ -85,7 +85,7 @@ import com.ibm.ws.sib.mfp.util.ArrayUtil;
  * a) the members of the shared state don't get changed by another thread's use of the message we
  * are going to share state with. The particular situation to consider is when sharing is first
  * established on a message's state, when that original owner does not yet
- * consider the state to be read only. This is guaranteed by locking of the 'master' member of that
+ * consider the state to be read only. This is guaranteed by locking of the 'primary' member of that
  * message.
  * </P><P>
  * b) a 3rd party message unknown to this operation which is already sharing state with the message
@@ -121,7 +121,7 @@ import com.ibm.ws.sib.mfp.util.ArrayUtil;
  * </P><P>
  * Note also that the implementation makes significant use of package access of both member functions
  * and instance members. We can therefore make few assumptions about whether a thread already holds the
- * lock on the 'master' when calling a protected or default access method. The fact that some instance
+ * lock on the 'primary' when calling a protected or default access method. The fact that some instance
  * members are referenced from within the other classes of this package makes guaranteeing thread safety
  * very difficult, even with the locking that is in place.
  * 
@@ -209,11 +209,11 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
     // a JSCompatibleMessage then we need to store the JSCompatibleMessage instead.
     private JMFMessageData containingMessage;
 
-    // The master JMF Message for the message of which this segment is a part.  When a
-    // JSMessageImpl is constructed at top level (by the JSchemaInterpreterImpl) its master
+    // The primary JMF Message for the message of which this segment is a part.  When a
+    // JSMessageImpl is constructed at top level (by the JSchemaInterpreterImpl) its primary
     // field is set to its compatabilityWrapperOrSelf.  Thereafter, every JSMessageData
-    // inherits its parent's master field.
-    JMFMessageData master;
+    // inherits its parent's primary field.
+    JMFMessageData primaryMessage;
 
     // If this JSMessageData is the 'encoding' for a JSCompatibleMessageImpl, we need
     // a reference to our wrapper. Some methods need to use the wrapper of we have one,
@@ -235,8 +235,8 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
 
     // make this public so that a client can make state transition assumptions across calls
     public final Object getMessageLockArtefact() {
-        if (master != null)
-            return master;
+        if (primaryMessage != null)
+            return primaryMessage;
         if (compatibilityWrapperOrSelf != null)
             return compatibilityWrapperOrSelf;
         return this;
@@ -250,7 +250,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
 
     // Set the parent JSMessageData of which this one is a dependent, and the
     // containingMessage which may the same thing, or may be a JSCompatibleMessageImpl.
-    // Locking: from the point that master is set any lock that was in place on the old
+    // Locking: from the point that primary is set any lock that was in place on the old
     //          value of getMessageLockArtefact() is useless in protecting us from concurrency
     //          issues.  However, code analysis would seem to reveal that this is always used
     //          during the initialization of JSMessageData instances, and therefore immune from
@@ -267,7 +267,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
             // If the parent is a JSMessageData then this is straight forward
             if (parent instanceof JSMessageData) {
                 parentMessage = (JSMessageData) parent;
-                master = ((JSMessageData) parent).master;
+                primaryMessage = ((JSMessageData) parent).primaryMessage;
                 containingMessage = ((JSMessageData) parent).compatibilityWrapperOrSelf;
             }
 
@@ -276,7 +276,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
             else {
                 JSMessageData msg = (JSMessageData) ((JSCompatibleMessageImpl) parent).getEncodingMessage();
                 parentMessage = msg;
-                master = msg.master;
+                primaryMessage = msg.primaryMessage;
                 containingMessage = parent;
             }
         }
@@ -313,10 +313,10 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
 
         synchronized (getMessageLockArtefact()) {
             compatibilityWrapperOrSelf = wrapper;
-            // If we are our own master & e've just been wrapped in a JSCompatibleMessage, then we
-            // need to update the master reference.
-            if (master == this) {
-                setMaster();
+            // If we are our own primaryMessage & e've just been wrapped in a JSCompatibleMessage, then we
+            // need to update the primary reference.
+            if (primaryMessage == this) {
+                setPrimary();
             }
         }
 
@@ -324,37 +324,37 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
             JmfTr.exit(this, tc, "setCompatibilityWrapper");
     }
 
-    // Set the master variable to this message's compatabilityOrSelf value
+    // Set the primary variable to this message's compatabilityOrSelf value
     // Locking: This will only ever be called once, during instantiation of a top-level JSMessageImpl,
     //          but we do want to get the value written back to memory without bothering
     //          with declaring it as volatile. The value is only ever accessed with the
     //          lock held, so locking here will do it.
-    final void setMaster() {
+    final void setPrimary() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            JmfTr.entry(this, tc, "setMaster");
+            JmfTr.entry(this, tc, "setPrimary");
 
         synchronized (getMessageLockArtefact()) {
-            master = compatibilityWrapperOrSelf;
+            primaryMessage = compatibilityWrapperOrSelf;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            JmfTr.exit(this, tc, "setMaster");
+            JmfTr.exit(this, tc, "setPrimary");
     }
 
-    // Set the master variable to this message's compatabilityOrSelf value
+    // Set the primary variable to this message's compatabilityOrSelf value
     // Locking: The lock is expected to be held by the calling stack.
-    final boolean isMaster() {
+    final boolean isPrimary() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            JmfTr.entry(this, tc, "isMaster");
+            JmfTr.entry(this, tc, "isPrimary");
 
-        if (master == compatibilityWrapperOrSelf) {
+        if (primaryMessage == compatibilityWrapperOrSelf) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                JmfTr.exit(this, tc, "isMaster", Boolean.TRUE);
+                JmfTr.exit(this, tc, "isPrimary", Boolean.TRUE);
             return Boolean.TRUE;
         }
         else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                JmfTr.exit(this, tc, "isMaster", Boolean.FALSE);
+                JmfTr.exit(this, tc, "isPrimary", Boolean.FALSE);
             return Boolean.FALSE;
         }
     }
@@ -362,7 +362,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
     // 'Unassemble' this message segment and all parent segments.  This means that the
     // contents are discarded and the cache filled by reading all eligible values from the
     // contents.
-    // Locking: a key method that justifies the locking described in the master policy; see
+    // Locking: a key method that justifies the locking described in the primary policy; see
     //          the call to parent.unassemble(). The lock must be held throughout this method.
     @Override
     public void unassemble()
@@ -387,7 +387,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
                     JSField field = getFieldDef(i, true);
 
                     if (field != null) {
-                        Object val = ownership(field.decodeValue(contents, getAbsoluteOffset(i), indirect, master), sharedContents);
+                        Object val = ownership(field.decodeValue(contents, getAbsoluteOffset(i), indirect, primaryMessage), sharedContents);
 
                         if (val == null) {
                             val = nullIndicator;
@@ -415,7 +415,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
     //          The value of parent of the supplied val may be modified by this routine -
     //          this might seem to violate our locking policy, but the usage of ownership() is always to
     //          supply a new 'val' argument by decoding from the 'contents', so there is no need to lock
-    //          this new instance, and it logically belongs in the locking scope of this.master.
+    //          this new instance, and it logically belongs in the locking scope of this.primaryMessage.
     private Object ownership(Object val, boolean forceShared) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             JmfTr.entry(this, tc, "ownership", new Object[] { val, Boolean.valueOf(forceShared) });
@@ -506,7 +506,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
                     return null;
                 }
 
-                ans = ownership(field.decodeValue(contents, getAbsoluteOffset(index), indirect, master), sharedContents);
+                ans = ownership(field.decodeValue(contents, getAbsoluteOffset(index), indirect, primaryMessage), sharedContents);
 
                 if (ans == null) {
                     ans = nullIndicator;
@@ -613,7 +613,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
             JSField field = getFieldDef(index, false);
             value = ownership(field.validateValue(value, indirect), false);
 
-            if (value instanceof JMFPart && (master != null)) {
+            if (value instanceof JMFPart && (primaryMessage != null)) {
                 if (this instanceof JSMessageImpl) {
                     invalidateSchemaCache();
                 }
@@ -638,7 +638,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
                 int offset = getAbsoluteOffset(index);
 
                 if (isFieldVarying(index)) {
-                    int newLen = field.getEncodedValueLength(value, indirect, master) - 4;
+                    int newLen = field.getEncodedValueLength(value, indirect, primaryMessage) - 4;
                     int oldLen = ArrayUtil.readInt(contents, offset);
 
                     // A 'null' encoding (which is -1) occupies zero bytes
@@ -673,7 +673,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
                 // The message may have become unassembled as a result of copying, so we
                 // only encode to the buffer if we still have a valid offset.
                 if (offset != -1) {
-                    field.encodeValue(contents, offset, value, indirect, master);
+                    field.encodeValue(contents, offset, value, indirect, primaryMessage);
                 }
             }
 
@@ -691,8 +691,8 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             JmfTr.entry(this, tc, "invalidateSchemaCache");
 
-        // If this is isn't the master, walk on up the tree
-        if (!isMaster())
+        // If this is isn't the primary, walk on up the tree
+        if (!isPrimary())
             getParent().invalidateSchemaCache();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -1872,12 +1872,12 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
         sb.append(parentMessage);
         sb.append(" containingMessage=");
         sb.append(containingMessage);
-        sb.append(" master=");
-        if (master == this) {
+        sb.append(" primaryMessage=");
+        if (primaryMessage == this) {
             sb.append("self");
         }
         else {
-            sb.append(master);
+            sb.append(primaryMessage);
         }
         sb.append(" compatibilityWrapperOrSelf=");
         if (compatibilityWrapperOrSelf == this) {

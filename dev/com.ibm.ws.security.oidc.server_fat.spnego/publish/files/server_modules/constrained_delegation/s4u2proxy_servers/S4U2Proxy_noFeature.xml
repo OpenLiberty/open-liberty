@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server> 	
+
+ 	<include location="${server.config.dir}/imports/features/security_spnego_features.xml"/>
+	
+	
+	<include location="${server.config.dir}/imports/configs/host_info.xml"/>
+	
+	<include location="${server.config.dir}/imports/constrained_delegation/jaas_config/jaasConfig_jdk8.xml"/>
+	        
+	<include location="${server.config.dir}/imports/configs/basicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/application_definition/spnegoTokenHelperFvt_location.xml"/>
+
+
+	<include location="${server.config.dir}/imports/configs/keystore.xml" />
+	
+
+	<include location="${server.config.dir}/imports/configs/fatTestPorts.xml" />
+	
+	<include location="${server.config.dir}/imports/constrained_delegation/config/s4u2proxyEnable_s4u2selfNotEnable_defaultConstrained.xml" />
+
+	<include location="${server.config.dir}/imports/spnego/authfilters/simpleservlet_contains.xml" />
+
+	<include location="${server.config.dir}/imports/spnego/serversettings/allowLocalhost_false.xml"/>    
+
+</server>

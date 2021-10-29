@@ -323,7 +323,7 @@ public final class Activator implements DiscardWithLockStrategy
      * The new bean is enlisted in the specified transaction. <p>
      * 
      * If a bean with the same identity is already enlisted in the current
-     * transaction, or there is a visible master instance, a
+     * transaction, or there is a visible main instance, a
      * <code>DuplicateKeyException</code> results. <p>
      * 
      * @param tx The transaction on which to add the bean
@@ -376,9 +376,9 @@ public final class Activator implements DiscardWithLockStrategy
      * a transaction which was successfully committed.
      * 
      * The transaction-local instance of the bean is removed from the cache,
-     * and any necessary reconciliation between that instance and the master
+     * and any necessary reconciliation between that instance and the main
      * instance is done (e.g. if the bean was removed during the transaction,
-     * the master instance is also removed from the cache).
+     * the main instance is also removed from the cache).
      * <p>
      * 
      * @param tx The transaction which just committed

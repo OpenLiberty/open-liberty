@@ -4,7 +4,7 @@
       parent="c14n.abstract">
 
     <!--
-    This is the master SubjectCanonicalization subflow. It handles selection of
+    This is the primary SubjectCanonicalization subflow. It handles selection of
     c14n subflows before returning control to the calling flow.
     -->
         

@@ -32,7 +32,7 @@
                 <!-- Proprietary logout flow. -->
                 <entry key="Logout" value="../system/flows/logout/logout-flow.xml" />
         
-                <!-- Logout propagation master flow. -->
+                <!-- Logout propagation primary flow. -->
                 <entry key="PropagateLogout" value="../system/flows/logout/logout-propagation-flow.xml" />
         
                 <!-- Logout propagation delegate flows. -->
@@ -64,7 +64,7 @@
                 <!-- Liberty IDWSF SSOS flow (for SAML 2 delegation) -->
                 <entry key="IDWSF/SSOS" value="../system/flows/saml/saml2/idwsf-ssos-flow.xml" />
         
-                <!-- Master flow for authentication. -->
+                <!-- Primary flow for authentication. -->
                 <entry key="authn.events" value="../conf/authn/authn-events-flow.xml" />
                 <entry key="authn.abstract" value="../system/flows/authn/authn-abstract-flow.xml" />
                 <entry key="authn-initial" value="../system/flows/authn/initial-authn-flow.xml" />
@@ -82,7 +82,7 @@
                 <entry key="authn/Duo" value="../system/flows/authn/duo-authn-flow.xml" />
                 <entry key="authn/MFA" value="../system/flows/authn/mfa-authn-flow.xml" />
           
-                <!-- Master flow for subject c14n. -->
+                <!-- Primary flow for subject c14n. -->
                 <entry key="c14n.events" value="../conf/c14n/subject-c14n-events-flow.xml" />
                 <entry key="c14n.abstract" value="../system/flows/c14n/subject-c14n-abstract-flow.xml" />
                 <entry key="c14n" value="../system/flows/c14n/subject-c14n-flow.xml" />
@@ -106,7 +106,7 @@
                 <entry key="c14n/SAML1Transform" value="../system/flows/c14n/subject-c14n-saml-default-flow.xml" />
                 <entry key="c14n/LegacyPrincipalConnector" value="../system/flows/c14n/subject-c14n-saml-default-flow.xml" />
         
-                <!-- Master intercept flow. -->
+                <!-- Primary intercept flow. -->
                 <entry key="intercept.events" value="../conf/intercept/intercept-events-flow.xml" />
                 <entry key="intercept.abstract" value="../system/flows/intercept/intercept-abstract-flow.xml" />
                 <entry key="intercept" value="../system/flows/intercept/intercept-flow.xml" />

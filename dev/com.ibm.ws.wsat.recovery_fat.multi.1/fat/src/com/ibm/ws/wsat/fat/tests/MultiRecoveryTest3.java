@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
+@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest3 extends MultiRecoveryTest{

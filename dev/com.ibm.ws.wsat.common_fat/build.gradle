@@ -8,6 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+dependencies {
+  requiredLibs project(":com.ibm.ws.transaction.fat.util")
+}
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 

@@ -1,7 +1,9 @@
+import parseUrl from "url-parse"
 import win from "core/window"
+import Im from "immutable"
 import { btoa, sanitizeUrl, generateCodeVerifier, createCodeChallenge } from "core/utils"
 
-export default function authorize ( { auth, authActions, errActions, configs, authConfigs={} } ) {
+export default function authorize ( { auth, authActions, errActions, configs, authConfigs={}, currentServer } ) {
   let { schema, scopes, name, clientId } = auth
   let flow = schema.get("flow")
   let query = []
@@ -24,11 +26,13 @@ export default function authorize ( { auth, authActions, errActions, configs, au
       break
 
     case "clientCredentials":
+    case "client_credentials":
       // OAS3
       authActions.authorizeApplication(auth)
       return
 
     case "authorizationCode":
+    case "authorization_code":
       // OAS3
       query.push("response_type=code")
       break
@@ -52,10 +56,17 @@ export default function authorize ( { auth, authActions, errActions, configs, au
   }
   query.push("redirect_uri=" + encodeURIComponent(redirectUrl))
 
-  if (Array.isArray(scopes) && 0 < scopes.length) {
+  let scopesArray = []
+  if (Array.isArray(scopes)) {
+    scopesArray = scopes
+  } else if (Im.List.isList(scopes)) {
+    scopesArray = scopes.toArray()
+  }
+
+  if (scopesArray.length > 0) {
     let scopeSeparator = authConfigs.scopeSeparator || " "
 
-    query.push("scope=" + encodeURIComponent(scopes.join(scopeSeparator)))
+    query.push("scope=" + encodeURIComponent(scopesArray.join(scopeSeparator)))
   }
 
   let state = btoa(new Date())
@@ -66,7 +77,7 @@ export default function authorize ( { auth, authActions, errActions, configs, au
     query.push("realm=" + encodeURIComponent(authConfigs.realm))
   }
 
-  if (flow === "authorizationCode" && authConfigs.usePkceWithAuthorizationCodeGrant) {
+  if ((flow === "authorizationCode" || flow === "authorization_code" || flow === "accessCode") && authConfigs.usePkceWithAuthorizationCodeGrant) {
       const codeVerifier = generateCodeVerifier()
       const codeChallenge = createCodeChallenge(codeVerifier)
 
@@ -87,7 +98,17 @@ export default function authorize ( { auth, authActions, errActions, configs, au
   }
 
   const authorizationUrl = schema.get("authorizationUrl")
-  const sanitizedAuthorizationUrl = sanitizeUrl(authorizationUrl)
+  let sanitizedAuthorizationUrl
+  if (currentServer) {
+    // OpenAPI 3
+    sanitizedAuthorizationUrl = parseUrl(
+      sanitizeUrl(authorizationUrl),
+      currentServer,
+      true
+    ).toString()
+  } else {
+    sanitizedAuthorizationUrl = sanitizeUrl(authorizationUrl)
+  }
   let url = [sanitizedAuthorizationUrl, query.join("&")].join(authorizationUrl.indexOf("?") === -1 ? "?" : "&")
 
   // pass action authorizeOauth2 and authentication data through window

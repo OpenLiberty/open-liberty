@@ -384,31 +384,41 @@ public class PackageRunnableTest {
             assertTrue("Server did not start successfully in time.", found);
 
             outputReader.setIs(null);
-            if (useNormalStop != true) {
+
+            // Attempt to stop the server
+            int retry = 0;
+            if (useNormalStop == false) {
                 // ensure no process left behind
-                proc.destroy();
-            } else {
-                // stop cleanly so shutdown hook is called
-                stopServer(extractLoc);
-                Log.info(c, method, "Server is stopping via the stop command, thus the shutdown hook should run...");
-                while (server.isStarted()) {
-                    Log.info(c, method, "Server still alive..sleeping");
-                    Thread.sleep(1);
+                while (proc.isAlive() && retry < 10) {
+                    Log.info(c, method, "Server is stopping via the proc.destroy() method.  Retry = " + retry);
+                    proc.destroy();
+                    Thread.sleep(1000);
+                    retry++;
                 }
+            } else {
+                // stop normally so shutdown hook is called
+                while (server.isStarted() && retry < 10) {
+                    Log.info(c, method, "Server is stopping via the 'server stop' command, thus the shutdown hook should run.  Retry = " + retry);
+                    stopServer(extractLoc);
+                    Thread.sleep(1000);
+                    retry++;
+                }
+
+                if (proc.isAlive())
+                    proc.destroy();
             }
 
             if (os != null) {
                 os.close();
             }
 
-            Log.info(c, method, "Waiting 30 seconds...to make sure all Liberty thread exiting.");
-            Thread.sleep(30000); // wait 30 second
-
-            Log.info(c, method, "Server with name = " + server.getServerName() + " server.isStarted() = " + server.isStarted() + " proc.isAlive() = " + proc.isAlive());
+            Log.info(c, method,
+                     "Server with name = " + server.getServerName() + " server.isStarted() = "
+                                + server.isStarted() + " proc.isAlive() = " + proc.isAlive() + " retry = " + retry);
 
         } finally {
             if (proc.isAlive()) {
-                Log.info(c, method, "Destroying proc...");
+                Log.info(c, method, "Destroying the process as it was not stopped via the previous attempts.");
                 proc.destroy();
             }
         }

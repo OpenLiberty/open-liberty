@@ -208,7 +208,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
           '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
           '-tb', transformProject.getFile('rules/jakarta-bundles.properties').path,
           '-td', transformProject.getFile('rules/jakarta-direct.properties').path,
-          '-tf', transformProject.getFile('rules/jakarta-xml-master.properties').path ]
+          '-tf', transformProject.getFile('rules/jakarta-text.properties').path ]
 
         // Add BND file specified local additions.
 

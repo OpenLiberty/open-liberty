@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,48 +31,34 @@ public abstract class WSATTest {
 
 	private static final String testNameParameter = "testName";
 
-    protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout) throws IOException, ProtocolException, URISyntaxException {
-    	
+	protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout) throws IOException, ProtocolException, URISyntaxException {
 
-    	
+		// Add testName parameter to query string so it appears in trace
+		final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName.getMethodName());
 
-    	
-    	
-    	
-    	// Add testName parameter to query string so it appears in trace
-    	final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName.getMethodName());
-    	
-    	System.out.println("xxxxxx: " + uri.toString());
-    	
-    	
-    	
-        return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
-    }
+		return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
+	}
 
-    protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout, String testName) throws IOException, ProtocolException, URISyntaxException {
-    	
-    	// Add testName parameter to query string so it appears in trace
-    	final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName);
-    	
-    	System.out.println("xxxxxx: " + uri.toString());
-    	
-    	
-    	
-        return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
-    }
+	protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout, String testName) throws IOException, ProtocolException, URISyntaxException {
 
-    private static URI appendUri(URI oldUri, String appendQuery) throws URISyntaxException {
+		// Add testName parameter to query string so it appears in trace
+		final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName);
 
-        String newQuery = oldUri.getQuery();
-        if (newQuery == null) {
-            newQuery = appendQuery;
-        } else {
-            newQuery += "&" + appendQuery;  
-        }
+		return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
+	}
 
-        URI newUri = new URI(oldUri.getScheme(), oldUri.getAuthority(),
-                oldUri.getPath(), newQuery, oldUri.getFragment());
+	private static URI appendUri(URI oldUri, String appendQuery) throws URISyntaxException {
 
-        return newUri;
-    }
+		String newQuery = oldUri.getQuery();
+		if (newQuery == null) {
+			newQuery = appendQuery;
+		} else {
+			newQuery += "&" + appendQuery;  
+		}
+
+		URI newUri = new URI(oldUri.getScheme(), oldUri.getAuthority(),
+				oldUri.getPath(), newQuery, oldUri.getFragment());
+
+		return newUri;
+	}
 }
