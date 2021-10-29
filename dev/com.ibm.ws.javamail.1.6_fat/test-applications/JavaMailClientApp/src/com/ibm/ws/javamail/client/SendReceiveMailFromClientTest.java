@@ -112,6 +112,8 @@ public class SendReceiveMailFromClientTest {
             inbox.open(Folder.READ_WRITE);
             Message msg = inbox.getMessage(inbox.getMessageCount());
 
+            int count = inbox.getNewMessageCount();
+
             out.println("=========== Start message headers ===========");
             out.println("Message count: " + inbox.getMessageCount());
             Enumeration en = msg.getAllHeaders();
@@ -129,10 +131,10 @@ public class SendReceiveMailFromClientTest {
             }
             out.println("============= end message headers =================");
 
-            if (foundExpectedFromHeader && foundExpectedSubjectHeader) {
+            if (foundExpectedFromHeader && foundExpectedSubjectHeader && 1==count) {
                 //print message that FAT controller will search for in output
                 out.println(testName +
-                            ": Application client received email with expected 'From' and 'Subject' headers.");
+                            ": Application client received one email with expected 'From' and 'Subject' headers.");
             }
             store.close();
         } catch (Exception mex) {

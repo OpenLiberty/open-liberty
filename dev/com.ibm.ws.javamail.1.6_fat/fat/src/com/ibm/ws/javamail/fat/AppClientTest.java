@@ -83,22 +83,23 @@ public class AppClientTest {
     public void testClientJavaMailSendReceive() throws Exception {
         // check for messages from the 3 main test scenarious that are
         //Check message.log for mail sent and received messages
-        int matches = client.findStringsInCopiedLogs(".*testBasicSendReceive.*Application client received email with expected 'From' and 'Subject' headers.*").size();
-        Assert.assertEquals("Did not find expected number of messages in message.log", 1, matches);
+        // We need to check if the message that we send is there more than checking message count
+        Assert.assertNotNull("Did not find expected number of messages in message.log",
+                             client.waitForStringInCopiedLog(".*testBasicSendReceive.*Application client received one email with expected 'From' and 'Subject' headers.*"));
     }
 
     @Test
     public void testClientJavaMailSendReceiveUsingAnnotationDefinition() throws Exception {
-        int matches = client.findStringsInCopiedLogs(".*testInjectionFromAnnotationDefinition.*Application client received email with expected 'From' and 'Subject' headers.*")
-                        .size();
-        Assert.assertEquals("Did not find expected number of messages in message.log", 1, matches);
+        // We need to check if the message that we send is there more than checking message count
+        Assert.assertNotNull("Did not find expected number of messages in message.log", client
+                        .waitForStringInCopiedLog(".*testInjectionFromAnnotationDefinition.*Application client received one email with expected 'From' and 'Subject' headers.*"));
     }
 
     @Test
     public void testClientJavaMailSendReceiveUsingAnnotationDescriptor() throws Exception {
-        int matches = client.findStringsInCopiedLogs(".*testInjectionFromDescriptorDefinition.*Application client received email with expected 'From' and 'Subject' headers.*")
-                        .size();
-        Assert.assertEquals("Did not find expected number of messages in message.log", 1, matches);
+        // We need to check if the message that we send is there more than checking message count
+        Assert.assertNotNull("Did not find expected number of messages in message.log", client
+                        .waitForStringInCopiedLog(".*testInjectionFromDescriptorDefinition.*Application client received one email with expected 'From' and 'Subject' headers.*"));
     }
 
     // Run the client and check for expected messages that the client started. By the time this
