@@ -11,11 +11,6 @@
 package org.eclipse.openj9.criu;
 
 import java.nio.file.Path;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.nio.file.Files;
-import java.util.Objects;
-import java.io.File;
 
 public final class CRIUSupport {
 

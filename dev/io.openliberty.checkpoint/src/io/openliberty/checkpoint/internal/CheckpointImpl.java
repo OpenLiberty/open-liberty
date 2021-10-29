@@ -185,19 +185,23 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         prepare(checkpointHooks);
         try {
             ExecuteCRIU currentCriu = getCurrentCriu();
-            if (currentCriu == null) {
-                debug(tc, () -> "No ExecuteCRIU service available.");
-                throw new CheckpointFailedException(Type.UNSUPPORTED, "The criu command is not available.", null, 0);
-            } else {
-                debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
-
-                WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
-                logsCheckpoint.create();
-                currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
-                                 logsCheckpoint.asFile());
-
-                debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
+            try {
+                currentCriu.checkpointSupported();
+            } catch (CheckpointFailedException cpfe) {
+                debug(tc, () -> "ExecuteCRIU service does not support checkpoint.");
+                //TODO log a more helpful message based on cpfe Type
+                System.out.println(cpfe.getMessage());
+                throw cpfe;
             }
+
+            debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
+
+            WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
+            logsCheckpoint.create();
+            currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
+                             logsCheckpoint.asFile());
+
+            debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {
             abortPrepare(checkpointHooks, e);
             if (e instanceof CheckpointFailedException) {
@@ -205,6 +209,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
             throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
         }
+
         restore(phase, checkpointHooks);
         createRestoreMarker();
     }
@@ -214,8 +219,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             return new ExecuteCRIU() {
 
                 @Override
-                public boolean isCheckpointSupported() {
-                    return true;
+                public void checkpointSupported() {
+                    // do nothing;
                 }
 
                 @Override
