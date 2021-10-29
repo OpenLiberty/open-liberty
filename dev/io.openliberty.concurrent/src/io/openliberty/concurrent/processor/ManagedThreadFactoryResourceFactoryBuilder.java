@@ -131,7 +131,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         String contextSvcJndiName = (String) threadFactoryProps.remove("context");
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);
-        String contextServiceId = "java:comp/DefaultContextService".equals(contextSvcJndiName) //
+        String contextServiceId = contextSvcJndiName == null || "java:comp/DefaultContextService".equals(contextSvcJndiName) //
                         ? "DefaultContextService" //
                         : ContextServiceResourceFactoryBuilder.getContextServiceID(application, module, component, contextSvcJndiName);
 
@@ -147,7 +147,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         threadFactoryProps.put(UNIQUE_JNDI_NAME, managedThreadFactoryID);
 
         threadFactoryProps.put("contextService.target", FilterUtils.createPropertyFilter("id", contextServiceId));
-        threadFactoryProps.put("contextService.target.minimum", 1);
+        threadFactoryProps.put("contextService.cardinality.minimum", 1);
 
         threadFactoryProps.put("createDaemonThreads", false);
         threadFactoryProps.put("defaultPriority", threadFactoryProps.remove("priority"));

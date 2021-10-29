@@ -311,11 +311,11 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
      */
     static final String getContextServiceID(String application, String module, String component, String jndiName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
-        if (application != null) {
+        if (application != null && !jndiName.startsWith("java:global")) {
             sb.append("application[").append(application).append("]/");
-            if (module != null) {
+            if (module != null && !jndiName.startsWith("java:app")) {
                 sb.append("module[").append(module).append("]/");
-                if (component != null)
+                if (component != null && !jndiName.startsWith("java:module"))
                     sb.append("component[").append(component).append("]/");
             }
         }

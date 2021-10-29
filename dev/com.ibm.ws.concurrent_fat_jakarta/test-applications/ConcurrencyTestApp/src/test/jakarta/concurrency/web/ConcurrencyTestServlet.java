@@ -28,6 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,10 +37,14 @@ import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
@@ -77,14 +82,17 @@ import test.context.timing.Timestamp;
                           cleared = "Priority",
                           unchanged = { APPLICATION, TRANSACTION })
 @ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
+                           context = "java:module/concurrent/ZLContextSvc",
                            hungTaskThreshold = 300000,
-                           maxAsync = 1) // TODO add context once annotation is fixed
+                           maxAsync = 1)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/executor6",
+                                    context = "java:app/concurrent/appContextSvc",
                                     hungTaskThreshold = 360000,
-                                    maxAsync = 2) // TODO add context once annotation is fixed
+                                    maxAsync = 2)
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 3)
+// TODO add resource definitions with context="java:comp/DefaultContextService" and unspecified
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -316,19 +324,175 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     * Verify that a ManagedExecutorService that is injected from a ManagedExecutorDefinition
+     * abides by the configured maxAsync and the configured thread context propagation/clearing
+     * that makes it possible to access third-party context from async completion stage actions.
      */
     @Test
-    public void testManagedExecutorDefinition() throws Exception {
-        assertNotNull(InitialContext.doLookup("java:module/concurrent/executor5"));
+    public void testManagedExecutorDefinition() throws Throwable {
+        ManagedExecutorService executor5 = InitialContext.doLookup("java:module/concurrent/executor5");
+
+        CompletableFuture<Exchanger<String>> stage0 = executor5.completedFuture(new Exchanger<String>());
+
+        CompletableFuture<Object[]> stage1a, stage1b, stage1c;
+
+        // Async completion stage action will attempt an exchange (which shouldn't be possible
+        // due to maxAsync of 1) and record the thread context under which it runs:
+        Function<Exchanger<String>, Object[]> fn = exchanger -> {
+            Object[] results = new Object[6];
+            try {
+                results[0] = exchanger.exchange("maxAsync=1 was not enforced", 1, TimeUnit.SECONDS);
+            } catch (InterruptedException | TimeoutException x) {
+                results[0] = x;
+            }
+            results[1] = Timestamp.get(); // should be cleared
+            results[2] = ZipCode.get(); // should be propagated
+            results[3] = ListContext.asString(); // should be propagated
+            results[4] = Thread.currentThread().getPriority(); // should be cleared
+            try {
+                // Application context should not be applied to pooled thread, causing the lookup to fail
+                results[5] = InitialContext.doLookup("java:module/concurrent/executor5");
+            } catch (NamingException x) {
+                results[5] = x;
+            }
+            return results;
+        };
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55902);
+        ListContext.newList();
+        ListContext.add(33);
+        ListContext.add(56);
+        ListContext.add(65);
+        Thread.currentThread().setPriority(4);
+        try {
+            // request async completion stages with above context,
+            stage1a = stage0.thenApplyAsync(fn);
+            stage1b = stage0.thenApplyAsync(fn);
+            // alter context slightly and request another async completion stage,
+            ZipCode.set(55904);
+            stage1c = stage0.thenApplyAsync(fn);
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+
+        Object[] results = stage1a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        assertNull(results[1]); // must be cleared
+        assertEquals(Integer.valueOf(55902), results[2]); // must be propagated
+        assertEquals("[33, 56, 65]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[4]); // must be cleared
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+            else
+                throw new AssertionError(results[5]);
+
+        results = stage1b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        assertNull(results[1]); // must be cleared
+        assertEquals(Integer.valueOf(55902), results[2]); // must be propagated
+        assertEquals("[33, 56, 65]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[4]); // must be cleared
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+            else
+                throw new AssertionError(results[5]);
+
+        results = stage1c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        assertNull(results[1]); // must be cleared
+        assertEquals(Integer.valueOf(55904), results[2]); // must be propagated
+        assertEquals("[33, 56, 65]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[4]); // must be cleared
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+            else
+                throw new AssertionError(results[5]);
     }
 
     /**
-     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     * Verify that a ManagedScheduledExecutorService that is injected from a ManagedScheduledExecutorDefinition
+     * abides by the configured maxAsync and the configured thread context propagation that
+     * makes it possible to look up resource references in the application component's namespace.
      */
     @Test
     public void testManagedScheduledExecutorDefinition() throws Exception {
         assertNotNull(executor6);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        TransferQueue<CountDownLatch> queue = new LinkedTransferQueue<CountDownLatch>();
+        CompletableFuture<TransferQueue<CountDownLatch>> stage0 = executor6.completedFuture(queue);
+
+        CompletableFuture<Object> stage1a, stage1b, stage1c, stage1d;
+
+        // This async completion stage action polls the transfer queue for a latch to block on.
+        // This allows the caller to use up the maxAsync (which is 2) and then attempt additional
+        // transfers to test whether additional async requests can run in parallel.
+        Function<TransferQueue<CountDownLatch>, Object> fn = q -> {
+            try {
+                if (q.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                    return InitialContext.doLookup("java:comp/concurrent/executor6"); // requires Application context
+                else
+                    return false;
+            } catch (InterruptedException | NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        stage1a = stage0.thenApplyAsync(fn);
+        stage1b = stage0.thenApplyAsync(fn);
+        stage1c = stage0.thenApplyAsync(fn);
+        stage1d = stage0.thenApplyAsync(fn);
+
+        // With maxAsync=2, there should be 2 async completion stage actions running to accept transfers:
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Additional transfers should not be possible
+        assertFalse(queue.tryTransfer(blocker, 1, TimeUnit.SECONDS));
+
+        // Allow completion stage actions to finish:
+        blocker.countDown();
+
+        // The remaining completion stage actions can start now:
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        Object result;
+        assertNotNull(result = stage1a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService); // successful lookup on completion stage thread
+
+        assertNotNull(result = stage1b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService); // successful lookup on completion stage thread
+
+        assertNotNull(result = stage1c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService); // successful lookup on completion stage thread
+
+        assertNotNull(result = stage1d.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService); // successful lookup on completion stage thread
     }
 
     /**
