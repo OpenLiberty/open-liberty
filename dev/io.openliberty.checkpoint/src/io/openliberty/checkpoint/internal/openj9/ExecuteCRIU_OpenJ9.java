@@ -50,9 +50,4 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         }
     }
 
-    @Override
-    public void checkpointSupported() {
-        //This service implementation is only registered after support for CRIU is confirmed
-        // so do nothing here.
-    }
 }
