@@ -93,7 +93,7 @@ public class SendReceiveMailFromClientTest {
      * @param mailSessionToUse
      * @throws IOException
      */
-    void receive() throws Exception {
+    boolean receive() throws Exception {
 
         final String METHOD = "receive()";
         out.println("Entering " + c + "." + METHOD + " Session: " + mailSessionToUse +
@@ -131,14 +131,17 @@ public class SendReceiveMailFromClientTest {
             }
             out.println("============= end message headers =================");
 
+            store.close();
+
             if (foundExpectedFromHeader && foundExpectedSubjectHeader && 1==count) {
                 //print message that FAT controller will search for in output
                 out.println(testName +
-                            ": Application client received one email with expected 'From' and 'Subject' headers.");
+                            ": Application client received email with expected 'From' and 'Subject' headers.");
+                return true;
             }
-            store.close();
         } catch (Exception mex) {
             mex.printStackTrace(out);
         }
+        return false;
     }
 }

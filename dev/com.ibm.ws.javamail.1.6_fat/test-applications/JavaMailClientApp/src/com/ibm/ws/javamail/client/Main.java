@@ -47,7 +47,14 @@ public class Main {
                                                                                            "testBasicSendReceive");
         testBasicSendReceive.send();
         // Receiving mails later give server to process incoming mails
-        testBasicSendReceive.receive();
+        for(int i=0;i<5;++i) {
+          System.out.println("Iteration: " + i + ", at time: " + System.currentTimeMillis());
+          Thread.sleep(5000);
+          if(testBasicSendReceive.receive())  {
+            System.out.println("Message received at time: " + System.currentTimeMillis());
+            break;
+          }
+        }
 
         //define the ports here because they are controlled from the FAT ports file and so can't be
         //  defined in the annotation which takes constant values.
