@@ -14,7 +14,18 @@ import java.io.File;
 
 public interface ExecuteCRIU {
 
-    void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException;
+    /**
+     * Invokes the criu dump for the specified image directory, log file and
+     * working directory
+     *
+     * @param imageDir
+     * @param logFileName
+     * @param workDir
+     * @throws CheckpointFailedException
+     */
+    default void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
+        // do nothing
+    };
 
     /**
      * Asserts that the current JVM and platform has CRIU support which is needed to checkpoint/restore.
@@ -22,5 +33,7 @@ public interface ExecuteCRIU {
      * @throws CheckpointFailedException with details of the platform or jvm incompatibility if CRIU is not supported
      * @see io.openliberty.checkpoint.internal.criu.CheckpointFailedException.TYPE
      */
-    void checkpointSupported() throws CheckpointFailedException;
+    default void checkpointSupported() throws CheckpointFailedException {
+        // do nothing
+    };
 }

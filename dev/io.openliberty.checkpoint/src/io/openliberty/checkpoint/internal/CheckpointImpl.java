@@ -51,6 +51,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
+import io.openliberty.checkpoint.internal.openj9.J9CRIUSupport;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
@@ -74,12 +75,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
     private final ServiceRegistration<ClassFileTransformer> transformerReg;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
-    private volatile ExecuteCRIU criu;
+    private final ExecuteCRIU criu;
 
     private static volatile CheckpointImpl INSTANCE = null;
-
-    private final boolean stubCriu;
 
     @Activate
     public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin) {
@@ -89,7 +87,18 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     // only for unit tests
     CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin) {
         this.cc = cc;
-        this.criu = criu;
+        if (Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_STUB_CRIU))) {
+            /*
+             * This is useful for development if you want to debug through a checkpoint/restore
+             * operation without actually doing the criu dump in between. You can do this with
+             * the following:
+             * bin/server checkpoint <server name> --at=<phase> -Dio.openliberty.checkpoint.stub.criu=true
+             */
+            this.criu = new ExecuteCRIU() {
+            };
+        } else {
+            this.criu = (criu == null) ? J9CRIUSupport.create() : criu;
+        }
         this.locAdmin = locAdmin;
         String phase = cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
         this.checkpointAt = phase == null ? null : Phase.getPhase(phase);
@@ -102,7 +111,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.transformerReg = null;
             INSTANCE = null;
         }
-        stubCriu = Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_STUB_CRIU));
     }
 
     @Deactivate
@@ -184,9 +192,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
         prepare(checkpointHooks);
         try {
-            ExecuteCRIU currentCriu = getCurrentCriu();
             try {
-                currentCriu.checkpointSupported();
+                criu.checkpointSupported();
             } catch (CheckpointFailedException cpfe) {
                 debug(tc, () -> "ExecuteCRIU service does not support checkpoint.");
                 //TODO log a more helpful message based on cpfe Type
@@ -198,8 +205,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
             WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
             logsCheckpoint.create();
-            currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
-                             logsCheckpoint.asFile());
+            criu.dump(imageDir, CHECKPOINT_LOG_FILE,
+                      logsCheckpoint.asFile());
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {
@@ -212,24 +219,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
         restore(phase, checkpointHooks);
         createRestoreMarker();
-    }
-
-    ExecuteCRIU getCurrentCriu() {
-        if (stubCriu) {
-            return new ExecuteCRIU() {
-
-                @Override
-                public void checkpointSupported() {
-                    // do nothing;
-                }
-
-                @Override
-                public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
-                    // do nothing
-                }
-            };
-        }
-        return criu;
     }
 
     /**

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.openj9.internal;
+package io.openliberty.checkpoint.internal.openj9;
 
 import java.io.File;
 
@@ -50,9 +50,4 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         }
     }
 
-    @Override
-    public void checkpointSupported() {
-        //This service implementation is only registered after support for CRIU is confirmed
-        // so do nothing here.
-    }
 }
