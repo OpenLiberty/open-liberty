@@ -1787,6 +1787,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             StashfileLocation = (String) config.get("sslStashfileLocation");
             CertLabel = (String) config.get("sslCertlabel");
             IPv6Preferred = (Boolean) config.get("ipv6Preferred");
+            ignoreAffinityRequests = (Boolean) config.get("ignoreAffinityRequests");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
