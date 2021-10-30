@@ -10,6 +10,11 @@
  *******************************************************************************/
 package test.jakarta.concurrency.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,19 +23,32 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicReference;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import jakarta.enterprise.concurrent.LastExecution;
+import jakarta.enterprise.concurrent.ZonedTrigger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
-import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManageableThread;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -41,6 +59,19 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@ContextServiceDefinition(name = "java:app/concurrent/appContextSvc",
+                          propagated = APPLICATION,
+                          cleared = { TRANSACTION, SECURITY },
+                          unchanged = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
+                           hungTaskThreshold = 300000,
+                           maxAsync = 1) // TODO add context once annotation is fixed
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/executor6",
+                                    hungTaskThreshold = 360000,
+                                    maxAsync = 2) // TODO add context once annotation is fixed
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
+                                context = "java:app/concurrent/appContextSvc",
+                                priority = 3)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -63,26 +94,25 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(name = "java:global/env/concurrent/executor4Ref", lookup = "concurrent/executor4")
     ManagedScheduledExecutorService executor4;
 
-    // TODO @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+    @Resource(lookup = "java:comp/concurrent/executor6")
+    ManagedScheduledExecutorService executor6;
+
+    @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
     ForkJoinWorkerThreadFactory forkJoinThreadFactory;
+
+    @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
+    ManagedThreadFactory lowPriorityThreads;
 
     @Override
     public void init() throws ServletException {
-        // TODO remove this temporary code once the 3.0 ManagedThreadFactory class
-        // is available which implements ForkJoinWorkerThreadFactory
-        forkJoinThreadFactory = new ForkJoinWorkerThreadFactory() {
-            @Override
-            public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-                try {
-                    java.lang.reflect.Method newThread = defaultThreadFactory.getClass()
-                                    .getMethod("newThread", ForkJoinPool.class);
-                    newThread.setAccessible(true);
-                    return (ForkJoinWorkerThread) newThread.invoke(defaultThreadFactory, pool);
-                } catch (Exception x) {
-                    throw new RuntimeException(x);
-                }
-            }
-        };
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     */
+    @Test
+    public void testContextServiceDefinition() throws Exception {
+        assertNotNull(InitialContext.doLookup("java:app/concurrent/appContextSvc"));
     }
 
     /**
@@ -93,15 +123,11 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testGetContextService1WithContextCapture() throws Exception {
-        // TODO ContextService contextSvc = executor1.getContextService();
-        ContextService contextSvc = (ContextService) executor1.getClass().getMethod("getContextService").invoke(executor1);
+        ContextService contextSvc = executor1.getContextService();
 
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
 
-        // TODO CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
-        CompletableFuture<String> stage1copy = (CompletableFuture<String>)
-                        contextSvc.getClass().getMethod("withContextCapture", CompletableFuture.class)
-                                             .invoke(contextSvc, stage1);
+        CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
 
         // block the managed executor's only thread
         CountDownLatch blocker = new CountDownLatch(1);
@@ -156,6 +182,52 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * TODO write more of this test later. For now, just verify that we can look up the resource.
+     */
+    @Test
+    public void testManagedExecutorDefinition() throws Exception {
+        assertNotNull(InitialContext.doLookup("java:module/concurrent/executor5"));
+    }
+
+    /**
+     * TODO write more of this test later. For now, just verify that we can inject the resource.
+     */
+    @Test
+    public void testManagedScheduledExecutorDefinition() throws Exception {
+        assertNotNull(executor6);
+    }
+
+    /**
+     * Verify that a ManagedThreadFactory that is injected from a ManagedThreadFactoryDefinition
+     * creates threads that run with the configured priority and with the configured thread context
+     * that makes it possible to look up resource references in the application component's namespace.
+     */
+    @Test
+    public void testManagedThreadFactoryDefinition() throws Exception {
+        assertNotNull(lowPriorityThreads);
+
+        int priority = Thread.currentThread().getPriority();
+
+        ForkJoinPool pool = new ForkJoinPool(2, lowPriorityThreads, null, false);
+        try {
+            ForkJoinTask<Long> task = pool.submit(new Factorial(5)
+                            // TODO once ContextServiceDefinition honors config: .assertAvailable("java:comp/env/concurrent/executor3Ref")
+                            .assertPriority(3));
+
+            assertEquals(Long.valueOf(120), task.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            pool.shutdown();
+        }
+
+        assertEquals(priority, Thread.currentThread().getPriority());
+
+        Thread managedThread = lowPriorityThreads.newThread(() -> {
+        });
+        assertEquals(3, managedThread.getPriority());
+        assertTrue(managedThread.getClass().getName(), managedThread instanceof ManageableThread);
+    }
+
+    /**
      * Verify that it is possible to use nested ContextService without ever having obtained the
      * managed executor that it is nested under, and that is possible to use the withContextCapture
      * methods which create completion stages that are backed by that managed executor.
@@ -166,10 +238,7 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void testNestedContextService2WithContextCapture() throws Exception {
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
 
-        // TODO CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
-        CompletableFuture<String> stage1copy = (CompletableFuture<String>)
-                        contextSvc2.getClass().getMethod("withContextCapture", CompletableFuture.class)
-                                              .invoke(contextSvc2, stage1);
+        CompletableFuture<String> stage1copy = contextSvc2.withContextCapture(stage1);
 
         // block the managed executor's 2 threads
         CountDownLatch blocker = new CountDownLatch(1);
@@ -248,6 +317,78 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Schedule a one-shot timer with a ZonedTrigger that implements only getZoneId and the
+     * getNextRunTime method that accepts a ZonedDateTime. Record the LastExecution and ensure
+     * that the methods which specify a ZoneId are working and return times that are consistent
+     * with what the ZonedTrigger asks for.
+     */
+    @Test
+    public void testOneShotTimerWithZonedTrigger() throws Exception {
+        final AtomicReference<LastExecution> lastExecRef = new AtomicReference<LastExecution>();
+        final AtomicReference<ZonedDateTime> scheduledAtRef = new AtomicReference<ZonedDateTime>();
+        final ZoneId USCentral = ZoneId.of("America/Chicago");
+        final ZoneId USMountain = ZoneId.of("America/Denver");
+        final ZoneId NewZealand = ZoneId.of("Pacific/Auckland");
+        final long TOLERANCE_NS = TimeUnit.MILLISECONDS.toNanos(500);
+
+        ZonedDateTime beforeScheduled = ZonedDateTime.now(USCentral);
+        ScheduledFuture<Integer> future = executor4.schedule(() -> 400, new ZonedTrigger() {
+            @Override
+            public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime scheduledAt) {
+                if (lastExecution == null)
+                    return scheduledAt.plusSeconds(4);
+                lastExecRef.set(lastExecution);
+                scheduledAtRef.set(scheduledAt);
+                return null;
+            }
+
+            @Override
+            public ZoneId getZoneId() {
+                return USCentral;
+            }
+        });
+        try {
+            ZonedDateTime afterScheduled = ZonedDateTime.now(USCentral);
+
+            assertEquals(Integer.valueOf(400), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(future.isDone());
+            assertFalse(future.isCancelled());
+
+            // Is the scheduledAt time within the range of when we actually scheduled it?
+            ZonedDateTime scheduledAt = scheduledAtRef.get();
+            assertEquals(USCentral, scheduledAt.getZone()); // must supply scheduledAt time in same zone
+            assertTrue(beforeScheduled + " must be less or equal to " + scheduledAt,
+                       beforeScheduled.minusNanos(TOLERANCE_NS).isBefore(scheduledAt));
+            assertTrue(afterScheduled + " must be greater or equal to " + scheduledAt,
+                       afterScheduled.plusNanos(TOLERANCE_NS).isAfter(scheduledAt));
+
+            // Does the target start time of the last execution match what the trigger asked for?
+            LastExecution lastExec = lastExecRef.get();
+            ZonedDateTime targetStartAt = lastExec.getScheduledStart(USCentral);
+            assertEquals(USCentral, targetStartAt.getZone());
+            ZonedDateTime targetStartAtExpected = scheduledAt.plusSeconds(4);
+            assertTrue(targetStartAt + " must be equal to " + targetStartAtExpected,
+                       targetStartAt.isAfter(targetStartAtExpected.minusNanos(TOLERANCE_NS)) &&
+                       targetStartAt.isBefore(targetStartAtExpected.plusNanos(TOLERANCE_NS)));
+
+            // Is the actual start time after (or equal to) the expected?
+            ZonedDateTime startAt = lastExec.getRunStart(USMountain);
+            assertEquals(USMountain, startAt.getZone());
+            assertTrue(startAt + " must be greater or equal to " + targetStartAt,
+                       startAt.isAfter(targetStartAt.minusNanos(TOLERANCE_NS)));
+
+            // Is the actual end time after (or equal to) the actual start time?
+            ZonedDateTime endAt = lastExec.getRunEnd(NewZealand);
+            assertEquals(NewZealand, endAt.getZone());
+            assertTrue(endAt + " must be greater or equal to " + startAt,
+                       endAt.isAfter(startAt.minusNanos(TOLERANCE_NS)));
+        } finally {
+            if (!future.isDone())
+                future.cancel(true);
+        }
+    }
+
+    /**
      * Verify that a parallel stream can run on a ForkJoinPool that uses a ManagedThreadFactory
      * to create its ForkJoinWorkerThreads, and that those threads run with the application
      * component context of the the application that looked up or injected the ManagedThreadFactory.
@@ -302,6 +443,263 @@ public class ConcurrencyTestServlet extends FATServlet {
             }
         } finally {
             pool.shutdown();
+        }
+    }
+
+    /**
+     * Verify that it is possible to obtain a ContextService that is referenced by
+     * multiple managed executors, and that is possible to use the withContextCapture methods
+     * which create completion stages that are backed by the respective managed executor.
+     * Verify that the completion stages run on the managed executor, subject to its concurrency
+     * constraints, and runs tasks under the context propagation settings of the ContextService.
+     * Part 1 - This test covers usage of the managedScheduledExecutorService concurrent/executor3.
+     */
+    @Test
+    public void testReferencedContextServiceWithContextCapture3() throws Exception {
+        CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+        ContextService contextSvc3 = executor3.getContextService();
+
+        CompletableFuture<String> stage1copy = contextSvc3.withContextCapture(stage1);
+
+        // block the managed executor's 3 threads
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blocking = new CountDownLatch(3);
+        try {
+            CompletableFuture<Object> stage2a = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2b = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2c = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage1.complete("java:comp/env/concurrent/executor3Ref");
+            assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // fill the managed executor's 3 queue slots
+            CompletableFuture<Object> stage2d = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2e = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2f = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // attempt to exceed the managed executor's maximum queue size
+            CompletableFuture<String> stage2g = stage1copy.thenApplyAsync(s -> s);
+            try {
+                String result = stage2g.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to queue another completion stage " + stage2g + ", with result: " + result);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException)
+                    ; // expected
+                else
+                    throw x;
+            }
+
+            blocker.countDown();
+
+            Object result;
+            assertNotNull(result = stage2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2d.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2e.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2f.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
+     * Verify that it is possible to obtain a ContextService that is referenced by
+     * multiple managed executors, and that is possible to use the withContextCapture methods
+     * which create completion stages that are backed by the respective managed executor.
+     * Verify that the completion stages run on the managed executor, subject to its concurrency
+     * constraints, and runs tasks under the context propagation settings of the ContextService.
+     * Part 2 - This test covers usage of the managedScheduledExecutorService concurrent/executor4.
+     */
+    @Test
+    public void testReferencedContextServiceWithContextCapture4() throws Exception {
+        CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+        ContextService contextSvc4 = executor4.getContextService();
+
+        CompletableFuture<String> stage1copy = contextSvc4.withContextCapture(stage1);
+
+        // block the managed executor's 4 threads
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blocking = new CountDownLatch(4);
+        try {
+            CompletableFuture<Object> stage2a = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2b = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2c = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2d = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    blocking.countDown();
+                    if (blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                        return InitialContext.doLookup(jndiName);
+                    else
+                        return "timed out";
+                } catch (InterruptedException | NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            stage1.complete("java:comp/env/concurrent/executor3Ref");
+            assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // fill the managed executor's 4 queue slots
+            CompletableFuture<Object> stage2e = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2f = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2g = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            CompletableFuture<Object> stage2h = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // attempt to exceed the managed executor's maximum queue size
+            CompletableFuture<String> stage2i = stage1copy.thenApplyAsync(s -> s);
+            try {
+                String result = stage2i.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to queue another completion stage " + stage2i + ", with result: " + result);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException)
+                    ; // expected
+                else
+                    throw x;
+            }
+
+            blocker.countDown();
+
+            Object result;
+            assertNotNull(result = stage2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2d.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2e.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2f.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2g.get());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertNotNull(result = stage2h.join());
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+        } finally {
+            blocker.countDown();
         }
     }
 }

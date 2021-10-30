@@ -11,14 +11,10 @@ IBM-API-Package: \
 # a CWWKF0001E from jwt's use of servlet 3.0
 Subsystem-Name: JSON Web Token Single Sign-On 1.0
 -features=com.ibm.websphere.appserver.jwt-1.0, \
-  com.ibm.websphere.appserver.appSecurity-2.0, \
-  com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:="1.1", \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="4.0", \
-  com.ibm.websphere.appserver.authFilter-1.0
--bundles= com.ibm.ws.security.jwtsso, \
-  com.ibm.ws.security.common, \
-  com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0",\
-  com.ibm.ws.security.mp.jwt
+  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="4.0, 5.0", \
+  com.ibm.websphere.appserver.authFilter-1.0, \
+  io.openliberty.jwtSso1.0.internal.ee-7.0; ibm.tolerates:="9.0"
+-bundles=com.ibm.ws.security.jwtsso.token
 kind=ga
 edition=core

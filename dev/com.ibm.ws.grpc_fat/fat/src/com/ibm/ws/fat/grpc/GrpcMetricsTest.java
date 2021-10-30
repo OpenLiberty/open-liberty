@@ -56,7 +56,7 @@ public class GrpcMetricsTest extends FATServletClient {
     String clientContextRoot = "HelloWorldClient";
 
     // keep track of the number of client calls made, at the class level since the client server and app are never restarted
-    private static int clientCallCount = 0;
+    private static int clientCallCount;
 
     @Rule
     public TestName name = new TestName();
@@ -88,6 +88,7 @@ public class GrpcMetricsTest extends FATServletClient {
         GrpcClientOnly.useSecondaryHTTPPort();
         GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
         GrpcServerOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".server.log");
+        clientCallCount = 0;
     }
 
     @AfterClass

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,23 +44,23 @@ public class JSF23IterableSupportTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23IterableSupportServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "IterableSupport.war", "com.ibm.ws.jsf23.fat.iterable");
+        ShrinkHelper.defaultDropinApp(server, "IterableSupport.war", "com.ibm.ws.jsf23.fat.iterable");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        jsf23CDIServer.startServer(JSF23IterableSupportTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23IterableSupportTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -76,7 +76,7 @@ public class JSF23IterableSupportTests {
             String value;
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiRepeatSupportForIterable.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "uiRepeatSupportForIterable.jsf");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -108,7 +108,7 @@ public class JSF23IterableSupportTests {
             String value;
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "uiDataSupportForIterable.jsf");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "uiDataSupportForIterable.jsf");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 

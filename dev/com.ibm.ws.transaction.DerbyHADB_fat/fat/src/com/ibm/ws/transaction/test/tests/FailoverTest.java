@@ -24,6 +24,8 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.web.FailoverServlet;
 
@@ -91,15 +93,22 @@ public class FailoverTest extends FATServletClient {
         server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
+    private SetupRunner runner = new SetupRunner() {
+        @Override
+        public void run(LibertyServer s) throws Exception {
+            setUp(s);
+        }
+    };
+
     @Before
     public void before() throws Exception {
-        startServers(server);
+        FATUtils.startServers(runner, server);
     }
 
     @After
     public void cleanup() throws Exception {
 
-        server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
 
         // Clean up XA resource files
         server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -133,7 +142,7 @@ public class FailoverTest extends FATServletClient {
         server.setServerStartTimeout(30000);
 
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, server);
 
         Log.info(this.getClass(), method, "Call driveTransactions");
         try {
@@ -177,7 +186,7 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, server);
 
         Log.info(this.getClass(), method, "complete");
         Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
@@ -200,7 +209,7 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, server);
         Log.info(this.getClass(), method, "call testControlSetup");
 
         try {
@@ -238,7 +247,7 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, server);
         Log.info(this.getClass(), method, "call driveTransactions");
         try {
             sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");

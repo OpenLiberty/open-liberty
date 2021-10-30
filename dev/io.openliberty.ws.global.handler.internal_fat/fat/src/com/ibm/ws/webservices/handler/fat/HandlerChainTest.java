@@ -116,6 +116,9 @@ public class HandlerChainTest {
         // Uninstall Applications
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
+        // Make server wait for application stop for the test to observe PreDestroy phase
+        //server.waitForStringInLog("CWWKE1101I");
+        
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",

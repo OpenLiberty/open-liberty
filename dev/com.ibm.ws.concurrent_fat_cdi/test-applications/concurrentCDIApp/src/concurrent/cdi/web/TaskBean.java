@@ -18,14 +18,13 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import prototype.enterprise.concurrent.Async;
 
 @Singleton
 public class TaskBean implements Callable<String> {
@@ -69,9 +68,9 @@ public class TaskBean implements Callable<String> {
     /**
      * Asynchronously, look up a JNDI name and convert the result to a String value.
      */
-    @Async
+    @Asynchronous
     public CompletionStage<List<String>> lookupAll(String jndiName1, String jndiName2, String jndiName3) {
-        if (Async.Result.getFuture().isDone())
+        if (Asynchronous.Result.getFuture().isDone())
             throw new AssertionError("Result CompletableFuture should not be done already!");
         try {
             return dependentScopedBean.lookupAndConvertToString(jndiName1)

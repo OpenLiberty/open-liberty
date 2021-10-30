@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ if (bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disa
 
                 def selectedSymbolicName = symbolicName
                 // If the jar is jakartaee transformed, then see if the pre-transformed bundle has iFix headers.
-                if (it.getSourceName().equals(bnd('jakartaee.transform.jar.name', '')) || symbolicName.endsWith(".jakarta")) {
+                if (it.getSourceName().equals(bnd('jakartaFinalJarName', '')) || symbolicName.endsWith(".jakarta")) {
                     selectedSymbolicName = outerSymbolicName
                 }
                     
@@ -113,7 +113,7 @@ if (bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disa
 if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
     task publishJavadoc(type: Copy) {
         dependsOn zipJavadoc
-        from zipJavadoc
+        from new File(project.buildDir, 'distributions')
         into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
         rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
     }

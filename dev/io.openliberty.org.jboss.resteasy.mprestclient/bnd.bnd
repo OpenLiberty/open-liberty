@@ -13,9 +13,12 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.mprestclient
 
-resteasy-version=4.7.0.Final
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.mprestclient.jakarta.jar
 
-src: src, resources
+resteasy-version=4.7.2.Final
+
+src: src
 
 app-resources= \
  META-INF/services/javax.enterprise.inject.spi.Extension | \

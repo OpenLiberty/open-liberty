@@ -24,4 +24,5 @@ fat.project: true
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.transaction.test.util
+  com.ibm.ws.transaction.test.util,\
+  com.ibm.ws.transaction.fat.util

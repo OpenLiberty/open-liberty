@@ -4,6 +4,8 @@ com.ibm.ws.security.oauth_fat
 com.ibm.ws.security.spnego_fat
 com.ibm.ws.security.spnego_fat.1   
 com.ibm.ws.security.spnego_fat.2
+com.ibm.ws.security.oidc.client_fat.spnego
+com.ibm.ws.security.oidc.server_fat.spnego
 
 # Not a fat bucket, but still has '_fat' in name
 com.ibm.ws.jpa.tests.beanvalidation_fat.common

@@ -32,5 +32,3 @@ Export-Package: com.ibm.ws.transaction.fat.util
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	fattest.simplicity;version=latest
-
-jakartaeeMe: true

@@ -119,7 +119,13 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
     private ComponentContext context;
     private Dictionary<String, Object> props;
+
+    /**
+     * Persistence properties supplied through JPAComponent configuration.
+     * These properties are applied to createContainerEntityManagerFactory.
+     */
     private Map<String, String> defaultProps;
+
     private boolean server = false;
     private static final Set<String> stuckApps = new ConcurrentSkipListSet<String>();
 
@@ -646,6 +652,17 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "processClientModulePersistenceXml : " + applInfo.getApplName() +
                         "#" + module.getName());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addDefaultProperties(Map<String, Object> persistenceProperties) {
+        if (this.defaultProps != null) {
+            persistenceProperties.putAll(defaultProps);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "addDefaultProperties props: {0}", defaultProps);
+            }
+        }
     }
 
     /**

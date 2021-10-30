@@ -48,7 +48,9 @@ public class CookieExpirationTests extends CommonSecurityFat {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
                     .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_20))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT_EE9));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -66,6 +68,7 @@ public class CookieExpirationTests extends CommonSecurityFat {
 
         fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction());
 
+        FATSuite.transformApps(server, "apps/formlogin.war", "dropins/testmarker.war");
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));

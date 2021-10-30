@@ -2,7 +2,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd">
 
-    <!-- Master flow to propagate a logout of an SPSession by determining a subflow to run based on the type. -->
+    <!-- Primary flow to propagate a logout of an SPSession by determining a subflow to run based on the type. -->
 
     <action-state id="PropagateLogout">
         <evaluate expression="InitializeProfileRequestContext" />

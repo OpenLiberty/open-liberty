@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,5 +74,5 @@ tested.features: \
 	io.openliberty.com.fasterxml.jackson;version=latest,\
 	io.openliberty.com.fasterxml.jackson.jaxrs;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0,\
-	org.jboss.resteasy:resteasy-rxjava2;strategy=exact;version=4.6.0.Final,\
+	org.jboss.resteasy:resteasy-rxjava2;strategy=exact;version=4.7.2.Final,\
 	io.openliberty.org.jboss.resteasy.common

@@ -11,10 +11,12 @@
 package com.ibm.ws.transaction.test.dbrotationtests;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicCoreTest2;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
@@ -45,7 +47,13 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.beforeSuite();
         setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
+    }
+    
+    @AfterClass
+    public static void afterClass() throws Exception {
+    	FATSuite.afterSuite();
     }
 
     @After

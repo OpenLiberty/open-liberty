@@ -10,7 +10,9 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.introspector;
 
+import javax.servlet.ServletConfig;
+
 public interface RESTfulEndpointLoggingIntrospector {
 
-    public String addEndpoint(String appName, String httpMethod, String endpoint, String className, String methodName);
+    public void addEndpoints(ServletConfig servletConfig, StringBuffer sb);
 }

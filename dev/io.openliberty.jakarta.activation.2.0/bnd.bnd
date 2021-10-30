@@ -21,6 +21,9 @@ Private-Package: \
 
 instrument.disabled: true
 
+Include-Resource: \
+  @${repo;com.sun.activation:jakarta.activation;2.0.0}!/META-INF/mailcap.default, \
+  @${repo;com.sun.activation:jakarta.activation;2.0.0}!/META-INF/mimetypes.default
 
 publish.wlp.jar.suffix: dev/api/spec
 

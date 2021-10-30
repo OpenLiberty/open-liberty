@@ -11,7 +11,6 @@
 package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -54,9 +53,13 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
     protected Map<String, String> getServerXMLVariables() {
         ConfigVariables configVariables = getConfigVariables();
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
-            // We must request all Liberty variables, rather than all user defined defaults,
-            // since we want to know the default values of any variables which have been overwritten.
-            HashMap<String, String> result = new HashMap<>();
+            // Bit of a workaround:
+            // * getUserDefinedVariableDefaults includes variables defined in
+            //   defaultInstances.xml, but doesn't include variables with a default
+            //   value which has been overridden.
+            // * getAllLibertyVariables doesn't include variables defined in
+            //   defaultInstances.xml.
+            Map<String, String> result = OSGiConfigUtils.getDefaultVariablesFromServerXML(configVariables);
             for (LibertyVariable var : configVariables.getAllLibertyVariables()) {
                 if (var.getDefaultValue() != null) {
                     result.put(var.getName(), var.getDefaultValue());

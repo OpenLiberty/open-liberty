@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.CommonTests;
 
@@ -68,8 +68,8 @@ public class JWKEndpointUrl2ServerTests extends CommonTest {
 
         List<validationData> expectations = commonTools.getValidHelloWorldExpectations(updatedTestSettings, realmName);
 
-        updatedTestSettings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(updatedTestSettings);
+        msgUtils.printOAuthOidcExpectations(expectations, settings);
 
         return expectations;
     }
