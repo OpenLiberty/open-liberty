@@ -16,9 +16,9 @@ Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.common
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.common.jakarta.jar
 
-resteasy-version=4.7.0.Final
-resteasy-tracing-api-version=1.0.0.Final
-apache-mime4j-version=0.8.5
+resteasy-version=4.7.2.Final
+resteasy-tracing-api-version=1.1.0.Final
+apache-mime4j-version=0.8.6
 
 src: src, resources
 
