@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -96,7 +96,8 @@ public class TestSettings {
 
     protected Integer httpPort = null;
 
-    protected boolean allowPrint = true;
+    // turn printing of test settings and expectations OFF by default
+    protected boolean allowPrint = false;
 
     public enum StoreType {
         DATABASE, LOCAL, CUSTOM, CUSTOMBELL

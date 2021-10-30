@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -102,18 +103,12 @@ public class DBServiceOptionalTestDisabled extends DBTestBase {
 		ShrinkHelper.defaultDropinApp(client, appNameServiceOptional, "com.ibm.ws."+appNameServiceOptional+".client","com.ibm.ws."+appNameServiceOptional+".server","com.ibm.ws."+appNameServiceOptional+".servlet","com.ibm.ws."+appNameServiceOptional+".utils");
 		ShrinkHelper.defaultDropinApp(server1, appNameServiceOptional, "com.ibm.ws."+appNameServiceOptional+".client","com.ibm.ws."+appNameServiceOptional+".server","com.ibm.ws."+appNameServiceOptional+".servlet","com.ibm.ws."+appNameServiceOptional+".utils");
 
-		if (client != null && !client.isStarted()) {
-			client.startServer();
-		}
-		if (server1 != null && !server1.isStarted()) {
-			server1.startServer();
-		}
+		FATUtils.startServers(client, server1);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		ServerUtils.stopServer(client);
-		ServerUtils.stopServer(server1);
+		FATUtils.stopServers(client, server1);
 
 		DBTestBase.cleanupWSATTest(client);
 		DBTestBase.cleanupWSATTest(server1);

@@ -121,7 +121,6 @@ public class Social_BasicTests extends SocialCommonTest {
     @MinimumJavaLevel(javaLevel = 8)
     @Mode(TestMode.LITE)
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO EE9 does not support jwtSso-1.0 feature at this time.
     public void Social_BasicTests_MainPath_withJwtSsoFeature() throws Exception {
 
         genericTestServer.reconfigServer(providerConfigString + "_withJwtSsoFeature.xml", _testName, true, null);

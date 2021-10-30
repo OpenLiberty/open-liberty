@@ -44,6 +44,24 @@ task addEJBTools {
       into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb21/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
+
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.ann/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.mix/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.xml/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
   }
 }
 
@@ -61,6 +79,24 @@ task addEnterpriseBeansTools {
       into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb21/lib/global"
       rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
     }
+
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.ann/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.mix/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.mdb.jms.fat.mdb30.xml/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
   }
 }
 
@@ -69,4 +105,5 @@ addRequiredLibraries {
   dependsOn addEJBTools
   dependsOn addEnterpriseBeansTools
   dependsOn addJakartaTransformer
+  dependsOn addDerby
 }

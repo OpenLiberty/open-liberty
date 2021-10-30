@@ -44,7 +44,7 @@ public class MDB21Test extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.mdb.jms.fat.mdb21")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.mdb.jms.fat.mdb21")).andWith(new JakartaEE9Action().forServers("ejbcontainer.mdb.jms.fat.mdb21"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.mdb.jms.fat.mdb21")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.mdb.jms.fat.mdb21")).andWith(new JakartaEE9Action().fullFATOnly().forServers("ejbcontainer.mdb.jms.fat.mdb21"));
 
     @BeforeClass
     public static void setUp() throws Exception {

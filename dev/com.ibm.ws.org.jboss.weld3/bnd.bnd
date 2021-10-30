@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[3.1.8.Final,3.2)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+# Exclude this bundle from instrumentation (RAS & FFDC trace injection)
+instrument.disabled: true
+instrument.ffdc: false
 
 -buildpath: \
 	org.jboss.weld:weld-osgi-bundle;version=3.1.8.Final, \

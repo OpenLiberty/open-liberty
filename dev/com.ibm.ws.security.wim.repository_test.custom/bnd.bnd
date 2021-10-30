@@ -21,7 +21,7 @@ Import-Package: \
   !com.myorg, \
   ${defaultPackageImport}
 
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 test.project: true
 
 -dsannotations: com.myorg.SampleCustomRepository

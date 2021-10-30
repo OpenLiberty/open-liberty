@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,9 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
                     .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_20))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT_EE9));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -67,7 +69,11 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction());
+        if (FATSuite.isJakartaEE9()) {
+            fatUtils.updateFeatureFile(server, "featuresWithoutJwtSso", "ee9");
+        }
 
+        FATSuite.transformApps(server, "apps/formlogin.war", "dropins/testmarker.war");
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());

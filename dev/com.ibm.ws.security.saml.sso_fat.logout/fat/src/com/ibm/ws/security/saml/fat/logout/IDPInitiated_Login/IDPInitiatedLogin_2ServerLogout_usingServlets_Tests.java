@@ -68,12 +68,12 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
         extraApps.add(SAMLConstants.SAML_CLIENT_APP);
 
         // the config filenames are the same for server 1 and 2, but their content is just a little different (and they live in different sub-directories)
-        server1MasterConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + ".xml";
-        server2MasterConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + ".xml";
+        server1MainConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + ".xml";
+        server2MainConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + ".xml";
         server1OtherConfig = "server_SPLogoutTrue" + cookieInfo.getCookieFileExtension() + ".xml";
         server2OtherConfig = "server_SPLogoutTrue" + cookieInfo.getCookieFileExtension() + ".xml";
 
-        start2SPWithIDPServer("com.ibm.ws.security.saml.sso_fat.logout", server1MasterConfig, "com.ibm.ws.security.saml.sso_fat.logout.server2", server2MasterConfig, SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, null, null);
+        start2SPWithIDPServer("com.ibm.ws.security.saml.sso_fat.logout", server1MainConfig, "com.ibm.ws.security.saml.sso_fat.logout.server2", server2MainConfig, SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, null, null);
 
         testSAMLServer.addIgnoredServerException(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
         testSAMLServer2.addIgnoredServerException(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
@@ -89,7 +89,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
     @Test
     public void IDPInitiatedLogin_2ServerLogout_usingServlets_Tests_IDPInitiated_LogoutUrl_sameUser() throws Exception {
 
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_logout_with_multipleSPs_on_2Servers(SAMLConstants.IDP_INITIATED, SAMLConstants.IDP_INITIATED, LOGOUT_INVOLVES_IDP);
 
     }
@@ -100,7 +100,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
         // With an IDP initiated login, we'll login and generate an idp_session cookie on the IDP server
         // once we have that, the IDP won't make us log in again, so, we're really using the same user from the rest of test
         testUsers = new Testusers(UserType.DIFFERENT);
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_logout_with_multipleSPs_on_2Servers(SAMLConstants.IDP_INITIATED, SAMLConstants.IDP_INITIATED, LOGOUT_INVOLVES_IDP);
 
     }
@@ -108,7 +108,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
     @Test
     public void IDPInitiatedLogin_2ServerLogout_usingServlets_Tests_IDPInitiated_LogoutUrl_tryToUseSPServer2CookieAfterLogout() throws Exception {
 
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_usingCookieAfterLogout(SAMLConstants.IDP_INITIATED, SAMLConstants.IDP_INITIATED, LOGOUT_INVOLVES_IDP);
 
     }
@@ -116,7 +116,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
     @Test
     public void IDPInitiatedLogin_2ServerLogout_usingServlets_Tests_servletRequestLogout_spLogoutFalse_sameUser() throws Exception {
 
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_logout_with_multipleSPs_on_2Servers(SAMLConstants.IDP_INITIATED, SAMLConstants.HTTPSERVLET_INITIATED, LogoutStaysInSPOnly);
 
     }
@@ -125,7 +125,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
     public void IDPInitiatedLogin_2ServerLogout_usingServlets_Tests_servletRequestLogout_spLogoutFalse_differentUsers() throws Exception {
 
         testUsers = new Testusers(UserType.DIFFERENT);
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_logout_with_multipleSPs_on_2Servers(SAMLConstants.IDP_INITIATED, SAMLConstants.HTTPSERVLET_INITIATED, LogoutStaysInSPOnly);
 
     }
@@ -133,7 +133,7 @@ public class IDPInitiatedLogin_2ServerLogout_usingServlets_Tests extends TwoServ
     @Test
     public void IDPInitiatedLogin_2ServerLogout_usingServlets_Tests_servletRequestLogout_spLogoutFalse_tryToUseSPServer2CookieAfterLogout() throws Exception {
 
-        reconfigServers(server1MasterConfig, server2MasterConfig);
+        reconfigServers(server1MainConfig, server2MainConfig);
         test_usingCookieAfterLogout(SAMLConstants.IDP_INITIATED, SAMLConstants.HTTPSERVLET_INITIATED, LogoutStaysInSPOnly);
 
     }

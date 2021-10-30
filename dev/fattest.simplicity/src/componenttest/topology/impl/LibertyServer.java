@@ -13,20 +13,21 @@ package componenttest.topology.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -37,11 +38,11 @@ import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
-import java.time.ZonedDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -227,7 +228,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 30) * 1000;
+    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 120) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
 
     // How long to wait for an app to start before failing out
@@ -1053,9 +1054,9 @@ public class LibertyServer implements LogMonitorClient {
     public static void printProcesses(Machine host, String prefix) {
         final String m = "printProcesses";
 
-        String timeStamp = ZonedDateTime.now( ZoneId.systemDefault() ).format( DateTimeFormatter.ofPattern( "uuuu.MM.dd.HH.mm.ss" ) ).toString();
+        String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss")).toString();
         String fileName = "processes-" + timeStamp + ".txt";
-        if (prefix != null && ! prefix.isEmpty()) {
+        if (prefix != null && !prefix.isEmpty()) {
             fileName = prefix + "-" + fileName;
         }
         Props properties = Props.getInstance();
@@ -1068,7 +1069,7 @@ public class LibertyServer implements LogMonitorClient {
             stream.print(detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
-        } 
+        }
     }
 
     public void printProcessHoldingPort(int port) {
@@ -2775,6 +2776,10 @@ public class LibertyServer implements LogMonitorClient {
         while (true) {
             try {
                 _postStopServerArchive();
+                break;
+            } catch (FileNotFoundException ex) {
+                Log.error(c, method, ex, "Failed to archive " + getServerName() + " because of missing files. ");
+                // The file is never going to appear, so break here.
                 break;
             } catch (Exception e) {
                 Log.error(c, method, e, "Server " + getServerName() + " may still be running.");

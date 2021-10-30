@@ -23,6 +23,7 @@ instrument.disabled: true
 	com.ibm.websphere.javaee.persistence.2.0;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.tx.jta;version=latest,\

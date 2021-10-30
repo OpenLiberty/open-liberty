@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.enterprise.concurrent.LastExecution;
@@ -69,6 +72,13 @@ public class LastExecutionImpl implements LastExecution {
     }
 
     /**
+     * @see javax.enterprise.concurrent.LastExecution#getRunEnd(java.time.ZoneId)
+     */
+    public ZonedDateTime getRunEnd(ZoneId zone) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTime), zone);
+    }
+
+    /**
      * @see javax.enterprise.concurrent.LastExecution#getRunStart()
      */
     @Override
@@ -77,11 +87,25 @@ public class LastExecutionImpl implements LastExecution {
     }
 
     /**
+     * @see javax.enterprise.concurrent.LastExecution#getRunStart(java.time.ZoneId)
+     */
+    public ZonedDateTime getRunStart(ZoneId zone) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), zone);
+    }
+
+    /**
      * @see javax.enterprise.concurrent.LastExecution#getScheduledStart()
      */
     @Override
     public final Date getScheduledStart() {
         return new Date(scheduledStartTime);
+    }
+
+    /**
+     * @see javax.enterprise.concurrent.LastExecution#getScheduledStart(java.time.ZoneId)
+     */
+    public ZonedDateTime getScheduledStart(ZoneId zone) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(scheduledStartTime), zone);
     }
 
     /**

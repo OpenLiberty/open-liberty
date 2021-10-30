@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -519,14 +519,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             // it
             String ksPath = System.getProperty("javax.net.ssl.keyStore");
             if (ksPath != null && ksPath.length() > 0) {
-                String ksPassword = System
-                                .getProperty("javax.net.ssl.keyStorePassword");
-                String ksType = System
-                                .getProperty("javax.net.ssl.keyStoreType");
+                String ksPassword = System.getProperty("javax.net.ssl.keyStorePassword");
+                String ksType = System.getProperty("javax.net.ssl.keyStoreType");
                 Log.info(thisClass, "setup Keymanager", "ksPath=" + ksPath + " ksPassword=" + ksPassword + " ksType=" + ksType);
                 if (ksPassword != null && ksType != null) {
-                    KeyManagerFactory kmFactory = KeyManagerFactory
-                                    .getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                    KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
                     File ksFile = new File(ksPath);
                     KeyStore keyStore = KeyStore.getInstance(ksType);
@@ -560,8 +557,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             // Install the all-trusting trust manager
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(keyManagers, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection
-                            .setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
             // Create all-trusting host name verifier
             @SuppressWarnings("unused")
@@ -705,10 +701,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations, testActions);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -833,8 +827,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations, testActions);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         Object thePage = null;
 
@@ -962,8 +956,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -1040,8 +1034,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -1145,10 +1139,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeEndpoint";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            settings.printTestSettings();
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1243,10 +1235,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         Page thePage = null;
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            settings.printTestSettings();
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1388,7 +1378,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "invokeEndpointWithBody";
 
         msgUtils.printMethodName(thisMethod);
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, null);
         Log.info(thisClass, thisMethod, "source: " + source);
         String s = IOUtils.toString(source, StandardCharsets.UTF_8);
         Log.info(thisClass, thisMethod, "source: " + s);
@@ -1478,9 +1468,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeForm";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1554,9 +1542,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeForm";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         msgUtils.printAllCookies(webClient);
 
@@ -1841,7 +1827,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeEndpointWithHttpUrlConn";
 
         msgUtils.printMethodName(thisMethod);
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, null);
 
         try {
             helpers.setMarkToEndOfAllServersLogs();

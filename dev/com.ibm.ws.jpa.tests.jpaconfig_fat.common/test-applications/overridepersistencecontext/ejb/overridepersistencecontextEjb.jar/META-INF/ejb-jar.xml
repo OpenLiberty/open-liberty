@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_id" xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+    metadata-complete="false" version="3.0">
+
+    <enterprise-beans>
+        <!-- Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OverridePersistenceContextSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.overridepersistencecontext.ejblocal.OverridePersistenceContextSFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/OverridePersistenceContext_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+
+                <!-- This property is set here to test it overrides the JPAComponent configuration value -->
+                <persistence-property>
+                    <name>javax.persistence.lock.timeout</name>
+                    <value>34567</value>
+                </persistence-property>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OverridePersistenceContext_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OverridePersistenceContext_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+
+        <!-- Stateful Session Bean, PC: CM-ES -->
+        <session>
+            <ejb-name>OverridePersistenceContextSFExEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.overridepersistencecontext.ejblocal.OverridePersistenceContextSFExEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/OverridePersistenceContext_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+
+                <!-- This property is set here to test it overrides the JPAComponent configuration value -->
+                <persistence-property>
+                    <name>javax.persistence.lock.timeout</name>
+                    <value>34567</value>
+                </persistence-property>
+            </persistence-context-ref>
+        </session>
+
+        <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OverridePersistenceContextSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.overridepersistencecontext.ejblocal.OverridePersistenceContextSLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/OverridePersistenceContext_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+
+                <!-- This property is set here to test it overrides the JPAComponent configuration value -->
+                <persistence-property>
+                    <name>javax.persistence.lock.timeout</name>
+                    <value>34567</value>
+                </persistence-property>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OverridePersistenceContext_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OverridePersistenceContext_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>OverridePersistenceContext_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

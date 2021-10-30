@@ -11,10 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
-
 import java.util.List;
 
 import org.junit.Test;
@@ -29,7 +28,6 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -63,7 +61,18 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
     protected static CXFSAMLCommonUtils commonUtils = new CXFSAMLCommonUtils();
     protected static String servicePort = null;
     protected static String serviceSecurePort = null;
+    //issue 18363
+    protected static String featureVersion = "";
 
+    //issue 18363
+    public static String getFeatureVersion() {
+        return featureVersion;
+    }
+    
+    public static void setFeatureVersion(String version) {
+        featureVersion = version;
+    } //End of issue 18363
+	
     /**
      * TestDescription:
      *
@@ -89,7 +98,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
-
+		
     }
 
     /**
@@ -116,7 +125,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
-
+        
     }
 
     /**
@@ -137,7 +146,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
     @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserBadPw_test() throws Exception {
-
+ 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -146,7 +155,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
         //		genericSAML(_testName, wc, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_UNAUTHORIZED));
-
+        
     }
 
     /**
@@ -176,7 +185,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
         //		genericSAML(_testName, wc, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_UNAUTHORIZED));
-
+        
     }
 
     /**
@@ -208,7 +217,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
         expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive message that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-
+		
     }
 
     /**
@@ -234,6 +243,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, commonUtils.processClientWsdl("ClientNotSamlTokenWebSvc.wsdl", servicePort));
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, expectedResponse));
-    }
+		
+	}
 
 }

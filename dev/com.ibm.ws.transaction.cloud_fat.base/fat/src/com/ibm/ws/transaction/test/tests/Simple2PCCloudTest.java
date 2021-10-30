@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -89,7 +90,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
@@ -99,7 +100,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         Log.info(this.getClass(), method, "testLeaseTableAccess" + id + " returned: " + sb);
 
         // "CWWKE0701E" error message is allowed
-        server1.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
     }
 
     /**
@@ -117,7 +118,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -144,7 +145,7 @@ public class Simple2PCCloudTest extends FATServletClient {
 
         // Lastly stop server1
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
-        server1.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1);
 
         // Lastly, clean up XA resource file
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -166,7 +167,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -192,7 +193,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for cloud001");
         // "CWWKE0701E" error message is allowed
-        server2.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
 
         // Lastly, clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -222,7 +223,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
@@ -270,7 +271,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for cloud001");
         // "CWWKE0701E" error message is allowed
-        server2.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
 
         // Lastly, clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);

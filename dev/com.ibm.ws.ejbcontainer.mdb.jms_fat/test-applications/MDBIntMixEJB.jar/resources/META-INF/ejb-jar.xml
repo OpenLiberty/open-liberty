@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ejb-jar id="EJBJar_1060639024453" version="3.0"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="false">
+  <enterprise-beans>
+    <message-driven id="MessageDriven_1050954917281">
+      <ejb-name>InterceptorMDB01Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.InterceptorMDB01Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDBReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <env-entry id="EnvEntry_101">
+        <description>This is a description</description>
+        <env-entry-name>int1Injection</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>42</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injectedEnvVar</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <resource-ref id="ResourceRef_1050954917312">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      <resource-env-ref id="ResourceEnvRef_101">
+        <resource-env-ref-name>ctxInjection</resource-env-ref-name>
+        <resource-env-ref-type>javax.ejb.MessageDrivenContext</resource-env-ref-type>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injContext</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1050954917312">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </message-driven>
+    <message-driven id="MessageDriven_1050954917282">
+      <ejb-name>InterceptorMDB02Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.InterceptorMDB02Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB02ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <env-entry id="EnvEntry_201">
+        <env-entry-name>int1Injection</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>42</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injectedEnvVar</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <resource-ref id="ResourceRef_1050954917313">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      <resource-env-ref id="ResourceEnvRef_201">
+        <resource-env-ref-name>ctxInjection</resource-env-ref-name>
+        <resource-env-ref-type>javax.ejb.MessageDrivenContext</resource-env-ref-type>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injContext</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1050954917313">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </message-driven>
+    <message-driven id="MessageDriven_1050954917283">
+      <ejb-name>InterceptorMDB03Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.InterceptorMDB03Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB03ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <env-entry id="EnvEntry_301">
+        <env-entry-name>int1Injection</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>42</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injectedEnvVar</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <resource-ref id="ResourceRef_1050954917314">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      <resource-env-ref id="ResourceEnvRef_301">
+        <resource-env-ref-name>ctxInjection</resource-env-ref-name>
+        <resource-env-ref-type>javax.ejb.MessageDrivenContext</resource-env-ref-type>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injContext</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1050954917314">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </message-driven>
+    <message-driven id="MessageDriven_1050954917284">
+      <ejb-name>InterceptorMDB04Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.InterceptorMDB04Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB04ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <env-entry id="EnvEntry_401">
+        <env-entry-name>int1Injection</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>42</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injectedEnvVar</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <resource-ref id="ResourceRef_1050954917315">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      <resource-env-ref id="ResourceEnvRef_401">
+        <resource-env-ref-name>ctxInjection</resource-env-ref-name>
+        <resource-env-ref-type>javax.ejb.MessageDrivenContext</resource-env-ref-type>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.mix.ejb.Interceptor01</injection-target-class>
+          <injection-target-name>injContext</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1050954917315">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </message-driven>
+  </enterprise-beans>
+</ejb-jar>

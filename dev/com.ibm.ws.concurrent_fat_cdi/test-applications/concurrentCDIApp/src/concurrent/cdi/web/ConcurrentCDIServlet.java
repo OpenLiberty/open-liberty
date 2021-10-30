@@ -277,8 +277,8 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * A managed bean that is ApplicationScoped can be annotated Async at the class level,
-     * and methods that return CompletableFuture will run asynchronously to the calling thread.
+     * A managed bean that is ApplicationScoped can have an asynchronous method
+     * that returns CompletableFuture and runs asynchronously to the calling thread.
      */
     @Test
     public void testAppScopedBeanAsyncMethodReturnsCompletableFuture() throws Exception {
@@ -291,8 +291,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * A managed bean that is ApplicationScoped can be annotated Async at the class level,
-     * and methods that return CompletionStage will run asynchronously to the calling thread.
+     * An asynchronous method that returns CompletionStage will run asynchronously to the calling thread.
      */
     @Test
     public void testAppScopedBeanAsyncMethodReturnsCompletionStage() throws Exception {
@@ -312,11 +311,11 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * A managed bean that is ApplicationScoped can be annotated Async at the class level,
-     * and methods with a void return type do not run asynchronously to the calling thread.
+     * A managed bean that is ApplicationScoped can have some asynchronous methods,
+     * but other methods do not run asynchronously to the calling thread.
      */
     @Test
-    public void testAppScopedBeanMethodWithVoidReturnTypeIsNotAsync() throws Exception {
+    public void testAppScopedBeanMethodWithoutAnnotationIsNotAsync() throws Exception {
         String curThreadName = Thread.currentThread().getName();
         AtomicReference<String> threadNameRef = new AtomicReference<String>();
         appScopedBean.notAsync(threadNameRef);

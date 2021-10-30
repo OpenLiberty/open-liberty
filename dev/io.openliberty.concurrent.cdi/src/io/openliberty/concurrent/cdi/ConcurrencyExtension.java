@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.concurrent.cdi;
 
-import prototype.enterprise.concurrent.Async;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -20,11 +19,12 @@ import javax.enterprise.inject.spi.Extension;
 import com.ibm.ws.cdi.CDIServiceUtils;
 
 import io.openliberty.concurrent.cdi.interceptor.AsyncInterceptor;
+import jakarta.enterprise.concurrent.Asynchronous;
 
 public class ConcurrencyExtension implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         // register the interceptor binding and the interceptor
-        AnnotatedType<Async> bindingType = beanManager.createAnnotatedType(Async.class);
+        AnnotatedType<Asynchronous> bindingType = beanManager.createAnnotatedType(Asynchronous.class);
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<AsyncInterceptor> interceptorType = beanManager.createAnnotatedType(AsyncInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));

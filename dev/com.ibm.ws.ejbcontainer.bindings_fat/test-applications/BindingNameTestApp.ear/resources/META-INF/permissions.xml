@@ -5,6 +5,10 @@
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
 
-
+   <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>*</name>
+      <actions>read,write</actions>
+   </permission>
 
 </permissions>
