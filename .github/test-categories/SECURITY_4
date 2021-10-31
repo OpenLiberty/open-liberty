@@ -2,6 +2,7 @@ com.ibm.ws.security.wim.adapter.ldap_fat
 com.ibm.ws.security.wim.core_fat
 com.ibm.ws.security.wim.registry_fat
 com.ibm.ws.security.wim.scim.2.0_fat
-com.ibm.ws.security.wim.adapter.ldap_fat.krb5
+com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1
+com.ibm.ws.security.wim.adapter.ldap_fat.krb5.2
 com.ibm.ws.ssl_fat_keystoreGen
 com.ibm.ws.ssl_fat_pkcs12
