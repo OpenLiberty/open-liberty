@@ -107,7 +107,7 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
     
     protected void warning(DDParser parser, String message) throws ParseException {
         if ( FAIL_ON_ERROR ) {
-            throw new ParseException( parser.missingHRef(hrefElementName) );        
+            throw new ParseException(message);        
         } else {
             parser.warning(message);
         }
@@ -115,6 +115,7 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
     
     public <R> R resolveReferent(DDParser parser, Class<R> referentClass) throws ParseException {
         if ( href == null ) {
+            // This is a new warning: Previously, a null pointer exception would occur.
             warning( parser, parser.missingHRef(hrefElementName) );
             return null;
         }
@@ -123,6 +124,7 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
         int hashIndex = hrefValue.indexOf('#');
         if ( (hashIndex == -1) ||
              (hashIndex == 0) || (hashIndex == hrefValue.length() - 1) ) {
+            // This is a new warning: Previously, an index out of bounds exception would occur.
             warning( parser, parser.invalidHRef(hrefElementName, hrefValue) );
             return null;
         }
@@ -139,19 +141,26 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
         String primaryDDPath = primaryDD.getDeploymentDescriptorPath();
 
         if ( !primaryDDPath.equals(hrefPath) ) {
+            // This warning was generated before.  Although, it a strange
+            // case to check for, since it is very very unlikely.
             warning( parser, parser.invalidHRefPrefix(hrefElementName, hrefValue, hrefPath, primaryDDPath) );
             return null;
         }
 
         Object primaryDDElement = primaryDD.getComponentForId(hrefId);
         if ( primaryDDElement == null ) {
-            warning( parser, parser.unresolvedReference(hrefElementName, hrefValue, hrefId, hrefPath) );
+            // This new warning is temporarily disabled.
+            // Adding this warning causes a lot of new test failures.
+            // There are many existing FAT tests which fail if this warning
+            // is enabled.
+            // warning( parser, parser.unresolvedReference(hrefElementName, hrefValue, hrefId, hrefPath) );
             return null;
         }
 
         try {
             return referentClass.cast(primaryDDElement);
         } catch ( ClassCastException e ) {
+            // This is a new warning.  Previously, a class cast exception would occur.
             warning( parser, parser.incorrectHRefType(hrefElementName, hrefValue, referentClass, primaryDDElement) );
             return null;
         }

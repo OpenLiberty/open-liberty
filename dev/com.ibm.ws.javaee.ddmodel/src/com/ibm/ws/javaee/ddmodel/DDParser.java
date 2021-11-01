@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -202,11 +203,13 @@ public abstract class DDParser {
         @Trivial
         @Override
         public void describe(Diagnostics diag) {
-            String prefix = "";
+            boolean isFirst = true;
             for (T t : list) {
-                diag.sb.append(prefix);
+                if ( !isFirst ) {
+                    isFirst = false;
+                    diag.sb.append(',');
+                }
                 diag.describeWithIdIfSet(t);
-                prefix = ",";
             }
         }
     }
@@ -221,11 +224,18 @@ public abstract class DDParser {
         }
     }
 
+    // This must remain a static class:
+    //
+    // The ID map is handed off to the parsed element
+    // when parsing completes.
+    //
+    // See, for example, EJBJarType.finish().
+
     public static class ComponentIDMap {
         public static final Object DUPLICATE = new Object();
 
-        private final Map<String, Object> idToComponentMap =
-            new HashMap<String, Object>();
+        private final Map<String, Object> idToComponentMap = new HashMap<>();
+        private Map<Object, String> componentToIdMap = null;
 
         @Trivial
         Object get(String id) {
@@ -237,21 +247,58 @@ public abstract class DDParser {
             return idToComponentMap.put(id, ddComponent);
         }
 
+        private boolean didDisplayIds;
+
         @Trivial
         public Object getComponentForId(String id) {
             Object comp = idToComponentMap.get(id);
-            return comp != DUPLICATE ? comp : null;
+            if ( comp == DUPLICATE ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {                
+                    // Should this be a warning??
+                    Tr.debug(tc, "Lookup of duplicate ID [ {0} ] forced to null.", id);
+                }
+                comp = null;
+            } else if ( comp == null ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Failed lookup of ID [ {0} ]", id);
+                    if ( !didDisplayIds ) {                                
+                        didDisplayIds = true;
+                        for ( Map.Entry<String, Object> idEntry : idToComponentMap.entrySet() ) {
+                            Tr.debug(tc, "ID [ {0} ]: [ {1} ]", idEntry.getKey(), idEntry.getValue());
+                        }
+                    }
+                }
+            } else {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Lookup of ID [ {0} ]: [ {1} ]", id, comp);
+                }
+            }
+            return comp;
         }
 
         // Mark as trivial to turn off logging as a fix for defect 53155
         @Trivial
         public String getIdForComponent(Object ddComponent) {
-            for (Map.Entry<String, Object> entry : idToComponentMap.entrySet()) {
-                if (entry.getValue() == ddComponent) {
-                    return entry.getKey();
-                }
+            if ( ddComponent == null ) {
+                return null; // Unexpected
+            } else if ( ddComponent == DUPLICATE ) {
+                return null;
             }
-            return null;
+
+            if ( componentToIdMap == null ) {
+                Map<Object, String> useMap =
+                    new IdentityHashMap<>( idToComponentMap.size() );
+                for ( Map.Entry<String, Object> idEntry : idToComponentMap.entrySet() ) {
+                    String id = idEntry.getKey();
+                    Object component = idEntry.getValue();
+                    if ( component != DUPLICATE ) {
+                        useMap.put(component, id);
+                    }
+                }
+                componentToIdMap = useMap;
+            }
+
+            return componentToIdMap.get(ddComponent);
         }
     }
 
@@ -274,7 +321,9 @@ public abstract class DDParser {
         void describeWithIdIfSet(Parsable parsable) {
             String id = idMap != null ? idMap.getIdForComponent(parsable) : null;
             if (id != null) {
-                sb.append("[id<\"" + id + "\">]");
+                sb.append("[id<\"");
+                sb.append(id);
+                sb.append("\">]");
             }
             parsable.describe(this);
         }
@@ -288,61 +337,79 @@ public abstract class DDParser {
 
         @Trivial
         public <T> void describeEnum(String name, T enumValue) {
-            sb.append(name + "<");
+            sb.append(name);
+            sb.append('<');
             if (enumValue != null) {
                 sb.append(enumValue);
             } else {
                 sb.append("null");
             }
-            sb.append(">");
+            sb.append('>');
         }
 
         @Trivial
         public <T> void describeEnumIfSet(String name, T enumValue) {
             if (enumValue != null) {
-                sb.append("[" + name + "<");
+                sb.append('[');
+                sb.append(name);
+
+                sb.append('<');
                 sb.append(enumValue);
-                sb.append(">]");
+                sb.append('>');
+
+                sb.append(']');
             }
         }
 
         @Trivial
         public void describe(String name, ParsableElement parsable) {
-            sb.append(name + "<");
+            sb.append(name);
+            sb.append('<');
             if (parsable != null) {
                 describeWithIdIfSet(parsable);
             } else {
                 sb.append("null");
             }
-            sb.append(">");
+            sb.append('>');
         }
 
         @Trivial
         public void describe(String name, ParsableList<? extends ParsableElement> parsableList) {
-            sb.append(name + "(");
+            sb.append(name);
+            sb.append('(');
             if (parsableList != null) {
                 parsableList.describe(this);
             } else {
                 sb.append("null");
             }
-            sb.append(")");
+            sb.append(')');
         }
 
         @Trivial
         public void describeIfSet(String name, ParsableElement parsable) {
             if (parsable != null) {
-                sb.append("[" + name + "<");
+                sb.append('[');
+                sb.append(name);
+
+                sb.append('<');
                 describeWithIdIfSet(parsable);
-                sb.append(">]");
+                sb.append('>');
+
+                sb.append(']');
             }
         }
 
         @Trivial
         public void describeIfSet(String name, ParsableList<? extends ParsableElement> parsableList) {
             if (parsableList != null) {
-                sb.append("[" + name + "(");
+                sb.append('[');
+                sb.append(name);
+
+                sb.append('(');
                 parsableList.describe(this);
-                sb.append(")]");
+                sb.append(')');
+
+                sb.append(']');
             }
         }
 
@@ -617,7 +684,31 @@ public abstract class DDParser {
     public String rootElementLocalName;
     
     public ComponentIDMap idMap = new ComponentIDMap();
+    
+    public void putId(String elementName, String id, Object value) {
+        Object oldValue = idMap.get(id);
+        if ( oldValue == null ) {
+            idMap.put(id, value);
+            return;
 
+        } else if ( oldValue == value ) {
+            return;
+
+        } else {
+            idMap.put(id, ComponentIDMap.DUPLICATE);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                String entryPath = describeEntry();
+                int lineNo = getLineNumber();
+
+                // Should this be a warning??
+                Tr.debug(tc,
+                    "Duplicate ID [ {0} ] in element [ {1} ] of [ {2} ] at line [ {3} ]",
+                    id, elementName, entryPath, lineNo);
+            }
+        }
+    }
+    
     protected String currentElementLocalName;
 
     protected final Object describeRootParsable = new Object() {
@@ -930,20 +1021,8 @@ public abstract class DDParser {
                 } else if (attrNS != null) {
                     throw new ParseException(incorrectIDAttrNamespace(attrNS));
                 }
-                IDType idKey = parseIDAttributeValue(i);
-                String key = idKey.getValue();
-                Object oldValue = idMap.get(key);
-                if (oldValue == null) {
-                    oldValue = idMap.put(key, parsable);
-                }
-                if (oldValue != null && oldValue != parsable) {
-                    if (oldValue != ComponentIDMap.DUPLICATE) {
-                        idMap.put(key, ComponentIDMap.DUPLICATE);
-                    }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The element {0} has an id {1} that is not unique.", currentElementLocalName, key);
-                    }
-                }
+                String id = parseIDAttributeValue(i).getValue();
+                putId(currentElementLocalName, id, parsable);
                 continue;
             }
             if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(attrNS)) {
@@ -1137,12 +1216,12 @@ public abstract class DDParser {
         
         public String toString() {
             return super.toString() +
-                "(" + versionAttr +
+                '(' + versionAttr +
                 ", " + namespace +
                 ", " + publicId +
                 ", " + version +
                 ", " + platformVersion +
-                ")";
+                ')';
         }
     }
 
@@ -1471,5 +1550,5 @@ public abstract class DDParser {
 
     protected String unexpectedRootElement(String expectedRootElementName) {
         return Tr.formatMessage(tc, "unexpected.root.element", describeEntry(), getLineNumber(), rootElementLocalName, expectedRootElementName);
-    }    
+    }
 }
