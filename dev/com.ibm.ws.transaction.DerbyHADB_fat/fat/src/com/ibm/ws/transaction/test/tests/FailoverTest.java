@@ -479,6 +479,114 @@ public class FailoverTest extends FATServletClient {
     }
 
     /**
+     * Simulate an unexpected sqlcode on the first attempt to connect to the database
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBConnectFailover() throws Exception {
+        final String method = "testHADBConnectFailover";
+        StringBuilder sb = null;
+        startServers(defaultServer);
+        Log.info(this.getClass(), method, "call testHADBConnectFailover");
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        defaultServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        startServers(defaultServer);
+
+        // Should see a message like
+        // WTRN0100E: Cannot recover from SQLException when opening the SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No error message signifying log failure", defaultServer.waitForStringInLog("An unexpected error occured whilst opening the recovery log"));
+
+        // We need to tidy up the environment at this point. We cannot guarantee
+        // test order, so we should ensure
+        // that we do any necessary recovery at this point
+        Log.info(this.getClass(), method, "call stopserver");
+        defaultServer.stopServer("WTRN0112E", "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+    }
+
+    /**
+     * Run the same test as in testHADBConnectFailover but against a server that has the enableLogRetries server.xml
+     * entry set to "true" so that non-transient (as well as transient) sqlcodes lead to an operation retry.
+     *
+     * In the simulation a connect attempt will be successfully retried.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBNewBehaviourConnectFailover() throws Exception {
+        final String method = "testHADBNewBehaviourConnectFailover";
+        StringBuilder sb = null;
+        startServers(recoverServer);
+        Log.info(this.getClass(), method, "call testHADBNewBehaviourConnectFailover");
+
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "setupForConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        recoverServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        Log.info(this.getClass(), method, "set timeout");
+        recoverServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        startServers(recoverServer);
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
+
+        Log.info(this.getClass(), method, "Complete");
+        recoverServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+    }
+
+    /**
+     * Run the same test as in testHADBConnectFailover but against a server that has the enableLogRetries server.xml
+     * entry set to "true" so that non-transient (as well as transient) sqlcodes lead to an operation retry.
+     *
+     * In the simulation a connect attempt will be successfully retried.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBNewBehaviourMultiConnectFailover() throws Exception {
+        final String method = "testHADBNewBehaviourMultiConnectFailover";
+        StringBuilder sb = null;
+        startServers(recoverServer);
+        Log.info(this.getClass(), method, "call testHADBNewBehaviourMultiConnectFailover");
+
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "setupForMultiConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        recoverServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        Log.info(this.getClass(), method, "set timeout");
+        recoverServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        startServers(recoverServer);
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
+
+        Log.info(this.getClass(), method, "Complete");
+        recoverServer.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+    }
+
+    /**
      * Simulate an HA condition at server start (testing log open error
      * handling))
      */

@@ -141,6 +141,7 @@ public class IfxPreparedStatement implements PreparedStatement {
     public int[] executeBatch() throws SQLException {
         int[] ret = null;
         boolean failOver = false;
+
         System.out.println("SIMHADB: executeBatch, this - " + this + ", wrapped - " + wrappedPS);
 
         if (IfxConnection.isFailoverEnabled()) {
@@ -193,9 +194,8 @@ public class IfxPreparedStatement implements PreparedStatement {
             Connection myconn = getConnection();
             try {
                 myconn.rollback();
-//                myconn.close();
             } catch (Exception ex) {
-                System.out.println("SIMHADB: on close connection, caught exc: " + ex);
+                System.out.println("SIMHADB: on rollback, caught exc: " + ex);
             }
             String sqlReason = "Generated internally";
             String sqlState = "Generated reason";

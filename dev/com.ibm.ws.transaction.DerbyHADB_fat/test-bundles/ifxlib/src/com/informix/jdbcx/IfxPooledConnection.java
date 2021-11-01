@@ -24,6 +24,7 @@ public class IfxPooledConnection implements PooledConnection {
     Connection unwrappedConnection = null;
 
     static boolean _areParametersSet = false;
+    static int _connectAttempts = 0;
 
     // CTOR
     public IfxPooledConnection(PooledConnection pc) {
@@ -78,7 +79,9 @@ public class IfxPooledConnection implements PooledConnection {
         else if (unwrappedConnection != null)
             theConn = unwrappedConnection;
         IfxConnection ifc = new IfxConnection(theConn);
-        System.out.println("SIMHADB: IfxPooledConnection.getConnection ret - " + ifc);
+        System.out.println("SIMHADB: IfxPooledConnection.getConnection ifc - " + ifc);
+        // Increment connect attempt counter
+        _connectAttempts++;
 
         if (!_areParametersSet) {
             _areParametersSet = true;
@@ -181,13 +184,42 @@ public class IfxPooledConnection implements PooledConnection {
                             IfxConnection.setFailoverValue(failingOperation);
                         System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
                         IfxConnection.setSimSQLCode(simsqlcodeInt);
+                    } else if (testTypeInt == 5)// Special case of failure at connection, throw an exception here
+                    {
+                        // Dependent on number of connection attempts, reset _areParametersSet
+                        if (_connectAttempts < numberOfFailuresInt)
+                            _areParametersSet = false;
+
+                        if (_areParametersSet) {
+                            // Last time through, need to update hatable to avoid interference with subsequent tests
+                            System.out.println("SIMHADB: update HATABLE with testtype = 99");
+                            stmt.executeUpdate("update hatable set testtype = 99 where testtype = 5");
+                        }
+
+                        String sqlReason = "Generated internally";
+                        String sqlState = "Generated reason";
+                        int reasonCode = -777;
+
+                        System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
+                        // if reason code is "-3" then exception is non-transient, otherwise it is transient
+                        SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
+
+                        throw sqlex;
                     }
                 } else {
                     System.out.println("SIMHADB: Empty result set");
                     IfxConnection.setFailoverEnabled(false);
                 }
+            } catch (SQLException sqle) {
+                int errorCode = sqle.getErrorCode();
+                System.out.println("SIMHADB: IfxPooledConnection.getConnection caught SQLException - " + sqle + " with error code: " + errorCode);
+
+                // No table, disable failover
+                IfxConnection.setFailoverEnabled(false);
+                if (errorCode == -777) // rethrow
+                    throw sqle;
             } catch (Exception e) {
-                System.out.println("SIMHADB: Caught exception - " + e);
+                System.out.println("SIMHADB: IfxPooledConnection.getConnection caught General exception - " + e);
                 // No table, disable failover
                 IfxConnection.setFailoverEnabled(false);
             } finally {

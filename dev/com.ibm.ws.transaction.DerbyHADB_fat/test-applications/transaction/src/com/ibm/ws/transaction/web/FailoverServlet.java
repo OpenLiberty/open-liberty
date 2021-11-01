@@ -39,7 +39,7 @@ import componenttest.app.FATServlet;
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT
     };
 
     /**
@@ -67,6 +67,18 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableFailover");
         setupTestParameters(request, response, TestType.RUNTIME, -3, 12, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableFailover complete");
+    }
+
+    public void setupForConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
+        setupTestParameters(request, response, TestType.CONNECT, 0, 0, 1);
+        System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
+    }
+
+    public void setupForMultiConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
+        setupTestParameters(request, response, TestType.CONNECT, 0, 0, 3);
+        System.out.println("FAILOVERSERVLET: setupForConnectFailover complete");
     }
 
     public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
