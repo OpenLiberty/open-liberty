@@ -211,10 +211,8 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testCMPConnectionFactory() throws Exception {
-        parseEJBJarBnd( ejbJarBndXMI("", testCMPConnectionFactoryXMI1()),
-                        DDParserBndExt.IS_XMI,
-                        getEJBJar21(),
-                        "missing.href", "CWWKC2287E");
+        parseEJBJarBndXMI( ejbJarBndXMI("", testCMPConnectionFactoryXMI1()),
+                           getEJBJar21() );
     }
 
     @Test

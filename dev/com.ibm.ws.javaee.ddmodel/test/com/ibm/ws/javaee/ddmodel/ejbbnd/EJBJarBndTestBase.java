@@ -225,7 +225,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
 
     public static String testCMPConnectionFactoryXMI1(String ddPath) {
         return "<ejbBindings xmi:id=\"EnterpriseBeanBindingName\" jndiName=\"ejb/EnterpriseBeanBinding\">" +
-                   "<enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"" + ddPath + "#EnterpriseBean\"/>" +
+                   "<enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"" + ddPath + "#s0\"/>" +
                    "<cmpConnectionFactory xmi:id=\"CMPConnectionFactoryBindingNAme\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" loginConfigurationName=\"DefaultCMPConnectionFactoryMapping\">" +
                        "<properties xmi:id=\"Property\" name=\"com.ibm.test.testProperty\" value=\"testData\" description=\"Test Post Pls Ignore\"/>" +
                    "</cmpConnectionFactory>" +
