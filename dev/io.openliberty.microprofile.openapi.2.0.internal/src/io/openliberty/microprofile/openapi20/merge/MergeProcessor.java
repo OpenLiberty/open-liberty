@@ -374,6 +374,14 @@ public class MergeProcessor {
         if (contextRoot == null) {
             return;
         }
+        
+        if (contextRoot.endsWith("/")) {
+            contextRoot = contextRoot.substring(0, contextRoot.length()-1);
+        }
+        
+        if (contextRoot.isEmpty()) {
+            return;
+        }
 
         Paths paths = model.getPaths();
         if (paths == null) {
@@ -440,7 +448,46 @@ public class MergeProcessor {
                 newPathItems.put(newPath, pathItem);
             }
             paths.setPathItems(newPathItems);
+            
+            // In some cases, removing the context root can leave all servers with no information at all.
+            // In these cases they can be removed.
+            boolean allServersEmpty = notNull(servers).stream()
+                            .allMatch(s -> isServerEmpty(s));
+            
+            if (allServersEmpty) {
+                model.setServers(null);
+            }
         }
+    }
+
+    /**
+     * Check whether a server element contains no useful data
+     * 
+     * @param server the server element to check
+     * @return true if the server element has no extensions, no description, no variables and a URL which is empty or {@code "/"}
+     */
+    private static boolean isServerEmpty(Server server) {
+        Map<String, Object> extensions = server.getExtensions();
+        if (extensions != null && !extensions.isEmpty()) {
+            return false;
+        }
+        
+        String description = server.getDescription();
+        if (description != null && !description.isEmpty()) {
+            return false;
+        }
+        
+        Map<String, ?> variables = server.getVariables();
+        if (variables != null && !variables.isEmpty()) {
+            return false;
+        }
+        
+        String url = server.getUrl();
+        if (url != null && !url.isEmpty() && !url.equals("/")) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
