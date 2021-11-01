@@ -16,7 +16,7 @@ src: \
 
 fat.project: true
 fat.test.databases: true
-tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
+tested.features: jpa-2.2, jpaContainer-2.2, ejbLite-3.2, servlet-4.0, jdbc-4.2, jndi-1.0
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer
@@ -32,11 +32,8 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0,
     com.ibm.ws.jpa.tests.spec10.inheritance_fat.common;version=latest,\
     fattest.simplicity;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-    com.ibm.websphere.javaee.jms.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.2;version=latest,\
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-    com.ibm.websphere.javaee.validation.2.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest

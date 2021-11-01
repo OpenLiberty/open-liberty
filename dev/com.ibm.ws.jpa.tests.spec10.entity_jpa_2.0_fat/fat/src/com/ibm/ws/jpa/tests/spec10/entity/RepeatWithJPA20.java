@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec10.relationships.manyXmany;
+package com.ibm.ws.jpa.tests.spec10.entity;
 
 import java.io.File;
 
