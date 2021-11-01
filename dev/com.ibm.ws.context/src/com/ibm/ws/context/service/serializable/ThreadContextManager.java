@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,8 +174,10 @@ public class ThreadContextManager implements WSContextService {
             // context that is always captured per the alwaysCaptureThreadContext service property
             for (int i = 0; i < alwaysEnabledProviders.size(); i++) {
                 ThreadContextProvider provider = alwaysEnabledProviders.get(i);
-                ThreadContext context = provider.captureThreadContext(execProps, null);
-                capturedThreadContext.add(alwaysEnabledProviderNames.get(i), context);
+                if (!configuredProviders.contains(provider)) {
+                    ThreadContext context = provider.captureThreadContext(execProps, null);
+                    capturedThreadContext.add(alwaysEnabledProviderNames.get(i), context);
+                }
             }
         }
 

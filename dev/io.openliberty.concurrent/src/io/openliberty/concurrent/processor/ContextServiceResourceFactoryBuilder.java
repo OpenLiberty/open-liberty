@@ -177,16 +177,20 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
         String[] properties = (String[]) contextSvcProps.remove("properties"); // TODO process these?
 
+        String transaction = null;
+        String remaining = null;
+
         // detect duplicate configuration of context types across all 3 lists
         Set<String> used = new HashSet<String>();
 
         // cleared
         TreeSet<String> cleared3PCtx = new TreeSet<String>();
-        boolean clearRemaining = false;
         for (String type : cleared)
             if (used.add(type)) {
                 if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
-                    clearRemaining = true;
+                    remaining = "cleared";
+                } else if (ContextServiceDefinition.TRANSACTION.equals(type)) {
+                    transaction = "cleared";
                 } else {
                     String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
                     if (pids == null)
@@ -196,12 +200,13 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
         // unchanged
         TreeSet<String> unchanged3PCtx = new TreeSet<String>();
-        boolean skipRemaining = false;
         StringBuilder skip = new StringBuilder();
         for (String type : unchanged)
             if (used.add(type)) {
                 if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
-                    skipRemaining = true;
+                    remaining = "unchanged";
+                } else if (ContextServiceDefinition.TRANSACTION.equals(type)) {
+                    transaction = "unchanged";
                 } else {
                     String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
                     if (pids == null) {
@@ -220,12 +225,13 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         // propagated
         TreeSet<String> propagated3PCtx = new TreeSet<String>();
         int propagateCount = 0;
-        boolean propagateRemaining = false;
         used.add("EmptyHandleList"); // built-in type that is always enabled and not configurable
         for (String type : propagated)
             if (used.add(type)) {
                 if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
-                    propagateRemaining = true;
+                    remaining = "propagated";
+                } else if (ContextServiceDefinition.TRANSACTION.equals(type)) {
+                    transaction = "propagated";
                 } else {
                     String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
                     if (pids == null) {
@@ -237,7 +243,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                 }
             } // TODO else error for duplicate usage
 
-        if (propagateRemaining)
+        if ("propagated".equals(remaining))
             for (Map.Entry<String, String[]> entry : BUILT_IN_CONTEXT_PIDS.entrySet()) {
                 String type = entry.getKey();
                 if (!used.contains(type)) {
@@ -248,17 +254,24 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                 }
             }
 
-        if (!clearRemaining && !propagateRemaining && !skipRemaining)
-            clearRemaining = true;
+        // Add Transaction context provider
+        if (transaction != null) {
+            String prefix = "threadContextConfigRef." + (propagateCount++);
+            contextSvcProps.put(prefix + ".config.referenceType", "com.ibm.ws.transaction.context");
+            contextSvcProps.put(prefix + ".transaction", transaction);
+        }
+
+        if (remaining == null)
+            remaining = "cleared";
 
         // Add a ThreadContextProvider that handles third-party context types
-        if (propagateRemaining || skipRemaining || !propagated3PCtx.isEmpty() || !unchanged3PCtx.isEmpty()) {
+        if (remaining.equals("propagated") || remaining.equals("unchanged") || !propagated3PCtx.isEmpty() || !unchanged3PCtx.isEmpty()) {
             String prefix = "threadContextConfigRef." + (propagateCount++);
             contextSvcProps.put(prefix + ".config.referenceType", "io.openliberty.thirdparty.context");
-            contextSvcProps.put(prefix + ".cleared", new Vector(cleared3PCtx));
-            contextSvcProps.put(prefix + ".propagated", new Vector(propagated3PCtx));
-            contextSvcProps.put(prefix + ".unchanged", new Vector(unchanged3PCtx));
-            contextSvcProps.put(prefix + ".remaining", clearRemaining ? "cleared" : propagateRemaining ? "propagated" : "unchanged");
+            contextSvcProps.put(prefix + ".cleared", new Vector<String>(cleared3PCtx));
+            contextSvcProps.put(prefix + ".propagated", new Vector<String>(propagated3PCtx));
+            contextSvcProps.put(prefix + ".unchanged", new Vector<String>(unchanged3PCtx));
+            contextSvcProps.put(prefix + ".remaining", remaining);
         } // else default behavior is to clear provider types that aren't configured
 
         BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
