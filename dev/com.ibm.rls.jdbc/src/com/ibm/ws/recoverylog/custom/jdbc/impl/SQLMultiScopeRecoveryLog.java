@@ -610,7 +610,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             //
                             // Now get the HA Lock row again, update it if necessary and hold it over the recover
 
-//                        try {
                             // Update the ownership of the recovery log to the running server
                             updateHADBLock(conn);
 
@@ -626,7 +625,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             // Set the exception that will be reported
                             currentSqlEx = sqlex;
                         } finally {
-//                            if (conn != null) {
                             if (openSuccess) {
                                 // Attempt a close. If it fails, trace the failure but allow processing to continue
                                 try {
@@ -685,17 +683,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 }
 
                             }
-//                            } else if (tc.isDebugEnabled())
-//                                Tr.debug(tc, "Connection was NULL");
                         } // end finally
-//                    } catch (SQLException exc) {
-//                        // The code above should have checked if the log is open or not fron the point of view of this class.
-//                        FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "464", this);
-//                        markFailed(exc); /* @MD19484C */
-//                        _recoverableUnits = null;
-//                        if (tc.isEntryEnabled())
-//                            Tr.exit(tc, "openLog", "InternalLogException");
-//                        throw new InternalLogException(exc);
                     } catch (Throwable exc) {
                         FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "500", this);
                         if (tc.isEventEnabled())
