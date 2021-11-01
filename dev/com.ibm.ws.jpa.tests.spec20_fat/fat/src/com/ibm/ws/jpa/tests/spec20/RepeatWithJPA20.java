@@ -15,12 +15,9 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.ibm.websphere.simplicity.log.Log;
-
+import componenttest.common.apiservices.Bootstrap;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
@@ -43,11 +40,14 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
 
     @Override
     public boolean isEnabled() {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("JPA20Server");
-
-        File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
-        Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());
-        return jpa20Feature.exists();
+        try {
+            Bootstrap b = Bootstrap.getInstance();
+            String installRoot = b.getValue("libertyInstallPath");
+            File jpa20Feature = new File(installRoot + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
+            return jpa20Feature.exists();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

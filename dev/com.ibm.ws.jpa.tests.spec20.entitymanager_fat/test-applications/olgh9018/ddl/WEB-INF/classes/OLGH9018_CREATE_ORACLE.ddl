@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.SimpleEntityOLGH9018 (id NUMBER NOT NULL, int1 NUMBER, str1 VARCHAR2(255), str2 VARCHAR2(255), PRIMARY KEY (id));
