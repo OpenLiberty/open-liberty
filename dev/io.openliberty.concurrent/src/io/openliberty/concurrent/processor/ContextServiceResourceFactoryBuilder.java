@@ -12,8 +12,13 @@ package io.openliberty.concurrent.processor;
 
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -33,6 +38,9 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
+import com.ibm.wsspi.threadcontext.WSContextService;
+
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ContextService")
@@ -41,6 +49,21 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
  */
 public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ContextServiceResourceFactoryBuilder.class);
+
+    /**
+     * Context types that are provided by built-in components and their configuration pids.
+     */
+    public static final Map<String, String[]> BUILT_IN_CONTEXT_PIDS = new HashMap<String, String[]>();
+    static {
+        BUILT_IN_CONTEXT_PIDS.put(ContextServiceDefinition.APPLICATION, new String[] {
+                                                                                       "com.ibm.ws.classloader.context",
+                                                                                       "com.ibm.ws.javaee.metadata.context"
+        });
+        BUILT_IN_CONTEXT_PIDS.put("Classification", new String[] { "com.ibm.ws.zos.wlm.context" });
+        BUILT_IN_CONTEXT_PIDS.put(ContextServiceDefinition.SECURITY, new String[] { "com.ibm.ws.security.context" });
+        BUILT_IN_CONTEXT_PIDS.put("SyncToOSThread", new String[] { "com.ibm.ws.security.thread.zos.context" });
+        // EmptyHandleList and ContextServiceDefinition.TRANSACTION are not configurable in server.xml
+    }
 
     /**
      * Name of property used by config service to uniquely identify a component instance.
@@ -149,13 +172,94 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         contextSvcProps.put("baseInstance.target", "(service.pid=unbound)");
         contextSvcProps.put("baseInstance.cardinality.minimum", 0);
 
-        // TODO process these
-        // corresponding metatype entry for nested thread context is:
-        // <AD id="threadContextConfigRef" type="String" ibm:type="pid" ibm:reference="com.ibm.wsspi.threadcontext.config" ibm:flat="true" cardinality="1000"
         String[] cleared = (String[]) contextSvcProps.remove("cleared");
         String[] propagated = (String[]) contextSvcProps.remove("propagated");
         String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
-        String[] properties = (String[]) contextSvcProps.remove("properties");
+        String[] properties = (String[]) contextSvcProps.remove("properties"); // TODO process these?
+
+        // detect duplicate configuration of context types across all 3 lists
+        Set<String> used = new HashSet<String>();
+
+        // cleared
+        TreeSet<String> cleared3PCtx = new TreeSet<String>();
+        boolean clearRemaining = false;
+        for (String type : cleared)
+            if (used.add(type)) {
+                if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
+                    clearRemaining = true;
+                } else {
+                    String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
+                    if (pids == null)
+                        cleared3PCtx.add(type);
+                }
+            } // TODO else error for duplicate usage
+
+        // unchanged
+        TreeSet<String> unchanged3PCtx = new TreeSet<String>();
+        boolean skipRemaining = false;
+        StringBuilder skip = new StringBuilder();
+        for (String type : unchanged)
+            if (used.add(type)) {
+                if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
+                    skipRemaining = true;
+                } else {
+                    String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
+                    if (pids == null) {
+                        unchanged3PCtx.add(type);
+                        skip.append(skip.length() == 0 ? "" : ",").append(type);
+                    } else {
+                        for (String pid : pids)
+                            skip.append(skip.length() == 0 ? "" : ",").append(pid);
+                    }
+                }
+            } // TODO else error for duplicate usage
+
+        if (skip.length() > 0)
+            contextSvcProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, skip.toString());
+
+        // propagated
+        TreeSet<String> propagated3PCtx = new TreeSet<String>();
+        int propagateCount = 0;
+        boolean propagateRemaining = false;
+        used.add("EmptyHandleList"); // built-in type that is always enabled and not configurable
+        for (String type : propagated)
+            if (used.add(type)) {
+                if (ContextServiceDefinition.ALL_REMAINING.equals(type)) {
+                    propagateRemaining = true;
+                } else {
+                    String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
+                    if (pids == null) {
+                        propagated3PCtx.add(type);
+                    } else {
+                        for (String pid : pids)
+                            contextSvcProps.put("threadContextConfigRef." + (propagateCount++) + ".config.referenceType", pid);
+                    }
+                }
+            } // TODO else error for duplicate usage
+
+        if (propagateRemaining)
+            for (Map.Entry<String, String[]> entry : BUILT_IN_CONTEXT_PIDS.entrySet()) {
+                String type = entry.getKey();
+                if (!used.contains(type)) {
+                    used.add(type);
+                    String[] pids = entry.getValue();
+                    for (String pid : pids)
+                        contextSvcProps.put("threadContextConfigRef." + (propagateCount++) + ".config.referenceType", pid);
+                }
+            }
+
+        if (!clearRemaining && !propagateRemaining && !skipRemaining)
+            clearRemaining = true;
+
+        // Add a ThreadContextProvider that handles third-party context types
+        if (propagateRemaining || skipRemaining || !propagated3PCtx.isEmpty() || !unchanged3PCtx.isEmpty()) {
+            String prefix = "threadContextConfigRef." + (propagateCount++);
+            contextSvcProps.put(prefix + ".config.referenceType", "io.openliberty.thirdparty.context");
+            contextSvcProps.put(prefix + ".cleared", new Vector(cleared3PCtx));
+            contextSvcProps.put(prefix + ".propagated", new Vector(propagated3PCtx));
+            contextSvcProps.put(prefix + ".unchanged", new Vector(unchanged3PCtx));
+            contextSvcProps.put(prefix + ".remaining", clearRemaining ? "cleared" : propagateRemaining ? "propagated" : "unchanged");
+        } // else default behavior is to clear provider types that aren't configured
 
         BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
 
@@ -207,11 +311,11 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
      */
     static final String getContextServiceID(String application, String module, String component, String jndiName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
-        if (application != null) {
+        if (application != null && !jndiName.startsWith("java:global")) {
             sb.append("application[").append(application).append("]/");
-            if (module != null) {
+            if (module != null && !jndiName.startsWith("java:app")) {
                 sb.append("module[").append(module).append("]/");
-                if (component != null)
+                if (component != null && !jndiName.startsWith("java:module"))
                     sb.append("component[").append(component).append("]/");
             }
         }

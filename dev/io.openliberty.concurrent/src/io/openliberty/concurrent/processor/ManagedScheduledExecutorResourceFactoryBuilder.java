@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
@@ -107,6 +108,7 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
             Tr.entry(tc, "createResourceFactory", props);
 
         Hashtable<String, Object> execSvcProps = new Hashtable<String, Object>();
+        Hashtable<String, Object> concurrencyPolicyProps = new Hashtable<String, Object>();
 
         // Initially copy everything into managedScheduledExecutorService properties and expand any variables
         VariableRegistry variableRegistry = variableRegistryRef.getServiceWithException();
@@ -128,8 +130,17 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         String module = (String) execSvcProps.get("module");
         String component = (String) execSvcProps.get("component");
         String jndiName = (String) execSvcProps.get(ResourceFactory.JNDI_NAME);
+        String contextSvcJndiName = (String) execSvcProps.remove("context");
+
+        Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
+        Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
+        String[] properties = (String[]) execSvcProps.remove("properties"); // TODO use these properties?
 
         String managedScheduledExecutorServiceID = getManagedScheduledExecutorServiceID(application, module, component, jndiName);
+        String concurrencyPolicyId = managedScheduledExecutorServiceID + "/concurrencyPolicy";
+        String contextServiceId = contextSvcJndiName == null || "java:comp/DefaultContextService".equals(contextSvcJndiName) //
+                        ? "DefaultContextService" //
+                        : ContextServiceResourceFactoryBuilder.getContextServiceID(application, module, component, contextSvcJndiName);
 
         StringBuilder filter = new StringBuilder(FilterUtils.createPropertyFilter(ID, managedScheduledExecutorServiceID));
         filter.insert(filter.length() - 1, '*');
@@ -142,31 +153,49 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         // Use the unique identifier because jndiName is not always unique for app-defined data sources
         execSvcProps.put(UNIQUE_JNDI_NAME, managedScheduledExecutorServiceID);
 
-        // TODO use configured values instead of defaulting
-        execSvcProps.put("ConcurrencyPolicy.target", "(id=defaultConcurrencyPolicy)");
-        execSvcProps.put("ConcurrencyPolicy.target.minimum", 1);
-        execSvcProps.put("ContextService.target", "(id=DefaultContextService)");
-        execSvcProps.put("ContextService.target.minimum", 1);
+        execSvcProps.put("ContextService.target", FilterUtils.createPropertyFilter("id", contextServiceId));
+        execSvcProps.put("ContextService.cardinality.minimum", 1);
+
+        execSvcProps.put("ConcurrencyPolicy.target", FilterUtils.createPropertyFilter(ID, concurrencyPolicyId));
+        execSvcProps.put("ConcurrencyPolicy.cardinality.minimum", 1);
+
+        execSvcProps.put("ContextService.target", FilterUtils.createPropertyFilter(ID, contextServiceId));
+        execSvcProps.put("ContextService.cardinality.minimum", 1);
+
+        // When unspecified, long running task run on the same concurrency policy as other tasks
         execSvcProps.put("LongRunningPolicy.target", "(service.pid=unbound)");
         execSvcProps.put("LongRunningPolicy.cardinality.minimum", 0);
-
-        // TODO process these
-        Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
-        Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
-        String[] properties = (String[]) execSvcProps.remove("properties");
-
-        BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
 
         StringBuilder managedScheduledExecutorSvcFilter = new StringBuilder(200);
         managedScheduledExecutorSvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedScheduledExecutorServiceID));
         managedScheduledExecutorSvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, managedScheduledExecutorServiceID, managedScheduledExecutorSvcFilter.toString(), declaringApplication);
+        // TODO errors for invalid config such as max=0 or -20
+        concurrencyPolicyProps.put(ID, concurrencyPolicyId);
+        concurrencyPolicyProps.put(CONFIG_DISPLAY_ID, concurrencyPolicyId);
+        concurrencyPolicyProps.put("expedite", 0);
+        if (maxAsync > 0)
+            concurrencyPolicyProps.put("max", maxAsync);
+        concurrencyPolicyProps.put("maxPolicy", "loose");
+        concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
+        concurrencyPolicyProps.put("runIfQueueFull", false);
+
+        BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
+        BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
+
+        ResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, managedScheduledExecutorServiceID, managedScheduledExecutorSvcFilter.toString(), declaringApplication);
         try {
-            String bundleLocation = bundleContext.getBundle().getLocation();
+            String concurrencyBundleLocation = concurrencyBundleCtx.getBundle().getLocation();
+            String concurrencyPolicyBundleLocation = concurrencyPolicyBundleCtx.getBundle().getLocation();
+
             ConfigurationAdmin configAdmin = configAdminRef.getService();
 
-            Configuration managedScheduledExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedScheduledExecutorService", bundleLocation);
+            Configuration concurrencyPolicyConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrency.policy.concurrencyPolicy",
+                                                                                           concurrencyPolicyBundleLocation);
+            concurrencyPolicyConfig.update(concurrencyPolicyProps);
+
+            Configuration managedScheduledExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedScheduledExecutorService",
+                                                                                                     concurrencyBundleLocation);
             managedScheduledExecutorSvcConfig.update(execSvcProps);
         } catch (Exception x) {
             factory.destroy();
