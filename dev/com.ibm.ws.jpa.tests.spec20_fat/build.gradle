@@ -26,7 +26,15 @@ task addJPAFATTools (type: Copy) {
 }
 
 addRequiredLibraries {
-  dependsOn addDerby
+  dependsOn copyJdbcDrivers
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn copyTestContainers
+}
+
+clean.doLast {
+  if (file('build').exists()) {
+    file('build').deleteDir()
+  }
+
 }

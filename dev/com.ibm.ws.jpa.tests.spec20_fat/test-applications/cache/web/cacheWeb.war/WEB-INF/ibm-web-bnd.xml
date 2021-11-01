@@ -5,7 +5,7 @@
     version="1.0">
 
     <virtual-host name="default_host" />
+
     <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
     <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
-
 </web-bnd>

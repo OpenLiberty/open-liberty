@@ -11,19 +11,9 @@
         </properties>
     </persistence-unit>
     <persistence-unit name="Util_JEE_RL" transaction-type="RESOURCE_LOCAL">
-        <!-- <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source> -->
-        
-<class>com.ibm.ws.jpa.fvt.util.entities.Util1x1Lf</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.Util1x1Rt</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.Util1xmLf</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.Util1xmRt</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.UtilEmbeddable</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.UtilEmbeddable2</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.UtilEmbEntity</class>
-<class>com.ibm.ws.jpa.fvt.util.entities.UtilEntity</class>
-
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
         <properties>
-            <property name="jag.openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>

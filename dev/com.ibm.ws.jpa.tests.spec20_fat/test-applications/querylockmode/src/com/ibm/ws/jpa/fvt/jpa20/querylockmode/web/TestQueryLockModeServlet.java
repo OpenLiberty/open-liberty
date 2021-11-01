@@ -101,7 +101,6 @@ public class TestQueryLockModeServlet extends JPATestServlet {
 
             executeDDL("JPA20_QUERYLOCKMODE_DELETE_${dbvendor}.ddl");
             executeDDL("JPA20_QUERYLOCKMODE_POPULATE_${dbvendor}.ddl");
-            executeTestVehicle(testExecCtx);
         }
     }
 }

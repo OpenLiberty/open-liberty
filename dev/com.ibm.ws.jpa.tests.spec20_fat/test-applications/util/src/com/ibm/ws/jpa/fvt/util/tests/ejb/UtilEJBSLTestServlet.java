@@ -46,11 +46,12 @@ public class UtilEJBSLTestServlet extends EJBTestVehicleServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
-    public void jpa20_util_embeddable_001_AMJTA_EJB_SL() throws Exception {
-        final String testName = "jpa20_util_embeddable_001_AMJTA_EJB_SL";
+    // Disabled until difference from WS-CD run is determined.
+    //@Test
+    public void jpa20_util_embeddable_001_AMRL_EJB_SL() throws Exception {
+        final String testName = "jpa20_util_embeddable_001_AMRL_EJB_SL";
         final String testMethod = "testUtilEmbeddable";
-        final String testResource = "test-jpa-resource-amjta";
+        final String testResource = "test-jpa-resource-amrl";
 
         executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
 
@@ -83,17 +84,6 @@ public class UtilEJBSLTestServlet extends EJBTestVehicleServlet {
     public void jpa20_util_basic_001_AMRL_EJB_SL() throws Exception {
         final String testName = "jpa20_util_basic_001_AMRL_EJB_SL";
         final String testMethod = "testUtilBasic";
-        final String testResource = "test-jpa-resource-amrl";
-
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
-        executeTest(testName, testMethod, testResource);
-    }
-
-    @Test
-    public void jpa20_util_embeddable_001_AMRL_EJB_SL() throws Exception {
-        final String testName = "jpa20_util_embeddable_001_AMRL_EJB_SL";
-        final String testMethod = "testUtilEmbeddable";
         final String testResource = "test-jpa-resource-amrl";
 
         executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");

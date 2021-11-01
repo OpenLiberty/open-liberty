@@ -14,5 +14,5 @@
         <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
     </resource-ref>
-    
+
 </web-app>

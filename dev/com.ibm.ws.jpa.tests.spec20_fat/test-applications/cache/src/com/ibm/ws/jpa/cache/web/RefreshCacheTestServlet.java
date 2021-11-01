@@ -43,6 +43,8 @@ import com.ibm.ws.jpa.cache.model.JPA20EMEntityB;
 import com.ibm.ws.jpa.cache.model.JPA20EMEntityC;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
+import componenttest.annotation.AllowedFFDC;
+
 /*
  * Skip for Oracle because they do not support TransactionIsolation=read-uncommitted
  */
@@ -95,6 +97,7 @@ public class RefreshCacheTestServlet extends JPATestServlet {
         }
     };
 
+    @Override
     protected Set<String> getInstalledFeatures() {
         HashSet<String> retVal = new HashSet<String>();
 
@@ -108,21 +111,25 @@ public class RefreshCacheTestServlet extends JPATestServlet {
         return retVal;
     }
 
+    @Override
     protected boolean isUsingJPA20Feature() {
         Set<String> instFeatureSet = getInstalledFeatures();
         return instFeatureSet.contains("jpa-2.0");
     }
 
+    @Override
     protected boolean isUsingJPA21Feature() {
         Set<String> instFeatureSet = getInstalledFeatures();
         return instFeatureSet.contains("jpa-2.1");
     }
 
+    @Override
     protected boolean isUsingJPA22Feature() {
         Set<String> instFeatureSet = getInstalledFeatures();
         return instFeatureSet.contains("jpa-2.2");
     }
 
+    @Override
     protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
         Set<String> instFeatureSet = getInstalledFeatures();
         if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
@@ -130,6 +137,7 @@ public class RefreshCacheTestServlet extends JPATestServlet {
         return instFeatureSet.contains("jpaContainer-2.1");
     }
 
+    @Override
     protected boolean isUsingJPA22ContainerFeature(boolean onlyContainerFeature) {
         Set<String> instFeatureSet = getInstalledFeatures();
         if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
@@ -189,6 +197,7 @@ public class RefreshCacheTestServlet extends JPATestServlet {
     }
 
     @Test
+    @AllowedFFDC(repeatAction = "JPA20_FEATURES") // Oracle doesn't like read_uncommitted, and even creating an EMF generates FFDC with OpenJPA.
     public void jpa_jpa20_cache_testRefreshC001() throws Exception {
         final String dbProduct = getDbProductName();
         if (dbProduct != null && dbProduct.toLowerCase().equals("oracle")) {

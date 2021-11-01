@@ -191,7 +191,7 @@ public class UtilTestLogic extends AbstractTestLogic {
             System.out.println("Clearing persistence context...");
             em.clear();
             Map<String, Object> hints = new TreeMap<String, Object>();
-            {
+            if (!isUsingJPA20Feature()) {
                 // For EclipseLink, use JPA 2.1 entity graphs.
                 // Must access reflectively because this bucket compiles against JPA 2.0.
                 Object entityGraph = EntityManager.class.getMethod("createEntityGraph", Class.class)
@@ -335,7 +335,7 @@ public class UtilTestLogic extends AbstractTestLogic {
             System.out.println("Clearing persistence context...");
             em.clear();
             Map<String, Object> hints = new TreeMap<String, Object>();
-            {
+            if (JPAProviderImpl.ECLIPSELINK == jpaProvider) {
                 // For EclipseLink, use JPA 2.1 entity graphs.
                 // Must access reflectively because this bucket compiles against JPA 2.0.
 
@@ -539,6 +539,8 @@ public class UtilTestLogic extends AbstractTestLogic {
 
             System.out.println("Rollback current Tx");
             jpaRW.getTj().rollbackTransaction();
+        } catch (java.lang.AssertionError ae) {
+            throw ae;
         } catch (Throwable t) {
             throw new RuntimeException(t);
         } finally {

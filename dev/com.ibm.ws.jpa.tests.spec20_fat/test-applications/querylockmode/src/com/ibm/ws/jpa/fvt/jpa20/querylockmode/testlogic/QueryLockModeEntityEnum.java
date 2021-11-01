@@ -17,7 +17,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0001 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0001";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0001";
         }
 
         @Override
@@ -28,7 +28,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0002 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0002";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0002";
         }
 
         @Override
@@ -39,7 +39,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0003 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0003";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0003";
         }
 
         @Override
@@ -50,7 +50,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0004 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0004";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0004";
         }
 
         @Override
@@ -61,7 +61,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0005 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0005";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0005";
         }
 
         @Override
@@ -72,7 +72,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0006 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0006";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0006";
         }
 
         @Override
@@ -83,7 +83,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0007 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0007";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0007";
         }
 
         @Override
@@ -94,7 +94,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0008 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0008";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0008";
         }
 
         @Override
@@ -105,7 +105,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0009 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0009";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0009";
         }
 
         @Override
@@ -116,7 +116,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0010 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0010";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0010";
         }
 
         @Override
@@ -127,7 +127,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0011 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0011";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0011";
         }
 
         @Override
@@ -138,7 +138,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0012 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0012";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0012";
         }
 
         @Override
@@ -149,7 +149,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0013 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0013";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0013";
         }
 
         @Override
@@ -160,7 +160,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0014 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0014";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0014";
         }
 
         @Override
@@ -171,7 +171,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0015 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0015";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0015";
         }
 
         @Override
@@ -182,7 +182,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0016 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0016";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0016";
         }
 
         @Override
@@ -193,7 +193,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0017 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0017";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0017";
         }
 
         @Override
@@ -204,7 +204,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0018 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0018";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0018";
         }
 
         @Override
@@ -215,7 +215,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0019 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0019";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0019";
         }
 
         @Override
@@ -226,7 +226,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0101 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0101";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0101";
         }
 
         @Override
@@ -237,7 +237,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0102 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0102";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0102";
         }
 
         @Override
@@ -248,7 +248,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0103 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0103";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0103";
         }
 
         @Override
@@ -259,7 +259,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0104 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0104";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0104";
         }
 
         @Override
@@ -270,7 +270,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0105 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0105";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0105";
         }
 
         @Override
@@ -281,7 +281,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0106 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0106";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0106";
         }
 
         @Override
@@ -292,7 +292,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0107 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0107";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0107";
         }
 
         @Override
@@ -303,7 +303,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0108 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0108";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0108";
         }
 
         @Override
@@ -314,7 +314,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0109 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0109";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0109";
         }
 
         @Override
@@ -325,7 +325,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0110 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0110";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0110";
         }
 
         @Override
@@ -336,7 +336,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0111 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0111";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0111";
         }
 
         @Override
@@ -347,7 +347,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0112 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0112";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0112";
         }
 
         @Override
@@ -358,7 +358,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0113 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0113";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0113";
         }
 
         @Override
@@ -369,7 +369,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0114 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0114";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0114";
         }
 
         @Override
@@ -380,7 +380,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0115 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0115";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0115";
         }
 
         @Override
@@ -391,7 +391,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0116 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0116";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0116";
         }
 
         @Override
@@ -402,7 +402,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0117 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0117";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0117";
         }
 
         @Override
@@ -413,7 +413,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0118 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0118";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0118";
         }
 
         @Override
@@ -424,7 +424,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0119 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0119";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0119";
         }
 
         @Override
@@ -435,7 +435,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0201 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0201";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0201";
         }
 
         @Override
@@ -446,7 +446,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0202 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0202";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0202";
         }
 
         @Override
@@ -457,7 +457,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0203 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0203";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0203";
         }
 
         @Override
@@ -468,7 +468,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0204 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0204";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0204";
         }
 
         @Override
@@ -479,7 +479,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0205 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0205";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0205";
         }
 
         @Override
@@ -490,7 +490,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0206 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0206";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0206";
         }
 
         @Override
@@ -501,7 +501,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0207 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0207";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0207";
         }
 
         @Override
@@ -512,7 +512,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0208 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0208";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0208";
         }
 
         @Override
@@ -523,7 +523,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0209 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0209";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0209";
         }
 
         @Override
@@ -534,7 +534,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0210 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0210";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0210";
         }
 
         @Override
@@ -545,7 +545,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0211 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0211";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0211";
         }
 
         @Override
@@ -556,7 +556,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0212 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0212";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0212";
         }
 
         @Override
@@ -567,7 +567,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0213 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0213";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0213";
         }
 
         @Override
@@ -578,7 +578,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0214 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0214";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0214";
         }
 
         @Override
@@ -589,7 +589,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0215 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0215";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0215";
         }
 
         @Override
@@ -600,7 +600,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0216 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0216";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0216";
         }
 
         @Override
@@ -611,7 +611,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0217 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0217";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0217";
         }
 
         @Override
@@ -622,7 +622,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0218 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0218";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0218";
         }
 
         @Override
@@ -633,7 +633,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0219 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0219";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0219";
         }
 
         @Override
@@ -644,7 +644,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0301 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0301";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0301";
         }
 
         @Override
@@ -655,7 +655,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0302 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0302";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0302";
         }
 
         @Override
@@ -666,7 +666,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0303 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0303";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0303";
         }
 
         @Override
@@ -677,7 +677,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0304 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0304";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0304";
         }
 
         @Override
@@ -688,7 +688,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0305 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0305";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0305";
         }
 
         @Override
@@ -699,7 +699,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0306 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0306";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0306";
         }
 
         @Override
@@ -710,7 +710,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0307 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0307";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0307";
         }
 
         @Override
@@ -721,7 +721,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0308 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0308";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0308";
         }
 
         @Override
@@ -732,7 +732,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0309 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0309";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0309";
         }
 
         @Override
@@ -743,7 +743,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0310 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0310";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0310";
         }
 
         @Override
@@ -754,7 +754,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0311 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0311";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0311";
         }
 
         @Override
@@ -765,7 +765,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0312 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0312";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0312";
         }
 
         @Override
@@ -776,7 +776,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0313 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0313";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0313";
         }
 
         @Override
@@ -787,7 +787,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0314 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0314";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0314";
         }
 
         @Override
@@ -798,7 +798,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0315 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0315";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0315";
         }
 
         @Override
@@ -809,7 +809,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0316 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0316";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0316";
         }
 
         @Override
@@ -820,7 +820,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0317 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0317";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0317";
         }
 
         @Override
@@ -831,7 +831,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0318 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0318";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0318";
         }
 
         @Override
@@ -842,7 +842,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0319 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0319";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0319";
         }
 
         @Override
@@ -853,7 +853,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0320 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0320";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0320";
         }
 
         @Override
@@ -864,7 +864,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0321 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0321";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0321";
         }
 
         @Override
@@ -875,7 +875,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0322 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0322";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0322";
         }
 
         @Override
@@ -886,7 +886,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0323 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0323";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0323";
         }
 
         @Override
@@ -897,7 +897,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0324 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0324";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0324";
         }
 
         @Override
@@ -908,7 +908,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0325 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0325";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0325";
         }
 
         @Override
@@ -919,7 +919,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0326 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0326";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0326";
         }
 
         @Override
@@ -930,7 +930,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0327 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0327";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0327";
         }
 
         @Override
@@ -941,7 +941,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0328 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0328";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0328";
         }
 
         @Override
@@ -952,7 +952,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0329 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0329";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0329";
         }
 
         @Override
@@ -963,7 +963,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0330 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0330";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0330";
         }
 
         @Override
@@ -974,7 +974,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0331 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0331";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0331";
         }
 
         @Override
@@ -985,7 +985,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0332 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0332";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0332";
         }
 
         @Override
@@ -996,7 +996,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0401 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0401";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0401";
         }
 
         @Override
@@ -1007,7 +1007,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0402 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0402";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0402";
         }
 
         @Override
@@ -1018,7 +1018,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0403 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0403";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0403";
         }
 
         @Override
@@ -1029,7 +1029,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0404 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0404";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0404";
         }
 
         @Override
@@ -1040,7 +1040,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0405 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0405";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0405";
         }
 
         @Override
@@ -1051,7 +1051,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0406 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0406";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0406";
         }
 
         @Override
@@ -1062,7 +1062,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0407 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0407";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0407";
         }
 
         @Override
@@ -1073,7 +1073,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0408 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0408";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0408";
         }
 
         @Override
@@ -1084,7 +1084,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0409 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0409";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0409";
         }
 
         @Override
@@ -1095,7 +1095,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0410 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0410";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0410";
         }
 
         @Override
@@ -1106,7 +1106,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0411 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0411";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0411";
         }
 
         @Override
@@ -1117,7 +1117,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0412 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0412";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0412";
         }
 
         @Override
@@ -1128,7 +1128,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0413 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0413";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0413";
         }
 
         @Override
@@ -1139,7 +1139,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0414 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0414";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0414";
         }
 
         @Override
@@ -1150,7 +1150,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0415 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0415";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0415";
         }
 
         @Override
@@ -1161,7 +1161,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0416 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0416";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0416";
         }
 
         @Override
@@ -1172,7 +1172,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0417 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0417";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0417";
         }
 
         @Override
@@ -1183,7 +1183,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0418 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0418";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0418";
         }
 
         @Override
@@ -1194,7 +1194,7 @@ public enum QueryLockModeEntityEnum implements JPAEntityClassEnum {
     Entity0419 {
         @Override
         public String getEntityClassName() {
-            return "com.ibm.ws.jpa.commonentities.datamodel.Entity0419";
+            return "com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0419";
         }
 
         @Override

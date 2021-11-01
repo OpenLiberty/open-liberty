@@ -165,8 +165,12 @@ public class JPA20EntityManagerDetachEntity {
 
     @Override
     public String toString() {
-        return "JPA20EntityManagerDetachEntity [id=" + id + ", strData=" + strData + ", entAM2MList=" + entAM2MList + ", entAM2MList_CA=" + entAM2MList_CA + ", entAM2MList_CD="
-               + entAM2MList_CD + ", entAM2O=" + entAM2O + ", entAM2O_CA=" + entAM2O_CA + ", entAM2O_CD=" + entAM2O_CD + ", entAO2MList=" + entAO2MList + ", entAO2MList_CA="
-               + entAO2MList_CA + ", entAO2MList_CD=" + entAO2MList_CD + ", entAO2O=" + entAO2O + ", entAO2O_CA=" + entAO2O_CA + ", entAO2O_CD=" + entAO2O_CD + "]";
+        return "JPA20EntityManagerDetachEntity [id=" + id + "]";
     }
+//    @Override
+//    public String toString() {
+//        return "JPA20EntityManagerDetachEntity [id=" + id + ", strData=" + strData + ", entAM2MList=" + entAM2MList + ", entAM2MList_CA=" + entAM2MList_CA + ", entAM2MList_CD="
+//               + entAM2MList_CD + ", entAM2O=" + entAM2O + ", entAM2O_CA=" + entAM2O_CA + ", entAM2O_CD=" + entAM2O_CD + ", entAO2MList=" + entAO2MList + ", entAO2MList_CA="
+//               + entAO2MList_CA + ", entAO2MList_CD=" + entAO2MList_CD + ", entAO2O=" + entAO2O + ", entAO2O_CA=" + entAO2O_CA + ", entAO2O_CD=" + entAO2O_CD + "]";
+//    }
 }

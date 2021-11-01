@@ -64,9 +64,9 @@ public class UtilWebTestServlet extends JPATestServlet {
     }
 
     @Test
-    public void jpa20_util_embeddable_001_AMJTA_Web() throws Exception {
-        final String testName = "jpa20_util_embeddable_001_AMJTA_Web";
-        final String testMethod = "testUtilEmbeddable";
+    public void jpa20_util_1x1_001_AMJTA_Web() throws Exception {
+        final String testName = "jpa20_util_1x1_001_AMJTA_Web";
+        final String testMethod = "testUtil1x1";
         final String testResource = "test-jpa-resource-amjta";
 
         executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
@@ -74,11 +74,12 @@ public class UtilWebTestServlet extends JPATestServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
-    public void jpa20_util_1x1_001_AMJTA_Web() throws Exception {
-        final String testName = "jpa20_util_1x1_001_AMJTA_Web";
-        final String testMethod = "testUtil1x1";
-        final String testResource = "test-jpa-resource-amjta";
+    // Disabled until difference from WS-CD run is determined.
+    //@Test
+    public void jpa20_util_embeddable_001_AMRL_Web() throws Exception {
+        final String testName = "jpa20_util_embeddable_001_AMRL_Web";
+        final String testMethod = "testUtilEmbeddable";
+        final String testResource = "test-jpa-resource-amrl";
 
         executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
 
@@ -90,6 +91,39 @@ public class UtilWebTestServlet extends JPATestServlet {
         final String testName = "jpa20_util_1xM_001_AMJTA_Web";
         final String testMethod = "testUtil1xm";
         final String testResource = "test-jpa-resource-amjta";
+
+        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
+
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa20_util_basic_001_AMRL_Web() throws Exception {
+        final String testName = "jpa20_util_basic_001_AMRL_Web";
+        final String testMethod = "testUtilBasic";
+        final String testResource = "test-jpa-resource-amrl";
+
+        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
+
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa20_util_1x1_001_AMRL_Web() throws Exception {
+        final String testName = "jpa20_util_1x1_001_AMRL_Web";
+        final String testMethod = "testUtil1x1";
+        final String testResource = "test-jpa-resource-amrl";
+
+        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
+
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa20_util_1xM_001_AMRL_Web() throws Exception {
+        final String testName = "jpa20_util_1xM_001_AMRL_Web";
+        final String testMethod = "testUtil1xm";
+        final String testResource = "test-jpa-resource-amrl";
 
         executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
 
