@@ -21,15 +21,15 @@ src: \
 	test-applications/MDBAnnWeb.war/src, \
 	test-applications/MDBIntAnnEJB.jar/src, \
 	test-applications/MDBIntAnnWeb.war/src, \
-	test-applications/MDBMixEJB.jar/src, \
-	test-applications/MDBMixWeb.war/src, \
 	test-applications/MDBIntMixEJB.jar/src, \
 	test-applications/MDBIntMixWeb.war/src, \
+	test-applications/MDBIntXMLEJB.jar/src, \
+	test-applications/MDBIntXMLWeb.war/src, \
+	test-applications/MDBMixEJB.jar/src, \
+	test-applications/MDBMixWeb.war/src, \
 	test-applications/MDBXMLEJB.jar/src, \
 	test-applications/MDBXMLEJB2.jar/src, \
-	test-applications/MDBXMLWeb.war/src, \
-	test-applications/MDBIntXMLEJB.jar/src, \
-	test-applications/MDBIntXMLWeb.war/src
+	test-applications/MDBXMLWeb.war/src
 
 fat.project: true
 
