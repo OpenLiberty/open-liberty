@@ -6,3 +6,4 @@ visibility=private
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-DisableAllFeatures-OnConflict: false
