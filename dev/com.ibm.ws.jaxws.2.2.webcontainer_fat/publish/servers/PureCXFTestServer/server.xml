@@ -1,6 +1,8 @@
 <server>
     <featureManager>
-        <feature>jsp-2.2</feature>        
+        <feature>jsp-2.2</feature>       
+        <feature>javaMail-1.6</feature> 
+        <feature>jaxb-2.3</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
