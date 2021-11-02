@@ -13,7 +13,16 @@
 bVersion=1.0
 grpcVersion=1.38.1
 
-Bundle-SymbolicName: io.openliberty.io.grpc.1.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.io.grpc.1.0.javaee; singleton:=true
+
+-pom: artifactid=io.openliberty.io.grpc.1.0.jakarta
+
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.io.grpc.1.0.jakarta.jar
+jakartaFinalBundleId: io.openliberty.io.grpc.1.0.jakarta
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.io.grpc.1.0.jakarta.jar
 
 Import-Package: \
   *

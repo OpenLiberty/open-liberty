@@ -14,8 +14,17 @@ grpcVersion=1.38.1
 nettyVersion=4.1.68.Final
 
 Bundle-Name: Open Liberty gRPC Client Third Party API
-Bundle-SymbolicName: io.openliberty.grpc.client.1.0.thirdparty
-Bundle-Description: Open Liberty gRPC Client Third Party API
+Bundle-SymbolicName: io.openliberty.grpc.client.1.0.javaee.thirdparty
+Bundle-Description: Open Liberty gRPC Client Third Party API; Jakarta enabled
+
+-pom: artifactid=io.openliberty.grpc.client.1.0.jakarta.thirdparty
+
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.grpc.client.1.0.jakarta.thirdparty.jar
+jakartaFinalBundleId: io.openliberty.grpc.client.1.0.jakarta.thirdparty
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.grpc.client.1.0.jakarta.thirdparty.jar
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
