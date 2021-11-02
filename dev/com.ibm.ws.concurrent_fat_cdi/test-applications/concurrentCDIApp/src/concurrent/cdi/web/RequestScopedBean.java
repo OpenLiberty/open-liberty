@@ -10,6 +10,10 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -19,8 +23,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.context.RequestScoped;
 
+@ContextServiceDefinition(name = "java:comp/concurrent/txcontextunchanged",
+                          propagated = APPLICATION,
+                          unchanged = TRANSACTION,
+                          cleared = ALL_REMAINING)
 @RequestScoped
 public class RequestScopedBean {
     private int number;

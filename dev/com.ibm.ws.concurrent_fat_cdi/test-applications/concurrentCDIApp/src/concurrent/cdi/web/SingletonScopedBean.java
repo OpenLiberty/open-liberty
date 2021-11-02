@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,18 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.inject.Singleton;
 
+@ContextServiceDefinition(name = "java:module/concurrent/txcontextcleared",
+                          cleared = TRANSACTION,
+                          propagated = ALL_REMAINING)
 @Singleton
 public class SingletonScopedBean {
     private final Map<Object, Object> map = new HashMap<Object, Object>();

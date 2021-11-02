@@ -40,8 +40,10 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 
 import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -49,6 +51,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Status;
+import jakarta.transaction.TransactionManager;
 import jakarta.transaction.TransactionSynchronizationRegistry;
 import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
@@ -100,6 +104,8 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     @Inject
     private TaskBean taskBean;
+
+    private TransactionManager tm;
 
     @Resource
     private UserTransaction tran;
@@ -163,6 +169,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Initialize the transaction service (including recovery logs) so it doesn't slow down our tests and cause timeouts.
      */
     public void initTransactionService() throws Exception {
+        // reflectively invoke: tm = TransactionManagerFactory.getTransactionManager();
+        Class<?> TransactionManagerFactory = Class.forName("com.ibm.tx.jta.TransactionManagerFactory");
+        tm = (TransactionManager) TransactionManagerFactory.getMethod("getTransactionManager").invoke(null);
         tran.begin();
         tran.commit();
     }
@@ -931,6 +940,94 @@ public class ConcurrentCDIServlet extends HttpServlet {
         assertTrue(lookupResults.toString(), lookupResults.get(0).endsWith("managedExecutorService[DefaultManagedExecutorService]"));
         assertTrue(lookupResults.toString(), lookupResults.get(1).endsWith("concurrent/sampleExecutor"));
         assertTrue(lookupResults.toString(), lookupResults.get(2).endsWith("concurrent/timeoutExecutor"));
+    }
+
+    /**
+     * Verify that transaction context is cleared per the ContextServiceDefinition configuration.
+     */
+    @Test
+    public void testTransactionContextCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/txcontextcleared");
+        tran.begin();
+        try {
+            assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+
+            contextSvc.contextualCallable(() -> {
+                // transaction context must be cleared
+                assertEquals(Status.STATUS_NO_TRANSACTION, tranSyncRegistry.getTransactionStatus());
+                // when transaction context is cleared, a new transaction can be started on the thread
+                tran.begin();
+                try {
+                    assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+                } finally {
+                    tran.commit();
+                }
+                return true;
+            }).call();
+        } finally {
+            tran.rollback();
+        }
+    }
+
+    /**
+     * Verify that transaction context is propagated per the ContextServiceDefinition configuration.
+     */
+    @Test
+    public void testTransactionContextPropagated() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/txcontext");
+        Object txKey;
+        CompletableFuture<Object> stage1 = new CompletableFuture<Object>();
+        CompletableFuture<?> stage2;
+        tran.begin();
+        try {
+            assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+            txKey = tranSyncRegistry.getTransactionKey();
+
+            stage2 = stage1.thenAcceptAsync(contextSvc.contextualConsumer(expectedTxKey -> {
+                try {
+                    // transaction context must be propagated to the thread
+                    assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+                    assertEquals(expectedTxKey, tranSyncRegistry.getTransactionKey());
+                    tran.commit();
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            }));
+
+            tm.suspend();
+        } finally {
+            if (tranSyncRegistry.getTransactionStatus() == Status.STATUS_ACTIVE)
+                tran.rollback();
+        }
+
+        stage1.complete(txKey);
+        stage2.join();
+    }
+
+    /**
+     * Verify that transaction context is left unchanged per the ContextServiceDefinition configuration.
+     */
+    @Test
+    public void testTransactionContextUnchanged() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/txcontextunchanged");
+
+        BiConsumer<Integer, Object> contextualConsumer = contextSvc.contextualConsumer((expectedStatus, expectedTxKey) -> {
+            try {
+                assertEquals(expectedStatus.intValue(), tranSyncRegistry.getTransactionStatus());
+                assertEquals(expectedTxKey, tranSyncRegistry.getTransactionKey());
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tran.begin();
+        try {
+            contextualConsumer.accept(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionKey());
+        } finally {
+            tran.rollback();
+        }
+
+        contextualConsumer.accept(Status.STATUS_NO_TRANSACTION, null);
     }
 
     /**
