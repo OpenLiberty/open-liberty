@@ -26,6 +26,7 @@ jakartaFinalBundleId: io.openliberty.jacc
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.jacc.jar
+publish.wlp.javadoc.include: io.openliberty.jacc.javadoc.zip
 
 Import-Package: com.ibm.wsspi.security.authorization.jacc
 

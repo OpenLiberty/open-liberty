@@ -23,6 +23,7 @@ jakartaFinalBundleId: io.openliberty.servlet
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.servlet.jar
+publish.wlp.javadoc.include: io.openliberty.servlet.javadoc.zip
 
 Import-Package: com.ibm.websphere.servlet.container,com.ibm.websphere.servlet.context,com.ibm.websphere.servlet.error,com.ibm.websphere.servlet.event,com.ibm.websphere.servlet.session,com.ibm.websphere.webcontainer,com.ibm.wsspi.servlet.session
 

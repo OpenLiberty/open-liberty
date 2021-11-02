@@ -61,3 +61,4 @@ jakartaFinalBundleId: io.openliberty.jaxrs30
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.jaxrs30.jar
+publish.wlp.javadoc.include: io.openliberty.jaxrs30.javadoc.zip

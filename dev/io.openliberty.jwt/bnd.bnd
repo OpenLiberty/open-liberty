@@ -26,6 +26,7 @@ jakartaFinalBundleId: io.openliberty.jwt
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.jwt.jar
+publish.wlp.javadoc.include: io.openliberty.jwt.javadoc.zip
 
 Import-Package: com.ibm.websphere.security.jwt
 

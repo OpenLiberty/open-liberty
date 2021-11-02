@@ -26,6 +26,7 @@ jakartaFinalBundleId: io.openliberty.oauth
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.oauth.jar
+publish.wlp.javadoc.include: io.openliberty.oauth.javadoc.zip
 
 Import-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token,com.ibm.ws.security.oauth20.resources,*
 

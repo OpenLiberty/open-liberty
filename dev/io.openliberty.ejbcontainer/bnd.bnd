@@ -26,6 +26,7 @@ jakartaFinalBundleId: io.openliberty.ejbcontainer
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.ejbcontainer.jar
+publish.wlp.javadoc.include: io.openliberty.ejbcontainer.javadoc.zip
 
 Import-Package: \
 	com.ibm.websphere.ejbcontainer.mbean,\
