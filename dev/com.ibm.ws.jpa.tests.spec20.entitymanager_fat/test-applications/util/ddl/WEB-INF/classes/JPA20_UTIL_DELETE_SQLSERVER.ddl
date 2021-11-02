@@ -1,7 +1,0 @@
-DELETE FROM UtilEntity;
-DELETE FROM UtilEmbEntity;
-DELETE FROM Util1x1Rt;
-DELETE FROM Util1x1Lf;
-DELETE FROM Util1xmRt;
-DELETE FROM Util1xmLf;
-DELETE FROM Util1xmLf_Util1xmRt;
