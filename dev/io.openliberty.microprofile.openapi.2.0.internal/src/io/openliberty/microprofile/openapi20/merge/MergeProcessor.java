@@ -239,7 +239,7 @@ public class MergeProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Only one document was able to be merged. Returning that document without changes.");
             }
-            return new MergedOpenAPIProvider(includedProviders.get(0).getModel(), mergeProblems);
+            return new MergedOpenAPIProvider(includedProviders.get(0).getModel(), mergeProblems, includedProviders.get(0).getApplicationPath());
         }
 
         OpenAPI merged = OASFactory.createOpenAPI();
