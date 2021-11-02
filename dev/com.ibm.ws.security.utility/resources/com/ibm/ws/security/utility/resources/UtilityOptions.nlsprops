@@ -260,7 +260,7 @@ createLTPAKeys.option-desc.password.key=\
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 tlsProfiler.desc=\
-\tTest the target host and port's compatibility with available TLS protocols and cipher suites.
+\tTest the target host and port''s compatibility with available TLS protocols and cipher suites.
 tlsProfiler.usage.options=\
 \t{0} tlsProfiler [options]
 tlsProfiler.required-key.port=\
