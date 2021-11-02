@@ -160,7 +160,6 @@ public abstract class DDParserBndExt extends DDParser {
         if ( namespace == null ) {
             patchNamespace(NAMESPACE_IBM_JAVAEE);
         } else if ( !namespace.equals(NAMESPACE_IBM_JAVAEE) ) {
-            // TODO: Should this be an error?
             warning( incorrectDescriptorNamespace(namespace, NAMESPACE_IBM_JAVAEE) );
             patchNamespace(NAMESPACE_IBM_JAVAEE);            
         }

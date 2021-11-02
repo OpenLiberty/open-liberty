@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -43,9 +44,55 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public abstract class DDParser {
     protected static final TraceComponent tc = Tr.register(DDParser.class);
 
+    // TODO:
+    //
+    // This could be wired into either of:
+    //   onError=FAIL in bootstrap.properties
+    //   <config onError="FAIL"/> in server.xml
+    //
+    // See open liberty issue 19207:
+    // https://github.com/OpenLiberty/open-liberty/issues/19207
+
+    protected static final boolean FAIL_ON_ERROR = false;
+
+    /**
+     * Display a warning message.  Do not fail parsing.
+     *
+     * @param message The warning message which is to be displayed.
+     */
     protected void warning(String message) {
         Tr.warning(tc, message);
     }
+
+    /**
+     * Display an error message.  If "fail-on-error" is set,
+     * throw an exception.
+     *
+     * @param message The error message which is to be displayed.
+     * 
+     * @throws ParseException Thrown if "fail-on-error" is set.
+     */
+    protected void error(String message) throws ParseException {
+        Tr.error(tc, message);
+
+        if ( FAIL_ON_ERROR ) {
+            throw new ParseException(message);
+        }
+    }
+
+    /**
+     * Display an error message.  Throw an exception,
+     * even if "fail-on-error" is not set.
+     *
+     * @param message The error message which is to be displayed.
+     * 
+     * @throws ParseException Always thrown.
+     */
+    protected void fatal(String message) throws ParseException {
+        Tr.error(tc, message);
+
+        throw new ParseException(message);
+    }    
     
     //
     
