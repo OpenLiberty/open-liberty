@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -335,12 +336,17 @@ public class UserInfoHelperTest extends CommonTestClass {
             {
                 one(httpResponse).getEntity();
                 will(returnValue(entity));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
             }
         });
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
-        String result = uihm.extractClaimsFromResponse(httpResponse, clientConfig, clientRequest);
-        assertNull("Result should be null but was [" + result + "].", result);
-        verifyLogMessage(outputMgr, "CWWKS1539E");
+        try {
+            String result = uihm.extractClaimsFromResponse(httpResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS1539E");
+        }
     }
 
     @Test
@@ -355,11 +361,20 @@ public class UserInfoHelperTest extends CommonTestClass {
     @Test
     public void testExtractClaimsFromJwtResponse_notJwt() throws Exception {
         String rawResponse = "This is not in JWT format";
+        mock.checking(new Expectations() {
+            {
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
 
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
-        String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should be null but was [" + result + "].", result);
-        verifyLogMessage(outputMgr, "CWWKS1539E");
+        try {
+            String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS1539E");
+        }
     }
 
     @Test
@@ -373,9 +388,12 @@ public class UserInfoHelperTest extends CommonTestClass {
         });
 
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
-        String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should be null but was [" + result + "].", result);
-        verifyLogMessage(outputMgr, "CWWKS1533E");
+        try {
+            String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E");
+        }
     }
 
     @Test
@@ -395,8 +413,11 @@ public class UserInfoHelperTest extends CommonTestClass {
             }
         });
         UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig, sslSupport);
-        String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should be null but was [" + result + "].", result);
-        verifyLogMessage(outputMgr, "CWWKS1533E" + ".+" + "CWWKS6056E");
+        try {
+            String result = uihm.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
+        }
     }
 }
