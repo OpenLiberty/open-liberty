@@ -13,9 +13,13 @@
 -includeresource: \
    @${repo;org.osgi:org.osgi.service.http;1.2.1}!/!(OSGI-OPT/src|META-INF/maven)/*
 
-publish.wlp.jar.suffix: dev/api/spec
+# Unlike the non Jakarta 9 one, do not publish to dev/api/spec.  It isn't needed
+# there since no Jakarta 9 features expose the API
+# publish.wlp.jar.suffix: dev/api/spec
 
 instrument.disabled: true
 
 -buildpath: \
 	org.osgi:org.osgi.service.http;version=1.2.1
+	
+jakartaeeMe: true
