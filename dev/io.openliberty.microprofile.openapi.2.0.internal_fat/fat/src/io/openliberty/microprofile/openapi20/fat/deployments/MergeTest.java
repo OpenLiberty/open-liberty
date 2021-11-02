@@ -110,6 +110,7 @@ public class MergeTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test"));
         
         // check that merge is not traced
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
@@ -133,6 +134,7 @@ public class MergeTest {
         OpenAPITestUtil.checkPaths(openapiNode, 3, "/test1/test", "/test2/test", "/test3/test");
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
+        assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test1/test"));
         
         // check that merge is traced
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
@@ -246,10 +248,48 @@ public class MergeTest {
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
         OpenAPITestUtil.checkServer(openapiNode, "http://example.org/server1");
+        assertEquals("/server1/test", OpenAPITestUtil.expandPath(openapiNode, "/test"));
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
         assertThat(server.findStringsInLogsUsingMark(" - The /test path.*test2.* clashes with a path from the.*test1.*test2.*will not be merged", server.getDefaultLogFile()), hasSize(1));
+    }
+    
+    /**
+     * This is a slightly convoluted example which will fail if the merged document doesn't have the right context root.
+     * <p>
+     * test1 and test2 clash, so only test1 will be returned.
+     * @throws Exception
+     */
+    @Test
+    public void testMergeClashNeedingContextRoot() throws Exception {
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResourceTest1.class)
+                                    .addAsManifestResource(openApiJsonWithServers("http://example.org"), "openapi.json");
+
+        deployApp(war1);
+        assertRest("/test1/test");
+
+        deployApp(war2);
+        assertRest("/test2/test1/test");
+
+        server.setMarkToEndOfLog();
+
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        
+        // Check that the server and path for test1 in the openapi doc is actually correct
+        assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test"));
+
+        // check for clash message
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
+        assertThat(server.findStringsInLogsUsingMark(" - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*will not be merged", server.getDefaultLogFile()),
+                   hasSize(1));
+
     }
 
     private Asset openApiJsonWithServers(String... urls) {

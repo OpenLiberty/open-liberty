@@ -13,11 +13,13 @@ package io.openliberty.microprofile.openapi20.fat.utils;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -230,6 +232,39 @@ public class OpenAPITestUtil {
         assertThat("Path names", pathNames, hasItems(containedPaths));
         assertThat("Path names", pathNames, hasSize(expectedCount));
     }
+    
+    /**
+     * Find the given path in the document and prepend the path from a relevant server to it and return the result
+     * 
+     * @param root the document
+     * @param pathName the path name
+     * @return the prepended path name
+     */
+    public static String expandPath(JsonNode root, String pathName) {
+        ObjectNode paths = getFieldObject(root, "paths");
+        ObjectNode path = getFieldObject(paths, pathName);
+        
+        JsonNode servers = path.get("servers");
+        if (servers == null) {
+            servers = root.get("servers");
+        }
+        assertNotNull(servers);
+        
+        URI uri = findServerUrl(servers);
+        return uri.getPath() + pathName;
+    }
+
+    private static URI findServerUrl(JsonNode serversNode) {
+        assertTrue(serversNode.isArray());
+        ArrayNode servers = (ArrayNode) serversNode;
+        assertFalse(servers.isEmpty());
+        
+        JsonNode serverNode = servers.get(0);
+        assertNotNull(serverNode);
+        JsonNode urlNode = serverNode.get("url");
+        assertNotNull(urlNode);
+        return URI.create(urlNode.asText());
+    }
 
     public static void checkInfo(JsonNode root, String defaultTitle, String defaultVersion) {
         JsonNode infoNode = root.get("info");
@@ -304,5 +339,12 @@ public class OpenAPITestUtil {
             result.add(item);
         }
         return result;
+    }
+    
+    private static ObjectNode getFieldObject(JsonNode parent, String fieldName) {
+        JsonNode childNode = parent.get(fieldName);
+        assertNotNull(childNode);
+        assertTrue(childNode.isObject());
+        return (ObjectNode) childNode;
     }
 }
