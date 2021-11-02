@@ -114,6 +114,7 @@ if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp
     task publishJavadoc(type: Copy) {
         dependsOn zipJavadoc
         from new File(project.buildDir, 'distributions')
+        include bnd('publish.wlp.javadoc.include', '*javadoc.zip')
         into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
         rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
     }
