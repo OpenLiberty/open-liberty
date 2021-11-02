@@ -15,6 +15,7 @@ import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStoreException;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -1070,11 +1071,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json");
             HttpResponse result = null;
+
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
                 logErrorMessage(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
                 throw ioex;
+            } finally {
+                setContextClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -1137,16 +1143,22 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
         HttpClient client = null;
         if (isSecure) {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-            }
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } else {
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                if (addBasicAuthHeader) {
+                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                } else {
+                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                }
+            } finally {
+                setContextClassLoader(origCL);
             }
         } else {
             if (addBasicAuthHeader) {
@@ -1156,6 +1168,35 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
         }
         return client;
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
     }
 
     private BasicCredentialsProvider createCredentialsProvider() {

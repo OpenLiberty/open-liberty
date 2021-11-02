@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.Key;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
@@ -787,11 +788,16 @@ public class JwKRetriever {
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json");
             HttpResponse result = null;
+            
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
                 logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
                 throw ioex;
+            } finally {
+                setContextClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -856,16 +862,22 @@ public class JwKRetriever {
     private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {
         HttpClient client = null;
         if (isSecure) {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-            }
-            if (addBasicAuthHeader) {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } else {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                if (addBasicAuthHeader) {
+                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                } else {
+                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+                }
+            } finally {
+                setContextClassLoader(origCL);
             }
         } else {
             if (addBasicAuthHeader) {
@@ -875,6 +887,35 @@ public class JwKRetriever {
             }
         }
         return client;
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
     }
 
     private BasicCredentialsProvider createCredentialsProvider() {

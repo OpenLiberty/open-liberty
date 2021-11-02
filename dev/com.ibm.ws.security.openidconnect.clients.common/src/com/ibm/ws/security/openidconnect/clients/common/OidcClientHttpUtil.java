@@ -11,6 +11,8 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -156,12 +158,17 @@ public class OidcClientHttpUtil {
 
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
+
+        ClassLoader origCL = getContextClassLoader();
+        setContextClassLoader(getClass());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
             throw ex;
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
+        } finally {
+            setContextClassLoader(origCL);
         }
 
         // Check the response from the endpoint to see if there was an error
@@ -207,12 +214,17 @@ public class OidcClientHttpUtil {
 
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
+
+        ClassLoader origCL = getContextClassLoader();
+        setContextClassLoader(getClass());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
             throw ex;
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
+        } finally {
+            setContextClassLoader(origCL);
         }
 
         Map<String, Object> result = new HashMap<String, Object>();
@@ -343,13 +355,19 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                setContextClassLoader(origCL);
             }
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
         }
 
         // BasicCredentialsProvider credentialsProvider = new
@@ -377,20 +395,55 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+                client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                        .setDefaultCredentialsProvider(credentialsProvider)
+                        .setSSLSocketFactory(connectionFactory)
+                        .setDefaultRequestConfig(rcfg)
+                        .build();
+            } finally {
+                setContextClassLoader(origCL);
             }
-            RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-            client = createBuilder(useSystemPropertiesForHttpClientConnections)
-                    .setDefaultCredentialsProvider(credentialsProvider)
-                    .setSSLSocketFactory(connectionFactory)
-                    .setDefaultRequestConfig(rcfg)
-                    .build();
         }
         return client;
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
     }
 
     static OidcClientHttpUtil instance = null;;

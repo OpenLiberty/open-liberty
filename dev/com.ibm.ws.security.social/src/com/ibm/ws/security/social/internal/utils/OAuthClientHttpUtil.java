@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.security.social.internal.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -110,10 +112,15 @@ public class OAuthClientHttpUtil {
     HttpResponse executeRequest(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, HttpUriRequest httpUriRequest, boolean useJvmProps) throws SocialLoginException {
         HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
         HttpResponse response = null;
+        
+        ClassLoader origCL = getContextClassLoader();
+        setContextClassLoader(getClass());
         try {
             response = httpClient.execute(httpUriRequest);
         } catch (Exception e) {
             throw new SocialLoginException("ERROR_EXECUTING_REQUEST", e, new Object[] { url, e.getLocalizedMessage() });
+        } finally {
+            setContextClassLoader(origCL);
         }
         return response;
     }
@@ -315,13 +322,19 @@ public class OAuthClientHttpUtil {
         if (url != null && url.startsWith("http:")) {
             client = getBuilder(useJvmProps).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                setContextClassLoader(origCL);
             }
-            client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;
@@ -337,17 +350,53 @@ public class OAuthClientHttpUtil {
         if (url != null && url.startsWith("http:")) {
             client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = getContextClassLoader();
+            setContextClassLoader(getClass());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                setContextClassLoader(origCL);
             }
-            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;
     }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
+    }
+
 
     private HttpClientBuilder getBuilder(boolean useJvmProps) {
         return useJvmProps ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();

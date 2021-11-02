@@ -12,6 +12,8 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -241,13 +243,50 @@ public class OidcClientUtil {
 
         HttpClient httpClient = baUsername != null ? oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useSystemPropertiesForHttpClientConnections) : oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
 
-        HttpResponse responseCode = httpClient.execute(request);
+        HttpResponse responseCode = null;
+
+        ClassLoader origCL = getContextClassLoader();
+        setContextClassLoader(getClass());
+        try {
+            responseCode = httpClient.execute(request);
+        } finally {
+            setContextClassLoader(origCL);
+        }
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put(ClientConstants.RESPONSEMAP_CODE, responseCode);
         result.put(ClientConstants.RESPONSEMAP_METHOD, request);
 
         return result;
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
     }
 
     // This assumes the oidcClient is using the same httpEndpoint settings as

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.security.social.internal.utils;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -458,13 +460,50 @@ public class OAuthClientUtil {
 
         HttpClient httpClient = baUsername != null ? httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useJvmProps) : httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
 
-        HttpResponse responseCode = httpClient.execute(request);
+        HttpResponse responseCode = null;
+        
+        ClassLoader origCL = getContextClassLoader();
+        setContextClassLoader(getClass());
+        try {
+            responseCode = httpClient.execute(request);
+        } finally {
+            setContextClassLoader(origCL);
+        }
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put(ClientConstants.RESPONSEMAP_CODE, responseCode);
         result.put(ClientConstants.RESPONSEMAP_METHOD, request);
 
         return result;
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final Class<?> clazz) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
+                return null;
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader classLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return null;
+            }
+        });
     }
 
     protected Integer getRedirectPortFromRequest(HttpServletRequest req) {
