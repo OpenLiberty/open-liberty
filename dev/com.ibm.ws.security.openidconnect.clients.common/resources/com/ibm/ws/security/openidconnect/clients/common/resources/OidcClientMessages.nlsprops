@@ -244,4 +244,10 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: The web response [{0}] is expe
 JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=The Content-Type header in the web response indicates that the response contains a JWT, but the response body is not in a valid JWT format.
 JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Ensure that the web response is in the format that is expected by the OpenID Connect client.
 
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: The {0} OpenID Connect client cannot retrieve information about the access token from the UserInfo endpoint: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=The response from the UserInfo endpoint might not be in a format that is expected. The OpenID Connect client might have encountered an error while submitting the UserInfo request.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Check the error message for more information. Verify that the content of the UserInfo response matches the Content-Type HTTP header.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -180,7 +180,7 @@ public class UserInfoHelper {
             statusCode = response.getStatusLine().getStatusCode();
             responseStr = extractClaimsFromResponse(response, config.getOidcClientConfig(), oidcClientRequest);
         } catch (Exception ex) {
-            //ffdc
+            Tr.error(tc, "ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS", new Object[] { config.getId(), ex.getMessage() });
         }
         if (statusCode != 200) {
             Tr.error(tc, "USERINFO_RETREIVE_FAILED", new Object[] { url, Integer.toString(statusCode), responseStr });
@@ -237,12 +237,13 @@ public class UserInfoHelper {
                 return responseString;
             } else {
                 // We expect to be extracting claims from a JWT, but the response string isn't a JWS or a JWE
-                Tr.error(tc, "JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT", new Object[] { responseString });
+                String msg = Tr.formatMessage(tc, "JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT", new Object[] { responseString });
+                throw new UserInfoException(msg);
             }
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE", new Object[] { clientConfig.getId(), e.getMessage() });
+            String msg = Tr.formatMessage(tc, "OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE", new Object[] { clientConfig.getId(), e.getMessage() });
+            throw new UserInfoException(msg, e);
         }
-        return null;
     }
 
     String extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
