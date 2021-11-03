@@ -32,12 +32,12 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
-import prototype.enterprise.concurrent.Async;
 
-@Async // TODO replace with spec Asynchronous once we have a snapshot build with it
+@Asynchronous
 @Interceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 5)
 public class AsyncInterceptor implements Serializable {
@@ -48,10 +48,10 @@ public class AsyncInterceptor implements Serializable {
     public Object intercept(InvocationContext context) throws Exception {
         Method method = context.getMethod();
         validateTransactional(method);
-        if (method.getDeclaringClass().getAnnotation(Async.class) != null)
+        if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
             throw new UnsupportedOperationException("@Asynchronous " + method.getDeclaringClass()); // TODO NLS?
 
-        Async anno = method.getAnnotation(Async.class);
+        Asynchronous anno = method.getAnnotation(Asynchronous.class);
 
         // @Asynchronous must be on a method that returns completion stage or void
         Class<?> returnType = method.getReturnType();
@@ -83,7 +83,7 @@ public class AsyncInterceptor implements Serializable {
     }
 
     /**
-     * Limits the pairing of @Async and @Transactional to NOT_SUPPORTED and REQUIRES_NEW.
+     * Limits the pairing of @Asynchronous and @Transactional to NOT_SUPPORTED and REQUIRES_NEW.
      *
      * @param method annotated method.
      * @throws UnsupportedOperationException for unsupported combinations.
@@ -98,7 +98,7 @@ public class AsyncInterceptor implements Serializable {
                 case REQUIRES_NEW:
                     break;
                 default:
-                    throw new UnsupportedOperationException("@Async @Transactional(" + tx.value().name() + ")");
+                    throw new UnsupportedOperationException("@Asynchronous @Transactional(" + tx.value().name() + ")");
             }
     }
 
@@ -127,12 +127,12 @@ public class AsyncInterceptor implements Serializable {
         }
 
         /**
-         * Runs the async method.
+         * Runs the asynchronous method.
          */
         @FFDCIgnore(Throwable.class) // application errors are raised directly to the application
         @Override
         public void run() {
-            Async.Result.setFuture(future);
+            Asynchronous.Result.setFuture(future);
             try {
                 Object returnVal = invocation.proceed();
                 if (returnVal != future)
@@ -154,7 +154,7 @@ public class AsyncInterceptor implements Serializable {
                 future.completeExceptionally(x);
                 // TODO when is setRollbackOnly appropriate?
             } finally {
-                Async.Result.setFuture(null);
+                Asynchronous.Result.setFuture(null);
             }
         }
 

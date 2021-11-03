@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
+import ImPropTypes from "react-immutable-proptypes"
+import Im from "immutable"
 
 export default class ModelCollapse extends Component {
   static propTypes = {
@@ -11,6 +13,9 @@ export default class ModelCollapse extends Component {
     classes: PropTypes.string,
     onToggle: PropTypes.func,
     hideSelfOnExpand: PropTypes.bool,
+    layoutActions: PropTypes.object,
+    layoutSelectors: PropTypes.object.isRequired,
+    specPath: ImPropTypes.list.isRequired,
   }
 
   static defaultProps = {
@@ -18,7 +23,8 @@ export default class ModelCollapse extends Component {
     expanded: false,
     title: null,
     onToggle: () => {},
-    hideSelfOnExpand: false
+    hideSelfOnExpand: false,
+    specPath: Im.List([]),
   }
 
   constructor(props, context) {
@@ -58,6 +64,15 @@ export default class ModelCollapse extends Component {
     })
   }
 
+  onLoad = (ref) => {
+    if (ref && this.props.layoutSelectors) {
+      const scrollToKey = this.props.layoutSelectors.getScrollToKey()
+
+      if( Im.is(scrollToKey, this.props.specPath) ) this.toggleCollapsed()
+      this.props.layoutActions.readyToScroll(this.props.specPath, ref.parentElement)
+    }
+  }
+
   render () {
     const { title, classes } = this.props
 
@@ -70,12 +85,14 @@ export default class ModelCollapse extends Component {
     }
 
     return (
-      <span className={classes || ""}>
-        { title && <span onClick={this.toggleCollapsed} style={{ "cursor": "pointer" }}>{title}</span> }
-        <span onClick={ this.toggleCollapsed } style={{ "cursor": "pointer" }}>
+      <span className={classes || ""} ref={this.onLoad}>
+        <button aria-expanded={this.state.expanded} className="model-box-control" onClick={this.toggleCollapsed}>
+          { title && <span className="pointer">{title}</span> }
           <span className={ "model-toggle" + ( this.state.expanded ? "" : " collapsed" ) }></span>
-        </span>
-        { this.state.expanded ? this.props.children :this.state.collapsedContent }
+          { !this.state.expanded && <span>{this.state.collapsedContent}</span> }
+        </button>
+
+        { this.state.expanded && this.props.children }
       </span>
     )
   }

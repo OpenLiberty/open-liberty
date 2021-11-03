@@ -13,7 +13,7 @@
        default-destroy-method="destroy">
 
     <!--
-    Intercept flows are used at various injection points to modify processing. This is the master list
+    Intercept flows are used at various injection points to modify processing. This is the primary list
     of flows available that provide interesting features to deployers, but flows are actually enabled by
     specifying them in various profile configuration beans via relying-party.xml 
     

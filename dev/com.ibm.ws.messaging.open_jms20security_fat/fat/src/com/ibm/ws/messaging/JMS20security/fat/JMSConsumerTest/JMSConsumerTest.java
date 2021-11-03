@@ -10,19 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20security.fat.JMSConsumerTest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,12 +32,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.JMSActivationSpec;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
+import com.ibm.websphere.simplicity.config.WasJmsProperties;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -57,6 +62,9 @@ public class JMSConsumerTest {
     //static { Logger.getLogger(c.getName()).setLevel(Level.FINER);}
     // Output goes to .../com.ibm.ws.messaging.open_jms20security_fat/build/libs/autoFVT/results/output.txt
 
+    /** @return the methodName of the caller. */
+    private final static String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
     private static boolean runInServlet(String test) throws IOException {
 
         boolean result;
@@ -112,7 +120,46 @@ public class JMSConsumerTest {
         // Add the client side jmsConsumer.mdb's to the client appserver. 
         TestUtils.addDropinsWebApp(server, "jmsapp", "jmsConsumer.mdb");
         
+        transformServerXml("JMSContext_ssl.xml");
+        
         startAppServers();
+    }
+
+    /**
+     * Update a Server.xml so that it uses appropriate javax or jakarta queue and topic classes in ActivationSpecs.
+     */
+    private static void transformServerXml(String fileName) throws Exception {
+        File file = new File("lib/LibertyFATTestFiles/"+fileName);
+        Log.info(c, "transformServerXml", "Updating ActivationSpec destinationType in:" + file);
+        ServerConfiguration config = ServerConfigurationFactory.fromFile(file);
+
+        Map<String, String> transformation = new HashMap<>();
+        if (JakartaEE9Action.isActive()) {
+            transformation.put("javax.jms.Queue", "jakarta.jms.Queue");
+            transformation.put("javax.jms.Topic", "jakarta.jms.Topic");
+        } else {
+            transformation.put("jakarta.jms.Queue", "javax.jms.Queue");
+            transformation.put("jakarta.jms.Topic", "javax.jms.Topic"); 
+        }
+        
+        // Update JMS queue and topic destinationType.
+        boolean configUpdated = false;
+        for (JMSActivationSpec jmsActivationSpec : config.getJMSActivationSpecs()) {
+            for (WasJmsProperties properties : jmsActivationSpec.getWasJmsProperties()) {
+                String destinationType = properties.getDestinationType();
+                if (destinationType != null && transformation.containsKey(destinationType)) {
+                    properties.setDestinationType(transformation.get(destinationType));
+                    configUpdated = true;
+                }
+            }
+        }
+
+        if (configUpdated) {
+            ServerConfigurationFactory.toFile(file, config);
+            Log.info(c, "transformServerXml", "Updated " + file);
+        } else {
+            Log.info(c, "transformServerXml", "No changes to " + file);
+        }
     }
 
     /**
@@ -128,7 +175,6 @@ public class JMSConsumerTest {
         server.setServerConfigurationFile(clientConfigFile);
         server1.setServerConfigurationFile(remoteConfigFile);
         // Start the remote server first to increase the odds of the client making contact at the first attempt.
-        //server.startServer("JMSConsumerTestClient.log");
         server1.startServer("JMSConsumerServer.log");
         server.startServer("JMSConsumerTestClient.log");
      
@@ -155,22 +201,13 @@ public class JMSConsumerTest {
     }
 
     private static void stopAppServers() throws Exception {
-             
-        if (JakartaEE9Action.isActive()) {
-            // Remove the Jakarta special case once fixed.
-            // Also remove @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
-            // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
-            // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
-            // [24/03/21 16:57:16:336 GMT] 0000004b com.ibm.ws.jca.service.EndpointActivationService             E J2CA8802E: The message endpoint activation failed for resource adapter wasJms due to exception: jakarta.resource.spi.InvalidPropertyException: CWSJR1181E: The JMS activation specification has invalid values - the reason(s) for failing to validate the JMS       
-            server.addIgnoredErrors(Arrays.asList("CWWKG0032W","J2CA8802E"));
-        }
         server.stopServer();
         server1.stopServer();  
     }
     
     
     // start 118076
-    // @Test
+    @Test
     public void testCloseConsumer_B_SecOn() throws Exception {
 
         boolean val = runInServlet("testCloseConsumer_B");
@@ -180,7 +217,7 @@ public class JMSConsumerTest {
 
     // TCP and Security on ( with ssl)
 
-    // @Test
+    @Test
     public void testCloseConsumer_TCP_SecOn() throws Exception {
 
         boolean val = runInServlet("testCloseConsumer_TCP");
@@ -528,7 +565,6 @@ public class JMSConsumerTest {
 //TODO Validate that the message is now in the exception destination. 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Test
     public void testCreateSharedDurable_B_SecOn() throws Exception {
@@ -543,7 +579,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Test
     public void testCreateSharedDurable_TCP_SecOn() throws Exception {
@@ -558,7 +593,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException"} )
     @Mode(TestMode.FULL)
     @Test
@@ -574,7 +608,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException"} )
     @Mode(TestMode.FULL)
     @Test
@@ -590,7 +623,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Test
     public void testCreateSharedNonDurable_B_SecOn() throws Exception {
@@ -608,7 +640,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Test
     public void testCreateSharedNonDurable_TCP_SecOn() throws Exception {
@@ -626,7 +657,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Mode(TestMode.FULL)
     @Test
@@ -642,7 +672,6 @@ public class JMSConsumerTest {
 
     }
 
-    @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
     @AllowedFFDC( { "com.ibm.websphere.sib.exception.SIResourceException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" } )
     @Mode(TestMode.FULL)
     @Test
@@ -659,72 +688,56 @@ public class JMSConsumerTest {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testMultiSharedNonDurableConsumer_SecOn() throws Exception {
-
+        server.setMarkToEndOfLog();
         boolean val = runInServlet("testBasicMDBTopic");
-        Thread.sleep(1000);
-        int count1 = getCount("Received in MDB1: testBasicMDBTopic:");
-        int count2 = getCount("Received in MDB2: testBasicMDBTopic:");
-
-        System.out.println("Number of messages received on MDB1 is " + count1
-                           + " and number of messages received on MDB2 is " + count2);
-        Log.info(c, "testMultiSharedNonDurableConsumer_SecOn", "Bindings count1="+count1+" count2="+count2);
-
-        boolean output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
-        }
-
-        assertTrue("testBasicMDBTopicNonDurable: output value is false", output);
-
+        assertTrue(methodName()+" Failed to send messages", val);
+        
+        // The servlet has sent 3 distinct messages which are received by either MDB1 or MDB2,
+        // the MDB's run as multiple instances so the order the messages are received is unpredictable.
+        // We allow up to 120 seconds to receive all of the messages,
+        // although normally there should be minimal delay and anything more that 10 seconds means that the test infrastructure is not 
+        // providing enough resources.
+        long receiveStartMilliseconds = System.currentTimeMillis();
+        int count = server.waitForMultipleStringsInLogUsingMark(3, "Received in MDB[1-2]: testBasicMDBTopic:");
+        Log.debug(c, "Bindings count="+count);
+        assertEquals("Incorrect number of messages:"+count, count, 3);
+        long receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
+       
+        server.setMarkToEndOfLog();
         val = runInServlet("testBasicMDBTopic_TCP");
-        Thread.sleep(1000);
-        count1 = getCount("Received in MDB1: testBasicMDBTopic_TCP:");
-        count2 = getCount("Received in MDB2: testBasicMDBTopic_TCP:");
-
-        System.out.println("Number of messages received on MDB1 is " + count1
-                           + " and number of messages received on MDB2 is " + count2);
-        Log.info(c, "testMultiSharedNonDurableConsumer_SecOn", "TCP count1="+count1+" count2="+count2);
-
-        output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
-        }
-
-        assertTrue("testBasicMDBTopicNonDurable: output value is false", output);
-
+        assertTrue("testMultiSharedNonDurableConsumer_SecOn Failed to send messages", val);
+        
+        receiveStartMilliseconds = System.currentTimeMillis();
+        count = server.waitForMultipleStringsInLogUsingMark(3, "Received in MDB[1-2]: testBasicMDBTopic_TCP:");
+        Log.debug(c, "TCP count="+count);
+        assertEquals("Incorrect number of messages:"+count, count, 3);
+        receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testMultiSharedDurableConsumer_SecOn() throws Exception {
-
-        runInServlet("testBasicMDBTopicDurShared");
-        Thread.sleep(1000);
-        int count1 = getCount("Received in MDB1: testBasicMDBTopic:");
-        int count2 = getCount("Received in MDB2: testBasicMDBTopic:");
-        Log.info(this.getClass(), "testMultiSharedDurableConsumer_SecOn", "Bindings count1="+count1+" count2="+count2);
-
-        boolean output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
-        }
-
-        assertTrue("testBasicMDBTopicDurableShared: output value is false", output);
-
-        boolean val = runInServlet("testBasicMDBTopicDurShared_TCP");
-        Thread.sleep(1000);
-        count1 = getCount("Received in MDB1: testBasicMDBTopic_TCP:");
-        count2 = getCount("Received in MDB2: testBasicMDBTopic_TCP:");
-        Log.info(this.getClass(), "testMultiSharedDurableConsumer_SecOn", "TCP count1="+count1+" count2="+count2);
-
-        output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
-        }
-
-        assertTrue("testBasicMDBTopicDurableShared_TCP: output value is false", output);
+        server.setMarkToEndOfLog();
+        boolean val = runInServlet("testBasicMDBTopicDurShared");
+        assertTrue(methodName()+" Failed to send messages", val);
+        
+        long receiveStartMilliseconds = System.currentTimeMillis();
+        int count = server.waitForMultipleStringsInLogUsingMark(3, "Received in MDB[1-2]: testBasicMDBTopic:");
+        Log.debug(c, "Bindings count="+count);
+        assertEquals("Incorrect number of messages:"+count, count, 3);
+        long receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
+              
+        server.setMarkToEndOfLog();
+        val = runInServlet("testBasicMDBTopicDurShared_TCP");
+        receiveStartMilliseconds = System.currentTimeMillis();
+        count = server.waitForMultipleStringsInLogUsingMark(3, "Received in MDB[1-2]: testBasicMDBTopic_TCP:");
+        Log.debug(c, "TCP count="+count);
+        assertEquals("Incorrect number of messages:"+count, count, 3);
+        receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
     }
 
     @Mode(TestMode.FULL)
@@ -809,36 +822,4 @@ public class JMSConsumerTest {
             throw new RuntimeException("tearDown exception", exception);
         }
     }
-
-    public int getCount(String str) throws Exception {
-
-        String file = server.getLogsRoot() + "trace.log";
-        System.out.println("FILE PATH IS : " + file);
-        int count1 = 0;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            String sCurrentLine;
-
-            // read lines until reaching the end of the file
-            while ((sCurrentLine = br.readLine()) != null) {
-
-                if (sCurrentLine.length() != 0) {
-                    // extract the words from the current line in the file
-                    if (sCurrentLine.contains(str))
-                        count1++;
-                }
-            }
-        } catch (FileNotFoundException exception) {
-
-            exception.printStackTrace();
-        } catch (IOException exception) {
-
-            exception.printStackTrace();
-        }
-        return count1;
-
-    }
-
 }

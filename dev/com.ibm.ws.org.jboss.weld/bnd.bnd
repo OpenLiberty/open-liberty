@@ -10,10 +10,17 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+Import-Package: javax.enterprise.context; version="[1.1.0,3.0.0)", \
+                javax.enterprise.context.spi; version="[1.1.0,3.0.0)", \
+                *
+
 # Exclude this bundle from instrumentation (RAS & FFDC trace injection)
 instrument.disabled: true
 instrument.ffdc: false
 
 -buildpath: \
+	com.ibm.ws.org.jboss.logging;version=latest, \
+	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	org.jboss.weld:weld-osgi-bundle;version=2.4.8.Final, \
+ 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

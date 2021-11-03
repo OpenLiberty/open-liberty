@@ -13,17 +13,20 @@ package com.ibm.ws.transaction.test.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
+
 import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.web.FailoverServlet;
 
@@ -46,7 +49,19 @@ import componenttest.topology.utils.FATServletClient;
  * They work as follows:
  *
  * -> A JDBC driver is implemented that wraps the underlying SQL Server driver. The driver is provided in a jar
- * named ifxjdbc.jar. This is inferred to be an Informix driver by the Liberty JDBC driver code.
+ * named ifxjdbc.jar. This is inferred to be an Informix driver by the Liberty JDBC driver code. The source for
+ * the driver is located in test-bundles/ifxlib/src.
+ *
+ * The code specific to a database implementation is in the com.informix.database.ConnectionManager class.
+ * The generic wrapper code is in the com.informix.jdbcx package,
+ *
+ * IfxConnection.java
+ * IfxConnectionPoolDataSource.java
+ * IfxConnectionPoolDataSourceBeanInfo.java
+ * IfxDatabaseMetaData.java
+ * IfxPooledConnection.java
+ * IfxPreparedStatement.java
+ * IfxStatement.java
  *
  * The wrapper code generally passes calls straight through to the real jdbc driver it wraps but, when prompted,
  * it can generate SQLExceptions that will be flowed to calling code, such as SQLMultiScopeRecoveryLog.
@@ -61,8 +76,47 @@ import componenttest.topology.utils.FATServletClient;
  *
  * -> Each test starts by (re)creating HATable and inserting a row to specify the test characteristics.
  *
- * ->The tests will drive a batch of 2PC transactions using artificial XAResourceImpl resources. The jdbc driver will
+ * -> The tests will drive a batch of 2PC transactions using artificial XAResourceImpl resources. The jdbc driver will
  * generate a SQLException at a point defined in the HATABLE row.
+ *
+ * NOTES ON ADDING TESTS TO CHECK HOW THE SQLMULTISCOPERECOVERYLOG HANDLES DUPLICATE RECOVERY RECORDS
+ * ==================================================================================================
+ *
+ * 1/ This class, FailioverTest, has testDuplicationInRecoveryLogsRestart
+ *
+ * (A) sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplication");
+ * Configures the environment for the test
+ *
+ * (B) sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+ * Runs a batch of transactions
+ *
+ * 2/ FailoverServlet has
+ *
+ * public void setupForDuplication(HttpServletRequest request, HttpServletResponse response) throws Exception {
+ * setupTestParameters(request, response, TestType.DUPLICATE, 0, 10, 1);
+ * }
+ *
+ * which drives,
+ *
+ * stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", " + thesqlcode + ")");
+ *
+ * In insert a row in hatable. The hatable is the mechanism for conveying info on how to configure the test env.
+ *
+ * 3/ The hatable configuration is read in the IfxPooledConnection.getConnection() method
+ *
+ * rsBasic = stmt.executeQuery("SELECT testtype, failingoperation, numberoffailures, simsqlcode" + " FROM hatable");
+ *
+ * The code fragment where (testTypeInt == 2) is used to set the ifxfdbc code to test duplication in the recovery logs
+ *
+ * 4/ Duplicate processing occurs each time we call IfxPreparedStatement.executeBatch(). This call is made 3 times in each SQLMultiScopeRecoveryLog.forceSections() invocation,
+ * for the set of inserts, updates and deletes.
+ *
+ * 5/ The insertion of duplicate data into the database is handled by IfxPreparedStatement.duplicateAndHalt();
+ *
+ * 6/ Duplicate data is assembled though the IfxPreparedStatement.set<Type> methods which call IfxPreparedStatement.collectDataForDuplicateRows()
+ *
+ * 7/ The handling of duplicate rows in recovery is signalled by the presence of "NMTEST: Replacing item" strings in the server trace. This string is
+ * written by SQLRecoverableUnitSectionImpl.addData() when a duplicate log entry is encountered.
  */
 @Mode
 @RunWith(FATRunner.class)
@@ -73,11 +127,21 @@ public class FailoverTest extends FATServletClient {
 
     @Server("com.ibm.ws.transaction")
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer server;
+    public static LibertyServer defaultServer;
+
+    @Server("com.ibm.ws.transaction_recover")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer recoverServer;
+
+    @Server("com.ibm.ws.transaction_multipleretries")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer retriesServer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(defaultServer, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(recoverServer, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(retriesServer, APP_NAME, "com.ibm.ws.transaction.*");
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -91,21 +155,21 @@ public class FailoverTest extends FATServletClient {
         server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
-    @Before
-    public void before() throws Exception {
-        startServers(server);
-    }
+    private SetupRunner runner = new SetupRunner() {
+        @Override
+        public void run(LibertyServer s) throws Exception {
+            setUp(s);
+        }
+    };
 
     @After
     public void cleanup() throws Exception {
 
-        server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
-
         // Clean up XA resource files
-        server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        defaultServer.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
 
         // Remove tranlog DB
-        server.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+        defaultServer.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
     }
 
     /**
@@ -116,36 +180,91 @@ public class FailoverTest extends FATServletClient {
     public void testHADBRecoverableRuntimeFailover() throws Exception {
         final String method = "testHADBRecoverableRuntimeFailover";
         StringBuilder sb = null;
-
+        FATUtils.startServers(runner, defaultServer);
         Log.info(this.getClass(), method, "Call setupForRecoverableFailover");
 
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "setupForRecoverableFailover");
-        } catch (Throwable e) {
-        }
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForRecoverableFailover");
 
         Log.info(this.getClass(), method, "setupForRecoverableFailover returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver");
+        Log.info(this.getClass(), method, "Call stopserver on " + defaultServer);
 
-        server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
 
         Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(30000);
+        defaultServer.setServerStartTimeout(30000);
 
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, defaultServer);
 
         Log.info(this.getClass(), method, "Call driveTransactions");
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");
-        } catch (Throwable e) {
-        }
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No warning message signifying failover", server.waitForStringInLog("Have recovered from SQLException"));
-
+        assertNotNull("No warning message signifying failover", defaultServer.waitForStringInLog("Have recovered from SQLException"));
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
         Log.info(this.getClass(), method, "Complete");
+    }
+
+    /**
+     * Test the setting of the "logRetryLimit" server.xml attribute. Set the parameter to 3 retries but simulate
+     * more than 3 (actually 5) failures in the test.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+    })
+    public void testHADBRecoverableFailureMultipleRetries() throws Exception {
+        final String method = "testHADBRecoverableFailureMultipleRetries";
+        StringBuilder sb = null;
+
+        FATUtils.startServers(runner, retriesServer);
+        Log.info(this.getClass(), method, "Call setupForRecoverableFailureMultipleRetries");
+
+        sb = runTestWithResponse(retriesServer, SERVLET_NAME, "setupForRecoverableFailureMultipleRetries");
+
+        Log.info(this.getClass(), method, "setupForRecoverableFailureMultipleRetries returned: " + sb);
+        Log.info(this.getClass(), method, "Call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
+
+        Log.info(this.getClass(), method, "set timeout");
+        retriesServer.setServerStartTimeout(30000);
+
+        Log.info(this.getClass(), method, "call startserver");
+
+        FATUtils.startServers(runner, retriesServer);
+
+        Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
+        // An unhandled sqlcode will lead to a failure to write to the log, the
+        // invalidation of the log and the throwing of Internal LogExceptions
+        sb = runTestWithResponse(retriesServer, SERVLET_NAME, "driveTransactionsWithFailure");
+
+        // Should see a message like
+        // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No error message signifying log failure", retriesServer.waitForStringInLog("Cannot recover from SQLException"));
+
+        // We need to tidy up the environment at this point. We cannot guarantee
+        // test order, so we should ensure
+        // that we do any necessary recovery at this point
+        Log.info(this.getClass(), method, "call stopserver");
+
+        FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
+        Log.info(this.getClass(), method, "set timeout");
+        retriesServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, retriesServer);
+
+        // RTC defect 170741
+        // Wait for recovery to be driven - this may suffer from a delay (see
+        // RTC 169082), so wait until the "recover("
+        // string appears in the messages.log
+        retriesServer.waitForStringInLog("recover\\(");
+        Log.info(this.getClass(), method, "call stopserver");
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
     }
 
     /**
@@ -164,55 +283,199 @@ public class FailoverTest extends FATServletClient {
     public void testHADBNonRecoverableRuntimeFailover() throws Exception {
         final String method = "testHADBNonRecoverableRuntimeFailover";
         StringBuilder sb = null;
-
+        FATUtils.startServers(runner, defaultServer);
         Log.info(this.getClass(), method, "call setupForNonRecoverableFailover");
 
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "setupForNonRecoverableFailover");
-        } catch (Throwable e) {
-        }
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForNonRecoverableFailover");
 
         Log.info(this.getClass(), method, "call stopserver");
-        server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
 
-        Log.info(this.getClass(), method, "complete");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, defaultServer);
+
         Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
         // An unhandled sqlcode will lead to a failure to write to the log, the
         // invalidation of the log and the throwing of Internal LogExceptions
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactionsWithFailure");
-        } catch (Throwable e) {
-        }
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactionsWithFailure");
 
         // Should see a message like
         // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No error message signifying log failure", server.waitForStringInLog("Cannot recover from SQLException"));
+        assertNotNull("No error message signifying log failure", defaultServer.waitForStringInLog("Cannot recover from SQLException"));
 
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
         Log.info(this.getClass(), method, "call stopserver");
-        server.stopServer("WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
-        Log.info(this.getClass(), method, "call testControlSetup");
 
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testControlSetup");
-        } catch (Throwable e) {
-        }
-        server.waitForStringInLog("testControlSetup complete");
+        FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+
+        FATUtils.startServers(runner, defaultServer);
+
         // RTC defect 170741
         // Wait for recovery to be driven - this may suffer from a delay (see
         // RTC 169082), so wait until the "recover("
         // string appears in the messages.log
-        server.waitForStringInLog("recover\\(");
+        defaultServer.waitForStringInLog("recover\\(");
+        Log.info(this.getClass(), method, "call stopserver");
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+    }
+
+    /**
+     * Run the same test as in testHADBNonRecoverableRuntimeFailover but against a server that has the enableLogRetries server.xml
+     * entry set to "true" so that non-transient (as well as transient) sqlcodes lead to an operation retry.
+     * sqlcode
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+    })
+    public void testHADBNewBehaviourRuntimeFailover() throws Exception {
+        final String method = "testHADBNewBehaviourRuntimeFailover";
+        StringBuilder sb = null;
+        FATUtils.startServers(runner, recoverServer);
+        Log.info(this.getClass(), method, "call setupForNonRecoverableFailover");
+
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "setupForNonRecoverableFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
+        Log.info(this.getClass(), method, "set timeout");
+        recoverServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, recoverServer);
+
+        Log.info(this.getClass(), method, "complete");
+        Log.info(this.getClass(), method, "call driveTransactions");
+        // An unhandled sqlcode will lead to a failure to write to the log, the
+        // invalidation of the log and the throwing of Internal LogExceptions
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "driveTransactions");
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
+
+        Log.info(this.getClass(), method, "Complete");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
+    }
+
+    /**
+     * Simulate an unexpected sqlcode on the first attempt to connect to the database
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBConnectFailover() throws Exception {
+        final String method = "testHADBConnectFailover";
+        StringBuilder sb = null;
+        FATUtils.startServers(runner, defaultServer);
+        Log.info(this.getClass(), method, "call testHADBConnectFailover");
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, defaultServer);
+
+        // Should see a message like
+        // WTRN0100E: Cannot recover from SQLException when opening the SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No error message signifying log failure", defaultServer.waitForStringInLog("An unexpected error occured whilst opening the recovery log"));
+
+        // We need to tidy up the environment at this point. We cannot guarantee
+        // test order, so we should ensure
+        // that we do any necessary recovery at this point
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0112E", "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+    }
+
+    /**
+     * Run the same test as in testHADBConnectFailover but against a server that has the enableLogRetries server.xml
+     * entry set to "true" so that non-transient (as well as transient) sqlcodes lead to an operation retry.
+     *
+     * In the simulation a connect attempt will be successfully retried.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBNewBehaviourConnectFailover() throws Exception {
+        final String method = "testHADBNewBehaviourConnectFailover";
+        StringBuilder sb = null;
+
+        FATUtils.startServers(runner, recoverServer);
+        Log.info(this.getClass(), method, "call testHADBNewBehaviourConnectFailover");
+
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "setupForConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
+        Log.info(this.getClass(), method, "set timeout");
+        recoverServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, recoverServer);
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
+
+        Log.info(this.getClass(), method, "Complete");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
+    }
+
+    /**
+     * Run the same test as in testHADBConnectFailover but against a server that has the enableLogRetries server.xml
+     * entry set to "true" so that non-transient (as well as transient) sqlcodes lead to an operation retry.
+     *
+     * In the simulation a connect attempt will be successfully retried.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                           "javax.resource.spi.ResourceAllocationException"
+    })
+    public void testHADBNewBehaviourMultiConnectFailover() throws Exception {
+        final String method = "testHADBNewBehaviourMultiConnectFailover";
+        StringBuilder sb = null;
+        FATUtils.startServers(runner, recoverServer);
+        Log.info(this.getClass(), method, "call testHADBNewBehaviourMultiConnectFailover");
+
+        sb = runTestWithResponse(recoverServer, SERVLET_NAME, "setupForMultiConnectFailover");
+
+        Log.info(this.getClass(), method, "call stopserver");
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
+        Log.info(this.getClass(), method, "set timeout");
+        recoverServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, recoverServer);
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
+        assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
+
+        Log.info(this.getClass(), method, "Complete");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
     }
 
     /**
@@ -228,46 +491,176 @@ public class FailoverTest extends FATServletClient {
 
         Log.info(this.getClass(), method, "call setupForStartupFailover");
 
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "setupForStartupFailover");
-        } catch (Throwable e) {
-        }
+        FATUtils.startServers(runner, defaultServer);
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForStartupFailover");
 
         Log.info(this.getClass(), method, "call stopserver");
-        server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
         Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(30000);
+        defaultServer.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
-        startServers(server);
+        FATUtils.startServers(runner, defaultServer);
         Log.info(this.getClass(), method, "call driveTransactions");
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");
-        } catch (Throwable e) {
-        }
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
 
         Log.info(this.getClass(), method, "complete");
     }
 
-    private void startServers(LibertyServer... servers) {
-        final String method = "startServers";
+    /**
+     * Inject duplicate recovery log entries into a database log, crash the server and test
+     * that recovery succeeds.
+     *
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testDuplicationInRecoveryLogsRestart() throws Exception {
+        final String method = "testDuplicationInRecoveryLogsRestart";
+        StringBuilder sb = null;
 
-        for (LibertyServer server : servers) {
-            assertNotNull("Attempted to start a null server", server);
-            ProgramOutput po = null;
-            try {
-                setUp(server);
-                po = server.startServerAndValidate(false, true, true);
-                if (po.getReturnCode() != 0) {
-                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
-                }
-                server.validateAppLoaded(APP_NAME);
-            } catch (Throwable t) {
-                Log.error(getClass(), method, t);
-                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
-            }
+        FATUtils.startServers(runner, defaultServer);
+
+        Log.info(this.getClass(), method, "call setupForDuplicationRestart");
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRestart");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, defaultServer);
+        Log.info(this.getClass(), method, "call driveTransactions");
+        try {
+            sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+        } catch (Exception e) {
+            // Halting the server generates a java.net.SocketException
+            Log.info(this.getClass(), method, "driveTransactions caught exception " + e);
         }
+        Log.info(this.getClass(), method, "See if the Server has halted");
+        // Server should have halted, check for message
+        assertNotNull("Server has not been halted", defaultServer.waitForStringInTrace("duplicateAndHalt, now HALT", LOG_SEARCH_TIMEOUT));
+
+        Log.info(this.getClass(), method, "Call postStopServerArchive");
+        defaultServer.postStopServerArchive(); // must explicitly collect since server start failed
+
+        // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+        // setup the server for a restart, set the server state manually.
+        defaultServer.setStarted(false);
+
+        Log.info(getClass(), method, "restart server");
+        FATUtils.startServers(runner, defaultServer);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        assertNotNull("No evidence of duplication", defaultServer.waitForStringInTrace("NMTEST: Replacing item", LOG_SEARCH_TIMEOUT));
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "complete");
+    }
+
+    /**
+     * Drive a set of transactions and inject duplicate recovery log entries into a database log, check that the duplicate records are
+     * in the database, drive more transactions and check that the duplicate records have been deleted by the runtime.
+     *
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testDuplicationInRecoveryLogsRuntime() throws Exception {
+        final String method = "testDuplicationInRecoveryLogsRuntime";
+        StringBuilder sb = null;
+        FATUtils.startServers(runner, defaultServer);
+        Log.info(this.getClass(), method, "call setupForDuplicationRuntime");
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRuntime");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, defaultServer);
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        List<String> lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
+
+        Log.info(this.getClass(), method, "call driveSixTransactions");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertTrue("Unexpectedly found no duplicates", lines.size() > 0);
+        int numDups = lines.size();
+
+        Log.info(this.getClass(), method, "call driveSixTransactions");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+
+        Log.info(this.getClass(), method, "call checkForDuplicates");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+
+        lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+        Assert.assertFalse("Unexpectedly found duplicates on test completion", lines.size() > numDups);
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "complete");
+    }
+
+    /**
+     * Inject duplicate recovery log entries into a database log, crash the server and test
+     * that recovery succeeds.
+     *
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testAbsenceOfDuplicatesInRecoveryLogs() throws Exception {
+        final String method = "testAbsenceOfDuplicatesInRecoveryLogs";
+        StringBuilder sb = null;
+        FATUtils.startServers(runner, defaultServer);
+        Log.info(this.getClass(), method, "call setupForHalt");
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForHalt");
+
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "set timeout");
+        defaultServer.setServerStartTimeout(30000);
+        Log.info(this.getClass(), method, "call startserver");
+        FATUtils.startServers(runner, defaultServer);
+        Log.info(this.getClass(), method, "call driveTransactions");
+
+        try {
+            sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+        } catch (Exception e) {
+            // Halting the server generates a java.net.SocketException
+            Log.info(this.getClass(), method, "driveTransactions caught exception " + e);
+        }
+
+        // Server should have halted, check for message
+        assertNotNull("Server has not been halted", defaultServer.waitForStringInTrace("Now HALT", LOG_SEARCH_TIMEOUT));
+
+        Log.info(this.getClass(), method, "Call postStopServerArchive");
+        defaultServer.postStopServerArchive(); // must explicitly collect since server start failed
+
+        // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+        // setup the server for a restart, set the server state manually.
+        defaultServer.setStarted(false);
+
+        Log.info(getClass(), method, "restart server");
+        FATUtils.startServers(runner, defaultServer);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        assertNull("Unexpected duplication", defaultServer.waitForStringInTrace("NMTEST: Replacing item", 60000));
+        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+        Log.info(this.getClass(), method, "complete");
     }
 }

@@ -18,7 +18,7 @@ Bundle-Description: Opentracing 2.0; version=${bVersion}
 WS-TraceGroup: OPENTRACING
 
 -dsannotations: io.openliberty.opentracing.internal.OpentracingUserFeatureAccessService, \
-                io.openliberty.opentracing.internal.OpentracingJaxRsProviderRegister, \
+                io.openliberty.opentracing.internal.OpentracingFilterHelperProvider, \
                 io.openliberty.opentracing.internal.OpentracingJaxRsEMCallbackImpl, \
                 io.openliberty.opentracing.internal.OpentracingService, \
                 io.openliberty.opentracing.internal.AppStateListener
@@ -32,14 +32,34 @@ Import-Package: \
     io.opentracing.util;version=0.33.0,\
     io.opentracing.noop;version=0.33.0,\
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
+    com.ibm.ws.jaxrs.defaultexceptionmapper;resolution:=optional, \
     *
 
 Export-Package: \
-	io.openliberty.opentracing.internal;version=2.0,\
+	io.openliberty.opentracing.internal;version=2.0;thread-context=true,\
 	io.openliberty.opentracing.internal.filters;version=2.0,\
 	io.openliberty.opentracing.spi.tracer;version=2.0;provide=true
                 
 Private-Package: io.openliberty.opentracing.internal.resources
+
+Include-Resource:\
+  META-INF=resources/META-INF
+  
+#javax.ws.rs.ext.Providers is service loaded by restfulWS-3.0 but
+#providers are added with a different mechanism in jaxrs-2.x
+#Future versions of OT will need to use jakarta providers rather than 
+#javax since it's currently being transformed
+app-resources= \
+  META-INF/services/javax.ws.rs.ext.Providers
+
+Service-Component: \
+  io.openliberty.opentracing20.internal.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+    
+jakartaeeMe: true
 
 -buildpath: \
     com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
@@ -57,6 +77,7 @@ Private-Package: io.openliberty.opentracing.internal.resources
     com.ibm.websphere.javaee.servlet.3.1; version=latest, \
     io.openliberty.org.eclipse.microprofile.opentracing.2.0;version=latest, \
     com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.javaee.version; version=latest, \
     com.ibm.ws.microprofile.opentracing.jaeger;version=latest, \
     com.ibm.ws.classloading;version=latest, \
     com.ibm.websphere.appserver.spi.kernel.service;version=latest

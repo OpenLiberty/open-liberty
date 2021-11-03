@@ -22,6 +22,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -66,7 +67,7 @@ public class GenericScopesTests extends CommonTest {
 
     }
 
-    protected static TestSettings update2LegScopeSettings(TestSettings inSettings, String fType) {
+    protected static TestSettings update2LegScopeSettings(TestSettings inSettings, String fType) throws Exception {
 
         TestSettings updatedTestSettings = inSettings.copyTestSettings();
         String clCfgScopes = null;
@@ -125,7 +126,7 @@ public class GenericScopesTests extends CommonTest {
             }
         }
 
-        updatedTestSettings.printTestSettings();
+        msgUtils.printTestSettings(updatedTestSettings);
         return updatedTestSettings;
     }
 

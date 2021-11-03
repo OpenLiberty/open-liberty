@@ -86,16 +86,8 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
-    private static final Set<String> REMOVE = new HashSet<String>();
+    //    private static final Set<String> REMOVE = new HashSet<String>();
     //    private static final Set<String> INSERT = new HashSet<String>();
-
-    static {
-        /*
-         * List of testing features that need to be removed and replaced.
-         */
-        REMOVE.add("jwtSso-1.0");
-
-    }
 
     /**
      * Tests were written to use repeat to run the tests with each version of the mpJwt feature. Now that the project has been
@@ -107,6 +99,6 @@ public class FATSuite {
      * mpJwt-2.0 needs EE9 enabled
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config").removeFeatures(REMOVE));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config"));
 
 }

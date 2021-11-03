@@ -5654,8 +5654,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
         if (promisedSP == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
-                            + "the max number of concurrent streams has already been reached on link: " + link);
+                if(((H2HttpInboundLinkWrap) link).muxLink.isClosing()){
+                    Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
+                            + "server is shutting down, closing link: " + link);
+                }
+                else{
+                    Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
+                            + "the max number of concurrent streams has already been reached on link: " + link);  
+                }
+                
             }
             return;
         }

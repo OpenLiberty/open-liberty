@@ -1,0 +1,12 @@
+<web-bnd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+    version="1.0">
+  	<resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+	<resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+	<resource-env-ref name="jms/MDBReqQueue" binding-name="jms/MDBReqQueue"/>
+	<resource-env-ref name="jms/MDB02ReqQueue" binding-name="jms/MDB02ReqQueue"/>
+	<resource-env-ref name="jms/MDB03ReqQueue" binding-name="jms/MDB03ReqQueue"/>
+	<resource-env-ref name="jms/MDB04ReqQueue" binding-name="jms/MDB04ReqQueue"/>
+</web-bnd>

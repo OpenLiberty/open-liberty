@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5"
+>
+  <display-name>MDBXMLWeb</display-name>
+      <resource-ref id="ResourceRef_1049488436243">
+         <res-ref-name>jms/TestQCF</res-ref-name>
+         <res-type>javax.jms.QueueConnectionFactory</res-type>
+         <res-auth>Application</res-auth>
+         <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+      <resource-env-ref id="ResourceEnvRef_1049488436243">
+         <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1049488419351">
+         <resource-env-ref-name>jms/MDBReqQueue</resource-env-ref-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1049488419351">
+         <resource-env-ref-name>jms/MDB02ReqQueue</resource-env-ref-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1049488419351">
+         <resource-env-ref-name>jms/MDB03ReqQueue</resource-env-ref-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+      <resource-env-ref id="ResourceEnvRef_1049488419351">
+         <resource-env-ref-name>jms/MDB04ReqQueue</resource-env-ref-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+</web-app>

@@ -10,21 +10,27 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
+import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import prototype.enterprise.concurrent.Async;
-
 @ApplicationScoped
+@ContextServiceDefinition(name = "java:app/concurrent/txcontext",
+                          propagated = TRANSACTION,
+                          cleared = ALL_REMAINING)
 public class ApplicationScopedBean implements Serializable {
     private static final long serialVersionUID = -2075274815197982538L;
 
@@ -33,15 +39,15 @@ public class ApplicationScopedBean implements Serializable {
     /**
      * An asynchronous method with return type of CompletableFuture.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<String> appendThreadNameFuture(String part1) {
-        return Async.Result.complete(part1 + getCharacter() + Thread.currentThread().getName());
+        return Asynchronous.Result.complete(part1 + getCharacter() + Thread.currentThread().getName());
     }
 
     /**
      * An asynchronous method with return type of CompletionStage.
      */
-    @Async
+    @Asynchronous
     public CompletionStage<String> appendThreadNameStage(String part1) {
         try {
             ManagedExecutorService executor = InitialContext.doLookup("java:comp/env/concurrent/executorRef");
@@ -54,7 +60,7 @@ public class ApplicationScopedBean implements Serializable {
     /**
      * Asynchronous method that intentionally raises an error, for testing purposes.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<Integer> forceError() {
         throw new Error("Intentionally raising this error.");
     }
@@ -66,7 +72,7 @@ public class ApplicationScopedBean implements Serializable {
     /**
      * Looks up a resource in JNDI, asynchronously to the calling thread.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<?> lookup(String jndiName) {
         try {
             return CompletableFuture.completedFuture(InitialContext.doLookup(jndiName));

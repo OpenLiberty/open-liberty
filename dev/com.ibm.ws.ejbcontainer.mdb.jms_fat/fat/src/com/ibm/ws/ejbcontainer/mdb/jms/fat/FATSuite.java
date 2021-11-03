@@ -16,11 +16,17 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.ejbcontainer.mdb.jms.fat.tests.MDB20Test;
 import com.ibm.ws.ejbcontainer.mdb.jms.fat.tests.MDB21Test;
+import com.ibm.ws.ejbcontainer.mdb.jms.fat.tests.MDB30AnnTest;
+import com.ibm.ws.ejbcontainer.mdb.jms.fat.tests.MDB30MixTest;
+import com.ibm.ws.ejbcontainer.mdb.jms.fat.tests.MDB30XMLTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 MDB20Test.class,
-                MDB21Test.class
+                MDB21Test.class,
+                MDB30AnnTest.class,
+                MDB30MixTest.class,
+                MDB30XMLTest.class
 })
 public class FATSuite {
 }
