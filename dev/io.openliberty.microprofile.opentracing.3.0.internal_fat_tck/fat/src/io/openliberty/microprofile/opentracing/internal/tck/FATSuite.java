@@ -34,30 +34,11 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class FATSuite {
     private static final String FEATURE_NAME = "io.openliberty.opentracing.mock-3.0.mf";
     private static final String BUNDLE_NAME = "io.openliberty.opentracing.mock-3.0.jar";
-    private static final String[] ALL_VERSIONS_OF_MP_REST_CLIENT = {"3.0"};
 
     @BeforeClass
     public static void setUp() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("OpentracingTCKServer");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
-    }
-    
-
-    public static FeatureReplacementAction MP_REST_CLIENT(String version, String serverName) {
-        return use(new FeatureReplacementAction(), "mpRestClient", version, ALL_VERSIONS_OF_MP_REST_CLIENT)
-                .withID("mpRestClient-" + version)
-                .forServers(serverName);
-    }
-
-    private static FeatureReplacementAction use(FeatureReplacementAction action, String featureName, String version, String... versionsToRemove) {
-        String feature = featureName + "-" + version;
-        action = action.addFeature(featureName + "-" + version);
-        for (String remove : versionsToRemove) {
-            if (!version.equals(remove)) {
-                action = action.removeFeature(featureName + "-" + remove);
-            }
-        }
-        return action;
     }
 }

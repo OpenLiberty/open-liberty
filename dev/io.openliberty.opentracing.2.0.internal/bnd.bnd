@@ -45,6 +45,10 @@ Private-Package: io.openliberty.opentracing.internal.resources
 Include-Resource:\
   META-INF=resources/META-INF
   
+#javax.ws.rs.ext.Providers is service loaded by restfulWS-3.0 but
+#providers are added with a different mechanism in jaxrs-2.x
+#Future versions of OT will need to use jakarta providers rather than 
+#javax since it's currently being transformed
 app-resources= \
   META-INF/services/javax.ws.rs.ext.Providers
 

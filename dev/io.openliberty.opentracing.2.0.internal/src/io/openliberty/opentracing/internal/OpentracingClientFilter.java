@@ -98,6 +98,12 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             return;
         }
 
+        /*
+         * In restfulWS-3.0, currentTracer is expected to be set and we might be running on a non-managed thread.
+         *
+         * In jaxrs-2.x, currentTracer is expected to not be set but run on the calling thread, 
+         * which should be managed so OpentracingTracerManager.getTracer() should always work.
+         */
         Tracer tracer = currentTracer.get();
         if (tracer == null) {
             tracer = OpentracingTracerManager.getTracer();

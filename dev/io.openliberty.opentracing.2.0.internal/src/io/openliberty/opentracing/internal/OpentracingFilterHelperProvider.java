@@ -33,7 +33,7 @@ public class OpentracingFilterHelperProvider {
 
     // DSR activation API ...
 
-    protected synchronized void activate(ComponentContext context) {
+    protected void activate(ComponentContext context) {
         instance.set(this);
     }
 
@@ -45,10 +45,10 @@ public class OpentracingFilterHelperProvider {
         return instance.get();
     }
 
-    private OpentracingFilterHelper helper;
+    private volatile OpentracingFilterHelper helper;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected synchronized void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
+    protected void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
     }
 
