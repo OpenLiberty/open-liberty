@@ -23,6 +23,5 @@ Export-Package: io.openliberty.opentracing.spi.tracer;version=2.0
 
 publish.wlp.jar.suffix: dev/spi/ibm
 
-
 -buildpath: \
 	io.openliberty.opentracing.2.0.internal;version=latest
