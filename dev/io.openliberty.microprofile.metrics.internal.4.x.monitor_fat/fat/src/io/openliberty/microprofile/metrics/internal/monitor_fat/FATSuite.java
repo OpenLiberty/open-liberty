@@ -24,13 +24,13 @@ public class FATSuite {
 
     /*
      * The below commented ClassRule is used to administer the execution of this FAT
-     * for multiple version of mpMetrics-3.x.
+     * for multiple version of mpMetrics-4.x.
      * 
      * It is left here, commented out, for later use when subsequent version of
-     * mpMetrics-3.x are available (i.e when 3.1 is released)
+     * mpMetrics-4.x are available (i.e when 4.1 is released)
      */
 //    @ClassRule
 //    public static RepeatTests r = RepeatTests.withoutModification()
-//                    .andWith(new FeatureReplacementAction("mpMetrics-3.0", "mpMetrics-3.X").withID("MPM3X"));
+//                    .andWith(new FeatureReplacementAction("mpMetrics-4.0", "mpMetrics-4.X").withID("MPM4X"));
 
 }
