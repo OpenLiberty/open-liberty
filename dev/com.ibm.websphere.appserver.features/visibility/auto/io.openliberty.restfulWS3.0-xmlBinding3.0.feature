@@ -5,6 +5,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.xmlBinding-3.0))"
 -bundles=io.openliberty.org.jboss.resteasy.jaxb.provider.jakarta
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

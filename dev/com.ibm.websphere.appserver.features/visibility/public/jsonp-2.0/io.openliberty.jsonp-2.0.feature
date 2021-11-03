@@ -9,6 +9,6 @@ IBM-ShortName: jsonp-2.0
 Subsystem-Name: Jakarta JSON Processing 2.0
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jsonpInternal-2.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

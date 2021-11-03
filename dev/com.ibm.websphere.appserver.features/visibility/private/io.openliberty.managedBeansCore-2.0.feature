@@ -14,6 +14,6 @@ IBM-API-Package: \
   com.ibm.ws.managedobject, \
   com.ibm.ws.ejbcontainer.jakarta, \
   com.ibm.ws.javaee.dd.ejb
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

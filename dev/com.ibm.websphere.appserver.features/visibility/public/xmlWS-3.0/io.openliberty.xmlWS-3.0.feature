@@ -27,8 +27,11 @@ IBM-API-Package: \
  bin/xmlWS/wsimport.bat, \
  bin/xmlWS/tools/ws-wsimport.jar, \
  bin/xmlWS/wsgen.bat, \
- bin/xmlWS/tools/ws-wsgen.jar
-kind=beta
+ bin/xmlWS/tools/ws-wsgen.jar, \
+ dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
+-jars=\
+  io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
+kind=ga
 edition=base
 WLP-AlsoKnownAs: jaxws-3.0
 WLP-Activation-Type: parallel

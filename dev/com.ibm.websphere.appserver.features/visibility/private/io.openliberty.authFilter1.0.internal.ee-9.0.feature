@@ -6,6 +6,6 @@ visibility = private
   io.openliberty.servlet.api-5.0
 -bundles=\
   io.openliberty.security.authentication.internal.filter
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

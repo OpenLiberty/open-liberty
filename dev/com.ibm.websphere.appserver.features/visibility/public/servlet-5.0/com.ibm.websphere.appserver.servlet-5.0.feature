@@ -69,6 +69,6 @@ Subsystem-Category: JakartaEE9Application
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/io.openliberty.servlet_1.1-javadoc.zip
 Subsystem-Name: Jakarta Servlet 5.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

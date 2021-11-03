@@ -29,8 +29,8 @@ publish.wlp.jar.suffix: dev/spi/ibm
 	com.ibm.ws.webservices.handler
 
 jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.globalhandler.spi.jakarta.jar
+jakartaFinalJarName: io.openliberty.globalhandler.spi.jar
 jakartaFinalBundleId: io.openliberty.globalhandler.spi
 
 # Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.globalhandler.spi.jakarta.jar
+publish.wlp.jar.include: io.openliberty.globalhandler.spi.jar

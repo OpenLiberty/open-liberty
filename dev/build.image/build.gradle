@@ -429,18 +429,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    //BETA
+    //GA
     task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile9Features
         packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
-                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
-            }
             copy {
                 from "$packageDir/wlp/templates/servers/webProfile9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
@@ -452,19 +448,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    //BETA
+    //GA
     task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee9Features
         packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
-                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
-            }
-
             copy {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
@@ -619,14 +610,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJavaee8
 
-    // BETA: Includes both kind=ga and kind=beta features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyWebProfile9(type: Zip) {
         dependsOn packageOpenLibertyWebProfile9
         dependsOn genChecksums
         baseName 'openliberty-webProfile9'
         from packageDir
         destinationDir distsDir
-        version betaVersion
+        version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.webprofile9.archivename', archivePath.toString())
             rootProject.storeProps()
@@ -634,14 +625,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyWebProfile9
 
-    // BETA: Includes both kind=ga and kind=beta features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyJakartaee9(type: Zip) {
         dependsOn packageOpenLibertyJakartaee9
         dependsOn genChecksums
         baseName 'openliberty-jakartaee9'
         from packageDir
         destinationDir distsDir
-        version betaVersion
+        version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
             rootProject.storeProps()

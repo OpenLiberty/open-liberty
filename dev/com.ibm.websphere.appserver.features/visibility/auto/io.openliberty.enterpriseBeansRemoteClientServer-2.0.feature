@@ -11,6 +11,6 @@ IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.clientContainerRemoteSupportCommon-1.0
 -bundles=com.ibm.ws.ejbcontainer.remote.client.server.jakarta
 IBM-Process-Types: server
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

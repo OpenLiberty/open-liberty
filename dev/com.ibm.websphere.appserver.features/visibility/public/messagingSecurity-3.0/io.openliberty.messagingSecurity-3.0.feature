@@ -12,6 +12,6 @@ Subsystem-Name: Messaging Server 3.0 Security
 -bundles=com.ibm.ws.messaging.utils, \
  com.ibm.ws.messaging.security, \
  com.ibm.ws.messaging.security.common
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

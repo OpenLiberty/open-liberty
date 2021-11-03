@@ -10,5 +10,5 @@ singleton=true
  io.openliberty.security.authentication.internal.filter, \
  io.openliberty.security.authentication.internal.tai, \
  io.openliberty.security.sso.internal
-kind=beta
+kind=ga
 edition=core

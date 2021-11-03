@@ -10,5 +10,5 @@ visibility = private
 -bundles=\
   com.ibm.ws.security.audit.source.jakarta
 
-kind=beta
+kind=ga
 edition=core

@@ -15,5 +15,5 @@ singleton=true
   com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5.jakarta, \
   com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5.jakarta, \
   com.ibm.ws.security.saml.websso.2.0.jakarta
-kind=beta
+kind=ga
 edition=core

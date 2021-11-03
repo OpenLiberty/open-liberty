@@ -18,11 +18,11 @@ Bundle-SymbolicName: io.openliberty.securityClient.javaee
 -pom: artifactid=io.openliberty.securityClient
 
 jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.securityClient.jakarta.jar
+jakartaFinalJarName: io.openliberty.securityClient.jar
 jakartaFinalBundleId: io.openliberty.securityClient
 
 # Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.securityClient.jakarta.jar
+publish.wlp.jar.include: io.openliberty.securityClient.jar
 
 Import-Package: com.ibm.websphere.security,com.ibm.websphere.security.auth.callback,com.ibm.wsspi.security.auth.callback
 

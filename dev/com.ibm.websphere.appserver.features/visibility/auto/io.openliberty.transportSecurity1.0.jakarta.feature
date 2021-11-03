@@ -7,5 +7,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.transportSecurity-1.0
-kind=beta
+kind=ga
 edition=core

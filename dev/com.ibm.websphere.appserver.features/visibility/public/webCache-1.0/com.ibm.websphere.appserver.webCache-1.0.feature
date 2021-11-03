@@ -18,9 +18,11 @@ Subsystem-Name: Web Response Cache 1.0
   com.ibm.websphere.appserver.distributedMap-1.0, \
   io.openliberty.webCache1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -jars=com.ibm.websphere.appserver.spi.webCache; location:=dev/spi/ibm/, \
- com.ibm.websphere.appserver.api.webCache; location:=dev/api/ibm/
+ com.ibm.websphere.appserver.api.webCache; location:=dev/api/ibm/, \
+ io.openliberty.webCache; location:=dev/api/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.webCache_1.0-javadoc.zip, \
  dev/api/ibm/schema/cachespec.xsd, \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webCache_1.1-javadoc.zip
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webCache_1.1-javadoc.zip, \
+ dev/api/ibm/javadoc/io.openliberty.webCache_1.1-javadoc.zip
 kind=ga
 edition=core

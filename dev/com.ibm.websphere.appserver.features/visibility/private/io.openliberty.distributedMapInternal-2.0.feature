@@ -9,6 +9,6 @@ Subsystem-Version: 2.0.0
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
   io.openliberty.dynacache.internal
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

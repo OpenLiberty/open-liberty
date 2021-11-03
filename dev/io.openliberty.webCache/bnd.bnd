@@ -18,11 +18,11 @@ Bundle-SymbolicName: io.openliberty.webCache.javaee
 -pom: artifactid=io.openliberty.webCache
 
 jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.webCache.jakarta.jar
+jakartaFinalJarName: io.openliberty.webCache.jar
 jakartaFinalBundleId: io.openliberty.webCache
 
 # Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.webCache.jakarta.jar
+publish.wlp.jar.include: io.openliberty.webCache.jar
 
 Import-Package: com.ibm.websphere.command,com.ibm.websphere.command.web,com.ibm.websphere.servlet.cache
 
