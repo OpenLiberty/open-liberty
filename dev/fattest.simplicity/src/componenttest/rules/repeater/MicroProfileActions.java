@@ -207,7 +207,7 @@ public class MicroProfileActions {
                                                           "mpJwt-2.0",
                                                           "mpOpenAPI-3.0",
                                                           "mpMetrics-4.0",
-//                                                          "mpOpenTracing-3.0",
+                                                          "mpOpenTracing-3.0",
                                                           "mpRestClient-3.0" };
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
