@@ -354,7 +354,7 @@ public class ScheduledTask<T> implements Callable<T> {
      * Callable.call is invoked by the executor to run this task some time (hopefully soon)
      * after the scheduled execution time has been reached.
      */
-    @FFDCIgnore({ Throwable.class, NullPointerException.class })
+    @FFDCIgnore(Throwable.class)
     @Override
     public T call() throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -450,17 +450,8 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (trigger == null)
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
-                            try {
-                                nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
-                            } catch (NullPointerException x) {
-                                // TODO remove NullPtr handling (and FFDCIgnore for it above)
-                                // after fix for https://github.com/eclipse-ee4j/concurrency-api/pull/152
-                                // Limit workaround to new 3.0 spec class so that we don't interfere with existing usage
-                                if (x.getStackTrace()[0].getClassName().equals("jakarta.enterprise.concurrent.ZonedTrigger"))
-                                    nextExecutionDate = null;
-                                else
-                                    throw x;
-                            }
+                            nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
+
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
                                          "taskScheduled " + Utils.toString(taskScheduledTime),
