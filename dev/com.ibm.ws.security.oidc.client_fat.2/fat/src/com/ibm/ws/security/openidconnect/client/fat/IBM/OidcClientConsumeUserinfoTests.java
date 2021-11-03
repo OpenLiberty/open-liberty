@@ -343,7 +343,8 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             break;
         // The encryption of the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
         case ENCRYPT_MISMATCH:
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem extracting the payload.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem retrieving info from the Userinfo endpoint.", MessageConstants.CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO);
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem extracting the payload.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
         // The sub in the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
@@ -358,6 +359,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
         case CONTENT_TYPE_MISMATCH_JSON_NOT_JWT:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem retrieving info from the Userinfo endpoint.", MessageConstants.CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO);
             expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1539E_CONTENT_NOT_JWT);
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
@@ -539,6 +541,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_userinfoMismatch() throws Exception {
 
@@ -549,6 +552,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         }
     }
 
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_implcicitFlow_userinfoMismatch() throws Exception {
 
@@ -559,6 +563,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         }
     }
 
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256_implcicitFlow_userinfoMismatch() throws Exception {
 
@@ -665,6 +670,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_userinfoMismatch() throws Exception {
 
@@ -856,6 +862,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JSONResponse_signedRS256_contentTypeJwt() throws Exception {
 

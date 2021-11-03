@@ -146,6 +146,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1537E_JWE_IS_NOT_VALID = "CWWKS1537E";
     public static final String CWWKS1538E_CONTENT_NOT_JSON = "CWWKS1538E";
     public static final String CWWKS1539E_CONTENT_NOT_JWT = "CWWKS1539E";
+    public static final String CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO = "CWWKS1540E";
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 
     public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
