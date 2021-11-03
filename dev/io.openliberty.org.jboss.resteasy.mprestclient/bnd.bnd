@@ -23,12 +23,12 @@ src: src
 app-resources= \
  META-INF/services/javax.enterprise.inject.spi.Extension | \
  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver | \
- META-INF/services/org.jboss.resteasy.microprofile.client.header.HeaderFillerFactory
-
+ META-INF/services/org.jboss.resteasy.microprofile.client.header.HeaderFillerFactory 
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata
+  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata, \
+  io.openliberty.microprofile.rest.client30.internal.OsgiServices
 
 Service-Component: \
   io.openliberty.restfulWS.mprestclient.ResourceProvider; \
@@ -39,9 +39,11 @@ Service-Component: \
 
 Export-Package: \
   org.jboss.resteasy.microprofile.client;version=1.0;thread-context=true,\
+  org.jboss.resteasy.microprofile.client.ot;version=1.0;thread-context=true,\
   org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
 
 Import-Package: \
+  !javax.enterprise.concurrent,\
   javax.annotation;version='!',\
   javax.inject,\
   javax.ws.rs.core,\
@@ -58,6 +60,7 @@ Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-client-microprofile-base;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-client-microprofile;${resteasy-version};EXACT}, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
+  META-INF=resources/META-INF
 
 
 -buildpath: \
@@ -75,6 +78,7 @@ Include-Resource:\
   com.ibm.websphere.javaee.jsonp.1.1,\
   com.ibm.websphere.javaee.servlet.4.0,\
   com.ibm.websphere.javaee.validation.2.0;version=latest,\
+  com.ibm.websphere.javaee.concurrent.1.0,\
   io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
   io.openliberty.org.eclipse.microprofile.rest.client.2.0;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\

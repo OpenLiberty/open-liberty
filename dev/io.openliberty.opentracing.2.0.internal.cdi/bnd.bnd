@@ -34,6 +34,8 @@ Include-Resource: \
 
 -dsannotations: io.openliberty.opentracing.internal.cdi.OpentracingCDIInjectionExtension
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\

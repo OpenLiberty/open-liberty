@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,23 +9,24 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.opentracing.internal;
+package io.openliberty.opentracing.internal.jaxrs;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
+
+import io.openliberty.opentracing.internal.OpentracingClientFilter;
+import io.openliberty.opentracing.internal.OpentracingContainerFilter;
+import io.openliberty.opentracing.internal.OpentracingFilterHelperProvider;
+import io.openliberty.opentracing.internal.OpentracingFilterProvider;
 
 /**
  * <p>The open tracing filter service.</p>
@@ -33,24 +34,22 @@ import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 @Component(immediate = true, service = { JaxRsProviderRegister.class, OpentracingFilterProvider.class })
 public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, OpentracingFilterProvider {
     private static final TraceComponent tc = Tr.register(OpentracingJaxRsProviderRegister.class);
-    private static final AtomicReference<OpentracingJaxRsProviderRegister> instance = new AtomicReference<OpentracingJaxRsProviderRegister>(null);
+    
+    // This reference ensures that we don't try to create any filter objects
+    // until the OpentracingFilterHelperProvider is active
+    @Reference
+    protected OpentracingFilterHelperProvider helper;
 
     // DSR activation API ...
 
-    protected synchronized void activate(ComponentContext context) {
-        instance.set(this);
-        setContainerFilter();
-        setClientFilter();
+    protected void activate(ComponentContext context) {
+        containerFilter = new OpentracingContainerFilter();
+        clientFilter = new OpentracingClientFilter();
     }
 
     protected void deactivate(ComponentContext context) {
-        instance.compareAndSet(this, null);
-        clearContainerFilter();
-        clearClientFilter();
-    }
-
-    public static OpentracingJaxRsProviderRegister getInstance() {
-        return instance.get();
+        containerFilter = null;
+        clientFilter = null;
     }
 
     // The filters.  There is a single container filter and a single client
@@ -59,38 +58,6 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
 
     private OpentracingContainerFilter containerFilter;
     private OpentracingClientFilter clientFilter;
-    private OpentracingFilterHelper helper;
-
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected synchronized void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
-        this.helper = helper;
-        if (containerFilter != null) {
-            containerFilter.setFilterHelper(helper);
-        }
-        if (clientFilter != null) {
-            clientFilter.setFilterHelper(helper);
-        }
-    }
-
-    protected void unsetOpentracingFilterHelper(OpentracingFilterHelper helper) {
-        this.helper = null;
-        if (containerFilter != null) {
-            containerFilter.setFilterHelper(null);
-        }
-        if (clientFilter != null) {
-            clientFilter.setFilterHelper(null);
-        }
-    }
-
-    @Trivial
-    protected void setContainerFilter() {
-        containerFilter = new OpentracingContainerFilter(helper);
-    }
-
-    @Trivial
-    protected void clearContainerFilter() {
-        containerFilter = null;
-    }
 
     @Override
     @Trivial
@@ -98,23 +65,11 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister, 
         return containerFilter;
     }
 
-    @Trivial
-    protected void setClientFilter() {
-        clientFilter = new OpentracingClientFilter(helper);
-    }
-
-    @Trivial
-    protected void clearClientFilter() {
-        clientFilter = null;
-    }
-
     @Override
     @Trivial
     public OpentracingClientFilter getClientFilter() {
         return clientFilter;
     }
-
-    //
 
     @Override
     @Trivial

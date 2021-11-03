@@ -28,6 +28,8 @@ WS-TraceGroup: OPENTRACING
 Import-Package: \
   !io.openliberty.microprofile.opentracing.internal.cdi, \
   javax.enterprise.inject.spi;version="[1.1,2.1)",\
+  org.eclipse.microprofile.opentracing; version="[2.0.0,4.0.0)",\
+  org.eclipse.microprofile.opentracing.*; version="[2.0.0,4.0.0)",\
   *
 
 Export-Package: \
@@ -37,6 +39,8 @@ Export-Package: \
 
 Include-Resource: \
   META-INF=resources/META-INF
+
+jakartaeeMe: true
 
 -buildpath: \
     io.openliberty.opentracing.2.0.internal;version=latest, \
