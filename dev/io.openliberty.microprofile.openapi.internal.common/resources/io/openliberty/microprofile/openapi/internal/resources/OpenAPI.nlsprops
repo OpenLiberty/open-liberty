@@ -69,11 +69,11 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: The following problems occurred wh
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=The OpenAPI documentation from multiple web modules cannot be successfully merged. The endpoints from the reported modules are not included in the generated OpenAPI document.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Review the merge problems to identify why the generated OpenAPI documents cannot be merged.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=The {0} path from the {1} module clashes with a path from the {2} module. {1} cannot be merged.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=The {0} path from the {1} module clashes with a path from the {2} module. The {1} module cannot be merged.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=The path is two modules. Both instances of the path cannot be included in the same OpenAPI document. This message is returned as part of CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Either change one of the conflicting modules or configure the mpOpenApi-2.0 feature to exclude one of the modules. This problem can be caused if servers are included in the OpenAPI document and the server URL does not end with the context root of the application (for example, because the application is accessed at a different URL through a reverse proxy).
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Either change one of the conflicting modules or configure the mpOpenApi-2.0 feature to exclude one of the modules. This problem might occur if servers are included in the OpenAPI document and the server URL does not end with the context root of the application. For example, when the application is accessed at a different URL through a reverse proxy.
 
-OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=The {0} extension key from the {1} module clashes with the same extension key from the {2} module. {1} cannot be merged.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=The {0} extension key from the {1} module clashes with the same extension key from the {2} module. The {1} module cannot be merged.
 OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Two modules declare the same extension with different values at the top level of the OpenAPI document. Both instances of the extension cannot be included in the same OpenAPI document. This message is returned as part of CWWKO1662.
 OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Either change one of the conflicting modules to remove the extension or configure the mpOpenApi-2.0 feature to exclude one of the modules.
 
