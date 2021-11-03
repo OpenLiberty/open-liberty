@@ -252,7 +252,7 @@ public class MergeTest {
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
-        assertThat(server.findStringsInLogsUsingMark(" - The /test path.*test2.* clashes with a path from the.*test1.*test2.*will not be merged", server.getDefaultLogFile()), hasSize(1));
+        assertThat(server.findStringsInLogsUsingMark(" - The /test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged", server.getDefaultLogFile()), hasSize(1));
     }
     
     /**
@@ -287,7 +287,7 @@ public class MergeTest {
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
-        assertThat(server.findStringsInLogsUsingMark(" - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*will not be merged", server.getDefaultLogFile()),
+        assertThat(server.findStringsInLogsUsingMark(" - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged", server.getDefaultLogFile()),
                    hasSize(1));
 
     }
