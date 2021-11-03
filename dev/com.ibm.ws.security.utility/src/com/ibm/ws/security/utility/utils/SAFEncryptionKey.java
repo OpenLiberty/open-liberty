@@ -42,7 +42,7 @@ public class SAFEncryptionKey {
     /**
      * SAF keyring URL pattern with three slashes: "safkeyring:///My.Keyring" OR "safkeyring://MyUser1/My.Keyring"
      */
-    Pattern safKeyringPatternThreeSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://*/\\w.*");
+    Pattern safKeyringPatternThreeSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://.*/\\w.*");
 
     /**
      * SAF crypto handlers
