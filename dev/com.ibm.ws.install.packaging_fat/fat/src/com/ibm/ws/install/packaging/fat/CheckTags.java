@@ -103,7 +103,7 @@ public class CheckTags extends InstallPackagesToolTest {
         ProgramOutput po1 = installCurrentPackage(METHOD_NAME, packageExt);
         Log.info(c, METHOD_NAME, "Installed Open Liberty RC:" + po1.getReturnCode());
 
-        // check for ol tags openliberty.io_OpenLiberty.swidtag,ibm.com_Open_Liberty-20.0.0.swidtag
+        // count number of OL & WL .swidtags
 
         String filename;
         File folder = new File(tagFolder);
@@ -116,7 +116,7 @@ public class CheckTags extends InstallPackagesToolTest {
         int tag2 = countFiles(listOfFiles, "ibm.com_Open_Liberty-");
         int tag3 = countFiles(listOfFiles, "ibm.com_WebSphere_Application_Server_Liberty");
 
-        // Check for OL swidtag (should only be in Open Liberty)
+        // Check for OL swidtag (none of these tags should exist)
         if (tag1 > 0) {
             Log.info(c, METHOD_NAME, "OL tag found:" + tag1);
             ol_swidtag_exists = true;
@@ -134,10 +134,10 @@ public class CheckTags extends InstallPackagesToolTest {
             unexpected_file_found = true;
         }
 
-        testsPassed = ol_swidtag_exists && IBM_ol_swidtag_exists && !unexpected_file_found;
+        testsPassed = !ol_swidtag_exists && IBM_ol_swidtag_exists && !unexpected_file_found;
 
         String assertMsg = "Incorrect number of swidtags found."
-                           + "\n    " + tag1 + "/1 openliberty .swidtag found"
+                           + "\n    " + tag1 + "/0 openliberty .swidtag found"
                            + "\n    " + tag2 + "/1 IBM openliberty .swidtag found"
                            + "\n    " + tag3 + "/0 other tag files found";
 
