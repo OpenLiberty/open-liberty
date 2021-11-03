@@ -318,7 +318,8 @@ public class JDTCompiler implements JspCompiler {
             boolean retbool=false;
                         try {
                                 for (int i = 0; i < jspCompilationUnits.length; i++) {
-                            if (result.equals(jspCompilationUnits[i].getJspClassName())) {
+                            if (result.equals(jspCompilationUnits[i].getJspClassName()) || 
+                                result.startsWith(jspCompilationUnits[i].getJspClassName() + '$')) {
                                 return false;
                             }
                                 }
