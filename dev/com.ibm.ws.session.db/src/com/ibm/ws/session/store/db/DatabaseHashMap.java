@@ -506,7 +506,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                 } // Oracle case to be handled later
             } //PM27191 END
-        } else if (usingPostgreSQL) {
+        } else if (usingPostgreSQL && _smc.isUsingCustomSchemaName()) {
             qualifierName = dmd.getUserName();
         }
         
