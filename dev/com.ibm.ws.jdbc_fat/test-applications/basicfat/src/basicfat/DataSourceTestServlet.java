@@ -646,7 +646,9 @@ public class DataSourceTestServlet extends FATServlet {
             } finally {
                 tran.setTransactionTimeout(0); // restore default
             }
-            if (queryTimeout < 85 || queryTimeout > 90) // tolerate any elapsed time for the query
+            // tolerate any elapsed time, as long as it is greater than the 30 second default from
+            // the dataSource and not greater than the 90 seconds set by tran.setTransactionTimeout(90)
+            if (queryTimeout < 31 || queryTimeout > 90)
                 throw new Exception("Expecting queryTimeout(sync to tran)=90, not " + queryTimeout);
 
         } finally {
