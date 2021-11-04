@@ -15,15 +15,16 @@ import java.io.File;
 public interface ExecuteCRIU {
 
     /**
-     * Invokes the criu dump for the specified image directory, log file and
-     * working directory
+     * Invokes the criu dump for the specified image directory, log file,
+     * working directory, and env properties file.
      *
      * @param imageDir
      * @param logFileName
      * @param workDir
+     * @param envProps
      * @throws CheckpointFailedException
      */
-    default void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
+    default void dump(File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
         // do nothing
     };
 
