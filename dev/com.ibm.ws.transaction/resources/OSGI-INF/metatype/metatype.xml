@@ -99,7 +99,13 @@
             
         <AD name="internal" description="internal use only"
             id="enableLogRetries" required="false" type="Boolean" default="false" />
-                                                           
+            
+        <AD name="internal" description="internal use only"
+            id="retriableSqlCodes" required="false" type="String" default="" />
+            
+        <AD name="internal" description="internal use only"
+            id="nonRetriableSqlCodes" required="false" type="String" default="" />                    
+                                                                   
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

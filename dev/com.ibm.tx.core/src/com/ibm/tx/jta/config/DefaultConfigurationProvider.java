@@ -434,4 +434,24 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public boolean enableLogRetries() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public String getRetriableSqlCodes() {
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public String getNonRetriableSqlCodes() {
+        return null;
+    }
 }

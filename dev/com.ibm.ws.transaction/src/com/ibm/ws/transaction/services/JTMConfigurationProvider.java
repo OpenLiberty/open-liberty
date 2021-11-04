@@ -68,8 +68,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -732,6 +731,32 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean enableLogRetries() {
         return (Boolean) _props.get("enableLogRetries");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public String getRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("retriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRetriableSqlCodes " + sqlcodes);
+        return sqlcodes;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public String getNonRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("nonRetriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getNonRetriableSqlCodes " + sqlcodes);
+        return sqlcodes;
     }
 
     @Override

@@ -316,6 +316,22 @@ public interface ConfigurationProvider {
     public boolean enableLogRetries();
 
     /**
+     * Retrieves a comma-separated list of sqlcodes for SQLExceptions that are thrown on Transaction recovery log operations. These operations will be retried.
+     * This property is only relevant where the Transaction recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public String getRetriableSqlCodes();
+
+    /**
+     * Retrieves a comma-separated list of sqlcodes for SQLExceptions that are thrown on Transaction recovery log operations. These operations will not be retried and
+     * the recovery log will be invalidated. This property is only relevant where the Transaction recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public String getNonRetriableSqlCodes();
+
+    /**
      * Returns true if a DataSourceFactory reference has been set through Declarative Services
      *
      * @return
