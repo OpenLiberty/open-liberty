@@ -23,6 +23,7 @@ jakartaFinalBundleId: io.openliberty.wsoc
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.wsoc.jar
+publish.wlp.javadoc.include: io.openliberty.wsoc.javadoc.zip
 
 Import-Package: com.ibm.websphere.wsoc
 
