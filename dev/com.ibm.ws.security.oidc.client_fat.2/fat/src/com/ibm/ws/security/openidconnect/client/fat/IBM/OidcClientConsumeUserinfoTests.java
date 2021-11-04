@@ -24,7 +24,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -62,15 +61,6 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public static Class<?> thisClass = OidcClientConsumeUserinfoTests.class;
     public static HashMap<String, Integer> defRespStatusMap = null;
 
-    public static String[] test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-    public static String[] test_LOGIN_PAGE_ONLY = Constants.GET_LOGIN_PAGE_ONLY;
-    public static String test_FinalAction = Constants.LOGIN_USER;
-    protected static String hostName = "localhost";
-    public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
-    public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
-    public static final String badTokenSegment = "1234567890123456789";
     private static final JwtTokenActions actions = new JwtTokenActions();
     protected static SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
     //private final String jwtContentType = "application/jwt";
@@ -114,10 +104,6 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         // override actions that generic tests should use - Need to skip consent form as httpunit
         // cannot process the form because of embedded javascript
 
-        test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-        test_FinalAction = Constants.LOGIN_USER;
         testSettings.setFlowType(Constants.RP_FLOW);
         // even though, we're not testing the RP handling the response from the tokenendpoint, the same config that could consume that
         // response will be used to consume the userinfo response, so, ... we need to make sure that the tokenendpoint returns an appropriate response
@@ -233,7 +219,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         // we created and saved a jwt for our test tooling token endpoint to return to the RP - let's invoke
         // the protected resource.  The RP will get the auth token, but, instead of getting a jwt from the OP, it will use a
         // token endpoint pointing to the test tooling app that will return the jwt previously obtained using a builder
-        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
 
@@ -896,7 +882,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
 
         // we created and saved a jwt for our test tooling userinfo endpoint to return to the RP - let's invoke
         // the protected resource.  The RP will get the auth token, but, will get a json response with a content-type set to jwt
-        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
 
