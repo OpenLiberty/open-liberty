@@ -16,10 +16,10 @@
     <feature>jndi-1.0</feature>
     <feature>servlet-5.0</feature>
   </featureManager>
-    
+
   <include location="../fatTestPorts.xml"/>
 
-  <application location="ConcurrencyTestApp.war">
+  <application location="ConcurrencyTestApp.ear">
     <classloader commonLibraryRef="ThirdPartyLibrariesWithCustomContext"/>
   </application>
 
@@ -64,9 +64,6 @@
   </managedScheduledExecutorService>
 
   <!-- needed by ForkJoinPool, which the test application uses -->
-  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
-
-  <!-- TODO remove once 3.0 ManagedThreadFactory interfaces is available -->
-  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.ear" className="java.lang.RuntimePermission" name="modifyThread"/>
 
 </server>

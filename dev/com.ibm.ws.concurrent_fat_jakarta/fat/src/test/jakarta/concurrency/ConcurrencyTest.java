@@ -13,7 +13,9 @@ package test.jakarta.concurrency;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -38,6 +40,13 @@ public class ConcurrencyTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Test application ConcurrencyTestApp.ear [ConcurrencyTestWeb.war, application.xml]
+        WebArchive ConcurrencyTestWeb = ShrinkHelper.buildDefaultApp("ConcurrencyTestWeb", "test.jakarta.concurrency.web");
+        EnterpriseArchive ConcurrencyTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConcurrencyTestApp.ear");
+        ConcurrencyTestApp.addAsModule(ConcurrencyTestWeb);
+        ShrinkHelper.addDirectory(ConcurrencyTestApp, "test-applications/ConcurrencyTestApp/resources");
+        ShrinkHelper.exportAppToServer(server, ConcurrencyTestApp);
+
         ShrinkHelper.defaultApp(server, APP_NAME, "test.jakarta.concurrency.web");
 
         // fake third-party library that also include a thread context provider
