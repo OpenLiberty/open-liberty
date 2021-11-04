@@ -294,6 +294,25 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("no-phantom-changes-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
+    
+    /**
+     * Test that clashing extensions at the top level cause the clashing document not to be included
+     */
+    @Test
+    public void testClashingExtension() {
+        OpenAPIProvider model1 = loadModel("clashing-extension-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("clashing-extension-2.yaml", "/test2");
+        
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+        // Extension key X in module Y conflicts with module Z, module Y will not be merged 
+        assertThat("Merge problems", resultProvider.getMergeProblems(),
+                   contains(stringContainsInOrder(Arrays.asList("x-foo", "clashing-extension-2.yaml", "clashing-extension-1.yaml", "clashing-extension-2.yaml"))));
+
+        assertThat(resultProvider.getApplicationPath(), is("/test1"));
+        
+        assertModelsEqual(model1.getModel(), result);
+    }
 
 
     private OpenAPI loadModel(String modelResource) {

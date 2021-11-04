@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.microprofile.openapi.OASFactory;
@@ -123,6 +124,11 @@ public class MergeProcessor {
      * The path names in use for models processed so far
      */
     private Map<OpenAPIProvider, Set<String>> pathNames = new HashMap<>();
+    
+    /**
+     * The extensions found on the OpenAPI object in models processed so far
+     */
+    private Map<OpenAPIProvider, Map<String, Object>> topLevelExtensions = new HashMap<>();
 
     private NameProcessor nameProcessor = new NameProcessor();
 
@@ -159,7 +165,9 @@ public class MergeProcessor {
             prependPaths(model, provider.getApplicationPath(), documentNameProcessor);
 
             // Check for clashes
-            if (!findAndRecordPathClashes(model, provider)) {
+            boolean pathClashes = findAndRecordPathClashes(model, provider);
+            boolean extensionClashes = findAndRecordExtensionClashes(model, provider);
+            if (!pathClashes && !extensionClashes) {
                 inProgressModels.add(new InProgressModel(provider, model, documentNameProcessor));
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -231,7 +239,7 @@ public class MergeProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Only one document was able to be merged. Returning that document without changes.");
             }
-            return new MergedOpenAPIProvider(includedProviders.get(0).getModel(), mergeProblems);
+            return new MergedOpenAPIProvider(includedProviders.get(0).getModel(), mergeProblems, includedProviders.get(0).getApplicationPath());
         }
 
         OpenAPI merged = OASFactory.createOpenAPI();
@@ -286,6 +294,46 @@ public class MergeProcessor {
             this.pathNames.put(provider, pathItems.keySet());
         }
 
+        return clashesFound;
+    }
+    
+    /**
+     * Finds any extension clashes between {@code document} and any previously processed document
+     * <p>
+     * If there are no clashes, the extensions from {@code document} are added to {@link #topLevelExtensions} and {@code false} is returned.
+     * <p>
+     * If clashes are found, each clash is added to {@link #mergeProblems} and {@code true} is returned.
+     * 
+     * @param model the OpenAPI model to search for clashes
+     * @param provider the provider that provided the model
+     * @return {@code true} if there are any extension clashes, otherwise {@code false}
+     */
+    private boolean findAndRecordExtensionClashes(OpenAPI model, OpenAPIProvider provider) {
+        Map<String, Object> extensions = model.getExtensions();
+        if (extensions == null || extensions.isEmpty()) {
+            // Can't clash if we have no extensions
+            return false;
+        }
+        
+        boolean clashesFound = false;
+        for (Entry<OpenAPIProvider, Map<String, Object>> entry : this.topLevelExtensions.entrySet()) {
+            OpenAPIProvider otherProvider = entry.getKey();
+            Map<String, Object> otherExtensions = entry.getValue();
+            for (Entry<String, Object> extensionEntry : extensions.entrySet()) {
+                String key = extensionEntry.getKey();
+                Object value = extensionEntry.getValue();
+                Object otherValue = otherExtensions.get(key);
+                if (otherValue != null && !Objects.equals(value, otherValue)) {
+                    mergeProblems.add(Tr.formatMessage(tc, MessageConstants.OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH, key, provider, otherProvider));
+                    clashesFound = true;
+                }
+            }
+        }
+        
+        if (!clashesFound) {
+            this.topLevelExtensions.put(provider, extensions);
+        }
+        
         return clashesFound;
     }
 
