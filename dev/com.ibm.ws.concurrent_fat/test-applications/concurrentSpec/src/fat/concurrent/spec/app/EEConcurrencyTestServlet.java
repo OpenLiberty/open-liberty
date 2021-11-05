@@ -11,7 +11,6 @@
 package fat.concurrent.spec.app;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.Closeable;
@@ -2955,11 +2954,11 @@ public class EEConcurrencyTestServlet extends FATServlet {
 
         ScheduledFuture<String> future = mschedxsvcClassloaderContext.schedule(getIdentityName, getIdentityName);
 
-        final long TIMEOUT_NS = TimeUnit.MILLISECONDS.toNanos(TIMEOUT);
-        for (long start = System.nanoTime(); !future.isDone() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL));
+        String result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        if ("[]".equals(result)) // can be empty if the first execution is reported
+            result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
 
-        assertTrue(future.isDone());
-        assertEquals("testIdentityNamePrecedence-Expected", future.get());
+        assertEquals("testIdentityNamePrecedence-Expected", result);
     }
 
     /**
