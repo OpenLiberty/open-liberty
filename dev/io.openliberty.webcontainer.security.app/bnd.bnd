@@ -23,7 +23,6 @@ jakartaFinalBundleId: io.openliberty.webcontainer.security.app
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.webcontainer.security.app.jar
-publish.wlp.javadoc.include: io.openliberty.webcontainer.security.app.javadoc.zip
 
 Import-Package: com.ibm.websphere.security.web
 

@@ -23,7 +23,6 @@ jakartaFinalBundleId: io.openliberty.webCache
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.webCache.jar
-publish.wlp.javadoc.include: io.openliberty.webCache.javadoc.zip
 
 Import-Package: com.ibm.websphere.command,com.ibm.websphere.command.web,com.ibm.websphere.servlet.cache
 

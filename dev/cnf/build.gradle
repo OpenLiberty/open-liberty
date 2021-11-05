@@ -235,15 +235,7 @@ task createGradleBootstrap {
                         version = getVersionFromReleaseRepo(org, bsn)
                     } catch (GradleException e) {
                         if (bsn.endsWith(".javaee")) {
-                            try {
-                                bsn = bsn.substring(0, bsn.length() - 7) + ".jakarta"
-                                version = getVersionFromReleaseRepo(org, bsn)
-                            } catch (GradleException e2) {
-                                bsn = bsn.substring(0, bsn.length() - 8)
-                                version = getVersionFromReleaseRepo(org, bsn)
-                            }
-                        } else if (bsn.endsWith(".javaee.thirdparty")){
-                            bsn = bsn.substring(0, bsn.length() - 18) + ".jakarta.thirdparty"
+                            bsn = bsn.substring(0, bsn.length() -7)
                             version = getVersionFromReleaseRepo(org, bsn)
                         } else {
                             throw e

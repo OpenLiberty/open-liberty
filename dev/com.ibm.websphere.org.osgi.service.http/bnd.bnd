@@ -19,3 +19,5 @@ instrument.disabled: true
 
 -buildpath: \
 	org.osgi:org.osgi.service.http;version=1.2.1
+	
+jakartaeeMe: true

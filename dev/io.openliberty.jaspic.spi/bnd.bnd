@@ -26,7 +26,6 @@ jakartaFinalBundleId: io.openliberty.jaspic.spi
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.jaspic.spi.jar
-publish.wlp.javadoc.include: io.openliberty.jaspic.spi.javadoc.zip
 
 Import-Package: com.ibm.wsspi.security.jaspi
 
