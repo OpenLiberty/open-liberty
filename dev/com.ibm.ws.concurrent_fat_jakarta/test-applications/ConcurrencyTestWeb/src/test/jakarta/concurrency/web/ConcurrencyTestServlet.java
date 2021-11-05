@@ -92,7 +92,24 @@ import test.context.timing.Timestamp;
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 3)
-// TODO add resource definitions with context="java:comp/DefaultContextService" and unspecified
+// TODO add resource definitions with context unspecified
+
+// TODO remove the following once we can enable them in application.xml
+@ContextServiceDefinition(name="java:app/concurrent/dd/ZPContextService",
+                          cleared = ListContext.CONTEXT_NAME,
+                          propagated = { ZipCode.CONTEXT_NAME, "Priority" },
+                          unchanged = APPLICATION)
+@ManagedExecutorDefinition(name = "java:app/concurrent/dd/ZPExecutor",
+                           context = "java:app/concurrent/dd/ZPContextService",
+                           hungTaskThreshold = 420000,
+                           maxAsync = 2)
+@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/dd/ScheduledExecutor",
+                                    context = "java:comp/DefaultContextService",
+                                    hungTaskThreshold = 410000,
+                                    maxAsync = 1)
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/dd/ThreadFactory",
+                                context = "java:app/concurrent/appContextSvc",
+                                priority = 4)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -329,7 +346,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * that makes it possible to access third-party context from async completion stage actions.
      */
     @Test
-    public void testManagedExecutorDefinition() throws Throwable {
+    public void testManagedExecutorDefinitionAnno() throws Throwable {
         ManagedExecutorService executor5 = InitialContext.doLookup("java:module/concurrent/executor5");
 
         CompletableFuture<Exchanger<String>> stage0 = executor5.completedFuture(new Exchanger<String>());
@@ -434,12 +451,130 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a ManagedExecutorService that is defined in application.xml
+     * abides by the configured maxAsync and the configured thread context propagation/clearing
+     * that makes it possible to access third-party context from async completion stage actions.
+     */
+    @Test
+    public void testManagedExecutorDefinitionAppDD() throws Throwable {
+        ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/dd/ZPExecutor");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        final TransferQueue<CountDownLatch> queue = new LinkedTransferQueue<CountDownLatch>();
+
+        Future<Object[]> future1, future2, future3, future4;
+
+        // This async task polls the transfer queue for a latch to block on.
+        // This allows the caller to use up the maxAsync (which is 2) and then attempt additional
+        // transfers to test whether additional async requests can run in parallel.
+        Callable<Object[]> task = () -> {
+            Object[] results = new Object[6];
+            results[0] = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            results[1] = Timestamp.get(); // should be cleared
+            results[2] = ZipCode.get(); // should be propagated
+            results[3] = ListContext.asString(); // should be cleared
+            results[4] = Thread.currentThread().getPriority(); // should be propagated
+            try {
+                results[5] = InitialContext.doLookup("java:app/concurrent/dd/ZPExecutor");
+            } catch (NamingException x) {
+                // expected, due to unchanged Application context on executor thread
+                results[5] = x;
+            }
+            return results;
+        };
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55901);
+        ListContext.newList();
+        ListContext.add(25);
+        Thread.currentThread().setPriority(6);
+        try {
+            // submit async task with the above context,
+            future1 = executor.submit(task);
+            // alter context slightly and submit more tasks,
+            ZipCode.set(55902);
+            future2 = executor.submit(task);
+            future3 = executor.submit(task);
+            future4 = executor.submit(task);
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+
+        // With maxAsync=2, there should be 2 async completion stage actions running to accept transfers:
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Additional transfers should not be possible
+        assertFalse(queue.tryTransfer(blocker, 1, TimeUnit.SECONDS));
+
+        // Allow completion stage actions to finish:
+        blocker.countDown();
+
+        // The remaining completion stage actions can start now:
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(queue.tryTransfer(blocker, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        Object[] results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(Boolean.TRUE, results[0]);
+        assertNull(results[1]); // Timestamp context must be cleared
+        assertEquals(Integer.valueOf(55901), results[2]); // must be propagated
+        assertEquals("[]", results[3]); // List context must be cleared
+        assertEquals(Integer.valueOf(6), results[4]); // must be propagated
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+            else
+                throw new AssertionError(results[5]);
+
+        results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(Boolean.TRUE, results[0]);
+        assertNull(results[1]); // Timestamp context must be cleared
+        assertEquals(Integer.valueOf(55902), results[2]); // must be propagated
+        assertEquals("[]", results[3]); // List context must be cleared
+        assertEquals(Integer.valueOf(6), results[4]); // must be propagated
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+            else
+                throw new AssertionError(results[5]);
+
+        results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(Boolean.TRUE, results[0]);
+        assertNull(results[1]); // Timestamp context must be cleared
+        assertEquals(Integer.valueOf(55902), results[2]); // must be propagated
+        assertEquals("[]", results[3]); // List context must be cleared
+        assertEquals(Integer.valueOf(6), results[4]); // must be propagated
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+
+        results = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(Boolean.TRUE, results[0]);
+        assertNull(results[1]); // Timestamp context must be cleared
+        assertEquals(Integer.valueOf(55902), results[2]); // must be propagated
+        assertEquals("[]", results[3]); // List context must be cleared
+        assertEquals(Integer.valueOf(6), results[4]); // must be propagated
+        if (!(results[5] instanceof NamingException)) // must be unchanged (not present on async thread)
+            if (results[5] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[5]);
+    }
+
+    /**
      * Verify that a ManagedScheduledExecutorService that is injected from a ManagedScheduledExecutorDefinition
      * abides by the configured maxAsync and the configured thread context propagation that
      * makes it possible to look up resource references in the application component's namespace.
      */
     @Test
-    public void testManagedScheduledExecutorDefinition() throws Exception {
+    public void testManagedScheduledExecutorDefinitionAnno() throws Exception {
         assertNotNull(executor6);
 
         CountDownLatch blocker = new CountDownLatch(1);
@@ -496,12 +631,102 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a ManagedScheduledExecutorService that is defined in application.xml
+     * abides by the configured maxAsync and the configured thread context propagation that
+     * makes it possible to look up resource references in the application component's namespace.
+     */
+    @Test
+    public void testManagedScheduledExecutorDefinitionAppDD() throws Throwable {
+        ManagedExecutorService executor = InitialContext.doLookup("java:global/concurrent/dd/ScheduledExecutor");
+
+        final Exchanger<String> exchanger = new Exchanger<String>();
+
+        Future<Object[]> future1, future2, future3;
+
+        // Async task that attempts an exchange (which shouldn't be possible
+        // due to maxAsync of 1) and records the thread context under which it runs:
+        Callable<Object[]> task = () -> {
+            Object[] results = new Object[6];
+            try {
+                results[0] = exchanger.exchange("maxAsync=1 was not enforced", 1, TimeUnit.SECONDS);
+            } catch (InterruptedException | TimeoutException x) {
+                results[0] = x;
+            }
+            results[1] = Timestamp.get();
+            results[2] = ZipCode.get();
+            results[3] = ListContext.asString();
+            results[4] = Thread.currentThread().getPriority();
+            results[5] = InitialContext.doLookup("java:app/concurrent/appContextSvc"); // Application context is propagated
+            return results;
+        };
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55901);
+        ListContext.newList();
+        ListContext.add(20);
+        Thread.currentThread().setPriority(7);
+        try {
+            future1 = executor.submit(task);
+            future2 = executor.submit(task);
+            future3 = executor.submit(task);
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+
+        Object[] results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        if (results[5] instanceof Throwable)
+            throw new AssertionError().initCause((Throwable) results[5]);
+        else
+            assertNotNull(results[5]);
+
+
+        results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        if (results[5] instanceof Throwable)
+            throw new AssertionError().initCause((Throwable) results[5]);
+        else
+            assertNotNull(results[5]);
+
+
+        results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
+            if (results[0] instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) results[0]);
+            else
+                throw new AssertionError(results[0]);
+        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        if (results[5] instanceof Throwable)
+            throw new AssertionError().initCause((Throwable) results[5]);
+        else
+            assertNotNull(results[5]);
+    }
+
+    /**
      * Verify that a ManagedThreadFactory that is injected from a ManagedThreadFactoryDefinition
      * creates threads that run with the configured priority and with the configured thread context
      * that makes it possible to look up resource references in the application component's namespace.
      */
     @Test
-    public void testManagedThreadFactoryDefinition() throws Exception {
+    public void testManagedThreadFactoryDefinitionAnno() throws Exception {
         assertNotNull(lowPriorityThreads);
 
         int priority = Thread.currentThread().getPriority();
@@ -523,6 +748,38 @@ public class ConcurrencyTestServlet extends FATServlet {
         });
         assertEquals(3, managedThread.getPriority());
         assertTrue(managedThread.getClass().getName(), managedThread instanceof ManageableThread);
+    }
+
+    /**
+     * Verify that a ManagedThreadFactory that is defined in application.xml
+     * creates threads that run with the configured priority and with the configured thread context
+     * that makes it possible to look up resource references in the application component's namespace.
+     */
+    @Test
+    public void testManagedThreadFactoryDefinitionAppDD() throws Throwable {
+        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/dd/ThreadFactory");
+
+        final LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        threadFactory.newThread(() -> {
+            results.add(Thread.currentThread().getName());
+            results.add(Thread.currentThread().getPriority());
+            try {
+                results.add(InitialContext.doLookup("java:app/concurrent/dd/ThreadFactory"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        }).start();
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result.toString(), !Thread.currentThread().getName().equals(result));
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(4), result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError().initCause((Throwable) result);
     }
 
     /**

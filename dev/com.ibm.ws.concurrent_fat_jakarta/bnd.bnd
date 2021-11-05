@@ -13,7 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/ConcurrencyTestApp/src,\
+	test-applications/ConcurrencyTestWeb/src,\
 	test-libraries/LocationUtils/src,\
 	test-libraries/PriorityContext/src,\
 	test-libraries/StatUtils/src
