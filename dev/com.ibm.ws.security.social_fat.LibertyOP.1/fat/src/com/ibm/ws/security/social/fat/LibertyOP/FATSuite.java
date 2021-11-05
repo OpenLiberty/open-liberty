@@ -32,13 +32,6 @@ import componenttest.rules.repeater.RepeatTests;
         LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
         LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
         LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
-        LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig.class,
-        LibertyOP_BasicConfigTests_oidc_usingSocialDiscoveryConfig.class,
-        LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig.class,
-        LibertyOP_Social_SamesiteTests_oauth_usingSocialConfig.class,
-        LibertyOP_Social_SamesiteTests_oidc_usingSocialConfig.class,
-        LibertyOP_SignatureAlg_oidc_usingSocialConfig.class,
-        LibertyOP_Encryption_oidc_usingSocialConfig.class
 
 })
 
@@ -53,5 +46,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly()).andWith(new JakartaEE9Action().fullFATOnly());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().liteFATOnly());
 }
