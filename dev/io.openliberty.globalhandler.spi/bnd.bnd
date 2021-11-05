@@ -34,3 +34,4 @@ jakartaFinalBundleId: io.openliberty.globalhandler.spi
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.globalhandler.spi.jar
+publish.wlp.javadoc.include: io.openliberty.globalhandler.spi.javadoc.zip

@@ -28,4 +28,5 @@ Export-Package: \
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
-	com.ibm.ws.ejbcontainer
+	com.ibm.ws.ejbcontainer, \
+	com.ibm.ws.ejbcontainer.remote.portable.core
