@@ -81,7 +81,6 @@ task copySwidTagToBuildImage (type:Copy) {
     from project.file('publish')
     into project.file('wlp/lib/versions/tags')
     include 'ibm.com_Open_Liberty*.swidtag'
-    include 'openliberty.io_OpenLiberty.swidtag'
     filter(ReplaceTokens,
            tokens: [ VERSION: bnd.libertyRelease ])
 }
