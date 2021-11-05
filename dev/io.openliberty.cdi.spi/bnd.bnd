@@ -27,7 +27,6 @@ jakartaFinalBundleId: io.openliberty.cdi.spi
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.cdi.spi.jar
-publish.wlp.javadoc.include: io.openliberty.cdi.spi.javadoc.zip
 
 publish.wlp.jar.suffix: dev/spi/ibm
 

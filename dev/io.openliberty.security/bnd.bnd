@@ -23,7 +23,6 @@ jakartaFinalBundleId: io.openliberty.security
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.security.jar
-publish.wlp.javadoc.include: io.openliberty.security.javadoc.zip
 
 Import-Package: com.ibm.websphere.security.auth.callback,com.ibm.wsspi.security.auth.callback,com.ibm.wsspi.security.common.auth.module,com.ibm.wsspi.security.tai,com.ibm.wsspi.security.token
 

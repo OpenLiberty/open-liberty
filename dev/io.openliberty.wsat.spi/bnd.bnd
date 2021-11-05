@@ -23,7 +23,6 @@ jakartaFinalBundleId: io.openliberty.wsat.spi
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.wsat.spi.jar
-publish.wlp.javadoc.include: io.openliberty.wsat.spi.javadoc.zip
 
 Import-Package: com.ibm.wsspi.webservices.wsat
 
