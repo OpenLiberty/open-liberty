@@ -735,7 +735,7 @@ mergeJVMOptions()
 readServerEnv()
 {
   # By default, we do not attempt to resolve variables in server.env
-  variableResolutionEnabled=0
+  variableExpansionEnabled=0
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
@@ -744,17 +744,17 @@ readServerEnv()
 
       \#*)
            # line is a comment.
-           # A comment line enables variable resolution if it contains the keyword,
-           # "enable_variable_resolution", and nothing else (ignoring case and white space).
+           # A comment line enables variable expansion if it contains the keyword,
+           # "enable_variable_expansion", and nothing else (ignoring case and white space).
            # If found, we use the source command ( . ) which performs all of the server.env
            # variable assignments while resolving any variable references.
-           if [ $variableResolutionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_resolution") ]
+           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
            then
               processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
-              if [ "#enable_variable_resolution" = $processedLine ]
+              if [ "#enable_variable_expansion" = $processedLine ]
               then
                  eval ". $1"
-                 variableResolutionEnabled=1
+                 variableExpansionEnabled=1
               fi
            fi ;;
       *=*)
@@ -764,15 +764,15 @@ readServerEnv()
            *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
            *)
-              # if variable resolution is enabled, then we have already "sourced" the entire file.  As a result
+              # if variable expansion is enabled, then we have already "sourced" the entire file.  As a result
               # all of the variables in server.env have already been defined as shell variables.  To make them
               # accessible to child processes, they need to be exported.
-              if [ $variableResolutionEnabled = 1 ]
+              if [ $variableExpansionEnabled = 1 ]
               then
                  eval "export ${var}"
               else
-                 # Variable resolution is not enabled.  Just set the variable to whatever is on the right side 
-                 # of the assignment and export it.  If a later line enables variable resolution, the source
+                 # Variable expansion is not enabled.  Just set the variable to whatever is on the right side 
+                 # of the assignment and export it.  If a later line enables variable expansion, the source
                  # command will reassign the variable (which is already exported) to the resolved value.
                  extractValueAndEscapeForEval "${line}"
                  eval "${var}=${escapeForEvalResult}; export ${var}"
