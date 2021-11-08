@@ -662,6 +662,7 @@ public class ConcurrencyTestServlet extends FATServlet {
 
         // Put some fake context onto the thread:
         Timestamp.set();
+        Long timestamp = Timestamp.get();
         ZipCode.set(55901);
         ListContext.newList();
         ListContext.add(20);
@@ -685,7 +686,10 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new AssertionError().initCause((Throwable) results[0]);
             else
                 throw new AssertionError(results[0]);
-        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        assertEquals(timestamp, results[1]); // must be propagated
+        assertEquals(Integer.valueOf(55901), results[2]); // must be propagated
+        assertEquals("[20]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(7), results[4]); // must be propagated
         if (results[5] instanceof Throwable)
             throw new AssertionError().initCause((Throwable) results[5]);
         else
@@ -699,7 +703,10 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new AssertionError().initCause((Throwable) results[0]);
             else
                 throw new AssertionError(results[0]);
-        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        assertEquals(timestamp, results[1]); // must be propagated
+        assertEquals(Integer.valueOf(55901), results[2]); // must be propagated
+        assertEquals("[20]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(7), results[4]); // must be propagated
         if (results[5] instanceof Throwable)
             throw new AssertionError().initCause((Throwable) results[5]);
         else
@@ -713,7 +720,10 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new AssertionError().initCause((Throwable) results[0]);
             else
                 throw new AssertionError(results[0]);
-        // TODO results[1] to results[4] : does third-party context propagate to the default managed executor?
+        assertEquals(timestamp, results[1]); // must be propagated
+        assertEquals(Integer.valueOf(55901), results[2]); // must be propagated
+        assertEquals("[20]", results[3]); // must be propagated
+        assertEquals(Integer.valueOf(7), results[4]); // must be propagated
         if (results[5] instanceof Throwable)
             throw new AssertionError().initCause((Throwable) results[5]);
         else

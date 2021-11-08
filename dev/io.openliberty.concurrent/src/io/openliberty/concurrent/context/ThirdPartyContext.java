@@ -102,6 +102,7 @@ public class ThirdPartyContext implements ThreadContext {
      * @param execProps           execution properties
      * @param threadContextConfig configuration for context providers. Null to indicate that all third-party types should be cleared
      */
+    @SuppressWarnings("unchecked")
     ThirdPartyContext(ThirdPartyContextCoordinator coordinator, Map<String, String> execProps, Map<String, ?> threadContextConfig) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -114,9 +115,9 @@ public class ThirdPartyContext implements ThreadContext {
         snapshots = new ArrayList<ThreadContextSnapshot>();
         for (ThreadContextProvider provider : coordinator.getProviders()) {
             String type = provider.getThreadContextType();
-            String action = Collections.binarySearch(cleared, type) >= 0 ? "cleared" : //
-                            Collections.binarySearch(propagated, type) >= 0 ? "propagated" : //
-                                            Collections.binarySearch(unchanged, type) >= 0 ? "unchanged" : //
+            String action = cleared != null && Collections.binarySearch(cleared, type) >= 0 ? "cleared" : //
+                            propagated != null && Collections.binarySearch(propagated, type) >= 0 ? "propagated" : //
+                                            unchanged != null && Collections.binarySearch(unchanged, type) >= 0 ? "unchanged" : //
                                                             remaining;
 
             if ("cleared".equals(action)) {

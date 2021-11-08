@@ -17,6 +17,11 @@ Bundle-Description: Jakarta Concurrency 3.0+ implementation; version=${bVersion}
 
 WS-TraceGroup: concurrent
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
 Private-Package: \
   io.openliberty.concurrent.context,\
   io.openliberty.concurrent.processor
