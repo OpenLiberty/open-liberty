@@ -19,7 +19,7 @@ src: \
 
 fat.project: true
 
-tested.features: opentracing-3.0, mprestclient-3.0
+tested.features: mpOpenTracing-3.0, mprestclient-3.0
 
 -buildpath: \
     io.openliberty.org.eclipse.microprofile.opentracing.3.0;version=latest,\
@@ -29,7 +29,5 @@ tested.features: opentracing-3.0, mprestclient-3.0
     io.opentracing:opentracing-util;version=0.33.0, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.wsspi.org.osgi.service.component;version=latest, \
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    com.ibm.ws.cdi.interfaces;version=latest
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
