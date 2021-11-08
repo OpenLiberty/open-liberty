@@ -132,7 +132,8 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
         Object primaryDDElement = primaryDD.getComponentForId(hrefId);
         if ( primaryDDElement == null ) {
             // New warning.
-            parser.warning( parser.unresolvedReference(hrefElementName, hrefValue, hrefId, hrefPath) );
+            // This warning is disabled pending resolution of issue 19207.
+            // parser.warning( parser.unresolvedReference(hrefElementName, hrefValue, hrefId, hrefPath) );
             return null;
         }
 

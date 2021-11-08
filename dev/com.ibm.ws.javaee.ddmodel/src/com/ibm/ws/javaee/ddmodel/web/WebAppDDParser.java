@@ -25,7 +25,7 @@ public class WebAppDDParser extends DDParserSpec {
     
     private static VersionData[] VERSION_DATA = {
         new VersionData("2.2", WEBAPP_DTD_PUBLIC_ID_22, null, WebApp.VERSION_2_2, JavaEEVersion.VERSION_1_2_INT),
-        new VersionData("2.3", WEBAPP_DTD_PUBLIC_ID_23, null, WebApp.VERSION_2_2, JavaEEVersion.VERSION_1_3_INT),
+        new VersionData("2.3", WEBAPP_DTD_PUBLIC_ID_23, null, WebApp.VERSION_2_3, JavaEEVersion.VERSION_1_3_INT),
 
         new VersionData("2.4", null, NAMESPACE_SUN_J2EE,   WebApp.VERSION_2_4, JavaEEVersion.VERSION_1_4_INT),
         new VersionData("2.5", null, NAMESPACE_SUN_JAVAEE, WebApp.VERSION_2_5, JavaEEVersion.VERSION_5_0_INT),
