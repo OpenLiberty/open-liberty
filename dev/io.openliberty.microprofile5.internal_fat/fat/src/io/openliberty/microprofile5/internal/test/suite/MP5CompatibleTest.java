@@ -95,8 +95,7 @@ public class MP5CompatibleTest {
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
-            server.stopServer();
-            //server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
         }
     }
 
