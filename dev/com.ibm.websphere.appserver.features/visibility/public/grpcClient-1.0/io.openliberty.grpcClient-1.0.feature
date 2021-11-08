@@ -13,10 +13,12 @@ Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Client 1.0
 -features= \
   com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="5.0", \
-  io.openliberty.grpcClient1.0.internal.ee-8.0; ibm.tolerates:="9.0", \
   com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  io.openliberty.grpcClient1.0.internal.ee-8.0; ibm.tolerates:="9.0", \
   io.openliberty.internal.grpc-1.0
 -bundles=\
+  io.openliberty.io.netty, \
+  io.openliberty.io.netty.ssl, \
   io.openliberty.org.apache.commons.logging
 kind=ga
 edition=core

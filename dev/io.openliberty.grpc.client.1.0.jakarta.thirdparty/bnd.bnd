@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.38.1
-nettyVersion=4.1.68.Final
 
 Bundle-Name: Open Liberty gRPC Client Third Party API
 Bundle-SymbolicName: io.openliberty.grpc.client.1.0.javaee.thirdparty
@@ -54,22 +53,13 @@ Import-Package: \
 
 Export-Package:\
   io.grpc.netty;version=${grpcVersion}, \
-  io.netty.handler.ssl;version=${nettyVersion}
+  io.netty.handler.ssl
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
   com.google.errorprone:error_prone_annotations;version=2.4.0,\
   io.grpc:grpc-netty;version=${grpcVersion},\
-  io.netty:netty-buffer;version=${nettyVersion},\
-  io.netty:netty-codec;version=${nettyVersion},\
-  io.netty:netty-codec-http;version=${nettyVersion},\
-  io.netty:netty-codec-http2;version=${nettyVersion},\
-  io.netty:netty-codec-socks;version=${nettyVersion},\
-  io.netty:netty-common;version=${nettyVersion},\
-  io.netty:netty-handler;version=${nettyVersion},\
-  io.netty:netty-handler-proxy;version=${nettyVersion},\
-  io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion},\
-  io.openliberty.grpc.1.0.internal.common;version=latest
-
+  io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.io.netty;version=latest,\
+  io.openliberty.io.netty.ssl;version=latest
