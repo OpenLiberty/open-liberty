@@ -10,6 +10,12 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -34,7 +40,38 @@ public class ConcurrencyTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "test.jakarta.concurrency.web");
+        // Test application ConcurrencyTestApp.ear [ConcurrencyTestWeb.war, application.xml]
+        WebArchive ConcurrencyTestWeb = ShrinkHelper.buildDefaultApp("ConcurrencyTestWeb", "test.jakarta.concurrency.web");
+        EnterpriseArchive ConcurrencyTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConcurrencyTestApp.ear");
+        ConcurrencyTestApp.addAsModule(ConcurrencyTestWeb);
+        ShrinkHelper.addDirectory(ConcurrencyTestApp, "test-applications/ConcurrencyTestApp/resources");
+        ShrinkHelper.exportAppToServer(server, ConcurrencyTestApp);
+
+        ShrinkHelper.defaultApp(server, APP_NAME, "test.jakarta.concurrency.web");
+
+        // fake third-party library that also include a thread context provider
+        JavaArchive locationUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "location-utils.jar")
+                        .addPackage("test.context.location")
+                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
+                                              "test.context.location.ZipCodeContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", locationUtilsContextProviderJar);
+
+        // fake thread context provider on its own (this will be made available via a bell)
+        JavaArchive priorityContextProviderJar = ShrinkWrap.create(JavaArchive.class, "priority-context.jar")
+                        .addPackage("test.context.priority")
+                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
+                                              "test.context.priority.PriorityContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", priorityContextProviderJar);
+
+        // fake third-party library that includes multiple thread context providers
+        JavaArchive statUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "stat-utils.jar")
+                        .addPackage("test.context.list")
+                        .addPackage("test.context.timing")
+                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
+                                              "test.context.list.ListContextProvider",
+                                              "test.context.timing.TimestampContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", statUtilsContextProviderJar);
+
         server.startServer();
     }
 

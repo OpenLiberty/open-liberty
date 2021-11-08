@@ -12,27 +12,28 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/baseclient/src,\
-	test-applications/bookstore/src,\
-	test-applications/clientcontextinjection/src,\
-	test-applications/complexclient/src,\
-	test-applications/handleresponses/src,\
-	test-applications/ibmjson4j/src,\
-	test-applications/jackson/src,\
-	test-applications/jaxrs20clientcallback/src,\
-	test-applications/jaxrs20ltpa/src,\
-	test-applications/jaxrs20ltpaclient/src,\
-	test-applications/jaxrs20withclientfeatureenabled/src,\
-	test-applications/jaxrsclient100Continue/src,\
-	test-applications/jaxrsclientproxy/src,\
-	test-applications/jaxrsclientproxyAuth/src,\
-	test-applications/jaxrsclientssl/src,\
-	test-applications/jaxrsclientstandalone/src,\
-	test-applications/jaxrsclienttimeout/src,\
-	test-applications/jsonp/src,\
-	test-applications/pathparam/src,\
-	test-applications/thirdpartyjerseyclient/src
+  fat/src,\
+  test-applications/baseclient/src,\
+  test-applications/bookstore/src,\
+  test-applications/clientcontextinjection/src,\
+  test-applications/complexclient/src,\
+  test-applications/handleresponses/src,\
+  test-applications/ibmjson4j/src,\
+  test-applications/jackson/src,\
+  test-applications/jaxrs20clientcallback/src,\
+  test-applications/jaxrs20ltpa/src,\
+  test-applications/jaxrs20ltpaclient/src,\
+  test-applications/jaxrs20withclientfeatureenabled/src,\
+  test-applications/jaxrsclient100Continue/src,\
+  test-applications/jaxrsclientproxy/src,\
+  test-applications/jaxrsclientproxyAuth/src,\
+  test-applications/jaxrsclientssl/src,\
+  test-applications/jaxrsclientstandalone/src,\
+  test-applications/jaxrsclienttimeout/src,\
+  test-applications/jsonp/src,\
+  test-applications/pathparam/src,\
+  test-applications/thirdpartyjerseyclient/src,\
+  test-applications/xmlbinding/src
 
 fat.project: true
 

@@ -90,6 +90,7 @@ import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
  * </p>
  */
 public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, HeartbeatLog {
+
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -580,39 +581,35 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // For exception handling
                     Throwable nonTransientException = null;
 
-                    int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
-
                     try {
-                        String fullLogDirectory = _internalLogProperties.getProperty("LOG_DIRECTORY");
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "fullLogDirectory = " + fullLogDirectory);
-
-                        conn = getConnection(fullLogDirectory); // DB2 = ny01DS, Oracle = nyoraDS
-                        if (conn == null) {
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "openLog", "Null connection InternalLogException");
-                            throw new InternalLogException("Failed to get JDBC Connection", null);
-                        }
-
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Set autocommit FALSE and RR isolation on the connection"); // don't really need RR since updateHADB lock ALWAYS UPDATEs or INSERTs
-                        initialIsolation = prepareConnectionForBatch(conn);
-
-                        //
-                        // FIRST PHASE DB PROCESSING: Touch the table and create table if necessary
-                        //
-
-                        conn = assertDBTableExists(conn, initialIsolation);
-
-                        // if we've got here without an exception we've been able to touch the table or create it with the locking record in
-                        // we've got no locks nor active transaction but conn is non-null and not closed
-                        //
-                        // SECOND PHASE DB PROCESSING: get the HA Lock row again, update it if necessary and hold it over the recover
-                        //
-
-                        boolean secondPhaseSuccess = false;
+                        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+                        boolean openSuccess = false;
                         SQLException currentSqlEx = null;
+
                         try {
+                            String fullLogDirectory = _internalLogProperties.getProperty("LOG_DIRECTORY");
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "fullLogDirectory = " + fullLogDirectory);
+
+                            conn = getConnection(fullLogDirectory); // DB2 = ny01DS, Oracle = nyoraDS
+                            if (conn == null) {
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "openLog", "Null connection InternalLogException");
+                                throw new InternalLogException("Failed to get JDBC Connection", null);
+                            }
+
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Set autocommit FALSE and RR isolation on the connection"); // don't really need RR since updateHADB lock ALWAYS UPDATEs or INSERTs
+                            initialIsolation = prepareConnectionForBatch(conn);
+
+                            // Touch the table and create table if necessary
+                            conn = assertDBTableExists(conn, initialIsolation);
+
+                            // if we've got here without an exception we've been able to touch the table or create it with the locking record in
+                            // we've got no locks nor active transaction but conn is non-null and not closed
+                            //
+                            // Now get the HA Lock row again, update it if necessary and hold it over the recover
+
                             // Update the ownership of the recovery log to the running server
                             updateHADBLock(conn);
 
@@ -620,72 +617,73 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             recover(conn);
 
                             conn.commit();
-                            secondPhaseSuccess = true;
+
+                            openSuccess = true;
                         } catch (SQLException sqlex) {
                             Tr.audit(tc, "WTRN0107W: " +
                                          "Caught SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                             // Set the exception that will be reported
                             currentSqlEx = sqlex;
                         } finally {
-                            if (conn != null) {
-                                if (secondPhaseSuccess) {
+                            if (openSuccess) {
+                                // Attempt a close. If it fails, trace the failure but allow processing to continue
+                                try {
                                     closeConnectionAfterBatch(conn, initialIsolation);
-                                } else {
-                                    // Tidy up connection before dropping into handleOpenLogSQLException method
-                                    // Attempt a rollback. If it fails, trace the failure but allow processing to continue
-                                    try {
-                                        conn.rollback();
-                                    } catch (Throwable exc) {
-                                        if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Rolling back on NOT secondPhaseSuccess", exc);
-                                    }
-                                    // Attempt a close. If it fails, trace the failure but allow processing to continue
-                                    try {
-                                        closeConnectionAfterBatch(conn, initialIsolation);
-                                    } catch (Throwable exc) {
-                                        if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Close Failed on NOT secondPhaseSuccess", exc);
-                                    }
-
-                                    boolean failAndReport = true;
-                                    // Set the exception that will be reported
-                                    nonTransientException = currentSqlEx;
-                                    OpenLogRetry openLogRetry = new OpenLogRetry();
-                                    openLogRetry.setNonTransientException(currentSqlEx);
-                                    // The following method will reset "nonTransientException" if it cannot recover
-                                    if (sqlTransientErrorHandlingEnabled) {
-                                        failAndReport = openLogRetry.retryAfterSQLException(this, _theDS, currentSqlEx, _transientRetryAttempts,
-                                                                                            _transientRetrySleepTime);
-
-                                        if (failAndReport)
-                                            nonTransientException = openLogRetry.getNonTransientException();
-                                    }
-
-                                    // We've been through the while loop
-                                    if (failAndReport) {
-                                        Tr.audit(tc, "WTRN0100E: " +
-                                                     "Cannot recover from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
-                                                     + nonTransientException);
-                                        markFailed(nonTransientException);
-                                        if (tc.isEntryEnabled())
-                                            Tr.exit(tc, "openLog", "InternalLogException");
-                                        throw new InternalLogException(nonTransientException);
-                                    } else {
-                                        Tr.audit(tc, "WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName);
-                                    }
-
+                                } catch (Throwable exc) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Close Failed after initial success", exc);
+                                    openSuccess = false;
                                 }
-                            } else if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Connection was NULL");
+                            }
+
+                            if (!openSuccess) {
+                                // Tidy up connection before dropping into handleOpenLogSQLException method
+                                // Attempt a rollback. If it fails, trace the failure but allow processing to continue
+                                try {
+                                    if (conn != null)
+                                        conn.rollback();
+                                } catch (Throwable exc) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Rolling back on NOT openSuccess", exc);
+                                }
+                                // Attempt a close. If it fails, trace the failure but allow processing to continue
+                                try {
+                                    if (conn != null)
+                                        closeConnectionAfterBatch(conn, initialIsolation);
+                                } catch (Throwable exc) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Close Failed on NOT sopenSuccess", exc);
+                                }
+
+                                boolean failAndReport = true;
+                                // Set the exception that will be reported
+                                nonTransientException = currentSqlEx;
+                                OpenLogRetry openLogRetry = new OpenLogRetry();
+                                openLogRetry.setNonTransientException(currentSqlEx);
+                                // The following method will reset "nonTransientException" if it cannot recover
+                                if (sqlTransientErrorHandlingEnabled) {
+                                    failAndReport = openLogRetry.retryAfterSQLException(this, _theDS, currentSqlEx, _transientRetryAttempts,
+                                                                                        _transientRetrySleepTime);
+
+                                    if (failAndReport)
+                                        nonTransientException = openLogRetry.getNonTransientException();
+                                }
+
+                                // We've been through the while loop
+                                if (failAndReport) {
+                                    Tr.audit(tc, "WTRN0100E: " +
+                                                 "Cannot recover from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
+                                                 + nonTransientException);
+                                    markFailed(nonTransientException);
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "openLog", "InternalLogException");
+                                    throw new InternalLogException(nonTransientException);
+                                } else {
+                                    Tr.audit(tc, "WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog " + _logName + " for server " + _serverName);
+                                }
+
+                            }
                         } // end finally
-                    } catch (SQLException exc) {
-                        // The code above should have checked if the log is open or not fron the point of view of this class.
-                        FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "464", this);
-                        markFailed(exc); /* @MD19484C */
-                        _recoverableUnits = null;
-                        if (tc.isEntryEnabled())
-                            Tr.exit(tc, "openLog", "InternalLogException");
-                        throw new InternalLogException(exc);
                     } catch (Throwable exc) {
                         FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "500", this);
                         if (tc.isEventEnabled())
@@ -2030,14 +2028,33 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     // Method: SQLMultiScopeRecoveryLog.isSQLErrorTransient
     //------------------------------------------------------------------------------
     /**
-     * Determine whether we have encountered a potentially transient
-     * SQL error condition. If so we can retry the SQL.
+     * Determine whether we have encountered a potentially transient SQL error condition. If so we can retry the SQL.
+     *
+     * This method is at the heart of the design for retrying SQL operations. If a SQL call receives a SQLTransientException, then we will re-execute the call (acquiring a new
+     * Connection on each occasion) a configured number of times with a configured time interval until the call succeeds or we give up, report the exception and invalidate the
+     * recovery log.
+     *
+     * This design has been (optionally) extended to retry on any SQLException if the server.xml enableLogRetries parameter has been set.
+     *
+     * Note that we have considered the specific situation where a call receives a SQLException on commit() and the call is re-executed. It is not possible to know whether the
+     * commit operation failed or succeeded, so failure is assumed. The impact on this situation occurring in forceSections() is as follows.
+     *
+     * In the forceSections() code an RMLT may comprise a set of inserts, updates and deletes. In the (potential) case where a SQLException was thrown but the commit operation
+     * was completed by the RDBMS, then, after acquiring a new Connection and taking the HADB lock...
+     *
+     * - re-execution of the inserts would result in a set of duplicate rows in the db table
+     * - re-execution of the updates would be a no-op, ie setting columns in a row to identical values
+     * - re-execution of the deletes would also be a no-op, the second attempt would simply delete no rows.
+     *
+     * The potentially sticky thing here is the duplicate rows in the db table. In practice, this does not appear to be an issue - recovery will create one set of runtime
+     * objects from the duplicate rows and deletion at runtime will clear out all appropriate rows.
      *
      * @return true if the error is transient.
      */
     protected boolean isSQLErrorTransient(SQLException sqlex) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "isSQLErrorTransient ", new Object[] { sqlex, this });
+
         boolean retryBatch = false;
         int sqlErrorCode = sqlex.getErrorCode();
 
@@ -2048,7 +2065,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.event(tc, " Error code: " + sqlErrorCode);
         }
 
-        if (sqlex instanceof SQLTransientException) {
+        // If the SQLException is a transient exception or if the server has been configured to retry on all SQLExceptions return true.
+        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries() || sqlex instanceof SQLTransientException) {
             retryBatch = true;
         }
 
@@ -2085,6 +2103,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isSQLErrorTransient", retryBatch);
+
         return retryBatch;
     }
 
@@ -2169,7 +2188,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     insertStatement.setLong(4, element.getSectionId());
                     insertStatement.setShort(5, (short) element.getIndex());
                     insertStatement.setBytes(6, element.getData());
-
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Insert row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId() + " item: " + (short) element.getIndex());
                     insertStatement.addBatch();
                 }
             }
@@ -2180,7 +2201,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     updateStatement.setLong(4, element.getRuId());
                     updateStatement.setLong(5, element.getSectionId());
                     updateStatement.setBytes(1, element.getData());
-
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Update row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId());
                     updateStatement.addBatch();
                 }
             }
@@ -2189,6 +2212,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (removes > 0) {
                 for (ruForReplay element : cachedRemoves) {
                     removeStatement.setLong(3, element.getRuId());
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Delete row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
+                                     + "ruId: " + element.getRuId());
                     removeStatement.addBatch();
                 }
             }
@@ -3531,8 +3557,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads (this really isn't necessary now we don't support sharing tables)
         {
-            int queryRetries = 0;
-
             while (!success) {
                 try {
                     if (conn == null) {
@@ -3598,31 +3622,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             } catch (Exception e) {
                             }
                             conn = null;
-                        }
-
-                        queryRetries++;
-                        boolean isTransient = sqlTransientErrorHandlingEnabled && (createException instanceof SQLException) && isSQLErrorTransient((SQLException) createException);
-                        if (queryRetries >= 2) {
-                            if (!handleFailover && isTransient) {
-                                queryRetries = 0;
-                                handleFailover = true;
-                            } else {
-                                // We are really struggling, we retried in case we were failing to create a table and we have retried
-                                // in case the Database is HA and was failing over. So log an FFDC and rethrow the exception to allow
-                                // the server to "fail to start"
-                                FFDCFilter.processException(createException, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "48", this);
-                                if (tc.isEntryEnabled())
-                                    Tr.exit(tc, "assertDBTableExists", createException);
-                                throw createException;
-                            }
-                        }
-                        // we're retrying - wait for a little while
-                        long sleepTime = isTransient ? _transientRetrySleepTime : 1000L;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "sleeping for ms=" + sleepTime);
-                        try {
-                            Thread.sleep(sleepTime);
-                        } catch (InterruptedException ie) {
                         }
                     } // end catch create failed
                 } // end catch read failed
@@ -4208,53 +4207,53 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryTime(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryInterval(int)
      */
     @Override
-    public void setStandardTransientErrorRetryTime(int standardTransientErrorRetryTime) {
+    public void setLogRetryInterval(int logRetryInterval) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setStandardTransientErrorRetryTime", standardTransientErrorRetryTime);
+            Tr.debug(tc, "setLogRetryInterval", logRetryInterval);
 
-        _transientRetrySleepTime = standardTransientErrorRetryTime * 1000;
+        _transientRetrySleepTime = logRetryInterval * 1000;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setStandardTransientErrorRetryAttempts(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryLimit(int)
      */
     @Override
-    public void setStandardTransientErrorRetryAttempts(int standardTransientErrorRetryAttempts) {
+    public void setLogRetryLimit(int logRetryLimit) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setStandardTransientErrorRetryAttempts", standardTransientErrorRetryAttempts);
+            Tr.debug(tc, "setLogRetryLimit", logRetryLimit);
 
-        _transientRetryAttempts = standardTransientErrorRetryAttempts;
+        _transientRetryAttempts = logRetryLimit;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryTime(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryInterval(int)
      */
     @Override
-    public void setLightweightTransientErrorRetryTime(int lightweightTransientErrorRetryTime) {
+    public void setLightweightLogRetryInterval(int lightweightLogRetryInterval) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightTransientErrorRetryTime", lightweightTransientErrorRetryTime);
+            Tr.debug(tc, "setLightweightLogRetryInterval", lightweightLogRetryInterval);
 
-        _lightweightTransientRetrySleepTime = lightweightTransientErrorRetryTime * 1000;
+        _lightweightTransientRetrySleepTime = lightweightLogRetryInterval * 1000;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightTransientErrorRetryAttempts(int)
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryLimit(int)
      */
     @Override
-    public void setLightweightTransientErrorRetryAttempts(int lightweightTransientErrorRetryAttempts) {
+    public void setLightweightLogRetryLimit(int lightweightLogRetryLimit) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightTransientErrorRetryAttempts", lightweightTransientErrorRetryAttempts);
+            Tr.debug(tc, "setLightweightLogRetryLimit", lightweightLogRetryLimit);
 
-        _lightweightTransientRetryAttempts = lightweightTransientErrorRetryAttempts;
+        _lightweightTransientRetryAttempts = lightweightLogRetryLimit;
     }
 
     /*
@@ -4345,6 +4344,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
+            if (tc.isEntryEnabled())
+                Tr.entry(tc, "ForceSectionsRetry.retryCode", new Object[] { conn });
+
             // This will confirm that this server owns this log and will invalidate the log if not.
             boolean lockSuccess = takeHADBLock(conn);
 
@@ -4352,6 +4354,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // We can go ahead and write to the Database
                 executeBatchStatements(conn);
             }
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "ForceSectionsRetry.retryCode");
         }
 
         @Override
@@ -4369,6 +4373,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
+            if (tc.isEntryEnabled())
+                Tr.entry(tc, "OpenLogRetry.retryCode", new Object[] { conn });
+            int initialIsolation = prepareConnectionForBatch(conn);
+
+            // Touch the table and create table if necessary
+            conn = assertDBTableExists(conn, initialIsolation);
             // Update the ownership of the recovery log to the running server
             updateHADBLock(conn);
 
@@ -4378,6 +4388,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // Drive recover again
             recover(conn);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "OpenLogRetry.retryCode");
         }
 
         @Override

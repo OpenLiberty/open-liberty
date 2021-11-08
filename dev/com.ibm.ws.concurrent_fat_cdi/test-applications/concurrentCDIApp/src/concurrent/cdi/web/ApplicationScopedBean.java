@@ -10,6 +10,9 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -17,6 +20,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -24,6 +28,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 @ApplicationScoped
+@ContextServiceDefinition(name = "java:app/concurrent/txcontext",
+                          propagated = TRANSACTION,
+                          cleared = ALL_REMAINING)
 public class ApplicationScopedBean implements Serializable {
     private static final long serialVersionUID = -2075274815197982538L;
 

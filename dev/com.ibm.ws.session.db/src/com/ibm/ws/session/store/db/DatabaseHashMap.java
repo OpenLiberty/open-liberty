@@ -364,6 +364,12 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                     mediumColSize = MEDIUMCOL_SIZE_DB2;
                     largeColSize = LARGECOL_SIZE_DB2;
+                    if (_smc.isUsingMultirow() && _smc.getRowSizeLimit()*1048576 > largeColSize) {
+                        largeColSize = _smc.getRowSizeLimit()*1048576;
+                        if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INIT_DB_SETTINGS], "DB2 row size limit : " + largeColSize);
+                        }
+                    }
                     usingDB2 = true;
 
                     //For SolidDB, which is a subset of DB2
@@ -506,7 +512,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                 } // Oracle case to be handled later
             } //PM27191 END
-        } else if (usingPostgreSQL) {
+        } else if (usingPostgreSQL && _smc.isUsingCustomSchemaName()) {
             qualifierName = dmd.getUserName();
         }
         
@@ -622,16 +628,21 @@ public class DatabaseHashMap extends BackedHashMap {
                         String configTableSpaceName = _smc.getTableSpaceName();
                         if (configTableSpaceName != null && !configTableSpaceName.equals("") && configTableSpaceName.length() != 0)
                             tableSpaceName = " in " + configTableSpaceName;
-                        if (usingSolidDB)
+                        if (usingSolidDB) {
                             s.executeUpdate("create table "
                                         + tableName
                                         + " (id varchar(128) not null, propid varchar(128) not null, appname varchar(128) not null, listenercnt smallint, lastaccess bigint, creationtime bigint, maxinactivetime integer, username varchar(256), small varchar("
                                         + smallColSize + "), medium long varchar, large BLOB(2M)) " + tableSpaceName);
-                        else
+                        } else {
+                            int rowSize = 2;
+                            if (_smc.isUsingMultirow() && _smc.getRowSizeLimit() > rowSize) {
+                                rowSize = _smc.getRowSizeLimit();
+                            }
                             s.executeUpdate("create table "
                                         + tableName
                                         + " (id varchar(128) not null, propid varchar(128) not null, appname varchar(128) not null, listenercnt smallint, lastaccess bigint, creationtime bigint, maxinactivetime integer, username varchar(256), small varchar("
-                                        + smallColSize + ") for bit data, medium long varchar for bit data, large BLOB(2M)) " + tableSpaceName);
+                                        + smallColSize + ") for bit data, medium long varchar for bit data, large BLOB(" + rowSize + "M)) " + tableSpaceName);
+                        }
                     }
                 }
                 //            } catch (com.ibm.ejs.cm.portability.TableAlreadyExistsException eee) {

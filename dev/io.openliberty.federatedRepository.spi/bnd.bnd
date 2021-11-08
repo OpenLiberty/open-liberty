@@ -18,11 +18,12 @@ Bundle-SymbolicName: io.openliberty.federatedRepository.spi.javaee
 -pom: artifactid=io.openliberty.federatedRepository.spi
 
 jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.federatedRepository.spi.jakarta.jar
+jakartaFinalJarName: io.openliberty.federatedRepository.spi.jar
 jakartaFinalBundleId: io.openliberty.federatedRepository.spi
 
 # Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.federatedRepository.spi.jakarta.jar
+publish.wlp.jar.include: io.openliberty.federatedRepository.spi.jar
+publish.wlp.javadoc.include: io.openliberty.federatedRepository.spi.javadoc.zip
 
 Import-Package: com.ibm.wsspi.security.wim,com.ibm.wsspi.security.wim.exception,com.ibm.wsspi.security.wim.model
 

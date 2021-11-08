@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,6 +45,7 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single container filter is used by all applications.</p> *
  */
+@Provider
 public class OpentracingContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingContainerFilter.class);
 
@@ -60,9 +62,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
     private OpentracingFilterHelper helper;
 
-    OpentracingContainerFilter(OpentracingFilterHelper helper) {
-        setFilterHelper(helper);
-    }
+    public OpentracingContainerFilter() {}
 
     void setFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
@@ -72,6 +72,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public void filter(ContainerRequestContext incomingRequestContext) throws IOException {
         String methodName = "filter(incoming)";
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
 
         Tracer tracer = OpentracingTracerManager.getTracer();
         if (tracer == null) {
@@ -145,8 +146,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public void filter(ContainerRequestContext incomingRequestContext,
                        ContainerResponseContext outgoingResponseContext) throws IOException {
-        String methodName = "filter(outgoing)";
 
+        String methodName = "filter(outgoing)";
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
         Boolean skipped = (Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);
 
         if (skipped != null) {

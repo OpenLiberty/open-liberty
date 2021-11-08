@@ -7,5 +7,5 @@ visibility=private
   io.openliberty.jakarta.cdi-3.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jndi.remote.client
-kind=beta
+kind=ga
 edition=base

@@ -13,5 +13,5 @@ Subsystem-Name: Jakarta Connectors 2.0 Inbound Security
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
    io.openliberty.connectors.security.internal.inbound
-kind=beta
+kind=ga
 edition=base

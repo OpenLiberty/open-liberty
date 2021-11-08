@@ -7,5 +7,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.security.csiv2.common, \
   com.ibm.ws.security.csiv2
-kind=beta
+kind=ga
 edition=base

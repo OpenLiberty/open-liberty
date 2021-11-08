@@ -21,11 +21,12 @@ Bundle-SymbolicName: io.openliberty.jwt.javaee
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.jwt.jakarta.jar
+jakartaFinalJarName: io.openliberty.jwt.jar
 jakartaFinalBundleId: io.openliberty.jwt
 
 # Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.jwt.jakarta.jar
+publish.wlp.jar.include: io.openliberty.jwt.jar
+publish.wlp.javadoc.include: io.openliberty.jwt.javadoc.zip
 
 Import-Package: com.ibm.websphere.security.jwt
 

@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+copyPiiFiles {
+  include '**/*.properties'
+}
+
 // Local vars
 File downloadSrcDir = project.file('build/source')
 

@@ -8,5 +8,5 @@ visibility = private
 -bundles=\
   io.openliberty.security.openidconnect.internal.client, \
   io.openliberty.security.openidconnect.internal.clients.common
-kind=beta
+kind=ga
 edition=core

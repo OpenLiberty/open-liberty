@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 // final as the toString impl will only work for this class
 public final class WasJmsProperties extends ConfigElement {
 
+    private String destinationType;
     private String queueName;
     private String destinationRef;
     private String userName;
@@ -35,6 +36,13 @@ public final class WasJmsProperties extends ConfigElement {
     private String readAhead;
     private String temporaryQueueNamePrefix;
     private String remoteServerAddress;
+
+    /**
+     * @return the destinationType
+     */
+    public String getDestinationType() {
+        return destinationType;
+    }
 
     /**
      * @return the queueName
@@ -132,6 +140,14 @@ public final class WasJmsProperties extends ConfigElement {
      */
     public String getRemoteServerAddress() {
         return remoteServerAddress;
+    }
+
+    /**
+     * @param destinationType the destinationType to set
+     */
+    @XmlAttribute
+    public void setDestinationType(String destinationType) {
+        this.destinationType = destinationType;
     }
 
     /**

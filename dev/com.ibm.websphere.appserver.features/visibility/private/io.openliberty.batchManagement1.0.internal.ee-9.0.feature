@@ -8,5 +8,5 @@ singleton=true
   io.openliberty.jsonp-2.0
 -bundles=com.ibm.ws.jbatch.joblog.jakarta, \
   com.ibm.ws.jbatch.rest.jakarta
-kind=beta
+kind=ga
 edition=base

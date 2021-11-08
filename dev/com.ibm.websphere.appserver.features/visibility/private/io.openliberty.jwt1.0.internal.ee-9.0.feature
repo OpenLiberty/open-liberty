@@ -7,9 +7,5 @@ visibility = private
 -bundles=\
   io.openliberty.security.jwt.internal, \
   io.openliberty.security.common.internal
--jars=\
-  io.openliberty.jwt; location:=dev/api/ibm/
--files=\
-  dev/api/ibm/javadoc/io.openliberty.jwt_1.1-javadoc.zip
-kind=beta
+kind=ga
 edition=core

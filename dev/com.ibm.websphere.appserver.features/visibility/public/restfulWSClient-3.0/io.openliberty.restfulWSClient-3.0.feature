@@ -47,6 +47,10 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   com.ibm.ws.org.jboss.logging, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
   io.openliberty.restfulWS.internal.globalhandler.jakarta
-kind=beta
+-jars=\
+  io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
+-files=\
+  dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

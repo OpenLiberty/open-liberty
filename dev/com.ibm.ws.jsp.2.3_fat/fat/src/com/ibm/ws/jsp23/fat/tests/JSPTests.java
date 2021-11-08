@@ -58,6 +58,7 @@ public class JSPTests {
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
     private static final String TestEDR_APP_NAME = "TestEDR";
+    private static final String TestJDT_APP_NAME = "TestJDT";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -79,6 +80,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PI44611_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
 
         server.startServer(JSPTests.class.getSimpleName() + ".log");
     }
@@ -814,6 +817,18 @@ public class JSPTests {
         LOG.info("url: " + url);
 
         runEDR(url, false);
+    }
+
+    /**
+     * This test verifies compile works without ClassCastException,
+     * per issue 19197.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void TestJDT() throws Exception {
+        this.verifyStringInResponse(TestJDT_APP_NAME, "index.jsp", "Test passed.");
     }
 
     /**

@@ -12,5 +12,5 @@ visibility = private
   		  com.ibm.ws.session.store.jakarta, \
   		  com.ibm.websphere.javaee.jcache.1.1.jakarta; mavenCoordinates="javax.cache:cache-api:1.1.0"
 
-kind=beta
+kind=ga
 edition=core

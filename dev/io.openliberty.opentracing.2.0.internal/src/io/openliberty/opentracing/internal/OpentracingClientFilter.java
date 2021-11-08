@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -43,8 +44,11 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single client filter is used by all clients.</p>
  */
+@Provider
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
+    
+    private static ThreadLocal<Tracer> currentTracer = new ThreadLocal<>();
 
     /**
      * <p>The property used to store the continuation for the outgoing request.</p>
@@ -54,17 +58,17 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     public static final String CLIENT_CONTINUATION_PROP_ID = OpentracingClientFilter.class.getName() + ".Span";
 
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
+    
+    public static final String CLIENT_FILTER_ENABLED_ID = OpentracingClientFilter.class.getName() + ".Enabled";
 
     private static final String TAG_COMPONENT_JAXRS = "jaxrs";
 
     private OpentracingFilterHelper helper;
 
-    OpentracingClientFilter(OpentracingFilterHelper helper) {
-        setFilterHelper(helper);
-    }
-
-    void setFilterHelper(OpentracingFilterHelper helper) {
-        this.helper = helper;
+    public OpentracingClientFilter() {}
+    
+    public OpentracingClientFilter(OpentracingFilterHelper helper) {
+       this.helper = helper;
     }
 
     /**
@@ -84,8 +88,26 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
         String methodName = "filter(outgoing)";
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
 
-        Tracer tracer = OpentracingTracerManager.getTracer();
+
+        if (!isEnabled(clientRequestContext)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, methodName + " trace disabled for method");
+            }
+            return;
+        }
+
+        /*
+         * In restfulWS-3.0, currentTracer is expected to be set and we might be running on a non-managed thread.
+         *
+         * In jaxrs-2.x, currentTracer is expected to not be set but run on the calling thread, 
+         * which should be managed so OpentracingTracerManager.getTracer() should always work.
+         */
+        Tracer tracer = currentTracer.get();
+        if (tracer == null) {
+            tracer = OpentracingTracerManager.getTracer();
+        }
         if (tracer == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " no tracer");
@@ -165,7 +187,16 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext,
                        ClientResponseContext clientResponseContext) throws IOException {
+    	
         String methodName = "filter(incoming)";
+        helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
+
+        if (!isEnabled(clientRequestContext)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, methodName + " trace disabled for method");
+            }
+            return;
+        }
 
         Boolean skip = (Boolean) clientRequestContext.getProperty(CLIENT_SPAN_SKIPPED_ID);
         if ((skip != null) && skip) {
@@ -214,6 +245,25 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " finish span", span);
         }
+    }
+    
+    /**
+     * Directly provide the current tracer for this thread
+     * <p>
+     * If set, this will be used in preference to finding a tracer for the current application using the thread context
+     * 
+     * @param tracer the new current tracer, or {@code null} to clear the current tracer
+     * @return the old current tracer, or {@code null} if no current tracer is set
+     */
+    public static Tracer setCurrentTracer(Tracer tracer) {
+        Tracer oldTracer = currentTracer.get();
+        currentTracer.set(tracer);
+        return oldTracer;
+    }
+    
+    private boolean isEnabled(ClientRequestContext requestContext) {
+        Object traceMethod = requestContext.getProperty(CLIENT_FILTER_ENABLED_ID);
+        return (traceMethod == null || traceMethod == Boolean.TRUE);
     }
 
     private class MultivaluedMapToTextMap implements TextMap {

@@ -29,7 +29,9 @@ import componenttest.topology.impl.LibertyServerFactory;
                 POP3Test.class,
                 SMTPTest.class,
                 MailSessionInjectionTest.class,
-                JavaMailResourceMBeanTest.class
+                JavaMailResourceMBeanTest.class,
+                AppClientTest.class
+
 })
 public class FATSuite {
 

@@ -2,8 +2,11 @@ com.ibm.ws.jpa.tests.spec10.query_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.query_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.query_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.query_jpa_3.0_fat
-com.ibm.ws.jpa_spec20_fat
+com.ibm.ws.jpa.tests.spec20_fat
+com.ibm.ws.jpa.tests.spec20.entitymanager_fat
 com.ibm.ws.jpa.tests.spec20.lock_fat
+com.ibm.ws.jpa.tests.spec20.ordercolumn_fat
+com.ibm.ws.jpa.tests.spec20.querylockmode_fat
 com.ibm.ws.jpa.tests.spec21.cdi_fat
 com.ibm.ws.jpa.tests.spec21.issues_fat
 com.ibm.ws.jpa.tests.spec21.txsynchronization_fat

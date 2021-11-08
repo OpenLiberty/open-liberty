@@ -8,6 +8,7 @@ visibility=protected
   com.ibm.websphere.appserver.distributedMap-1.0, \
   com.ibm.websphere.appserver.security-1.0, \
   io.openliberty.securityAPI.javaee-1.0, \
+  io.openliberty.securityAPI.jakarta-1.0, \
   com.ibm.websphere.appserver.authFilter-1.0, \
   io.openliberty.webBundleSecurity1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=com.ibm.websphere.security, \

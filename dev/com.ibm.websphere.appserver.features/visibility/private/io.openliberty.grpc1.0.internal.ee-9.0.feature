@@ -9,6 +9,6 @@ Subsystem-Name: Jakarta gRPC internal 1.0
   io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.38.1", \
   io.openliberty.grpc.1.0.internal.jakarta, \
   com.ibm.ws.security.authorization.util.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
