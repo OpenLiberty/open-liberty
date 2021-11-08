@@ -25,7 +25,6 @@ import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -2069,49 +2068,30 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
         // Check whether specific retriable sqlcodes have been configured
-        String retriableSqlCodesStr = ConfigurationProviderManager.getConfigurationProvider().getRetriableSqlCodes();
-        if (retriableSqlCodesStr != null && !retriableSqlCodesStr.trim().isEmpty()) {
+        List<Integer> retriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getRetriableSqlCodes();
+        if (retriableSqlCodesList != null && !retriableSqlCodesList.isEmpty()) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "There are retriable sqlcodes " + retriableSqlCodesStr);
-            List<String> retriableSqlCodeList = Arrays.asList(retriableSqlCodesStr.split(","));
-            for (String sqlcode : retriableSqlCodeList) {
+                Tr.debug(tc, "There are retriable sqlcodes " + retriableSqlCodesList);
+
+            if (retriableSqlCodesList.contains(sqlErrorCode)) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Isolated string sqlcode " + sqlcode);
-                int intSqlCode = 0;
-                try {
-                    intSqlCode = Integer.parseInt(sqlcode.trim());
-                } catch (NumberFormatException nfe) {
-                    Tr.audit(tc, "WTRN0107W: " +
-                                 "Malformed sqlcode " + sqlcode + " in retriable sqlcode list");
-                }
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Isolated integer sqlcode " + intSqlCode);
-                if (intSqlCode == sqlErrorCode)
-                    foundRetriableSqlCode = true;
+                    Tr.debug(tc, "The error code is in the list");
+                foundRetriableSqlCode = true;
             }
         }
 
         // Check whether specific non-retriable sqlcodes have been configured
-        String nonRetriableSqlCodesStr = ConfigurationProviderManager.getConfigurationProvider().getNonRetriableSqlCodes();
-        if (nonRetriableSqlCodesStr != null && !nonRetriableSqlCodesStr.trim().isEmpty()) {
+        List<Integer> nonRetriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getNonRetriableSqlCodes();
+        if (nonRetriableSqlCodesList != null && !nonRetriableSqlCodesList.isEmpty()) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "There are non-retriable sqlcodes " + nonRetriableSqlCodesStr);
-            List<String> nonRetriableSqlCodeList = Arrays.asList(nonRetriableSqlCodesStr.split(","));
-            for (String sqlcode : nonRetriableSqlCodeList) {
+                Tr.debug(tc, "There are non-retriable sqlcodes " + nonRetriableSqlCodesList);
+
+            if (nonRetriableSqlCodesList.contains(sqlErrorCode)) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Isolated string sqlcode " + sqlcode);
-                int intSqlCode = 0;
-                try {
-                    intSqlCode = Integer.parseInt(sqlcode.trim());
-                } catch (NumberFormatException nfe) {
-                    Tr.audit(tc, "WTRN0107W: " +
-                                 "Malformed sqlcode " + sqlcode + " in non-retriable sqlcode list");
-                }
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Isolated integer sqlcode " + intSqlCode);
-                if (intSqlCode == sqlErrorCode)
-                    foundNonRetriableSqlCode = true;
+                    Tr.debug(tc, "The error code is in the list");
+                foundNonRetriableSqlCode = true;
             }
+
         }
 
         boolean delveIntoException = true;
