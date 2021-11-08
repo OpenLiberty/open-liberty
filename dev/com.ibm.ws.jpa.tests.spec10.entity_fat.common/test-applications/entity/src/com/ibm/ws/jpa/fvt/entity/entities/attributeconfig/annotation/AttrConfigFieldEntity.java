@@ -38,6 +38,10 @@ public class AttrConfigFieldEntity implements IAttributeConfigFieldEntity {
     @Basic(fetch = FetchType.LAZY)
     private String stringValLazy;
 
+    /*
+     * optional: Whether the value of the field or property may be null.
+     * This is a hint and is disregarded for primitive types; it may be used in schema generation
+     */
     @Basic(optional = false)
     private String stringValOptional;
 

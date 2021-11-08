@@ -47,7 +47,6 @@ public class ReadOnly_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "ReadOnlyEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -60,7 +59,6 @@ public class ReadOnly_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLReadOnlyEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 

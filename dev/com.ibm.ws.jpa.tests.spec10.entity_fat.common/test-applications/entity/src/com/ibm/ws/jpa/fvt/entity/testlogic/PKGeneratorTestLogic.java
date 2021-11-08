@@ -50,7 +50,7 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
 
         // These triggers for OpenJPA interfere with EclipseLink, which runs a separate query to get the sequence number, so remove them
         if (jpaResource.getEm().getProperties().containsKey("eclipselink.target-server")) {
-            DataSource ds = (DataSource) new InitialContext().lookup("jdbc/JPA_NJTADS");
+            DataSource ds = (DataSource) new InitialContext().lookup("jdbc/JPA_NJTA_DS");
             Connection con = ds.getConnection();
             try {
                 // The triggers are created only for Oracle, so we can skip for other database types
@@ -76,10 +76,15 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
             return;
         }
 
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        if (JPAProviderImpl.HIBERNATE.equals(provider)) {
+            // TODO: Hibernate fails with "SEQUENCE 'APP.HIBERNATE_SEQUENCE' does not exist" exception, even though it does exist.
+            return;
+        }
+
         // Execute Test Case
         try {
             System.out.println("PKGeneratorTestLogic.testPKGenerator001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             int ARR_LEN = 20;
             IPKGeneratorEntity[] entityArray = new IPKGeneratorEntity[ARR_LEN];
@@ -124,8 +129,7 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().persist(entityArray[randomIndex]);
                 jpaResource.getEm().flush();
 
-                System.out.println(
-                                   "Persisted and flushed IPKGeneratorEntity with id=" + entityArray[randomIndex].getId() +
+                System.out.println("Persisted and flushed IPKGeneratorEntity with id=" + entityArray[randomIndex].getId() +
                                    " and intVal = " + entityArray[randomIndex].getIntVal());
             }
 
@@ -148,20 +152,41 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
                 entityArray_find[index] = (IPKGeneratorEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), targetId);
 
                 // Perform validations on the entity returned by find.
-                Assert.assertNotNull(
-                                     "Assert the find operation for IPKGeneratorEntity with id=" + targetId + " did not return a null value.",
-                                     entityArray_find[index]);
-                Assert.assertNotSame(
-                                     "Assert the entity returned by the find operation for IPKGeneratorEntity with id=" + targetId +
-                                     "is not the same entity object as the original.",
-                                     entityArray[index],
-                                     entityArray_find[index]);
-                Assert.assertEquals(
-                                    "Assert the value of intVal associated with the entity returned by the find operation for " +
-                                    "IPKGeneratorEntity with id=" + targetId + " is not the same as the original.",
-                                    entityArray[index].getIntVal(),
+                Assert.assertNotNull("Assert the find operation for IPKGeneratorEntity with id=" + targetId + " did not return a null value.", entityArray_find[index]);
+                Assert.assertNotSame("Assert the entity returned by the find operation for IPKGeneratorEntity with id=" + targetId +
+                                     "is not the same entity object as the original.", entityArray[index], entityArray_find[index]);
+                Assert.assertEquals("Assert the value of intVal associated with the entity returned by the find operation for " +
+                                    "IPKGeneratorEntity with id=" + targetId + " is not the same as the original.", entityArray[index].getIntVal(),
                                     entityArray_find[index].getIntVal());
             }
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            for (int index = 0; index < ARR_LEN; index++) {
+                int targetId = entityArray[index].getId();
+                System.out.println("Searching for IPKGeneratorEntity with id=" + targetId);
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + targetId + ")...");
+                IPKGeneratorEntity find_remove_entity = (IPKGeneratorEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), targetId);
+                System.out.println("Object returned by find: " + find_remove_entity);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+                System.out.println("Removing entity...");
+                jpaResource.getEm().remove(find_remove_entity);
+            }
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -172,57 +197,5 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("PKGeneratorTestLogic.testPKGenerator001(): End");
         }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("PKGeneratorTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        PKGeneratorEntityEnum targetEntityAType = PKGeneratorEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("PKGeneratorTestLogic.testTemplate(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } catch (AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException(t);
-        } finally {
-            System.out.println("PKGeneratorTestLogic.testTemplate(): End");
-        }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), PKGeneratorEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

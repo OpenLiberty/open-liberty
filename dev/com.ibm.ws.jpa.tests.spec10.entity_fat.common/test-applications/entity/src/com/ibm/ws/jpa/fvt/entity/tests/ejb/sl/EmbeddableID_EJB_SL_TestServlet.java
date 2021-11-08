@@ -53,7 +53,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -66,7 +65,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -79,7 +77,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -92,7 +89,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -105,7 +101,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -118,7 +113,6 @@ public class EmbeddableID_EJB_SL_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddableIdEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 

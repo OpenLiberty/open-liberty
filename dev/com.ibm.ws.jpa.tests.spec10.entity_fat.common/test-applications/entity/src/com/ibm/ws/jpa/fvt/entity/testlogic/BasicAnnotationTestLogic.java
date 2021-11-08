@@ -11,6 +11,9 @@
 
 package com.ibm.ws.jpa.fvt.entity.testlogic;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import javax.persistence.PersistenceException;
 import javax.persistence.PersistenceUnitUtil;
 
@@ -19,12 +22,14 @@ import org.junit.Assert;
 import com.ibm.ws.jpa.fvt.entity.entities.IAttributeConfigFieldEntity;
 import com.ibm.ws.jpa.fvt.entity.support.SerializableClass;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.BasicAnnotationEntityEnum;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class BasicAnnotationTestLogic extends AbstractTestLogic {
+
     /*
      * 6 Points
      */
@@ -37,11 +42,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -57,10 +57,11 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testEagerFetchFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -74,9 +75,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             String eagerString = "I am an eager String.";
 
@@ -107,30 +108,50 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             PersistenceUnitUtil puu = jpaResource.getEm().getEntityManagerFactory().getPersistenceUnitUtil();
 
             System.out.println("Verifying that the stringValEager attribute of the entity returned by find() is available...");
-            Assert.assertTrue("Assert that " + targetEntityType.getEntityName() +
-                              " (id=1)'s 'StringValEager' field is loaded.",
+            Assert.assertTrue("Assert that " + targetEntityType.getEntityName() + " (id=" + id + ")'s 'StringValEager' field is loaded.",
                               puu.isLoaded(find_entity, "stringValEager"));
-//            log.assertPass("Extra assert to maintain point count.");
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -155,11 +176,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -175,10 +191,22 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testLazyFetchFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -192,9 +220,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             String lazyString = "I am a lazy String.";
 
@@ -219,8 +247,8 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             System.out.println("Clearing persistence context...");
             jpaResource.getEm().clear();
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
 
             System.out.println("Clearing persistence context...");
             jpaResource.getEm().clear();
@@ -230,32 +258,56 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             PersistenceUnitUtil puu = jpaResource.getEm().getEntityManagerFactory().getPersistenceUnitUtil();
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertFalse(
-                               "Assert entity returned by find is NOT managed by the persistence context.",
-                               jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertFalse("Assert entity returned by find is NOT managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Note that the spec states that marking a persistent field LAZY means that it is a hint to the provider,
-            // rather then a non-negotiable dictation.  OpenJPA honors the lazy behavior, while EclipseLink still
-            // loads the String. (change introduced by task 130951)
-            Assert.assertFalse("Assert that " + targetEntityType.getEntityName() +
-                               " (id=1)'s 'StringValLazy' field is NOT loaded.",
-                               puu.isLoaded(find_entity, "stringValLazy"));
+            // rather then a non-negotiable dictation.
+            // OpenJPA honors the lazy behavior
+            // EclipseLink still loads the String. (change introduced by task 130951)
+            JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+            switch (provider) {
+                case ECLIPSELINK:
+                    Assert.assertTrue(targetEntityType.getEntityName() + " (id=" + id + ")'s 'StringValLazy' field is loaded.",
+                                      !puu.isLoaded(find_entity, "stringValLazy"));
+                    break;
+                case OPENJPA:
+                    Assert.assertTrue(targetEntityType.getEntityName() + " (id=" + id + ")'s 'StringValLazy' field is loaded.",
+                                      !puu.isLoaded(find_entity, "stringValLazy"));
+                    break;
+                case HIBERNATE:
+                    Assert.assertTrue(targetEntityType.getEntityName() + " (id=" + id + ")'s 'StringValLazy' field is NOT loaded.",
+                                      puu.isLoaded(find_entity, "stringValLazy"));
+                    break;
+            }
 
-//            if (getJPAProviderImpl(jpaResource) == JPAProviderImpl.ECLIPSELINK) {
-//            	Assert.assertNotNull("With Eclipselink, assert find_entity.getStringValLazy() does not return null "
-//            			+ " (to detect if a later change alters its behavior.)",
-//            			find_entity.getStringValLazy());
-//            } else {
-//            	Assert.assertNull("Assert find_entity.getStringValLazy() returns null", find_entity.getStringValLazy());
-//            }
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -280,11 +332,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -300,10 +347,13 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+        boolean onPersist = false;
+        boolean onCommit = false;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testNonOptionalFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -317,39 +367,99 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
-            System.out.println("NOT setting any attributes on the entity...");
-            // new_entity.setStringValOptional("I'm not optional");  // pasted as a comment to show how other tests avoid falling on their face.
+            System.out.println("NOT setting 'stringValOptional' attribute on the entity...");
+            // stringValOptional is set to 'optional = false' and some persistence providers throw an exception if not set
+            // new_entity.setStringValOptional("I'm not optional");
 
-            // Other then UniqueString, which also cannot be set null, but not by virtue of the optional field...
+            // These fields are set to 'nullable = false', so they cannot be left unset
             new_entity.setUniqueString("I am unique.");
             new_entity.setUniqueConstraintString("I too am unique");
             SerializableClass serializableClass = new SerializableClass();
             serializableClass.setSomeInt(42);
             new_entity.setNotNullable(serializableClass);
 
-            System.out.println("Persisting " + new_entity);
-            jpaResource.getEm().persist(new_entity);
-
+            JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
             try {
-                System.out.println("Attempting to commit transaction, an PersistenceException should be thrown.");
-                jpaResource.getTj().commitTransaction();
-                Assert.fail("Transaction Commit completed without an PersistenceException being thrown.");
-            } catch (Throwable t) {
-                // The specification states that optional is a hint to the persistence provider whether the value of the field is
-                // allowed to be null.  It does not specify an exact behavior regarding enforcement of this attribute.
+                System.out.println("Persisting " + new_entity);
+                onPersist = true;
+                jpaResource.getEm().persist(new_entity);
+                onPersist = false;
 
-                // log.assertPass
-                System.out.println("The transaction commit threw an Exception, as expected.");
+                System.out.println("Attempting to commit transaction");
+                onCommit = true;
+                jpaResource.getTj().commitTransaction();
+
+                /*
+                 * The specification states that '@Basic(optional = false)' is a hint to the persistence provider
+                 * whether the value of the field is allowed to be null. It does not specify an exact behavior
+                 * regarding enforcement of this attribute.
+                 *
+                 * TODO: EclipseLink does not throw an exception and seems to ignore '@Basic(optional = false)'
+                 * This may be a bug in EclipseLink and should be investigated.
+                 */
+                if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+                    // Cleanup since there was no failure
+                    System.out.println("Beginning new transaction...");
+                    jpaResource.getTj().beginTransaction();
+                    if (jpaResource.getTj().isApplicationManaged()) {
+                        System.out.println("Joining entitymanager to JTA transaction...");
+                        jpaResource.getEm().joinTransaction();
+                    }
+
+                    System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+                    IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+                    System.out.println("Object returned by find: " + find_remove_entity2);
+
+                    Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+                    System.out.println("Removing entity...");
+                    jpaResource.getEm().remove(find_remove_entity2);
+
+                    System.out.println("Committing transaction...");
+                    jpaResource.getTj().commitTransaction();
+                } else {
+                    Assert.fail("Transaction Commit completed without a PersistenceException being thrown.");
+                }
+            } catch (Throwable t) {
+                System.out.println("The transaction commit threw exception (" + t + ") for provider " + provider.name());
+                switch (provider) {
+                    case OPENJPA:
+                        // OpenJPA fails on commit
+                        Assert.assertTrue("The exception was not thrown on commit", onCommit);
+
+                        // Caught an Exception, check if IllegalStateException is in the Exception Chain
+                        System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for IllegalStateException...");
+                        Throwable root = containsCauseByException(IllegalStateException.class, t);
+                        Assert.assertNotNull("Throwable stack did not contain " + IllegalStateException.class, root);
+                        break;
+                    case HIBERNATE:
+                        // Hibernate fails on persist, rather than commit
+                        Assert.assertTrue("The exception was not thrown on persist", onPersist);
+
+                        // Caught an Exception, check if PersistenceException is in the Exception Chain
+                        System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
+                        Throwable root2 = containsCauseByException(PersistenceException.class, t);
+                        Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root2);
+                        break;
+                    case ECLIPSELINK:
+                        // EclipseLink should not have failed
+                    default:
+                        throw t;
+                }
             } finally {
                 if (jpaResource.getTj().isTransactionActive()) {
                     System.out.println("Rolling back the transaction...");
                     jpaResource.getTj().rollbackTransaction();
                 }
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -374,11 +484,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -394,10 +499,11 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testColumnNameOverrideFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -411,9 +517,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             System.out.println("Setting intValColumnName to 42...");
             new_entity.setIntValColumnName(42);
@@ -442,28 +548,47 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             Assert.assertEquals("Assert find_entity.intValColumnName() == " + new_entity.getIntValColumnName() + ").",
-                                new_entity.getIntValColumnName(),
-                                find_entity.getIntValColumnName());
+                                new_entity.getIntValColumnName(), find_entity.getIntValColumnName());
 
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -488,11 +613,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -508,10 +628,11 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testNullableFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -525,9 +646,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             System.out.println("Setting stringValColumnNullable field...");
             //String stringValColumnNullable = "Some String";
@@ -557,26 +678,17 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             Assert.assertEquals("Assert find_entity.intValColumnName() == " + new_entity.getIntValColumnName() + ").",
-                                new_entity.getIntValColumnName(),
-                                find_entity.getIntValColumnName());
+                                new_entity.getIntValColumnName(), find_entity.getIntValColumnName());
 
             System.out.println("Going to attempt to set stringValColumnNullable to null, should fail.");
             find_entity.setNotNullable(null);
@@ -585,16 +697,47 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Attempting to commit transaction, a PersistenceException should be thrown.");
                 jpaResource.getTj().commitTransaction();
                 Assert.fail("Transaction Commit completed without an Exception being thrown.");
+            } catch (AssertionError ae) {
+                throw ae;
             } catch (Throwable t) {
                 // Caught an Exception, check if PersistenceException is in the Exception Chain
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
-                assertExceptionIsInChain(PersistenceException.class, t);
+                Throwable root = containsCauseByException(PersistenceException.class, t);
+                Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root);
             } finally {
                 if (jpaResource.getTj().isTransactionActive()) {
                     System.out.println("Rolling back the transaction...");
                     jpaResource.getTj().rollbackTransaction();
                 }
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
             throw ae;
@@ -618,11 +761,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -638,10 +776,12 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+        int id2 = 2;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testUniqueFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -655,9 +795,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity1 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity1.setId(1);
+            new_entity1.setId(id);
 
             new_entity1.setUniqueString("A Unique String");
 
@@ -671,9 +811,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             System.out.println("Persisting " + new_entity1);
             jpaResource.getEm().persist(new_entity1);
 
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=2)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id2 + ")...");
             IAttributeConfigFieldEntity new_entity2 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity2.setId(2);
+            new_entity2.setId(id2);
 
             new_entity2.setUniqueString("Another Unique String");
             // Set all of the fields marked non-optional to some initialized value.
@@ -699,57 +839,80 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity1);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity1,
-                                 find_entity1);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity1));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity1.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity1, find_entity1);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity1.getId(), id);
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=2)...");
-            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 2);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id2 + ")...");
+            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id2);
             System.out.println("Object returned by find: " + find_entity2);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity2,
-                                 find_entity2);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity2));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 2",
-                                find_entity2.getId(),
-                                2);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity2, find_entity2);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity2));
+            Assert.assertEquals("Assert that the entity's id is " + id2, find_entity2.getId(), id2);
 
-            System.out.println("Editing IAttributeConfigFieldEntity(id=2) so its uniqueString field equals IAttributeConfigFieldEntity(id=1)...");
+            System.out.println("Editing IAttributeConfigFieldEntity(id=" + id2 + ") so its uniqueString field equals IAttributeConfigFieldEntity(id=" + id + ")...");
             find_entity2.setUniqueString("A Unique String");
 
             try {
                 System.out.println("Attempting to commit transaction, a PersistenceException should be thrown.");
                 jpaResource.getTj().commitTransaction();
                 Assert.fail("Transaction Commit completed without an Exception being thrown.");
+            } catch (AssertionError ae) {
+                throw ae;
             } catch (Throwable t) {
                 // Caught an Exception, check if PersistenceException is in the Exception Chain
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
-                assertExceptionIsInChain(PersistenceException.class, t);
+                Throwable root = containsCauseByException(PersistenceException.class, t);
+                Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root);
             } finally {
                 if (jpaResource.getTj().isTransactionActive()) {
                     System.out.println("Rolling back the transaction...");
                     jpaResource.getTj().rollbackTransaction();
                 }
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity1);
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id2);
+            System.out.println("Object returned by find: " + find_remove_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity1);
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity1);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
             throw ae;
@@ -773,11 +936,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -793,10 +951,11 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testAttributeTableFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -810,9 +969,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity1 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity1.setId(1);
+            new_entity1.setId(id);
 
             System.out.println("Setting intValColumnTable to 42...");
             new_entity1.setIntValColumnTable(42);
@@ -841,23 +1000,45 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity1);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity1,
-                                 find_entity1);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity1));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity1.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity1, find_entity1);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity1.getId(), id);
             Assert.assertEquals("Assert intValColumnTable is 42", 42, find_entity1.getIntValColumnTable());
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -882,11 +1063,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -902,10 +1078,13 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+        boolean onPersist = false;
+        boolean onCommit = false;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testColumnLengthFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             {
                 System.out.println("Beginning new transaction...");
@@ -920,9 +1099,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
 
                 // Construct a new entity instances
-                System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+                System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
                 IAttributeConfigFieldEntity new_entity1 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-                new_entity1.setId(1);
+                new_entity1.setId(id);
 
                 new_entity1.setStringValColumnLength("I am far too long for what this entity will support");
 
@@ -933,26 +1112,40 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 serializableClass.setSomeInt(42);
                 new_entity1.setNotNullable(serializableClass);
 
-                System.out.println("Persisting " + new_entity1);
-                jpaResource.getEm().persist(new_entity1);
-
                 try {
+                    System.out.println("Persisting " + new_entity1);
+                    onPersist = true;
+                    jpaResource.getEm().persist(new_entity1);
+                    onPersist = false;
+
                     System.out.println("Attempting to commit transaction, a PersistenceException should be thrown.");
+                    onCommit = true;
                     jpaResource.getTj().commitTransaction();
                     Assert.fail("Transaction Commit completed without an Exception being thrown.");
+                } catch (AssertionError ae) {
+                    throw ae;
                 } catch (Throwable t) {
+                    JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+                    switch (provider) {
+                        case ECLIPSELINK:
+                        case OPENJPA:
+                            Assert.assertTrue("The exception was not thrown on commit", onCommit);
+                            break;
+                        case HIBERNATE:
+                            // Hibernate fails on persist; throwing PersistenceException (org.hibernate.PropertyValueException) as the cause
+                            Assert.assertTrue("The exception was not thrown on persist", onPersist);
+                            break;
+                    }
                     // Caught an Exception, check if PersistenceException is in the Exception Chain
                     System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
-                    assertExceptionIsInChain(PersistenceException.class, t);
+                    Throwable root = containsCauseByException(PersistenceException.class, t);
+                    Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root);
                 } finally {
                     if (jpaResource.getTj().isTransactionActive()) {
                         System.out.println("Rolling back the transaction...");
                         jpaResource.getTj().rollbackTransaction();
                     }
                 }
-                // Clear persistence context
-                System.out.println("Clearing persistence context...");
-                jpaResource.getEm().clear();
             }
 
             System.out.println("Beginning new transaction...");
@@ -967,9 +1160,9 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity1 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity1.setId(1);
+            new_entity1.setId(id);
 
             new_entity1.setStringValColumnLength("OK Size");
 
@@ -997,22 +1190,14 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity1);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity1,
-                                 find_entity1);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity1));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity1.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity1, find_entity1);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity1.getId(), id);
 
             find_entity1.setStringValColumnLength("I am far too long for what this entity will support");
 
@@ -1020,16 +1205,43 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Attempting to commit transaction, a PersistenceException should be thrown.");
                 jpaResource.getTj().commitTransaction();
                 Assert.fail("Transaction Commit completed without an Exception being thrown.");
+            } catch (AssertionError ae) {
+                throw ae;
             } catch (Throwable t) {
                 // Caught an Exception, check if PersistenceException is in the Exception Chain
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
-                assertExceptionIsInChain(PersistenceException.class, t);
+                Throwable root = containsCauseByException(PersistenceException.class, t);
+                Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root);
             } finally {
                 if (jpaResource.getTj().isTransactionActive()) {
                     System.out.println("Rolling back the transaction...");
                     jpaResource.getTj().rollbackTransaction();
                 }
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
             // Clear persistence context
             System.out.println("Clearing persistence context...");
             jpaResource.getEm().clear();
@@ -1057,11 +1269,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1077,10 +1284,12 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+        int id2 = 2;
+
         // Execute Test Case
         try {
             System.out.println("BasicAnnotationTestLogic.testUniqueConstraintsFunction(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -1094,14 +1303,14 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IAttributeConfigFieldEntity new_entity1 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity1.setId(1);
+            new_entity1.setId(id);
 
             new_entity1.setUniqueConstraintString("A Unique String");
 
             // Set all of the fields marked non-optional to some initialized value.
-            System.out.println("Initializing other non-optional attributes on IAttributeConfigFieldEntity(id=1)...");
+            System.out.println("Initializing other non-optional attributes on IAttributeConfigFieldEntity(id=" + id + ")...");
             new_entity1.setStringValOptional("I'm not optional");
             new_entity1.setUniqueString("I too am unique");
             SerializableClass serializableClass = new SerializableClass();
@@ -1111,14 +1320,14 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             System.out.println("Persisting " + new_entity1);
             jpaResource.getEm().persist(new_entity1);
 
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=2)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id2 + ")...");
             IAttributeConfigFieldEntity new_entity2 = (IAttributeConfigFieldEntity) constructNewEntityObject(targetEntityType);
-            new_entity2.setId(2);
+            new_entity2.setId(id2);
 
             new_entity2.setUniqueConstraintString("Another Unique String");
 
             // Set all of the fields marked non-optional to some initialized value.
-            System.out.println("Initializing other non-optional attributes on IAttributeConfigFieldEntity(id=1)...");
+            System.out.println("Initializing other non-optional attributes on IAttributeConfigFieldEntity(id=" + id + ")...");
             new_entity2.setStringValOptional("I'm not optional");
             new_entity2.setUniqueString("I am unique as well");
             SerializableClass serializableClass2 = new SerializableClass();
@@ -1141,57 +1350,80 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity1);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity1,
-                                 find_entity1);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity1));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity1.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity1, find_entity1);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity1.getId(), id);
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=2)...");
-            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 2);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id2 + ")...");
+            IAttributeConfigFieldEntity find_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id2);
             System.out.println("Object returned by find: " + find_entity2);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity2,
-                                 find_entity2);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity2));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 2",
-                                find_entity2.getId(),
-                                2);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity2, find_entity2);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity2));
+            Assert.assertEquals("Assert that the entity's id is " + id2, find_entity2.getId(), id2);
 
-            System.out.println("Editing IAttributeConfigFieldEntity(id=2) so its uniqueConstraintString field equals IAttributeConfigFieldEntity(id=1)...");
+            System.out.println("Editing IAttributeConfigFieldEntity(id=" + id2 + ") so its uniqueConstraintString field equals IAttributeConfigFieldEntity(id=" + id + ")...");
             find_entity2.setUniqueConstraintString("A Unique String");
 
             try {
                 System.out.println("Attempting to commit transaction, a PersistenceException should be thrown.");
                 jpaResource.getTj().commitTransaction();
+
                 Assert.fail("Transaction Commit completed without an Exception being thrown.");
+            } catch (AssertionError ae) {
+                throw ae;
             } catch (Throwable t) {
                 // Caught an Exception, check if PersistenceException is in the Exception Chain
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for PersistenceException...");
-                assertExceptionIsInChain(PersistenceException.class, t);
+                Throwable root = containsCauseByException(PersistenceException.class, t);
+                Assert.assertNotNull("Throwable stack did not contain " + PersistenceException.class, root);
             } finally {
                 if (jpaResource.getTj().isTransactionActive()) {
                     System.out.println("Rolling back the transaction...");
                     jpaResource.getTj().rollbackTransaction();
                 }
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity1 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity1);
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IAttributeConfigFieldEntity find_remove_entity2 = (IAttributeConfigFieldEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id2);
+            System.out.println("Object returned by find: " + find_remove_entity2);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity1);
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity1);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity2);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -1203,51 +1435,4 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             System.out.println("BasicAnnotationTestLogic.testUniqueConstraintsFunction(): End");
         }
     }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("BasicAnnotationTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityName = (String) testExecCtx.getProperties().get("EntityName");
-        BasicAnnotationEntityEnum targetEntityType = BasicAnnotationEntityEnum.resolveEntityByName(entityName);
-        if (targetEntityType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity type specified ('" + entityName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("BasicAnnotationTestLogic.testTemplate(): Begin");
-            ////cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println("BasicAnnotationTestLogic.testTemplate(): End");
-        }
-    }
-
-//    protected void cleanupDatabase(JPAResource jpaResource) {
-//        // Cleanup the database for executing the test
-//        System.out.println("Cleaning up database before executing test...");
-//        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), BasicAnnotationEntityEnum.values());
-//        System.out.println("Database cleanup complete.\n");
-//    }
 }

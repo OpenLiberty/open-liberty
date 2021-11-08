@@ -39,7 +39,6 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Int_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Int_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -51,12 +50,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Int_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Int_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -68,12 +65,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_IntWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_IntWrapper_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -85,12 +80,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_IntWrapper_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_IntWrapper_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -102,12 +95,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Long_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Long_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -119,12 +110,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Long_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Long_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -136,12 +125,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_LongWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_LongWrapper_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -153,12 +140,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_LongWrapper_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_LongWrapper_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -170,12 +155,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Short_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Short_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -187,12 +170,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_Short_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Short_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -204,12 +185,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_ShortWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_ShortWrapper_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -221,12 +200,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_ShortWrapper_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_ShortWrapper_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -238,12 +215,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_SqlTimestamp_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_SqlTimestamp_Ano_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -255,12 +230,10 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
     @Test
-
     public void jpa10_Entity_Versioning_SqlTimestamp_XML_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_SqlTimestamp_XML_CMEX_EJB_SFEX";
         final String testMethod = "testVersioning001";
@@ -272,7 +245,6 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 

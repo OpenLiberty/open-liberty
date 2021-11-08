@@ -5,16 +5,13 @@
     version="1.0">
 
     <!-- <sequence-generator name="XMLSeqGen1" sequence-name="XMLSeqGen1_Seq" /> -->
-    <table-generator name="XMLTableType2Generator"></table-generator>
-    <table-generator name="XMLTableType3Generator" table="XMLTableIDGenTable"
-        pk-column-name="GEN_NAME" value-column-name="GEN_VAL">
-    </table-generator>
-    <table-generator name="XMLTableType4Generator" table="XMLTableIDGen4Table"
-        pk-column-name="GEN_NAME" value-column-name="GEN_VAL" initial-value="1000"
-        allocation-size="100">
-    </table-generator>
-    <mapped-superclass
-        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTable">
+    <table-generator name="XMLTableType2Generator"/>
+    <table-generator name="XMLTableType3Generator" table="XMLTableIDGenTable" pk-column-name="GEN_NAME" value-column-name="GEN_VAL"/>
+    <table-generator name="XMLTableType4Generator" table="XMLTableIDGen4Table" pk-column-name="GEN_NAME" value-column-name="GEN_VAL" initial-value="1000" allocation-size="100"/>
+
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <mapped-superclass class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTable" access="FIELD">
         <attributes>
             <basic name="street" />
             <basic name="city" />
@@ -22,8 +19,8 @@
             <basic name="zip" />
         </attributes>
     </mapped-superclass>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.attributeconfig.xml.XMLAttrConfigFieldEntity">
+
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.attributeconfig.xml.XMLAttrConfigFieldEntity">
         <!-- <table catalog="jpacat" schema="jpaschema" name="XACfgFldE"> -->
         <table schema="jpaschema" name="XACfgFldE">
             <unique-constraint>
@@ -33,9 +30,9 @@
         <secondary-table schema="jpaschema" name="XAltColumnTable"/>
         <attributes>
             <id name="id" />
-            <basic name="stringValEager" fetch="EAGER"></basic>
-            <basic name="stringValLazy" fetch="LAZY"></basic>
-            <basic name="stringValOptional" optional="false"></basic>
+            <basic name="stringValEager" fetch="EAGER"/>
+            <basic name="stringValLazy" fetch="LAZY"/>
+            <basic name="stringValOptional" optional="false"/>
             <basic name="intValColumnName">
                 <column name="intValColName" />
             </basic>
@@ -62,298 +59,309 @@
             </basic>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportTestEntity"
-        access="FIELD">
-        <table name="XMLDatatypeSupTestEntity"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportTestEntity" access="FIELD">
+        <table name="XMLDatatypeSupTestEntity"/>
         <attributes>
             <id name="id" />
-            <basic name="booleanAttrDefault"></basic>
-            <basic name="byteAttrDefault"></basic>
-            <basic name="charAttrDefault"></basic>
-            <basic name="doubleAttrDefault"></basic>
-            <basic name="floatAttrDefault"></basic>
-            <basic name="intAttrDefault"></basic>
-            <basic name="longAttrDefault"></basic>
-            <basic name="shortAttrDefault"></basic>
-            <basic name="booleanWrapperAttrDefault"></basic>
-            <basic name="byteWrapperAttrDefault"></basic>
-            <basic name="characterWrapperAttrDefault"></basic>
-            <basic name="doubleWrapperAttrDefault"></basic>
-            <basic name="floatWrapperAttrDefault"></basic>
-            <basic name="integerWrapperAttrDefault"></basic>
-            <basic name="longWrapperAttrDefault"></basic>
-            <basic name="shortWrapperAttrDefault"></basic>
-            <basic name="bigIntegerAttrDefault"></basic>
-            <basic name="bigDecimalAttrDefault"></basic>
-            <basic name="byteArrayAttrDefault"></basic>
-            <basic name="byteWrapperArrayAttrDefault"></basic>
-            <basic name="charArrayAttrDefault"></basic>
-            <basic name="charWrapperArrayAttrDefault"></basic>
-            <basic name="stringAttrDefault"></basic>
+            <basic name="booleanAttrDefault"/>
+            <basic name="byteAttrDefault"/>
+            <basic name="charAttrDefault"/>
+            <basic name="doubleAttrDefault"/>
+            <basic name="floatAttrDefault"/>
+            <basic name="intAttrDefault"/>
+            <basic name="longAttrDefault"/>
+            <basic name="shortAttrDefault"/>
+            <basic name="booleanWrapperAttrDefault"/>
+            <basic name="byteWrapperAttrDefault"/>
+            <basic name="characterWrapperAttrDefault"/>
+            <basic name="doubleWrapperAttrDefault"/>
+            <basic name="floatWrapperAttrDefault"/>
+            <basic name="integerWrapperAttrDefault"/>
+            <basic name="longWrapperAttrDefault"/>
+            <basic name="shortWrapperAttrDefault"/>
+            <basic name="bigIntegerAttrDefault"/>
+            <basic name="bigDecimalAttrDefault"/>
+            <basic name="byteArrayAttrDefault"/>
+            <basic name="byteWrapperArrayAttrDefault"/>
+            <basic name="charArrayAttrDefault"/>
+            <basic name="charWrapperArrayAttrDefault"/>
+            <basic name="stringAttrDefault"/>
             <basic name="utilDateAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
             <basic name="utilCalendarAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
-            <basic name="sqlDateAttrDefault"></basic>
-            <basic name="sqlTimeAttrDefault"></basic>
-            <basic name="sqlTimestampAttrDefault"></basic>
-            <basic name="enumeration"></basic>
-            <basic name="serializableClass"></basic>
-            <transient name="transientString"></transient>
+            <basic name="sqlDateAttrDefault"/>
+            <basic name="sqlTimeAttrDefault"/>
+            <basic name="sqlTimestampAttrDefault"/>
+            <basic name="enumeration"/>
+            <basic name="serializableClass"/>
+            <transient name="transientString"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportPropertyTestEntity"
-        access="PROPERTY">
-        <table name="XMLDatatypeSupPropTestEntity"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportPropertyTestEntity" access="PROPERTY">
+        <table name="XMLDatatypeSupPropTestEntity"/>
         <attributes>
             <id name="id" />
-            <basic name="booleanAttrDefault"></basic>
-            <basic name="byteAttrDefault"></basic>
-            <basic name="charAttrDefault"></basic>
-            <basic name="doubleAttrDefault"></basic>
-            <basic name="floatAttrDefault"></basic>
-            <basic name="intAttrDefault"></basic>
-            <basic name="longAttrDefault"></basic>
-            <basic name="shortAttrDefault"></basic>
-            <basic name="booleanWrapperAttrDefault"></basic>
-            <basic name="byteWrapperAttrDefault"></basic>
-            <basic name="characterWrapperAttrDefault"></basic>
-            <basic name="doubleWrapperAttrDefault"></basic>
-            <basic name="floatWrapperAttrDefault"></basic>
-            <basic name="integerWrapperAttrDefault"></basic>
-            <basic name="longWrapperAttrDefault"></basic>
-            <basic name="shortWrapperAttrDefault"></basic>
-            <basic name="bigIntegerAttrDefault"></basic>
-            <basic name="bigDecimalAttrDefault"></basic>
-            <basic name="byteArrayAttrDefault"></basic>
-            <basic name="byteWrapperArrayAttrDefault"></basic>
-            <basic name="charArrayAttrDefault"></basic>
-            <basic name="charWrapperArrayAttrDefault"></basic>
-            <basic name="stringAttrDefault"></basic>
+            <basic name="booleanAttrDefault"/>
+            <basic name="byteAttrDefault"/>
+            <basic name="charAttrDefault"/>
+            <basic name="doubleAttrDefault"/>
+            <basic name="floatAttrDefault"/>
+            <basic name="intAttrDefault"/>
+            <basic name="longAttrDefault"/>
+            <basic name="shortAttrDefault"/>
+            <basic name="booleanWrapperAttrDefault"/>
+            <basic name="byteWrapperAttrDefault"/>
+            <basic name="characterWrapperAttrDefault"/>
+            <basic name="doubleWrapperAttrDefault"/>
+            <basic name="floatWrapperAttrDefault"/>
+            <basic name="integerWrapperAttrDefault"/>
+            <basic name="longWrapperAttrDefault"/>
+            <basic name="shortWrapperAttrDefault"/>
+            <basic name="bigIntegerAttrDefault"/>
+            <basic name="bigDecimalAttrDefault"/>
+            <basic name="byteArrayAttrDefault"/>
+            <basic name="byteWrapperArrayAttrDefault"/>
+            <basic name="charArrayAttrDefault"/>
+            <basic name="charWrapperArrayAttrDefault"/>
+            <basic name="stringAttrDefault"/>
             <basic name="utilDateAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
             <basic name="utilCalendarAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
-            <basic name="sqlDateAttrDefault"></basic>
-            <basic name="sqlTimeAttrDefault"></basic>
-            <basic name="sqlTimestampAttrDefault"></basic>
-            <basic name="enumeration"></basic>
-            <basic name="serializableClass"></basic>
-            <transient name="transientString"></transient>
+            <basic name="sqlDateAttrDefault"/>
+            <basic name="sqlTimeAttrDefault"/>
+            <basic name="sqlTimestampAttrDefault"/>
+            <basic name="enumeration"/>
+            <basic name="serializableClass">
+                <lob/>
+            </basic>
+            <transient name="transientString"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportTestEntity"
-        access="FIELD">
-        <table name="XMLSerialDatatypeSupTE"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportTestEntity" access="FIELD">
+        <table name="XMLSerialDatatypeSupTE"/>
         <attributes>
             <id name="id" />
-            <basic name="booleanAttrDefault"></basic>
-            <basic name="byteAttrDefault"></basic>
-            <basic name="charAttrDefault"></basic>
-            <basic name="doubleAttrDefault"></basic>
-            <basic name="floatAttrDefault"></basic>
-            <basic name="intAttrDefault"></basic>
-            <basic name="longAttrDefault"></basic>
-            <basic name="shortAttrDefault"></basic>
-            <basic name="booleanWrapperAttrDefault"></basic>
-            <basic name="byteWrapperAttrDefault"></basic>
-            <basic name="characterWrapperAttrDefault"></basic>
-            <basic name="doubleWrapperAttrDefault"></basic>
-            <basic name="floatWrapperAttrDefault"></basic>
-            <basic name="integerWrapperAttrDefault"></basic>
-            <basic name="longWrapperAttrDefault"></basic>
-            <basic name="shortWrapperAttrDefault"></basic>
-            <basic name="bigIntegerAttrDefault"></basic>
-            <basic name="bigDecimalAttrDefault"></basic>
-            <basic name="byteArrayAttrDefault"></basic>
-            <basic name="byteWrapperArrayAttrDefault"></basic>
-            <basic name="charArrayAttrDefault"></basic>
-            <basic name="charWrapperArrayAttrDefault"></basic>
-            <basic name="stringAttrDefault"></basic>
+            <basic name="booleanAttrDefault"/>
+            <basic name="byteAttrDefault"/>
+            <basic name="charAttrDefault"/>
+            <basic name="doubleAttrDefault"/>
+            <basic name="floatAttrDefault"/>
+            <basic name="intAttrDefault"/>
+            <basic name="longAttrDefault"/>
+            <basic name="shortAttrDefault"/>
+            <basic name="booleanWrapperAttrDefault"/>
+            <basic name="byteWrapperAttrDefault"/>
+            <basic name="characterWrapperAttrDefault"/>
+            <basic name="doubleWrapperAttrDefault"/>
+            <basic name="floatWrapperAttrDefault"/>
+            <basic name="integerWrapperAttrDefault"/>
+            <basic name="longWrapperAttrDefault"/>
+            <basic name="shortWrapperAttrDefault"/>
+            <basic name="bigIntegerAttrDefault"/>
+            <basic name="bigDecimalAttrDefault"/>
+            <basic name="byteArrayAttrDefault"/>
+            <basic name="byteWrapperArrayAttrDefault"/>
+            <basic name="charArrayAttrDefault"/>
+            <basic name="charWrapperArrayAttrDefault"/>
+            <basic name="stringAttrDefault"/>
             <basic name="utilDateAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
             <basic name="utilCalendarAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
-            <basic name="sqlDateAttrDefault"></basic>
-            <basic name="sqlTimeAttrDefault"></basic>
-            <basic name="sqlTimestampAttrDefault"></basic>
-            <basic name="enumeration"></basic>
-            <basic name="serializableClass"></basic>
-            <transient name="transientString"></transient>
+            <basic name="sqlDateAttrDefault"/>
+            <basic name="sqlTimeAttrDefault"/>
+            <basic name="sqlTimestampAttrDefault"/>
+            <basic name="enumeration"/>
+            <basic name="serializableClass">
+                <lob/>
+            </basic>
+            <transient name="transientString"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportPropertyTestEntity"
-        access="PROPERTY">
-        <table name="XMLSerialDatatypeSupPropTE"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportPropertyTestEntity" access="PROPERTY">
+        <table name="XMLSerialDatatypeSupPropTE"/>
         <attributes>
             <id name="id" />
-            <basic name="booleanAttrDefault"></basic>
-            <basic name="byteAttrDefault"></basic>
-            <basic name="charAttrDefault"></basic>
-            <basic name="doubleAttrDefault"></basic>
-            <basic name="floatAttrDefault"></basic>
-            <basic name="intAttrDefault"></basic>
-            <basic name="longAttrDefault"></basic>
-            <basic name="shortAttrDefault"></basic>
-            <basic name="booleanWrapperAttrDefault"></basic>
-            <basic name="byteWrapperAttrDefault"></basic>
-            <basic name="characterWrapperAttrDefault"></basic>
-            <basic name="doubleWrapperAttrDefault"></basic>
-            <basic name="floatWrapperAttrDefault"></basic>
-            <basic name="integerWrapperAttrDefault"></basic>
-            <basic name="longWrapperAttrDefault"></basic>
-            <basic name="shortWrapperAttrDefault"></basic>
-            <basic name="bigIntegerAttrDefault"></basic>
-            <basic name="bigDecimalAttrDefault"></basic>
-            <basic name="byteArrayAttrDefault"></basic>
-            <basic name="byteWrapperArrayAttrDefault"></basic>
-            <basic name="charArrayAttrDefault"></basic>
-            <basic name="charWrapperArrayAttrDefault"></basic>
-            <basic name="stringAttrDefault"></basic>
+            <basic name="booleanAttrDefault"/>
+            <basic name="byteAttrDefault"/>
+            <basic name="charAttrDefault"/>
+            <basic name="doubleAttrDefault"/>
+            <basic name="floatAttrDefault"/>
+            <basic name="intAttrDefault"/>
+            <basic name="longAttrDefault"/>
+            <basic name="shortAttrDefault"/>
+            <basic name="booleanWrapperAttrDefault"/>
+            <basic name="byteWrapperAttrDefault"/>
+            <basic name="characterWrapperAttrDefault"/>
+            <basic name="doubleWrapperAttrDefault"/>
+            <basic name="floatWrapperAttrDefault"/>
+            <basic name="integerWrapperAttrDefault"/>
+            <basic name="longWrapperAttrDefault"/>
+            <basic name="shortWrapperAttrDefault"/>
+            <basic name="bigIntegerAttrDefault"/>
+            <basic name="bigDecimalAttrDefault"/>
+            <basic name="byteArrayAttrDefault"/>
+            <basic name="byteWrapperArrayAttrDefault"/>
+            <basic name="charArrayAttrDefault"/>
+            <basic name="charWrapperArrayAttrDefault"/>
+            <basic name="stringAttrDefault"/>
             <basic name="utilDateAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
             <basic name="utilCalendarAttrDefault">
                 <temporal>DATE</temporal>
             </basic>
-            <basic name="sqlDateAttrDefault"></basic>
-            <basic name="sqlTimeAttrDefault"></basic>
-            <basic name="sqlTimestampAttrDefault"></basic>
-            <basic name="enumeration"></basic>
-            <basic name="serializableClass"></basic>
-            <transient name="transientString"></transient>
+            <basic name="sqlDateAttrDefault"/>
+            <basic name="sqlTimeAttrDefault"/>
+            <basic name="sqlTimestampAttrDefault"/>
+            <basic name="enumeration"/>
+            <basic name="serializableClass">
+                <lob/>
+            </basic>
+            <transient name="transientString"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.embeddableid.xml.XMLEmbeddableIdEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.embeddableid.xml.XMLEmbeddableIdEntity">
         <attributes>
-            <embedded-id name="pkey"></embedded-id>
-            <basic name="intVal"></basic>
+            <embedded-id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByte">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByte" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByteWrapper">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByteWrapper" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityChar">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityChar" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityCharacterWrapper">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityCharacterWrapper" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityInt">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityInt" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityIntWrapper">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityIntWrapper" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLong">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLong" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLongWrapper">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLongWrapper" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShort">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShort" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShortWrapper">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShortWrapper" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityString">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityString" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaSqlDate">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaSqlDate" access="FIELD">
         <attributes>
-            <id name="pkey"></id>
-            <basic name="intVal"></basic>
+            <id name="pkey"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaUtilDate">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaUtilDate" access="FIELD">
         <attributes>
             <id name="pkey">
                 <temporal>DATE</temporal>
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.idclass.xml.XMLIdClassEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.idclass.xml.XMLIdClassEntity">
         <id-class class="com.ibm.ws.jpa.fvt.entity.support.PKey" />
         <attributes>
-            <id name="id"></id>
-            <id name="country"></id>
-            <basic name="intVal"></basic>
+            <id name="id"/>
+            <id name="country"/>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectEntity">
         <attributes>
             <id name="id"></id>
-            <basic name="localIntVal"></basic>
-            <basic name="localStrVal"></basic>
-            <embedded name="embeddedObj"></embedded>
+            <basic name="localIntVal"/>
+            <basic name="localStrVal"/>
+            <embedded name="embeddedObj"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectAOEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectAOEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="localIntVal"></basic>
-            <basic name="localStrVal"></basic>
+            <id name="id"/>
+            <basic name="localIntVal"/>
+            <basic name="localStrVal"/>
             <embedded name="embeddedObj">
                 <attribute-override name="intVal">
                     <column name="intValCol" />
@@ -364,22 +372,20 @@
             </embedded>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenAutoEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenAutoEntity">
         <attributes>
             <id name="id">
                 <generated-value strategy="AUTO" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenIdentityEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenIdentityEntity">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
 <!--
@@ -403,47 +409,42 @@
         </attributes>
     </entity>
 -->
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType1Entity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType1Entity">
         <attributes>
             <id name="id">
                 <generated-value strategy="TABLE" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType2Entity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType2Entity">
         <attributes>
             <id name="id">
                 <generated-value strategy="TABLE" generator="XMLTableType2Generator" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType3Entity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType3Entity">
         <attributes>
             <id name="id">
                 <generated-value strategy="TABLE" generator="XMLTableType3Generator" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType4Entity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType4Entity">
         <attributes>
             <id name="id">
                 <generated-value strategy="TABLE" generator="XMLTableType4Generator" />
             </id>
-            <basic name="intVal"></basic>
+            <basic name="intVal"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.readonly.xml.XMLReadOnlyEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.readonly.xml.XMLReadOnlyEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
+            <id name="id"/>
+            <basic name="intVal"/>
             <basic name="noInsertIntVal">
                 <column insertable="false" />
             </basic>
@@ -455,80 +456,74 @@
             </basic>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntWrapperEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntWrapperEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongWrapperEntity">
-        <table name="XMLVersionedLongWrapperEnt"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongWrapperEntity">
+        <table name="XMLVersionedLongWrapperEnt"/>
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortEntity">
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortEntity">
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortWrapperEntity">
-        <table name="XMLVersionedShortWrapperEnt"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortWrapperEntity">
+        <table name="XMLVersionedShortWrapperEnt"/>
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedSqlTimestampEntity">
-        <table name="XMLVersionedSqlTimestampEnt"></table>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedSqlTimestampEntity">
+        <table name="XMLVersionedSqlTimestampEnt"/>
         <attributes>
-            <id name="id"></id>
-            <basic name="intVal"></basic>
-            <basic name="stringVal"></basic>
-            <version name="version"></version>
+            <id name="id"/>
+            <basic name="intVal"/>
+            <basic name="stringVal"/>
+            <version name="version"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLEmbedMultiTableEnt">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLEmbedMultiTableEnt" access="FIELD">
         <secondary-table name="XSEC_TABLEEMB">
             <primary-key-join-column name="id" />
         </secondary-table>
         <attributes>
-            <id name="id"></id>
-            <basic name="name"></basic>
+            <id name="id" />
+            <basic name="name" />
             <embedded name="embeddedObj">
                 <attribute-override name="street">
                     <column table="XSEC_TABLEEMB" />
@@ -545,8 +540,9 @@
             </embedded>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTableEnt">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTableEnt" access="FIELD">
         <secondary-table name="XSEC_TABLE2AMSC">
             <primary-key-join-column name="id" />
         </secondary-table>
@@ -563,18 +559,19 @@
             <column table="XSEC_TABLE2AMSC" />
         </attribute-override>
         <attributes>
-            <id name="id"></id>
-            <basic name="name"></basic>
+            <id name="id"/>
+            <basic name="name"/>
         </attributes>
     </entity>
-    <entity
-        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMultiTableEnt">
+    <!-- https://github.com/eclipse-ee4j/jpa-api/issues/332: 
+    Hibernate defaults to PROPERTY access type. EclipseLink/OpenJPA defaults to FIELD access type. -->
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMultiTableEnt" access="FIELD">
         <secondary-table name="XSEC_TABLE1">
             <primary-key-join-column name="id" />
         </secondary-table>
         <attributes>
-            <id name="id"></id>
-            <basic name="name"></basic>
+            <id name="id" />
+            <basic name="name" />
             <basic name="street">
                 <column table="XSEC_TABLE1" />
             </basic>
@@ -589,13 +586,13 @@
             </basic>
         </attributes>
     </entity>
-    <embeddable
-        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMTEmbeddable">
+    <!-- Provider should default to FIELD access type, matching the owning -->
+    <embeddable class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMTEmbeddable">
         <attributes>
-            <basic name="street"></basic>
-            <basic name="city"></basic>
-            <basic name="state"></basic>
-            <basic name="zip"></basic>
+            <basic name="street"/>
+            <basic name="city"/>
+            <basic name="state"/>
+            <basic name="zip"/>
         </attributes>
     </embeddable>
 
