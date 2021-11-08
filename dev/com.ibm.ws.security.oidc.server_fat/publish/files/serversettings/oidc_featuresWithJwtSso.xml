@@ -15,6 +15,7 @@
 		<feature>securitylibertyinternals-1.0</feature>
 		<feature>openidConnectServer-1.0</feature>
 		<feature>jwtSso-1.0</feature>
+		<feature>servlet-3.1</feature> <!-- required for EE9 repeat -->
 	</featureManager>
 	<jwtSso id="defaultJwtSso" cookieName="JWT"></jwtSso>
 
