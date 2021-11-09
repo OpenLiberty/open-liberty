@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connec
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0} OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky JWT (JSON Web Token) z webov\u00e9 odezvy. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu autorizace, ale nen\u00ed nastavena.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu autorizace mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du nebo po\u017eadovan\u00fdch token\u016f.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Nastavte atribut authorizationEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu autorizace poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.

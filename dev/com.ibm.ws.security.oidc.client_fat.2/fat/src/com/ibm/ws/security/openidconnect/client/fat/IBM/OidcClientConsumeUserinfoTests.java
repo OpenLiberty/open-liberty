@@ -19,11 +19,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -61,22 +61,13 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public static Class<?> thisClass = OidcClientConsumeUserinfoTests.class;
     public static HashMap<String, Integer> defRespStatusMap = null;
 
-    public static String[] test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-    public static String[] test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-    public static String[] test_LOGIN_PAGE_ONLY = Constants.GET_LOGIN_PAGE_ONLY;
-    public static String test_FinalAction = Constants.LOGIN_USER;
-    protected static String hostName = "localhost";
-    public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
-    public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
-    public static final String badTokenSegment = "1234567890123456789";
     private static final JwtTokenActions actions = new JwtTokenActions();
     protected static SignatureEncryptionUserinfoUtils userinfoUtils = new SignatureEncryptionUserinfoUtils();
     //private final String jwtContentType = "application/jwt";
     private final String jsonContentType = "application/json";
 
     protected enum ExpectedBehavior {
-        USE_USERINFO, DO_NO_USE_USERINFO, CONTENT_TYPE_MISMATCH, SUBJECT_MISMATCH, SIGN_MISMATCH, ENCRYPT_MISMATCH
+        USE_USERINFO, DO_NO_USE_USERINFO, CONTENT_TYPE_MISMATCH_JWT_NOT_JSON, CONTENT_TYPE_MISMATCH_JSON_NOT_JWT, SUBJECT_MISMATCH, SIGN_MISMATCH, ENCRYPT_MISMATCH
     }
 
     @SuppressWarnings("serial")
@@ -113,10 +104,6 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         // override actions that generic tests should use - Need to skip consent form as httpunit
         // cannot process the form because of embedded javascript
 
-        test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
-        test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
-        test_FinalAction = Constants.LOGIN_USER;
         testSettings.setFlowType(Constants.RP_FLOW);
         // even though, we're not testing the RP handling the response from the tokenendpoint, the same config that could consume that
         // response will be used to consume the userinfo response, so, ... we need to make sure that the tokenendpoint returns an appropriate response
@@ -213,11 +200,11 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         // let's create a similar JWT token (that userinfo will return), but make sure that it has an additional claim - we'll check to make sure that the extra claim
         // shows up in the subject that our protected test app sees (when the userinfo reponse is "valid" and make sure that the extra claims DO NOT show up
         // when the userinfo response is "invalid"
-        List<NameValuePair> usernnfoTokenParms = createUserinfoTokenParms(overrideParms);
-        String userinfoToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), userinfoBuilderId, usernnfoTokenParms);
+        List<NameValuePair> userninfoTokenParms = createUserinfoTokenParms(overrideParms);
+        String userinfoToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), userinfoBuilderId, userninfoTokenParms);
 
         // create the proper expectations - expect extra claims to be or not to be in the subject as well as possible extra error messages in the logs
-        expectations = updateExpectationsForTest(expectations, expectedBehavior, usernnfoTokenParms);
+        expectations = updateExpectationsForTest(expectations, expectedBehavior, userninfoTokenParms);
 
         // save the new token in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
         List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", userinfoToken);
@@ -232,7 +219,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         // we created and saved a jwt for our test tooling token endpoint to return to the RP - let's invoke
         // the protected resource.  The RP will get the auth token, but, instead of getting a jwt from the OP, it will use a
         // token endpoint pointing to the test tooling app that will return the jwt previously obtained using a builder
-        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
 
@@ -342,7 +329,8 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             break;
         // The encryption of the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
         case ENCRYPT_MISMATCH:
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.TRACE_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem extracting the payload.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem retrieving info from the Userinfo endpoint.", MessageConstants.CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO);
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem extracting the payload.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
         // The sub in the userinfo response does not match the ID token/openidconnect client config (look for error message and for extra claims to NOT exist in the app output)
@@ -351,8 +339,14 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
         // The content type of the response does not match the format of the actual response look for error message and for extra claims to NOT exist in the app output)
-        case CONTENT_TYPE_MISMATCH:
+        case CONTENT_TYPE_MISMATCH_JWT_NOT_JSON:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1538E_CONTENT_NOT_JSON);
             expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN);
+            expectations = setNotUsedUserinfoData(expectations, parms);
+            break;
+        case CONTENT_TYPE_MISMATCH_JSON_NOT_JWT:
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a problem retrieving info from the Userinfo endpoint.", MessageConstants.CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO);
+            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that the subject in the userinfo response did NOT match the subject in the ID token.", MessageConstants.CWWKS1539E_CONTENT_NOT_JWT);
             expectations = setNotUsedUserinfoData(expectations, parms);
             break;
         // The userinfo response is valid (for the ID token/openidconnect client) - its content should be used and the subject in the response should reflect the userinfo claims
@@ -533,6 +527,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_userinfoMismatch() throws Exception {
 
@@ -543,6 +538,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         }
     }
 
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_implcicitFlow_userinfoMismatch() throws Exception {
 
@@ -553,6 +549,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         }
     }
 
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedHS256_implcicitFlow_userinfoMismatch() throws Exception {
 
@@ -659,6 +656,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_userinfoMismatch() throws Exception {
 
@@ -826,7 +824,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     @Test
     public void OidcClientConsumeUserinfoTests_JWSResponse_signedRS256_contentTypeJson() throws Exception {
 
-        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH);
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWSBuilderName(Constants.SIGALG_RS256), setJWSBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH_JWT_NOT_JSON);
 
     }
 
@@ -840,7 +838,51 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     @Test
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_contentTypeJson() throws Exception {
 
-        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH);
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH_JWT_NOT_JSON);
+
+    }
+
+    /**
+     * Test that we will not accept userinfo data that is contained in a response with content-type set to jwt when it actually
+     * contains a json response.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_JSONResponse_signedRS256_contentTypeJwt() throws Exception {
+
+        // unlike all of the other tests, we can use the normal token endpoint in this test - we just need to make the "userinfo" endpoint return json data with a content-type of jwt
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/NormalTokenEndpointRS256"));
+        updatedTestSettings.setSignatureAlg(Constants.SIGALG_RS256);
+        List<validationData> expectations = userinfoUtils.setBasicSigningExpectations(Constants.SIGALG_RS256, Constants.SIGALG_RS256, updatedTestSettings, Constants.LOGIN_USER, false);
+
+        List<NameValuePair> userinfoTokenParms = new ArrayList<NameValuePair>();
+        userinfoTokenParms.add(new NameValuePair("sub", "bob"));
+        userinfoTokenParms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("sub", "bob");
+        jsonData.put("defaultExtraClaim", "someValue");
+        String userinfoToken = jsonData.toString();
+
+        // create the proper expectations - expect extra claims to not to be in the subject as well as an extra error message in the logs
+        expectations = updateExpectationsForTest(expectations, ExpectedBehavior.CONTENT_TYPE_MISMATCH_JSON_NOT_JWT, userinfoTokenParms);
+
+        // save the new token (json data) in the test userinfo endpoint so that the rp will have that returned instead of the standard json response
+        List<endpointSettings> userinfParms = eSettings.addEndpointSettings(null, "userinfoToken", userinfoToken);
+
+        //  (That url that the RP will call is:  http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT)
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, updatedTestSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", userinfParms, null, expectations);
+
+        Log.info(thisClass, "genericConsumeJWSUserinfoTest", String.valueOf(expectations.size()));
+
+        // we created and saved a jwt for our test tooling userinfo endpoint to return to the RP - let's invoke
+        // the protected resource.  The RP will get the auth token, but, will get a json response with a content-type set to jwt
+        genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
 

@@ -13,6 +13,7 @@ package com.ibm.tx.jta.config;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
 import java.util.logging.Level;
 
 import com.ibm.tx.config.ConfigurationProvider;
@@ -433,5 +434,25 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public boolean enableLogRetries() {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getRetriableSqlCodes() {
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getNonRetriableSqlCodes() {
+        return null;
     }
 }

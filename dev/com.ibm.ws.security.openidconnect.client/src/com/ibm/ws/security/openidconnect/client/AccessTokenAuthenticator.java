@@ -43,7 +43,6 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
@@ -432,26 +431,12 @@ public class AccessTokenAuthenticator {
     }
 
     JSONObject extractClaimsFromJwtResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
-        if (responseString == null || responseString.isEmpty()) {
+        UserInfoHelper userInfoHelper = new UserInfoHelper(clientConfig, null);
+        String claims = userInfoHelper.extractClaimsFromJwtResponse(responseString, clientConfig, oidcClientRequest);
+        if (claims == null) {
             return null;
         }
-        boolean isJwe = false;
-        try {
-            if (JweHelper.isJwe(responseString)) {
-                responseString = JweHelper.extractPayloadFromJweToken(responseString, clientConfig, null);
-                isJwe = true;
-            }
-            if (JweHelper.isJws(responseString)) {
-                return extractClaimsFromJwsResponse(responseString, clientConfig, oidcClientRequest);
-            } else if (isJwe) {
-                // JWE payloads can be either JWS or raw JSON, so allow falling back to parsing raw JSON in the case of a JWE response
-                return extractClaimsFromJsonResponse(responseString, clientConfig, oidcClientRequest);
-            }
-        } catch (Exception e) {
-            String msg = Tr.formatMessage(tc, "OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE", new Object[] { clientConfig.getId(), e });
-            throw new Exception(msg, e);
-        }
-        return null;
+        return JSONObject.parse(claims);
     }
 
     JSONObject extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
