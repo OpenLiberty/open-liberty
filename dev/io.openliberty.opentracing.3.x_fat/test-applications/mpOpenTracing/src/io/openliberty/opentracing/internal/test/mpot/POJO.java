@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.opentracing.internal.test.mpot;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.opentracing.Traced;
 
