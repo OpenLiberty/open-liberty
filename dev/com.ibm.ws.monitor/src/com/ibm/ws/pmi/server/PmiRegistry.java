@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@
 package com.ibm.ws.pmi.server;
 
 import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -111,7 +113,7 @@ public class PmiRegistry implements PmiConstants {
         setInstrumentationLevel(defaultLevel);
         //disabled = false;
         try {
-            MBeanServer mServer = ManagementFactory.getPlatformMBeanServer();
+            MBeanServer mServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
             ObjectName pmiMBean = new ObjectName(PmiConstants.MBEAN_NAME);
             mServer.registerMBean(PmiCollaboratorFactory.getPmiCollaborator(), pmiMBean);
             printAllMBeans();
@@ -126,7 +128,7 @@ public class PmiRegistry implements PmiConstants {
 
     private static void printAllMBeans() {
         /*
-         * MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+         * MBeanServer mbs = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
          * System.out.println("COUNT = " + mbs.getMBeanCount());
          * //ObjectName name = new ObjectName("name=Perf");
          * Set<ObjectInstance> allPerfMBeans = mbs.queryMBeans(null, null);
