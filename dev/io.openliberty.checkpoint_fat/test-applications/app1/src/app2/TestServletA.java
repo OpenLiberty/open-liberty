@@ -8,33 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app1.web;
+package app2;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
+@WebServlet("/servlet1")
+public class TestServletA {
 
-import componenttest.app.FATServlet;
-
-@SuppressWarnings("serial")
-@WebServlet("/TestServletA")
-public class TestServletA extends FATServlet {
-
-    @Test
     public void testHttpServletRequest(HttpServletRequest request, HttpServletResponse resp) throws Exception {
         resp.getWriter().println("Running test method 'testHttpServletRequest'");
     }
-
-    @Test
-    public void testHttpServletRequest2(HttpServletRequest request, HttpServletResponse resp) throws Exception {
-        resp.getWriter().println("Running test method 'testHttpServletRequest'");
-    }
-
-    @Test
-    public void testHttpServletRequest3(HttpServletRequest request, HttpServletResponse resp) throws Exception {
-        resp.getWriter().println("Running test method 'testHttpServletRequest'");
-    }
-
 }

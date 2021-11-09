@@ -12,6 +12,7 @@ package componenttest.topology.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
@@ -67,6 +68,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -450,10 +452,76 @@ public class LibertyServer implements LogMonitorClient {
     private final LogMonitor logMonitor;
 
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
+
+    public void setCheckpoint(Phase phase) {
+        checkpointInfo = new CheckPointInfo(phase);
+    }
+
     /**
-     * checkpointPhase defaults to null meaning no checkpoint taken
+     * When server.start is executed, perform a
+     *
+     * <pre>
+     * <code> "bin/server checkpoint --at==phase"</code>, followed by
+     * <code> "bin/server start"</code>
+     * </pre>
+     *
+     * @param phase
+     * @param autoRestor    if true initiate restore as part of serverStart
+     * @param beforeRestore beforeRestore lambda is called just before the server start
      */
-    private Phase checkpointPhase = null;
+    public void setCheckpoint(Phase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
+        if (phase == null) {
+            throw new NullPointerException("phase must be non-null");
+        }
+        checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
+    }
+
+    /**
+     * Info
+     */
+    private CheckPointInfo checkpointInfo;
+
+    private static class CheckPointInfo {
+
+        Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
+            Log.debug(c, "No beforeRestoreLambda supplied.");
+        };
+
+        public CheckPointInfo(Phase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+            this.checkpointPhase = phase;
+            this.autoRestore = autorestore;
+            if (beforeRestoreLambda == null) {
+                this.beforeRestoreLambda = defaultLambda;
+            } else {
+                this.beforeRestoreLambda = (LibertyServer svr) -> {
+                    Log.debug(c, "Begin execution of supplied beforeRestoreLambda.");
+                    beforeRestoreLambda.accept(svr);
+                    Log.debug(c, "Excecution of supplied beforeRestoreLambda complete.");
+                };
+            }
+        }
+
+        public CheckPointInfo(Phase phase) {
+            this(phase, true, null);
+        }
+
+        /*
+         * parameters to configure a checkpoint/restore test
+         */
+        private final Phase checkpointPhase; //Phase to checkpoint
+        private final boolean autoRestore; // weather or not to perform restore after checkpoint
+        //AN optional function executed after checkpoint but before restore
+        private final Consumer<LibertyServer> beforeRestoreLambda;
+
+        /*
+         * save intermediate results of ongoing checkpoint restore test
+         */
+        private final boolean checkpointTaken = false;
+        private ProgramOutput output;
+        private boolean validateApps;
+        private boolean expectStartFailure;
+        private boolean validateTimedExit;
+    }
 
     /**
      * @param serverCleanupProblem the serverCleanupProblem to set
@@ -786,7 +854,6 @@ public class LibertyServer implements LogMonitorClient {
         //Now we need to copy file overwriting existing server.xml and delete the temp
         tempServerXML.copyToDest(serverXML, false, true);
         tempServerXML.delete();
-
     }
 
     /**
@@ -1304,16 +1371,6 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         parametersList.addAll(extraArgs);
-        ArrayList<String> checkpointParams = new ArrayList<String>();
-        if (doCheckpoint()) {
-            //set up params to take checkpoint.
-            for (String param : parametersList) {
-                if (param.equals("start") || param.equals("run") || param.equals("debug")) {
-                    param = "checkpoint";
-                }
-                checkpointParams.add(param);
-            }
-        }
 
         //Setup the server logs assuming the default setting.
         messageAbsPath = logsRoot + messageFileName;
@@ -1359,13 +1416,6 @@ public class LibertyServer implements LogMonitorClient {
         //passed in via the system property
         if (MAC_RUN != null && !!!MAC_RUN.equalsIgnoreCase(Boolean.toString(false))) {
             JVM_ARGS += " " + MAC_RUN;
-        }
-
-        if (doCheckpoint()) {
-            JVM_ARGS += " " + "-XX:+EnableCRIUSupport";
-            Log.info(c, method, "Checkpoint: is on for server " + this.getServerName());
-        } else {
-            Log.info(c, method, "Checkpoint: is off for server " + this.getServerName());
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
@@ -1448,18 +1498,10 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.info(c, method, "Using additional env props: " + envVars.toString());
 
-        Log.info(c, method, "Starting Server with command: " + cmd);
-        for (String param : parameters) {
-            Log.info(c, method, "Starting Server with parameter: " + param);
-        }
-        for (String param : checkpointParams) {
-            Log.info(c, method, "Checkpoint parameter: " + param);
-        }
+        Log.finer(c, method, "Starting Server with command: " + cmd);
 
         // Create a marker file to indicate that we're trying to start a server
         createServerMarkerFile();
-
-        Log.info(c, method, "Starting with executeAsync: " + executeAsync);
 
         ProgramOutput output;
         if (executeAsync) {
@@ -1478,23 +1520,19 @@ public class LibertyServer implements LogMonitorClient {
             output = null;
         } else {
             if (machine instanceof LocalMachine) {
-                Log.info(c, method, "LocalMachine is : " + machine);
                 // Running the server start asynchronously because it appears that the start
                 // process is hanging from time to time. We can probably remove this when we fix
                 // the issue causing the process to hang.
                 final BlockingQueue<ProgramOutput> outputQueue = new LinkedBlockingQueue<ProgramOutput>();
 
                 Runnable execServerCmd = null;
+
                 if (this.runAsAWindowService == false) {
-                    String[] params = doCheckpoint() ? checkpointParams.toArray(new String[checkpointParams.size()]) : parameters;
+                    final String[] params = doCheckpoint() ? checkpointAdjustParams(parametersList) : parameters;
                     execServerCmd = new Runnable() {
 
                         @Override
                         public void run() {
-                            Log.info(c, method, "cmd in runnable: " + cmd);
-                            for (String p : params) {
-                                Log.info(c, method, "Param in runnable: " + p);
-                            }
                             try {
                                 outputQueue.put(machine.execute(cmd, params, envVars));
                             } catch (Exception e) {
@@ -1508,7 +1546,6 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
-
                         @Override
                         public void run() {
                             try {
@@ -1531,11 +1568,11 @@ public class LibertyServer implements LogMonitorClient {
                 t.start();
                 // Way more than we really need to wait -- in normal circumstances this will return immediately as
                 // we're just kicking off the server script.
-                final int scriptTimeout_seconds = doCheckpoint() ? 30 : 5 * 60;
-                output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+                final int SCRIPT_TIMEOUT_IN_MINUTES = 5;
+                output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
                 if (runAsAWindowService == true) {
                     // wait for "register" to complete first, and now wait for "start" to complete
-                    output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+                    output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
                 }
 
                 if (output == null) {
@@ -1555,10 +1592,10 @@ public class LibertyServer implements LogMonitorClient {
                         // If at first you don't succeed...
                         Thread tryAgain = new Thread(cmd);
                         tryAgain.start();
-                        output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+                        output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
                         if (runAsAWindowService == true) {
                             // wait for "register" to complete first, and now wait for "start" to complete
-                            output = outputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+                            output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
                         }
                         if (output == null) {
                             Log.warning(c, "The second attempt to start the server also timed out. The server may or may not have actually started");
@@ -1587,16 +1624,19 @@ public class LibertyServer implements LogMonitorClient {
             }
             if (doCheckpoint()) {
                 checkpointValidate(output);
-                checkpointRestore(output);
+                checkpointInfo.beforeRestoreLambda.accept(this);
+                if (checkpointInfo.autoRestore) {
+                    checkpointRestore();
+                }
+            } else {
+                return output;
             }
         }
 
         // Validate the server and apps started - if they didn't, that
         // method will throw an appropriate exception
 
-        if ("start".equals(serverCmd))
-
-        {
+        if ("start".equals(serverCmd)) {
             validateServerStarted(output, validateApps, expectStartFailure, validateTimedExit);
             isStarted = true;
         }
@@ -1605,12 +1645,36 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
+    private String[] checkpointAdjustParams(List<String> parametersList) {
+        final String method = "checkpointFixParams";
+        Log.info(c, method, "checkpointFixUpParameters: " + parametersList);
+        ArrayList<String> checkpointParams = new ArrayList<String>();
+        //exclude actions run, debug, package, ...
+        boolean isLaunch = "start".equals(parametersList.get(0));
+        for (int i = 0; i < parametersList.size(); i++) {
+            if (i == 0 && isLaunch) {
+                checkpointParams.add("checkpoint");
+            } else if (i == 2 && isLaunch) {
+                checkpointParams.add("--at=" + checkpointInfo.checkpointPhase);
+                checkpointParams.add(parametersList.get(i));
+            } else {
+                checkpointParams.add(parametersList.get(i));
+            }
+        }
+        if (parametersList.size() == 2 && isLaunch) {
+            checkpointParams.add("--at=" + checkpointInfo.checkpointPhase);
+        }
+        String[] ret = checkpointParams.toArray(new String[checkpointParams.size()]);
+        Log.info(c, method, "checkpointFixParams: " + checkpointParams);
+        return ret;
+    }
+
     /**
-     * After a checkpoint image has been created and basic valida
+     * After a checkpoint image has been created and basic validation
      *
      * @param output
      */
-    private void checkpointRestore(ProgramOutput output) {
+    public void checkpointRestore() throws Exception {
         String method = "checkpointRestore";
         //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
         // polling timeout on the launch
@@ -1631,14 +1695,22 @@ public class LibertyServer implements LogMonitorClient {
         new Thread(execRunnable).start();
         //Poll for script completion
         final int scriptTimeout_seconds = 5 * 60;
+        ProgramOutput output = null;
         try {
             output = restoreProgramOutputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        if (output == null) {
-            // what a pain
+        if (output == null || output.getReturnCode() != 0) {
+            Log.warning(c, "Restore failed with RC:" + output.getReturnCode());
+            Log.warning(c, "Restore stdout: " + output.getStdout());
+            Log.warning(c, "Restore stderr: " + output.getStderr());
+        }
+        if (checkpointInfo.autoRestore == false) {
+            if (output != null && output.getReturnCode() == 0) {
+                validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectStartFailure,
+                                      checkpointInfo.validateTimedExit);
+            }
         }
     }
 
@@ -1658,6 +1730,13 @@ public class LibertyServer implements LogMonitorClient {
             throw fail;
         }
         assertCheckpointDirAsExpected();
+        //server is stopped at this point so no delay on following log searches
+        if (checkpointInfo.checkpointPhase == Phase.FEATURES) {
+            assertNull("'CWWKZ0018I: Starting application...' message found taking FEATURES checkpoint.",
+                       waitForStringInLogUsingMark("CWWKZ0018I:", 0));
+        }
+        assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
+                      waitForStringInLogUsingMark("CWWKC0451I:", 0));
     }
 
     /**
@@ -1696,8 +1775,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * @return
      */
-    private boolean doCheckpoint() throws Exception {
-        return (checkpointPhase != null) && getCheckpointSupported();
+    private boolean doCheckpoint() {
+        return (checkpointInfo != null) && getCheckpointSupported();
     }
 
     /**
@@ -6231,11 +6310,6 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
-    public void setCheckpointPhase(Phase checkpointPhase) {
-        //Force a checkpoint and server restart at the designated phase.
-        this.checkpointPhase = checkpointPhase;
-    }
-
     public void setupForRestConnectorAccess() throws Exception {
         if (isStarted) {
             throw new IllegalStateException("Must call setupForRestConnectorAccess BEFORE starting the server");
@@ -6674,24 +6748,28 @@ public class LibertyServer implements LogMonitorClient {
     private Boolean checkpointSupported;
 
     /**
-     *
-     *
-     * @return           true if the server has requisite support for the following operations
+     * @return
+     *                   true if the server has requisite support for the following operations, false otherwise.
      *
      *                   <pre>
      *   bin/server start --checkpoint==[PHASE];
      *   bin/server restore
      *                   </pre>
      *
-     *                   false otherwise.
      * @throws Exception we may attempt to fork a new jvm to test for support. An exception typically
      *                       means a Failure around forking the new process.
      */
-    public boolean getCheckpointSupported() throws Exception {
+    public boolean getCheckpointSupported() {
         if (checkpointSupported == null) {
             // Check if criu supported. Needed to run checkpoint/restore tests.
             if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
-                JavaInfo jinfo = JavaInfo.fromPath(machineJava);
+                JavaInfo jinfo;
+                try {
+                    jinfo = JavaInfo.fromPath(machineJava);
+                } catch (IOException e) {
+                    LOG.warning("Unable to detect platform support for criu: " + e.getMessage());
+                    return false; //no cache of checkpointSupported let it keep trying.
+                }
                 if (jinfo.VENDOR == Vendor.OPENJ9 && jinfo.isCriuSupported()) {
                     checkpointSupported = true;
                 } else {

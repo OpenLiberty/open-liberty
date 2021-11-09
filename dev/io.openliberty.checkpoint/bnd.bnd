@@ -15,7 +15,7 @@ bVersion: 1.0
 Bundle-Name: Open Liberty Checkpoint Support
 Bundle-Description: Open Liberty Checkoint Support, version ${bVersion}
 Bundle-SymbolicName: io.openliberty.checkpoint
-Private-Package: io.openliberty.checkpoint.internal.*
+Private-Package: io.openliberty.checkpoint.internal.*,io.openliberty.checkpoint.resources.*
 Export-Package: io.openliberty.checkpoint.internal.criu
 Import-Package: org.apache.felix.service.command; resolution:=optional, org.eclipse.openj9.criu; resolution:=optional, *
 

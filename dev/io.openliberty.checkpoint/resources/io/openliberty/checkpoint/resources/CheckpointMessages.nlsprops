@@ -15,12 +15,16 @@
 #COMPONENTPREFIX CWWKC                 
 #COMPONENTNAMEFOR CWWKC Checkpoint
 
-# Message numbers CWWKC0nnn are reserved for this file.
-#                                      ## Liberty CRIU message codes are CWWKC 0451-0550.
-# NLS_MESSAGEFORMAT_VAR                # MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-platform.notSupported=CWWKC0451I: The checkpoint feature is not supported.
-platform.notSupported.explanation=The checkpoint feature is supported on the linux platform with the criu libraries present.
-platform.notSupported.useraction=Check the knowledge center for full operating system and library requirements.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requested. The server will stopped when the checkpoint completes.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=A checkpoint was requested. The server is halted and its current state is written to disk.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the knowledge center for details of the checkpoint/restore operations.
+#
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: The liberty server is is resuming execution from a checkpoint
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=A restore operation was run on a liberty server checkpoint image.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Check the knowledge center for details of the checkpoint/restore operations.

@@ -16,8 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ServletTest.class,
-                ServletTestFeatureCheckpoint.class
+                TestWithFATServlet.class
 })
 public class FATSuite {
 

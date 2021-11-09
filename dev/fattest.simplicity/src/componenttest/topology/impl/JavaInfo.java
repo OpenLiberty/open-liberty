@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -288,23 +289,22 @@ public class JavaInfo {
      */
     private Boolean probeCriuSupport() {
         final String method = "probeCriuSupport";
+        //Find path to fattest.simplicity.jar jar on file system (the jar containing this class).
+        String simplicityJar;
         try {
-            //Find path to fattest.simplicity.jar jar on file system (the jar containing this class).
-            String simplicityJar;
             simplicityJar = new File(componenttest.topology.impl.probe.CriuSupport.class.getProtectionDomain()
                             .getCodeSource()
                             .getLocation()
                             .toURI()).getPath();
-            ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
-                            "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
-            Process proc;
-            try {
-                proc = procBuilder.start();
-                proc.waitFor();
-            } catch (InterruptedException e) {
-                Log.info(c, method, "Can't probe for criu support: " + e);
-                return Boolean.FALSE;
-            }
+        } catch (URISyntaxException e) {
+            throw new Error(e);
+        }
+        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
+                        "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
+        Process proc;
+        try {
+            proc = procBuilder.start();
+            proc.waitFor();
             BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
             String line;
             int lines = 0;
@@ -321,10 +321,11 @@ public class JavaInfo {
             } else {
                 criuSupported = Optional.of(Boolean.FALSE);
             }
-        } catch (Exception ex) {
+        } catch (IOException | InterruptedException ex) {
             Log.info(c, method, "Exception launching process to probe for criu support:" + ex);
             criuSupported = Optional.of(Boolean.FALSE);
         }
+        Log.info(c, method, "Executed isCriuSupported on Jinfo: " + this);
         return criuSupported.get();
     }
 
@@ -421,6 +422,8 @@ public class JavaInfo {
 
     @Override
     public String toString() {
-        return "major=" + MAJOR + "  minor=" + MINOR + " service release=" + SERVICE_RELEASE + " fixpack=" + FIXPACK + "  vendor=" + VENDOR + "  javaHome=" + JAVA_HOME;
+        return "major=" + MAJOR + ",  minor=" + MINOR + ", service release=" + SERVICE_RELEASE
+               + ", fixpack=" + FIXPACK + ",  vendor=" + VENDOR
+               + ",  javaHome=" + JAVA_HOME + ", criuSupported=" + criuSupported;
     }
 }

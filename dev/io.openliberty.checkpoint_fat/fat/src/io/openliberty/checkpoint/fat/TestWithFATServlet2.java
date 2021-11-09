@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import app1.web.TestServletA;
+import app1.TestServletA;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -25,21 +25,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
-public class ServletTestFeatureCheckpoint extends FATServletClient {
+public class TestWithFATServlet2 extends FATServletClient {
 
     public static final String APP_NAME = "app1";
 
@@ -49,13 +36,12 @@ public class ServletTestFeatureCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-
         ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
     }
 
     @Before
     public void setUp() throws Exception {
-        server.setCheckpointPhase(Phase.FEATURES);
+        server.setCheckpoint(Phase.APPLICATIONS);
         server.startServer();
     }
 
