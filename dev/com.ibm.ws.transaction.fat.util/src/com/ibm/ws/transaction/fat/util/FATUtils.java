@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.fat.util;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.time.Duration;
+
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -20,6 +22,8 @@ import componenttest.topology.impl.LibertyServer;
 public class FATUtils {
 	
 	private static final Class<FATUtils> c = FATUtils.class;
+
+	public static final Duration TESTCONTAINER_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 
     public static void startServers(LibertyServer... servers) throws Exception {
     	startServers((SetupRunner)null, servers);

@@ -15,8 +15,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
@@ -51,8 +53,9 @@ public class FATSuite {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(type);
-        Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
-        testContainer.start();
+        Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
+        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).waitingFor(Wait.forHealthcheck()).start();
+        Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + type);
     }
 
     public static void afterSuite() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.SSLRecoveryServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -47,7 +49,7 @@ public class SSLRecoveryTest extends FATServletClient {
     public static LibertyServer serverLibertySSL;
 
     // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
+    public static PostgreSQLContainer testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
@@ -56,12 +58,12 @@ public class SSLRecoveryTest extends FATServletClient {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        postgre.start();
+        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
 
         setUp();
 
         // Create tables for the DB
-        try (Connection conn = postgre.createConnection("")) {
+        try (Connection conn = testContainer.createConnection("")) {
             Statement stmt = conn.createStatement();
             stmt.execute("CREATE TABLE people( id integer UNIQUE NOT NULL, name VARCHAR (50) );");
             stmt.close();
@@ -73,9 +75,9 @@ public class SSLRecoveryTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(serverLibertySSL, APP_NAME, "com.ibm.ws.transaction.web");
 
-        String host = postgre.getContainerIpAddress();
-        String port = String.valueOf(postgre.getMappedPort(5432));
-        String jdbcURL = postgre.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
+        String host = testContainer.getContainerIpAddress();
+        String port = String.valueOf(testContainer.getMappedPort(5432));
+        String jdbcURL = testContainer.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
         Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);
 
         serverLibertySSL.addEnvVar("POSTGRES_HOST", host);
@@ -91,7 +93,7 @@ public class SSLRecoveryTest extends FATServletClient {
         try {
             serverLibertySSL.stopServer();
         } finally {
-            postgre.stop();
+            testContainer.stop();
         }
     }
 

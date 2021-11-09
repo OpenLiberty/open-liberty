@@ -110,10 +110,6 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             throw e;
         }
 
-        // Bounce first server to clear log
-        FATUtils.stopServers(server1);
-        FATUtils.startServers(runner, server1);
-
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
@@ -123,7 +119,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     }
 
     protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
-        FATUtils.stopServers(servers);
+
         for (LibertyServer server : servers) {
             try {
                 final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
