@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,11 @@ public class JwtFatUtils extends ServerFileUtils {
 
     public void updateFeatureFileForEE9(LibertyServer server) throws Exception {
 
-        updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction().replace(JakartaEE9Action.ID + "_", ""));
+        String version = RepeatTestFilter.getMostRecentRepeatAction();
+        // try to replace the EE9 noMpJwt repeat instance name with noMpJwt_ee9 - if this is a different repeat action this will do nothing
+        version = version.replace(JakartaEE9Action.ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE9);
+        // if the EE9 repeat instance is still in the the action, remove it
+        updateFeatureFile(server, "jwtSsoFeatures", version.replace(JakartaEE9Action.ID + "_", ""));
         if (JakartaEE9Action.isActive()) {
             updateFeatureFile(server, "featuresWithoutJwtSso", "ee9");
         }
