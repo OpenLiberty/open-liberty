@@ -284,10 +284,15 @@ AUTHFILTER_MULTIPLE_MATCHED.explanation=Wi\u0119cej ni\u017c jeden filtr uwierzy
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Przejrzyj plik server.xml i popraw konfiguracj\u0119.
 
 # do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
-OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Wymagana informacja cookie o nazwie rozpoczynaj\u0105cej si\u0119 od WASReqURLOidc ma niepoprawn\u0105 warto\u015b\u0107. Nazwa hosta [{1}] u\u017cywana w informacji cookie nie jestzgodna z nazw\u0105 zarejestrowan\u0105 u dostawcy. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Wymagana informacja cookie o nazwie rozpoczynaj\u0105cej si\u0119 od WASReqURLOidc ma niepoprawn\u0105 warto\u015b\u0107. Nazwa hosta [{1}] u\u017cywana w informacji cookie nie jest zgodna z nazw\u0105 zarejestrowan\u0105 u dostawcy. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re zawiera zniekszta\u0142cone informacje cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Nieprawid\u0142owy format informacji cookie mo\u017ce wynika\u0107 z modyfikacji informacji cookie przez agenta u\u017cytkownika poprzez u\u017cycie nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy. Je\u015bli oczekiwana jest nazwa hosta, nale\u017cy doda\u0107 j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w pliku server.xml.
 
-# 1533, 1534, 1535 used in clients.common bundle, do not use here.
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient OpenID Connect {0} nie mo\u017ce wyodr\u0119bni\u0107 roszcze\u0144 znacznika JSON Web Token (JWT) z odpowiedzi WWW. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Odpowied\u017a WWW musi by\u0107 znacznikiem JWT w formacie JSON Web Encryption (JWE) albo w formacie JSON Web Signature (JWS). Mo\u017cliwe, \u017ce odpowied\u017a ma nieprawid\u0142owy format lub klient OpenID Connect napotka\u0142 inny b\u0142\u0105d podczas przetwarzania odpowiedzi.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Upewnij si\u0119, \u017ce odpowied\u017a jest w formacie JWT.
+
+#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

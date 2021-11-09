@@ -83,6 +83,17 @@ encode.option-desc.custom.description=\n \tA descri\u00e7\u00e3o de {0} \u00e9 a
 # encryption is enabled.
 no.custom.encyption=A criptografia de senha customizada n\u00e3o foi detectada.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=O r\u00f3tulo {0} n\u00e3o existe no conjunto de chaves {1}. N\u00e3o \u00e9 poss\u00edvel encontrar uma chave v\u00e1lida para a criptografia de senha AES.
+saf.cert.is.not.key=O certificado {0} n\u00e3o \u00e9 uma entrada de chave. O certificado deve ser uma entrada chave para us\u00e1-lo como uma chave de criptografia de senha AES.
+saf.cert.expired=O certificado {0} est\u00e1 expirado e n\u00e3o pode ser usado como uma chave de criptografia de senha AES.
+saf.keyring.does.not.exist=O keystore {0} n\u00e3o existe. Nenhum certificado pode ser recuperado do keystore para usar como chave de criptografia de senha AES.
+saf.arg.not.onZ=Os argumentos -- keyring, -- keyringType e -- keyLabel podem ser usados apenas no z/OS.
+saf.arg.not.aes=Os argumentos -- keyring, -- keyringType e -- keyLabel podem ser usados apenas com codifica\u00e7\u00e3o AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

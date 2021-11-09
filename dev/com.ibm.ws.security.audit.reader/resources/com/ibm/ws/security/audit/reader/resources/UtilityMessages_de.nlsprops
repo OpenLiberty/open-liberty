@@ -38,6 +38,7 @@ missingArgs= Die folgenden Argumente fehlen: {0} und {1}.
 missingArgs3=Die folgenden Argumente fehlen: {0}, {1} und {2}.
 invalidFileLocations=Der vollst\u00e4ndig qualifizierte Pfad {0}, der f\u00fcr das Argument --auditFileLocation angegeben wurde, entspricht dem vollst\u00e4ndig qualifizierten Pfad {1}, der f\u00fcr das Argument --outputFileLocation angegeben wurde. Beide Pfade m\u00fcssen eindeutig sein.
 invalidURLFormat=Der f\u00fcr das Argument {1} angegebene Wert {0} entspricht nicht dem Format f\u00fcr die vollst\u00e4ndig qualifizierte Datei-URL.
+
 password.enterText=Kennwort eingeben:
 password.reenterText=Kennwort erneut eingeben:
 password.readError=Fehler beim Lesen des Kennworts.

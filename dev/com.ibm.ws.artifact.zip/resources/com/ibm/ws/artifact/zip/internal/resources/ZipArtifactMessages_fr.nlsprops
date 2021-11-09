@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Red\u00e9marrez le serveur.  Lo
 reaper.reopen.active=CWWKM0127W: R\u00e9ouverture de {0}
 reaper.reopen.active.explanation=Une modification inattendue a entra\u00een\u00e9 la r\u00e9ouverture d'un fichier archive d'application ouvert.  Le serveur a tent\u00e9 d'obtenir le contenu mis \u00e0 jour du fichier archive, mais il se peut qu'il n'ait pas enti\u00e8rement mis \u00e0 jour les liste internes des contenus d'archive.
 reaper.reopen.active.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Le fichier zip {0} est manquant.
+missing.zip.file.explanation=Une exception s'est produite lors du traitement de l'archive car le fichier indiqu\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9. 
+missing.zip.file.useraction=V\u00e9rifiez que le fichier sp\u00e9cifi\u00e9 existe et que ses droits d'acc\u00e8s sont lisibles par le serveur.

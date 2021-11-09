@@ -210,11 +210,6 @@ USERINFO_INVALID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: El cliente de {0} OpenID Connect no puede extraer reclamaciones de la se\u00f1al web JSON (JWT) de la respuesta de la web. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La respuesta de la web debe ser una JWT en formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Es posible que la respuesta no est\u00e9 bien formada o que el cliente de OpenID Connect haya encontrado otro error al procesar la respuesta.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la respuesta est\u00e1 en formato JWT.
-
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: El cliente OpenID Connect [{0}] necesita un URL de punto final de autorizaci\u00f3n, pero no se ha establecido.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Se debe establecer un URL de punto final de autorizaci\u00f3n para obtener un c\u00f3digo de autorizaci\u00f3n o las se\u00f1ales necesarias.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Establezca el atributo authorizationEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de autorizaci\u00f3n del proveedor de OpenID Connect. Como alternativa, establezca el atributo discoveryEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de descubrimiento del proveedor de OpenID Connect.
@@ -222,5 +217,16 @@ OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Establezca el atributo authorizationEn
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: El cliente OpenID Connect [{0}] necesita un URL de punto final de se\u00f1al, pero no se ha establecido.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Se debe establecer un URL de punto final de se\u00f1al para obtener las se\u00f1ales necesarias.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Establezca el atributo tokenEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URl de punto final de se\u00f1al del proveedor de OpenID Connect. Como alternativa, establezca el atributo discoveryEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de descubrimiento del proveedor de OpenID Connect.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: La se\u00f1al no est\u00e1 en formato de firma web JSON (JWS) porque no contiene tres partes, pero el cliente de OpenID Connect [{0}] s\u00f3lo acepta se\u00f1ales que est\u00e1n en formato JWS.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Es posible que la se\u00f1al est\u00e9 mal formada o que est\u00e9 en formato JWE (JSON Web Encryption). Las se\u00f1ales deben estar en formato JWS si el atributo keyManagementKeyAlias no est\u00e1 configurado.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Para aceptar se\u00f1ales JWE, configure el atributo keyManagementKeyAlias en la configuraci\u00f3n del cliente de OpenID Connect. De lo contrario, aseg\u00farese de que solo se env\u00eden se\u00f1ales JWS a este recurso.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: La se\u00f1al no est\u00e1 en formato JWE (JSON Web Encryption) porque no contiene cinco partes, pero el cliente de OpenID Connect [{0}] s\u00f3lo acepta se\u00f1ales que est\u00e1n en formato JWE.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Es posible que la se\u00f1al est\u00e9 mal formada o que est\u00e9 en formato de firma web JSON (JWS). Las se\u00f1ales deben estar en formato JWE si se ha configurado el atributo keyManagementKeyAlias.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Para aceptar se\u00f1ales JWS en lugar de se\u00f1ales JWE, elimine el atributo keyManagementKeyAlias en la configuraci\u00f3n del cliente de OpenID Connect. De lo contrario, aseg\u00farese de que solo se env\u00eden se\u00f1ales JWE a este recurso.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

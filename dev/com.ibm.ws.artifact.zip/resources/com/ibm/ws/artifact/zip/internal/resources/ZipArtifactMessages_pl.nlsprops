@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Zrestartuj serwer.  Gdy aktuali
 reaper.reopen.active=CWWKM0127W: Ponowne otwarcie pliku {0}.
 reaper.reopen.active.explanation=Nieoczekiwana zmiana spowodowa\u0142a ponowne otwarcie otwartego pliku archiwum aplikacji.  Serwer pr\u00f3bowa\u0142 uzyska\u0107 zaktualizowan\u0105 zawarto\u015b\u0107 pliku archiwum, ale prawdopodobnie nie zaktualizowa\u0142 w pe\u0142ni wewn\u0119trznych listing\u00f3w zawarto\u015bci archiwum.
 reaper.reopen.active.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Brak pliku zip {0}.
+missing.zip.file.explanation=Podczas przetwarzania archiwum wyst\u0105pi\u0142 wyj\u0105tek, poniewa\u017c nie znaleziono okre\u015blonego pliku. 
+missing.zip.file.useraction=Upewnij si\u0119, \u017ce okre\u015blony plik istnieje i serwer ma uprawnienia do odczytu tego pliku.

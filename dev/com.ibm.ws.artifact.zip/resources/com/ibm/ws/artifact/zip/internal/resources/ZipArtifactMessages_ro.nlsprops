@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Reporni\u0163i serverul.  C\u00
 reaper.reopen.active=CWWKM0127W: Redeschidere {0}
 reaper.reopen.active.explanation=O modificare nea\u015fteptat\u0103 a cauzat redeschiderea unui fi\u015fier de arhiv\u0103 de aplica\u0163ie deschis.  Serverul a \u00eencercat s\u0103 ob\u0163in\u0103 con\u0163inutul actualizat din fi\u015fierul de arhiv\u0103, dar este posibil s\u0103 nu aib\u0103 list\u0103rile interne actualizate complet ale con\u0163inutului arhivei.
 reaper.reopen.active.useraction=Reporni\u0163i serverul.  C\u00e2nd actualiza\u0163i fi\u015fiere de aplica\u0163ie, a\u015ftepta\u0163i ca serverul s\u0103 termine activitatea \u015fi apoi mai a\u015ftepta\u0163i cel pu\u0163in o jum\u0103tate de secund\u0103 pentru a permite \u00eenchiderea fi\u015fierelor de aplica\u0163ie.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Lipse\u015fte fi\u015fierul zip {0}.
+missing.zip.file.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii arhivei deoarece nu a fost g\u0103sit fi\u015fierul specificat. 
+missing.zip.file.useraction=Verifica\u0163i c\u0103 exist\u0103 fi\u015fierul secificat \u015fi are permisiuni care permit citirea de c\u0103tre server.

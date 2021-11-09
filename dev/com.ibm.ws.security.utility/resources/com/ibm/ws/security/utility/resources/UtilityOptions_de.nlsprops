@@ -81,6 +81,12 @@ encode.option-desc.listCustom=\tZeigt die Informationen der angepassten Kennwort
 \tname: Name des Algorithmus f\u00fcr die angepasste Kennwortverschl\u00fcsselung\n\
 \tfeaturename: Featurename\n\
 \tdescription: Beschreibung der angepassten Kennwortverschl\u00fcsselung
+encode.option-key.keyring=\ \ \ \ --keyring=[Schl\u00fcsselring]
+encode.option-desc.keyring=\tGeben Sie den SAF-Schl\u00fcsselring an, in dem sich der AES-Verschl\u00fcsselungsschl\u00fcssel befindet.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[Schl\u00fcsselringtyp]
+encode.option-desc.keyringType=\tGeben Sie den SAF-Schl\u00fcsselringtyp des Schl\u00fcsselrings an, in dem sich die AES-Verschl\u00fcsselung\n\tis befindet.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[Schl\u00fcssellabel]
+encode.option-desc.keyLabel=\tGeben Sie die Bezeichnung des SAF-Zertifikats des AES-Verschl\u00fcsselungsschl\u00fcssels an.
 
 
 
@@ -93,7 +99,6 @@ encode.option-desc.listCustom=\tZeigt die Informationen der angepassten Kennwort
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 sslCert.desc=\tErstellt ein SSL-Standardzertifikat f\u00fcr die Server- \n\
 \toder Clientkonfiguration.
-
 #Note to translator the word "createSSLCertificate" should not be translated
 sslCert.usage.options=\t{0} createSSLCertificate '{--server=Servername |--client=Clientname'}\n\
 \t--password[=Kennwort] [Optionen]
@@ -162,12 +167,11 @@ sslCert.option-desc.keyType=\tOptional. Ein PKCS12-Keystore wird standardm\u00e4
 sslCert.option-key.ext=\ \ \ \ --extInfo=Erweiterungsinformationen f\u00fcr das Zertifikat
 sslCert.option-desc.ext=\tDie Zertifikatserweiterungsinformationen, die dem Zertifikat hinzugef\u00fcgt werden sollen.\n\
 \tDie Standarderweiterung ist ein alternativer Namenseintrag f\u00fcr das Subject, bei dem \n\
-\tder Hostname verwendet wird. \
-Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\
+\tder Hostname verwendet wird. Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\
 \t \
 Java-Befehl ''keytool''. Dieses Flag kann im Befehl mehrfach verwendet werden.\n\
 \ 
-
+line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
