@@ -208,7 +208,6 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: caught SYSTEMEXCEPTION as expected: " + sysex);
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: unexpected EXCEPTION: " + e);
-            throw new Exception();
         }
     }
 
