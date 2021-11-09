@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureRepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.configInAppTests.MPJwt12MPConfigInApp_Tests;
 import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_Algorithm;
@@ -79,7 +79,6 @@ import componenttest.rules.repeater.RepeatTests;
 
 })
 
-@SuppressWarnings("restriction")
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
@@ -91,6 +90,6 @@ public class FATSuite {
      * copy/use the proper version of some config files.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(MPJwt11FatConstants.MP_JWT_12));
 
 }
