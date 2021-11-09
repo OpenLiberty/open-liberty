@@ -47,12 +47,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
+import io.openliberty.netty.internal.tcp.TCPUtils;
+import io.openliberty.netty.internal.udp.UDPUtils;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -72,18 +76,17 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private static Queue<Callable<?>> serverStartedTasks = new LinkedBlockingQueue<>();
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
-    Set<Channel> activeChannels = ConcurrentHashMap.newKeySet();
+    private Set<Channel> activeChannels = ConcurrentHashMap.newKeySet();
 
-    protected EventLoopGroup parentGroup;
-    protected EventLoopGroup childGroup;
+    private EventLoopGroup parentGroup;
+    private EventLoopGroup childGroup;
 
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
     /**
-     * DS method for setting the required channel framework service. For now
-     * this reference is needed for access to EndPointMgr. That code will be split
-     * out.
+     * DS method for setting the required channel framework service. For now this
+     * reference is needed for access to EndPointMgr. That code will be split out.
      *
      * @param bundle
      */
@@ -163,7 +166,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             // set up future to log channel stopped messages
             for (Channel channel : activeChannels) {
                 channel.closeFuture().addListener(future -> {
-                    logChannelStopped(channel);
+                    stop(channel);
                 });
             }
             Future<?> parent = null;
@@ -290,8 +293,18 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
+    public BootstrapExtended createTCPBootstrapOutbound(Map<String, Object> tcpOptions) throws NettyException {
+        return TCPUtils.createTCPBootstrapOutbound(this, tcpOptions);
+    }
+
+    @Override
     public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
         return UDPUtils.createUDPBootstrap(this, options);
+    }
+
+    @Override
+    public BootstrapExtended createUDPBootstrapOutbound(Map<String, Object> options) throws NettyException {
+        return UDPUtils.createUDPBootstrapOutbound(this, options);
     }
 
     @Override
@@ -307,22 +320,37 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
+    public ChannelFuture startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+            ChannelFutureListener bindListener) throws NettyException {
+        if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
+            return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+        } else {
+            return UDPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+        }
+    }
+
+    @Override
     public ChannelFuture stop(Channel channel) {
-        if (isActive && channel.isOpen()) {
-            ChannelFuture closeFuture = channel.close();
-            activeChannels.remove(closeFuture.channel());
-            closeFuture.addListener(future -> {
-                if (!future.isSuccess()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        String channelName = channel.attr(ConfigConstants.NameKey).get();
-                        Tr.debug(tc,
-                                "channel " + channelName + " failed to stop due to: " + future.cause().getMessage());
+        if (activeChannels.contains(channel)) {
+            activeChannels.remove(channel);
+            if (isActive && channel.isOpen()) {
+                ChannelFuture closeFuture = channel.close();
+                closeFuture.addListener(future -> {
+                    if (!future.isSuccess()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            String channelName = channel.attr(ConfigConstants.NameKey).get();
+                            Tr.debug(tc,
+                                    "channel " + channelName + " failed to stop due to: " + future.cause().getMessage());
+                        }
+                    } else {
+                        logChannelStopped(channel);
                     }
-                } else {
-                    logChannelStopped(channel);
-                }
-            });
-            return closeFuture;
+                });
+                return closeFuture;
+            } else {
+                logChannelStopped(channel);
+                return null;
+            }
         } else {
             return null;
         }
@@ -330,13 +358,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public void stop(Channel channel, long timeout) {
-        if (this.isActive && channel.isOpen()) {
+        if (activeChannels.contains(channel)) {
             if (timeout == -1) {
                 timeout = getDefaultChainQuiesceTimeout();
             }
-            stop(channel).awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
-            activeChannels.remove(channel);
-            logChannelStopped(channel);
+            ChannelFuture future = stop(channel);
+            if (future != null) {
+                future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -359,8 +388,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // destroy covered by serverStopping
     }
 
+    public EventLoopGroup getParentGroup() {
+        return this.parentGroup;
+    }
+
+    public EventLoopGroup getChildGroup() {
+        return this.childGroup;
+    }
+
     private void logChannelStopped(Channel channel) {
-        if (channel instanceof NioServerSocketChannel) {
+        if (channel instanceof NioServerSocketChannel || channel instanceof NioSocketChannel) {
             TCPUtils.logChannelStopped(channel);
         } else if (channel instanceof NioDatagramChannel) {
             UDPUtils.logChannelStopped(channel);
