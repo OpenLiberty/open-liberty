@@ -129,7 +129,7 @@ public class BridgeBuilderImplTest {
     private BridgeBuilderImplTest withNoCachedProvider() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(providerFactory).getConfigProvider("HttpServlet", APP_CONTEXT, null);
+                exactly(2).of(providerFactory).getConfigProvider("HttpServlet", APP_CONTEXT, null);
                 will(returnValue(null));
             }
         });

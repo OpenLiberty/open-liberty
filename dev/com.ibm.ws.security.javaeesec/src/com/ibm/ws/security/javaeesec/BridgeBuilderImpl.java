@@ -55,22 +55,21 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
-            return;
-        }
-
-        // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
-        synchronized(this) {
+        } else {
             AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
-            if (authConfigProvider != null) {
-                // A provider was registered already for this application context.
-                return;
+            if (authConfigProvider == null) {
+                // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
+                synchronized (this) {
+                    authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
+                    if (authConfigProvider == null) {
+                        // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
+                        Map<String, String> props = new ConcurrentHashMap<String, String>();
+                        authConfigProvider = new AuthProvider(props, providerFactory);
+                        providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
+                    }
+                }
             }
-
-            // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
-            Map<String, String> props = new ConcurrentHashMap<String, String>();
-            authConfigProvider = new AuthProvider(props, providerFactory);
-            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
-        }
+        }        
     }
 
     @Override

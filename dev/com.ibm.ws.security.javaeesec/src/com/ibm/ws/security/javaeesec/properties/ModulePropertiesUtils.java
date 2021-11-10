@@ -40,8 +40,6 @@ public class ModulePropertiesUtils {
     private final Map<MetaData, HamObject> ModuleToHam = Collections.synchronizedMap(new WeakHashMap<MetaData, HamObject>());
     private final Map<MetaData, HamLookupObject> ModuleToHamLookup = Collections.synchronizedMap(new WeakHashMap<MetaData, HamLookupObject>());
 
-    private Boolean isHam = null;
-
     protected ModulePropertiesUtils() {}
 
     public static ModulePropertiesUtils getInstance() {
@@ -77,15 +75,11 @@ public class ModulePropertiesUtils {
     }
 
     public boolean isHttpAuthenticationMechanism() {
-        if (isHam == null) {
-            HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
-            if (ham != null) {
-                isHam = true;
-            } else {
-                isHam = false;
-            }
-        }
-        return isHam;
+        HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
+        if (ham != null) {
+            return true;
+        } 
+        return false;
     }
 
     public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
