@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -354,19 +355,9 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     private boolean isVariableCached(String variableName, Object variableValue) {
         if (variableCache.containsKey(variableName)) {
             Object cachedVariableValue = variableCache.get(variableName);
-            return isEqual(cachedVariableValue, variableValue);
+            return Objects.equals(cachedVariableValue, variableValue);
         } else {
             return false;
-        }
-    }
-
-    private static boolean isEqual(Object oldVariableValue, Object newVariableValue) {
-        if (oldVariableValue == null) {
-            return newVariableValue == null;
-        } else if (newVariableValue == null) {
-            return false;
-        } else {
-            return oldVariableValue.equals(newVariableValue);
         }
     }
 
@@ -374,7 +365,8 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      * Checks cached variable values against the current variable values.
      * Returns true if at least one variable has changed. False, otherwise.
      */
-    public synchronized boolean variablesChanged() {
+    public synchronized Map<String, DeltaType> variablesChanged() {
+        Map<String, DeltaType> changed = null;
         for (Map.Entry<String, Object> entry : variableCache.entrySet()) {
             String variableName = entry.getKey();
             Object oldVariableValue = entry.getValue();
@@ -391,14 +383,28 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 newVariableValue = lookupVariableDefaultValue(variableName);
             }
 
-            if (!isEqual(oldVariableValue, newVariableValue)) {
+            DeltaType deltaType = getDeltaType(oldVariableValue, newVariableValue);
+            if (deltaType != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Variable " + variableName + " has changed. ");
                 }
-                return true;
+                if (changed == null) {
+                    changed = new HashMap<>();
+                }
+                changed.put(variableName, deltaType);
             }
         }
-        return false;
+        return changed == null ? Collections.emptyMap() : changed;
+    }
+
+    DeltaType getDeltaType(Object oldValue, Object newValue) {
+        if (oldValue == null) {
+            return newValue != null ? DeltaType.ADDED : null;
+        }
+        if (newValue == null) {
+            return DeltaType.REMOVED;
+        }
+        return oldValue.equals(newValue) ? null : DeltaType.MODIFIED;
     }
 
     public String lookupVariableFromAdditionalSources(String variableName) {

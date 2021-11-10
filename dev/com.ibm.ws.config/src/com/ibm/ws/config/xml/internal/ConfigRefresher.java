@@ -258,7 +258,7 @@ public class ConfigRefresher {
         return true;
     }
 
-    // Entry point for refreshing configuration because of changes in file system variables
+    // Entry point for refreshing configuration because of changes in variables
     public void variableRefresh(Map<String, DeltaType> deltaMap) {
         doRefresh(deltaMap);
 

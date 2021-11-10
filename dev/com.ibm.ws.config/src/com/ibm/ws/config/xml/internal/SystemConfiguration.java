@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -28,6 +29,7 @@ import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -134,10 +136,13 @@ class SystemConfiguration {
         bc.registerService(CheckpointHookFactory.class, (p) -> new CheckpointHook() {
             @Override
             public void restore() {
-                try {
-                    reprocessConfig(true);
-                } catch (ConfigUpdateException e) {
-                    throw new RuntimeException(e);
+                if (serverXMLConfig.isModified()) {
+                    configRefresher.refreshConfiguration();
+                } else {
+                    Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
+                    if (!deltaTypes.isEmpty()) {
+                        configRefresher.variableRefresh(deltaTypes);
+                    }
                 }
             };
         }, null);
@@ -188,16 +193,12 @@ class SystemConfiguration {
             serverXMLConfig.loadInitialConfiguration(variableRegistry);
         }
 
-        reprocessConfig(false);
-    }
-
-    void reprocessConfig(boolean restoreHook) throws ConfigUpdateException {
-        if (serverXMLConfig.isModified() || variableRegistry.variablesChanged()) {
+        if (serverXMLConfig.isModified() || !variableRegistry.variablesChanged().isEmpty()) {
             variableRegistry.clearVariableCache();
             changeHandler.updateAtStartup(serverXMLConfig.getConfiguration());
             serverXMLConfig.setConfigReadTime();
             bundleProcessor.startProcessor(true);
-        } else if (!restoreHook) {
+        } else {
             bundleProcessor.startProcessor(false);
         }
     }
