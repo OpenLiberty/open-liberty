@@ -10,6 +10,7 @@
         padding: 8px 30px 8px 130px;
         display: flex;
         align-items: center;
+        height: 35px;
     }
     a
     {
@@ -35,7 +36,7 @@
 
     .filter-wrapper
     {
-        display: flex;
+        display: none;
 
         flex: 3;
 
