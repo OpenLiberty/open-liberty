@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 
 /**
@@ -35,6 +36,7 @@ public class ServletRequestInfoDebug {
     static final String DEBUG_REMOTE_ADDRESS = ", Remote Address=";
     static final String DEBUG_REMOTE_PORT = ", Remote Port=";
 
+    @Trivial
     static void logServerRequestInfo(HttpServletRequest req) {
         if (tc.isDebugEnabled() && req != null) {
             Tr.debug(tc, servletRequestInfo(req));
@@ -48,6 +50,7 @@ public class ServletRequestInfoDebug {
      * @return Returns a string that contains each parameter and it value(s)
      *         in the HttpServletRequest object.
      */
+    @Trivial
     static String servletRequestInfo(HttpServletRequest req) {
 
         StringBuffer sb = new StringBuffer(DEBUG_REQ_INFO_BUFSIZE);
@@ -91,6 +94,7 @@ public class ServletRequestInfoDebug {
      * @return Returns a string value for the given header in the HttpServletRequest object.
      *
      **/
+    @Trivial
     static String getHeader(HttpServletRequest req, String key) {
         HttpServletRequest sr = req;
         String header = null;
