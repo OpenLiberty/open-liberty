@@ -130,4 +130,9 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
     public Enumeration<URL> findResources(String resourceName) throws IOException {
         return Collections.<URL> enumeration(Collections.<URL> emptyList());
     }
+    
+    @Override
+    protected void addURL(URL url) {
+        super.addURL(url);
+    }
 }

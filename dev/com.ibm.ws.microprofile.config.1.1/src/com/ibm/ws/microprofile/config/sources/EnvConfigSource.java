@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,12 @@ import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 public class EnvConfigSource extends InternalConfigSource implements StaticConfigSource {
 
     private static final TraceComponent tc = Tr.register(EnvConfigSource.class);
+    private final String name;
+
+    @Trivial
+    public EnvConfigSource() {
+        name = Tr.formatMessage(tc, "environment.variables.config.source");
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -49,7 +55,7 @@ public class EnvConfigSource extends InternalConfigSource implements StaticConfi
     @Override
     @Trivial
     public String getName() {
-        return Tr.formatMessage(tc, "environment.variables.config.source");
+        return name;
     }
 
     /** {@inheritDoc} */

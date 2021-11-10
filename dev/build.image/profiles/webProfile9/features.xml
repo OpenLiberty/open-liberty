@@ -1,0 +1,10 @@
+<feature>webProfile-9.1</feature>
+<feature>monitor-1.0</feature>
+<feature>ldapRegistry-3.0</feature>
+<feature>localConnector-1.0</feature>
+<feature>restConnector-2.0</feature>
+<feature>transportSecurity-1.0</feature>
+<feature>sessionCache-1.0</feature>
+<feature>sessionDatabase-1.0</feature>
+<feature>webCache-1.0</feature>
+<feature>requestTiming-1.0</feature>

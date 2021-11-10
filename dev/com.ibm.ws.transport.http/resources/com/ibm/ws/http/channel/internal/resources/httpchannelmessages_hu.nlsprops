@@ -190,4 +190,16 @@ config.hsts.invalid.max.age.value.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a
 
 config.hsts.missing.max.age=CWWKT0041W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt [{0}] be\u00e1ll\u00edt\u00e1s\u00e1ra Szigor\u00fa sz\u00e1ll\u00edt\u00e1si biztons\u00e1g (HSTS) fejl\u00e9ck\u00e9nt. Ez a konfigur\u00e1ci\u00f3 nem tartalmazza a k\u00f6telez\u0151 max-age el\u0151\u00edr\u00e1st. Az a konfigur\u00e1ci\u00f3, amely nem tartalmaz max-age el\u0151\u00edr\u00e1st, \u00e9rv\u00e9nytelen \u00e9s nem haszn\u00e1lhat\u00f3.
 config.hsts.missing.max.age.explanation=A megadott konfigur\u00e1ci\u00f3nak tartalmaznia kell egy nem negat\u00edv eg\u00e9sz sz\u00e1m \u00e9rt\u00e9ket tartalmaz\u00f3 max-age el\u0151\u00edr\u00e1st.
-config.hsts.missing.max.age.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3 tartalmazzon egy nem negat\u00edv eg\u00e9sz sz\u00e1m \u00e9rt\u00e9k\u0171 max-age el\u0151\u00edr\u00e1st. 
+config.hsts.missing.max.age.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3 tartalmazzon egy nem negat\u00edv eg\u00e9sz sz\u00e1m \u00e9rt\u00e9k\u0171 max-age el\u0151\u00edr\u00e1st.
+
+headers.emptyName=CWWKT0042W: A(z) {0} konfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9sekor \u00fcres fejl\u00e9cnevet tal\u00e1lt a rendszert. Ez az \u00e9rt\u00e9k figyelmen k\u00edv\u00fcl marad.
+headers.emptyName.explanation=A megadott fejl\u00e9cn\u00e9v egy \u00fcres karaktersorozat. A fejl\u00e9cn\u00e9v nem lehet \u00fcres. 
+headers.emptyName.useraction=Gondoskodj\u00e9k r\u00f3la, hogy ne legyen \u00fcres fejl\u00e9cn\u00e9v. 
+
+headers.duplicateHeaderName=CWWKT0043W: A(z) [{0}] fejl\u00e9cben a(z) {1} konfigur\u00e1ci\u00f3 haszn\u00e1latakor t\u00f6bbsz\u00f6r szerepl\u0151 fejl\u00e9cnevet tal\u00e1lt a rendszer. A(z) [{0}] fejl\u00e9c \u00f6sszes konfigur\u00e1ci\u00f3ja figyelmen k\u00edv\u00fcl marad. A remove, add, set vagy setIfMissing konfigur\u00e1ci\u00f3k \u00e1ltal meghat\u00e1rozott egyes fejl\u00e9ceknek az \u00f6sszes konfigur\u00e1ci\u00f3ra kiterjed\u0151en egyedinek kell lenni\u00fck.
+headers.duplicateHeaderName.explanation=A megadott fejl\u00e9cn\u00e9v m\u00e1r kor\u00e1bban be\u00e1ll\u00edt\u00e1sra ker\u00fclt a Headers \u00f6sszetev\u0151 egy m\u00e1sik konfigur\u00e1ci\u00f3j\u00e1ban.
+headers.duplicateHeaderName.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a remove, add, set vagy setIfMissing konfigur\u00e1ci\u00f3k \u00e1ltal meghat\u00e1rozott fejl\u00e9cek ne legyenek jelen egyn\u00e9l t\u00f6bb konfigur\u00e1ci\u00f3ban.
+
+headers.knownDuplicateHeader=CWWKT0044W: A t\u00f6bbsz\u00f6r szerepl\u0151 fejl\u00e9cn\u00e9vk\u00e9nt megjel\u00f6lt [{0}] fejl\u00e9c megtal\u00e1lhat\u00f3 a(z) {1} konfigur\u00e1ci\u00f3ban. A(z) [{0}] fejl\u00e9c figyelmen k\u00edv\u00fcl marad. A(z) {1} konfigur\u00e1ci\u00f3 \u00e1ltal meghat\u00e1rozott fejl\u00e9ceknek egyedi fejl\u00e9cnevet kell tartalmazniuk.
+headers.knownDuplicateHeader.explanation=A megadott fejl\u00e9cn\u00e9v m\u00e1r megtal\u00e1lhat\u00f3 remove, add, set vagy setIfMissing konfigur\u00e1ci\u00f3kban.
+headers.knownDuplicateHeader.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az adott konfigur\u00e1ci\u00f3ban megadott fejl\u00e9cnevek egyediek legyenek a remove, add, set vagy setIfMissing konfigur\u00e1ci\u00f3kra kiterjed\u0151en. 

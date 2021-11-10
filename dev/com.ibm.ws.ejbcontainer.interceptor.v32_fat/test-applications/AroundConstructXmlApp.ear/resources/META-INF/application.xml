@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application id="Application_ID" version="6"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+   <application-name>AroundConstructXmlApp</application-name>
+   <display-name>AroundConstructXmlApp.ear</display-name>
+   <module>
+      <ejb>AroundConstructXmlEJB.jar</ejb>
+   </module>
+   <module>
+      <web>
+          <web-uri>AroundConstructXmlWeb.war</web-uri>
+          <context-root>/AroundConstructXmlApp</context-root>
+      </web>
+   </module>
+</application>

@@ -204,26 +204,31 @@ public class LDAPFatUtils {
     }
 
     /**
-     * Convenience method to create an LdapRegistry configuration object for Oracle / Sun LDAP server
+     * Convenience method to create an LdapRegistry configuration object for InMemorySunLDAPServer
      * and if provided a {@link ServerConfiguration} instance add it to the list of LDAP registries.
      *
      * @param  serverConfiguration The {@link ServerConfiguration} instance. Can be null.
      * @param  id                  The registry ID. Can be null.
      * @param  realm               The realm name. Can be null.
+     * @param  name                The name of the Ldap registry
+     * @param  ldapPort            The port of the ldap server
+     * @param  bindDN              The bindDN of the ldap server
+     * @param  bindPwd             The password of the ldap server
      * @return                     The LdapRegistry instance.
      */
-    public static LdapRegistry createSunLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm, String name) {
+    public static LdapRegistry createSunLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm, String name, String ldapPort, String bindDN,
+                                                     String bindPwd) {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setId(id);
         ldap.setRealm(realm);
         ldap.setName(name);
         ldap.setLdapType("Sun Java System Directory Server");
         ldap.setBaseDN("dc=rtp,dc=raleigh,dc=ibm,dc=com");
-        ldap.setHost("${ldap.server.13.name}");
-        ldap.setPort("${ldap.server.13.port}");
+        ldap.setHost("localhost");
+        ldap.setPort(ldapPort);
+        ldap.setBindDN(bindDN);
+        ldap.setBindPassword(bindPwd);
         ldap.setSearchTimeout("8m");
-
-        ldap.setFailoverServer(new FailoverServers("failoverLdapServers", new String[][] { { "${ldap.server.3.name}", "${ldap.server.3.port}" } }));
 
         if (serverConfiguration != null) {
             serverConfiguration.getLdapRegistries().add(ldap);

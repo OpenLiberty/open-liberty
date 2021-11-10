@@ -154,6 +154,7 @@ Include-Resource: \
 
 -dependson: com.ibm.ws.org.codehaus.jackson
 
+instrument.ffdc: false
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 	org/apache/cxf/common/util/UrlUtils.class
 

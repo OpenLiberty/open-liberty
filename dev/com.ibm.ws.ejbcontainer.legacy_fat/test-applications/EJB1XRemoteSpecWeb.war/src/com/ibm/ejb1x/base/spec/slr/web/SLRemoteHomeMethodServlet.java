@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,7 @@ public class SLRemoteHomeMethodServlet extends FATServlet {
     public void initializeHomes() {
         try {
 
-            fhome1 = FATHelper.lookupRemoteBinding(ejbJndiName1, SLRaHome.class);
+            fhome1 = FATHelper.lookupRemoteHomeBinding(ejbJndiName1, SLRaHome.class);
 
         } catch (NamingException e) {
             throw new RuntimeException(e);

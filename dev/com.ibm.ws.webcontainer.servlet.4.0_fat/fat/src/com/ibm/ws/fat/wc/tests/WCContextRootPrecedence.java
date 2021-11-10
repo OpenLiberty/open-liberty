@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -24,10 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -35,6 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * WCContextRootPrecedence class tests the precedences of the context root. It
@@ -131,7 +125,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootServerXmlPrecedence() throws Exception {
-        verifyStringInResponse("/ServerContextRoot", "/", "Simple HTML page - TestContextRootServerXmlPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/ServerContextRoot/", "Simple HTML page - TestContextRootServerXmlPrecedence");
     }
 
     /**
@@ -144,7 +138,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootEARAppPrecedence() throws Exception {
-        this.verifyStringInResponse("/ApplicationContextRoot", "/", "Simple HTML page - TestContextRootEARAppPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/ApplicationContextRoot/", "Simple HTML page - TestContextRootEARAppPrecedence");
     }
 
     /**
@@ -157,7 +151,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootWebExtPrecedence() throws Exception {
-        verifyStringInResponse("/WebExtContextRoot", "/", "Simple HTML page - TestContextRootWebExtPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/WebExtContextRoot/", "Simple HTML page - TestContextRootWebExtPrecedence");
     }
 
     /**
@@ -170,7 +164,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootAppNamePrecedence() throws Exception {
-        verifyStringInResponse("/AppNameContextRoot", "/", "Simple HTML page - TestContextRootAppNamePrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/AppNameContextRoot/", "Simple HTML page - TestContextRootAppNamePrecedence");
     }
 
     /**
@@ -182,7 +176,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testDefaultContextPathElementPrecedence() throws Exception {
-        verifyStringInResponse("/WebDefaultContextPath", "/", "Simple HTML page - TestDefaultContextPathPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/WebDefaultContextPath/", "Simple HTML page - TestDefaultContextPathPrecedence");
     }
 
     /**
@@ -195,8 +189,7 @@ public class WCContextRootPrecedence {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootDirOrFileNamePrecedence() throws Exception {
-        verifyStringInResponse("/TestContextRootDirOrFileNamePrecedence", "/",
-                               "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/TestContextRootDirOrFileNamePrecedence/", "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
     }
 
     /**
@@ -228,22 +221,4 @@ public class WCContextRootPrecedence {
         server.findStringsInLogs(
                                  "CWWKZ0002E:.*TestDefaultContextPathWithEndSlashInvalidCase.*CWWKC2257E:.*default-context-path");
     }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
-
-    }
-
 }

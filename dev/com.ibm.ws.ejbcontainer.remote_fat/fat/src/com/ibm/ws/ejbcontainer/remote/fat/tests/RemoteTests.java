@@ -155,6 +155,16 @@ public class RemoteTests extends AbstractTest {
 
         ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteEJB, DeployOptions.SERVER_ONLY);
 
+        //#################### CrossApp2xTest.ear
+        JavaArchive CrossApp2xEJB = ShrinkHelper.buildJavaArchive("CrossApp2xEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.home2x.ejb.");
+        CrossApp2xEJB = (JavaArchive) ShrinkHelper.addDirectory(CrossApp2xEJB, "test-applications/CrossApp2xEJB.jar/resources");
+
+        EnterpriseArchive CrossApp2xTest = ShrinkWrap.create(EnterpriseArchive.class, "CrossApp2xTest.ear");
+        CrossApp2xTest.addAsModule(CrossApp2xEJB).addAsLibraries(CrossAppRemoteSharedJar);
+        CrossApp2xTest = (EnterpriseArchive) ShrinkHelper.addDirectory(CrossApp2xTest, "test-applications/CrossApp2xTest.ear/resources");
+
+        ShrinkHelper.exportDropinAppToServer(server, CrossApp2xTest, DeployOptions.SERVER_ONLY);
+
         //#################### EJBHome2xTest.ear
         JavaArchive EJBHome2xTestEJB = ShrinkHelper.buildJavaArchive("EJBHome2xTestEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.home2x.ejb.");
         EJBHome2xTestEJB = (JavaArchive) ShrinkHelper.addDirectory(EJBHome2xTestEJB, "test-applications/EJBHome2xTestEJB.jar/resources");

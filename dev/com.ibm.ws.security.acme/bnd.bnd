@@ -26,11 +26,10 @@ Bundle-Description: ACME 2.0; version=${bVersion}
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.acme.internal.jar
-#JakartaEE-Bundle-Name: ACME 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.acme.internal
-#JakartaEE-Bundle-Description: ACME 2.0; Jakarta enabled
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.acme.internal.jar
+jakartaFinalBundleName: ACME 2.0
+jakartaFinalBundleId: io.openliberty.security.acme.internal
+jakartaFinalBundleDescription: ACME 2.0; Jakarta Enabled
 
 WS-TraceGroup: ACMECA
 
@@ -56,8 +55,9 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
     @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
     @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
-    @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
-    @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
     org=${bin}/org
 
@@ -101,9 +101,10 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.ws.org.slf4j.api.1.7.7,\
 	org.shredzone.acme4j:acme4j-client;version=2.7,\
 	org.shredzone.acme4j:acme4j-utils;version=2.7,\
-	org.bouncycastle:bcprov-jdk15on;version=1.61,\
-	org.bouncycastle:bcpkix-jdk15on;version=1.61,\
-	org.bitbucket.b_c:jose4j;version=0.6.5,\
+	org.bouncycastle:bcprov-jdk15on;version=1.69,\
+	org.bouncycastle:bcpkix-jdk15on;version=1.69,\
+	org.bouncycastle:bcutil-jdk15on;version=1.69,\
+ 	org.bitbucket.b_c:jose4j;version=0.6.5,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.crypto.certificateutil;version=latest,\

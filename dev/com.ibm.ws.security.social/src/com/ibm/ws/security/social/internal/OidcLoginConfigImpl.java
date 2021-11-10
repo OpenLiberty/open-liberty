@@ -33,6 +33,7 @@ import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
@@ -126,6 +127,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
     public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
     private List<String> forwardLoginParameter = null;
+    public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
+    private String keyManagementKeyAlias = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -203,6 +206,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         jwkRequestParamMap = populateCustomRequestParameterMap(props, KEY_JWK_PARAM);
 
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
+        keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -399,6 +403,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT + " = " + includeCustomCacheKeyInSubject);
             Tr.debug(tc, KEY_resource + " = " + resource);
             Tr.debug(tc, CFG_KEY_FORWARD_LOGIN_PARAMETER + " = " + forwardLoginParameter);
+            Tr.debug(tc, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS + " = " + keyManagementKeyAlias);
         }
     }
 
@@ -896,11 +901,17 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
     @Override
     public String getKeyManagementKeyAlias() {
-        return null;
+        return keyManagementKeyAlias;
     }
 
     @Override
+    @Sensitive
     public Key getJweDecryptionKey() throws GeneralSecurityException {
+        String keyAlias = getKeyManagementKeyAlias();
+        if (keyAlias != null) {
+            String keyStoreRef = getKeyStoreRef();
+            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        }
         return null;
     }
 

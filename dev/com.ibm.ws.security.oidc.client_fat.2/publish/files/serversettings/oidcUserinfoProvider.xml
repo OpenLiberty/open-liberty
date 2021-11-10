@@ -1,0 +1,150 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigHS256O"
+		scope="myScopeSample"
+		signatureAlgorithm="HS256"
+		oauthProviderRef="OAuthConfigHS256O" />
+
+	<oauthProvider
+		id="OAuthConfigHS256O"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="false"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs256O,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/hs256IO,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/hs256UO"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+	
+	<openidConnectProvider
+		id="OidcConfigHS256J"
+		scope="myScopeSample"
+		signatureAlgorithm="HS256"
+		oauthProviderRef="OAuthConfigHS256J" />
+
+	<oauthProvider
+		id="OAuthConfigHS256J"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs256J,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/hs256IJ,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/hs256UJ"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigRS256O"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAliasName="rs256"
+		oauthProviderRef="OAuthConfigRS256O" />
+
+	<oauthProvider
+		id="OAuthConfigRS256O"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="false"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256O,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256IO,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256UO"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigRS256J"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAliasName="rs256"
+		oauthProviderRef="OAuthConfigRS256J" />
+
+	<oauthProvider
+		id="OAuthConfigRS256J"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="false"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256J,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256IJ,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256UJ"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+											
+</server>

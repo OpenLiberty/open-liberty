@@ -22,5 +22,5 @@ define({
         TOOL_URL_INVALID: "Az URL érvénytelen. Mégis hozzáadja a könyvjelzőt?",
         TOOL_URL_INACCESSIBLE: "Az URL nem érhető el. Mégis hozzáadja a könyvjelzőt?",
         TOOL_DUPLICATE: "A könyvjelző már létezik. Adjon meg egy egyedi nevet.",
-        TOOL_BADREQUEST: "Hiba történt a könyvjelzőnek az eszközkészlethez hozzáadása során: {0}."
+        TOOL_BADREQUEST: "A könyvjelző nem vehető föl az eszközkészletbe a következő hiba miatt:  {0}."
 });

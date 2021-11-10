@@ -366,32 +366,22 @@ public class ArtifactDownloader implements AutoCloseable {
     }
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
-        OutputStream out = null;
-        URLConnection conn;
-        InputStream in = null;
-        try {
-            URL url = address.toURL();
-            try {
-                out = new BufferedOutputStream(new FileOutputStream(destination));
-            } catch (FileNotFoundException e) {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
-                                                 destination.toString());
-            }
-
-            if (envMap.get("https.proxyHost") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-                conn = url.openConnection(proxy);
-            } else if (envMap.get("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                conn = url.openConnection(proxy);
-            } else {
-                conn = url.openConnection();
-            }
-            addBasicAuthentication(address, conn, repository);
-            final String userAgentValue = calculateUserAgent();
-            conn.setRequestProperty("User-Agent", userAgentValue);
-            conn.connect();
-            in = conn.getInputStream();
+        Proxy proxy;
+        if (envMap.get("https.proxyHost") != null) {
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+        } else if (envMap.get("http.proxyUser") != null) {
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
+        } else {
+            proxy = Proxy.NO_PROXY;
+        }
+        URL url = address.toURL();
+        URLConnection conn = url.openConnection(proxy);
+        addBasicAuthentication(address, conn, repository);
+        final String userAgentValue = calculateUserAgent();
+        conn.setRequestProperty("User-Agent", userAgentValue);
+        conn.connect();
+        File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
+        try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile))) {
             byte[] buffer = new byte[BUFFER_SIZE];
             int numRead;
             long progressCounter = 0;
@@ -402,13 +392,15 @@ public class ArtifactDownloader implements AutoCloseable {
                 }
                 out.write(buffer, 0, numRead);
             }
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
+
+        } catch (FileNotFoundException e) {
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
+                                             destination.toString());
+        }
+
+        if (destination.exists() || !tempFile.renameTo(destination)) {
+            logger.fine("Could not rename " + tempFile.getName() + " to: " + destination.getName());
+            tempFile.delete();
         }
     }
 

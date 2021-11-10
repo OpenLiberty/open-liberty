@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,20 +15,15 @@ Bundle-SymbolicName: io.openliberty.jakarta.xmlBinding.3.0; singleton:=true
 
 Export-Package: jakarta.xml.bind.*;version="3.0"
 
-#Private-Package: org.apache.geronimo.osgi.locator
-
 Import-Package: \
   jakarta.activation, \
   javax.xml.namespace, \
   javax.xml.stream, \
-  org.apache.geronimo.osgi.registry.api;resolution:=optional,\
-  !org.glassfish.hk2.osgiresourcelocator,\
+  org.glassfish.hk2.osgiresourcelocator, \
   *
 
 DynamicImport-Package: \
   org.glassfish.jaxb.*
-
-#Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 
 Include-Resource:\
   @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
@@ -40,4 +35,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=3.0.1
+	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=3.0.1,\
+	io.openliberty.org.glassfish.hk2.osgi-resource-locator

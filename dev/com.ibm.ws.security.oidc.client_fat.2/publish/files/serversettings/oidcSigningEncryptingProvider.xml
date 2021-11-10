@@ -1,0 +1,111 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSigningEncrypting"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthConfigSigningEncrypting" />
+
+	<oauthProvider
+		id="OAuthConfigSigningEncrypting"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptES256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptES384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptES512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/invalidKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/nonExistantKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/omittedKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptShortRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptPublicRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_trustStoreRefOmitted,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_sslRefOmitted"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+							
+</server>
+

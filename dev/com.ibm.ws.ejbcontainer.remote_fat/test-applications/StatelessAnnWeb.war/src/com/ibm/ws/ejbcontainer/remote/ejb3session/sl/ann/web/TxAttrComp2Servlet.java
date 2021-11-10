@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.TransactionRequiredException;
 import javax.transaction.UserTransaction;
@@ -40,7 +39,6 @@ import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.TxAttrEJBLocal;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.TxAttrEJBLocalHome;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -116,7 +114,7 @@ public class TxAttrComp2Servlet extends FATServlet {
 
         try {
             slHome = (TxAttrEJBLocalHome) FATHelper.lookupDefaultBindingEJBJavaApp(interfaceName, Module, beanName);
-            slHome2 = (TxAttrEJBHome) PortableRemoteObject.narrow(FATHelper.lookupDefaultBindingEJBJavaApp(remoteInterfaceName, Module, beanName), TxAttrEJBHome.class);
+            slHome2 = (TxAttrEJBHome) FATHelper.lookupDefaultBindingEJBJavaApp(remoteInterfaceName, Module, beanName);
         } catch (NamingException ne) {
             throw new RuntimeException(ne);
         }
@@ -327,8 +325,6 @@ public class TxAttrComp2Servlet extends FATServlet {
      * javax.transaction.TransactionRequiredException.
      */
     @Test
-    // TODO: Remove Skip when #17742 is fixed
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRequiredException" })
     public void testMandatoryAttribThrowsExcp_TxAttrComp2() throws Exception {
         try {

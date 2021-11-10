@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     ApplicationProcessorTest.class,
     CacheTest.class,
-    DeploymentTest.class
+    DeploymentTest.class,
+    MergeConfigTest.class,
+    MergeTest.class
 })
 public class FATSuite {
 }

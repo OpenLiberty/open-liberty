@@ -1518,6 +1518,29 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
     }
 
     /**
+     * Method to create a remote home reference object. Once the client
+     * reference (stub) is found, it is then passed through the EJSWrapperCommon
+     * to perform a narrow.
+     *
+     */
+    public Object createRemoteHomeObject() throws RemoteException, CreateException {
+        EJSWrapperCommon wc = getWrapper();
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "createRemoteHomeObject: " + wc);
+
+        Object result;
+
+        Object stub = getContainer().getEJBRuntime().getRemoteReference(wc.getRemoteWrapper());
+        result = wc.getRemoteHomeObject(stub, getBeanMetaData().homeInterfaceClass);
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc,
+                    "createRemoteHomeObject returning: " + Util.identity(result));
+        return result;
+    }
+
+    /**
      * Method to create a remote business reference object. Once the index
      * of the interface is found, it is then passed through the EJSWrapperCommon
      * for the rest of the logic.
@@ -3279,7 +3302,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
         return homeRecord;
     }
 
-    private final ReentrantLock createSingletonLock = new ReentrantLock();
+    private transient final ReentrantLock createSingletonLock = new ReentrantLock();
 
     /**
      * Create the Singleton bean instance if it doesn't

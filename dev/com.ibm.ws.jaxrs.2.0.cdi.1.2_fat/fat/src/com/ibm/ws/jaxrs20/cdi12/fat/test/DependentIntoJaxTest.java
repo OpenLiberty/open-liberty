@@ -10,13 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.test;
 
-import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +33,7 @@ public class DependentIntoJaxTest extends AbstractTest {
     @BeforeClass
     public static void setUp() throws Exception {
         appname = "DependentIntoJax";
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname, "com.ibm.ws.jaxrs20.cdi12.fat.dependentintojax");
+        ShrinkHelper.defaultDropinApp(server, appname, "com.ibm.ws.jaxrs20.cdi12.fat.dependentintojax");
         server.startServer();
     }
 

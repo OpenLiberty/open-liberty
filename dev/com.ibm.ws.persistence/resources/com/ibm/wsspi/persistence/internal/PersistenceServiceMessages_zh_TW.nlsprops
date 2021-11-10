@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=DatabaseStore \u5df2\u8a18\u8f09\u9019\u5247\u932f\u8aa4\u8a0a\u606f\u3002
 PROVIDER_ERROR_CWWKD0292E.useraction=\u8acb\u53c3\u95b1 DatabaseStore \u8aaa\u660e\u6587\u4ef6\u3002
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: \u4e0d\u652f\u63f4\u6240\u914d\u7f6e\u7684\u4ea4\u6613\u9694\u96e2\u5c64\u6b21 {0}\u3002
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=\u76f8\u95dc\u806f\u7684\u8cc7\u6599\u5eab\u9a45\u52d5\u7a0b\u5f0f\u4e0d\u652f\u63f4\u6240\u8981\u6c42\u7684\u9694\u96e2\u5c64\u6b21\u3002
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=\u8acb\u8b8a\u66f4\u9694\u96e2\u5c64\u6b21\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21\u3002
+

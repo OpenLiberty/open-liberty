@@ -28,6 +28,8 @@ dependencies {
   enterpriseBeansTools 'test:io.openliberty.ejbcontainer.jakarta.fat_tools:1.+'
   // Dependencies needed for when running on Java 9 (EE-type APIs were removed from JDK)
   requiredLibs 'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.31ef0b15cf'
+  // Dependencies needed for InvalidTransactionLocalException
+  requiredLibs project(':com.ibm.ws.ejbcontainer.core')
 }
 
 task addEJBTools {

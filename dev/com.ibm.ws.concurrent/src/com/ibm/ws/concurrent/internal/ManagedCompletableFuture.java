@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,6 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Extension to CompletableFuture for managed executors.
@@ -464,8 +463,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             contextDescriptor = r.getContextDescriptor();
             action = r.getAction();
         } else if (executor instanceof WSManagedExecutorService) {
-            WSContextService contextSvc = ((WSManagedExecutorService) executor).getContextService();
-            contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
         } else {
             contextDescriptor = null;
         }
@@ -514,8 +512,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             contextDescriptor = s.getContextDescriptor();
             action = s.getAction();
         } else if (executor instanceof WSManagedExecutorService) {
-            WSContextService contextSvc = ((WSManagedExecutorService) executor).getContextService();
-            contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
         } else {
             contextDescriptor = null;
         }
@@ -697,9 +694,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (managedExecutor == null)
             return null;
 
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = managedExecutor.getContextService().captureThreadContext(XPROPS_SUSPEND_TRAN);
-        return contextDescriptor;
+        return managedExecutor.captureThreadContext(XPROPS_SUSPEND_TRAN);
     }
 
     /**
@@ -1080,11 +1075,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#newIncompleteFuture()
      */
-    public CompletableFuture<T> newIncompleteFuture() {
+    public <R> CompletableFuture<R> newIncompleteFuture() {
         if (JAVA8)
-            return new ManagedCompletableFuture<T>(new CompletableFuture<T>(), defaultExecutor, null);
+            return new ManagedCompletableFuture<R>(new CompletableFuture<R>(), defaultExecutor, null);
         else
-            return new ManagedCompletableFuture<T>(defaultExecutor, futureRefLocal.get());
+            return new ManagedCompletableFuture<R>(defaultExecutor, futureRefLocal.get());
     }
 
     /**

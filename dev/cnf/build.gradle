@@ -25,7 +25,7 @@ dependencies {
     binaries "commons-io:commons-io:2.8.0"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
-    binaries "org.eclipse.jdt.core.compiler:ecj:4.3.1"
+    binaries "org.eclipse.jdt:ecj:3.22.0"
     binaries "org.ow2.asm:asm-all:5.2"
     binaries "org.jsoup:jsoup:1.7.2"
     binaries "com.ibm.ws.javax.j2ee:servlet:3.1"

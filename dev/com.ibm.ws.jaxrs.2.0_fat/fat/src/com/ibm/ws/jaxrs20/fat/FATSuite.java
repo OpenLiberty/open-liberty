@@ -51,6 +51,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JerseyTest.class,
                 JerseyInjectionTest.class,
                 LinkHeaderTest.class,
+                MediaTypeTest.class,
                 MultipartTest.class,
                 ManagedBeansTest.class,
                 OptionsTest.class,

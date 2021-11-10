@@ -102,8 +102,11 @@ public class URAPIs_ADWildCardTest {
         String user = "vmmtestuser";
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPassword", "Checking good credentials");
+
+        String userReturned = servlet.checkPassword(user, password);
+        assertNotNull("Authentication should succeed.", userReturned);
         assertEquals("Authentication should succeed.",
-                     "cn=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.checkPassword(user, password).toLowerCase());
+                     "cn=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", userReturned.toLowerCase());
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 

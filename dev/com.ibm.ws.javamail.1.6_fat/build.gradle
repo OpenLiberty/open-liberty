@@ -22,3 +22,15 @@ dependencies {
                'com.sun.xml.bind:jaxb-core:2.2.+',
                'com.sun.xml.bind:jaxb-impl:2.2.+'
 }
+
+
+
+task addRestConnector(type: Copy) {
+  shouldRunAfter jar
+  from buildImage.file('wlp/clients/restConnector.jar')
+  into new File(autoFvtDir, 'lib')
+}
+
+addRequiredLibraries {
+  dependsOn addRestConnector
+}

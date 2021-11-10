@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.internal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -24,6 +25,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -60,14 +62,14 @@ class ContextualDefaultExecutor implements Executor, WSManagedExecutorService {
     }
 
     @Override
-    public void execute(Runnable command) {
-        defaultManagedExecutor.getNormalPolicyExecutor().execute(command);
+    @SuppressWarnings("unchecked")
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        return contextService.captureThreadContext(props);
     }
 
     @Override
-    @Trivial
-    public WSContextService getContextService() {
-        return contextService;
+    public void execute(Runnable command) {
+        defaultManagedExecutor.getNormalPolicyExecutor().execute(command);
     }
 
     @Override

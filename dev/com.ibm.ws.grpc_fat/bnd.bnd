@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.38.1
-nettyVersion=4.1.66.Final
+nettyVersion=4.1.68.Final
 
 src: \
     fat/src,\
@@ -72,7 +72,6 @@ tested.features:\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-    xml-apis:xml-apis;version=1.4.01,\
     com.google.protobuf:protobuf-java;version=3.13.0, \
     com.google.protobuf:protobuf-java-util;version=3.11.4, \
     com.ibm.websphere.javaee.jaxrs.2.1,\
@@ -80,3 +79,4 @@ tested.features:\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
     com.ibm.websphere.javaee.jsonb.1.0;version=latest
+

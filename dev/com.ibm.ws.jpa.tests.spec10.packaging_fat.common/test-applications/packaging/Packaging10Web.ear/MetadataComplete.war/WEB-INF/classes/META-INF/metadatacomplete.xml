@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+
+    <mapped-superclass
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.entities.MDCMappedSuperclass"
+        metadata-complete="true">
+        <attributes>
+            <id name="id" />
+            <basic name="name">
+                <column length="30" />
+            </basic>
+        </attributes>
+    </mapped-superclass>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.entities.MDCEmbedEntity"
+        metadata-complete="true">
+        <attributes>
+            <id name="id" />
+            <embedded name="embeddable"></embedded>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.entities.MDCMSCEntity"></entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.entities.MDCEntity"
+        metadata-complete="true">
+        <attributes>
+            <id name="id" />
+            <basic name="name">
+                <column length="30" />
+            </basic>
+        </attributes>
+    </entity>
+    <embeddable
+        class="com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.entities.MDCEmbeddable"
+        metadata-complete="true">
+        <attributes>
+            <basic name="name">
+                <column length="30" />
+            </basic>
+        </attributes>
+    </embeddable>
+</entity-mappings>

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -91,6 +91,7 @@ Export-Package: \
   org.apache.myfaces.context.servlet;thread-context=true, \
   org.apache.myfaces.config.annotation;thread-context=true, \
   org.apache.myfaces.config.impl.digester.elements;thread-context=true, \
+  org.apache.myfaces.el.convert;thread-context=true,\
   org.apache.myfaces.flow;thread-context=true, \
   org.apache.myfaces.flow.cdi;thread-context=true, \
   org.apache.myfaces.lifecycle;thread-context=true, \
@@ -185,4 +186,6 @@ instrument.ffdc: false
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  io.openliberty.el.internal.cdi;version=latest
+

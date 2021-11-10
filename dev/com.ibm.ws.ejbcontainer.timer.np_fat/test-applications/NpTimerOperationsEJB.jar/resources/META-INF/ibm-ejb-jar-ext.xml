@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd" version="1.0">
+
+  <session name="StatefulBean">
+      <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+</ejb-jar-ext>

@@ -33,14 +33,15 @@
         <AD name="%client.inactivity.timeout" description="%client.inactivity.timeout.desc"
             id="clientInactivityTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
+		<!-- heuristicRetryInterval is a synonym for heuristicRetryWait -->
         <AD name="%heuristic.retry.interval" description="%heuristic.retry.interval.desc"
             id="heuristicRetryInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
-        <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
-            id="heuristicRetryWait" required="false" type="Integer" default="5" />
+        <AD name="%heuristic.retry.interval" description="%heuristic.retry.interval.desc"
+            id="heuristicRetryWait" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
         <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
-            id="heuristicRetryLimit" required="false" type="Integer" default="5" />
+            id="heuristicRetryLimit" required="false" type="Integer" default="0" />
 
         <AD name="%max.transaction.timeout" description="%max.transaction.timeout.desc"
             id="propogatedOrBMTTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />

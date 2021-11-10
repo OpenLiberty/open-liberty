@@ -10,7 +10,8 @@
  *******************************************************************************/
 /**
  * Provides the classes necessary to encode or decode the sensitive data.
- * @version 1.3.0
+ *
+ * @version 1.4.0
  */
-@org.osgi.annotation.versioning.Version("1.3.0")
+@org.osgi.annotation.versioning.Version("1.4.0")
 package com.ibm.websphere.crypto;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,10 +32,17 @@ public class SystemConfig14Source extends InternalConfigSource implements Extend
     private static final TraceComponent tc = Tr.register(SystemConfig14Source.class);
     static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
+    private final String name;
+
+    @Trivial
+    public SystemConfig14Source() {
+        name = Tr.formatMessage(tc, "system.properties.config.source");
+    }
+
     @Override
     @Trivial
     public String getName() {
-        return Tr.formatMessage(tc, "system.properties.config.source");
+        return name;
     }
 
     /** {@inheritDoc} */

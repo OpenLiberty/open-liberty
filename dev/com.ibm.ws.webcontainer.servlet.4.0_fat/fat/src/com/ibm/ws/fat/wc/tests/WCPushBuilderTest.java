@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -21,14 +18,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Note this is a basic test to ensure newPushBuilder() returns null for non H2 requests.
@@ -62,24 +56,7 @@ public class WCPushBuilderTest {
 
     @Test
     public void testPushBuilderAPI() throws Exception {
-        verifyStringInResponse("/TestPushBuilderAPI", "/PushBuilderAPIServlet", "PASS : req.newPushBuilder() returned null");
+        HttpUtils.findStringInReadyUrl(server, "/TestPushBuilderAPI/PushBuilderAPIServlet",
+                                       "PASS : req.newPushBuilder() returned null");
     }
-
-    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
-        WebConversation wc = new WebConversation();
-        wc.setExceptionsThrownOnErrorStatus(false);
-
-        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
-        WebResponse response = wc.getResponse(request);
-        LOG.info("Response : " + response.getText());
-
-        assertEquals("Expected " + 200 + " status code was not returned!",
-                     200, response.getResponseCode());
-
-        String responseText = response.getText();
-
-        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
-
-    }
-
 }

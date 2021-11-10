@@ -6,16 +6,10 @@
     <feature>servlet-4.0</feature>
     <feature>jsp-2.3</feature>
   </featureManager>
-  
+
   <applicationManager autoExpand="true"/>
 
-  <logging
-    traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HttpTransport=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all:com.ibm.ws.session.*=all:com.ibm.ws.runtime.update.internal*=all:ChannelFramework=all"
-    maxFileSize="20"
-    maxFiles="10"
-    traceFormat="BASIC"/>
-    
   <!--Java2 security-->
   <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-  
+
 </server>

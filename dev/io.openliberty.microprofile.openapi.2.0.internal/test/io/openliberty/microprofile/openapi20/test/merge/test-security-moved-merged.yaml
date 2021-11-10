@@ -1,0 +1,35 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  /test1/test:
+    get:
+      security:
+        - fooSecurityScheme: []
+      responses:
+        202:
+          description: "success"
+    post:
+      security:
+        - fooSecurityScheme: []
+      responses:
+        202:
+          description: "success"
+  /test2/test:
+    get:
+      security:
+        - barSecurityScheme: []
+      responses:
+        202:
+          description: "success"
+components:
+  securitySchemes:
+    fooSecurityScheme:
+      type: apiKey
+      name: apiKey
+      in: query
+    barSecurityScheme:
+      type: apiKey
+      name: apiKey
+      in: query

@@ -39,7 +39,7 @@ public class Config20NoCDITests extends FATServletClient {
     public static final String SERVER_NAME = "Config20NoCDIServer";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     @TestServlets({

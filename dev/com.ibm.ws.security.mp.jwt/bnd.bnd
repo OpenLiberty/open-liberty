@@ -15,6 +15,15 @@ Bundle-Name: WAS Secuity MP JWT 1.0
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt
 Bundle-Description: WAS security jwt authentication for microprofile, version=${bVersion}
 
+#
+# Generate a Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.security.mp.jwt.internal.jar
+jakartaFinalBundleName: Liberty Security MP JWT
+jakartaFinalBundleId: io.openliberty.security.mp.jwt.internal
+jakartaFinalBundleDescription: Liberty Security MP JWT; Jakarta Enabled
+
 WS-TraceGroup: \
   MPJWT
 
@@ -36,6 +45,7 @@ Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.ws.security.jwt.utils, \
+   org.eclipse.microprofile.jwt; version="[1.0,3)", \
    org.jose4j.*;version="[0.5,1)", \
    *
 

@@ -1,4 +1,13 @@
-/*******************************************************************************n * Copyright (c) 2020 IBM Corporation and others.n * All rights reserved. This program and the accompanying materialsn * are made available under the terms of the Eclipse Public License v1.0n * which accompanies this distribution, and is available atn * http://www.eclipse.org/legal/epl-v10.htmln *n * Contributors:n *     IBM Corporation - initial API and implementationn *******************************************************************************/
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.ejbcontainer.bindings.configtests.ejb;
 
 import static org.junit.Assert.assertEquals;
@@ -10,7 +19,6 @@ import javax.ejb.LocalHome;
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 
 /**
  *
@@ -93,8 +101,7 @@ public class JavaColonLookupBean {
 
     private ConfigTestsRemoteEJB lookupRemoteJavaNamespace(boolean shouldWork, String lookupString) throws Exception {
         try {
-            Object lookup = ctx.lookup(lookupString);
-            ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) PortableRemoteObject.narrow(lookup, ConfigTestsRemoteHome.class);
+            ConfigTestsRemoteHome home = (ConfigTestsRemoteHome) ctx.lookup(lookupString);
             return home.create();
         } catch (NamingException e) {
             if (shouldWork) {

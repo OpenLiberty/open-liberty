@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=A cadeia padr\u00e3o e 
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Defina uma cadeia de canais do sistema de mensagens segura, em t\u00fanel, padr\u00e3o para esse servidor de aplicativos.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: O arquivo de propriedades ''{0}'' utilizado para determinar a seguran\u00e7a do n\u00edvel de transporte do sistema de mensagens inicial do client e n\u00e3o pode ser localizado.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=O arquivo de propriedades que cont\u00e9m informa\u00e7\u00f5es utilizadas durante o estabelecimento de conex\u00f5es do sistema de mensagens do cliente seguras n\u00e3o pode ser localizado.  Um conjunto de valores padr\u00e3o ser\u00e1 assumido.  Pode n\u00e3o ser poss\u00edvel o estabelecimento de conex\u00f5es do sistema de mensagens do cliente seguras.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configure o arquivo de propriedades para seguran\u00e7a do n\u00edvel de transporte do sistema de mensagens do cliente.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Ocorreu um erro interno.  Uma representa\u00e7\u00e3o da classe {0} n\u00e3o pode ser localizada.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
@@ -454,18 +448,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Ocorreu um erro interno.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: N\u00e3o \u00e9 poss\u00edvel localizar uma cadeia de transporte nomeada {0} da qual obter a configura\u00e7\u00e3o de SSL que pode ser requerida para estabelecer uma conex\u00e3o com um host remoto nomeado {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=As informa\u00e7\u00f5es requeridas para estabelecer uma conex\u00e3o com base em SSL (Secure Sockets Layer) para um mesmo n\u00edvel de processamento n\u00e3o est\u00e3o presentes na configura\u00e7\u00e3o atual.  Estas informa\u00e7\u00f5es s\u00e3o obtidas normalmente de uma defini\u00e7\u00e3o de cadeia de transporte adequada. Esta defini\u00e7\u00e3o de cadeia possui um nome que corresponde a uma cadeia que est\u00e1 presente no per\u00edodo remoto.  Essa cadeia de transporte n\u00e3o pode ser localizada.  Talvez n\u00e3o seja poss\u00edvel estabelecer a conex\u00e3o.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Defina cadeias de transporte adicionais.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: A cadeia de transporte nomeada {0} n\u00e3o cont\u00e9m nenhuma configura\u00e7\u00e3o de SSL que pode ser requerida para estabelecer uma conex\u00e3o com o host remoto nomeado {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=As informa\u00e7\u00f5es requeridas para estabelecer uma conex\u00e3o com base em SSL (Secure Sockets Layer) para um mesmo n\u00edvel de processamento n\u00e3o est\u00e3o presentes na configura\u00e7\u00e3o atual.  Estas informa\u00e7\u00f5es s\u00e3o obtidas normalmente de uma defini\u00e7\u00e3o de cadeia de transporte adequada. Esta defini\u00e7\u00e3o de cadeia possui um nome que corresponde a uma cadeia que est\u00e1 presente no per\u00edodo remoto.  Essa cadeia de transporte n\u00e3o pode ser localizada.  Talvez n\u00e3o seja poss\u00edvel estabelecer a conex\u00e3o.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configure canais de transporte SSL adicionais para a cadeia de transporte especificada.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

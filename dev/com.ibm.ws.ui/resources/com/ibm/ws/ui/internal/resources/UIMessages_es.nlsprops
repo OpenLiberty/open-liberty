@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=No se requiere ninguna acci\u00
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Los datos de la herramienta {0} data para el usuario {1} se ha cargado desde el almacenamiento persistencia con el nombre de archivo antiguo y se ha convertido al nombre de archivo nuevo.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=El producto ha cargado los datos de la herramienta para el usuario y la herramienta especificados desde el almacenamiento persistido con el nombre de archivo antiguo y ha guardado una copia en el nombre de archivo nuevo. La copia del nombre de archivo nuevo se cargar\u00e1 durante el siguiente acceso al almacenamiento persistido.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=No se requiere ninguna acci\u00f3n.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: El cat\u00e1logo predeterminado del Centro de administraci\u00f3n se ha cargado desde la persistencia COLLECTIVE que ha creado una versi\u00f3n anterior del servidor. El cat\u00e1logo se ha vuelto a cargar utilizando una copia de la versi\u00f3n actual del servidor.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=El producto ha convertido el cat\u00e1logo predeterminado del Centro de administraci\u00f3n en la versi\u00f3n actual del servidor. La copia de la persistencia COLLECTIVE se carga en el siguiente acceso al almacenamiento persistente.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=No se requiere ninguna acci\u00f3n.

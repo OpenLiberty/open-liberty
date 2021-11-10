@@ -30,8 +30,6 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.WSDLGetInterceptor;
 import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -106,13 +104,11 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         boolean wsdlLocationExisted = true;
         boolean wsdlLocationEmpty = StringUtils.isEmpty(wsdlLocation);
         //check whether there is jax-ws-catalog enabled
-        if (!wsdlLocationEmpty && wsdlUrl == null)
-        {
+        if (!wsdlLocationEmpty && wsdlUrl == null) {
             wsdlLocationExisted = false;
             OASISCatalogManager catalogManager = jaxWsModuleMetaData.getServerMetaData().getServerBus().getExtension(OASISCatalogManager.class);
             String resolvedLocation = null;
-            if (catalogManager != null)
-            {
+            if (catalogManager != null) {
 
                 try {
                     resolvedLocation = catalogManager.resolveSystem(wsdlLocation);
@@ -127,8 +123,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 }
 
             }
-            if (resolvedLocation != null)
-            {
+            if (resolvedLocation != null) {
                 wsdlLocationExisted = true;
             }
 
@@ -145,14 +140,8 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         }
     }
 
-    protected void customizeLoggingInOutIntercetptor(EndpointInfo libertyEndpointInfo) {
-        Map<String, String> endpointProperties = libertyEndpointInfo.getEndpointProperties();
-        if (null != endpointProperties && Boolean.valueOf(endpointProperties.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
-            List<Interceptor<? extends Message>> inInterceptors = server.getEndpoint().getInInterceptors();
-            inInterceptors.add(new LoggingInInterceptor());
-            List<Interceptor<? extends Message>> outInterceptors = server.getEndpoint().getOutInterceptors();
-            outInterceptors.add(new LoggingOutInterceptor());
-        }
+    protected void enableLogging(EndpointInfo libertyEndpointInfo) {
+        // Replaced by FeatureLogging for jaxws-2.3 and xmlWS-3.0 
     }
 
     public AbstractHTTPDestination getDestination() {
@@ -246,12 +235,12 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             if (ad != null && !ad.startsWith(HTTP_PREFIX)) {
                 String base = getBaseURL(request);
                 if (disableAddressUpdates) {
-                    
+
                     request.setAttribute("org.apache.cxf.transport.endpoint.address",
                                          base + ad);
                 } else {
                     // Only set the address if the Endpoint URL hasn't already been set
-                    if(destination.getEndpointInfo().getAddress() == null)
+                    if (destination.getEndpointInfo().getAddress() == null)
                         BaseUrlHelper.setAddress(destination, base + ad);
                 }
             }

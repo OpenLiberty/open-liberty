@@ -10,7 +10,7 @@
  *******************************************************************************/
 define({
         LOGIN_BUTTON: "提交",
-        LOGIN_TITLE: "Liberty 管理中心",
+        LOGIN_TITLE: "Liberty Admin Center",
         LOGIN_USER: "用户名",
         LOGIN_PASSWORD: "密码",
         LOGIN_COPYRIGHT: "Copyright © 2013, 2016 IBM Corporation and others. All rights reserved.\n此程序和随附的资料将根据 Eclipse Public License V1.0 的条款提供，Eclipse Public License V1.0 会随此分发产品一起提供，并且可以在以下位置获得：http://www.eclipse.org/legal/epl-v10.html",

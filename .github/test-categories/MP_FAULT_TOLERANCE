@@ -6,3 +6,4 @@ com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics
 com.ibm.ws.microprofile.faulttolerance_fat_tck
 com.ibm.ws.microprofile.faulttolerance_git_fat_tck
 io.openliberty.microprofile.faulttolerance.3.0.internal_fat_tck
+io.openliberty.microprofile.faulttolerance.4.0.internal_fat_tck

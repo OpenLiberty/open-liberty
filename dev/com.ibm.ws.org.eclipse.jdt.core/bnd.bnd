@@ -12,11 +12,11 @@
 bVersion=1.0
 
 Bundle-Name: JDT Compiler
-Bundle-SymbolicName: com.ibm.ws.org.eclipse.jdt.core.3.22.0
-Bundle-Description: JDT Compiler, version 3.22.0 [4.16]
+Bundle-SymbolicName: com.ibm.ws.org.eclipse.jdt.core
+Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.26.0: June, 2021
 
 Import-Package: !*
    
-Export-Package: org.eclipse.jdt.*;version=3.22.0;usage=JSP
+Export-Package: org.eclipse.jdt.*;version=3.26.0;usage=JSP
 
--buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.22.0
+-buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.26.0

@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.4.01
+
+#Currently only intended for testing purposes
+Bundle-Name: DOM & SAX XML APIs
+Bundle-SymbolicName: io.openliberty.xml-apis
+Bundle-Description: Provides XML APIs as a bundle
+
+test.project: true
+publish.wlp.jar.disabled: true
+
+#javax.xml classes (JAXP & StAX) intentionally excluded
+#org.apache.xmlcommons classes intentionally excluded
+-includeresource: \
+  @${repo;xml-apis:xml-apis;1.4.01;EXACT}!/!javax/*|org/apache/*
+
+Export-Package: \
+  org.w3c.*;version=1.4.01,\
+  org.xml.*;version=1.4.01
+

@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.ext;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -29,9 +30,11 @@ import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
 import com.ibm.ws.threading.CompletionStageExecutor;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.resource.ResourceInfo;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -54,6 +57,11 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
     @Override
     public final boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
         return ((ExecutorService) executor).awaitTermination(timeout, unit);
+    }
+
+    @Override
+    public final ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        return executor.captureThreadContext(props);
     }
 
     @Override
@@ -91,9 +99,9 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
         return ((ManagedExecutor) executor).failedStage(x);
     }
 
-    @Override
+    @Deprecated // being replaced with captureThreadContext so that this method signature can change to spec
     public final WSContextService getContextService() {
-        return executor.getContextService();
+        return ((ManagedExecutorServiceImpl) executor).getContextService();
     }
 
     @Override

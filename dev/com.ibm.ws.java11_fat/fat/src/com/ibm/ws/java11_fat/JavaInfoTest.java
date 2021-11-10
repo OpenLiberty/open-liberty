@@ -124,4 +124,33 @@ public class JavaInfoTest extends FATServletClient {
         assertEquals(sr, fatJavaInfo.serviceRelease());
     }
 
+    /**
+     * This test validates that classes are available using the JavaInfo.isSystemClassAvailable
+     * method. To validate this function, the test uses a Class.forName. Java classes
+     * should be found by isAvailable. Application classes should not be found.
+     */
+    @Test
+    public void verifyIsAvailable() {
+        String[] classesToTest = { "com.ibm.security.auth.module.Krb5LoginModule",
+                                   "com.ibm.lang.management.OperatingSystemMXBean",
+                                   "com.sun.security.auth.module.Krb5LoginModule",
+                                   "org.apache.xalan.processor.TransformerFactoryImpl",
+                                   "com.ibm.xtq.xslt.jaxp.compiler.TransformerFactoryImpl",
+                                   "org.xml.sax.ext.LexicalHandler"
+        };
+
+        for (String className : classesToTest) {
+            assertEquals(className, isAvailable(className), JavaInfo.isSystemClassAvailable(className));
+        }
+    }
+
+    private static boolean isAvailable(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            //No FFDC needed
+            return false;
+        }
+    }
 }

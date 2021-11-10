@@ -85,7 +85,8 @@ tested.features: \
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-    xml-apis:xml-apis;version=1.4.01,\
+    io.openliberty.xml-apis;version=latest,\
+    io.openliberty.org.apache.xerces;version=latest,\
     com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.jsf.2.2;version=latest,\

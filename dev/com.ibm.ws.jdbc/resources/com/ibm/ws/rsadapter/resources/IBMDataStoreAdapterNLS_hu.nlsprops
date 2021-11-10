@@ -95,7 +95,8 @@ ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Gy\u0171jtse \u00f6ssze az F
 #Do not translate: Datasource
 IMPLICIT_TRANSACTION_FOUND=DSRA0095I: A Liberty \u00e1ltal nem k\u00f6vetett adatb\u00e1zis-tranzakci\u00f3t \u00e9szlelt a rendszer. A kapcsolat t\u00f6rl\u00e9se el\u0151tt k\u00eds\u00e9rlet t\u00f6rt\u00e9nik a visszag\u00f6rget\u00e9sre. Ez az \u00fczenet az egyes adatforr\u00e1sokra vonatkoz\u00f3an egyszer ker\u00fcl napl\u00f3z\u00e1sra. Az ezt k\u00f6vet\u0151 implicit tranzakci\u00f3k automatikusan felold\u00e1sra ker\u00fclnek.
 IMPLICIT_TRANSACTION_FOUND.explanation=Az adatb\u00e1zis egy tranzakci\u00f3t kezdett a kapcsolaton kereszt\u00fcl. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 visszag\u00f6rgeti a tranzakci\u00f3t a kapcsolat t\u00e1rba val\u00f3 visszaad\u00e1sa el\u0151tt.
-IMPLICIT_TRANSACTION_FOUND.useraction=\u00c9rt\u00e9kelje ki az alkalmaz\u00e1s k\u00f3dj\u00e1t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy mi okozza az implicit tranzakci\u00f3t. Lehet, hogy az alkalmaz\u00e1s k\u00f3dja explicit m\u00f3don meg tudja akad\u00e1lyozni a tov\u00e1bbi implicit tranzakci\u00f3kat, vagy be lehet \u00e1ll\u00edtani egy explicit m\u0171veletet az adatforr\u00e1shoz. 
+IMPLICIT_TRANSACTION_FOUND.useraction=\u00c9rt\u00e9kelje ki az alkalmaz\u00e1s k\u00f3dj\u00e1t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy mi okozza az implicit tranzakci\u00f3t. Lehet, hogy az alkalmaz\u00e1s k\u00f3dja explicit m\u00f3don meg tudja akad\u00e1lyozni a tov\u00e1bbi implicit tranzakci\u00f3kat, vagy be lehet \u00e1ll\u00edtani egy explicit m\u0171veletet az adatforr\u00e1shoz.
+
 # 0096-0101 deleted
 # 0110 deleted
 # 0174 deleted
@@ -342,7 +343,7 @@ PROP_SET_ERROR.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a tu
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Az errorCode vagy sqlState attrib\u00fatumok valamelyik\u00e9t meg kell adni.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adja meg az errorCode vagy sqlState attrib\u00fatumok egyik\u00e9t az identifyException elemre vonatkoz\u00f3an.
 
-8068_EXC_REPLACE_CONFLICT=DSRA8068E: A(z) {0} adatforr\u00e1s nem tudja be\u00e1ll\u00edtani az sqlState \u00e9s errorCode attrib\u00fatumokat ugyanazon az identifyException elemen, ha a replaceExceptions attrib\u00fatum "true" \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: A(z) {0} adatforr\u00e1s nem tudja be\u00e1ll\u00edtani az sqlState \u00e9s errorCode attrib\u00fatumokat ugyanazon az identifyException elemen, ha a replaceExceptions attrib\u00fatum ''true'' \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
 8068_EXC_REPLACE_CONFLICT.explanation=A kiv\u00e9telek cser\u00e9jekor a kiv\u00e9telt vagy az SQL \u00e1llapota, vagy a hibak\u00f3dja azonos\u00edthatja, a kett\u0151 egyszerre nem.
 8068_EXC_REPLACE_CONFLICT.useraction=Adjon meg k\u00fcl\u00f6n identifyException konfigur\u00e1ci\u00f3s elemet az sqlState \u00e9s az errorCode sz\u00e1m\u00e1ra.
 

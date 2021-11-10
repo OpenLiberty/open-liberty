@@ -91,6 +91,19 @@ encode.option-desc.listCustom=\
 \tname : the custom password encryption algorithm name\n\
 \tfeaturename : the feature name\n\
 \tdescription : the description of the custom password encryption
+encode.option-key.keyring=\
+\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\
+\tSpecify the SAF keyring where the AES encryption key is located.
+encode.option-key.keyringType=\
+\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\
+\tSpecify the SAF keyring type of the keyring where the AES encryption\n\
+\tis located.
+encode.option-key.keyLabel=\
+\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\
+\tSpecify the label of the SAF certificate of the AES encryption key.
 
 
 

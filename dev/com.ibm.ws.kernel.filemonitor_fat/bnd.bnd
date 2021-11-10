@@ -20,6 +20,7 @@ src: \
 test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar,spi/ibm/*.jar
 
 fat.project: true
+tested.features: servlet-3.1
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

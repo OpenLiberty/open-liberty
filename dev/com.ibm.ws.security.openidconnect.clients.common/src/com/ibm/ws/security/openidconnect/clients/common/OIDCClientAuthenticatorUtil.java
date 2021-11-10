@@ -167,13 +167,12 @@ public class OIDCClientAuthenticatorUtil {
             ConvergedClientConfig clientConfig) {
         ProviderAuthenticationResult oidcResult = null;
 
-        if (!isEndpointValid(clientConfig)) {
+        if (!isAuthorizationEndpointValid(clientConfig)) {
+            Tr.error(tc, "OIDC_CLIENT_NULL_AUTH_ENDPOINT", clientConfig.getClientId());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
-        boolean isImplicit = false;
-        if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
-            isImplicit = true;
-        }
+
+        boolean isImplicit = Constants.IMPLICIT.equals(clientConfig.getGrantType());
 
         String authzCode = null;
         String responseState = null;
@@ -322,15 +321,8 @@ public class OIDCClientAuthenticatorUtil {
         return metHttpsRequirement;
     }
 
-    public static boolean isEndpointValid(ConvergedClientConfig clientConfig) {
-        String url = null;
-        if (clientConfig.getGrantType() == Constants.IMPLICIT) {
-            url = clientConfig.getTokenEndpointUrl();
-        } else {
-            url = clientConfig.getAuthorizationEndpointUrl();
-        }
-        return url != null;
-
+    public static boolean isAuthorizationEndpointValid(ConvergedClientConfig clientConfig) {
+        return clientConfig.getAuthorizationEndpointUrl() != null;
     }
 
     //todo: avoid call on each request.

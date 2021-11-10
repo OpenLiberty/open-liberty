@@ -459,13 +459,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private AuthenticationData getHashtable(Subject partialSubject) {
         AuthenticationData authData = new WSAuthenticationData();
-
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(partialSubject, new String[] { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY });
         if (hashtable != null) {
             String customCacheKey = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
-            Boolean internalCachekeyAssertion = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
-            if (customCacheKey != null && internalCachekeyAssertion != null && internalCachekeyAssertion.equals(Boolean.TRUE)) {
+            if (customCacheKey != null) {
                 authData.set(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
             }
         }
@@ -473,15 +471,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         hashtable = subjectHelper.getHashtableFromSubject(partialSubject, new String[] { AttributeNameConstants.WSCREDENTIAL_USERID,
                                                                                          AttributeNameConstants.WSCREDENTIAL_PASSWORD });
         if (hashtable != null) {
-            Boolean internalCachekeyAssertion = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
             String userid = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_USERID);
             String password = (String) hashtable.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
             if (userid != null & password != null) {
                 authData.set(AttributeNameConstants.WSCREDENTIAL_USERID, userid);
                 authData.set(AttributeNameConstants.WSCREDENTIAL_PASSWORD, password);
-
-            } else if (userid != null && internalCachekeyAssertion != null && internalCachekeyAssertion.equals(Boolean.TRUE)) {
-                authData.set(AttributeNameConstants.WSCREDENTIAL_USERID, userid); //Allow to login with user ID only
+            } else if (userid != null) {
+                Boolean internalCachekeyAssertion = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
+                if (internalCachekeyAssertion != null && internalCachekeyAssertion.equals(Boolean.TRUE))
+                    authData.set(AttributeNameConstants.WSCREDENTIAL_USERID, userid); //Allow to login with user ID only
             }
         }
 

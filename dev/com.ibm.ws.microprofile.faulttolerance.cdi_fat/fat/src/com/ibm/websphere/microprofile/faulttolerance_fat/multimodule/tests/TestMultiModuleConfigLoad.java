@@ -57,9 +57,9 @@ public class TestMultiModuleConfigLoad extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    //run against both EE8 and EE7 features
+    //run against EE9, EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.LATEST, MicroProfileActions.MP13,
+    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.MP50, MicroProfileActions.MP13,
                                                               RepeatFaultTolerance.MP21_METRICS20);
 
     @BeforeClass

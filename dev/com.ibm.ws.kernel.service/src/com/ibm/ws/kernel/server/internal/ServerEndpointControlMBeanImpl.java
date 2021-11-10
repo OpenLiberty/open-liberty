@@ -28,12 +28,9 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.kernel.server.ServerEndpointControlMBean;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentController;
 import com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFailedException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /*
  * Register this mbean as an osgi service
@@ -200,26 +197,8 @@ public class ServerEndpointControlMBeanImpl extends StandardMBean implements Ser
 
     @Override
     public boolean isActive(String targets) {
-        betaFenceCheck();
         return pauseableComponentController.isActive(targets);
 
-    }
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
-    private static final TraceComponent tc = Tr.register(ServerEndpointControlMBeanImpl.class);
-
-    private void betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is beta and is not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: The beta method isActive has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
     }
 
 }

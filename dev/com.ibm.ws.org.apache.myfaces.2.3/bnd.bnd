@@ -87,6 +87,7 @@ Export-Package: \
   org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.annotation;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.impl.digester.elements;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.el.convert;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \

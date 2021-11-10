@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -46,8 +46,6 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class FormLoginReadListenerTest {
-    private static final Logger LOG = Logger.getLogger(FormLoginReadListenerTest.class.getName());
-
     @Server("servlet31_formLoginReadListener")
     public static LibertyServer server;
 
@@ -72,6 +70,11 @@ public class FormLoginReadListenerTest {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(FormLoginReadListenerTest.class.getSimpleName() + ".log");
+
+        // CWWKS4105I: LTPA configuration is ready after x seconds
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      server.waitForStringInLogUsingMark("CWWKS4105I.*"));
+
     }
 
     @AfterClass

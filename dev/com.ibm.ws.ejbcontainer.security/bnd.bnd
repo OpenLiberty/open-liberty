@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.ejbcontainer.security
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.ejbcontainer.security.internal.jar
-#JakartaEE-Bundle-Name: EJB container Security Collaborator internal
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.ejbcontainer.security.internal
-#JakartaEE-Bundle-Description: EJB container Security Collaborator internal; Jakarta enabled
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.ejbcontainer.security.internal.jar
+jakartaFinalBundleName: EJB container Security Collaborator internal
+jakartaFinalBundleId: io.openliberty.ejbcontainer.security.internal
+jakartaFinalBundleDescription: EJB container Security Collaborator internal; Jakarta Enabled
 
 WS-TraceGroup: \
   SecurityCollaborator

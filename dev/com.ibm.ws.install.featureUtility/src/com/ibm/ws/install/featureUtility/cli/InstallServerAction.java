@@ -235,59 +235,20 @@ public class InstallServerAction implements ActionHandler {
                 return rc;
         }
 
-
-        private boolean isEnableOption() {
-        	File f = new File(Utils.getInstallDir() + "/etc/featureUtility.properties");
-            if(f.exists()) {
-            	try (InputStream input = new FileInputStream(f)){
-                	Properties prop = new Properties();
-                	prop.load(input);
-                	String enableOptionsForFAT = prop.getProperty("enable.options");
-                	if(enableOptionsForFAT != null && enableOptionsForFAT.toString().equals("true")) {
-                		return true;
-                	}	
-                } catch (IOException e) {
-        			e.printStackTrace();
-        		} 
-            }
-        	return false;
-        }
         
         private ExitCode assetInstallInit(Collection<String> assetIds) {
                 List<String> features = new ArrayList<>();
                 List<String> userFeatures = new ArrayList<>();
                 // find all user features in server.xml
                 for(String asset : assetIds){
-                	if(isEnableOption()) {
-                		if(asset.contains(":")){
-                    		String[] assetSplit = asset.split(":");
-                    		featureToExt.put(assetSplit[1], assetSplit[0]);
-                        	featureNames.add(assetSplit[1]);
-                    	} else {
-                    		featureToExt.put(asset, "");
-                    		featureNames.add(asset);
-                    	}
-                	}else {
-                		if(asset.startsWith("usr:")){
-                            userFeatures.add(asset.substring("usr:".length()));
-    	                } else {
-    	                    features.add(asset);
-    	                }
-                    	
-                    	if(!userFeatures.isEmpty()){
-                            logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_USER_FEATURE_SERVER_XML", userFeatures.toString()));
-
-                            // remove any user features before installation.
-                            for(String feature : features){
-                                    if(!userFeatures.contains(feature)){
-                                        featureNames.add(feature);
-                                    }
-                            }
-    	                } else {
-    	                        featureNames.addAll(features);
-    	                }
-                	}	
-                	
+            		if(asset.contains(":")){
+                		String[] assetSplit = asset.split(":");
+                		featureToExt.put(assetSplit[1], assetSplit[0]);
+                    	featureNames.add(assetSplit[1]);
+                	} else {
+                		featureToExt.put(asset, "");
+                		featureNames.add(asset);
+                	}
                 }
                 return ReturnCode.OK;
         }

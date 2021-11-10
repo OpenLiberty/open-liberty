@@ -18,12 +18,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health.services.impl.AppModuleContextService;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -40,6 +45,16 @@ public class HealthCheck31ExecutorImpl implements HealthCheck31Executor {
      */
     private AppModuleContextService appModuleContextService;
 
+    /**
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    private volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
+
     private HealthCheck31CDIBeanInvoker healthCheckCDIBeanInvoker;
     private J2EENameFactory j2eeNameFactory;
     private final static Logger logger = Logger.getLogger(HealthCheck31ExecutorImpl.class.getName(), "io.openliberty.microprofile.health.resources.Health");
@@ -47,7 +62,6 @@ public class HealthCheck31ExecutorImpl implements HealthCheck31Executor {
     /**
      * For creating J2EENames.
      */
-    private static final String MANAGEDTASK_IDENTITY_NAME = "javax.enterprise.concurrent.IDENTITY_NAME";
     private final static String HC_MANAGEDTASK_IDENTITY_NAME = "mp.healthcheck.proxy";
     private final static String HC_TASK_OWNER = "mp.healthcheck.runtime";
     private final static String ONLY_WAR_EJB_NOT_SUPPORTED = null;
@@ -76,6 +90,7 @@ public class HealthCheck31ExecutorImpl implements HealthCheck31Executor {
         Set<HealthCheckResponse> retval;
 
         // TaskIdentity identifies the task for the purposes of mgmt/auditing.
+        final String MANAGEDTASK_IDENTITY_NAME = eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
         execProps.put(MANAGEDTASK_IDENTITY_NAME, HC_MANAGEDTASK_IDENTITY_NAME);
 
         // TaskOwner identifies the submitter of the task.
@@ -109,5 +124,35 @@ public class HealthCheck31ExecutorImpl implements HealthCheck31Executor {
     @Override
     public void removeModuleReferences(String appName, String moduleName) {
         healthCheckCDIBeanInvoker.removeModuleReferences(appName, moduleName);
+    }
+
+    /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = JavaEEVersion.class, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+        eeVersionRef = ref;
+    }
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
     }
 }

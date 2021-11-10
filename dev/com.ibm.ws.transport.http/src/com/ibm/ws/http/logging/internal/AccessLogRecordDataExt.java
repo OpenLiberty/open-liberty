@@ -92,4 +92,9 @@ public class AccessLogRecordDataExt implements AccessLogRecordData {
     public String getLocalPort() {
         return delegate.getLocalPort();
     }
+
+    @Override
+    public String getRemotePort() {
+        return delegate.getRemotePort();
+    }
 }

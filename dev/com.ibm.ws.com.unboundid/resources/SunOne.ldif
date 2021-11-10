@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -26,8 +26,7 @@ objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: top
-userPassword:: e1NTSEF9ekdZQjZJZ1BWVzE4WjJ5d3RrNGlkMTVRRm5DWTJKOGtGQVlKaEE9PQ=
- =
+userPassword: password
 uid: noNSUID
 
 dn: uid=persona1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
@@ -109,7 +108,7 @@ objectClass: inetOrgPerson
 objectClass: person
 objectClass: top
 title: FVT user
-userPassword:: e1NIQX1DOFlVWjhlcGY5UlRjK0wzV29RK1U2VHdLb2s9
+userPassword: vmmtestuserpwd
 uid: vmmtestuser
 
 dn: uid=vmmuser1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com

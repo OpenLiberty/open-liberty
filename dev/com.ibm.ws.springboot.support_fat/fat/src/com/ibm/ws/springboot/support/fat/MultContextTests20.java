@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +35,8 @@ public class MultContextTests20 extends AbstractSpringTests {
     private static final int CHILD2_MAIN_PORT = 8082;
     private static final int CHILD2_ACTUATOR_PORT = 9992;
 
+    private static final String USE_DEFAULT_HOST = "useDefaultHostPorts";
+    private static final String USE_DEFAULT_HOST_WITH_APP = "useDefaultHostWithAppPort";
     private static final String USE_APP_CONFIG = "useAppConfigPorts";
 
     @Override
@@ -73,6 +77,34 @@ public class MultContextTests20 extends AbstractSpringTests {
     @Override
     public String getLogMethodName() {
         return "-" + testName.getMethodName();
+    }
+
+    @Override
+    public List<String> getExpectedWebApplicationEndpoints() {
+        String methodName = testName.getMethodName();
+        List<String> expectedEndpoints = new ArrayList<String>(super.getExpectedWebApplicationEndpoints());
+        if (methodName != null) {
+
+            if (methodName.equals(USE_DEFAULT_HOST)) {
+                expectedEndpoints.add(ID_DEFAULT_HOST);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD1_ACTUATOR_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_ACTUATOR_PORT);
+
+            } else if (methodName.equals(USE_DEFAULT_HOST_WITH_APP)) {
+                // ID_DEFAULT_HOST was already added via call to super()
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD1_ACTUATOR_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_ACTUATOR_PORT);
+
+            } else if (methodName.equals(USE_APP_CONFIG)) {
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD1_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD1_ACTUATOR_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + CHILD2_ACTUATOR_PORT);
+            }
+        }
+        return expectedEndpoints;
     }
 
     @After

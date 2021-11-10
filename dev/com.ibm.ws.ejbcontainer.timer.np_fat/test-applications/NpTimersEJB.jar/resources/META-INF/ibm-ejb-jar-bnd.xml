@@ -1,0 +1,24 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+    <session name="NpTimerBeanBMT" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/NpTimerBeanBMT"/>
+
+    <session name="NpTimerBeanRequiresNew" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/NpTimerBeanRequiresNew"/>
+
+    <session name="NpTimerBeanRequired" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/NpTimerBeanRequired"/>
+
+    <session name="NpTimerBeanNotSupported" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/NpTimerBeanNotSupported"/>
+
+    <session name="NpTimerBeanBMTNoCommit" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/NpTimerBeanBMTNoCommit"/>
+
+    <session name="TimeoutFailureBeanCMT" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/TimeoutFailureBeanCMT"/>
+
+    <session name="TimeoutFailureBeanBMT" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/TimeoutFailureBeanBMT"/>
+
+    <session name="XMLTxBean" simple-binding-name="com/ibm/ws/ejbcontainer/timer/np/ejb/XMLTxBean"/>
+
+
+</ejb-jar-bnd>

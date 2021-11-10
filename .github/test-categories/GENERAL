@@ -3,4 +3,5 @@ build.example.testcontainers_fat
 com.ibm.ws.java11_fat
 build.featureStart.aToL_fat
 build.featureStart.mToZ_fat
+io.openliberty.java.internal_fat
 io.openliberty.ws.global.handler.internal_fat

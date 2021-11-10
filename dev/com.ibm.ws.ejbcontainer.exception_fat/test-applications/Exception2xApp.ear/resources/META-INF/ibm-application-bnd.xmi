@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applicationbnd:ApplicationBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:applicationbnd="applicationbnd.xmi" xmlns:application="application.xmi" xmi:id="Application_ID_Bnd">
+  <authorizationTable xmi:id="AuthorizationTable_1"/>
+  <application href="META-INF/application.xml#Application_ID"/>
+</applicationbnd:ApplicationBinding>

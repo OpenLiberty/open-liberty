@@ -17,35 +17,23 @@ src: \
   test-applications/addNumbersClient/src,\
   test-applications/calculator/src,\
   test-applications/converter/src,\
-  test-applications/ejbServiceRefBndAppCodes/src,\
   test-applications/helloClient/src,\
   test-applications/helloClientDDMerge/src,\
   test-applications/helloClientServiceResource/src,\
-  test-applications/helloEJBServer/src,\
   test-applications/helloServer/src,\
   test-applications/httpConduitProperties/src,\
-  test-applications/POJOServiceSecurity/src,\
-  test-applications/POJOServiceSecurityClient/src,\
   test-applications/pureCXF/src,\
   test-applications/pureCXFWSDLFirst/src,\
-  test-applications/sharedLib/src,\
   test-applications/stubClient/src,\
   test-applications/testBindingTypeWsdlWeb/src,\
   test-applications/testCXFJMXSupport/src,\
   test-applications/testEndpointPropertiesWeb/src,\
-  test-applications/testHandlerClient/src,\
-  test-applications/testHandlerClientWithoutXML/src,\
-  test-applications/testHandlerProvider/src,\
   test-applications/testMTOM/src,\
   test-applications/testMTOMClient/src,\
   test-applications/testMTOMClient_withDD/src,\
-  test-applications/testPortComponentRefApplication/src,\
-  test-applications/testPortComponentRefEJBinWeb/src,\
-  test-applications/testPortComponentRefWeb/src,\
   test-applications/testWebServiceMonitor/src,\
   test-applications/virtualhost/src,\
-  test-applications/webServiceRefFeatures/src,\
-  test-applications/wsBndServiceRefOverride/src
+  test-applications/webServiceRefFeatures/src
   
 
 fat.project: true
@@ -74,15 +62,15 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227,\
-	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
-	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
-	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180914-1510,\
-	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
-	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20190515-1254,\
+  	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
@@ -99,5 +87,3 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
 	io.openliberty.org.apache.commons.logging;version=latest
   
-  
-	

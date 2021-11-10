@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.tx.rununderuow.web.RunUnderUOWServlet;
 
 import componenttest.annotation.Server;
@@ -52,7 +53,7 @@ public class RunUnderUOWTest extends FATServletClient {
         EnterpriseArchive RunUnderUOWTestApp = ShrinkWrap.create(EnterpriseArchive.class, "RunUnderUOWTestApp.ear");
         RunUnderUOWTestApp.addAsModule(RunUnderUOWBean).addAsModule(RunUnderUOWWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, RunUnderUOWTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, RunUnderUOWTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

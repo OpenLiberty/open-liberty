@@ -20,12 +20,15 @@ import com.ibm.ws.el30.fat.varargstest.EL30VarargsMethodMatchingServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test EL 3.0 Method Matching when Varargs are used. See BZ 65358 
  */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class EL30VarargsMethodMatchingTest extends FATServletClient {
 

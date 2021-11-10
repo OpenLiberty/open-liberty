@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,12 +34,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.appConfig.cdi.web.BuiltInConverterTestServlet;
 import com.ibm.ws.microprofile.appConfig.cdi.web.ConfigPropertyTestServlet;
 import com.ibm.ws.microprofile.appConfig.cdi.web.FieldTestServlet;
@@ -76,8 +76,8 @@ public class BasicConfigTests extends FATServletClient {
     public static final String CUSTOM_SOURCES_APP_NAME = "customSources";
     public static final String TYPES_APP_NAME = "types";
 
-    @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP12, MicroProfileActions.MP13, MicroProfileActions.MP14, MicroProfileActions.MP33,
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP12, MicroProfileActions.MP13, MicroProfileActions.MP14,
+                                                             MicroProfileActions.MP33,
                                                              MicroProfileActions.MP41);
 
     @Server(SERVER_NAME)
@@ -126,11 +126,12 @@ public class BasicConfigTests extends FATServletClient {
                                                                                 + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
                                                                        "services/org.eclipse.microprofile.config.spi.ConfigSource");
 
-        ShrinkHelper.exportDropinAppToServer(server, customSourcesWar);
-        ShrinkHelper.exportDropinAppToServer(server, types_war);
-        ShrinkHelper.exportDropinAppToServer(server, cdiConfigWar);
-        ShrinkHelper.exportDropinAppToServer(server, convertersWar);
-        ShrinkHelper.defaultDropinApp(server, CONVERTER_PRIORITY_APP_NAME, "com.ibm.ws.microprofile.config11.converter.*");
+        ShrinkHelper.exportDropinAppToServer(server, customSourcesWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, types_war, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, cdiConfigWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, convertersWar, DeployOptions.SERVER_ONLY);
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
+        ShrinkHelper.defaultDropinApp(server, CONVERTER_PRIORITY_APP_NAME, options, "com.ibm.ws.microprofile.config11.converter.*");
 
         server.startServer();
     }

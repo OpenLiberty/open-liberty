@@ -27,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ClientHeaderPropagationTests.class,
                 HelloWorldCDITests.class,
                 HelloWorldTest.class,
+                HelloWorldEarTest.class,
                 HelloWorldTlsTest.class,
                 HelloWorldThirdPartyApiTest.class,
                 SecureHelloWorldTest.class,

@@ -933,7 +933,7 @@ public class OracleHelper extends DatabaseHelper {
 
     @FFDCIgnore(Exception.class)
     private void assertIBMKerberosSupported() throws ResourceException {
-        if (JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
+        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
             // The Oracle JDBC driver prior to 21c does not support kerberos authentication on IBM JDK 8 because
             // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
             boolean ibmJdkSupported;

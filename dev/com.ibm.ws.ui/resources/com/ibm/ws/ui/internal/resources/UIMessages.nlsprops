@@ -317,3 +317,7 @@ TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=No action is required.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Tool {0} data for user {1} was loaded from the persisted storage using its old file name and has converted to its new file name.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=The product loaded the tool data for the specified user and tool from persisted storage using its old file name and stored a copy into the new file name. The copy in the new file name will be loaded by subsequent access to persisted storage.
 TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=No action is required.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: The Admin Center default catalog was loaded from COLLECTIVE persistence that is created by an earlier server version. The catalog is reloaded by using a copy from the current server version.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=The product converted the Admin Center default catalog to the current server version. The copy in the COLLECTIVE persistence is loaded by subsequent access to the persisted storage.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=No action is required.

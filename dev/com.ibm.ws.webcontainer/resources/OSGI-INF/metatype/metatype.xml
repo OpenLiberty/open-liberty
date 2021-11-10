@@ -264,7 +264,7 @@
         <AD id="deferServletRequestListenerDestroyOnError"
             name="%deferServletRequestListenerDestroyOnError.name" 
             description="%deferServletRequestListenerDestroyOnError.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
 
 		<!--com.ibm.ws.jsp.-->
         <AD id="allowExpressionFactoryPerApp"
@@ -337,11 +337,17 @@
             name="%setHtmlContentTypeOnError.name"
             description="%setHtmlContentTypeOnError.desc"
             required="false" type="Boolean" default="true" />
-
+            
         <!--com.ibm.ws.webcontainer.-->
         <AD id="excludeAllHandledTypesClasses"
             name="%excludeAllHandledTypesClasses.name"
             description="%excludeAllHandledTypesClasses.desc"
+            required="false" type="Boolean" />
+            
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="closeWrappedResponseOutputAfterForward"
+            name="%closeWrappedResponseOutputAfterForward.name"
+            description="%closeWrappedResponseOutputAfterForward.desc"
             required="false" type="Boolean" />
 
         <AD name="internal" description="internal use only"

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.helloworld;
 
@@ -124,6 +124,7 @@ public class HelloWorldResource<E> {
         HelloWorldResource.message = "Hello World!";
         StringBuffer sb = new StringBuffer();
 
+        System.out.println("Entering Helloworld");
         MultivaluedMap<String, String> theHeaders = headers.getRequestHeaders();
         if (theHeaders != null) {
             for (String key : theHeaders.keySet()) {

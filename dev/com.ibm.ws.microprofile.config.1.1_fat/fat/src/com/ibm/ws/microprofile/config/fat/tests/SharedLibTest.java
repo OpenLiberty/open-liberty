@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -41,14 +42,15 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class SharedLibTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "SharedLibUserServer";
     public static final String APP_NAME = "sharedLibUser";
 
-    @Server("SharedLibUserServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = SharedLibUserTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("SharedLibUserServer", MicroProfileActions.MP20, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP20, MicroProfileActions.MP41);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -70,8 +72,8 @@ public class SharedLibTest extends FATServletClient {
                                                  .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
                                                  .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml");
 
-        ShrinkHelper.exportAppToServer(server, sharedLibUser_war);
-        ShrinkHelper.exportToServer(server, "shared", sharedLib_jar);
+        ShrinkHelper.exportAppToServer(server, sharedLibUser_war, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "shared", sharedLib_jar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

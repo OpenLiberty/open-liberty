@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.timer.auto.npTimer.web.AutoCreatedNPTimerServlet;
 
 import componenttest.annotation.Server;
@@ -82,7 +83,7 @@ public class AutoCreatedNPTimerTest extends FATServletClient {
         EnterpriseArchive AutoNPTimersApp = ShrinkWrap.create(EnterpriseArchive.class, "AutoNPTimersApp.ear");
         AutoNPTimersApp.addAsModule(AutoNPTimersEJB).addAsModule(AutoNPTimersWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, AutoNPTimersApp);
+        ShrinkHelper.exportDropinAppToServer(server, AutoNPTimersApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

@@ -40,7 +40,7 @@ import componenttest.topology.utils.FATServletClient;
 public class InterceptorTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat("AsyncFaultTolerance", TestMode.FULL, MicroProfileActions.LATEST, MicroProfileActions.MP22);
+    public static RepeatTests r = RepeatFaultTolerance.repeat("AsyncFaultTolerance", TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP22);
 
     private static final String APP_NAME = "ftInterceptors";
 

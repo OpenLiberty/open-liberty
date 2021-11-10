@@ -1036,13 +1036,41 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
     }
 
-    protected void printProcessHoldingPort(int port) {
+    public void printProcesses() {
+        final String m = "printProcesses";
+        try {
+            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+            Log.info(c, m, detector.listProcesses());
+        } catch (Exception ex) {
+            Log.error(c, m, ex, "Caught exception while trying to list processes");
+        }
+    }
+
+    public void printProcessHoldingPort(int port) {
         final String m = "printProcessHoldingPort";
         try {
             PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
-            Log.info(c, m, detector.determineOwnerOfPort(port));
+            Log.info(c, m, detector.determineCommandLineForPid(getPid()));
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to detect the process holding port " + port);
+        }
+    }
+
+    public String getPid() {
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+        try {
+            return detector.determinePidForPort(httpDefaultPort);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getCommandLine() {
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+        try {
+            return detector.determineCommandLineForPid(detector.determinePidForPort(httpDefaultPort));
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -1269,7 +1297,7 @@ public class LibertyServer implements LogMonitorClient {
         // running Oracle/Sun JVMs - this results in buckets timing out as they wait for the entropy pool to be repopulated. Additionally,
         // from Java 9 onwards, IBM JDKs will also exhibit the same behaviour as it will start to use /dev/random by default.
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
-        JVM_ARGS += " -Djava.security.egd=file:///dev/urandom";
+        JVM_ARGS += " -Djava.security.egd=file:/dev/urandom";
 
         JavaInfo info = JavaInfo.forServer(this);
         // Debug for a highly intermittent problem on IBM JVMs.
@@ -2391,8 +2419,8 @@ public class LibertyServer implements LogMonitorClient {
 
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
+        final String method = "stopServer";
         try {
-            final String method = "stopServer";
             Log.info(c, method, "<<< STOPPING SERVER: " + this.getServerName());
 
             if (!isStarted) {
@@ -2505,7 +2533,20 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
             if (postStopServerArchive)
-                postStopServerArchive();
+                while (true) {
+                    try {
+                        postStopServerArchive();
+                        break;
+                    } catch (Exception e) {
+                        Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
+                        printProcesses();
+                        try {
+                            Thread.sleep(500);
+                        } catch (Exception x) {
+                            Log.error(c, method, x);
+                        }
+                    }
+                }
             // Delete marker for stopped server
             // deleteServerMarkerFile();
         }
@@ -2721,7 +2762,7 @@ public class LibertyServer implements LogMonitorClient {
         runJextract(serverFolder);
 
         // Copy the log files: try to move them instead if we can
-        recursivelyCopyDirectory(serverFolder, logFolder, true, true, true);
+        recursivelyCopyDirectory(serverFolder, logFolder, false, true, true);
 
         deleteServerMarkerFile();
 
@@ -2766,7 +2807,11 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+        String method = "recursivelyCopyDirectory";
         destination.mkdirs();
+
+        Log.finest(c, method, "Remote: " + remoteDirectory + "\nDestination: " + destination + "\nignoreFailures: " + ignoreFailures + "\nskipArchives: " + skipArchives
+                              + "\nmoveFile: " + moveFile);
 
         ArrayList<String> logs = new ArrayList<String>();
         logs = listDirectoryContents(remoteDirectory);
@@ -2774,20 +2819,20 @@ public class LibertyServer implements LogMonitorClient {
             if (remoteDirectory.getName().equals("workarea")) {
                 if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.finest(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
+                    Log.finest(c, method, "Skipping workarea element " + l);
                     continue;
                 }
             }
 
             if (remoteDirectory.getName().equals("messaging")) {
-                Log.finest(c, "recursivelyCopyDirectory", "Skipping message store element " + l);
+                Log.finest(c, method, "Skipping message store element " + l);
                 continue;
             }
 
             RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
             String absPath = toCopy.getAbsolutePath();
-            Log.finest(c, "recursivelyCopyDirectory", "Getting: " + absPath);
+            Log.finest(c, method, "Getting: " + absPath);
 
             if (absPath.endsWith(".log"))
                 LogPolice.measureUsedTrace(toCopy.length());
@@ -2804,7 +2849,7 @@ public class LibertyServer implements LogMonitorClient {
                             || absPath.endsWith(".rar")
                             //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
                             || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, "recursivelyCopyDirectory", "Skipping: " + absPath);
+                        Log.finest(c, method, "Skipping: " + absPath);
                         continue;
                     }
 
@@ -2824,20 +2869,29 @@ public class LibertyServer implements LogMonitorClient {
                         // If we're local, try to rename the file instead..
                         if (machine.isLocal() && toCopy.rename(toReceive)) {
                             copied = true; // well, we moved it, but it counts.
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
 
                         if (!copied && toReceive.copyFromSource(toCopy)) {
-                            // copy was successful, clean up the source log
-                            toCopy.delete();
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            boolean done = false;
+
+                            while (!done) {
+                                // copy was successful, clean up the source log
+                                done = toCopy.delete();
+                                if (!done) {
+                                    Log.info(c, method, "Sleeping 0.5s before trying again");
+                                    Thread.sleep(500);
+                                }
+                            }
+                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
                     } else {
                         toReceive.copyFromSource(toCopy);
-                        Log.finest(c, "recursivelyCopyDirectory", "COPY: " + l + " to " + toReceive.getAbsolutePath());
+                        Log.finest(c, method, "COPY: " + l + " to " + toReceive.getAbsolutePath());
                     }
                 } catch (Exception e) {
-                    Log.finest(c, "recursivelyCopyDirectory", "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
+                    Log.info(c, method, "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
+                    Log.error(c, method, e);
                     // Ignore on request and carry on copying the rest of the files
                     if (!ignoreFailures) {
                         throw e;
@@ -5512,16 +5566,17 @@ public class LibertyServer implements LogMonitorClient {
             e.printStackTrace();
         }
 
-        Log.info(c, "waitForStringInTrace", "Waiting for " + regexp + " to be found in " + (f == null ? "null" : f.getAbsolutePath()));
-
-        if (f != null) {
-            if (timeout > 0) {
-                return waitForStringInLog(regexp, timeout, f);
-            } else {
-                return waitForStringInLog(regexp, f);
-            }
-        } else {
+        if (f == null) {
+            Log.info(c, "waitForStringInTrace", "Failed to getMostRecentTraceFile(). Server " + getServerName() + " is probably stopping.");
             return null;
+        }
+
+        Log.info(c, "waitForStringInTrace", "Waiting for " + regexp + " to be found in " + f.getAbsolutePath());
+
+        if (timeout > 0) {
+            return waitForStringInLog(regexp, timeout, f);
+        } else {
+            return waitForStringInLog(regexp, f);
         }
     }
 
@@ -5663,7 +5718,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
-        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins").mkdir();
     }
 
     /**
@@ -6309,7 +6364,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void clearAdditionalSystemProperties() {
-        this.additionalSystemProperties.clear();
+        this.additionalSystemProperties = null;
     }
 
     /**

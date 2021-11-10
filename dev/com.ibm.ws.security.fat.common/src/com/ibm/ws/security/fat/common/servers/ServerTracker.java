@@ -63,6 +63,8 @@ public class ServerTracker {
         server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
         // ignore potential timing issue with SSL port restart - if the port was ready when tests need it, that's good enough
         server.addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
+        // ignore ssl message - runtime retries and can proceed (sometimes) when it can't tests will fail when they don't get the correct response
+        server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
 
     }
 

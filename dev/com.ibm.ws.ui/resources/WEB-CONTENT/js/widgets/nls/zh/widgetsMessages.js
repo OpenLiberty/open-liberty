@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 define({
-    LIBERTY_HEADER_TITLE: "Liberty 管理中心",
+    LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "首选项",
     LIBERTY_HEADER_LOGOUT: "注销",
     LIBERTY_HEADER_LOGOUT_USERNAME: "注销 {0}",

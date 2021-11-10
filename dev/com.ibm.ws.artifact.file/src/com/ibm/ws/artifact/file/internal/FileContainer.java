@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -269,50 +269,47 @@ public class FileContainer implements com.ibm.wsspi.artifact.ArtifactContainer {
         //else.. it's a relative request to a non-root node..
         //  or.. it's a relative nested request to the root node..
 
-        //the request is valid, but we have to create the chain of Containers that
-        //link from this node, to the Entry being returned.
+        // The request is valid.
 
-        File top = dir;
-        File container = target;
-        Deque<File> s = new ArrayDeque<File>();
+        // Obtain containers starting from this container and ending
+        // with the target.
+        //
+        // Intermediate container entries must be created before
+        // their child entries are created.
+        //
+        // Per the above tests, the target is not an immediate child
+        // of this container.
 
-        //navigate upwards from this Node, pushing the nodes to a Stack as we go.
-        while (!container.equals(top)) {
-            s.push(container);
-            container = container.getParentFile();
+        // Walk upwards.  Don't add either this directory or the target.
+        Deque<File> ascendants = new ArrayDeque<>(); // Default size is 16.
+        File ascendant = target;
+        while (!(ascendant = ascendant.getParentFile()).equals(dir)) {
+            ascendants.push(ascendant);
         }
 
-        //pop the stack until empty, creating the Container & Entries as required
-        ArtifactContainer p = this;
-        ArtifactEntry e = null;
-        File f = s.pop();
-        //process the stack until empty.
-        while (f != null) {
+        // Walk downwards.
+        //
+        // For each intermediate file, create an entry for that file,
+        // and immediately interpret that file as a container.
+        //
+        // The intermediates are guaranteed to be directories, because
+        // the prior 'exists'.
 
-            if (FileUtils.fileIsDirectory(f)) {
-                //if it's a dir, build a Container for it
-                if (!s.isEmpty()) {
-                    //if the stack isnt empty, we're still going upwards, so make a Container
-                    //to wrap the entry for the current level.
-                    p = new FileContainer(cacheDir, p, new FileEntry(p, f, root, containerFactoryHolder), f, containerFactoryHolder, false, root); //false because cant be root!
-                } else {
-                    //if the stack is empty, this is the last layer to be created, end on an Entry.
-                    e = new FileEntry(p, f, root, containerFactoryHolder);
-                }
-            } else if (FileUtils.fileIsFile(f)) {
-                //if its a file, build an Entry for it.
-                e = new FileEntry(p, f, root, containerFactoryHolder);
-            }
-
-            //pop the stack into f, or make f null if stack is empty.
-            if (!s.isEmpty()) {
-                f = s.pop();
-            } else {
-                f = null;
-            }
+        ArtifactContainer descendantAsContainer = this;
+        while (!ascendants.isEmpty()) {
+            File descendant = ascendants.pop();
+            ArtifactEntry descendantEntry = new FileEntry(descendantAsContainer, descendant, root, containerFactoryHolder);
+            descendantAsContainer = new FileContainer(cacheDir, descendantAsContainer, descendantEntry, descendant, containerFactoryHolder, false, root);
         }
 
-        return e;
+        // Finally, create the entry for the target.
+
+        // The 'immediate child' case only cares that the target exists.
+        // That the target is a simple file or a directory, or something else,
+        // is not checked.  Having these checks for more deeply nested cases
+        // is not consistent, and is expensive.
+
+        return new FileEntry(descendantAsContainer, target, root, containerFactoryHolder);
     }
 
     /** {@inheritDoc} */

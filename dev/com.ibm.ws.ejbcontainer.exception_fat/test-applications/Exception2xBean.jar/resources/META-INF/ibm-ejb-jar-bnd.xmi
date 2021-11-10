@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbbnd:EJBJarBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbbnd="ejbbnd.xmi" xmlns:ejb="ejb.xmi" xmlns:commonbnd="commonbnd.xmi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:id="ejb-jar_ID_Bnd">
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="exception2x/ejb/TestExHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1043952615515" jndiName="exception2x/ejb/SFRaHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1043952615515"/>
+  </ejbBindings>
+</ejbbnd:EJBJarBinding>

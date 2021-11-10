@@ -66,9 +66,20 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
     // The following update does not change max version, not is it applicable to the sparse reader:
     //   Ensure class is set for annotation targets of MethodParameterInfo
     //   wildfly/jandex@a5cd95a#diff-a696ceb786df083f5910564662f55bc9
+    
+    // Max version updated to 10 per:
+    //   #84 Index classes used in the constant pool
+    //   wildfly/jandex@57b3afe
+    //   #58 Indexer option to control ClassInfo sorting
+    //   wildfly/jandex@6507a3d
+    //   #121 Include relevant type-use annotations in MethodInfo/FieldInfo
+    //   wildfly/jandex@cd5437e
+    //   #119 Support modules and records
+    //   wildfly/jandex@32cdeb0
+    //   (None of this new data is extracted by the sparse reader)
 
     public static final int MIN_VERSION = 6;
-    public static final int MAX_VERSION = 9;
+    public static final int MAX_VERSION = 10;
 
     public static boolean accept(int version) {
         return ( (version >= SparseIndexReaderVersionImpl_V2.MIN_VERSION) && 
@@ -88,7 +99,8 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         TYPE_PARAMETER((byte) 7, (byte) 2),
         TYPE_PARAMETER_BOUND((byte) 8, (byte) 3),
         METHOD_PARAMETER_TYPE((byte) 9, (byte) 2),
-        THROWS_TYPE((byte) 10, (byte) 2);
+        THROWS_TYPE((byte) 10, (byte) 2),
+        RECORD_COMPONENT((byte) 11, (byte) 0);
 
         private AnnoTarget(byte tag, byte seekCount) {
             this.tag = tag;
@@ -234,9 +246,13 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
     @Override
     public SparseIndex read() throws IOException {
+        int usersLength = 0;
         input.seekPackedU32(); // annotationSize
         input.seekPackedU32(); // implementorSize
         input.seekPackedU32(); // subclassesSize
+        if (version >= 10) {
+            usersLength = input.readPackedU32();
+        }
 
         readByteTable();
         readStringTable();
@@ -249,9 +265,15 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
         readTypeTable();
         readTypeListTable();
+        if (version >= 10) {
+            readUsersTable(usersLength);
+        }
 
         readMethodTable();
         readFieldTable();
+        if (version >= 10) {
+            readRecordComponentTable();
+        }
 
         classTable = readClassTable();
 
@@ -691,6 +713,16 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
 
         return typeNames;
     }
+    
+    private void readUsersTable(int usersLength) throws IOException {
+        for (int i = 0; i < usersLength; i++) {
+            input.seekPackedU32(); // user name index
+            int usesCount = input.readPackedU32();
+            for (int j = 0; j < usesCount; j++) {
+                input.seekPackedU32(); // used name index
+            }
+        }
+    }
 
     // Part 3: Methods, fields, and classes ...
 
@@ -772,6 +804,15 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         SparseDotName[] fieldAnnotations = readElementAnnotations(fieldName);
 
         return new SparseAnnotationHolder(fieldName, fieldAnnotations);
+    }
+    
+    private void readRecordComponentTable() throws IOException {
+        int size = input.readPackedU32();
+        for (int i = 0; i < size; i++) {
+            input.seekPackedU32(); // name index
+            input.seekPackedU32(); // type index
+            readAnnotations();
+        }
     }
 
     //
@@ -856,7 +897,19 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
         // System.out.println("Next class annotations [ " + numAnnotations + " ]");
 
         readFields(classInfo);
+        if (version >= 10) {
+            input.seekPackedU32(); // field position array byte table index
+        }
+        
         readMethods(classInfo);
+        if (version >= 10) {
+            input.seekPackedU32(); // method position array byte table index
+        }
+        
+        if (version >= 10) {
+            readRecordComponents();
+            input.seekPackedU32(); // record component position array byte table index
+        }
 
         for ( int annoNo = 0; annoNo < numAnnotations; annoNo++ ) {
             if ( readClassAnnotations(className, classAnnoClassNames) ) {
@@ -961,6 +1014,14 @@ public final class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderV
             int methodOffset = methodOffsets[methodNo];
             SparseAnnotationHolder methodAnnoHolder = methodTable[methodOffset];
             classInfo.addAllocatedMethodAnnotations( methodAnnoHolder.getAnnotations() );
+        }
+    }
+    
+    private void readRecordComponents() throws IOException {
+        int numRecordComponents = input.readPackedU32();
+        // System.out.println("Next record components [ " + numRecordComponents + " ]");
+        for (int i = 0; i < numRecordComponents; i++) {
+            input.seekPackedU32(); // record component index
         }
     }
 }

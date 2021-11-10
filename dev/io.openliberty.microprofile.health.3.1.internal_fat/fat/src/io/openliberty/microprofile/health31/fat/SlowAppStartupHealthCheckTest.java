@@ -30,6 +30,7 @@ import javax.json.JsonObject;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assume;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,6 +42,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -63,12 +66,15 @@ public class SlowAppStartupHealthCheckTest {
     @Server(SERVER_NAME)
     public static LibertyServer server1;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
+
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
         //This test expects to hit the server before the app is started so we disable validation to prevent the test framework waiting for the app to start.
-        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
 
         if (!server.isStarted())
             server.startServer();

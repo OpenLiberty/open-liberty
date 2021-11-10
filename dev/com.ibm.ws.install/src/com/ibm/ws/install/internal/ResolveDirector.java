@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -866,11 +866,18 @@ class ResolveDirector extends AbstractDirector {
         ESAAsset esaAsset;
         String esaPath = esaFile.getAbsolutePath();
         String debugHeader = "createESAAsset(" + esaFile.getAbsolutePath() + ", \"" + toExtension + "\"): ";
+
         try {
             if (esaAssetCach.containsKey(esaPath)) {
                 return esaAssetCach.get(esaPath);
             }
             esaAsset = new ESAAsset(esaFile, toExtension, false);
+            ProvisioningFeatureDefinition fd = esaAsset.getProvisioningFeatureDefinition();
+            if (esaAssetCach.containsKey(fd.getSymbolicName())) {
+                //if the feature already exists in cache, return
+                return esaAssetCach.get(fd.getSymbolicName());
+            }
+
         } catch (Exception e) {
             esaAssetCach.put(esaPath, null);
             log(Level.SEVERE, debugHeader + Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.bad.zip", esaFile.getAbsolutePath(), e.getMessage()), e);

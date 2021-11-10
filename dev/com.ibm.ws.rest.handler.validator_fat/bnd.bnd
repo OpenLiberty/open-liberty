@@ -29,7 +29,10 @@ tested.features: mpOpenApi-2.0,\
                  componenttest-2.0,\
                  appSecurity-4.0,\
                  messaging-3.0,\
-                 connectors-2.0
+                 connectors-2.0,\
+                 appsecurity-3.0,\
+                 cdi-2.0,\
+                 el-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

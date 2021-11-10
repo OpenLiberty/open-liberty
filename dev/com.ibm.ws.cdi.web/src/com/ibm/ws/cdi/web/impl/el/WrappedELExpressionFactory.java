@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import javax.el.ValueExpression;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.web.factories.WeldListenerFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 /**
  *

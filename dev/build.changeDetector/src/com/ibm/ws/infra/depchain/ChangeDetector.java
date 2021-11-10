@@ -602,7 +602,6 @@ public class ChangeDetector {
         // com.ibm.ws.wssecurity_fat
         return projectName.contains("_fat.common") ||
                projectName.equals("com.ibm.ws.jpa_testframework") ||
-               projectName.equals("com.ibm.ws.jpa.tests.spec10.injection.common") ||
                projectName.equals("com.ibm.ws.security.openidconnect.server_fat") ||
                projectName.equals("com.ibm.ws.wssecurity_fat");
     }

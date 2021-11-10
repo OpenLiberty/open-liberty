@@ -343,7 +343,7 @@ PROP_SET_ERROR.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00e1 hodnota pro p
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Mus\u00ed b\u00fdt zad\u00e1n jeden z atribut\u016f errorCode nebo sqlState.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Aktualizujte konfiguraci tak, aby ur\u010dovala alespo\u0148 jeden z atribut\u016f errorCode nebo sqlState v prvku identifyException.
 
-8068_EXC_REPLACE_CONFLICT=DSRA8068E: Zdroj dat {0} nem\u016f\u017ee konfigurovat atributy sqlState a errorCode ve stejn\u00e9m prvku identifyException, je-li atribut replaceExceptions nakonfigurov\u00e1n na hodnotu true.
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: Zdroj dat {0} nem\u016f\u017ee konfigurovat atributy sqlState a errorCode ve stejn\u00e9m prvku identifyException, je-li atribut replaceExceptions nakonfigurov\u00e1n na hodnotu ''true''.
 8068_EXC_REPLACE_CONFLICT.explanation=P\u0159i nahrazov\u00e1n\u00ed v\u00fdjimek m\u016f\u017ee b\u00fdt v\u00fdjimka identifikov\u00e1na p\u0159\u00edslu\u0161n\u00fdm stavem SQL nebo k\u00f3dem chyby, nikoli ob\u011bma.
 8068_EXC_REPLACE_CONFLICT.useraction=Zadejte samostatn\u00e9 konfigura\u010dn\u00ed prvky identifyException pro stav sqlState a k\u00f3d chyby.
 

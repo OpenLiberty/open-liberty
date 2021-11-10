@@ -28,7 +28,7 @@ Export-Package: \
 
 Include-Resource: \
    @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}!/META-INF/*.tld,\
-   @${repo;com.ibm.ws.org.apache:xalan;2.7.2}!/!META-INF/*
+   @${repo;xalan:xalan;2.7.2}!/!META-INF/*
 
 -buildpath: \
   com.ibm.ws.javax.j2ee:jsp.tld.standard;version=1.2

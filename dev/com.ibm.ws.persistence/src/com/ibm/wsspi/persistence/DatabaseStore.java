@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,43 @@
  *******************************************************************************/
 package com.ibm.wsspi.persistence;
 
+import java.util.Map;
+
 /**
  * Enables configuration of a database as a persistent store that can be shared by multiple components.
  */
 public interface DatabaseStore {
+
     /**
      * Create a persistence service unit for the specified entity classes.
      * The invoker of this method is responsible for closing the persistence service unit
      * and for participating in DDL generation.
-     * 
-     * The persistence service feature is currently not supported for informix.
-     * 
+     *
      * @param loader class loader for the entity classes.
      * @param entityClasses list of entity classes.
      * @return the persistence service unit.
      * @throws Exception if a failure occurs.
+     * @throws UnsupportedOperationException for Informix
      */
     PersistenceServiceUnit createPersistenceServiceUnit(ClassLoader loader, String... entityClassNames) throws Exception;
+
+    /**
+     * Create a persistence service unit for the specified entity classes.
+     * Allows the invoker to pass configuration properties.
+     * The invoker of this method is responsible for closing the persistence service unit
+     * and for participating in DDL generation.
+     *
+     * The persistence service feature is currently not supported for informix.
+     *
+     * @param loader class loader for the entity classes.
+     * @param properties map of configuration properties
+     * @param entityClasses list of entity classes.
+     * @return the persistence service unit.
+     * @throws Exception if a failure occurs.
+     * @throws UnsupportedOperationException for Informix
+     * @throws UnsupportedOperationException if a configuration property is not supported
+     */
+    PersistenceServiceUnit createPersistenceServiceUnit(ClassLoader loader, Map properties, String... entityClassNames) throws Exception;
 
     /**
      * Get the configured schema name.

@@ -19,11 +19,10 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.spi.jaspic
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.jaspic.2.0.spi.jar
-#JakartaEE-Bundle-Name: Jakarta Authentication Service Provider Interface for Containers (JASPIC) SPI 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.jaspic.2.0.spi
-#JakartaEE-Bundle-Description: Jakarta Authentication Service Provider Interface for Containers (JASPIC) SPI 2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.jaspic.2.0.spi.jar
+jakartaFinalBundleName: Jakarta Authentication Service Provider Interface for Containers 2.0 SPI 
+jakartaFinalBundleId: io.openliberty.jaspic.2.0.spi
+jakartaFinalBundleDescription: Jakarta Authentication Service Provider Interface for Containers 2.0 SPI
 
 Import-Package: com.ibm.wsspi.security.jaspi
 

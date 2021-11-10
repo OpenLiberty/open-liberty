@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.internal.test.helloworld.HelloWorldApplication;
@@ -45,7 +46,7 @@ public class ConfiguredJAXRSCDITest {
     private static final String SERVER_NAME = "MPServer";
 
     @ClassRule
-    public static RepeatTests r = MPRepeatUtils.getMPRepeat(SERVER_NAME, MPRepeatUtils.MP_CONFIG_VERSIONS);
+    public static RepeatTests r = MicroProfileActions.repeatAllWithConfig(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

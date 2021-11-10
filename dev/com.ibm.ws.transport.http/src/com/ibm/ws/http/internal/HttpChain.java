@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,8 +266,9 @@ public class HttpChain implements ChainEventListener {
         Map<String, Object> remoteIpOptions = owner.getRemoteIpConfig();
         Map<String, Object> compressionOptions = owner.getCompressionConfig();
         Map<String, Object> samesiteOptions = owner.getSamesiteConfig();
+        Map<String, Object> headersOptions = owner.getHeadersConfig();
 
-        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, endpointOptions, resolvedHostName);
+        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, headersOptions, endpointOptions, resolvedHostName);
         
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -387,7 +388,7 @@ public class HttpChain implements ChainEventListener {
                 // HTTP Channel
                 ChannelData httpChannel = cfw.getChannel(httpName);
                 if (httpChannel == null) {
-                    chanProps = new HashMap<Object, Object>(httpOptions);
+                    chanProps = new HashMap<Object, Object>(httpOptions);                    
                     // Put the endpoint id, which allows us to find the registered access log
                     // dynamically
                     chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
@@ -456,6 +457,35 @@ public class HttpChain implements ChainEventListener {
                             chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
                         }
                         chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, enableSameSite);
+                    }
+                    
+                    if(headersOptions.get("id").equals("defaultHeaders")){
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, "false");
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, null);
+                    }
+                    
+                    else{
+                        boolean enableHeadersFeature = false;
+                        if(headersOptions.containsKey("add")){
+                            enableHeadersFeature=true;
+                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, headersOptions.get("add"));
+                        }
+                        if(headersOptions.containsKey("set")){
+                            enableHeadersFeature=true;
+                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, headersOptions.get("set"));
+                        }
+                        if(headersOptions.containsKey("setIfMissing")){
+                            enableHeadersFeature=true;
+                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, headersOptions.get("setIfMissing"));
+                        }
+                        if(headersOptions.containsKey("remove")){
+                            enableHeadersFeature=true;
+                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, headersOptions.get("remove"));
+                        }
+                        chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, enableHeadersFeature);
                     }
 
 
@@ -722,6 +752,7 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> remoteIp;
         final Map<String, Object> compression;
         final Map<String, Object> samesite;
+        final Map<String, Object> headers;
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
@@ -734,6 +765,7 @@ public class HttpChain implements ChainEventListener {
                             Map<String, Object> remoteIp,
                             Map<String, Object> compression,
                             Map<String, Object> samesite,
+                            Map<String, Object> headers,
                             Map<String, Object> endpoint,
                             String resolvedHostName) {
             this.isHttps = isHttps;
@@ -743,6 +775,7 @@ public class HttpChain implements ChainEventListener {
             this.remoteIp = remoteIp;
             this.compression = compression;
             this.samesite = samesite;
+            this.headers = headers;
             endpointOptions = endpoint;
 
             String attribute = isHttps ? "httpsPort" : "httpPort";
@@ -807,7 +840,7 @@ public class HttpChain implements ChainEventListener {
         }
 
         /**
-         * CHeck to see if all of the maps are the same as they
+         * Check to see if all of the maps are the same as they
          * were the last time: ConfigurationAdmin returns unmodifiable
          * maps: if the map instances are the same, there have been no
          * updates.
@@ -826,6 +859,7 @@ public class HttpChain implements ChainEventListener {
                        remoteIp == other.remoteIp &&
                        compression == other.compression &&
                        samesite == other.samesite &&
+                       headers == other.headers &&
                        !endpointChanged(other);
             } else {
                 return configHost.equals(other.configHost) &&
@@ -835,6 +869,7 @@ public class HttpChain implements ChainEventListener {
                        remoteIp == other.remoteIp &&
                        compression == other.compression &&
                        samesite == other.samesite &&
+                       headers == other.headers &&
                        !endpointChanged(other);
             }
         }
@@ -859,7 +894,7 @@ public class HttpChain implements ChainEventListener {
             if (other == null)
                 return true;
 
-            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp) || (compression != other.compression) || (samesite != other.samesite);
+            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp) || (compression != other.compression) || (samesite != other.samesite) || (headers != other.headers);
             
         }
 
@@ -886,6 +921,7 @@ public class HttpChain implements ChainEventListener {
                    + ",remoteIp=" + System.identityHashCode(remoteIp)
                    + ",compression=" + System.identityHashCode(compression)
                    + ",samesite=" + System.identityHashCode(samesite)
+                   + ",headers=" + System.identityHashCode(headers)
                    + ",sslOptions=" + (isHttps ? System.identityHashCode(sslOptions) : "0")
                    + ",endpointOptions=" + endpointOptions.get(Constants.SERVICE_PID)
                    + "]";

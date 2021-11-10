@@ -191,3 +191,15 @@ config.hsts.invalid.max.age.value.useraction=Assegure-se de que a diretiva de id
 config.hsts.missing.max.age=CWWKT0041W: Uma tentativa foi feita para configurar [{0}] como o cabe\u00e7alho Strict-Transport-Security. Essa configura\u00e7\u00e3o n\u00e3o cont\u00e9m a diretiva de idade m\u00e1xima obrigat\u00f3ria. Uma configura\u00e7\u00e3o que n\u00e3o cont\u00e9m uma diretiva de idade m\u00e1xima \u00e9 inv\u00e1lida e n\u00e3o pode ser usada.
 config.hsts.missing.max.age.explanation=A configura\u00e7\u00e3o especificada deve conter uma diretiva de idade m\u00e1xima com um valor de n\u00famero inteiro n\u00e3o negativo.
 config.hsts.missing.max.age.useraction=Assegure-se de que a configura\u00e7\u00e3o contenha uma diretiva de idade m\u00e1xima com um valor de n\u00famero inteiro n\u00e3o negativo.
+
+headers.emptyName=CWWKT0042W: Um nome de cabe\u00e7alho vazio foi encontrado quando a configura\u00e7\u00e3o {0} foi analisada. Esse valor foi ignorado.
+headers.emptyName.explanation=O nome do cabe\u00e7alho especificado \u00e9 uma sequ\u00eancia de caracteres vazia. Um nome de cabe\u00e7alho n\u00e3o deve estar vazio. 
+headers.emptyName.useraction=Certifique-se de que nenhum nome de cabe\u00e7alho esteja vazio.  
+
+headers.duplicateHeaderName=CWWKT0043W: Um nome de cabe\u00e7alho duplicado foi encontrado no cabe\u00e7alho [{0}] usando a configura\u00e7\u00e3o {1}. Todas as configura\u00e7\u00f5es para o cabe\u00e7alho [{0}] foram ignoradas. Qualquer cabe\u00e7alho que seja definido pelas configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o ou setIfMissing deve ser exclusivo em todas as configura\u00e7\u00f5es.
+headers.duplicateHeaderName.explanation=O nome de cabe\u00e7alho especificado foi previamente configurado por outra configura\u00e7\u00e3o do recurso de Cabe\u00e7alhos.
+headers.duplicateHeaderName.useraction=Certifique-se de que cabe\u00e7alhos que s\u00e3o definidos pelas configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o ou setIfMissing n\u00e3o estejam presentes em mais de uma configura\u00e7\u00e3o.
+
+headers.knownDuplicateHeader=CWWKT0044W: O cabe\u00e7alho [{0}], que \u00e9 marcado como um nome de cabe\u00e7alho duplicado, foi encontrado na configura\u00e7\u00e3o {1}. O cabe\u00e7alho [{0}] foi ignorado. Qualquer cabe\u00e7alho que seja definido pela configura\u00e7\u00e3o {1} deve conter nomes de cabe\u00e7alho exclusivos.
+headers.knownDuplicateHeader.explanation=O nome de cabe\u00e7alho especificado j\u00e1 foi encontrado pelas configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o, ou setIfMissing.
+headers.knownDuplicateHeader.useraction=Certifique-se de que nomes de cabe\u00e7alho que s\u00e3o definidos nesta configura\u00e7\u00e3o sejam exclusivos em todas as configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o, ou setIfMissing.              

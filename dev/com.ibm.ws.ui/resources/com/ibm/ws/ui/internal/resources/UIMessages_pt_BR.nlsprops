@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,15 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Obtenha uma JVM que suporta produtos d
 OSGI_SERVICE_ERROR=CWWKX1066E: O {0} servi\u00e7o OSGi n\u00e3o est\u00e1 dispon\u00edvel.
 OSGI_SERVICE_ERROR.explanation=Esse erro do servidor interno ocorreu porque o servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel.
 OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o de limpeza.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: A caixa de ferramentas do Centro Administrativo para o usu\u00e1rio {0} foi carregada por meio do armazenamento persistido usando seu antigo nome de arquivo e se converteu em seu novo nome de arquivo.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=O produto carregou a caixa de ferramentas do Centro Administrativo por meio do armazenamento persistido usando seu antigo nome de arquivo e armazenou uma c\u00f3pia no novo nome do arquivo. A c\u00f3pia no novo nome do arquivo ser\u00e1 carregada pelo acesso subsequente ao armazenamento persistido.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Os dados {0} da ferramenta para o usu\u00e1rio {1} foram carregados por meio do armazenamento persistido usando seu antigo nome de arquivo que foi convertido em seu novo nome de arquivo.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=O produto carregou os dados da ferramenta para o usu\u00e1rio e a ferramenta especificados por meio do armazenamento persistido usando seu antigo nome de arquivo e armazenou uma c\u00f3pia no novo nome do arquivo. A c\u00f3pia no novo nome do arquivo ser\u00e1 carregada pelo acesso subsequente ao armazenamento persistido.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION=CWWKX1070I: O cat\u00e1logo padr\u00e3o do Centro de Administra\u00e7\u00e3o foi carregado a partir da persist\u00eancia COLETIVA que foi criada por uma vers\u00e3o anterior do servidor. O cat\u00e1logo \u00e9 recarregado usando uma c\u00f3pia da vers\u00e3o do servidor atual.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.explanation=O produto converteu o cat\u00e1logo padr\u00e3o do Centro de Administra\u00e7\u00e3o para a vers\u00e3o atual do servidor. A c\u00f3pia na persist\u00eancia COLETIVA \u00e9 carregada pelo acesso subsequente ao armazenamento persistido.
+CATALOG_FILE_PROMOTED_TO_CURRENT_VERSION.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

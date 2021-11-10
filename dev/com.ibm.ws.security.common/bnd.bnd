@@ -19,11 +19,10 @@ Bundle-Description: Common code for security bundles; version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.common.internal.jar
-#JakartaEE-Bundle-Name: Security Common
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.common.internal
-#JakartaEE-Bundle-Description: Common code for security bundles; version=${bVersion} 
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.common.internal.jar
+jakartaFinalBundleName: Security Common
+jakartaFinalBundleId: io.openliberty.security.common.internal
+jakartaFinalBundleDescription: Common code for security bundles; Jakarta Enabled
 
 WS-TraceGroup: SecurityCommon
 

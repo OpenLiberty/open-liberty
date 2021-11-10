@@ -112,7 +112,7 @@ public class WsocTestRunner {
         }
 
         // We've had some test failures that are not found in local env and some builds.  This short wait should flesh them out locally...
-        java.lang.Thread.sleep(50);
+        java.lang.Thread.sleep(250);
         if (sess.isOpen()) {
             LOG.info("Reached max messages or test timeout, closing wsoc session");
             if (!_wtr.getClosedAlready()) {

@@ -50,26 +50,78 @@ public class MultiRecoveryTest {
 		server2.setServerStartTimeout(START_TIMEOUT);
 	}
 
-	protected void startServers(LibertyServer ... servers) {
-		final String method = "startServers";
-		
-		for (LibertyServer server : servers) {
-			assertNotNull("Attempted to start a null server", server);
-			try {
-				final ProgramOutput po = server.startServerAndValidate(false,false,true);
-				if (po.getReturnCode() != 0) {
-					Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-					Log.info(getClass(), method, "Stdout: " + po.getStdout());
-					Log.info(getClass(), method, "Stderr: " + po.getStderr());
-					Exception ex = new Exception("Server start failed for "  + server.getServerName());
-					throw ex;
-				}
-			} catch (Exception e) {
-				Log.error(getClass(), method, e);
-				fail(e.getMessage());
-			}
-		}
-	}
+    protected void startServers(LibertyServer... servers) throws Exception {
+        final String method = "startServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            int attempt = 0;
+            int maxAttempts = 5;
+
+            do {
+                if (attempt++ > 0) {
+                    Log.info(getClass(), method, "Waiting 5 seconds after start failure before making attempt " + attempt);
+                    try {
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+                        Log.error(getClass(), method, e);
+                    }
+                }
+
+                if (server.resetStarted() == 0) {
+                    String pid = server.getPid();
+                    Log.info(getClass(), method,
+                             "Server " + server.getServerName() + " is already running." + ((pid != null ? "(pid:" + pid + ")" : "")) + " Maybe it is on the way down.");
+                    server.printProcesses();
+                    continue;
+                }
+
+                ProgramOutput po = null;
+                try {
+                    po = server.startServerAndValidate(false, false, true);
+                } catch (Exception e) {
+                    Log.error(getClass(), method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
+                }
+
+                if (po != null) {
+                    String s;
+                    int rc = po.getReturnCode();
+
+                    Log.info(getClass(), method, "ReturnCode: " + rc);
+
+                    s = server.getPid();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Pid: " + s);
+
+                    s = po.getStdout();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stdout: " + s.trim());
+
+                    s = po.getStderr();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(getClass(), method, "Stderr: " + s.trim());
+
+                    if (rc == 0) {
+                        break;
+                    } else {
+                        String pid = server.getPid();
+                        Log.info(getClass(), method,
+                                 "Non zero return code starting server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : ""))
+                                                     + " Maybe it is on the way down.");
+                        server.printProcessHoldingPort(server.getHttpDefaultPort());
+                    }
+                }
+            } while (attempt < maxAttempts);
+
+            if (!server.isStarted()) {
+                server.postStopServerArchive();
+                throw new Exception("Failed to start " + server.getServerName() + " after " + attempt + " attempts");
+            }
+        }
+    }
 	
 	protected void stopServers(LibertyServer ... servers) {
 		final String method = "stopServers";
@@ -102,6 +154,7 @@ public class MultiRecoveryTest {
 	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String startServer) throws Exception {
         final String method = "recoveryTest";
         String result = null;
+        final long LOG_SEARCH_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -117,14 +170,14 @@ public class MultiRecoveryTest {
         //restart server in three modes
         if(startServer.equals("server1")){
         		startServers(server);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName()));
+                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("server2")){
         		startServers(server2);
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName()));
+                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("both")){
         		startServers(server, server2);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName()));
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName()));
+                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
+                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         }
 
 		try {
@@ -175,29 +228,67 @@ public class MultiRecoveryTest {
 		String urlStr2 = BASE_URL2 + "/" + recoveryServer + "/" + servletName
 				+ "?number=" + testNumber+"02";
 
-		Log.info(getClass(), method, "URL1: " + urlStr1 + "\nURL2: " + urlStr2);
 		String result1 = "";
-		HttpURLConnection con1 = HttpUtils.getHttpConnection(new URL(urlStr1), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-		try {
-	        BufferedReader br1 = HttpUtils.getConnectionStream(con1);
-	        result1 = br1.readLine();
-		} finally {
-			con1.disconnect();
-		}
-        assertNotNull(result1);
-
         String result2 = "";
-		HttpURLConnection con2 = HttpUtils.getHttpConnection(new URL(urlStr2), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-		try {
-	        BufferedReader br2 = HttpUtils.getConnectionStream(con2);
-	        result2 = br2.readLine();
-		} finally {
-			con2.disconnect();
-		}
-        assertNotNull(result2);
         
+        URL url1 = new URL(urlStr1);
+        URL url2 = new URL(urlStr2);
+
+        while (result1.isEmpty() || result2.isEmpty())
+        {
+        	if (result1.isEmpty()) {
+        		HttpURLConnection con1 = null;
+
+        		try {
+        			Log.info(getClass(), method, "Getting connection to " + urlStr1);
+        			con1 = HttpUtils.getHttpConnection(url1, expectedConnectionCode, REQUEST_TIMEOUT);
+        		} catch (Exception e) {
+        			Log.error(getClass(), method, e);
+        		}
+        		
+        		if (con1 != null) {
+        			try {
+            			Log.info(getClass(), method, "Getting result from " + urlStr1);
+        				BufferedReader br1 = HttpUtils.getConnectionStream(con1);
+        				result1 = br1.readLine();
+        			} finally {
+        				con1.disconnect();
+        			}
+        		}
+        	}
+
+        	if (result2.isEmpty()) {
+        		HttpURLConnection con2 = null;
+
+        		try {
+        			Log.info(getClass(), method, "Getting connection to " + urlStr2);
+        			con2 = HttpUtils.getHttpConnection(url2, expectedConnectionCode, REQUEST_TIMEOUT);
+        		} catch (Exception e) {
+        			Log.error(getClass(), method, e);
+        		}
+
+        		if (con2 != null) {
+        			try {
+            			Log.info(getClass(), method, "Getting result from " + urlStr2);
+        				BufferedReader br2 = HttpUtils.getConnectionStream(con2);
+        				result2 = br2.readLine();
+        			} finally {
+        				con2.disconnect();
+        			}
+        		}
+        	}
+
+        	// Do we need to retry?
+        	if (result1.isEmpty() || result2.isEmpty()) {
+    			Log.info(getClass(), method, "Sleeping 5 seconds before retrying");
+        		try {
+        			Thread.sleep(5000);
+        		} catch (Exception e) {
+        			Log.error(getClass(), method, e);
+        		}
+        	}
+        }
+
         Log.info(getClass(), method, "Recovery test " + testNumber + 
 				"\n Result1 : " + result1 + 
 				"\n Result2 : " + result2);
