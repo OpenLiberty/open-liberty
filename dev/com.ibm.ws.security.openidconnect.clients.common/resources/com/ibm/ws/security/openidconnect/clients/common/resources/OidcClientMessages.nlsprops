@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Ensure that the OpenID Connect provider generates va
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: The {0} OpenID Connect client cannot extract the JSON Web Token (JWT) claims from the web response. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=The web response must be a JWT in either JSON Web Encryption (JWE) or JSON Web Signature (JWS) format. The response might be malformed, or the OpenID Connect client encountered another error processing the response.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=See the error in the message for more information. Verify that the response is in JWT format.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: The OpenID Connect client [{0}] requires an authorization endpoint URL, but it is not set.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=An authorization endpoint URL must be set to obtain an authorization code or the required tokens.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Set the authorizationEndpointUrl attribute in the OpenID Connect client configuration to the authorization endpoint URL of the OpenID Connect provider. Alternatively, set the discoveryEndpointUrl attribute in the OpenID Connect client configuration to the discovery endpoint URL of the OpenID Connect provider.
@@ -228,5 +233,21 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, conf
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: The token is not in JSON Web Encryption (JWE) format because it does not contain five parts, but the [{0}] OpenID Connect client only accepts tokens that are in JWE format.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=The token might be malformed or might be in JSON Web Signature (JWS) format. Tokens must be in JWE format if the keyManagementKeyAlias attribute is configured.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=To accept JWS tokens instead of JWE tokens, remove the keyManagementKeyAlias attribute in the OpenID Connect client configuration. Otherwise, ensure that only JWE tokens are sent to this resource.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: The data extracted from the response from the UserInfo endpoint is not in JSON format. The extracted data is [{0}]. The error is [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=The UserInfo endpoint should return claims as members of a JSON object or a JSON Web Token (JWT). The format of the response might not be valid, or the response might not match the format that is specified by the Content-Type header.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=Check the format of the UserInfo endpoint response to ensure it is in JSON or JWT format.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: The web response [{0}] is expected to be a JSON Web Token (JWT), but the response is not in JSON Web Signature (JWS) or JSON Web Encryption (JWE) format.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=The Content-Type header in the web response indicates that the response contains a JWT, but the response body is not in a valid JWT format.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Ensure that the web response is in the format that is expected by the OpenID Connect client.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: The {0} OpenID Connect client cannot retrieve information about the access token from the UserInfo endpoint: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=The response from the UserInfo endpoint might not be in a format that is expected. The OpenID Connect client might have encountered an error while submitting the UserInfo request.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Check the error message for more information. Verify that the content of the UserInfo response matches the Content-Type HTTP header.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
