@@ -53,8 +53,6 @@ import org.jboss.resteasy.microprofile.client.publisher.MpPublisherMessageBodyRe
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ResteasyUriBuilder;
 
-import com.ibm.ws.kernel.service.util.SecureAction;
-
 import io.openliberty.microprofile.rest.client30.internal.OsgiServices;
 import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 
@@ -117,8 +115,6 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
     public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
-    
-    private static final SecureAction SECURE_ACTION = AccessController.doPrivileged(SecureAction.get());
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
@@ -281,7 +277,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
 
         builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
 
-        ClassLoader classLoader = SECURE_ACTION.getClassLoader(aClass);
+        ClassLoader classLoader = getClassLoader(aClass);
 
         T actualClient;
         ResteasyClient client;
@@ -802,6 +798,13 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             return System.getProperty(key, def);
         }
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key, def));
+    }
+
+    private static ClassLoader getClassLoader(Class<?> clazz) {
+        if (System.getSecurityManager() == null) {
+            return clazz.getClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) clazz::getClassLoader);
     }
 
     private final MpClientBuilderImpl builderDelegate;
