@@ -28,6 +28,6 @@ Command-Class: io.openliberty.xmlbinding.tools.XJC
 
 publish.tool.script.subdir=xmlBinding/
 publish.tool.script.relative=..
-publish.tool.script.dir.length=11
+publish.tool.script.dir.length=16
 publish.tool.jar=ws-xjc.jar
 publish.tool.script=xjc
