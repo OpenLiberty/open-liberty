@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,8 +92,12 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
                                                          WSSecurityConstants.TR_RESOURCE_BUNDLE);
 
     public static final String WSSEC = "ws-security";
-    public static final String CXF_SIG_PROPS = WSSEC + ".signature.properties";
-    public static final String CXF_ENC_PROPS = WSSEC + ".encryption.properties";
+    public static final String SEC = "security";
+    public static final String CXF_SIG_PROPS = WSSEC + ".signature.properties"; //cxf2
+    public static final String CXF_ENC_PROPS = WSSEC + ".encryption.properties"; //cxf2
+    public static final String SEC_SIG_PROPS = SEC + ".signature.properties"; //cxf3
+    public static final String SEC_ENC_PROPS = SEC + ".encryption.properties"; //cxf3
+
 
     /**
      * @param p
@@ -181,7 +185,7 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
 
                         assertSamlTokens(message); //@2020
                         
-                        //@2020 TODO - look into doing this?
+                        //@2020 TODO: - look into doing this?
                         // Check version against policy
 
                         Principal principal =
@@ -260,6 +264,9 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
         SAMLTokenProcessor p = new SAMLTokenProcessor();
         // Get the cryptor properties and set them into requestData
         Object o = message.getContextualProperty(CXF_SIG_PROPS);
+        if (o == null) {
+            o = message.getContextualProperty(SEC_SIG_PROPS); //v3
+        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "found sig object:" + (o != null));
         };
@@ -273,6 +280,9 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
         }
         // Get the enc cryptor properties and set them into requestData
         Object oe = message.getContextualProperty(CXF_ENC_PROPS);
+        if (oe == null) {
+            oe = message.getContextualProperty(SEC_ENC_PROPS);  //v3
+        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "found enc object:" + (oe != null));
         };

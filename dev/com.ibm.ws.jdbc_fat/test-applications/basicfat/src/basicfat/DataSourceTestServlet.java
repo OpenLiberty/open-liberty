@@ -646,7 +646,9 @@ public class DataSourceTestServlet extends FATServlet {
             } finally {
                 tran.setTransactionTimeout(0); // restore default
             }
-            if (queryTimeout < 85 || queryTimeout > 90) // tolerate any elapsed time for the query
+            // tolerate any elapsed time, as long as it is greater than the 30 second default from
+            // the dataSource and not greater than the 90 seconds set by tran.setTransactionTimeout(90)
+            if (queryTimeout < 31 || queryTimeout > 90)
                 throw new Exception("Expecting queryTimeout(sync to tran)=90, not " + queryTimeout);
 
         } finally {
@@ -3124,6 +3126,7 @@ public class DataSourceTestServlet extends FATServlet {
      * The recoveryAuthData should be used for recovery.
      */
     public void testXARecovery() throws Throwable {
+        int numPrepares = 3;
         clearTable(ds4u_2);
         Connection[] cons = new Connection[3];
         tran.begin();
@@ -3135,6 +3138,12 @@ public class DataSourceTestServlet extends FATServlet {
 
             String dbProductName = cons[0].getMetaData().getDatabaseProductName().toUpperCase();
             System.out.println("Product Name is " + dbProductName);
+
+            // Work around PostgreSQL's limit of max_prepared_transactions=2,
+            // which results in the following message when exceeded:
+            // "maximum number of prepared transactions reached"
+            if ("POSTGRESQL".equalsIgnoreCase(dbProductName))
+                numPrepares = 2;
 
             // Verify isolation-level="TRANSACTION_READ_COMMITTED" from ibm-web-ext.xml
             int isolation = cons[0].getTransactionIsolation();
@@ -3156,12 +3165,14 @@ public class DataSourceTestServlet extends FATServlet {
             pstmt.executeUpdate();
             pstmt.close();
 
-            pstmt = cons[2].prepareStatement("insert into cities values (?, ?, ?)");
-            pstmt.setString(1, "Moorhead");
-            pstmt.setInt(2, 38065);
-            pstmt.setString(3, "Clay");
-            pstmt.executeUpdate();
-            pstmt.close();
+            if (numPrepares == 3) {
+                pstmt = cons[2].prepareStatement("insert into cities values (?, ?, ?)");
+                pstmt.setString(1, "Moorhead");
+                pstmt.setInt(2, 38065);
+                pstmt.setString(3, "Clay");
+                pstmt.executeUpdate();
+                pstmt.close();
+            }
 
             System.out.println("Intentionally causing in-doubt transaction");
             TestXAResource.assignSuccessLimit(1, cons);
@@ -3206,12 +3217,12 @@ public class DataSourceTestServlet extends FATServlet {
             PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
 
             /*
-             * Poll for results once a second for 5 seconds.
+             * Poll for results once a second for up to 2 minutes.
              * Most databases will have XA recovery done by this point
              *
              */
             List<String> cities = new ArrayList<>();
-            for (int count = 0; cities.size() < 3 && count < 5; Thread.sleep(1000)) {
+            for (int count = 0; cities.size() < numPrepares && count < 120; Thread.sleep(1000)) {
                 if (!cities.contains("Edina")) {
                     pstmt.setString(1, "Edina");
                     result = pstmt.executeQuery();
@@ -3226,7 +3237,7 @@ public class DataSourceTestServlet extends FATServlet {
                         cities.add(1, "St. Louis Park");
                 }
 
-                if (!cities.contains("Moorhead")) {
+                if (numPrepares == 3 && !cities.contains("Moorhead")) {
                     pstmt.setString(1, "Moorhead");
                     result = pstmt.executeQuery();
                     if (result.next())
@@ -3236,7 +3247,7 @@ public class DataSourceTestServlet extends FATServlet {
                 System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
             }
 
-            if (cities.size() < 3)
+            if (cities.size() < numPrepares)
                 throw new Exception("Missing entry in database. Results: " + cities);
             else
                 System.out.println("successfully accessed the data");

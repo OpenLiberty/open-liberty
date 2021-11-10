@@ -28,7 +28,6 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -71,7 +70,6 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     @MinimumJavaLevel(javaLevel = 8)
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // jwtSso-1.0 is not EE9 compliant.
     public void basicSAMLTests_withJwtSsoFeature() throws Exception {
         List<String> extraMsgs = new ArrayList<String>();
         extraMsgs.add("CWWKS9122I:.*sp1/snoop");

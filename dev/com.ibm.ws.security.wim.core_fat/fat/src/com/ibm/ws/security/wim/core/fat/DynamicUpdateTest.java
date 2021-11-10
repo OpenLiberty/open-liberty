@@ -56,13 +56,13 @@ public class DynamicUpdateTest {
      * private static final String DEAULT_WIMREGISTRY_REALM = "dynamicUpdate/default_wimRegistry_realm.xml";
      */
 
-    private static final String MASTER_SERVER_XML = "dynamicUpdate/master_server.xml";
+    private static final String PRIMARY_SERVER_XML = "dynamicUpdate/primary_server.xml";
     private static final String WITHOUT_PRIMARY_REALM = "dynamicUpdate/without_primary_realm.xml";
     private static final String WITH_PRIMARY_REALM_WITH_UR_MAPPING = "dynamicUpdate/with_UR_mapping.xml";
     private static final String TWO_LDAPS_AND_ONE_UNDER_PRIMARY_REALM = "dynamicUpdate/multiple_ldaps_and_single_under_realm.xml";
     private static final String TWO_LDAPS_AND_TWO_UNDER_PRIMARY_REALM = "dynamicUpdate/multiple_ldaps_and_multiple_under_realm.xml";
     private static final String TWO_LDAPS_AND_TWO_REALMS = "dynamicUpdate/multiple_ldaps_and_multiple_realms.xml";
-    protected static String serverConfigurationFile = MASTER_SERVER_XML;
+    protected static String serverConfigurationFile = PRIMARY_SERVER_XML;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -97,7 +97,7 @@ public class DynamicUpdateTest {
             servlet.getRealm();
         }
 
-        serverConfigurationFile = MASTER_SERVER_XML;
+        serverConfigurationFile = PRIMARY_SERVER_XML;
     }
 
     @AfterClass
@@ -148,7 +148,7 @@ public class DynamicUpdateTest {
         Log.info(c, "loginAfterRemovingPrimaryRealmTest", "Entering test loginAfterRemovingPrimaryRealmTest");
 
         //Change server configuration to add UR mapping attr under primary realm
-        setServerConfiguration(MASTER_SERVER_XML);
+        setServerConfiguration(PRIMARY_SERVER_XML);
 
         assertEquals("Authentication should succeed.", UNIQUE_NAME, servlet.checkPassword(USERNAME, USER_PASSWORD));
 
@@ -170,7 +170,7 @@ public class DynamicUpdateTest {
         Log.info(c, "getRealmAfterRemovingPrimaryRealm", "Checking expected realm");
 
         //Change server configuration to add UR mapping attr under primary realm
-        setServerConfiguration(MASTER_SERVER_XML);
+        setServerConfiguration(PRIMARY_SERVER_XML);
         assertEquals("defaultWIMFileBasedRealm", servlet.getRealm());
 
         //Change server configuration to remove primary realm

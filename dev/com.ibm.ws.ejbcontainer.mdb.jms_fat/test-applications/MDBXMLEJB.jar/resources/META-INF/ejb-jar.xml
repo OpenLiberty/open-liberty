@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <enterprise-beans>
+         <message-driven id="MessageDriven_1050954917281">
+            <ejb-name>BMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.BMTBeanIA</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>BMTReqQueue</activation-config-property-value>
+               </activation-config-property>
+	           <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1050954917312">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1050954917312">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <message-driven id="MessageDriven_1050954917282">
+            <ejb-name>BMTBeanNoCommit</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.BMTBeanNoCommit</ejb-class>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>BMTNoCommitReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+		          <activation-config-property-name>destinationType</activation-config-property-name>
+		          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1050954917313">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1050954917313">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <message-driven id="MessageDriven_1050955272500">
+            <ejb-name>CMTBeanIA</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.CMTBeanIA</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1050955272500">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1050955272500">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <!-- NEW for message-destination-ref -->
+         <message-driven id="MessageDriven_1050955272501">
+            <ejb-name>CommonMDB</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.CommonMDB</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <message-destination-type>javax.jms.Queue</message-destination-type>
+            <message-destination-link>CommonDestinationLinkQ</message-destination-link>
+            <resource-ref id="ResourceRef_1050955272501">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <message-destination-ref>   
+              <description>This is a description</description>         
+              <message-destination-ref-name>jms/TestResultQueue</message-destination-ref-name>
+              <message-destination-type>javax.jms.Queue</message-destination-type>
+              <message-destination-usage>Produces</message-destination-usage>
+            </message-destination-ref>
+         </message-driven>
+         <session id="Session_1051542150766">
+            <ejb-name>MDBSF</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SFHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SF</remote>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SFLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SFLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SFBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session> 
+         <message-driven id="MessageDriven_1052927711541">
+            <ejb-name>MDBBeanNonDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.MDBBeanNonDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>news</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>NonDurable</activation-config-property-value>
+               </activation-config-property>  
+            </activation-config>
+            <resource-ref id="ResourceRef_1052936135227">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1052927844512">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <message-driven id="MessageDriven_1052944140106">
+            <ejb-name>MDBBeanDurableTopic</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.MDBBeanDurableTopic</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>sports</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>Durable</activation-config-property-value>
+               </activation-config-property> 
+               <activation-config-property>
+                   <activation-config-property-name>clientId</activation-config-property-name>
+                   <activation-config-property-value>C0001</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>subscriptionName</activation-config-property-name>
+                   <activation-config-property-value>subscription1</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1052944140136">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1052944140136">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <message-driven id="MessageDriven_1053020707733">
+            <ejb-name>MDBBeanMessageSelector</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.MDBBeanMessageSelector</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>select</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+                  <activation-config-property-value>Durable</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>MessageSelector</activation-config-property-name>
+                  <activation-config-property-value>JMSType=&apos;MCM02&apos;</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>clientId</activation-config-property-name>
+                   <activation-config-property-value>C0002</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                   <activation-config-property-name>subscriptionName</activation-config-property-name>
+                   <activation-config-property-value>subscription2</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1053020707733">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1053020707733">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven> 
+         <session id="Session_1053464348325">
+            <ejb-name>MDBSLL</ejb-name>
+            <local-home>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLLaHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLLa</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLLaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_1053491355674">
+            <ejb-name>MDBSLR</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLRaHome</home>
+            <remote>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLRa</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <resource-ref id="ResourceRef_1053491355674">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <!-- NEW for message-destination-ref -->
+            <message-destination-ref>            
+              <message-destination-ref-name>jms/CommonDestinationQ</message-destination-ref-name>
+              <message-destination-type>javax.jms.Queue</message-destination-type>
+              <message-destination-usage>Produces</message-destination-usage>
+              <message-destination-link>CommonDestinationLinkQ</message-destination-link>
+            </message-destination-ref>  
+            <message-destination-ref>            
+              <message-destination-ref-name>jms/CommonDestinationTopic</message-destination-ref-name>
+              <message-destination-type>javax.jms.Topic</message-destination-type>
+              <message-destination-usage>ConsumesProduces</message-destination-usage>
+              <message-destination-link>MDBXMLEJB2.jar#CommonDestinationLinkTopic</message-destination-link>
+            </message-destination-ref>
+         </session>
+         <message-driven id="MessageDriven_1053531321804">
+            <ejb-name>CMTBeanNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.CMTBeanNotSupported</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTNotSupportedReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1053531508082">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1053531508082">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+         <message-driven id="MessageDriven_1053615533140">
+            <ejb-name>CMTBeanRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb.CMTBeanRequired</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+	           <activation-config-property>
+                  <activation-config-property-name>destination</activation-config-property-name>
+                  <activation-config-property-value>CMTRequiredReqQueue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>destinationType</activation-config-property-name>
+                  <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+               </activation-config-property>
+               <activation-config-property>
+                  <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                  <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+               </activation-config-property>
+            </activation-config>
+            <resource-ref id="ResourceRef_1053615533140">
+               <res-ref-name>jms/TestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-env-ref id="ResourceEnvRef_1053615533140">
+               <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+               <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
+         </message-driven>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_ID">
+         <container-transaction id="MethodTransaction_1052927711561">
+            <method id="MethodElement_1052927711561">
+               <ejb-name>MDBSF</ejb-name>
+               <method-intf>Local</method-intf>
+               <method-name>incrementInt</method-name>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction> 
+         <container-transaction id="MethodTransaction_1053531321924">
+            <description>CMTBeanNotSupported:+:</description>
+            <method id="MethodElement_1053531321924">
+               <ejb-name>CMTBeanNotSupported</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053551952349">
+            <description>MDBSLLSupports:+:</description>
+            <method id="MethodElement_1053551952349">
+               <ejb-name>MDBSLL</ejb-name>
+               <method-name>method2</method-name>
+               <method-params>
+                  <method-param>java.lang.String</method-param>
+               </method-params>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_1053615533160">
+            <description>CMTBeanRequired:+:</description>
+            <method id="MethodElement_1053615533160">
+               <ejb-name>CMTBeanRequired</ejb-name>
+               <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction>
+         <!-- NEW for message-destination-ref -->
+         <message-destination>
+            <message-destination-name>CommonDestinationLinkQ</message-destination-name>
+         </message-destination> 
+      </assembly-descriptor>
+   </ejb-jar>

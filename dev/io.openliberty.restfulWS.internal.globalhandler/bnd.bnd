@@ -15,6 +15,9 @@ Bundle-SymbolicName: io.openliberty.restfulWS.internal.globalhandler
 
 jakartaeeMe: true
 
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.restfulWS.internal.globalhandler.jakarta.jar
+
 src: src, resources
 
 #-cdiannotations:

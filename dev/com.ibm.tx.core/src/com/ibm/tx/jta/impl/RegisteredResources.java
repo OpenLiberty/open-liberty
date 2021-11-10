@@ -186,7 +186,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * If we are performing the isSameRM check, this is the JTAXAResourceImpl against which
      * the checking is performed.
      */
-    protected JTAXAResourceImpl _sameRMMasterResource;
+    protected JTAXAResourceImpl _sameRMPrimaryResource;
 
     /**
      * The second XA resource which has the same RM instance as the first JTAXAResource.
@@ -392,15 +392,15 @@ public class RegisteredResources implements Comparator<JTAResource> {
                         Tr.event(tc, "Second resource or later, so we should check for isSameRM");
 
                     if (_isCheckingSameRM) {
-                        if (xaRes.isSameRM(_sameRMMasterResource.XAResource()) &&
-                        // Make sure _sameRMMasterResource also compatible with branchCoupling start flag
-                            (_sameRMMasterResource.getBranchCoupling() == branchCoupling)) {
+                        if (xaRes.isSameRM(_sameRMPrimaryResource.XAResource()) &&
+                        // Make sure _sameRMPrimaryResource also compatible with branchCoupling start flag
+                            (_sameRMPrimaryResource.getBranchCoupling() == branchCoupling)) {
                             if (tc.isEventEnabled())
                                 Tr.event(tc, "isSameRM match successful");
                             matchedSameRM = true;
                             _isCheckingSameRM = false;
 
-                            xid = _sameRMMasterResource.getXID();
+                            xid = _sameRMPrimaryResource.getXID();
                         } else {
                             if (tc.isEventEnabled())
                                 Tr.event(tc, "isSameRM match was not successful, so we create a new branch xid");
@@ -432,11 +432,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
             }
 
             // If we are enlisting the first resource to the tran and it is capable to
-            // perform isSameRM, we set it as the master resource that we make our
+            // perform isSameRM, we set it as the primary resource that we make our
             // isSameRM processing against.
 
-            if (_isCheckingSameRM && (_sameRMMasterResource == null)) {
-                _sameRMMasterResource = jtaRes;
+            if (_isCheckingSameRM && (_sameRMPrimaryResource == null)) {
+                _sameRMPrimaryResource = jtaRes;
             }
 
             jtaRes.setBranchCoupling(branchCoupling);
@@ -2482,7 +2482,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         }
 
         if (_sameRMResource != null) {
-            _sameRMResource.copyDiagnostics(_sameRMMasterResource);
+            _sameRMResource.copyDiagnostics(_sameRMPrimaryResource);
             diagnoseResource(_sameRMResource, diagType);
         }
 

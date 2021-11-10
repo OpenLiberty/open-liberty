@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere WSAT SPI
+Bundle-Description: WebSphere WSAT SPI, version ${bVersion}
+Bundle-SymbolicName: io.openliberty.wsat.spi.javaee
+
+-pom: artifactid=io.openliberty.wsat.spi
+
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.wsat.spi.jar
+jakartaFinalBundleId: io.openliberty.wsat.spi
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.wsat.spi.jar
+publish.wlp.javadoc.include: io.openliberty.wsat.spi.javadoc.zip
+
+Import-Package: com.ibm.wsspi.webservices.wsat
+
+Export-Package: com.ibm.wsspi.webservices.wsat
+
+-includeresource: {META-INF/maven/io.openliberty.spi/io.openliberty.wsat.spi/pom.xml=io.openliberty.wsat.spi.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.wsat.common

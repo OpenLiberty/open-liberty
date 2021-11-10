@@ -18,13 +18,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.SessionScoped;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import prototype.enterprise.concurrent.Async;
 
 @SessionScoped
 public class SessionScopedBean implements Serializable {
@@ -39,7 +38,7 @@ public class SessionScopedBean implements Serializable {
      * returning true if the latch is counted down
      * and false if we time out waiting for it.
      */
-    @Async(executor = "java:app/env/concurrent/sampleExecutorRef")
+    @Asynchronous(executor = "java:app/env/concurrent/sampleExecutorRef")
     public CompletableFuture<Boolean> await(CountDownLatch blocker, long time, TimeUnit unit,
                                             LinkedBlockingQueue<Object> lookedUpResources) {
         try {
@@ -57,12 +56,12 @@ public class SessionScopedBean implements Serializable {
         return text;
     }
 
-    @Async(executor = "java:comp/UserTransaction")
+    @Asynchronous(executor = "java:comp/UserTransaction")
     public CompletionStage<String> jndiNameNotAnExecutor() {
         throw new AssertionError("This should be unreachable because java:comp/UserTransaction is not an executor");
     }
 
-    @Async(executor = "java:comp/env/concurrent/doesNotExistRef")
+    @Asynchronous(executor = "java:comp/env/concurrent/doesNotExistRef")
     public CompletionStage<String> jndiNameNotFound() {
         throw new AssertionError("This should be unreachable due to the executor JNDI name not being found!");
     }

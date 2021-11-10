@@ -65,14 +65,14 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         //   jakarta-versions.properties
         //   jakarta-bundles.properties
         //   jakarta-direct.properties
-        //   jakarta-xml-master.properties
-        //   (other xml properties files as referenced by 'jakarta-xml-master.properties'
+        //   jakarta-text.properties
+        //   (other xml properties files as referenced by 'jakarta-text.properties'
         DEFAULT_TRANSFORMATION_RULES.put("-tr", TRANSFORMER_RULES_ROOT + "jakarta-renames.properties"); // Package renames
         DEFAULT_TRANSFORMATION_RULES.put("-ts", TRANSFORMER_RULES_ROOT + "jakarta-selections.properties"); // File selections and omissions
         DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions.properties"); // Package version updates
         DEFAULT_TRANSFORMATION_RULES.put("-tb", TRANSFORMER_RULES_ROOT + "jakarta-bundles.properties"); // bundle identity updates
         DEFAULT_TRANSFORMATION_RULES.put("-td", TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
-        DEFAULT_TRANSFORMATION_RULES.put("-tf", TRANSFORMER_RULES_ROOT + "jakarta-xml-master.properties"); // master xml subsitution file
+        DEFAULT_TRANSFORMATION_RULES.put("-tf", TRANSFORMER_RULES_ROOT + "jakarta-text.properties"); // text updates
     }
 
     // Point-in-time list of enabled JakartaEE9 features.
@@ -412,7 +412,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[10] = DEFAULT_TRANSFORMATION_RULES.get("-tb");
             args[11] = "-td"; // exact java string constant updates
             args[12] = DEFAULT_TRANSFORMATION_RULES.get("-td");
-            args[13] = "-tf"; // master xml subsitution file
+            args[13] = "-tf"; // text updates
             args[14] = DEFAULT_TRANSFORMATION_RULES.get("-tf");
 
             // Go through the additions

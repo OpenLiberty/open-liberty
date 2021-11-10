@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -65,9 +66,7 @@ public class XATest extends AbstractTxFAT {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("WTRN0076W", "WTRN0048W", "WTRN0075W");
-        }
+        FATUtils.stopServers(new String[] { "WTRN0076W", "WTRN0048W", "WTRN0075W" }, server);
     }
 
     @Test

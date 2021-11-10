@@ -41,7 +41,8 @@ public class IfxConnectionPoolDataSourceBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor URL = new PropertyDescriptor("URL", myClass);
             PropertyDescriptor databaseName = new PropertyDescriptor("databaseName", myClass);
             PropertyDescriptor driverType = new PropertyDescriptor("driverType", myClass);
-            PropertyDescriptor[] list = { password, selectMethod, portNumber, user, serverName, URL, databaseName, driverType };
+            PropertyDescriptor createDatabase = new PropertyDescriptor("createDatabase", myClass);
+            PropertyDescriptor[] list = { password, selectMethod, portNumber, user, serverName, URL, databaseName, driverType, createDatabase };
             return list;
         } catch (IntrospectionException iexErr) {
             throw new Error(iexErr.toString());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -35,14 +38,12 @@ public class EndToEndTest extends WSATTest {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		if (server != null && !server.isStarted()) {
-			server.startServer();
-		}
+		FATUtils.startServers(server);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server);
+		FATUtils.stopServers(server);
 	}
 
 	@Test
@@ -71,17 +72,18 @@ public class EndToEndTest extends WSATTest {
 
 	@Test
 	public void testTwowayCommit() {
+		String method = "testTwowayCommit";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=twoservercommit&baseurl=" + BASE_URL;
-			System.out.println("testTwoway URL: " + urlStr);
+			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = HttpUtils
 					.getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testTwoway Result : " + result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Finish Twoway message"));
 		} catch (Exception e) {
@@ -91,17 +93,18 @@ public class EndToEndTest extends WSATTest {
 	
 	@Test
 	public void testTwowayRollback() {
+		String method = "testTwowayRollback";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=twoserverrollback&baseurl=" + BASE_URL;
-			System.out.println("testTwoway URL: " + urlStr);
+			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = HttpUtils
 					.getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testTwoway Result : " + result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Finish Twoway message"));
 		} catch (Exception e) {
@@ -111,21 +114,21 @@ public class EndToEndTest extends WSATTest {
 
 	@Test
 	public void testNoOptionalNoTransaction() {
+		String method = "testNoOptionalNoTransaction";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=noOptionalNoTransaction&baseurl=" + BASE_URL;
-			System.out.println("testNoOptionalNoTransaction URL: " + urlStr);
+			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = HttpUtils
 					.getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testNoOptionalNoTransaction Result : " + result);
+			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Detected WS-AT policy, however there is no"
 							+ " active transaction in current thread"));
-
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
@@ -133,22 +136,23 @@ public class EndToEndTest extends WSATTest {
 
 	@Test
 	public void testFeatureDynamic() {
+		String method = "testFeatureDynamic";
 		try {
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=twoway&baseurl=" + BASE_URL;
-			System.out.println("testFeatureDynamic URL: " + urlStr);
+			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = HttpUtils
 					.getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testFeatureDynamic First Result : " + result);
+			Log.info(getClass(), method, "First Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Finish Twoway message"));
 			
-			server.stopServer();
-			server.startServer();
+			FATUtils.stopServers(server);
+			FATUtils.startServers(server);
 			server.setServerConfigurationFile("dynamicallyRemoveWSAT/serverWithoutWSAT.xml");
 	        assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
 	        assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
@@ -160,11 +164,11 @@ public class EndToEndTest extends WSATTest {
 	        br = HttpUtils.getConnectionStream(con);
 			result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testFeatureDynamic Second Result : " + result);
+			Log.info(getClass(), method, "Second Result : " + result);
 			assertTrue("Cannot get expected reply from server", result.contains("javax.naming.NameNotFoundException"));
 	        
-			server.stopServer();
-			server.startServer();
+			FATUtils.stopServers(server);
+			FATUtils.startServers(server);
 	        server.setServerConfigurationFile("dynamicallyRemoveWSAT/serverWithWSAT.xml");
 	        assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
 	        assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
@@ -174,7 +178,7 @@ public class EndToEndTest extends WSATTest {
 	        br = HttpUtils.getConnectionStream(con);
 			result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testFeatureDynamic Third Result : " + result);
+			Log.info(getClass(), method, "Third Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Finish Twoway message"));
 			
@@ -182,17 +186,4 @@ public class EndToEndTest extends WSATTest {
 			fail("Exception happens: " + e.toString());
 		}
 	}
-
-	/*
-	 * public String callStringProvider(String endpointUrl) throws IOException,
-	 * MalformedURLException { URL url = new URL(endpointUrl); InputStream is =
-	 * url.openConnection().getInputStream(); BufferedReader br = new
-	 * BufferedReader(new InputStreamReader(is));
-	 * 
-	 * String line = null; StringBuffer sb = new StringBuffer();
-	 * 
-	 * while ((line = br.readLine()) != null) { sb.append(line); }
-	 * 
-	 * return sb.toString(); }
-	 */
 }

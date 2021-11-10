@@ -1,0 +1,30 @@
+<ejb-jar-bnd
+xmlns="http://websphere.ibm.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+version="1.0">
+
+    <message-driven name="InterceptorMDB01Bean">
+        <jca-adapter activation-spec-binding-name="mdb30/MDBReqQueue" destination-binding-name="jms/MDBReqQueue" activation-spec-auth-alias=""/>
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="InterceptorMDB02Bean">
+        <jca-adapter activation-spec-binding-name="mdb30/MDB02ReqQueue" destination-binding-name="jms/MDB02ReqQueue" activation-spec-auth-alias=""/>
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="InterceptorMDB03Bean">
+        <jca-adapter activation-spec-binding-name="mdb30/MDB03ReqQueue" destination-binding-name="jms/MDB03ReqQueue" activation-spec-auth-alias=""/>
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="InterceptorMDB04Bean">
+        <jca-adapter activation-spec-binding-name="mdb30/MDB04ReqQueue" destination-binding-name="jms/MDB04ReqQueue" activation-spec-auth-alias=""/>
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+</ejb-jar-bnd>

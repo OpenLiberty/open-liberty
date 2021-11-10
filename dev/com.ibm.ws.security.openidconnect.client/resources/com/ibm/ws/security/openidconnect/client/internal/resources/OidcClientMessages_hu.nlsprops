@@ -289,7 +289,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Rossz form\u00e1tum\
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3 \u00e9s \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t. A rossz form\u00e1tum\u00fa cookie-t okozhatja a cookie m\u00f3dos\u00edt\u00e1sa a felhaszn\u00e1l\u00f3 \u00fcgyn\u00f6k\u00f6n olyan hosztn\u00e9vvel, ami elt\u00e9r a szolg\u00e1ltat\u00f3n regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1s hosztnev\u00e9t\u0151l. Ha a hosztn\u00e9v elv\u00e1rt, akkor adja azt hozz\u00e1 a webAppSecurity elem wasReqURLRedirectDomainNames attrib\u00fatum\u00e1hoz a server.xml f\u00e1jlban.
 
 # 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tudja kibontani a JSON Web Token (JWT) ig\u00e9nyeket a webes v\u00e1laszb\u00f3l. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A webes v\u00e1lasz csak JWT lehet JSON Web Encryption (JWE) vagy JSON Web Signature (JWS) form\u00e1tumban. Lehet, hogy a v\u00e1lasz form\u00e1tuma nem megfelel\u0151, illetve az OpenID Connect \u00fcgyf\u00e9l egy m\u00e1sik hib\u00e1ba \u00fctk\u00f6z\u00f6tt a v\u00e1lasz feldolgoz\u00e1sa k\u00f6zben.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tudja kibontani a JSON Vil\u00e1gh\u00e1l\u00f3s kulcssz\u00f3 (JWT) ig\u00e9nyeket a vil\u00e1gh\u00e1l\u00f3s v\u00e1laszb\u00f3l. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A vil\u00e1gh\u00e1l\u00f3s v\u00e1lasz csak JWT lehet JSON Web Encryption (JWE) vagy JSON Web Signature (JWS) form\u00e1tumban. Lehet, hogy a v\u00e1lasz form\u00e1tuma nem megfelel\u0151, illetve az OpenID Connect \u00fcgyf\u00e9l egy m\u00e1sik hib\u00e1ba \u00fctk\u00f6z\u00f6tt a v\u00e1lasz feldolgoz\u00e1sa k\u00f6zben.
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy a v\u00e1lasz JWT form\u00e1tumban van-e.
+
+#1534, 1535 used in clients.common bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

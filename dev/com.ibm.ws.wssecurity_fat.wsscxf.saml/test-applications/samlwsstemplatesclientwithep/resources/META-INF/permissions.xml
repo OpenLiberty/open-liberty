@@ -43,4 +43,8 @@
    	   <name>suppressAccessChecks</name>
     </permission>
  
+    <permission>
+       <class-name>javax.security.auth.AuthPermission</class-name>
+       <name>getSubject</name>
+    </permission>
 </permissions>

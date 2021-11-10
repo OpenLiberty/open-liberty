@@ -9,6 +9,7 @@ export const PRE_AUTHORIZE_OAUTH2 = "pre_authorize_oauth2"
 export const AUTHORIZE_OAUTH2 = "authorize_oauth2"
 export const VALIDATE = "validate"
 export const CONFIGURE_AUTH = "configure_auth"
+export const RESTORE_AUTHORIZATION = "restore_authorization"
 
 const scopeSeparator = " "
 
@@ -26,11 +27,21 @@ export function authorize(payload) {
   }
 }
 
+export const authorizeWithPersistOption = (payload) => ( { authActions } ) => {
+  authActions.authorize(payload)
+  authActions.persistAuthorizationIfNeeded()  
+}
+
 export function logout(payload) {
   return {
     type: LOGOUT,
     payload: payload
   }
+}
+
+export const logoutWithPersistOption = (payload) => ( { authActions } ) => {
+  authActions.logout(payload)
+  authActions.persistAuthorizationIfNeeded()  
 }
 
 export const preAuthorizeImplicit = (payload) => ( { authActions, errActions } ) => {
@@ -60,14 +71,21 @@ export const preAuthorizeImplicit = (payload) => ( { authActions, errActions } )
     return
   }
 
-  authActions.authorizeOauth2({ auth, token })
+  authActions.authorizeOauth2WithPersistOption({ auth, token })
 }
+
 
 export function authorizeOauth2(payload) {
   return {
     type: AUTHORIZE_OAUTH2,
     payload: payload
   }
+}
+
+
+export const authorizeOauth2WithPersistOption = (payload) => ( { authActions } ) => {
+  authActions.authorizeOauth2(payload)
+  authActions.persistAuthorizationIfNeeded()  
 }
 
 export const authorizePassword = ( auth ) => ( { authActions } ) => {
@@ -134,7 +152,7 @@ export const authorizeAccessCodeWithFormParams = ( { auth, redirectUrl } ) => ( 
 }
 
 export const authorizeAccessCodeWithBasicAuthentication = ( { auth, redirectUrl } ) => ( { authActions } ) => {
-  let { schema, name, clientId, clientSecret } = auth
+  let { schema, name, clientId, clientSecret, codeVerifier } = auth
   let headers = {
     Authorization: "Basic " + btoa(clientId + ":" + clientSecret)
   }
@@ -142,7 +160,8 @@ export const authorizeAccessCodeWithBasicAuthentication = ( { auth, redirectUrl 
     grant_type: "authorization_code",
     code: auth.code,
     client_id: clientId,
-    redirect_uri: redirectUrl
+    redirect_uri: redirectUrl,
+    code_verifier: codeVerifier
   }
 
   return authActions.authorizeRequest({body: buildFormData(form), name, url: schema.get("tokenUrl"), auth, headers})
@@ -156,7 +175,8 @@ export const authorizeRequest = ( data ) => ( { fn, getConfigs, authActions, err
   let parsedUrl
 
   if (specSelectors.isOAS3()) {
-    parsedUrl = parseUrl(url, oas3Selectors.selectedServer(), true)
+    let finalServerUrl = oas3Selectors.serverEffectiveValue(oas3Selectors.selectedServer())
+    parsedUrl = parseUrl(url, finalServerUrl, true)
   } else {
     parsedUrl = parseUrl(url, specSelectors.url(), true)
   }
@@ -207,7 +227,7 @@ export const authorizeRequest = ( data ) => ( { fn, getConfigs, authActions, err
       return
     }
 
-    authActions.authorizeOauth2({ auth, token})
+    authActions.authorizeOauth2WithPersistOption({ auth, token})
   })
   .catch(e => {
     let err = new Error(e)
@@ -241,5 +261,21 @@ export function configureAuth(payload) {
   return {
     type: CONFIGURE_AUTH,
     payload: payload
+  }
+}
+
+export function restoreAuthorization(payload) {
+  return {
+    type: RESTORE_AUTHORIZATION,
+    payload: payload
+  }
+}
+
+export const persistAuthorizationIfNeeded = () => ( { authSelectors, getConfigs } ) => {
+  const configs = getConfigs()
+  if (configs.persistAuthorization)
+  {
+    const authorized = authSelectors.authorized()
+    localStorage.setItem("authorized", JSON.stringify(authorized.toJS()))
   }
 }

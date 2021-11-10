@@ -6,8 +6,6 @@ visibility = private
   io.openliberty.servlet.api-5.0; apiJar=false
 -bundles=\
   io.openliberty.webservices.handler
--jars=\
-  com.ibm.websphere.appserver.spi.globalhandler.jakarta; location:=dev/spi/ibm/
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

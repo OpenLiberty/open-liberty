@@ -8,6 +8,6 @@ singleton=true
  com.ibm.ws.jdbc.4.1.jakarta,\
  com.ibm.ws.jdbc.4.2.jakarta,\
  com.ibm.ws.jdbc.4.3.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

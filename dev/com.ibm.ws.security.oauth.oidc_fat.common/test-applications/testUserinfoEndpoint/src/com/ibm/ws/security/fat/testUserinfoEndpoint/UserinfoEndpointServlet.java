@@ -22,7 +22,9 @@ public class UserinfoEndpointServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final String servletName = "UserinfoEndpointServlet";
+    private final String jwtContentType = "application/jwt";
     private String token = null;
+    private String contentType = jwtContentType;
 
     public UserinfoEndpointServlet() {
     }
@@ -54,6 +56,12 @@ public class UserinfoEndpointServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         token = req.getParameter("userinfoToken");
+        String contentTypeSetting = req.getParameter("contentType");
+        if (contentTypeSetting == null || contentTypeSetting == "") { // content type not passed, use default of jwt
+            contentType = jwtContentType;
+        } else {
+            contentType = contentTypeSetting;
+        }
 
         System.out.println("Userinfo Endpoint Saving token: " + token);
         writer.println("token saved: " + token);
@@ -71,9 +79,9 @@ public class UserinfoEndpointServlet extends HttpServlet {
      * @throws IOException
      */
     protected void handleReturnTokenRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Userinfo Endpoint Returning token: " + token);
+        System.out.println("Userinfo Endpoint Returning token: " + token + "\n with contentType: " + contentType);
 
-        resp.setContentType("application/jwt");
+        resp.setContentType(contentType);
         PrintWriter writer = resp.getWriter();
 
         writer.println(token);

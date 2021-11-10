@@ -449,7 +449,7 @@ public class StatefulASActivationStrategy
             return;
         }
 
-        Object key = bean.ivCacheKey; // MasterKey                d199233
+        Object key = bean.ivCacheKey; // MainKey                d199233
         StatefulBeanO sfbean = null; // d655854
 
         synchronized (locks.getLock(key))

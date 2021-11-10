@@ -1,0 +1,56 @@
+<ejb-jar-bnd
+xmlns="http://websphere.ibm.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+version="1.0">
+
+    <message-driven name="BMTBeanIA">
+        <jca-adapter activation-spec-binding-name="mdb30/BMTReqQueue" destination-binding-name="jms/BMTReqQueue" activation-spec-auth-alias=""/>
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="BMTBeanNoCommit">
+        <jca-adapter activation-spec-binding-name="mdb30/BMTNoCommitReqQueue" destination-binding-name="jms/BMTNoCommitReqQueue" activation-spec-auth-alias="" />
+        <!-- do not remove, we intentionally create dangling resource-ref and resource-env-ref bindings to show
+             that application will install and run with dangling references. We should only get warning messages. -->  
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="CMTBeanIA">
+        <jca-adapter activation-spec-binding-name="mdb30/CMTReqQueue" destination-binding-name="jms/CMTReqQueue" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="MDBBeanNonDurableTopic">
+        <jca-adapter activation-spec-binding-name="mdb30/TestTopicListenerPort" destination-binding-name="jms/news" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="MDBBeanDurableTopic">
+        <jca-adapter activation-spec-binding-name="mdb30/TestDurableTopicListenerPort" destination-binding-name="jms/sports" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="MDBBeanMessageSelector">
+        <jca-adapter activation-spec-binding-name="mdb30/TestMessageSelectorTopicListenerPort" destination-binding-name="jms/select" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="CMTBeanNotSupported">
+        <jca-adapter activation-spec-binding-name="mdb30/CMTNotSupportedReqQueue" destination-binding-name="jms/CMTNotSupportedReqQueue" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+
+    <message-driven name="CMTBeanRequired">  
+        <jca-adapter activation-spec-binding-name="mdb30/CMTRequiredReqQueue" destination-binding-name="jms/CMTRequiredReqQueue" activation-spec-auth-alias="" />
+        <resource-ref name="jms/TestQCF" binding-name="jms/TestQCF"/>
+        <resource-env-ref name="jms/TestResultQueue" binding-name="jms/TestResultQueue"/>
+    </message-driven>
+</ejb-jar-bnd>

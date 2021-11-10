@@ -244,7 +244,7 @@ public class JSVaryingListImpl extends JSListImpl implements JSVaryingList {
       ArrayUtil.writeInt(frame, next, offset);
       if (elem == nullIndicator)
         elem = null;
-      offset += element.getEncodedValueLength(elem, indirect, master);
+      offset += element.getEncodedValueLength(elem, indirect, primaryMessage);
       next += 4;
     }
     return next;
@@ -260,7 +260,7 @@ public class JSVaryingListImpl extends JSListImpl implements JSVaryingList {
         throw new JMFUninitializedAccessException("Value at accessor " + i + " is missing");
       if (elem == nullIndicator)
         elem = null;
-      ans += element.getEncodedValueLength(elem, indirect, master);
+      ans += element.getEncodedValueLength(elem, indirect, primaryMessage);
     }
     return ans;
   }

@@ -13,6 +13,6 @@ IBM-API-Package: com.ibm.websphere.ejbcontainer; type="ibm-api", \
  io.openliberty.ejbcontainer.v40.internal, \
  com.ibm.ws.ejbcontainer.remote.jakarta
 -files=clients/ejbRemotePortable.jakarta.jar
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

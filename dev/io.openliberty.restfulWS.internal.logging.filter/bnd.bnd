@@ -13,6 +13,9 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.restfulWS.internal.logging.filter
 
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.restfulWS.internal.logging.filter.jakarta.jar
+
 app-resources= \
   META-INF/services/javax.ws.rs.ext.Providers
 

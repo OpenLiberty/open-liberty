@@ -189,6 +189,8 @@ public class FATTest extends AbstractAppManagerTest {
         File link = new File("/bin/ln");
         if (link.exists() && link.canExecute()) {
             String serverRoot = server.getServerRoot();
+            String hardPath = serverRoot + "/symbolicLink/somethingelse/Classes";
+            String symPath = serverRoot + "/testWarApplication/WEB-INF/classes";
             try {
                 final String method = testName.getMethodName();
                 Log.info(c, method, "Starting test " + method);
@@ -216,8 +218,6 @@ public class FATTest extends AbstractAppManagerTest {
                                                                 serverRoot + "/symbolicLink/somethingelse"));
                 server.copyFileToLibertyServerRoot(DROPINS_FISH_DIR, "looseApplication/testWarApplication.war.xml");
 
-                String hardPath = serverRoot + "/symbolicLink/somethingelse/Classes";
-                String symPath = serverRoot + "/testWarApplication/WEB-INF/classes";
                 String[] execParameters = new String[] { "/bin/ln", "-s", hardPath, symPath };
                 Process process = Runtime.getRuntime().exec(execParameters);
                 assertEquals("Creating symbolic link didn't return 0.", 0, process.waitFor());
@@ -243,6 +243,11 @@ public class FATTest extends AbstractAppManagerTest {
                            line.contains(UPDATED_MESSAGE));
                 con.disconnect();
             } finally {
+                // Try unlinking the file. Simplicity seems to have issues with symbolic links.
+                String[] execParameters = new String[] { "unlink", symPath };
+                Process process = Runtime.getRuntime().exec(execParameters);
+                assertEquals("Removing symbolic link didn't return 0.", 0, process.waitFor());
+
                 // manually do this clean up because the stopServer command will try
                 // to collect the server as is, and will break upon looking at the
                 // symbolic links created...

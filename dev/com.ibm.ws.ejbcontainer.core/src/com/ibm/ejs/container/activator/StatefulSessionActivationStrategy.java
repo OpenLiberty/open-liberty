@@ -90,7 +90,7 @@ public abstract class StatefulSessionActivationStrategy
      * Insert a stateful bean with the specified key into the cache. The caller
      * must be holding the lock associated with the key.
      */
-    private void cacheInsert(MasterKey key, StatefulBeanO sfbean) {
+    private void cacheInsert(MainKey key, StatefulBeanO sfbean) {
         CacheElement cacheElement = cache.insert(key, sfbean);
         sfbean.ivCacheElement = cacheElement;
         sfbean.ivCacheKey = key;
@@ -114,7 +114,7 @@ public abstract class StatefulSessionActivationStrategy
 
         StatefulBeanO sfbean = (StatefulBeanO) bean;
         BeanId id = bean.getId();
-        MasterKey key = new MasterKey(id);
+        MainKey key = new MainKey(id);
         boolean success = false;
 
         sfbean.ivCacheLock = locks.getLock(key);
@@ -224,7 +224,7 @@ public abstract class StatefulSessionActivationStrategy
             Tr.entry(tc, "atActivate (" + beanId + ") : " + tx);
 
         Throwable exception = null;
-        MasterKey key = new MasterKey(beanId);
+        MainKey key = new MainKey(beanId);
         TimeoutElement elt = null;
         boolean found = false;
         boolean locked = false;
@@ -702,7 +702,7 @@ public abstract class StatefulSessionActivationStrategy
 
         BeanO bean = null;
         Throwable exception = null;
-        MasterKey key = new MasterKey(beanId);
+        MainKey key = new MainKey(beanId);
 
         try
         {
@@ -854,7 +854,7 @@ public abstract class StatefulSessionActivationStrategy
             Tr.entry(tc, "atPassivate " + beanId);
 
         BeanO bean = null;
-        MasterKey key = new MasterKey(beanId);
+        MainKey key = new MainKey(beanId);
 
         try {
 
@@ -926,7 +926,7 @@ public abstract class StatefulSessionActivationStrategy
         // The 'bean' parameter may be null (i.e. when calling to uninstall
         // a passivated bean), so don't count on it.                      LI3408
 
-        MasterKey key = new MasterKey(beanId);
+        MainKey key = new MainKey(beanId);
 
         synchronized (locks.getLock(key)) {
 

@@ -30,6 +30,7 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
     private String _serverName = " ";
     private String _databaseName = " ";
     private String _driverType = " ";
+    private String _createDatabase = " ";
 
     private ConnectionManager connManager;
     // The HATABLE is configured by a servlet at runtime. When testing startup
@@ -171,6 +172,16 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
     public void setDriverType(String driverType) {
         System.out.println("SIMHADB: IfxConnectionPoolDataSource.setDriverType: " + driverType);
         _driverType = driverType;
+    }
+
+    public String getCreateDatabase() {
+        System.out.println("SIMHADB: IfxConnectionPoolDataSource.getCreateDatabase");
+        return " ";
+    }
+
+    public void setCreateDatabase(String createDatabase) {
+        System.out.println("SIMHADB: IfxConnectionPoolDataSource.setCreateDatabase: " + createDatabase);
+        _createDatabase = createDatabase;
     }
 
     /**

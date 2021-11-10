@@ -11,6 +11,6 @@ visibility=private
  com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.app.manager.client, \
  com.ibm.ws.managedobject
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

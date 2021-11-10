@@ -132,15 +132,15 @@ public class JSSEProviderFactory {
                 Tr.debug(tc, "Provider name [" + i + "]: " + providerList[i].getName());
 
             if (providerList[i].getName().equalsIgnoreCase(contextProvider)) {
-                if (contextProvider.equalsIgnoreCase(Constants.IBMJSSE2_NAME) && validateProvider(Constants.IBMJSSE2_NAME)) {
+                if (contextProvider.equalsIgnoreCase(Constants.IBMJSSE2_NAME)) {
                     cachedProvider = new IBMJSSEProvider();
                     providerCache.put(Constants.IBMJSSE2_NAME, cachedProvider);
                     providerCache.put(contextProvider, cachedProvider);
-                } else if (contextProvider.equalsIgnoreCase(Constants.IBMJSSE_NAME) && validateProvider(Constants.IBMJSSE_NAME)) {
+                } else if (contextProvider.equalsIgnoreCase(Constants.IBMJSSE_NAME)) {
                     cachedProvider = new IBMJSSEProvider();
                     providerCache.put(Constants.IBMJSSE_NAME, cachedProvider);
                     providerCache.put(contextProvider, cachedProvider);
-                } else if (contextProvider.equalsIgnoreCase(Constants.SUNJSSE_NAME) && validateProvider(Constants.SUNJSSE_NAME)) {
+                } else if (contextProvider.equalsIgnoreCase(Constants.SUNJSSE_NAME)) {
                     cachedProvider = new SunJSSEProvider();
                     providerCache.put(Constants.SUNJSSE_NAME, cachedProvider);
                     providerCache.put(contextProvider, cachedProvider);

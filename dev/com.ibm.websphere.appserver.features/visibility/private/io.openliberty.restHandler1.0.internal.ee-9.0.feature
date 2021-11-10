@@ -9,6 +9,6 @@ visibility = private
 
 -bundles= com.ibm.ws.rest.handler.jakarta
 
-kind=beta
+kind=ga
 edition=core
 

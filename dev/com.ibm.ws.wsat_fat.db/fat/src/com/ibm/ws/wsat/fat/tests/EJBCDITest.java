@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -51,30 +53,24 @@ public class EJBCDITest extends DBTestBase {
 		server1 = LibertyServerFactory
 				.getLibertyServer("WSATEJB_Server1");
 		server1.setHttpDefaultPort(server1Port);
-		
+
 		DBTestBase.initWSATTest(client);
 		DBTestBase.initWSATTest(server1);
 
-    ShrinkHelper.defaultDropinApp(client, "wsatEJBCDIApp", "com.ibm.ws.wsat.ejbcdi.*");
-    ShrinkHelper.defaultDropinApp(server1, "wsatEJBCDIApp", "com.ibm.ws.wsat.ejbcdi.*");
-		
+		ShrinkHelper.defaultDropinApp(client, "wsatEJBCDIApp", "com.ibm.ws.wsat.ejbcdi.*");
+		ShrinkHelper.defaultDropinApp(server1, "wsatEJBCDIApp", "com.ibm.ws.wsat.ejbcdi.*");
+
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
 		Server1_URL = "http://" + server1.getHostname() + ":"
 				+ server1.getHttpDefaultPort();
 
-		if (client != null && !client.isStarted()) {
-			client.startServer();
-		}
-		if (server1 != null && !server1.isStarted()) {
-			server1.startServer();
-		}
+		FATUtils.startServers(client, server1);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		ServerUtils.stopServer(client);
-		ServerUtils.stopServer(server1);
+		FATUtils.stopServers(client, server1);
 
 		DBTestBase.cleanupWSATTest(client);
 		DBTestBase.cleanupWSATTest(server1);
@@ -971,6 +967,7 @@ public class EJBCDITest extends DBTestBase {
 	}
 
 	public String executeWSATWithException(String url, int httpCode) {
+		String method = "executeWSATWithException";
 		String result = "";
 		HttpURLConnection con;
 		try {
@@ -979,13 +976,12 @@ public class EJBCDITest extends DBTestBase {
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			result = br.readLine();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			result = e.getMessage();
-			e.printStackTrace();
+			Log.error(getClass(), method, e);
 		}
 
-		System.out.println("Execute WS-AT test from " + url);
-		System.out.println("Result: " + result);
+		Log.info(getClass(), method, "Execute WS-AT test from " + url);
+		Log.info(getClass(), method, "Result: " + result);
 		return result;
 	}
 }

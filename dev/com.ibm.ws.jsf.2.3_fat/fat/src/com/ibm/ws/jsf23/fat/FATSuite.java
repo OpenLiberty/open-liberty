@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.jsf23.fat.tests.CDIConfigByACPTests;
-import com.ibm.ws.jsf23.fat.tests.CDIFacesInMetaInfTests;
-import com.ibm.ws.jsf23.fat.tests.CDIFacesInWebXMLTests;
-import com.ibm.ws.jsf23.fat.tests.CDIInjectionTests;
 import com.ibm.ws.jsf23.fat.tests.Faces30Tests;
+import com.ibm.ws.jsf23.fat.tests.JSF23CDIConfigByACPTests;
+import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInMetaInfTests;
+import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInWebXMLTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CDIGeneralTests;
+import com.ibm.ws.jsf23.fat.tests.JSF23CDIInjectionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ClassLevelBeanValidationTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CommandScriptTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ComponentSearchTests;
@@ -83,10 +83,10 @@ import componenttest.rules.repeater.RepeatTests;
                 JSF23ViewParametersTests.class,
                 JSF23UISelectManyTests.class,
                 JSF23ViewResourceTests.class,
-                CDIInjectionTests.class,
-                CDIFacesInMetaInfTests.class,
-                CDIFacesInWebXMLTests.class,
-                CDIConfigByACPTests.class,
+                JSF23CDIInjectionTests.class,
+                JSF23CDIFacesInMetaInfTests.class,
+                JSF23CDIFacesInWebXMLTests.class,
+                JSF23CDIConfigByACPTests.class,
                 Faces30Tests.class
 })
 

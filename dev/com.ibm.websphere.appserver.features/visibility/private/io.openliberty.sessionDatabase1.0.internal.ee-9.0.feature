@@ -11,6 +11,6 @@ visibility = private
   		  com.ibm.ws.session.db.jakarta, \
   		  com.ibm.ws.session.store.jakarta
 
-kind=beta
+kind=ga
 edition=core
 

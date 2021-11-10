@@ -458,7 +458,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             }
 
         } catch ( FileNotFoundException e ) {
-            Tr.error(tc, "missing.zip.file" + file.getAbsolutePath());
+            Tr.error(tc, "missing.zip.file", file.getAbsolutePath());
             return false;
 
         } finally {

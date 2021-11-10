@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.PathParamTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ProxyClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ThirdpartyJerseyClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.TimeoutClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.XmlBindingTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -49,30 +50,31 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicClientTest.class,
-                HandleResponsesTest.class,
-                JAXRSClientStandaloneTest.class,
-                JAXRS20WithClientFeatureEnabledTest.class,
-                //JAXRSClientSSLTest.class,
-                JAXRSClientSSLDefaultTest.class,
-                JAXRSClientSSLFiltersTest.class,
-                JAXRSClientSSLTestNoLibertySSLCfg.class,
-                JAXRSClientSSLTestNoLibertySSLFeature.class,
-                ThirdpartyJerseyClientTest.class,
-                IBMJson4JProvidersTest.class,
-                JsonPProvidersTest.class,
-                JacksonProvidersTest.class,
+                ClientContextInjectionTest.class,
                 ComplexClientTest.class,
+                HandleResponsesTest.class,
+                IBMJson4JProvidersTest.class,
+                JacksonProvidersTest.class,
+                JAXRS20ClientAsyncInvokerTest.class,
                 JAXRS20ClientInvocationTest.class,
                 JAXRS20ClientSyncInvokerTest.class,
-                JAXRS20ClientAsyncInvokerTest.class,
-                TimeoutClientTest.class,
+                JAXRS20WithClientFeatureEnabledTest.class,
+                JAXRSClient100ContinueTest.class,
+                JAXRSClientCallbackTest.class,
+                JAXRSClientLtpaTest.class,
+                JAXRSClientSSLProxyAuthTest.class,
+                JAXRSClientSSLDefaultTest.class,
+                JAXRSClientSSLFiltersTest.class,
+                //JAXRSClientSSLTest.class,
+                JAXRSClientSSLTestNoLibertySSLCfg.class,
+                JAXRSClientSSLTestNoLibertySSLFeature.class,
+                JAXRSClientStandaloneTest.class,
+                JsonPProvidersTest.class,
                 PathParamTest.class,
                 ProxyClientTest.class,
-                JAXRSClientLtpaTest.class,
-                JAXRSClientCallbackTest.class,
-                ClientContextInjectionTest.class,
-                JAXRSClientSSLProxyAuthTest.class,
-                JAXRSClient100ContinueTest.class
+                ThirdpartyJerseyClientTest.class,
+                TimeoutClientTest.class,
+                XmlBindingTest.class
 })
 public class FATSuite {
     @ClassRule

@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+  wiremockAndJetty
+  httpcore
+}
+
+configurations.wiremockAndJetty {
+  transitive = false
+}
+
+dependencies {
+  wiremockAndJetty 'com.github.tomakehurst:wiremock-standalone:2.14.0',
+    'org.eclipse.jetty:jetty-http:9.4.31.v20200723',
+    'org.eclipse.jetty:jetty-io:9.4.31.v20200723',
+    'org.eclipse.jetty:jetty-server:9.4.31.v20200723',
+    'org.eclipse.jetty:jetty-util:9.4.31.v20200723'
+  httpcore 'org.apache.httpcomponents:httpcore:4.4.11'
+}
+
+task addWiremockAndJetty(type: Copy) {
+  from configurations.wiremockAndJetty
+  into "${buildDir}/autoFVT/publish/servers/FATServer/"
+}
+
+task addHttpcore(type: Copy) {
+  from configurations.httpcore
+  into "${buildDir}/autoFVT/publish/servers/FATServer/lib/global"
+}
+
+addRequiredLibraries {
+  dependsOn addWiremockAndJetty
+  dependsOn addHttpcore
+}

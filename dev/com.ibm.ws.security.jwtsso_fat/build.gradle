@@ -36,6 +36,8 @@ dependencies {
       'xerces:xercesImpl:2.11.0'
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 def appBuildDir = "${buildDir}/test-application"
 
 task formlogin(type: War) {

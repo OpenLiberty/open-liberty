@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+   <enterprise-beans>
+      <message-driven id="MessageDriven_1050955272591">
+         <ejb-name>CommonMDBTopic</ejb-name>
+         <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.xml.ejb2.CommonMDBTopic</ejb-class>
+         <messaging-type>javax.jms.MessageListener</messaging-type>
+         <transaction-type>Container</transaction-type>
+         <activation-config>
+	        <activation-config-property>
+               <activation-config-property-name>destination</activation-config-property-name>
+               <activation-config-property-value>CommonDestinationTopic</activation-config-property-value>
+            </activation-config-property>
+            <activation-config-property>
+               <activation-config-property-name>destinationType</activation-config-property-name>
+               <activation-config-property-value>javax.jms.Topic</activation-config-property-value>
+            </activation-config-property>
+            <activation-config-property>
+               <activation-config-property-name>SubscriptionDurability</activation-config-property-name>
+               <activation-config-property-value>Durable</activation-config-property-value>
+            </activation-config-property>
+            <activation-config-property>
+               <activation-config-property-name>MessageSelector</activation-config-property-name>
+               <activation-config-property-value>JMSType=&apos;MCM03&apos;</activation-config-property-value>
+            </activation-config-property>
+            <activation-config-property>
+               <activation-config-property-name>clientId</activation-config-property-name>
+               <activation-config-property-value>C0003</activation-config-property-value>
+            </activation-config-property>
+            <activation-config-property>
+               <activation-config-property-name>subscriptionName</activation-config-property-name>
+               <activation-config-property-value>subscription3</activation-config-property-value>
+            </activation-config-property>
+         </activation-config>
+         <message-destination-link>CommonDestinationLinkTopic</message-destination-link>
+         <resource-ref id="ResourceRef_1050955272591">
+            <res-ref-name>jms/TestQCF</res-ref-name>
+            <res-type>javax.jms.QueueConnectionFactory</res-type>
+            <res-auth>Application</res-auth>
+            <res-sharing-scope>Shareable</res-sharing-scope>
+         </resource-ref>            
+         <message-destination-ref>            
+            <message-destination-ref-name>jms/TestResultQueue</message-destination-ref-name>
+            <message-destination-type>javax.jms.Queue</message-destination-type>
+            <message-destination-usage>Produces</message-destination-usage>
+         </message-destination-ref>                                   
+      </message-driven>        
+   </enterprise-beans>
+   <assembly-descriptor id="AssemblyDescriptor_ID2">
+      <message-destination>
+         <message-destination-name>CommonDestinationLinkTopic</message-destination-name>
+      </message-destination> 
+   </assembly-descriptor>
+</ejb-jar>

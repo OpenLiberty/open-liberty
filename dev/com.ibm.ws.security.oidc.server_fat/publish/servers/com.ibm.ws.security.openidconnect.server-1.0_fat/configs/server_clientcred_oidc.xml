@@ -160,5 +160,12 @@
 		className="java.net.SocketPermission"
 		name="*"
 		actions="connect,resolve" />
-
+	<javaPermission
+		className="java.net.URLPermission"
+		name="https://localhost:8920/oidc/endpoint/OidcConfigSample/token"
+		actions="POST" />
+	<javaPermission
+		className="java.net.URLPermission"
+		name="https://localhost:8920/oauth2tai/snoop"
+		actions="POST" />
 </server>

@@ -9,6 +9,6 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.beanvalidation.v20.cdi.jakarta,\
   io.openliberty.org.hibernate.validator.cdi.7.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

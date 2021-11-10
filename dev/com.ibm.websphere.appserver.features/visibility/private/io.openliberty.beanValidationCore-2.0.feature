@@ -14,6 +14,6 @@ IBM-App-ForceRestart: install, \
  com.ibm.ws.javaee.dd.common, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.beanvalidation.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

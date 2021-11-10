@@ -35,6 +35,6 @@ CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: Componenta WsByteBuffer a generat o ex
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=O valoare de proprietate de configurare WsByteBuffer nu este un num\u0103r valid.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corecta\u0163i eroarea de configurare.
 
-POOL_MISMATCH=CWWKO0603E: Specifica\u0163iile de ad\u00e2ncimi \u015fi dimensiuni de pool WsByteBuffer nu au acela\u015fi num\u0103r de intr\u0103ri. Dimensiuni: {0}  Ad\u00e2ncimi: {1}
+POOL_MISMATCH=CWWKO0603E: Specifica\u0163iile de ad\u00e2ncimi \u015fi dimensiuni de pool WsByteBuffer nu au acela\u015fi num\u0103r de intr\u0103ri.  Dimensiuni: {0}  Ad\u00e2ncimi: {1}
 POOL_MISMATCH.explanation=Dimensiunile sau ad\u00e2ncimile de pool au fost specificate incorect.
 POOL_MISMATCH.useraction=Corecta\u0163i eroarea de configurare.

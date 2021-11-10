@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,33 +63,33 @@ public interface HeartbeatLog {
      * Set the time interval for an HA DB retry where the operation has a standard retry scheme such
      * as opening or forcing recovery logs.
      *
-     * @param lightweightTransientErrorRetryTime
+     * @param logRetryInterval
      */
-    public void setStandardTransientErrorRetryTime(int standardTransientErrorRetryTime);
+    public void setLogRetryInterval(int logRetryInterval);
 
     /**
      * Set the number of retries for an HA DB retry where the operation has a standard retry scheme such
      * as opening or forcing recovery logs.
      *
-     * @param lightweightTransientErrorRetryAttempts
+     * @param logRetryLimit
      */
-    public void setStandardTransientErrorRetryAttempts(int standardTransientErrorRetryAttempts);
+    public void setLogRetryLimit(int logRetryLimit);
 
     /**
      * Set the time interval for an HA DB retry where the operation has a lightweight retry scheme such
      * as claiming peer logs or heartbeating.
      *
-     * @param lightweightTransientErrorRetryTime
+     * @param lightweightLogRetryInterval
      */
-    public void setLightweightTransientErrorRetryTime(int lightweightTransientErrorRetryTime);
+    public void setLightweightLogRetryInterval(int lightweightLogRetryInterval);
 
     /**
      * Set the number of retries for an HA DB retry where the operation has a lightweight retry scheme such
      * as claiming peer logs or heartbeating.
      *
-     * @param lightweightTransientErrorRetryAttempts
+     * @param lightweightLogRetryLimit
      */
-    public void setLightweightTransientErrorRetryAttempts(int lightweightTransientErrorRetryAttempts);
+    public void setLightweightLogRetryLimit(int lightweightLogRetryLimit);
 
     /**
      * Signals to the Recovery Log that the server is stopping.

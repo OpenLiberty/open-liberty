@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest.sharedTests;
 
@@ -231,8 +231,8 @@ public class JwtCommonTests extends MangleJWTTestTools {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.FORBIDDEN_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating issue with the JWT token", MessageConstants.CWWKS1106A_AUTHENTICATION_FAILED);
 
-        testSettings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(testSettings);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { Constants.INVOKE_RS_PROTECTED_RESOURCE }, testSettings);
 
         WebConversation wc = new WebConversation();
         helpers.invokeRsProtectedResource(_testName, wc, badJwtToken, testSettings, expectations);

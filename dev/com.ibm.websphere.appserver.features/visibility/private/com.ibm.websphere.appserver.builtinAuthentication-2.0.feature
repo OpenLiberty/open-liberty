@@ -14,5 +14,5 @@ singleton=true
   io.openliberty.security.authentication.internal.builtin, \
   com.ibm.ws.security.mp.jwt.proxy,\
   com.ibm.ws.security.kerberos.auth
-kind=beta
+kind=ga
 edition=core

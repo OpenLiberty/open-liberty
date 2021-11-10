@@ -243,7 +243,7 @@ fi
 
 JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
 if [ -z "${JAVA_HOME}" ]; then
-  JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(which java)))/lib/modules
+  JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(command -v java)))/lib/modules
 fi
 
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS

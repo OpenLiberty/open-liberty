@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- TODO
+<application version="10" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_10.xsd">
+-->
+<application version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
+  <display-name>Concurrency Test Application</display-name>
+
+  <module>
+    <web>
+      <web-uri>ConcurrencyTestWeb.war</web-uri>
+      <context-root>/</context-root>
+    </web>
+  </module>
+
+<!-- TODO enable these
+  <context-service>
+    <name>java:app/concurrent/dd/ZPContextService</name>
+    <cleared>List</cleared>
+    <propagated>ZipCode</propagated>
+    <propagated>Priority</propagated>
+    <unchanged>Application</unchanged>
+  </context-service>
+
+  <managed-executor>
+    <name>java:app/concurrent/dd/ZPExecutor</name>
+    <context-service-ref>java:app/concurrent/dd/ZPContextService</context-service-ref>
+    <max-async>2</max-async>
+    <hung-task-threshold>420000</hung-task-threshold>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:global/concurrent/dd/ScheduledExecutor</name>
+    <context-service-ref>java:comp/DefaultContextService</context-service-ref>
+    <max-async>1</max-async>
+    <hung-task-threshold>410000</hung-task-threshold>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/dd/ThreadFactory</name>
+    <context-service-ref>java:app/concurrent/appContextSvc</context-service-ref>
+    <priority>4</priority>
+  </managed-thread-factory>
+-->
+</application>

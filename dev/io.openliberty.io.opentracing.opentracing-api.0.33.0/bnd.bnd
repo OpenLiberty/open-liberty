@@ -27,6 +27,8 @@ Export-Package: io.opentracing;version=0.33.0, \
 Include-Resource: \
   META-INF/LICENSE.txt=resources/META-INF/LICENSE.txt
 
+publish.wlp.jar.disabled: true
+
 instrument.disabled: true
 
 -buildpath: \

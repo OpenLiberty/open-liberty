@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,13 @@ USERINFO_INVALID.explanation=La subreclamaci\u00f3n de los datos de informaci\u0
 USERINFO_INVALID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect genera datos de informaci\u00f3n de usuario v\u00e1lidos.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: El cliente OpenID Connect [{0}] necesita un URL de punto final de autorizaci\u00f3n, pero no se ha establecido.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Se debe establecer un URL de punto final de autorizaci\u00f3n para obtener un c\u00f3digo de autorizaci\u00f3n o las se\u00f1ales necesarias.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Establezca el atributo authorizationEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de autorizaci\u00f3n del proveedor de OpenID Connect. Como alternativa, establezca el atributo discoveryEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de descubrimiento del proveedor de OpenID Connect.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: El cliente OpenID Connect [{0}] necesita un URL de punto final de se\u00f1al, pero no se ha establecido.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Se debe establecer un URL de punto final de se\u00f1al para obtener las se\u00f1ales necesarias.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Establezca el atributo tokenEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URl de punto final de se\u00f1al del proveedor de OpenID Connect. Como alternativa, establezca el atributo discoveryEndpointUrl en la configuraci\u00f3n del cliente OpenID Connect en el URL de punto final de descubrimiento del proveedor de OpenID Connect.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

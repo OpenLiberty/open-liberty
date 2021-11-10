@@ -41,8 +41,10 @@ tested.features: \
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.ws.transaction.test.util;version=latest,\
+  com.ibm.ws.transaction.fat.util;version=latest,\
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.componenttest:public.api;version=1.0.0,\
   com.ibm.ws.wsat_fat.db;version=latest
 
 -testpath: \

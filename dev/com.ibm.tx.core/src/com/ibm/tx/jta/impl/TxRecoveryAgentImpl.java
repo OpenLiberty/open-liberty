@@ -1006,14 +1006,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
 
         // The optional SQL HADB Retry parameters
-        int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+        int logRetryInterval = cp.getLogRetryInterval();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
-        heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
-        int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+            Tr.debug(tc, "logRetryInterval - ", logRetryInterval);
+        heartbeatLog.setLogRetryInterval(logRetryInterval);
+        int logRetryLimit = cp.getLogRetryLimit();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
-        heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+            Tr.debug(tc, "logRetryLimit - ", logRetryLimit);
+        heartbeatLog.setLogRetryLimit(logRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBRetryParameters");
     }
@@ -1029,14 +1029,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
 
         // The optional SQL HADB Retry parameters
-        int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+        int lightweightLogRetryInterval = cp.getLightweightLogRetryInterval();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
-        heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
-        int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+            Tr.debug(tc, "lightweightLogRetryInterval - ", lightweightLogRetryInterval);
+        heartbeatLog.setLightweightLogRetryInterval(lightweightLogRetryInterval);
+        int lightweightLogRetryLimit = cp.getLightweightLogRetryLimit();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
-        heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
+            Tr.debug(tc, "lightweightLogRetryLimit - ", lightweightLogRetryLimit);
+        heartbeatLog.setLightweightLogRetryLimit(lightweightLogRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
     }

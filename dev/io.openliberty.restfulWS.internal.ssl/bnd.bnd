@@ -13,6 +13,9 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.restfulWS.internal.ssl
 
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.restfulWS.internal.ssl.jakarta.jar
+
 #-cdiannotations:
 
 -dsannotations: \
