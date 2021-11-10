@@ -454,25 +454,22 @@ public class LibertyServer implements LogMonitorClient {
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
     public void setCheckpoint(Phase phase) {
-        checkpointInfo = new CheckPointInfo(phase);
+        setCheckpoint(phase, true, null);
     }
 
     /**
      * When server.start is executed, perform a
      *
      * <pre>
-     * <code> "bin/server checkpoint --at==phase"</code>, followed by
+     * <code> "bin/server checkpoint --at=phase"</code>, followed by
      * <code> "bin/server start"</code>
      * </pre>
      *
-     * @param phase
-     * @param autoRestor    if true initiate restore as part of serverStart
+     * @param phase         The phase at whichh to take the checkpoint. Must be non-null.
+     * @param autoRestore   if true initiate restore as part of serverStart
      * @param beforeRestore beforeRestore lambda is called just before the server start
      */
     public void setCheckpoint(Phase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
-        if (phase == null) {
-            throw new NullPointerException("phase must be non-null");
-        }
         checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
     }
 
@@ -488,6 +485,9 @@ public class LibertyServer implements LogMonitorClient {
         };
 
         public CheckPointInfo(Phase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+            if (phase == null) {
+                throw new IllegalArgumentException("Phase must not be null");
+            }
             this.checkpointPhase = phase;
             this.autoRestore = autorestore;
             if (beforeRestoreLambda == null) {
@@ -499,10 +499,6 @@ public class LibertyServer implements LogMonitorClient {
                     Log.debug(c, "Excecution of supplied beforeRestoreLambda complete.");
                 };
             }
-        }
-
-        public CheckPointInfo(Phase phase) {
-            this(phase, true, null);
         }
 
         /*
