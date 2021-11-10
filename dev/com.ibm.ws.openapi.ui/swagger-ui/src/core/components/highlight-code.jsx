@@ -16,14 +16,26 @@ export default class HighlightCode extends Component {
     canCopy: PropTypes.bool
   }
 
+  #childNodes
+
   downloadText = () => {
     saveAs(this.props.value, this.props.fileName || "response.txt")
+  }
+
+  handleRootRef = (node) => {
+    if (node === null) {
+      this.#childNodes = node
+    } else {
+      this.#childNodes = Array
+        .from(node.childNodes)
+        .filter(node => !!node.nodeType && node.classList.contains("microlight"))
+    }
   }
 
   preventYScrollingBeyondElement = (e) => {
     const target = e.target
 
-    var deltaY = e.nativeEvent.deltaY
+    var deltaY = e.deltaY
     var contentHeight = target.scrollHeight
     var visibleHeight = target.offsetHeight
     var scrollTop = target.scrollTop
@@ -39,6 +51,14 @@ export default class HighlightCode extends Component {
     }
   }
 
+  componentDidMount() {
+    this.#childNodes?.forEach(node => node.addEventListener("mousewheel", this.preventYScrollingBeyondElement, { passive: false }))
+  }
+
+  componentWillUnmount() {
+    this.#childNodes?.forEach(node => node.removeEventListener("mousewheel", this.preventYScrollingBeyondElement))
+  }
+
   render () {
     let { value, className, downloadable, getConfigs, canCopy, language } = this.props
 
@@ -50,15 +70,14 @@ export default class HighlightCode extends Component {
       ? <SyntaxHighlighter
           language={language}
           className={className + " microlight"}
-          onWheel={this.preventYScrollingBeyondElement}
           style={getStyle(get(config, "syntaxHighlight.theme"))}
           >
           {value}
         </SyntaxHighlighter>
-      : <pre onWheel={this.preventYScrollingBeyondElement} className={className + " microlight"}>{value}</pre>
+      : <pre className={className + " microlight"}>{value}</pre>
 
     return (
-      <div className="highlight-code">
+      <div className="highlight-code" ref={this.handleRootRef}>
         { !downloadable ? null :
           <div className="download-contents" onClick={this.downloadText}>
             Download
