@@ -11,7 +11,6 @@
 package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -767,9 +766,14 @@ public class FailoverTest extends FATServletClient {
         FATUtils.startServers(runner, defaultServer);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNull("Unexpected duplication", defaultServer.waitForStringInTrace("NMTEST: Replacing item", 60000));
+        assertNotNull("Recovery failed", defaultServer.waitForStringInLog("recover\\("));
+        // Check that there were no duplicates
+        List<String> lines = defaultServer.findStringsInLogs("NMTEST: Replacing item");
+        Assert.assertFalse("Unexpectedly found duplicates on recovery", lines.size() > 0);
+
         Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "complete");
     }
 }
