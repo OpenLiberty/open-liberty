@@ -1624,9 +1624,9 @@ public class LibertyServer implements LogMonitorClient {
                 checkpointInfo.beforeRestoreLambda.accept(this);
                 if (checkpointInfo.autoRestore) {
                     checkpointRestore();
+                } else {
+                    return output;
                 }
-            } else {
-                return output;
             }
         }
 
