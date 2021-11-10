@@ -24,13 +24,13 @@ import java.util.Properties;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
 public class DB2KerberosContainer extends Db2Container {
@@ -61,15 +61,8 @@ public class DB2KerberosContainer extends Db2Container {
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 10 : 25)));
-        withLogConsumer(DB2KerberosContainer::log);
+        withLogConsumer(new SimpleLogConsumer(c, "DB2"));
         withReuse(true);
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(DB2KerberosContainer.class, "[DB2]", msg);
     }
 
     @Override

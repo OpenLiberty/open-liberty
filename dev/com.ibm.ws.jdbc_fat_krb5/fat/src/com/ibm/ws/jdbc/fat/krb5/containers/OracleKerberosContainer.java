@@ -51,7 +51,7 @@ public class OracleKerberosContainer extends OracleContainer {
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
         super.withNetwork(network);
-        super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-Krb5"));
+        super.withLogConsumer(new SimpleLogConsumer(c, "oracle"));
     }
 
     @Override

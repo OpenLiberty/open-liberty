@@ -26,11 +26,12 @@ import java.util.Properties;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
+
+import componenttest.containers.SimpleLogConsumer;
 
 public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> {
 
@@ -73,15 +74,8 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
         withEnv("KRB5_TRACE", "/dev/stdout");
 
         withExposedPorts(PG_PORT);
-        withLogConsumer(PostgresKerberosContainer::log);
+        withLogConsumer(new SimpleLogConsumer(c, "postgre"));
         withReuse(true);
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(PostgresKerberosContainer.class, "[PG]", msg);
     }
 
     @Override

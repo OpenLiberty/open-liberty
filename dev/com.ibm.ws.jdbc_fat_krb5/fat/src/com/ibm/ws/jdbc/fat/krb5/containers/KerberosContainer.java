@@ -30,15 +30,16 @@ import java.util.concurrent.TimeUnit;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
 
@@ -75,18 +76,25 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withEnv("KRB5_KDC", "localhost");
         withEnv("KRB5_PASS", KRB5_PASS);
 
-        withLogConsumer(KerberosContainer::log);
+        withLogConsumer(new SimpleLogConsumer(c, "krb5"));
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*KERB SETUP COMPLETE.*$")
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
         withReuse(true);
         withCreateContainerCmdModifier(cmd -> {
-            List<ExposedPort> ports = new ArrayList<>();
+            //Add previously exposed ports and UDP port
+            List<ExposedPort> exposedPorts = new ArrayList<>();
             for (ExposedPort p : cmd.getExposedPorts()) {
-                ports.add(p);
+                exposedPorts.add(p);
             }
-            ports.add(new ExposedPort(99, InternetProtocol.UDP));
-            cmd.withExposedPorts(ports);
+            exposedPorts.add(ExposedPort.udp(99));
+            cmd.withExposedPorts(exposedPorts);
+
+            //Add previous port bindings and UDP port binding
+            Ports ports = cmd.getPortBindings();
+            ports.bind(ExposedPort.udp(99), Ports.Binding.empty());
+            cmd.withPortBindings(ports);
+            cmd.withHostName(KRB5_KDC);
         });
     }
 
@@ -269,13 +277,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         @SuppressWarnings("resource")
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "[KRB5]", msg);
     }
 
     private static boolean hasCachedContainers() {
