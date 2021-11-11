@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Ind\u00edtsa \u00fajra a kiszol
 reaper.reopen.active=CWWKM0127W: {0} \u00fajranyit\u00e1sa
 reaper.reopen.active.explanation=Egy v\u00e1ratlan m\u00f3dos\u00edt\u00e1s megnyitott arch\u00edv f\u00e1jl \u00fajranyit\u00e1s\u00e1t okozta.  A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta lek\u00e9rdezni az arch\u00edv f\u00e1jl friss\u00edtett tartalm\u00e1t, de lehet, hogy az arch\u00edv tartalmak bels\u0151 list\u00e1ja nem teljesen friss.
 reaper.reopen.active.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.  Alkalmaz\u00e1sf\u00e1jlok friss\u00edt\u00e9sekor v\u00e1rja meg, am\u00edg a kiszolg\u00e1l\u00f3 fokozatosan le\u00e1ll\u00edt\u00e1sra ker\u00fcl, plusz v\u00e1rjon legal\u00e1bb f\u00e9l m\u00e1sodpercet, hogy az alkalmaz\u00e1sf\u00e1jlok bez\u00e1r\u00f3djanak.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: A(z) {0} zip f\u00e1jl hi\u00e1nyzik.
+missing.zip.file.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az archiv\u00e1l\u00e1si feldolgoz\u00e1s sor\u00e1n, mert a megadott f\u00e1jl nem tal\u00e1lhat\u00f3. 
+missing.zip.file.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megadott f\u00e1jl l\u00e9tezik \u00e9s rendelkezik a kiszolg\u00e1l\u00f3 \u00e1ltal olvashat\u00f3 enged\u00e9lyekkel.

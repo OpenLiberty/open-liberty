@@ -78,6 +78,13 @@ encode.option-desc.listCustom=\tAffiche les informations de chiffrement personna
 \tname : nom pour un algorithme de chiffrement personnalis\u00e9 de mot de passe\n\
 \tfeaturename : nom de la fonction\n\
 \tdescription : description du chiffrement personnalis\u00e9 de mot de passe
+encode.option-key.keyring=\ \ \ \ --keyring=[fichier de cl\u00e9s]
+encode.option-desc.keyring=\tSp\u00e9cifiez le fichier de cl\u00e9s SAF dans lequel se trouve la cl\u00e9 de chiffrement AES.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[Type de fichier de cl\u00e9s]
+encode.option-desc.keyringType=\tSp\u00e9cifiez le type de fichier de cl\u00e9s SAF du fichier de cl\u00e9s dans lequel se trouve le chiffrement\n\
+\tAES.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[Libell\u00e9 de cl\u00e9]
+encode.option-desc.keyLabel=\tSp\u00e9cifiez le libell\u00e9 du certificat SAF de la cl\u00e9 de chiffrement AES.
 
 
 

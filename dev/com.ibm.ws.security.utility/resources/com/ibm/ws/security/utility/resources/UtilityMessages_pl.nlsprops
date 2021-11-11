@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Nie wykryto niestandardowego szyfrowania has\u0142a.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=Etykieta {0} nie istnieje w pliku kluczy {1}. Nie mo\u017cna znale\u017a\u0107 prawid\u0142owego klucza do szyfrowania AES has\u0142a.
+saf.cert.is.not.key=Certyfikat {0} nie jest wpisem klucza. Certyfikat musi by\u0107 wpisem klucza, aby mo\u017cna go by\u0142o u\u017cywa\u0107 jako klucza szyfrowania AES has\u0142a.
+saf.cert.expired=Certyfikat {0} wygas\u0142 i nie mo\u017ce by\u0107 u\u017cywany jako klucz szyfrowania AES has\u0142a.
+saf.keyring.does.not.exist=Plik kluczy {0} nie istnieje. Nie mo\u017cna pobra\u0107 \u017cadnego certyfikatu z pliku kluczy, aby u\u017cy\u0107 go jako klucza szyfrowania AES has\u0142a.
+saf.arg.not.onZ=Argumenty --keyring, --keyringType i --keyLabel mog\u0105 by\u0107 u\u017cywane tylko w systemie z/OS.
+saf.arg.not.aes=Argumenty --keyring, --keyringType i --keyLabel mog\u0105 by\u0107 u\u017cywane tylko z kodowaniem AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

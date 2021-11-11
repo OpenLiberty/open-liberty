@@ -64,3 +64,31 @@ OPENAPI_APPLICATION_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u0
 OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Ocorreu um erro ao processar o aplicativo {0} e um documento OpenAPI n\u00e3o foi produzido. O erro foi: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Ocorreu um erro de tempo de execu\u00e7\u00e3o ao processar o aplicativo.
 OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Revise os logs FFDC e o texto de exce\u00e7\u00e3o para identificar o problema.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Ocorreram os problemas a seguir ao mesclar documentos do OpenAPI: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=A documenta\u00e7\u00e3o do OpenAPI a partir de v\u00e1rios m\u00f3dulos da web n\u00e3o pode ser mesclada com sucesso. Os terminais dos m\u00f3dulos relatados n\u00e3o est\u00e3o inclu\u00eddos no documento do OpenAPI gerado.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Revise os problemas de mesclagem para identificar por que os documentos gerados do OpenAPI n\u00e3o podem ser mesclados.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=O caminho {0} do m\u00f3dulo {1} conflita com um caminho do m\u00f3dulo {2}. {1} n\u00e3o ser\u00e1 mesclado.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=O caminho \u00e9 dois m\u00f3dulos. Ambas as inst\u00e2ncias do caminho n\u00e3o podem ser inclu\u00eddas no mesmo documento do OpenAPI. Esta mensagem \u00e9 retornada como parte do CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Altere um dos m\u00f3dulos conflitantes ou configure o recurso mpOpenApi-2.0 para excluir um deles. Esse problema pode ser causado se servidores forem inclu\u00eddos no documento do OpenAPI e a URL do servidor n\u00e3o terminar com a raiz de contexto da aplica\u00e7\u00e3o (por exemplo, porque a aplica\u00e7\u00e3o \u00e9 acessada em uma URL diferente por meio de um proxy reverso).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: A combina\u00e7\u00e3o de documenta\u00e7\u00e3o do OpenAPI de v\u00e1rios m\u00f3dulos est\u00e1 desativada. Apenas {0} \u00e9 usado para gerar documenta\u00e7\u00e3o do OpenAPI. Para ativar a mesclagem de documenta\u00e7\u00e3o do OpenAPI de todos os m\u00f3dulos, defina a propriedade de configura\u00e7\u00e3o mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A menos que a mesclagem de documenta\u00e7\u00e3o do OpenAPI esteja ativada, a documenta\u00e7\u00e3o do OpenAPI \u00e9 gerada apenas para o primeiro m\u00f3dulo do OpenAPI implementado.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Se voc\u00ea deseja que todos os seus m\u00f3dulos da web sejam usados para gerar a documenta\u00e7\u00e3o do OpenAPI, configure a propriedade do MicroProfile Config listada na mensagem. Essa propriedade pode ser configurada em qualquer um dos locais em que o MicroProfile Config procura por propriedades de configa\u00e7\u00e3o, como em uma propriedade do sistema Java ou em uma vari\u00e1vel de ambiente.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: O objeto de informa\u00e7\u00e3o configurado com a propriedade {0} n\u00e3o \u00e9 v\u00e1lido. As propriedades de t\u00edtulo e vers\u00e3o devem ser configuradas. O valor inv\u00e1lido \u00e9: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Se a propriedade for configurada, ela deve ser configurada para uma se\u00e7\u00e3o de informa\u00e7\u00e3o completa no formato JSON, com as propriedades de t\u00edtulo e de vers\u00e3o configuradas para valores v\u00e1lidos.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Corrija o valor de informa\u00e7\u00e3o configurado.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: A propriedade de configura\u00e7\u00e3o {0} n\u00e3o pode ser analisada como JSON. O valor \u00e9: {1}\n O erro \u00e9: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Se a propriedade for configurada, ela deve ser configurada para uma se\u00e7\u00e3o de informa\u00e7\u00e3o completa no formato JSON.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Revise o texto do erro para identificar o problema e corrija o valor de informa\u00e7\u00e3o configurado de modo que ele seja um JSON v\u00e1lido.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Nome inv\u00e1lido encontrado em {0}: {1}. Cada nome deve usar o formato "applicationName" ou "applicationName/moduleName".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=A propriedade de configura\u00e7\u00e3o deve conter uma lista separada por v\u00edrgula de nomes de aplica\u00e7\u00f5es e de m\u00f3dulos ou um dos valores especiais "all", "first", ou "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Revise o texto do erro para identificar o problema e corrija a propriedade de configura\u00e7\u00e3o indicada.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: A propriedade de configura\u00e7\u00e3o {0} inclui "{1}" mas isso n\u00e3o corresponde a nenhuma aplica\u00e7\u00e3o ou m\u00f3dulo da web implementado.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=O servidor est\u00e1 configurado para criar a documenta\u00e7\u00e3o do OpenAPI para o nome da aplica\u00e7\u00e3o ou do m\u00f3dulo, mas nenhuma aplica\u00e7\u00e3o ou m\u00f3dulo da web com esse nome foi implementado.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Verifique se todos as aplica\u00e7\u00f5es iniciaram corretamente e que os nomes na propriedade de configura\u00e7\u00e3o est\u00e3o especificados corretamente.

@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=\u5075\u6e2c\u4e0d\u5230\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u3002
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist={0} \u6a19\u7c64\u4e0d\u5b58\u5728\u65bc {1} \u91d1\u9470\u74b0\u4e2d\u3002\u627e\u4e0d\u5230 AES \u5bc6\u78bc\u52a0\u5bc6\u7684\u6709\u6548\u91d1\u9470\u3002
+saf.cert.is.not.key={0} \u6191\u8b49\u4e0d\u662f\u91d1\u9470\u9805\u76ee\u3002\u6191\u8b49\u5fc5\u9808\u662f\u91d1\u9470\u9805\u76ee\uff0c\u624d\u80fd\u5c07\u5b83\u7528\u4f5c AES \u5bc6\u78bc\u52a0\u5bc6\u91d1\u9470\u3002
+saf.cert.expired={0} \u6191\u8b49\u5df2\u904e\u671f\uff0c\u7121\u6cd5\u7528\u4f5c AES \u5bc6\u78bc\u52a0\u5bc6\u91d1\u9470\u3002
+saf.keyring.does.not.exist={0} \u91d1\u9470\u5132\u5b58\u5eab\u4e0d\u5b58\u5728\u3002\u7121\u6cd5\u5f9e\u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u64f7\u53d6\u6191\u8b49\uff0c\u4ee5\u7528\u4f5c AES \u5bc6\u78bc\u52a0\u5bc6\u91d1\u9470\u3002
+saf.arg.not.onZ=--keyring\u3001--keyringType \u53ca --keyLabel \u5f15\u6578\u53ea\u80fd\u5728 z/OS \u4e0a\u4f7f\u7528\u3002
+saf.arg.not.aes=--keyring\u3001--keyringType \u53ca --keyLabel \u5f15\u6578\u53ea\u80fd\u8207 AES \u7de8\u78bc\u642d\u914d\u4f7f\u7528\u3002
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

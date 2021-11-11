@@ -210,11 +210,6 @@ USERINFO_INVALID.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Con
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Clientul OpenID Connect {0} nu poate extrage revendic\u0103rile JWT (JSON Web Token) din r\u0103spunsul web. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=R\u0103spunsul web trebuie s\u0103 fie un JWT \u00een formatul JWE (JSON Web Encryption) sau JWS (JWS Web Signature). R\u0103spunsul ar putea fi formatat gre\u015fit sau clientul OpenID Connect a \u00eent\u00e2lnit o alt\u0103 eroare la procesarea r\u0103spunsului.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 r\u0103spunsul este \u00een format JWT.
-
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Clientul OpenID Connect [{0}] necesit\u0103 un URL de punct final de autorizare, dar nu este setat.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Trebuie s\u0103 fie setat un URL de punct final de autorizare pentru a ob\u0163ine un cod de autorizare sau jetoanele necesare.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Seta\u0163i atributul authorizationEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de autorizare al furnizorului OpenID Connect. Sau seta\u0163i atributul discoveryEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de descoperire al furnizorului OpenID Connect.
@@ -222,5 +217,16 @@ OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Seta\u0163i atributul authorizationEnd
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Clientul OpenID Connect [{0}] necesit\u0103 un URL de punct final de jeton, dar nu este setat.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Trebuie s\u0103 fie setat un URL de punct final de jeton pentru a ob\u0163ine jetoanele necesare.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Seta\u0163i atributul tokenEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de jeton al furnizorului OpenID Connect. Sau seta\u0163i atributul discoveryEndpointUrl \u00een configura\u0163ia de client OpenID Connect la URL-ul de punct final de descoperire al furnizorului OpenID Connect.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: Jetonul nu este \u00een formatul JWS (JSON Web Signature) deoarece nu con\u0163ine trei p\u0103r\u0163i, iar consumatorul JWT [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWS.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Jetonul poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWE (JSON Web Encryption). Jetoanele trebuie s\u0103 fie \u00een formatul JWS dac\u0103 nu este configurat atributul keyManagementKeyAlias.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pentru a accepta jetoane JWE, configura\u0163i atributul keyManagementKeyAlias \u00een configura\u0163ia clientului OpenID Connect. Altfel, asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWS.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Jetonul nu este \u00een formatul JWE (JSON Web Encryption), deoarece nu con\u0163ine cinci p\u0103r\u0163i, iar clientul OpenID Conect [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWE.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Jetonul poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWS (JSON Web Signature). Jetoanele trebuie s\u0103 fie \u00een formatul JWE dac\u0103 este configurat atributul keyManagementKeyAlias.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pentru a accepta jetoane JWS \u00een loc de jetoane JWE, \u00eenl\u0103tura\u0163i atributul keyManagementKeyAlias din configura\u0163ia clientului OpenID Connect. Altfel, asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWE.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

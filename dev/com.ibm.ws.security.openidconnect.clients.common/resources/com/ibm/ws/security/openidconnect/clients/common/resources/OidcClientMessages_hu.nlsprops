@@ -210,11 +210,6 @@ USERINFO_INVALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az Open
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tudja kibontani a JSON Vil\u00e1gh\u00e1l\u00f3s kulcssz\u00f3 (JWT) ig\u00e9nyeket a vil\u00e1gh\u00e1l\u00f3s v\u00e1laszb\u00f3l. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A vil\u00e1gh\u00e1l\u00f3s v\u00e1lasz csak JWT lehet JSON Web Encryption (JWE) vagy JSON Web Signature (JWS) form\u00e1tumban. Lehet, hogy a v\u00e1lasz form\u00e1tuma nem megfelel\u0151, illetve az OpenID Connect \u00fcgyf\u00e9l egy m\u00e1sik hib\u00e1ba \u00fctk\u00f6z\u00f6tt a v\u00e1lasz feldolgoz\u00e1sa k\u00f6zben.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy a v\u00e1lasz JWT form\u00e1tumban van-e.
-
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l jogosults\u00e1g v\u00e9gpont URL-c\u00edmet ig\u00e9nyel, de az nincs be\u00e1ll\u00edtva.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Jogosults\u00e1gk\u00f3d vagy a sz\u00fcks\u00e9ges kulcssz\u00f3k beszerz\u00e9s\u00e9hez be kell \u00e1ll\u00edtani egy jogosults\u00e1g v\u00e9gpont URL-c\u00edmet.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban \u00e1ll\u00edtsa be az authorizationEndpointUrl attrib\u00fatumot az OpenID Connect szolg\u00e1ltat\u00f3 jogosults\u00e1g v\u00e9gpont URL-c\u00edm\u00e9re. Ennek alternat\u00edv\u00e1jak\u00e9nt az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban \u00e1ll\u00edtsa be a discoveryEndpointUrl attrib\u00fatumot az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL-c\u00edm\u00e9re.
@@ -222,5 +217,16 @@ OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Az OpenID Connect \u00fcgyf\u00e9l kon
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l kulcssz\u00f3 v\u00e9gpont URL-c\u00edmet ig\u00e9nyel, de az nincs be\u00e1ll\u00edtva.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=A sz\u00fcks\u00e9ges kulcssz\u00f3k beszerz\u00e9s\u00e9hez be kell \u00e1ll\u00edtani egy kulcssz\u00f3 v\u00e9gpont URL-c\u00edmet.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban \u00e1ll\u00edtsa be a tokenEndpointUrl attrib\u00fatumot az OpenID Connect szolg\u00e1ltat\u00f3 kulcssz\u00f3 v\u00e9gpont URL-c\u00edm\u00e9re. Ennek alternat\u00edv\u00e1jak\u00e9nt az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban \u00e1ll\u00edtsa be a discoveryEndpointUrl attrib\u00fatumot az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL-c\u00edm\u00e9re.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: A token nem JSON Web Signature (JWS) form\u00e1tum\u00fa, met nem h\u00e1rom r\u00e9szt tartalmaz, de a(z)[{0}] OpenID Connect \u00fcgyf\u00e9l csak JWS form\u00e1tum\u00fa tokeneket fogad el.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Lehet, hogy a token a k\u00e9r\u00e9sben rossz form\u00e1tum\u00fa vagy JSON Web Encryption (JWE) form\u00e1tum\u00fa. A tokenek csak JWS form\u00e1tum\u00faak lehetnek, ha a keyManagementKeyAlias attrib\u00fatum nincs be\u00e1ll\u00edtva.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=JWE tokenek elfogad\u00e1s\u00e1hoz \u00e1ll\u00edtsa be a keyManagementKeyAlias attrib\u00fatumot az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban. Egy\u00e9bk\u00e9nt pedig gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak JWS tokenek ker\u00fclnek elk\u00fcld\u00e9sre ennek az er\u0151forr\u00e1snak.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: A token nem JSON Web Encryption (JWE) form\u00e1tum\u00fa, met nem \u00f6t r\u00e9szt tartalmaz, de a(z)[{0}] OpenID Connect \u00fcgyf\u00e9l csak JWE form\u00e1tum\u00fa tokeneket fogad el.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Lehet, hogy a token rossz form\u00e1tum\u00fa vagy JSON Web Signature (JWS) form\u00e1tum\u00fa. A tokenek csak JWE form\u00e1tum\u00faak lehetnek, ha a keyManagementKeyAlias attrib\u00fatum be van \u00e1ll\u00edtva.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=JWE tokenek elfogad\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el a keyManagementKeyAlias attrib\u00fatumot az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1b\u00f3l. Egy\u00e9bk\u00e9nt pedig gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak JWE tokenek ker\u00fclnek elk\u00fcld\u00e9sre ennek az er\u0151forr\u00e1snak.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

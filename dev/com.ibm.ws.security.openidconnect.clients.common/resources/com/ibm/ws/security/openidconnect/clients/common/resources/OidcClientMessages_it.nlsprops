@@ -210,11 +210,6 @@ USERINFO_INVALID.useraction=Verificare che il provider OpenID Connect generi dat
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Il client OpenID Connect {0} non \u00e8 in grado di estrarre le richieste JWT (JSON Web Token) dalla risposta web. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La risposta web deve essere un JWT in formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Il formato della risposta potrebbe non essere corretto oppure il client OpenID Connect ha rilevato un altro errore durante l'elaborazione della risposta.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la risposta sia in formato JWT.
-
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Il client OpenID Connect [{0}] richiede un URL per l''endpoint di autorizzazione, ma non \u00e8 impostato.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=\u00c8 necessario impostare un URL per l'endpoint di autorizzazione al fine di ottenere un codice di autorizzazione o i token richiesti.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Impostare l'attributo authorizationEndpointUrl nella configurazione del client OpenID Connect sull'URL per l'endpoint di autorizzazione del provider OpenID Connect. In alternativa, impostare l'attributo discoveryEndpointUrl nel cliente di configurazione OpenID Connect sull'URL per l'endpoint di rilevamento del provider OpenID Connect.
@@ -222,5 +217,16 @@ OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Impostare l'attributo authorizationEnd
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Il client OpenID Connect [{0}] richiede un URL per l''endpoint del token, ma non \u00e8 impostato.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=\u00c8 necessario impostare un URL per l'endpoint del token al fine di ottenere i token richiesti.
 OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Impostare l'attributo tokenEndpointUrl nella configurazione del client OpenID Connect sull'URL per l'endpoint del token del provider OpenID Connect. In alternativa, impostare l'attributo discoveryEndpointUrl nel cliente di configurazione OpenID Connect sull'URL per l'endpoint di rilevamento del provider OpenID Connect.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: Il token non \u00e8 nel formato JWS (JSON Web Signature) perch\u00e9 non contiene tre parti, ma il client OpenID Connect [{0}] accetta solo token nel formato JWS.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Il token potrebbe avere un formato non corretto oppure potrebbe essere nel formato JWE (JSON Web Encryption). I token devono essere nel formato JWS se l'attributo keyManagementKeyAlias non \u00e8 configurato.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Per accettare i token JWE, configurare l'attributo keyManagementKeyAlias nella configurazione del client OpenID Connect. Altrimenti, assicurarsi che a questa risorsa vengano inviati solo token JWS.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Il token non \u00e8 nel formato JWE (JSON Web Encryption) perch\u00e9 non contiene cinque parti, ma il client OpenID Connect [{0}] accetta solo token nel formato JWE.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il token potrebbe avere un formato non corretto oppure potrebbe essere nel formato JWS (JSON Web Signature). I token devono essere nel formato JWE se l'attributo keyManagementKeyAlias \u00e8 configurato.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Per accettare i token JWS invece dei token JWE, rimuovere l'attributo keyManagementKeyAlias nella configurazione del client OpenID Connect. Altrimenti, assicurarsi che a questa risorsa vengano inviati solo token JWE.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

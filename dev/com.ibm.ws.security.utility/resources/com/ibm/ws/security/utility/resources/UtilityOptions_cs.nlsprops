@@ -76,6 +76,13 @@ encode.option-desc.listCustom=\tZobrazit informace o vlastn\u00edm \u0161ifrov\u
 \tname : n\u00e1zev vlastn\u00edho \u0161ifrovac\u00edho algoritmu hesel\n\
 \tfeaturename : n\u00e1zev funkce\n\
 \tdescription : popis vlastn\u00edho \u0161ifrov\u00e1n\u00ed hesel
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\tZadejte svazek kl\u00ed\u010d\u016f SAF, kde se nach\u00e1z\u00ed \u0161ifrovac\u00ed kl\u00ed\u010d AES.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\tZadejte typ svazku kl\u00ed\u010d\u016f SAF svazku kl\u00ed\u010d\u016f, kde se nach\u00e1z\u00ed \n\
+\t\u0161ifrov\u00e1n\u00ed AES.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\tZadejte \u0161t\u00edtek certifik\u00e1tu SAF \u0161ifrovac\u00edho kl\u00ed\u010de AES.
 
 
 

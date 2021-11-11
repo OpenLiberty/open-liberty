@@ -77,6 +77,13 @@ encode.option-desc.listCustom=\tJavaScript Object Notation (JSON)\n\
 \tname : \u30ab\u30b9\u30bf\u30e0\u30fb\u30d1\u30b9\u30ef\u30fc\u30c9\u6697\u53f7\u5316\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u540d\n\
 \tfeaturename : \u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u540d\n\
 \tdescription : \u30ab\u30b9\u30bf\u30e0\u30fb\u30d1\u30b9\u30ef\u30fc\u30c9\u6697\u53f7\u5316\u306e\u8aac\u660e
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\tAES \u6697\u53f7\u9375\u304c\u914d\u7f6e\u3055\u308c\u3066\u3044\u308b SAF \u9375\u30ea\u30f3\u30b0\u3092\u6307\u5b9a\u3057\u307e\u3059\u3002
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\tAES \u6697\u53f7\u5316\u304c\u914d\u7f6e\u3055\u308c\u3066\u3044\u308b\u9375\u30ea\u30f3\u30b0\u306e SAF \u9375\u30ea\u30f3\u30b0\u30fb\u30bf\u30a4\u30d7\u3092\n\
+\t\u6307\u5b9a\u3057\u307e\u3059\u3002
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\tAES \u6697\u53f7\u9375\u306e SAF \u8a3c\u660e\u66f8\u306e\u30e9\u30d9\u30eb\u3092\u6307\u5b9a\u3057\u307e\u3059\u3002
 
 
 

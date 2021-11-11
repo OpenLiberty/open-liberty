@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Riavviare il server.  Quando si
 reaper.reopen.active=CWWKM0127W: {0} riaperto
 reaper.reopen.active.explanation=Una modifica non prevista ha causato la riapertura di un file di archivio dell'applicazione aperto.  Il server ha tentato di ottenere il contenuto aggiornato del file di archivio, ma potrebbe non avere completamente aggiornati gli elenchi interni del contenuto dell'archivio.
 reaper.reopen.active.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: File zip {0} mancante.
+missing.zip.file.explanation=Si \u00e8 verificata un'eccezione durante l'elaborazione dell'archivio in quanto il file specificato non \u00e8 stato trovato. 
+missing.zip.file.useraction=Verificare che il file specificato esista e che disponga di autorizzazioni leggibili dal server.
