@@ -37,8 +37,9 @@ public class TestWithFATServlet extends FATServletClient {
     public static LibertyServer server;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void copyAppToDropins() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "app1");
+        FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
     @Before

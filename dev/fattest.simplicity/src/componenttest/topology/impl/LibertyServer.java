@@ -211,9 +211,9 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
-    protected static final boolean DEFAULT_PRE_CLEAN = true;
-    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
-    protected static final boolean DEFAULT_VALIDATE_APPS = true;
+    public static final boolean DEFAULT_PRE_CLEAN = true;
+    public static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
+    public static final boolean DEFAULT_VALIDATE_APPS = true;
     protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
     public static boolean validateApps = DEFAULT_VALIDATE_APPS;
@@ -1620,7 +1620,7 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
             if (doCheckpoint()) {
-                checkpointValidate(output);
+                checkpointValidate(output, expectStartFailure);
                 checkpointInfo.beforeRestoreLambda.accept(this);
                 if (checkpointInfo.autoRestore) {
                     checkpointRestore();
@@ -1691,10 +1691,10 @@ public class LibertyServer implements LogMonitorClient {
         };
         new Thread(execRunnable).start();
         //Poll for script completion
-        final int scriptTimeout_seconds = 5 * 60;
+        final int scriptTimeout = 5;
         ProgramOutput output = null;
         try {
-            output = restoreProgramOutputQueue.poll(scriptTimeout_seconds, TimeUnit.MINUTES);
+            output = restoreProgramOutputQueue.poll(scriptTimeout, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1717,8 +1717,10 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param output
      */
-    private void checkpointValidate(ProgramOutput output) throws Exception {
-        assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+    private void checkpointValidate(ProgramOutput output, boolean expectStartFailure) throws Exception {
+        if (!expectStartFailure) {
+            assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+        }
         // validate server not started
         resetStarted();
         if (isStarted) {

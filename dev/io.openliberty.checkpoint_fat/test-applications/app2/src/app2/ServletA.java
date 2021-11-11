@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,22 @@
  *******************************************************************************/
 package app2;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/servlet1")
-public class TestServletA {
+@WebServlet("/request")
+public class ServletA extends HttpServlet {
 
-    public void testHttpServletRequest(HttpServletRequest request, HttpServletResponse resp) throws Exception {
-        resp.getWriter().println("Running test method 'testHttpServletRequest'");
+    /**  */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.getOutputStream().println("Got ServletA");
     }
 }
