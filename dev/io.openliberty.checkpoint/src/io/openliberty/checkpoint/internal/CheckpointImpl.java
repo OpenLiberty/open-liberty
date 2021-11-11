@@ -205,8 +205,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
             WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
             logsCheckpoint.create();
+            if (tc.isInfoEnabled()) {
+                Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
+            }
             criu.dump(imageDir, CHECKPOINT_LOG_FILE,
                       logsCheckpoint.asFile());
+            if (tc.isInfoEnabled()) {
+                Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
+            }
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {

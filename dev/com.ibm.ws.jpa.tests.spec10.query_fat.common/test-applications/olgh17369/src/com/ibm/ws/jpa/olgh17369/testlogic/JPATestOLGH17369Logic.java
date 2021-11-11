@@ -171,6 +171,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
+        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            return;
+        }
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -438,6 +444,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
+        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            return;
+        }
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -659,6 +671,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
+        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            return;
+        }
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -820,6 +838,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
+        }
+
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
+        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            return;
         }
 
         // Execute Test Case

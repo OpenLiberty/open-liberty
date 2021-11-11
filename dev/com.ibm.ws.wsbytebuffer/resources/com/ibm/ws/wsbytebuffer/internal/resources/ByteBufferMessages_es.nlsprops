@@ -23,7 +23,7 @@
 
 ### WSBB will use message ids from 0600-0799
 
-NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: La propiedad personalizada {0} tiene el valor {1}. Este valor no es v\u00e1lido.
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: La propiedad personalizada {0} tiene el valor de {1}. Este valor no es v\u00e1lido.
 NOT_VALID_CUSTOM_PROPERTY.explanation=Se ha especificado una propiedad personalizada con un valor que est\u00e1 fuera del rango de valores v\u00e1lidos.
 NOT_VALID_CUSTOM_PROPERTY.useraction=Corrija el error de configuraci\u00f3n.
 
@@ -31,10 +31,10 @@ UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: La propiedad personalizada {0} especifi
 UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Una propiedad personalizada se ha especificado incorrectamente.
 UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corrija el error de configuraci\u00f3n.
 
-CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: El componente WsByteBuffer ha generado una excepci\u00f3n NumberFormatException al procesar la siguiente propiedad: Nombre de propiedad: {0}  Valor: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: El componente WsByteBuffer ha generado una excepci\u00f3n NumberFormatException al procesar la siguiente propiedad: Nombre de propiedad: {0} Valor: {1}
 CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Un valor de propiedad de configuraci\u00f3n WsByteBuffer no es un n\u00famero v\u00e1lido.
 CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrija el error de configuraci\u00f3n.
 
-POOL_MISMATCH=CWWKO0603E: Las especificaciones de tama\u00f1os y profundidades de agrupaci\u00f3n WsByteBuffer no tienen el mismo n\u00famero de entradas. Tama\u00f1os: {0} Profundidades: {1}
+POOL_MISMATCH=CWWKO0603E: Las especificaciones de tama\u00f1os y profundidades de agrupaci\u00f3n WsByteBuffer no tienen el mismo n\u00famero de entradas.  Tama\u00f1os: {0} Profundidades: {1}
 POOL_MISMATCH.explanation=Los tama\u00f1os o profundidades de agrupaci\u00f3n se han especificado incorrectamente.
 POOL_MISMATCH.useraction=Corrija el error de configuraci\u00f3n.

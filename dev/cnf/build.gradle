@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -230,7 +230,25 @@ task createGradleBootstrap {
                     org = 'dev'
                 }
                 for (String bsn : bndProject.getBsns()) {
-                    String version = getVersionFromReleaseRepo(org, bsn)
+                    String version = null
+                    try {
+                        version = getVersionFromReleaseRepo(org, bsn)
+                    } catch (GradleException e) {
+                        if (bsn.endsWith(".javaee")) {
+                            try {
+                                bsn = bsn.substring(0, bsn.length() - 7) + ".jakarta"
+                                version = getVersionFromReleaseRepo(org, bsn)
+                            } catch (GradleException e2) {
+                                bsn = bsn.substring(0, bsn.length() - 8)
+                                version = getVersionFromReleaseRepo(org, bsn)
+                            }
+                        } else if (bsn.endsWith(".javaee.thirdparty")){
+                            bsn = bsn.substring(0, bsn.length() - 18) + ".jakarta.thirdparty"
+                            version = getVersionFromReleaseRepo(org, bsn)
+                        } else {
+                            throw e
+                        }
+                    }
                     depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
                     depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
                 }

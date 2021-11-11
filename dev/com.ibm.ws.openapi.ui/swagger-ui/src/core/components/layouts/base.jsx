@@ -59,7 +59,7 @@ export default class BaseLayout extends React.Component {
     if (loadingStatus === "failedConfig") {
       const lastErr = errSelectors.lastError()
       const lastErrMsg = lastErr ? lastErr.get("message") : ""
-      loadingMessage = <div className="info" style={{ maxWidth: "880px", marginLeft: "auto", marginRight: "auto", textAlign: "center" }}>
+      loadingMessage = <div className="info failed-config">
         <div className="loading-container">
           <h4 className="title">Failed to load remote configuration.</h4>
           <p>{lastErrMsg}</p>
@@ -93,7 +93,7 @@ export default class BaseLayout extends React.Component {
           <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
             <Errors/>
             <Row className="information-container">
-              <Col aria-label="swagger info container" mobile={12}>
+              <Col mobile={12}>
                 <InfoContainer/>
               </Col>
             </Row>
@@ -111,20 +111,18 @@ export default class BaseLayout extends React.Component {
             <FilterContainer/>
 
             <Row>
-              <Col aria-label="swagger operations container" mobile={12} desktop={12} >
+              <Col mobile={12} desktop={12} >
                 <Operations/>
               </Col>
             </Row>
             <Row>
-              <Col aria-label="swagger models container" mobile={12} desktop={12} >
+              <Col mobile={12} desktop={12} >
                 <Models/>
               </Col>
             </Row>
             <FooterContainer/>  
           </VersionPragmaFilter>
         </div>
-        
       )
-      
   }
 }

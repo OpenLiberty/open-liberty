@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicTestBase;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
@@ -182,7 +183,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         String testFailureString = "";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -222,7 +223,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
             // Bounce first server to clear log
-            server1.stopServer();
+            FATUtils.stopServers(server1);
             server1.startServerAndValidate(false, true, true);
 
             // Check log was cleared
@@ -269,7 +270,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         try {
             // Start Server1
-            server1.startServer();
+            FATUtils.startServers(server1);
 
             try {
                 // We expect this to fail since it is gonna crash the server
@@ -312,7 +313,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
                 //Stop server2
                 if (!testFailed) {
-                    longPeerStaleTimeServer2.stopServer();
+                    FATUtils.stopServers(longPeerStaleTimeServer2);
                 }
             }
 
@@ -349,7 +350,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
                 // Bounce first server to clear log
-                server1.stopServer();
+                FATUtils.stopServers(server1);
                 po = server1.startServerAndValidate(false, true, true);
                 if (po.getReturnCode() != 0) {
                     Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
@@ -407,7 +408,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // Start Server2
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-        server2.startServer();
+        FATUtils.startServers(server2);
 
         // Set the owner of our recovery logs to a peer in the control row through a servlet
         // This simulates a peer's acquisition of our recovery logs.
@@ -419,7 +420,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         Log.info(this.getClass(), method, "setPeerOwnership" + id + " returned: " + sb);
 
-        server2.stopServer();
+        FATUtils.stopServers(server2);
         if (!testFailed) {
             // restart 1st server
             //
@@ -434,7 +435,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
             //Stop server1
             if (!testFailed) {
-                longPeerStaleTimeServer1.stopServer();
+                FATUtils.stopServers(longPeerStaleTimeServer1);
             }
         }
 
@@ -469,7 +470,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
-        peerLockingDisabledServer1.startServer();
+        FATUtils.startServers(peerLockingDisabledServer1);
 
         // Set the latch in the control row through a servlet
         try {
@@ -526,7 +527,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
                 // Bounce first server to clear log
-                peerLockingEnabledServer1.stopServer();
+                FATUtils.stopServers(peerLockingEnabledServer1);
                 peerLockingEnabledServer1.startServerAndValidate(false, true, true);
 
                 // Check log was cleared
@@ -573,7 +574,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
-        peerLockingDisabledServer1.startServer();
+        FATUtils.startServers(peerLockingDisabledServer1);
 
         // Set the latch in the control row through a servlet
         try {
@@ -637,7 +638,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
 
             //Stop server2
-            server2.stopServer();
+            FATUtils.stopServers(server2);
 
             // restart 1st server
             peerLockingDisabledServer1.startServerAndValidate(false, true, true);
@@ -661,7 +662,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
             // Bounce first server to clear log
-            peerLockingDisabledServer1.stopServer();
+            FATUtils.stopServers(peerLockingDisabledServer1);
             peerLockingDisabledServer1.startServerAndValidate(false, true, true);
 
             // Check log was cleared
@@ -714,7 +715,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         String testFailureString = "";
 
         // Start Server1
-        startServers(server1);
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -733,16 +734,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // Now start server2
         if (!testFailed) {
-            ProgramOutput po = server2.startServerAndValidate(false, true, true);
-
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not start server2");
-                Log.error(this.getClass(), "dynamicTest", ex);
-                throw ex;
-            }
+            FATUtils.startServers(server2);
 
             // wait for 2nd server to perform peer recovery
             if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
@@ -763,10 +755,10 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
 
             //Stop server2
-            server2.stopServer((String[]) null);
+            FATUtils.stopServers(server2);
 
             // restart 1st server
-            server1.startServerAndValidate(false, true, true);
+            FATUtils.startServers(server1);
 
             if (server1.waitForStringInTrace("WTRN0133I") == null) {
                 testFailed = true;
@@ -787,8 +779,8 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
 
             // Bounce first server to clear log
-            server1.stopServer("CWWKN0005W"); // LastingXAResourceImpl handles CWWKN0005W
-            server1.startServerAndValidate(false, true, true);
+            FATUtils.stopServers(new String[] { "CWWKN0005W" }, server1);
+            FATUtils.startServers(server1);
 
             // Check log was cleared
             if (server1.waitForStringInTrace("WTRN0135I") == null) {

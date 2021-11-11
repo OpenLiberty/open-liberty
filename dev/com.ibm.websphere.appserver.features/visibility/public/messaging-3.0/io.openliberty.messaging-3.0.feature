@@ -12,6 +12,6 @@ Subsystem-Name: Jakarta Messaging 3.0
   io.openliberty.connectors-2.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jms20.feature
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -68,12 +69,12 @@ public class RecoveryDBTranlogTest extends FATServletClient {
         }
 
         server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
-        server.startServerAndValidate(false, true, true, false);
+        FATUtils.startServers(server);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        TestUtils.stopServer(server);
+        FATUtils.stopServers(server);
     }
 
     @Test

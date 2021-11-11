@@ -8,7 +8,5 @@ visibility = private
 -bundles=\
   com.ibm.ws.security.jwt, \
   com.ibm.ws.security.common
--files=\
-  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jwt_1.1-javadoc.zip
 kind=ga
 edition=core

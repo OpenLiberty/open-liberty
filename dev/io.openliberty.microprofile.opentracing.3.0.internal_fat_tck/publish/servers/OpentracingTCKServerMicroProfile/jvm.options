@@ -1,0 +1,2 @@
+-DUSE_MOCK_TRACER=true
+-Dcom.ibm.tools.attach.enable=yes

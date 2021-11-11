@@ -6,6 +6,10 @@ Bundle-SymbolicName: com.ibm.ws.org.glassfish.json.2.0
 Export-Package: \
    org.glassfish.json.*;version="2.0"
 
+Import-Package: \
+   jakarta.json.spi;version="[2.0,3.0)", \
+   *
+
 Service-Component:\
   com.ibm.ws.org.glassfish.json.JsonProviderImpl;\
     implementation:=org.glassfish.json.JsonProviderImpl;\

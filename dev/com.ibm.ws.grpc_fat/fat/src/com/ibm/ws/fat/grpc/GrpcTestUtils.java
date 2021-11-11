@@ -91,6 +91,7 @@ public class GrpcTestUtils {
                                                 Logger logger,
                                                 boolean skipValidation) throws Exception {
         logger.info("Entered set server config with xml " + serverXML);
+        server.setConfigUpdateTimeout(180 * 1000);
         if (originalServerXML == null || !originalServerXML.equals(serverXML)) {
             server.setMarkToEndOfLog();
             // Update server.xml

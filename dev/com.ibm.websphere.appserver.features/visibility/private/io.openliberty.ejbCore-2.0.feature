@@ -9,6 +9,6 @@ IBM-API-Package: jakarta.ejb; type="spec", \
   io.openliberty.managedBeansCore-2.0
 -bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.app.manager.ejb
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -3,6 +3,6 @@ symbolicName=io.openliberty.jsonbInternal-2.0
 visibility=private
 -features=, \
   io.openliberty.jsonbImpl-2.0.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.jca.cm.handle.HandleList;
 
 public final class ConnectionEventListener implements javax.resource.spi.ConnectionEventListener {
     private MCWrapper mcWrapper = null;
+    private boolean connectionErrorAlreadyIssued = false;
 
     private static final TraceComponent tc = Tr.register(ConnectionEventListener.class, J2CConstants.traceSpec, J2CConstants.messageFile);
 
@@ -180,6 +181,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     public void connectionErrorOccurred(ConnectionEvent event) {
 
         int eventID = event.getId();
+        Exception eve = event.getException();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             StringBuilder entry = new StringBuilder(event.getClass().getSimpleName()).append('{');
@@ -207,6 +209,51 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
             Tr.debug(this, tc, tsb.toString());
         }
 
+        if (connectionErrorAlreadyIssued) {
+            if (eve != null)
+                Tr.debug(this, tc, "Connection error occurred was already issued for mcw listener " +
+                                   this +
+                                   " Skipping this request.  Message from resource adapter " +
+                                   eve + eve.getMessage() + eve.getCause());
+            else
+                Tr.debug(this, tc, "Connection error occurred was already issued for mcw listener " +
+                                   this +
+                                   " Skipping this request.  No message provided by resource adapter.");
+
+            return;
+        } else {
+            connectionErrorAlreadyIssued = true;
+        }
+
+        String tempString = "state " + mcWrapper.getStateString() + " ";
+        if (mcWrapper.getState() == mcWrapper.STATE_ACTIVE_FREE) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                if (eve != null)
+                    Tr.debug(this, tc, "A connection error occurred for a free mcw listener " +
+                                       this +
+                                       " will be destroyed before the next getConnection" +
+                                       " request or during connection maintainance.  Message from resource adapter " +
+                                       eve + eve.getMessage() + eve.getCause());
+                else
+                    Tr.debug(this, tc, "A connection error occurred for a free mcw listener " +
+                                       this +
+                                       " will be destroyed before the next getConnection" +
+                                       " request or during connection maintainance.  No message provided by resource adapter.");
+            }
+            mcWrapper.do_not_reuse_mcw = true;
+
+            Exception tempEx = event.getException();
+
+            if (tempEx != null) {
+                tempString = tempString + J2CUtilityClass.generateExceptionString(tempEx);
+                Tr.audit(tc, "RA_CONNECTION_ERROR_J2CA0056", tempString, mcWrapper.gConfigProps.cfName);
+            } else {
+                Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", tempString + mcWrapper.gConfigProps.cfName);
+            }
+            return;
+
+        }
+
         switch (eventID) {
 
             case ConnectionEvent.CONNECTION_ERROR_OCCURRED: {
@@ -214,17 +261,17 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 Exception tempEx = event.getException();
 
                 // Initialize tempString so the msg makes sense for the case where the event has NO associated Exception
-                String tempString = "";
+
                 if (tempEx != null) {
 
                     // If there is an associated Exception, generate tempString from that
-                    tempString = J2CUtilityClass.generateExceptionString(tempEx);
+                    tempString = tempString + J2CUtilityClass.generateExceptionString(tempEx);
                     Tr.audit(tc, "RA_CONNECTION_ERROR_J2CA0056", tempString, mcWrapper.gConfigProps.cfName);
 
                 }
 
                 else {
-                    Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", mcWrapper.gConfigProps.cfName);
+                    Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", tempString + mcWrapper.gConfigProps.cfName);
                 }
 
                 // NOTE: Moving all functional code for this to the MCWrapper as it is
@@ -253,16 +300,15 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 Exception tempEx = event.getException();
 
                 // Initialize tempString so the msg makes sense for the case where the event has NO associated Exception
-                String tempString = "";
                 if (tempEx != null) {
 
                     // If there is an associated Exception, generate tempString from that
-                    tempString = J2CUtilityClass.generateExceptionString(tempEx);
+                    tempString = tempString + J2CUtilityClass.generateExceptionString(tempEx);
                     Tr.audit(tc, "RA_CONNECTION_ERROR_J2CA0056", tempString, mcWrapper.gConfigProps.cfName);
                 }
 
                 else {
-                    Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", mcWrapper.gConfigProps.cfName);
+                    Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", tempString + mcWrapper.gConfigProps.cfName);
                 }
 
                 // NOTE: Moving all functional code for this to the MCWrapper as it is

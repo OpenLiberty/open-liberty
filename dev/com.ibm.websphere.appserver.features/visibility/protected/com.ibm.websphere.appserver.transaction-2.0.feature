@@ -38,6 +38,6 @@ Subsystem-Name: Jakarta Transactions 2.0
  com.ibm.ws.cdi.interfaces.jakarta
 -jars=com.ibm.websphere.appserver.spi.transaction; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.transaction_1.1-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -1,0 +1,203 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+               project(':com.ibm.ws.security.jaas.common'),
+               project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+               'jtidy:jtidy:4aug2000r7-dev',
+               'org.apache.sshd:sshd-common:2.5.1',
+               'org.apache.sshd:sshd-core:2.5.1',
+               'org.apache.sshd:sshd-scp:2.5.1',
+               'net.sourceforge.htmlunit:htmlunit:2.44.0',
+               'rhino:js:1.6R5'
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+autoFVT.doLast {
+
+  /****************************************************************
+   *
+   * Copy the common SSL client default keystore.
+   *
+   ****************************************************************/
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+    into new File(autoFvtDir, 'securitykeys')
+    include 'commonSslClientDefault.jks'
+  }
+  
+  /****************************************************************
+   *
+   * Common setup for the OP and RP servers.
+   *
+   ****************************************************************/
+  def servers = [
+    "com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.op",
+    "com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.rp"
+  ]
+  servers.each { server ->
+    copy {
+      from new File(projectDir, "publish/files/oidc/serversettings")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '**.xml'
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'commonBasicKeyStore.jks'
+      include 'commonTrustStore.jks'
+      include 'commonBadTrustStore.jks'
+    }
+  }
+
+  /****************************************************************
+   *
+   * Copy the basicauth.war to servers.
+   *
+   ****************************************************************/
+  servers = [
+    "com.ibm.ws.security.spnego.fat.formlogin",
+    "com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.op"
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauth.zip', 'basicauth.war'
+    }
+  }
+  
+  /****************************************************************
+   *
+   * Copy common resources to servers.
+   *
+   ****************************************************************/
+  servers = [
+    "com.ibm.ws.security.spnego.fat.formlogin",
+    "com.ibm.ws.security.openidconnect.fat.spnego.setup",
+    "com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.op",
+    "BackendServer"
+  ]
+  servers.each { server ->
+    copy {
+      from new File(projectDir, "publish/files/resources")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/resources')
+      include '**'
+    }
+  }
+  
+  /****************************************************************
+   *
+   * Server setup: com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.op
+   *
+   ****************************************************************/
+  def server = 'com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.op'
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/application_definition')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/application_definition')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/configs')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/configs')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/features')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/features')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/spnego/configs')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/spnego/configs')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/spnego/authfilters')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/spnego/authfilters')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/jwt/serversettings')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/jwt/serversettings')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/server_modules/spnego/serversettings')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports/spnego/serversettings')
+    include '**.xml'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/resources')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources')
+    include '**'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/errorPages')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/errorPages')
+    include '**.jsp'
+  }
+    
+  /****************************************************************
+   *
+   * Copy the formlogin.war to servers.
+   *
+   ****************************************************************/
+  server = "com.ibm.ws.security.spnego.fat.formlogin"
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'formlogin.zip', 'formlogin.war'
+  }
+  server = "com.ibm.ws.security.openidconnect.client-1.0_fat.spnego.rp"
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    rename 'formlogin.zip', 'formlogin.war'
+  }
+  
+  /****************************************************************
+   *
+   * Copy the clientcert.war to servers.
+   *
+   ****************************************************************/
+  server = "com.ibm.ws.security.spnego.fat.clientcert"
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/clientcert.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'clientcert.zip', 'clientcert.war'
+  }
+
+  /****************************************************************
+   *
+   * Copy kerberos scripts.
+   *
+   ****************************************************************/
+  copy {
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/')
+    include 'kerberos/**'
+  }
+}

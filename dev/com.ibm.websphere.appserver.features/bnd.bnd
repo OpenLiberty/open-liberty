@@ -14,6 +14,10 @@
 
 testsrc: test/src
 
+# Setting this to false since this project does not have a resources directory.
+# The copyPiiFiles tasks in this project's build.gradle will do the right copy then.
+copy.pii: false
+
 instrument.disabled: true
 
 feature.project: true

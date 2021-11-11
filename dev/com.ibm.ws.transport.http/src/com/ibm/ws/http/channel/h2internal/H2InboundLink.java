@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,6 +39,8 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -49,7 +54,8 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-public class H2InboundLink extends HttpInboundLink {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ServerQuiesceListener.class)
+public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListener {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -81,6 +87,8 @@ public class H2InboundLink extends HttpInboundLink {
     private final int closeWaitForWritesWatchDogTimer = 5000;
     private final int closeWaitForReadWatchDogTimer = 5000;
     private final int STREAM_CLOSE_DELAY = 2000;
+
+    private boolean isClosing = false;
 
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
@@ -221,6 +229,17 @@ public class H2InboundLink extends HttpInboundLink {
         initialVC.getStateMap().put("h2_frame_size", getRemoteConnectionSettings().getMaxFrameSize());
     }
 
+    /**
+     * If server is shutting down, set this connection to close so that 
+     * no new streams are processed. 
+     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
+     */
+    @Override
+    public void serverStopping() {
+        this.isClosing = true;
+        this.closeConnectionLink(null, true);
+    }
+
     public synchronized long getInitialWindowSize() {
         return initialWindowSize;
     }
@@ -243,6 +262,12 @@ public class H2InboundLink extends HttpInboundLink {
                 if (maxPushStreams >= 0 && openPushStreams > maxPushStreams) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "createNewInboundLink cannot open a new push stream; maximum number of open push streams reached" + openPushStreams);
+                    }
+                    return null;
+                }
+                else if(FrameworkState.isStopping()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createNewInboundLink cannot open a new push stream; framework is stopping");
                     }
                     return null;
                 }
@@ -1371,6 +1396,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
+    }
+
+    public boolean isClosing(){
+        return this.isClosing;
     }
 
     /**

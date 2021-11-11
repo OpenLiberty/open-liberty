@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ejb-jar id="EJBJar_1060639024453" version="3.0"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="false">
+   <display-name>Interceptor Beans</display-name>
+
+   <enterprise-beans>
+    <session id="SimpleSLLocal">
+       <ejb-name>SLEnvInjectTest</ejb-name>
+       <business-local>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLLocal</business-local>
+       <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SLEnvInjectTestBean</ejb-class>
+       <session-type>Stateless</session-type>
+       <transaction-type>Container</transaction-type>
+    </session>
+    
+    <session id="SimpleSLRemote">
+       <ejb-name>SLRemoteEnvInjectTest</ejb-name>
+       <business-remote>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLRemote</business-remote>
+       <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SLRemoteEnvInjectTestBean</ejb-class>
+       <session-type>Stateless</session-type>
+       <transaction-type>Container</transaction-type>
+    </session>
+  
+    <message-driven id="MessageDriven_1050954917281">
+    <description>This is a MDB description</description>
+    <ejb-name>InterceptorMDB01Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB01Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>   
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDBReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      
+      <around-invoke>
+      	<method-name>aroundInvoke</method-name>
+      </around-invoke>
+      
+      <ejb-ref id="EJBRef_SimpleSLRemote1">
+      	<description>
+      		injection of stateless bean SimpleSLRemote
+      	</description>
+      	<ejb-ref-name>ejb/SLEnvInjectTest_remote_biz</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<remote>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLRemote</remote>
+      </ejb-ref>
+      
+      <ejb-local-ref id="EJBLocalRef_SimpleSLLocal1">
+      	<description>
+      		injection of stateless bean SimpleSLLocal
+      	</description>
+      	<ejb-ref-name>ejb/SLEnvInjectTest_local_biz</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<local>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLLocal</local>
+      </ejb-local-ref>
+
+      <resource-ref id="ResourceRef_1050954917312">
+        <description>This is a description</description>
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>        
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB01Bean</injection-target-class>
+      		<injection-target-name>replyQueueFactoryName</injection-target-name>      		
+      	</injection-target>        
+      </resource-ref>
+      
+      <resource-env-ref>
+        <description>This is a description</description>
+      	<resource-env-ref-name>MDB01BeanContext</resource-env-ref-name>
+      	<resource-env-ref-type>javax.ejb.EJBContext</resource-env-ref-type>
+      	<injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB01Bean</injection-target-class>
+      		<injection-target-name>ctx</injection-target-name>
+      	</injection-target>
+      </resource-env-ref>
+      
+      <resource-env-ref id="ResourceEnvRef_1050954917312">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>       
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB01Bean</injection-target-class>
+      		<injection-target-name>replyQueueName</injection-target-name>      		
+      	</injection-target>        
+      </resource-env-ref>
+      
+      <post-construct>
+      	<lifecycle-callback-method>postConstructCallback</lifecycle-callback-method>
+      </post-construct>
+      <pre-destroy>
+      	<lifecycle-callback-method>preDestroyCallback</lifecycle-callback-method>
+      </pre-destroy>
+
+    </message-driven>
+    
+    <message-driven id="MessageDriven_1050954917282">
+      <ejb-name>InterceptorMDB02Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB02ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <around-invoke>
+      	<method-name>aroundInvoke</method-name>
+      </around-invoke>    
+      
+      <ejb-ref id="EJBRef_SimpleSLRemote2">
+      	<description>
+      		injection of stateless bean SimpleSLRemote
+      	</description>
+      	<ejb-ref-name>SimpleSLRemote</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<remote>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLRemote</remote>
+      	<injection-target>
+      		<injection-target-class>
+      			com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean
+      		</injection-target-class>
+      		<injection-target-name>injectedRef2</injection-target-name>
+      	</injection-target>
+      </ejb-ref>
+      
+      <ejb-local-ref id="EJBLocalRef_SimpleSLLocal2">
+      	<description>
+      		injection of stateless bean SimpleSLLocal
+      	</description>
+      	<ejb-ref-name>SimpleSLLocal</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<local>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLLocal</local>
+      	<injection-target>
+      		<injection-target-class>
+      			com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean
+      		</injection-target-class>
+      		<injection-target-name>injectedRef</injection-target-name>
+      	</injection-target>
+      </ejb-local-ref>
+
+      <resource-ref id="ResourceRef_1050954917313">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean</injection-target-class>
+      		<injection-target-name>replyQueueFactoryName</injection-target-name>      		
+      	</injection-target>                
+      </resource-ref>
+
+      <resource-env-ref>
+      	<resource-env-ref-name>MDB02BeanContext</resource-env-ref-name>
+      	<resource-env-ref-type>javax.ejb.EJBContext</resource-env-ref-type>
+      	<injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean</injection-target-class>
+      		<injection-target-name>ctx</injection-target-name>
+      	</injection-target>
+      </resource-env-ref>  
+         
+      <resource-env-ref id="ResourceEnvRef_1050954917313">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB02Bean</injection-target-class>
+      		<injection-target-name>replyQueueName</injection-target-name>      		
+      	</injection-target>               
+      </resource-env-ref>
+      
+      <post-construct>
+      	<lifecycle-callback-method>postConstructCallback</lifecycle-callback-method>
+      </post-construct>
+      <pre-destroy>
+      	<lifecycle-callback-method>preDestroyCallback</lifecycle-callback-method>
+      </pre-destroy>
+      
+    </message-driven>
+    
+    <message-driven id="MessageDriven_1050954917283">
+      <ejb-name>InterceptorMDB03Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB03Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB03ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <around-invoke>
+      	<method-name>aroundInvoke</method-name>
+      </around-invoke>    
+      <ejb-local-ref id="EJBLocalRef_SimpleSLLocal3">
+      	<description>
+      		injection of stateless bean SimpleSLLocal
+      	</description>
+      	<ejb-ref-name>SimpleSLLocal</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<local>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLLocal</local>
+      	<injection-target>
+      		<injection-target-class>
+      			com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB03Bean
+      		</injection-target-class>
+      		<injection-target-name>injectedRef</injection-target-name>
+      	</injection-target>
+      </ejb-local-ref>
+      <resource-ref id="ResourceRef_1050954917314">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB03Bean</injection-target-class>
+      		<injection-target-name>replyQueueFactoryName</injection-target-name>      		
+      	</injection-target>                        
+      </resource-ref>
+      
+      <resource-env-ref>
+      	<resource-env-ref-name>MDB03BeanContext</resource-env-ref-name>
+      	<resource-env-ref-type>javax.ejb.EJBContext</resource-env-ref-type>
+      	<injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB03Bean</injection-target-class>
+      		<injection-target-name>ctx</injection-target-name>
+      	</injection-target>
+      </resource-env-ref>     
+     
+      <resource-env-ref id="ResourceEnvRef_1050954917314">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB03Bean</injection-target-class>
+      		<injection-target-name>replyQueueName</injection-target-name>      		
+      	</injection-target>                       
+      </resource-env-ref>
+      <post-construct>
+      	<lifecycle-callback-method>postConstructCallback</lifecycle-callback-method>
+      </post-construct>
+      <pre-destroy>
+      	<lifecycle-callback-method>preDestroyCallback</lifecycle-callback-method>
+      </pre-destroy>
+      
+    </message-driven>
+    
+    <message-driven id="MessageDriven_1050954917284">
+      <ejb-name>InterceptorMDB04Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB04Bean</ejb-class>
+      <transaction-type>Bean</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>destination</activation-config-property-name>
+          <activation-config-property-value>MDB04ReqQueue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>destinationType</activation-config-property-name>
+          <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+          <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      
+      <around-invoke>
+      	<method-name>aroundInvoke</method-name>
+      </around-invoke>    
+      <ejb-local-ref id="EJBLocalRef_SimpleSLLocal4">
+      	<description>
+      		injection of stateless bean SimpleSLLocal
+      	</description>
+      	<ejb-ref-name>ejb/yoMama</ejb-ref-name>
+      	<ejb-ref-type>Session</ejb-ref-type>
+      	<local>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.SimpleSLLocal</local>
+      	<injection-target>
+      		<injection-target-class>
+      			com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB04Bean
+      		</injection-target-class>
+      		<injection-target-name>injectedRef</injection-target-name>
+      	</injection-target>
+      </ejb-local-ref>
+      <resource-ref id="ResourceRef_1050954917315">
+        <res-ref-name>jms/TestQCF</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Application</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB04Bean</injection-target-class>
+      		<injection-target-name>replyQueueFactoryName</injection-target-name>      		
+      	</injection-target>                                
+      </resource-ref>
+      
+      <resource-env-ref>
+      	<resource-env-ref-name>MDB04BeanContext</resource-env-ref-name>
+      	<resource-env-ref-type>javax.ejb.EJBContext</resource-env-ref-type>
+      	<injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB04Bean</injection-target-class>
+      		<injection-target-name>ctx</injection-target-name>
+      	</injection-target>
+      </resource-env-ref>          
+      <resource-env-ref id="ResourceEnvRef_1050954917315">
+        <resource-env-ref-name>jms/TestResultQueue</resource-env-ref-name>
+        <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+        <injection-target>
+      		<injection-target-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.InterceptorMDB04Bean</injection-target-class>
+      		<injection-target-name>replyQueueName</injection-target-name>      		
+      	</injection-target>                       
+      </resource-env-ref>
+      
+      <post-construct>
+      	<lifecycle-callback-method>postConstructCallback</lifecycle-callback-method>
+      </post-construct>
+      <pre-destroy>
+      	<lifecycle-callback-method>preDestroyCallback</lifecycle-callback-method>
+      </pre-destroy>
+      
+    </message-driven>
+  </enterprise-beans>
+  
+   <interceptors id="interceptors_1">
+   	<interceptor id="interceptor_1">
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor01</interceptor-class>
+   		<around-invoke>
+   			<method-name>aroundInvoke</method-name>
+   		</around-invoke>
+   		<post-construct>
+   			<lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+   		</post-construct>
+   		<pre-destroy>
+   			<lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+   		</pre-destroy>
+   	</interceptor>
+   	<interceptor id="interceptor_2">
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor02</interceptor-class>
+   		<around-invoke>
+   			<method-name>aroundInvoke</method-name>
+   		</around-invoke>
+   		<post-construct>
+   			<lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+   		</post-construct>
+   		<pre-destroy>
+   			<lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+   		</pre-destroy>
+   	</interceptor>
+   	<interceptor id="interceptor_3">
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor03</interceptor-class>
+   		<around-invoke>
+   			<method-name>aroundInvoke</method-name>
+   		</around-invoke>
+   		<post-construct>
+   			<lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+   		</post-construct>
+   		<pre-destroy>
+   			<lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+   		</pre-destroy>
+   	</interceptor>
+   	<interceptor id="interceptor_4">
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor04</interceptor-class>
+   		<around-invoke>
+   			<method-name>aroundInvoke</method-name>
+   		</around-invoke>
+   		<post-construct>
+   			<lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+   		</post-construct>
+   		<pre-destroy>
+   			<lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+   		</pre-destroy>
+   	</interceptor>
+   </interceptors>
+   
+   <assembly-descriptor>
+   	<interceptor-binding>
+   		<ejb-name>InterceptorMDB01Bean</ejb-name>
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor01</interceptor-class>
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor02</interceptor-class>
+   		<exclude-default-interceptors>true</exclude-default-interceptors>
+   	</interceptor-binding>
+   	<interceptor-binding>
+   		<ejb-name>InterceptorMDB01Bean</ejb-name>
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor03</interceptor-class>
+   		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor04</interceptor-class>
+   		<exclude-default-interceptors>true</exclude-default-interceptors>
+   		<method>
+   			<method-name>onMessage</method-name>
+   		</method>
+   	</interceptor-binding>
+  	<interceptor-binding>
+  		<ejb-name>InterceptorMDB02Bean</ejb-name>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor01</interceptor-class>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor02</interceptor-class>
+  	</interceptor-binding>
+  	<interceptor-binding>
+  		<ejb-name>InterceptorMDB02Bean</ejb-name>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor04</interceptor-class>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor03</interceptor-class>
+  		<exclude-default-interceptors>true</exclude-default-interceptors>
+  		<exclude-class-interceptors>true</exclude-class-interceptors> 		
+  		<method>
+  			<method-name>onMessage</method-name>
+  		</method>
+   </interceptor-binding>
+   <interceptor-binding>
+  		<ejb-name>InterceptorMDB03Bean</ejb-name>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor02</interceptor-class>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor01</interceptor-class>
+   </interceptor-binding>
+   <interceptor-binding>
+  		<ejb-name>InterceptorMDB03Bean</ejb-name>
+   		<exclude-default-interceptors>true</exclude-default-interceptors>
+   		<method>
+  			<method-name>onMessage</method-name>
+  		</method>
+   </interceptor-binding>
+   <interceptor-binding>
+  		<ejb-name>InterceptorMDB04Bean</ejb-name>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor03</interceptor-class>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor02</interceptor-class>
+  		<interceptor-class>com.ibm.ws.ejbcontainer.mdb.jms.interceptor.xml.ejb.Interceptor01</interceptor-class>
+  		<exclude-default-interceptors>true</exclude-default-interceptors>
+    </interceptor-binding>
+   </assembly-descriptor>
+</ejb-jar>

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.inject.Singleton;
 import jakarta.transaction.TransactionSynchronizationRegistry;
 import jakarta.transaction.Transactional;
@@ -21,8 +22,6 @@ import jakarta.transaction.Transactional.TxType;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import prototype.enterprise.concurrent.Async;
 
 @Singleton
 public class TransactionalBean implements Serializable {
@@ -33,61 +32,61 @@ public class TransactionalBean implements Serializable {
         return tranSyncRegistry.getTransactionKey();
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.MANDATORY)
     public CompletableFuture<Object> runAsyncAsMandatory() {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.NEVER)
     public CompletableFuture<Object> runAsyncAsNever() throws Exception {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.NOT_SUPPORTED)
     public CompletableFuture<Object> runAsyncAsNotSupported() throws Exception {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.REQUIRED)
     public CompletableFuture<Object> runAsyncAsRequired() throws Exception {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.REQUIRES_NEW)
     public CompletableFuture<Object> runAsyncAsRequiresNew() throws Exception {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }
     }
 
-    @Async
+    @Asynchronous
     @Transactional(TxType.SUPPORTS)
     public CompletableFuture<Object> runAsyncAsSupports() throws Exception {
         try {
-            return Async.Result.complete(getTransactionKey());
+            return Asynchronous.Result.complete(getTransactionKey());
         } catch (NamingException x) {
             throw new CompletionException(x);
         }

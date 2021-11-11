@@ -6,5 +6,5 @@ visibility = private
   io.openliberty.servlet.api-5.0
 -bundles=\
   io.openliberty.security.jaas.internal.common
-kind=beta
+kind=ga
 edition=base

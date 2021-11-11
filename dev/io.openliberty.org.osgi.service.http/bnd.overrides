@@ -1,0 +1,13 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.osgi.service.http.javaee
+
+-pom: artifactid=io.openliberty.org.osgi.service.http
+
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.org.osgi.service.http.jar
+jakartaFinalBundleId: io.openliberty.org.osgi.service.http
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.org.osgi.service.http.jar

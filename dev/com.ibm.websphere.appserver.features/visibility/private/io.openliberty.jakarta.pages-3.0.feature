@@ -5,6 +5,6 @@ singleton=true
   io.openliberty.jakarta.expressionLanguage-4.0; apiJar=false, \
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=io.openliberty.jakarta.pages.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

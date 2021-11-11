@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: Liberty Global Handler SPI
+Bundle-Description: Liberty Global Handler SPI, version ${bVersion}; Jakarta enabled
+Bundle-SymbolicName: io.openliberty.globalhandler.spi.javaee
+
+-pom: artifactid=io.openliberty.globalhandler.spi
+
+Import-Package: com.ibm.wsspi.webservices.handler
+
+Export-Package: com.ibm.wsspi.webservices.handler
+
+-includeresource: {META-INF/maven/io.openliberty.spi/io.openliberty.globalhandler.spi/pom.xml=io.openliberty.globalhandler.spi.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.webservices.handler
+
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.globalhandler.spi.jar
+jakartaFinalBundleId: io.openliberty.globalhandler.spi
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.globalhandler.spi.jar
+publish.wlp.javadoc.include: io.openliberty.globalhandler.spi.javadoc.zip

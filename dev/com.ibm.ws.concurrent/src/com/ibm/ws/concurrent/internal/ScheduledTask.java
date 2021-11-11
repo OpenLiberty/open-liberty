@@ -205,12 +205,12 @@ public class ScheduledTask<T> implements Callable<T> {
      * Construct and schedule a task which also serves as a future.
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
-     * @param task task
-     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
-     * @param initialDelay indicates when the task should first run
-     * @param fixedDelay fixed delay between executions of the task. Null if not using fixed delay.
-     * @param fixedRate fixed period between the start of executions of the task. Null if not using fixed rate.
-     * @param unit unit of time.
+     * @param task           task
+     * @param isCallable     indicates whether task is submitted as a Callable or Runnable.
+     * @param initialDelay   indicates when the task should first run
+     * @param fixedDelay     fixed delay between executions of the task. Null if not using fixed delay.
+     * @param fixedRate      fixed period between the start of executions of the task. Null if not using fixed rate.
+     * @param unit           unit of time.
      */
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable,
                   long initialDelay, Long fixedDelay, Long fixedRate, TimeUnit unit) {
@@ -275,9 +275,9 @@ public class ScheduledTask<T> implements Callable<T> {
      * Construct and schedule a task which also serves as a future.
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
-     * @param task task
-     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
-     * @param trigger indicates when the task should run
+     * @param task           task
+     * @param isCallable     indicates whether task is submitted as a Callable or Runnable.
+     * @param trigger        indicates when the task should run
      */
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Trigger trigger) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -451,6 +451,7 @@ public class ScheduledTask<T> implements Callable<T> {
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
                             nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
+
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
                                          "taskScheduled " + Utils.toString(taskScheduledTime),

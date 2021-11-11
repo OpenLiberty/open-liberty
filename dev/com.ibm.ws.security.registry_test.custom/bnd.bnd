@@ -20,7 +20,7 @@ Export-Package: \
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
 
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 test.project: true
 
 #

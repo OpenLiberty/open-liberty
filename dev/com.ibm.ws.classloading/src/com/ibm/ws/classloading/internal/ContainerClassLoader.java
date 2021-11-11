@@ -251,8 +251,18 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             // Doing the conversion that the shared class cache logic does for jar
             // URLs in order to do less work while holding a shared class cache monitor.
             if ("jar".equals(protocol) || "wsjar".equals(protocol)) {
+                String path = resourceURL.getPath();
+                // Can only do this for jar files.  Shared class cache logic
+                // cannot handle a file reference that is a war for instance.
+                // Need to use the full path for war files.
+                if (path.endsWith(resourceName)) {
+                    path = path.substring(0, path.length() - resourceName.length());
+                    if (path.endsWith(".jar!/") || path.endsWith(".zip!/")) {
+                        path = path.substring(0, path.length() - 2);
+                    }
+                }
                 try {
-                    sharedClassCacheURL = new URL(resourceURL.getPath());
+                    sharedClassCacheURL = new URL(path);
                 } catch (MalformedURLException e) {
                     sharedClassCacheURL = null;
                 }

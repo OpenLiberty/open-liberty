@@ -35,6 +35,8 @@ Include-Resource: \
 	@${repo;org.testcontainers:testcontainers;1.15.3;EXACT}!/META-INF/**,\
 	resources/logback-test.xml
 
+publish.wlp.jar.disabled: true
+
 #Ensure that a stub project is created in CL
 generate.replacement: true
 

@@ -381,14 +381,18 @@ public class RingBufferTest {
         System.out.println("Waiting for thread to enter either runnable or terminated state... Current state " + thread.getState());
         while (!(thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED)
                && timeElapsedInMilliSecs < threadWaitTimeOutInMilliSecs) {
+            System.out.println("ASNB begin - Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
             try {
+                System.out.println("ASNB sleep - Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
                 Thread.sleep(waitTimeInMilliSecs);
-            } catch (InterruptedException e) {
-                //Check to see if we are swallowing an interruption.
+            } catch (Exception e) {
+                System.out.println("ASNB exception - Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
+                //Check to see if we are swallowing any exception.
                 e.printStackTrace();
             }
+            System.out.println("ASNB main - Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
             timeElapsedInMilliSecs += waitTimeInMilliSecs;
-            System.out.println("Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
+            System.out.println("ASNB end - Thread id : " + thread.getId() + ", wait time (ms) : " + timeElapsedInMilliSecs + ", state : " + thread.getState());
         }
         assertTrue(message + ". state: " + thread.getState(), thread.getState() == Thread.State.RUNNABLE || thread.getState() == Thread.State.TERMINATED);
 

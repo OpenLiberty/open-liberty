@@ -8,5 +8,5 @@ IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.containerServices-1.0
 -bundles=com.ibm.ws.security.appbnd, \
  io.openliberty.ejbcontainer.security.internal
-kind=beta
+kind=ga
 edition=core

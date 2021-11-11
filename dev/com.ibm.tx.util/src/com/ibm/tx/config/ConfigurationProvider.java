@@ -281,32 +281,39 @@ public interface ConfigurationProvider {
     public int getPeerTimeBeforeStale();
 
     /**
-     * Configures the length of time between retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     * Configures the length of time between retries for HADB transient errors for standard operations (open and force) where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getStandardTransientErrorRetryTime();
+    public int getLogRetryInterval();
 
     /**
-     * Configures the number of retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     * Configures the number of retries for HADB transient errors for standard operations (open and force)where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getStandardTransientErrorRetryAttempts();
+    public int getLogRetryLimit();
 
     /**
      * Configures the length of time between retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getLightweightTransientErrorRetryTime();
+    public int getLightweightLogRetryInterval();
 
     /**
      * Configures the number of retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getLightweightTransientErrorRetryAttempts();
+    public int getLightweightLogRetryLimit();
+
+    /**
+     * Return true when all SQLExceptions should be retried when logging to a database.
+     *
+     * @return
+     */
+    public boolean enableLogRetries();
 
     /**
      * Returns true if a DataSourceFactory reference has been set through Declarative Services

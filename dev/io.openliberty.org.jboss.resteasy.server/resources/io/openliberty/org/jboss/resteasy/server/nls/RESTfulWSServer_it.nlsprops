@@ -60,4 +60,6 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Pi\u00f9 associazioni serv
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A un servlet REST \u00e8 consentito essere configurato con zero o solo una associazione percorso. Un servlet REST \u00e8 un qualsiasi servlet che utilizza uno dei seguenti nomi di classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher o org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Questo messaggio indica che pi\u00f9 di una associazione \u00e8 associata a un servlet REST nel web.xml. 
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Esaminare nel web.xml le associazioni di servlet che sono associate al servlet REST e rimuoverle tutte o tutte tranne una.
 
-
+UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: Il modulo Web {0} include una classe dell''applicazione JAX-RS, {1}, che non \u00e8 associata. Il server ignorer\u00e0 questa classe dell''applicazione.
+UNMAPPED_APPLICATION_CWWKW1302W.explanation=La classe dell'applicazione specificata non \u00e8 dichiarata nel file web.xml del modulo Web. La classe non \u00e8 nemmeno annotata con @ApplicationPath, pertanto il server non \u00e8 in grado di determinare il relativo percorso HTTP e ignorer\u00e0 la classe.
+UNMAPPED_APPLICATION_CWWKW1302W.useraction=Aggiungere un'annotazione @ApplicationPath che specifica il percorso dell'applicazione o specifica il percorso nel file web.xml. In alternativa, rimuovere la classe dell'applicazione se \u00e8 inutilizzata.

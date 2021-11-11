@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.opentracing.internal.OpentracingClientFilter;
-import io.openliberty.opentracing.internal.OpentracingJaxRsProviderRegister;
+import io.openliberty.opentracing.internal.OpentracingFilterHelperProvider;
 
 /**
  *
@@ -35,13 +35,13 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
     private OpentracingClientFilter clientFilter = null;
 
     public OpentracingRestClientFilter() {
-        OpentracingJaxRsProviderRegister jaxRsProvider = OpentracingJaxRsProviderRegister.getInstance();
+        OpentracingFilterHelperProvider jaxRsProvider = OpentracingFilterHelperProvider.getInstance();
         if (jaxRsProvider == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "OpentracingJaxRsProviderRegister.getInstance() returned null");
             }
         } else {
-            clientFilter = jaxRsProvider.getClientFilter();
+            clientFilter = new OpentracingClientFilter(jaxRsProvider.getOpentracingFilterHelper());
         }
     }
 

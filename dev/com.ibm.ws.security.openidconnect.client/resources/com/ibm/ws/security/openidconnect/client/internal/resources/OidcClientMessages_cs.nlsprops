@@ -293,4 +293,6 @@ OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0}
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
 OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
 
+#1534, 1535 used in clients.common bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

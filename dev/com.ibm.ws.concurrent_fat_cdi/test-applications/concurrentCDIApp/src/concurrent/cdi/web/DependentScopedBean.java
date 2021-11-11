@@ -13,12 +13,11 @@ package concurrent.cdi.web;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.context.Dependent;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import prototype.enterprise.concurrent.Async;
 
 @Dependent
 public class DependentScopedBean {
@@ -31,9 +30,9 @@ public class DependentScopedBean {
     /**
      * Asynchronously, look up a JNDI name and convert the result to a String value.
      */
-    @Async
+    @Asynchronous
     public CompletionStage<String> lookupAndConvertToString(String jndiName) {
-        CompletableFuture<String> future = Async.Result.getFuture();
+        CompletableFuture<String> future = Asynchronous.Result.getFuture();
         try {
             future.complete(InitialContext.doLookup(jndiName).toString());
         } catch (NamingException x) {

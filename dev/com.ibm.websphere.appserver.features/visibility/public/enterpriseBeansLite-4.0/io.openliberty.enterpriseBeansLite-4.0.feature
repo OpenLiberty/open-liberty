@@ -19,9 +19,9 @@ Subsystem-Category: JakartaEE9Application
 -bundles=io.openliberty.ejbcontainer.v40.internal, \
  com.ibm.ws.ejbcontainer.timer.jakarta, \
  com.ibm.ws.ejbcontainer.async.jakarta
--jars=io.openliberty.ejbcontainer.2.0; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ejbcontainer_1.0-javadoc.zip
+-jars=io.openliberty.ejbcontainer; location:=dev/api/ibm/
+-files=dev/api/ibm/javadoc/io.openliberty.ejbcontainer_1.0-javadoc.zip
 Subsystem-Name: Jakarta Enterprise Beans 4.0 Lite
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

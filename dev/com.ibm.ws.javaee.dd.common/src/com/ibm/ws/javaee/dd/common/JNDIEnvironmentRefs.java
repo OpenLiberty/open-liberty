@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,10 @@ import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 /**
  * Represents the subset of the jndiEnvironmentRefsGroup group from the javaee
  * XSD that includes reference declarations only.
- * 
+ *
  * @see JNDIEnvironmentRefsGroup
  */
-public interface JNDIEnvironmentRefs
-{
+public interface JNDIEnvironmentRefs {
     /**
      * @return &lt;env-entry> as a read-only list
      */
@@ -71,6 +70,11 @@ public interface JNDIEnvironmentRefs
     List<PersistenceUnitRef> getPersistenceUnitRefs();
 
     /**
+     * @return &lt;context-service> as a read-only list
+     */
+    List<ContextService> getContextServices();
+
+    /**
      * @return &lt;data-source> as a read-only list
      */
     List<DataSource> getDataSources();
@@ -89,6 +93,21 @@ public interface JNDIEnvironmentRefs
      * @return &lt;mail-session> as a read-only list
      */
     List<MailSession> getMailSessions();
+
+    /**
+     * @return &lt;managed-executor> as a read-only list
+     */
+    List<ManagedExecutor> getManagedExecutors();
+
+    /**
+     * @return &lt;managed-scheduled-executor> as a read-only list
+     */
+    List<ManagedScheduledExecutor> getManagedScheduledExecutors();
+
+    /**
+     * @return &lt;managed-thread-factory> as a read-only list
+     */
+    List<ManagedThreadFactory> getManagedThreadFactories();
 
     /**
      * @return &lt;connection-factory> as a read-only list

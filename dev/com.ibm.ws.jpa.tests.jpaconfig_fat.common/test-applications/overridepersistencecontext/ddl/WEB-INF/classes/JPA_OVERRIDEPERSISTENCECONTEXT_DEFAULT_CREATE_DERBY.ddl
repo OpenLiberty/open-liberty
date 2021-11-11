@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.SimpleOverridePersistenceContextEntity (ID INTEGER NOT NULL, VERSION INTEGER, NAME VARCHAR(255), PRIMARY KEY (ID));

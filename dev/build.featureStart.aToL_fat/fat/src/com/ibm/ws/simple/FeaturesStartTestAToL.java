@@ -268,6 +268,10 @@ public class FeaturesStartTestAToL {
             if (javaInfo.vendor() != JavaInfo.Vendor.IBM) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
                 return true;
+            } else if (JAVA_LEVEL >= 11) {
+                // IBM JDK 11+ (Semeru) is based on Adopt JDK 11+ and it doesn't include Health Center
+                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because IBM JDK 11+ doesn't include Health Center.");
+                return true;                
             } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
                 return true;

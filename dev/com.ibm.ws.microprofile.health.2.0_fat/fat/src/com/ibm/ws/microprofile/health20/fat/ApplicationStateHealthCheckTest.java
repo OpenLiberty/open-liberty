@@ -111,15 +111,14 @@ public class ApplicationStateHealthCheckTest {
 
     @After
     public void cleanUp() throws Exception {
-        server1.removeAllInstalledAppsForValidation();
-        server2.removeAllInstalledAppsForValidation();
         if (server1.isStarted()) {
             server1.stopServer(EXPECTED_FAILURES);
         }
         if (server2.isStarted()) {
             server2.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
         }
-
+        server1.removeAllInstalledAppsForValidation();
+        server2.removeAllInstalledAppsForValidation();
     }
 
     /**
@@ -296,6 +295,11 @@ public class ApplicationStateHealthCheckTest {
             }
             //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
             ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+        } else if (appName.equals(DELAYED_APP_NAME)) {
+            //Don't wait for app to start because it sleeps for 60 seconds
+            ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+            //But wait for the servlet to be up
+            server.waitForStringInLog("CWWKT0016I:.*" + DELAYED_APP_NAME);
         } else {
             ShrinkHelper.exportDropinAppToServer(server, app);
         }

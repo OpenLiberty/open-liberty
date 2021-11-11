@@ -28,4 +28,10 @@ import componenttest.topology.database.container.DatabaseContainerType;
 public class FATSuite {
     public static DatabaseContainerType type = DatabaseContainerType.Derby; // Default container type
     public static JdbcDatabaseContainer<?> testContainer;
+
+    public static void beforeSuite() throws Exception {
+    }
+
+    public static void afterSuite() throws Exception {
+    }
 }

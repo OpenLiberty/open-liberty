@@ -14,7 +14,7 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.security.appbnd, \
  io.openliberty.security.authentication.internal.filter, \
  io.openliberty.security.sso.internal
--jars=com.ibm.websphere.appserver.api.webcontainer.security.app; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webcontainer.security.app_1.4-javadoc.zip
-kind=beta
+-jars=io.openliberty.webcontainer.security.app; location:=dev/api/ibm/
+-files=dev/api/ibm/javadoc/io.openliberty.webcontainer.security.app_1.4-javadoc.zip
+kind=ga
 edition=core

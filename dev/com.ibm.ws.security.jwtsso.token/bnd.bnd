@@ -24,7 +24,8 @@ Export-Package: com.ibm.ws.security.jwtsso.token
 Import-Package: \
   !com.ibm.ws.security.jwtsso.token, \
   !*.internal.*, \
-  org.eclipse.microprofile.jwt, \
+  org.eclipse.microprofile.jwt;version="[1.0,3)", \
+  com.ibm.wsspi.security.tai;version="[1.1,11)", \
   org.jose4j.*;version="[0.5,1)", \
   *
   

@@ -10,50 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.tests;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
+@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest1 extends MultiRecoveryTest{
 
-	@Server("WSATRecovery1")
-	public static LibertyServer server;
-
-	@Server("WSATRecovery2")
-	public static LibertyServer server2;
-
-	@BeforeClass
-	public static void beforeTests() throws Exception {
-		beforeTests(server, server2);
-	}
-
-	@Before
-	public void beforeTest() throws Exception {
-		startServers(server, server2);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		stopServers(server, server2);
-	}
-
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR001AFVT() throws Exception {
-		recoveryTest(server, server2, "101","server1");
+		recoveryTest(server1, server2, "101","server1");
 	}
 	
 	@Test
@@ -63,17 +37,17 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest{
 	// Got Exception WTRN0049W during test
 	// Report javax.transaction.SystemException
 	public void WSTXMPR001BFVT() throws Exception {
-		recoveryTest(server, server2, "102","server2");
+		recoveryTest(server1, server2, "102","server2");
 	}
 	
 	@Test
 	public void WSTXMPR001CFVT() throws Exception {
-		recoveryTest(server, server2, "103","both");
+		recoveryTest(server1, server2, "103","both");
 	}
 	
 	@Test
 	public void WSTXMPR002AFVT() throws Exception {
-		recoveryTest(server, server2, "201","server1");
+		recoveryTest(server1, server2, "201","server1");
 	}
 	
 	@Test
@@ -83,46 +57,46 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest{
 	// Got Exception WTRN0049W and Warning WTRN0046E during test
 	// Report javax.transaction.SystemException 
 	public void WSTXMPR002BFVT() throws Exception {
-		recoveryTest(server, server2, "202","server2");
+		recoveryTest(server1, server2, "202","server2");
 	}
 	
 	@Test
 	public void WSTXMPR002CFVT() throws Exception {
-		recoveryTest(server, server2, "203","both");
+		recoveryTest(server1, server2, "203","both");
 	}
 
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR003AFVT() throws Exception {
-		recoveryTest(server, server2, "301","server1");
+		recoveryTest(server1, server2, "301","server1");
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR003BFVT() throws Exception {
-		recoveryTest(server, server2, "302","server2");
+		recoveryTest(server1, server2, "302","server2");
 	}
 	
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@Test
 	public void WSTXMPR003CFVT() throws Exception {
-		recoveryTest(server, server2, "303","both");
+		recoveryTest(server1, server2, "303","both");
 	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
 	public void WSTXMPR004AFVT() throws Exception {
-		recoveryTest(server, server2, "401","server1");
+		recoveryTest(server1, server2, "401","server1");
 	}
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR004BFVT() throws Exception {
-		recoveryTest(server, server2, "402","server2");
+		recoveryTest(server1, server2, "402","server2");
 	}
 	
 	@Test
 	public void WSTXMPR004CFVT() throws Exception {
-		recoveryTest(server, server2, "403","both");
+		recoveryTest(server1, server2, "403","both");
 	}
 }

@@ -40,7 +40,7 @@ public class TimeoutTests extends SAMLLogoutCommonTest {
 
     private static final String SESSION_NOT_FOUND = "SessionNotFound";
 
-    protected static String serverMasterConfig = "";
+    protected static String serverMainConfig = "";
     protected static String serverOtherConfig = "";
 
     static String shortLifetimeSP = "spShortLifetime";
