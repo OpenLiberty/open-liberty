@@ -6,14 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.social.fat.commonTests;
 
 import java.util.List;
 
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -41,6 +40,9 @@ import componenttest.topology.impl.LibertyServerWrapper;
  **/
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
+// some of the ffdc can be delayed and are logged after the test that caused them completes - this causes the test that actually recieves it to fail
+// we're checking status codes and error messages, so, we shouldn't have to rely on the ffdcs to validate that we got the correct error.
+@AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "java.net.NoRouteToHostException", "java.net.SocketException", "java.net.SocketTimeoutException", "java.security.cert.CertPathBuilderException", "org.apache.http.conn.ConnectTimeoutException", "org.apache.http.conn.HttpHostConnectException", "sun.security.validator.ValidatorException", "com.ibm.security.cert.IBMCertPathBuilderException" })
 @Mode(TestMode.FULL)
 public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
 
@@ -88,8 +90,6 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
      * For social oidc clients, coverage in the oidcclient bucket covers the same code path.
      *
      */
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "org.apache.http.conn.HttpHostConnectException", "org.apache.http.conn.ConnectTimeoutException",
-            "java.net.SocketTimeoutException", "java.net.SocketException", "java.net.NoRouteToHostException" })
     @Test
     @Mode(TestMode.LITE)
     public void Social_BasicConfigTests_NoServerrSSL_useJvmProps() throws Exception {
@@ -168,7 +168,6 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
      * </OL>
      */
     @ExpectedFFDC({ "javax.net.ssl.SSLHandshakeException" })
-    @AllowedFFDC({ "com.ibm.security.cert.IBMCertPathBuilderException", "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException", "com.ibm.ws.security.social.error.SocialLoginException", "org.apache.http.conn.HttpHostConnectException" })
     @Test
     public void Social_BasicConfigTests_NoServerrSSL_badTrust() throws Exception {
 
