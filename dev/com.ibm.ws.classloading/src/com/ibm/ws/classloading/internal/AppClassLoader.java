@@ -665,7 +665,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     } catch (PrivilegedActionException paex) {                 
                     }
 
-
                     final ProtectionDomain fpd = pd;
                     java.security.PermissionCollection pc = null;
                     if (pd.getPermissions() == null) {
@@ -703,13 +702,29 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * Find a class on this loader's class path or delegate to the parent class
      * loader.
      */
+    @FFDCIgnore(ClassNotFoundException.class)
     protected Class<?> findOrDelegateLoadClass(String name) throws ClassNotFoundException {
-        // The resolve parameter is a legacy parameter that is effectively
-        // never used as of JDK 1.1 (see footnote 1 of section 5.3.2 of the 2nd
-        // edition of the JVM specification).  The only caller of
-        // loadClass(String, boolean) is java.lang.ClassLoader.loadClass(String),
-        // and that method always passes false, so we ignore the parameter.
-        return super.loadClass(name, false);
+        // parent is really only null for unit tests
+        if (parent == null) {
+            return super.loadClass(name, false);
+        }
+        Class<?> result = findLoadedClass(name);
+        if (result != null) {
+            return result;
+        }
+        if (parent instanceof NoClassNotFoundLoader) {
+            result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
+        } else {
+            try {
+                result = parent.loadClass(name);
+            } catch (ClassNotFoundException e) {
+                // move on to local findClass
+            }
+        }
+        if (result != null) {
+            return result;
+        }
+        return findClass(name);
     }
 
     /**
