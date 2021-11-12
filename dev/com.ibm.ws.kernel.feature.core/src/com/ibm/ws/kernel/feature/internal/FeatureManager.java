@@ -78,7 +78,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
@@ -119,6 +118,8 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  * The feature manager finishes the initialization of the runtime by analyzing a list
@@ -295,7 +296,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     private volatile boolean deactivated;
 
-    private String checkpointPhase;
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    private Phase checkpointPhase;
 
     private volatile LibertyBootRuntime libertyBoot;
 
@@ -388,7 +390,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         //register the BundleOriginMonitor for tracking bundles installed by non-feature manager bundles
         bundleContext.addBundleListener((bundleOriginsListener = new BundleInstallOriginBundleListener(bundleContext)));
-        checkpointPhase = bundleContext.getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
     }
 
     /**
@@ -782,7 +783,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     // even if no features are loaded
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
-                    checkiFCheckpointFeatureMissing(Arrays.asList(featureChange.features));
+                    checkIfCheckpointFeatureMissing(Arrays.asList(featureChange.features));
                     checkServerReady();
 
                     //register a service that can be looked up for server start.
@@ -1302,7 +1303,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // short circuit if package server is expecting conflicts
         if (currentPackageServerConflict != null) {
-            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict, EnumSet.allOf(ProcessType.class));
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict,
+                                                   EnumSet.allOf(ProcessType.class));
         }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
@@ -1916,7 +1918,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * If server launch was requested with a checkpoint, and checkpoint feature is not enabled, an
      * error message is issued and the jvm is exited.
      */
-    private void checkiFCheckpointFeatureMissing(Collection<String> features) {
+    private void checkIfCheckpointFeatureMissing(Collection<String> features) {
 
         //TODO remove beta check on feature release.
         if (checkpointPhase != null && ProductInfo.getBetaEdition()) {
