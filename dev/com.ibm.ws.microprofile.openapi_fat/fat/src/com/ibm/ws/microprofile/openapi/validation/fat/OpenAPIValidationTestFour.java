@@ -17,11 +17,11 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * A class to test the Callbacks, Reference and PathItem validator. Scenarios
- * include: Reference: all possible invalid references Callback: invalid fields
- * and missing required fields PathItems: duplicate path items and invalid
- * fields
- *
+ * A class to test the Callbacks, Reference and PathItem validator.
+ * Scenarios include:
+ * Reference: all possible invalid references
+ * Callback: invalid fields and missing required fields
+ * PathItems: duplicate path items and invalid fields
  */
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestFour {

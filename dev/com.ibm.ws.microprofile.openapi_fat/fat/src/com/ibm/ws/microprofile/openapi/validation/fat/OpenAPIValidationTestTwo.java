@@ -16,24 +16,26 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Tests to ensure that OpenAPI model validation works, model walker calls
- * appropriate validators, and proper events (errors, warning) are reported.
+ * Tests to ensure that OpenAPI model validation works, model walker calls appropriate validators,
+ * and proper events (errors, warning) are reported.
  *
- * Tests that correct validation messages are provided for the validation errors
- * in the following models:
+ * Tests that correct validation messages are provided for the validation errors in the following models:
  *
  * Security Scheme, Security Requirement, OAuth Flow(s), MediaType, Example
  *
- * The app with a static yaml file checks the following conditions for each
- * model: - SecurityScheme: REQUIRED 'type' field, other required fields for
- * each particular type - all validation cases checked - SecurityRequirement:
- * SecurityRequirement is declared, Scopes is present on appropriate types - all
- * validation cases checked - OAuthFlow: REQUIRED 'scopes' field, and valid url
- * - all validation cases checked - OAuthFlows: fields are defined for
- * applicable flows objects - all validation cases checked - MediaType:
- * 'example' and 'examples', encoding not in schema, encoding but null schema -
- * all validation cases checked - Example: 'value' and 'extrenalValue' - all
- * validation cases checked
+ * The app with a static yaml file checks the following conditions for each model:
+ * - SecurityScheme: REQUIRED 'type' field, other required fields for each particular type
+ *   - all validation cases checked
+ * - SecurityRequirement: SecurityRequirement is declared, Scopes is present on appropriate types
+ *   - all validation cases checked
+ * - OAuthFlow: REQUIRED 'scopes' field, and valid url
+ *   - all validation cases checked
+ * - OAuthFlows: fields are defined for applicable flows objects
+ *   - all validation cases checked
+ * - MediaType: 'example' and 'examples', encoding not in schema, encoding but null schema
+ *   - all validation cases checked
+ * - Example: 'value' and 'extrenalValue'
+ *   - all validation cases checked
  *
  */
 @RunWith(FATRunner.class)

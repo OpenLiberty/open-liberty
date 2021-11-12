@@ -17,35 +17,39 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Tests to ensure that OpenAPI model validation works, model walker calls
- * appropriate validators, and proper events (errors, warning) are reported.
+ * Tests to ensure that OpenAPI model validation works,
+ * model walker calls appropriate validators, and proper events (errors, warning) are reported.
  *
- * Tests for correct validation messages provided for the validation errors in
- * the following models:
+ * Tests for correct validation messages provided for the validation errors in the following models:
  *
- * Info, Contact, License, ServerVariable(s), Server(s), PathItem, Operation,
- * ExternalDocumentation, SecurityRequirement, RequestBody, Response, Responses
+ * Info, Contact, License, ServerVariable(s), Server(s), PathItem, Operation, ExternalDocumentation,
+ * SecurityRequirement, RequestBody, Response, Responses
  *
- * The app with a static yaml file checks the following conditions for each
- * model: - Info: REQUIRED "title" and "version", valid "termsOfService" URL -
- * all validation cases checked - License: REQUIRED "name", and valid "url" URL
- * - all validation cases checked - Contact: valid url and email - all
- * validation cases checked - ServerVariable: REQUIRED "default" - all
- * validation cases checked - ServerVariables: null value results in invalid
- * OpenAPI doc, null key is tested - all validation cases checked - Server:
- * "url" field is not null and is valid, and all server variables are defined -
- * all validation cases checked - PathItem: duplicate parameter, the 'required'
- * field of path parameter, undeclared parameter, path string validity,
- * operation parameters - all validation cases checked - Operation: RQUIRED
- * 'responses' field and unique operation IDs - all validation cases checked -
- * ExternalDocumentation: invalid url tested here, null url tested in
- * OpenAPIValidationTestTwo - SecurityRequirement: name undeclared in
- * SecurityScheme tested, the rest of cases are tested in
- * OpenAPIValidationTestTwo - RequestBody: REQUIRED 'content' field tested - all
- * validation cases checked - Response: REQUIRED 'description' field tested -
- * all validation cases checked - Responses: at least one response code for
- * successful operation tested - all validation cases checked
- *
+ * The app with a static yaml file checks the following conditions for each model:
+ * - Info: REQUIRED "title" and "version", valid "termsOfService" URL
+ *   - all validation cases checked
+ * - License: REQUIRED "name", and valid "url" URL
+ *   - all validation cases checked
+ * - Contact: valid url and email - all validation cases checked
+ * - ServerVariable: REQUIRED "default" - all validation cases checked
+ * - ServerVariables: null value results in invalid OpenAPI doc, null key is tested
+ *   - all validation cases checked
+ * - Server: "url" field is not null and is valid, and all server variables are defined
+ *   - all validation cases checked
+ * - PathItem: duplicate parameter, the 'required' field of path parameter, undeclared parameter,
+ * path string validity, operation parameters
+ *   - all validation cases checked
+ * - Operation: RQUIRED 'responses' field and unique operation IDs
+ *   - all validation cases checked
+ * - ExternalDocumentation: invalid url tested here, null url tested in OpenAPIValidationTestTwo
+ * - SecurityRequirement: name undeclared in SecurityScheme tested, the rest of cases are tested
+ * in OpenAPIValidationTestTwo
+ * - RequestBody: REQUIRED 'content' field tested
+ *   - all validation cases checked
+ * - Response: REQUIRED 'description' field tested
+ *   - all validation cases checked
+ * - Responses: at least one response code for successful operation tested
+ *   - all validation cases checked
  */
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestOne {
