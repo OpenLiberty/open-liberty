@@ -88,7 +88,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     private CDIService cdiService;
 
     //The key is Object to match afterServiceInvoke.
-    private final Map<Object, CreationalContext<?>> creationalContextsToRelease = new HashMap<>();
+    private final Map<Object, CreationalContext<?>> creationalContextsToRelease = new ConcurrentHashMap<>();
 
     private static List<String> validRequestScopeList = new ArrayList<>();
     private static List<String> validSingletonScopeList = new ArrayList<>();
