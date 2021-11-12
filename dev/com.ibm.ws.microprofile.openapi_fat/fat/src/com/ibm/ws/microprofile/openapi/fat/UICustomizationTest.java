@@ -169,10 +169,10 @@ public class UICustomizationTest extends FATServletClient {
         validateOpenAPIUI(CSS_CONTENT_CUSTOM_IMAGE, true, true);
     }
 
-    private boolean validateOpenAPIUI(
-        String expectedContent,
-        boolean validateImage,
-        boolean assertion) throws IOException, Exception {
+    private boolean validateOpenAPIUI(String expectedContent,
+                                      boolean validateImage,
+                                      boolean assertion)
+        throws IOException, Exception {
         // UI endpoint - HTTP
         String cssContent = downloadUrl(UI_CUSTOM_HEADER_CSS);
         boolean valid = validateCSS(cssContent, expectedContent, assertion);
@@ -186,10 +186,9 @@ public class UICustomizationTest extends FATServletClient {
         return valid;
     }
 
-    private static boolean validateCSS(
-        String body,
-        String referenceText,
-        boolean assertion) {
+    private static boolean validateCSS(String body,
+                                       String referenceText,
+                                       boolean assertion) {
         if (assertion) {
             assertNotNull("FAIL: Unexpected null content", body);
             assertTrue("FAIL: Unexpected content : Didn't find '" + referenceText + "' within content : " + body,
@@ -204,8 +203,8 @@ public class UICustomizationTest extends FATServletClient {
         return true;
     }
 
-    private String downloadUrl(
-        String path) throws IOException, Exception {
+    private String downloadUrl(String path)
+        throws IOException, Exception {
         return new OpenAPIConnection(server, path).download();
     }
 }

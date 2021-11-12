@@ -38,9 +38,16 @@ public class Flight {
     @Schema(required = true, example = "US$350")
     private String price;
 
-    private Flight() {}
+    private Flight() {
+    }
 
-    public Flight(Airline airline, String dateTime, String number, String status, String airportFrom, String airportTo, String price) {
+    public Flight(Airline airline,
+                  String dateTime,
+                  String number,
+                  String status,
+                  String airportFrom,
+                  String airportTo,
+                  String price) {
         this.airline = airline;
         this.dateTime = dateTime;
         this.number = number;

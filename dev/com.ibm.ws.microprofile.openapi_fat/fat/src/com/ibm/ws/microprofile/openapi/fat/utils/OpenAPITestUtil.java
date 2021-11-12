@@ -47,18 +47,22 @@ public class OpenAPITestUtil {
      * @param features - Liberty features to enable
      * @throws Exception
      */
-    public static void changeFeatures(LibertyServer server, String... features) throws Exception {
+    public static void changeFeatures(LibertyServer server,
+                                      String... features)
+        throws Exception {
         List<String> featuresList = Arrays.asList(features);
         server.setMarkToEndOfLog();
         server.changeFeatures(featuresList);
-        assertNotNull("Features weren't updated successfully", server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+        assertNotNull("Features weren't updated successfully",
+            server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
     }
 
     /**
      * @param server - Liberty server
      * @param name - The name of a feature to remove e.g. openapi-3.0
      */
-    public static void removeFeature(LibertyServer server, String name) {
+    public static void removeFeature(LibertyServer server,
+                                     String name) {
         try {
             server.setMarkToEndOfLog();
             ServerConfiguration config = server.getServerConfiguration();
@@ -68,7 +72,7 @@ public class OpenAPITestUtil {
             features.remove(name);
             server.updateServerConfiguration(config);
             assertNotNull("Config wasn't updated successfully",
-                          server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+                server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
         } catch (Exception e) {
             Assert.fail("Unable to remove feature:" + name);
         }
@@ -78,7 +82,8 @@ public class OpenAPITestUtil {
      * @param server - Liberty server
      * @param name - The name of a feature to add e.g. openapi-3.0
      */
-    public static void addFeature(LibertyServer server, String name) {
+    public static void addFeature(LibertyServer server,
+                                  String name) {
         try {
             server.setMarkToEndOfLog();
             ServerConfiguration config = server.getServerConfiguration();
@@ -88,7 +93,7 @@ public class OpenAPITestUtil {
             features.add(name);
             server.updateServerConfiguration(config);
             assertNotNull("Config wasn't updated successfully",
-                          server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+                server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
         } catch (Exception e) {
             Assert.fail("Unable to add feature:" + name);
         }
@@ -100,8 +105,10 @@ public class OpenAPITestUtil {
      * @param server - Liberty server
      * @throws Exception
      */
-    public static void waitForApplicationProcessorAddedEvent(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Application Processor: Adding application ended: appInfo=.*\\[" + appName + "\\]", TIMEOUT);
+    public static void waitForApplicationProcessorAddedEvent(LibertyServer server,
+                                                             String appName) {
+        String s = server.waitForStringInTraceUsingMark(
+            "Application Processor: Adding application ended: appInfo=.*\\[" + appName + "\\]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
     }
 
@@ -111,8 +118,10 @@ public class OpenAPITestUtil {
      * @param server - Liberty server
      * @throws Exception
      */
-    public static void waitForApplicationProcessorProcessedEvent(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Application Processor: Processing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+    public static void waitForApplicationProcessorProcessedEvent(LibertyServer server,
+                                                                 String appName) {
+        String s = server.waitForStringInTraceUsingMark(
+            "Application Processor: Processing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
     }
 
@@ -122,17 +131,22 @@ public class OpenAPITestUtil {
      * @param server - Liberty server
      * @throws Exception
      */
-    public static void waitForApplicationProcessorRemovedEvent(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Application Processor: Removing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+    public static void waitForApplicationProcessorRemovedEvent(LibertyServer server,
+                                                               String appName) {
+        String s = server.waitForStringInTraceUsingMark(
+            "Application Processor: Removing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish removing the app " + appName, s);
     }
 
-    public static void waitForApplicationAdded(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+    public static void waitForApplicationAdded(LibertyServer server,
+                                               String appName) {
+        String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]",
+            TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully process the app " + appName, s);
     }
 
-    public static Application removeApplication(LibertyServer server, String appName) {
+    public static Application removeApplication(LibertyServer server,
+                                                String appName) {
         Application webApp = null;
         try {
             ServerConfiguration config = server.getServerConfiguration();
@@ -141,7 +155,7 @@ public class OpenAPITestUtil {
             server.waitForConfigUpdateInLogUsingMark(null);
             waitForApplicationProcessorRemovedEvent(server, appName);
             assertNotNull("FAIL: App didn't report is has been stopped.",
-                          server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
+                server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
         } catch (Exception e) {
             fail("FAIL: Could not remove the application " + appName);
         }
@@ -158,7 +172,12 @@ public class OpenAPITestUtil {
      * @param waitForUpdate boolean controlling if the method should wait for the configuration update event before returning
      * @return the deployed application
      */
-    public static Application addApplication(LibertyServer server, String name, String path, String type, boolean waitForAppProcessor) throws Exception {
+    public static Application addApplication(LibertyServer server,
+                                             String name,
+                                             String path,
+                                             String type,
+                                             boolean waitForAppProcessor)
+        throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         Application app = config.addApplication(name, path, type);
         server.updateServerConfiguration(config);
@@ -169,7 +188,11 @@ public class OpenAPITestUtil {
         return app;
     }
 
-    public static Application addApplication(LibertyServer server, String name, String path, String type) throws Exception {
+    public static Application addApplication(LibertyServer server,
+                                             String name,
+                                             String path,
+                                             String type)
+        throws Exception {
         return addApplication(server, name, path, type, true);
     }
 
@@ -182,11 +205,16 @@ public class OpenAPITestUtil {
      * @param name the name of the application
      * @return the deployed application
      */
-    public static Application addApplication(LibertyServer server, String name) throws Exception {
+    public static Application addApplication(LibertyServer server,
+                                             String name)
+        throws Exception {
         return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", true);
     }
 
-    public static Application addApplication(LibertyServer server, String name, boolean waitForAppProcessor) throws Exception {
+    public static Application addApplication(LibertyServer server,
+                                             String name,
+                                             boolean waitForAppProcessor)
+        throws Exception {
         return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", waitForAppProcessor);
     }
 
@@ -201,22 +229,28 @@ public class OpenAPITestUtil {
      * @param server
      * @throws Exception
      */
-    public static void removeAllApplication(LibertyServer server) throws Exception {
-        server.getServerConfiguration().getApplications().stream().forEach(app -> removeApplication(server, app.getName()));
+    public static void removeAllApplication(LibertyServer server)
+        throws Exception {
+        server.getServerConfiguration().getApplications().stream()
+            .forEach(app -> removeApplication(server, app.getName()));
     }
 
-    public static void checkServer(JsonNode root, String... expectedUrls) {
+    public static void checkServer(JsonNode root,
+                                   String... expectedUrls) {
         JsonNode serversNode = root.get("servers");
         assertNotNull(serversNode);
         assertTrue(serversNode.isArray());
         ArrayNode servers = (ArrayNode) serversNode;
 
         List<String> urls = Arrays.asList(expectedUrls);
-        servers.findValues("url").forEach(url -> assertTrue("FAIL: Unexpected server URL " + url, urls.contains(url.asText())));
+        servers.findValues("url")
+            .forEach(url -> assertTrue("FAIL: Unexpected server URL " + url, urls.contains(url.asText())));
         assertEquals("FAIL: Found incorrect number of server objects.", urls.size(), servers.size());
     }
 
-    public static void checkPaths(JsonNode root, int expectedCount, String... containedPaths) {
+    public static void checkPaths(JsonNode root,
+                                  int expectedCount,
+                                  String... containedPaths) {
         JsonNode pathsNode = root.get("paths");
         assertNotNull(pathsNode);
         assertTrue(pathsNode.isObject());
@@ -224,10 +258,14 @@ public class OpenAPITestUtil {
 
         assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
         List<String> expected = Arrays.asList(containedPaths);
-        expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
+        expected.stream()
+            .forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path,
+                paths.get(path)));
     }
 
-    public static void checkInfo(JsonNode root, String defaultTitle, String defaultVersion) {
+    public static void checkInfo(JsonNode root,
+                                 String defaultTitle,
+                                 String defaultVersion) {
         JsonNode infoNode = root.get("info");
         assertNotNull(infoNode);
 
@@ -241,7 +279,10 @@ public class OpenAPITestUtil {
         assertTrue("Incorrect default value for version", version.equals(defaultVersion));
     }
 
-    public static void changeServerPorts(LibertyServer server, int httpPort, int httpsPort) throws Exception {
+    public static void changeServerPorts(LibertyServer server,
+                                         int httpPort,
+                                         int httpsPort)
+        throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         HttpEndpoint http = config.getHttpEndpoints().getById("defaultHttpEndpoint");
         if (http == null) {
@@ -250,7 +291,8 @@ public class OpenAPITestUtil {
             http.setHttpPort(Integer.toString(httpPort));
             http.setHttpsPort(Integer.toString(httpsPort));
             config.getHttpEndpoints().add(http);
-        } else if (Integer.parseInt(http.getHttpPort()) == httpPort && Integer.parseInt(http.getHttpsPort()) == httpsPort) {
+        } else if (Integer.parseInt(http.getHttpPort()) == httpPort
+            && Integer.parseInt(http.getHttpsPort()) == httpsPort) {
             return;
         }
 
@@ -263,20 +305,26 @@ public class OpenAPITestUtil {
 
             // Save the config and wait for message that was a result of the config change
             server.updateServerConfiguration(config);
-            assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
+            assertNotNull("FAIL: Didn't get expected config update log messages.",
+                server.waitForConfigUpdateInLogUsingMark(null, false));
             String regex = "Updated server information.*"
-                           + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
+                + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
             server.waitForStringInTrace(regex, TIMEOUT);
         } else {
             server.updateServerConfiguration(config);
         }
     }
 
-    public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort) {
+    public static String[] getServerURLs(LibertyServer server,
+                                         int httpPort,
+                                         int httpsPort) {
         return getServerURLs(server, httpPort, httpsPort, null);
     }
 
-    public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort, String contextRoot) {
+    public static String[] getServerURLs(LibertyServer server,
+                                         int httpPort,
+                                         int httpsPort,
+                                         String contextRoot) {
         List<String> servers = new ArrayList<>();
         contextRoot = contextRoot == null ? "" : contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
         if (httpPort != -1) {
@@ -288,7 +336,8 @@ public class OpenAPITestUtil {
         return servers.toArray(new String[0]);
     }
 
-    public static void setMarkToEndOfAllLogs(LibertyServer server) throws Exception {
+    public static void setMarkToEndOfAllLogs(LibertyServer server)
+        throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
     }

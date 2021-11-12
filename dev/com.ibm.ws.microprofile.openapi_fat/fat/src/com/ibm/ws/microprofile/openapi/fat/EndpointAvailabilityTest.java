@@ -49,9 +49,10 @@ public class EndpointAvailabilityTest extends FATServletClient {
     public static void setUp() throws Exception {
         server.startServer("EndpointAvailabilityTest.log", true);
         assertNotNull("Web application is not available at /openapi/",
-                      server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
+            server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
         assertNotNull("Web application is not available at /openapi/ui/",
-                      server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become available
+            server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become
+                                                                    // available
     }
 
     @AfterClass
@@ -73,7 +74,8 @@ public class EndpointAvailabilityTest extends FATServletClient {
         checkConnectionIsOK(uiConnection);
     }
 
-    private void checkConnectionIsOK(OpenAPIConnection c) throws Exception {
+    private void checkConnectionIsOK(OpenAPIConnection c)
+        throws Exception {
         c.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
     }
 }

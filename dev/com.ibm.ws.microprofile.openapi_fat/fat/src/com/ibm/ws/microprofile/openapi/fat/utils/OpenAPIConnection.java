@@ -71,7 +71,8 @@ public class OpenAPIConnection {
         this.path = path;
     }
 
-    private String readConnection(HttpURLConnection connection) throws Exception {
+    private String readConnection(HttpURLConnection connection)
+        throws Exception {
         BufferedReader output = HttpUtils.getResponseBody(connection);
         StringBuilder contents = new StringBuilder();
 
@@ -133,7 +134,8 @@ public class OpenAPIConnection {
      * @throws ProtocolException
      */
     public HttpURLConnection getConnection() throws IOException, ProtocolException {
-        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method, headers, streamToWrite);
+        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method,
+            headers, streamToWrite);
         return conn;
     }
 
@@ -179,7 +181,8 @@ public class OpenAPIConnection {
      * @param headerValue - value of the header
      * @return
      */
-    public OpenAPIConnection header(String headerName, String headerValue) {
+    public OpenAPIConnection header(String headerName,
+                                    String headerValue) {
         this.headers.put(headerName, headerValue);
         return this;
     }
@@ -255,7 +258,8 @@ public class OpenAPIConnection {
         return this.queryParams;
     }
 
-    public OpenAPIConnection queryParam(String paramName, String paramValue) {
+    public OpenAPIConnection queryParam(String paramName,
+                                        String paramValue) {
         this.queryParams.put(paramName, paramValue);
         return this;
     }
@@ -267,7 +271,8 @@ public class OpenAPIConnection {
      * @param secure - if true connection uses HTTPS
      * @return
      */
-    public static OpenAPIConnection openAPIDocsConnection(LibertyServer server, boolean secure) {
+    public static OpenAPIConnection openAPIDocsConnection(LibertyServer server,
+                                                          boolean secure) {
         return new OpenAPIConnection(server, OPEN_API_DOCS).secure(secure);
     }
 
@@ -278,7 +283,8 @@ public class OpenAPIConnection {
      * @param secure - if true connection uses HTTPS
      * @return
      */
-    public static OpenAPIConnection openAPIUIConnection(LibertyServer server, boolean secure) {
+    public static OpenAPIConnection openAPIUIConnection(LibertyServer server,
+                                                        boolean secure) {
         return new OpenAPIConnection(server, OPEN_API_UI).secure(secure);
     }
 }

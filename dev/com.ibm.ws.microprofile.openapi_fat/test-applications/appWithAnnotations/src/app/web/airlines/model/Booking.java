@@ -32,7 +32,8 @@ public class Booking {
     @Schema(required = true, example = "window")
     private String seatPreference;
 
-    private Booking() {}
+    private Booking() {
+    }
 
     public Flight getDeparttureFlight() {
         return departtureFlight;

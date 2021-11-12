@@ -106,10 +106,9 @@ public class AnnotationProcessingTest {
      * @param openApiDoc the OpenAPI document containing the schema
      * @param schemaName the name of the schema to use
      */
-    private void assertDataMatchesSchema(
-        JsonNode data,
-        JsonNode openApiDoc,
-        String schemaName) {
+    private void assertDataMatchesSchema(JsonNode data,
+                                         JsonNode openApiDoc,
+                                         String schemaName) {
 
         JsonNode schema = openApiDoc.path("components").path("schemas")
             .path(schemaName);
@@ -135,8 +134,7 @@ public class AnnotationProcessingTest {
         }
     }
 
-    private <T> Set<T> toSet(
-        Iterator<T> i) {
+    private <T> Set<T> toSet(Iterator<T> i) {
         Set<T> result = new HashSet<>();
         while (i.hasNext()) {
             result.add(i.next());

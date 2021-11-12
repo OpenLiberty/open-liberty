@@ -48,12 +48,12 @@ public class OpenAPIValidationTestThree {
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
-        //wait for endpoint to become available
+        // wait for endpoint to become available
         assertNotNull("Web application is not available at /Validation/",
-                      server.waitForStringInLog("CWWKT0016I.*/Validation/"));
+            server.waitForStringInLog("CWWKT0016I.*/Validation/"));
         // wait for server is ready to run a smarter planet message
         assertNotNull("CWWKF0011I.* not received on relationServer",
-                      server.waitForStringInLog("CWWKF0011I.*"));
+            server.waitForStringInLog("CWWKF0011I.*"));
     }
 
     @AfterClass
@@ -64,7 +64,8 @@ public class OpenAPIValidationTestThree {
     @Test
     public void testPaths() throws Exception {
         assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
-                      server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
+            server.waitForStringInLog(
+                "Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
     }
 
     @Test
