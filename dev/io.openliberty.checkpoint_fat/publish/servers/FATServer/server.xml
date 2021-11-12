@@ -17,7 +17,4 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
-    <application location="app1.war" />
-
 </server>

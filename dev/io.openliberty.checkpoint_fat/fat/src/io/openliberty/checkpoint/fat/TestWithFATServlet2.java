@@ -10,39 +10,92 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Set;
+
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import app1.TestServletA;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 @RunWith(FATRunner.class)
-public class TestWithFATServlet2 extends FATServletClient {
+public class TestWithFATServlet2 {
 
-    public static final String APP_NAME = "app1";
+    public static final String APP_NAME = "app2";
 
     @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
-    @Before
-    public void setUp() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS);
+    @Test
+    public void testAtFeatures() throws Exception {
+        server.setCheckpoint(Phase.FEATURES);
         server.startServer();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testAtApplicationsMultRestore() throws Exception {
+        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.startServer();
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+
+        server.stopServer(false, "");
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+
+        server.stopServer(false, "");
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testMultCheckpointNoClean() throws Exception {
+        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.startServer();
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+
+        server.stopServer(false, "");
+        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, false /* clean start */,
+                                      LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );;
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testCheckpointFeatureMissingError() throws Exception {
+        if (!server.getCheckpointSupported()) {
+            //skip as this test will fail if criu not supported
+            return;
+        }
+        server.setCheckpoint(Phase.APPLICATIONS);
+        ServerConfiguration svrCfg = server.getServerConfiguration();
+        Set<String> features = svrCfg.getFeatureManager().getFeatures();
+        features.remove("checkpoint-1.0");
+        server.updateServerConfiguration(svrCfg);
+
+        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART,
+                                      LibertyServer.DEFAULT_VALIDATE_APPS, true /* expectStartFailure */ );
+
+        assertNotNull("'CWWKF0048E: .* the checkpoint-1.0 feature was not configured in the server.xml file' message was not found",
+                      server.waitForStringInLogUsingMark("CWWKF0048E: .* the checkpoint-1.0 feature was not configured in the server.xml file", 0));
     }
 
     @After
