@@ -51,9 +51,11 @@ public class ProxySupportTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
-        MicroProfileActions.MP41,
-        MicroProfileActions.MP33, MicroProfileActions.MP22);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
 
     @BeforeClass
     public static void setUpTest() throws Exception {

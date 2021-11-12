@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.openapi.fat.annotations.AnnotationProcessingTest;
 import com.ibm.ws.microprofile.openapi.fat.filter.FilterConfigTest;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFour;

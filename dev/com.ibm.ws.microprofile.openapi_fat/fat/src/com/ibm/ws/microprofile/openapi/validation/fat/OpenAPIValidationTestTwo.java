@@ -41,9 +41,11 @@ public class OpenAPIValidationTestTwo {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50,
-        MicroProfileActions.MP41,
-        MicroProfileActions.MP33, MicroProfileActions.MP22);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
 
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
