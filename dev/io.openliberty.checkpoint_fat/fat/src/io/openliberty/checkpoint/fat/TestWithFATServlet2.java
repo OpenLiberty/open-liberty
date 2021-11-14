@@ -23,12 +23,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class TestWithFATServlet2 {
 
     public static final String APP_NAME = "app2";
@@ -81,10 +83,6 @@ public class TestWithFATServlet2 {
 
     @Test
     public void testCheckpointFeatureMissingError() throws Exception {
-        if (!server.getCheckpointSupported()) {
-            //skip as this test will fail if criu not supported
-            return;
-        }
         server.setCheckpoint(Phase.APPLICATIONS);
         ServerConfiguration svrCfg = server.getServerConfiguration();
         Set<String> features = svrCfg.getFeatureManager().getFeatures();

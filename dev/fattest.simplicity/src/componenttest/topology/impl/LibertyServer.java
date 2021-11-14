@@ -466,7 +466,7 @@ public class LibertyServer implements LogMonitorClient {
      * <code> "bin/server start"</code>
      * </pre>
      *
-     * @param phase         The phase at whichh to take the checkpoint. Must be non-null.
+     * @param phase         The phase at which to take the checkpoint. Must be non-null.
      * @param autoRestore   if true initiate restore as part of serverStart
      * @param beforeRestore beforeRestore lambda is called just before the server start
      */

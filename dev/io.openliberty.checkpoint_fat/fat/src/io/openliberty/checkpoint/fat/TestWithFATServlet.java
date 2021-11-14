@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import app1.TestServletA;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -28,6 +29,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class TestWithFATServlet extends FATServletClient {
 
     public static final String APP_NAME = "app1";
