@@ -17,10 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class OAuth20CustomStoreClient01Hash extends OAuth20Client01Common {
 

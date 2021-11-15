@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -61,7 +60,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_20 }) // tests purposely skipped as we want the server.xml using 1.1 to prove that the function isn't accidentally allowed.
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTests {
 
