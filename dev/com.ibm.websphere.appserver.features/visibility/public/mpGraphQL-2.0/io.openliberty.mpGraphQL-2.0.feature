@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.mpGraphQL-2.0
-WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: org.eclipse.microprofile.graphql; type="stable", \
