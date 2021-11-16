@@ -26,8 +26,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.Permission;
-import java.security.PermissionCollection;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -40,13 +38,10 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
-
-import javax.security.auth.Policy;
 
 import org.osgi.framework.Bundle;
 
@@ -62,7 +57,6 @@ import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -121,7 +115,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
-        // only use system transformers if IS_BETA (part of checkpoint feature)
         this.systemTransformers = systemTransformers;
         this.parent = parent;
         this.config = config;
@@ -612,7 +605,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     } catch (PrivilegedActionException paex) {                 
                     }
 
-                    CodeSource cs = pd.getCodeSource();
 
                     final ProtectionDomain fpd = pd;
                     java.security.PermissionCollection pc = null;
