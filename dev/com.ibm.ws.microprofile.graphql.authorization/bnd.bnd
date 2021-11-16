@@ -38,4 +38,5 @@ src: src/
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.authorization.util;version=latest
- 
+
+jakartaeeMe: true

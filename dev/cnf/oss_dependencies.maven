@@ -125,9 +125,14 @@ io.smallrye.common:smallrye-common-function:1.6.0
 io.smallrye.config:smallrye-config-common:2.5.1
 io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config:2.5.1
-io.smallrye:smallrye-graphql-client-api:1.0.9
-io.smallrye:smallrye-graphql-client:1.0.9
-io.smallrye:smallrye-graphql-schema-model:1.0.9
+io.smallrye:smallrye-graphql-api:1.0.26
+io.smallrye:smallrye-graphql-cdi:1.0.26
+io.smallrye:smallrye-graphql-client-api:1.0.26
+io.smallrye:smallrye-graphql-client:1.0.26
+io.smallrye:smallrye-graphql-schema-builder:1.0.26
+io.smallrye:smallrye-graphql-schema-model:1.0.26
+io.smallrye:smallrye-graphql-servlet:1.0.26
+io.smallrye:smallrye-graphql:1.0.26
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
 jakarta.authentication:jakarta.authentication-api:2.0.0

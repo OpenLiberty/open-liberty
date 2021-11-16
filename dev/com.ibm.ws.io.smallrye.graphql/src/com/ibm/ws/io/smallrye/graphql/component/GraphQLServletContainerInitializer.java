@@ -184,7 +184,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 return;
             }
             diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config).getGraphQLSchema();
+            graphQLSchema = Bootstrap.bootstrap(schema, config);
         } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
             throw new ServletException(t);
@@ -197,7 +197,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
 
         ctx.setAttribute(SchemaServlet.SCHEMA_PROP, graphQLSchema);
 
-        ExecutionService executionService = new ExecutionService(config, graphQLSchema);
+        ExecutionService executionService = new ExecutionService(config, graphQLSchema, null);
         
         String path = "/" + ConfigFacade.getOptionalValue("mp.graphql.contextpath", String.class)
                                         .filter(s -> {return s.replaceAll("/", "").length() > 0;})
