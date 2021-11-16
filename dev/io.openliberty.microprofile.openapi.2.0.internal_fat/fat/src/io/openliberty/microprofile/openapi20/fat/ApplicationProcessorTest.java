@@ -61,8 +61,11 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
         server.startServer(c.getSimpleName() + ".log");
-        assertNotNull("Web application is not available at /openapi/", server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
-        assertNotNull("Web application is not available at /openapi/ui/", server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi/",
+            server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi/ui/",
+            server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become
+                                                                    // available
         assertNotNull("Server did not report that it has started", server.waitForStringInLog("CWWKF0011I.*"));
     }
 
@@ -95,8 +98,7 @@ public class ApplicationProcessorTest extends FATServletClient {
             "https://test-server.com:80/#1",
             "https://test-server.com:80/#2",
             "https://test-server.com:80/#3",
-            "https://test-server.com:80/#4"
-        );
+            "https://test-server.com:80/#4");
 
         OpenAPITestUtil.checkPaths(openapiNode, 3, "/test-service/test", "/modelReader", "/staticFile");
         JsonNode infoNode = openapiNode.get("info");

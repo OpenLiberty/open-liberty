@@ -60,12 +60,13 @@ public class MergeTest {
 
     @Server("OpenAPIMergeTestServer")
     public static LibertyServer server;
-    
+
     private List<String> deployedApps = new ArrayList<>();
 
     @BeforeClass
     public static void setupServer() throws Exception {
-        server.setAdditionalSystemProperties(Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "all"));
+        server.setAdditionalSystemProperties(
+            Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "all"));
         server.startServer();
     }
 
@@ -78,14 +79,14 @@ public class MergeTest {
     public void cleanup() throws Exception {
         server.setMarkToEndOfLog();
         server.deleteAllDropinApplications();
-        
+
         List<String> failedToStop = new ArrayList<>();
         for (String app : deployedApps) {
             if (server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + app) == null) {
                 failedToStop.add(app);
             }
         }
-        
+
         if (!failedToStop.isEmpty()) {
             throw new AssertionError("The following apps failed to stop: " + failedToStop);
         }
@@ -94,13 +95,13 @@ public class MergeTest {
     @Test
     public void testTwoWars() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         deployApp(war1);
 
@@ -111,11 +112,11 @@ public class MergeTest {
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
         assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test"));
-        
+
         // check that merge is not traced
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
         assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
-        
+
         // check merged model was cached and cache is used on subsequent requests
         OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
@@ -127,7 +128,8 @@ public class MergeTest {
         assertRest("/test2/test");
         assertRest("/test3/test");
 
-        // With three apps deployed, we should have a merged doc with paths from all apps listed
+        // With three apps deployed, we should have a merged doc with paths from all
+        // apps listed
         // and a new info section
         doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(doc);
@@ -135,16 +137,15 @@ public class MergeTest {
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
         assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test1/test"));
-        
+
         // check that merge is traced
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
         assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
-        
+
         // check merged model was cached and cache is used on subsequent requests
         OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
         assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(1));
-        
 
         // Remove war1
         undeployApp(war1);
@@ -155,11 +156,11 @@ public class MergeTest {
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test2/test", "/test3/test");
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
-        
+
         // check that merge is traced
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
         assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
-        
+
         // check merged model was cached and cache is used on subsequent requests
         OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
@@ -169,13 +170,13 @@ public class MergeTest {
     @Test
     public void testMultiModuleEar() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-                                          .addAsModules(war1, war2);
+            .addAsModules(war1, war2);
 
         deployApp(ear);
 
@@ -189,13 +190,13 @@ public class MergeTest {
     @Test
     public void testNonJaxrsEarModule() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(TestServlet.class);
+            .addClasses(TestServlet.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-                                          .addAsModules(war1, war2);
+            .addAsModules(war1, war2);
 
         deployApp(ear);
 
@@ -208,10 +209,10 @@ public class MergeTest {
     @Test
     public void testNonJaxrsAppNotMerged() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(TestServlet.class);
+            .addClasses(TestServlet.class);
 
         deployApp(war1);
         deployApp(war2);
@@ -219,7 +220,8 @@ public class MergeTest {
         assertRest("/test1/test");
         assertRest("/test2/test");
 
-        // Check that war1 is documented and no merging is done, (no context root prepended to path)
+        // Check that war1 is documented and no merging is done, (no context root
+        // prepended to path)
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
@@ -229,19 +231,19 @@ public class MergeTest {
     @Test
     public void testMergeClash() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
-                                    .addAsManifestResource(openApiJsonWithServers("http://example.org/server1"), "openapi.json");
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+            .addAsManifestResource(openApiJsonWithServers("http://example.org/server1"), "openapi.json");
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
-                                    .addAsManifestResource(openApiJsonWithServers("http://example.org/server2"), "openapi.json");
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+            .addAsManifestResource(openApiJsonWithServers("http://example.org/server2"), "openapi.json");
 
         deployApp(war1);
         assertRest("/test1/test");
 
         deployApp(war2);
         assertRest("/test2/test");
-        
+
         server.setMarkToEndOfLog();
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
@@ -252,9 +254,11 @@ public class MergeTest {
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
-        assertThat(server.findStringsInLogsUsingMark(" - The /test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged", server.getDefaultLogFile()), hasSize(1));
+        assertThat(server.findStringsInLogsUsingMark(
+            " - The /test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
+            server.getDefaultLogFile()), hasSize(1));
     }
-    
+
     /**
      * This is a slightly convoluted example which will fail if the merged document doesn't have the right context root.
      * <p>
@@ -264,11 +268,11 @@ public class MergeTest {
     @Test
     public void testMergeClashNeedingContextRoot() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResourceTest1.class)
-                                    .addAsManifestResource(openApiJsonWithServers("http://example.org"), "openapi.json");
+            .addClasses(DeploymentTestApp.class, DeploymentTestResourceTest1.class)
+            .addAsManifestResource(openApiJsonWithServers("http://example.org"), "openapi.json");
 
         deployApp(war1);
         assertRest("/test1/test");
@@ -281,14 +285,18 @@ public class MergeTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
-        
-        // Check that the server and path for test1 in the openapi doc is actually correct
+
+        // Check that the server and path for test1 in the openapi doc is actually
+        // correct
         assertEquals("/test1/test", OpenAPITestUtil.expandPath(openapiNode, "/test"));
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
-        assertThat(server.findStringsInLogsUsingMark(" - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged", server.getDefaultLogFile()),
-                   hasSize(1));
+        assertThat(
+            server.findStringsInLogsUsingMark(
+                " - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
+                server.getDefaultLogFile()),
+            hasSize(1));
 
     }
 
@@ -312,8 +320,10 @@ public class MergeTest {
         assertEquals("Failed to call test resource at " + path, "OK", response);
     }
 
-    private void assertServerContextRoot(JsonNode model, String contextRoot) {
-        OpenAPITestUtil.checkServer(model, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1, contextRoot));
+    private void assertServerContextRoot(JsonNode model,
+                                         String contextRoot) {
+        OpenAPITestUtil.checkServer(model,
+            OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1, contextRoot));
     }
 
     private void deployApp(Archive<?> archive) throws Exception {
@@ -323,7 +333,7 @@ public class MergeTest {
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + getName(archive)));
         deployedApps.add(getName(archive));
     }
-    
+
     private void undeployApp(Archive<?> archive) throws Exception {
         server.setMarkToEndOfLog();
         server.setTraceMarkToEndOfDefaultTrace();
