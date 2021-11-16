@@ -18,11 +18,13 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,6 +32,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +46,10 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
@@ -59,8 +66,15 @@ import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
 @RunWith(FATRunner.class)
 public class DeploymentTest {
 
-    @Server("OpenAPITestServer")
+    private static final String SERVER_NAME = "OpenAPITestServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     /**
      * Add configuration to only scan the test resource class
@@ -200,8 +214,26 @@ public class DeploymentTest {
 
     @Test
     public void testLooseWarWithLib() throws Exception {
-        copyLoosePackage(server, "looseFiles/warClasses", DeploymentTestResource.class.getPackage().getName());
-        copyLoosePackage(server, "looseFiles/libClasses", DeploymentTestResource2.class.getPackage().getName());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testLooseWarWithLib.war");
+        war.addPackage(DeploymentTestResource.class.getPackage());
+        war.addPackage(DeploymentTestResource2.class.getPackage());
+
+        File outputDir = new File("transformedLooseApp");
+        File outputFile = new File(outputDir, war.getName());
+        outputDir.mkdirs();
+
+        war.as(ExplodedExporter.class).exportExploded(outputFile.getParentFile(), outputFile.getName());
+
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(outputFile.toPath());
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(outputFile.toPath());
+        }
+
+        copyLoosePackage(server, outputFile.getPath() + "/WEB-INF/classes", "looseFiles/warClasses",
+            DeploymentTestResource.class.getPackage().getName());
+        copyLoosePackage(server, outputFile.getPath() + "/WEB-INF/classes", "looseFiles/libClasses",
+            DeploymentTestResource2.class.getPackage().getName());
         deployLooseApp("looseWar.war.xml", "war");
 
         String response = new HttpRequest(server, "/looseWar.war/test").run(String.class);
@@ -216,13 +248,15 @@ public class DeploymentTest {
     }
 
     private void copyLoosePackage(LibertyServer server,
+                                  String srcDir,
                                   String looseDir,
                                   String packageName)
         throws Exception {
         String packageDir = packageName.replace('.', '/');
         RemoteFile remoteDirClasses = LibertyFileManager.createRemoteFile(server.getMachine(),
             server.getServerRoot() + "/" + looseDir + "/" + packageDir);
-        LocalFile localDirClasses = new LocalFile(LibertyServerUtils.makeJavaCompatible("build/classes/" + packageDir));
+        LocalFile localDirClasses = new LocalFile(
+            LibertyServerUtils.makeJavaCompatible(new File(srcDir, packageDir).getPath()));
         localDirClasses.copyToDest(remoteDirClasses, true, true);
     }
 

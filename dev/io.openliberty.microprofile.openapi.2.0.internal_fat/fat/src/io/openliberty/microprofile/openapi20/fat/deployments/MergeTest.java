@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +44,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
@@ -58,8 +61,15 @@ import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
 @RunWith(FATRunner.class)
 public class MergeTest {
 
-    @Server("OpenAPIMergeTestServer")
+    private static final String SERVER_NAME = "OpenAPIMergeTestServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     private List<String> deployedApps = new ArrayList<>();
 
