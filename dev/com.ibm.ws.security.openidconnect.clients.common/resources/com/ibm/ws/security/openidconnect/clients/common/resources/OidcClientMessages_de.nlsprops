@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Der OpenID Connect-Client {0} kann die JWT-Anspr\u00fcche (JSON Web Token) nicht aus der Webantwort extrahieren. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Die Webantwort muss ein JWT im JWE-Format (JSON Web Encryption) oder JWS-Format (JSON Web Signature) sein. M\u00f6glicherweise ist die Antwort fehlerhaft oder im OpenID Connect-Client ist w\u00e4hrend der Verarbeitung der Antwort ein anderer Fehler aufgetreten.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. Vergewissern Sie sich, dass die Antwort das JWT-Format hat.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Der OpenID Connect-Client [{0}] erfordert eine Berechtigungsendpunkt-URL, aber diese ist nicht gesetzt.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Zum Abrufen eines Autorisierungscodes oder der erforderlichen Token muss eine Berechtigungsendpunkt-URL gesetzt werden.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Setzen Sie das Attribut authorizationEndpointUrl in der Konfiguration des OpenID Connect-Clients auf die Berechtigungsendpunkt-URL des OpenID Connect-Providers. Alternativ k\u00f6nnen Sie das Attribut discoveryEndpointUrl in der Konfiguration des OpenID Connect-Clients auf die Erkennungsendpunkt-URL des OpenID Connect-Providers setzen.

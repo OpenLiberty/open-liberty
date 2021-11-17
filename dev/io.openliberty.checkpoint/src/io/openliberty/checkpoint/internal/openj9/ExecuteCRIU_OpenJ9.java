@@ -28,13 +28,14 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
 
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
-    public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
+    public void dump(File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
         criuSupport.setShellJob(true);
         criuSupport.setFileLocks(true);
         criuSupport.setLogFile(logFileName);
         criuSupport.setWorkDir(workDir.toPath());
         criuSupport.setTCPEstablished(true);
+        criuSupport.registerRestoreEnvFile(envProps.toPath());
         try {
             criuSupport.checkpointJVM();
         } catch (JVMCheckpointException e) {

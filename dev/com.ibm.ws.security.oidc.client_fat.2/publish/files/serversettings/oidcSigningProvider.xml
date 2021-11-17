@@ -44,6 +44,7 @@
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs384,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs512,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/normalTokenEndpointRS256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256Implicit,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs384,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs512,

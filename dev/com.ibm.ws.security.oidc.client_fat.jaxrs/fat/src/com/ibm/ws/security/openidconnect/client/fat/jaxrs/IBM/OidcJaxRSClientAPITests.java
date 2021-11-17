@@ -21,12 +21,12 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.FATSuite;
-import com.ibm.ws.security.openidconnect.client.fat.jaxrs.OidcClientJaxrsRepeatAction;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.CommonTests.JaxRSClientAPITests;
 
 import componenttest.annotation.AllowedFFDC;
@@ -76,9 +76,9 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests
-            .with(new OidcClientJaxrsRepeatAction(Constants.OPAQUE_TOKEN_FORMAT))
-            .andWith(new OidcClientJaxrsRepeatAction(Constants.JWS_TOKEN_FORMAT))
-            .andWith(new OidcClientJaxrsRepeatAction(Constants.JWE_TOKEN_FORMAT));
+            .with(new SecurityTestRepeatAction(Constants.OPAQUE_TOKEN_FORMAT))
+            .andWith(new SecurityTestRepeatAction(Constants.JWS_TOKEN_FORMAT))
+            .andWith(new SecurityTestRepeatAction(Constants.JWE_TOKEN_FORMAT));
 
     @SuppressWarnings("serial")
     @BeforeClass

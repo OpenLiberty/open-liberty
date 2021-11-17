@@ -54,6 +54,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.ClientRunnerException;
+import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -81,6 +82,8 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
+
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  * Implementation of FrameworkManager. There are several important threads:
@@ -561,6 +564,13 @@ public class FrameworkManager {
             if (fwk == null)
                 return null;
             fwk.init();
+            if (LaunchArguments.isBetaEdition()) {
+                String phaseProp = config.get(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+                if (phaseProp != null) {
+                    // register the checkpoint phase as early as possible
+                    fwk.getBundleContext().registerService(Phase.class, Phase.getPhase(phaseProp), null);
+                }
+            }
             return fwk;
         } catch (BundleException ex) {
             throw ex;

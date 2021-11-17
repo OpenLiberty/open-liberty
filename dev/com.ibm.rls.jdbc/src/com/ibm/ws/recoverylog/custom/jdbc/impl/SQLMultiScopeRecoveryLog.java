@@ -2056,6 +2056,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.entry(tc, "isSQLErrorTransient ", new Object[] { sqlex, this });
 
         boolean retryBatch = false;
+        boolean foundRetriableSqlCode = false;
+        boolean foundNonRetriableSqlCode = false;
         int sqlErrorCode = sqlex.getErrorCode();
 
         if (tc.isEventEnabled()) {
@@ -2065,12 +2067,50 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.event(tc, " Error code: " + sqlErrorCode);
         }
 
-        // If the SQLException is a transient exception or if the server has been configured to retry on all SQLExceptions return true.
-        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries() || sqlex instanceof SQLTransientException) {
-            retryBatch = true;
+        // Check whether specific retriable sqlcodes have been configured
+        List<Integer> retriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getRetriableSqlCodes();
+        if (retriableSqlCodesList != null && !retriableSqlCodesList.isEmpty()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "There are retriable sqlcodes " + retriableSqlCodesList);
+
+            if (retriableSqlCodesList.contains(sqlErrorCode)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The error code is in the list");
+                foundRetriableSqlCode = true;
+            }
         }
 
-        if (!retryBatch && sqlex instanceof BatchUpdateException) {
+        // Check whether specific non-retriable sqlcodes have been configured
+        List<Integer> nonRetriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getNonRetriableSqlCodes();
+        if (nonRetriableSqlCodesList != null && !nonRetriableSqlCodesList.isEmpty()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "There are non-retriable sqlcodes " + nonRetriableSqlCodesList);
+
+            if (nonRetriableSqlCodesList.contains(sqlErrorCode)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The error code is in the list");
+                foundNonRetriableSqlCode = true;
+            }
+
+        }
+
+        boolean delveIntoException = true;
+        // Determine whether to retry the operation based on the type of SQLException and its sqlcode.
+        if (!ConfigurationProviderManager.getConfigurationProvider().enableLogRetries()) {
+            // This is the original behaviour, where the enableLogProperties attribute has not been set in server.xml
+            if (foundRetriableSqlCode || sqlex instanceof SQLTransientException) {
+                retryBatch = true;
+                delveIntoException = false;
+            }
+        } else {
+            // This is the new behaviour, where the enableLogProperties attribute has been set in server.xml
+            if (!foundNonRetriableSqlCode) {
+                retryBatch = true;
+                delveIntoException = false;
+            }
+        }
+
+        if (delveIntoException && sqlex instanceof BatchUpdateException) {
             if (tc.isDebugEnabled()) {
                 if (sqlex instanceof SQLTransientException) {
                     Tr.debug(tc, "Exception is not considered transient but does implement SQLTransientException!");

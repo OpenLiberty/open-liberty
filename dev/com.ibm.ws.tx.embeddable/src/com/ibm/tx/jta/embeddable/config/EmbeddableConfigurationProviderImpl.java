@@ -1,5 +1,6 @@
 package com.ibm.tx.jta.embeddable.config;
 
+import java.util.List;
 /*******************************************************************************
  * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -549,5 +550,25 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     @Override
     public boolean enableLogRetries() {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getRetriableSqlCodes() {
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getNonRetriableSqlCodes() {
+        return null;
     }
 }

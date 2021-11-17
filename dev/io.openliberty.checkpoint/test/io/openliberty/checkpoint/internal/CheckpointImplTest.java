@@ -95,7 +95,7 @@ public class CheckpointImplTest {
         volatile boolean throwIOException = false;
 
         @Override
-        public void dump(File imageDir, String logFileName, File workDir) throws CheckpointFailedException {
+        public void dump(File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
             this.imageDir = imageDir;
             this.logFilename = logFileName;
             this.workDir = workDir;

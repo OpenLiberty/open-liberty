@@ -276,7 +276,7 @@ public class LaunchArguments {
     /*
      * Duplicating ProductInfo logic here to avoid unnecessary calls to ThreadIdentityManager too early
      */
-    private boolean isBetaEdition() {
+    static public boolean isBetaEdition() {
         return Boolean.getBoolean(ProductInfo.BETA_EDITION_JVM_PROPERTY);
     }
 

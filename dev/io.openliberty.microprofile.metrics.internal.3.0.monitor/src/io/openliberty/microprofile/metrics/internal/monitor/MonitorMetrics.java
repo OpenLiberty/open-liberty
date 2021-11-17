@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package io.openliberty.microprofile.metrics.internal.monitor;
 
 import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +39,7 @@ public class MonitorMetrics {
 	protected Set<MetricID> baseMetricIDs;
 
 	public MonitorMetrics(String objectName) {
-		this.mbs = ManagementFactory.getPlatformMBeanServer();
+		this.mbs = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
 		this.objectName = objectName;
 		this.vendorMetricIDs = new HashSet<MetricID>();
 		this.baseMetricIDs = new HashSet<MetricID>();

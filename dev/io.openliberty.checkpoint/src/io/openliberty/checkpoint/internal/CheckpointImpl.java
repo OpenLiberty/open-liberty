@@ -64,6 +64,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
+    private static final String FILE_ENV_PROPERTIES = DIR_CHECKPOINT + ".env.properties";
     private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
     private static final String CHECKPOINT_LOG_FILE = "checkpoint.log";
 
@@ -186,8 +187,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 // do nothing
             }
         }
-        File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + DIR_CHECKPOINT_IMAGE).asFile();
-        imageDir.mkdirs();
+
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
         prepare(checkpointHooks);
@@ -200,16 +200,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 System.out.println(cpfe.getMessage());
                 throw cpfe;
             }
-
+            File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
-            WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
-            logsCheckpoint.create();
             if (tc.isInfoEnabled()) {
                 Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
             }
             criu.dump(imageDir, CHECKPOINT_LOG_FILE,
-                      logsCheckpoint.asFile());
+                      getLogsCheckpoint(),
+                      getEnvProperties());
             if (tc.isInfoEnabled()) {
                 Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
             }
@@ -228,11 +227,27 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     /**
-     *
+     * @return
      */
+    private File getImageDir() {
+        File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + DIR_CHECKPOINT_IMAGE).asFile();
+        imageDir.mkdirs();
+        return imageDir;
+    }
+
+    private File getLogsCheckpoint() {
+        WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
+        logsCheckpoint.create();
+        return logsCheckpoint.asFile();
+    }
+
     private void createRestoreMarker() {
         // create a marker to indicate that another restore needs to restore the workarea
         locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_RESTORE_MARKER).create();
+    }
+
+    private File getEnvProperties() {
+        return locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_ENV_PROPERTIES).asFile();
     }
 
     List<CheckpointHook> getHooks(Object[] factories, Phase phase) {

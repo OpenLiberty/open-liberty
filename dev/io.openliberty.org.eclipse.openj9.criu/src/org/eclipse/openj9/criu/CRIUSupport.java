@@ -12,59 +12,226 @@ package org.eclipse.openj9.criu;
 
 import java.nio.file.Path;
 
+/**
+ * CRIU Support API
+ */
 public final class CRIUSupport {
 
+	/**
+	 * Constructs a new {@code CRIUSupport}.
+	 *
+	 * The default CRIU dump options are:
+	 * <p>
+	 * {@code imageDir} = imageDir, the directory where the images are to be
+	 * created.
+	 * <p>
+	 * {@code leaveRunning} = false
+	 * <p>
+	 * {@code shellJob} = false
+	 * <p>
+	 * {@code extUnixSupport} = false
+	 * <p>
+	 * {@code logLevel} = 2
+	 * <p>
+	 * {@code logFile} = criu.log
+	 * <p>
+	 * {@code fileLocks} = false
+	 * <p>
+	 * {@code workDir} = imageDir, the directory where the images are to be created.
+	 *
+	 * @param imageDir the directory that will hold the dump files as a
+	 *                 java.nio.file.Path
+	 * @throws NullPointerException     if imageDir is null
+	 * @throws SecurityException        if no permission to access imageDir or no
+	 *                                  CRIU_DUMP_PERMISSION
+	 * @throws IllegalArgumentException if imageDir is not a valid directory
+	 */
 	public CRIUSupport(Path imageDir) {
 	}
 
+	/**
+	 * Queries if CRIU support is enabled.
+	 *
+	 * @return TRUE is support is enabled, FALSE otherwise
+	 */
 	public static boolean isCRIUSupportEnabled() {
 		return false;
 	}
 
+	/**
+	 * Sets the directory that will hold the images upon checkpoint. This must be
+	 * set before calling {@link #checkpointJVM()}.
+	 *
+	 * @param imageDir the directory as a java.nio.file.Path
+	 * @return this
+	 * @throws NullPointerException     if imageDir is null
+	 * @throws SecurityException        if no permission to access imageDir
+	 * @throws IllegalArgumentException if imageDir is not a valid directory
+	 */
 	public CRIUSupport setImageDir(Path imageDir) {
 		return this;
 	}
 
+	/**
+	 * Controls whether process trees are left running after checkpoint.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param leaveRunning
+	 * @return this
+	 */
 	public CRIUSupport setLeaveRunning(boolean leaveRunning) {
 		return this;
 	}
 
+	/**
+	 * Controls ability to dump shell jobs.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param shellJob
+	 * @return this
+	 */
 	public CRIUSupport setShellJob(boolean shellJob) {
 		return this;
 	}
 
+	/**
+	 * Controls whether to dump only one end of a unix socket pair.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param extUnixSupport
+	 * @return this
+	 */
 	public CRIUSupport setExtUnixSupport(boolean extUnixSupport) {
 		return this;
 	}
 
+	/**
+	 * Sets the verbosity of log output. Available levels:
+	 * <ol>
+	 * <li>Only errors
+	 * <li>Errors and warnings
+	 * <li>Above + information messages and timestamps
+	 * <li>Above + debug
+	 * </ol>
+	 * <p>
+	 * Default: 2
+	 *
+	 * @param logLevel verbosity from 1 to 4 inclusive
+	 * @return this
+	 * @throws IllegalArgumentException if logLevel is not valid
+	 */
 	public CRIUSupport setLogLevel(int logLevel) {
 		return this;
 	}
 
+	/**
+	 * Write log output to logFile.
+	 * <p>
+	 * Default: criu.log
+	 *
+	 * @param logFile name of the file to write log output to. The path to the file
+	 *                can be set with {@link #setWorkDir(Path)}.
+	 * @return this
+	 * @throws IllegalArgumentException if logFile is null or a path
+	 */
 	public CRIUSupport setLogFile(String logFile) {
 		return this;
 	}
 
+	/**
+	 * Controls whether to dump file locks.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param fileLocks
+	 * @return this
+	 */
 	public CRIUSupport setFileLocks(boolean fileLocks) {
 		return this;
 	}
 
+	/**
+	 * Controls whether to re-establish TCP connects.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param tcpEstablished
+	 * @return this
+	 */
 	public CRIUSupport setTCPEstablished(boolean tcpEstablished) {
 		return this;
 	}
 
+	/**
+	 * Controls whether auto dedup of memory pages is enabled.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param autoDedup
+	 * @return this
+	 */
 	public CRIUSupport setAutoDedup(boolean autoDedup) {
 		return this;
 	}
 
+	/**
+	 * Controls whether memory tracking is enabled.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param trackMemory
+	 * @return this
+	 */
 	public CRIUSupport setTrackMemory(boolean trackMemory) {
 		return this;
 	}
 
+	/**
+	 * Sets the directory where non-image files are stored (e.g. logs).
+	 * <p>
+	 * Default: same as path set by {@link #setImageDir(Path)}.
+	 *
+	 * @param workDir the directory as a java.nio.file.Path
+	 * @return this
+	 * @throws NullPointerException     if workDir is null
+	 * @throws SecurityException        if no permission to access workDir
+	 * @throws IllegalArgumentException if workDir is not a valid directory
+	 */
 	public CRIUSupport setWorkDir(Path workDir) {
 		return this;
 	}
 
+	/**
+	 * Append new environment variables to the set returned by ProcessEnvironment.getenv(...) upon
+	 * restore. All pre-existing (environment variables from checkpoint run) env
+	 * vars are retained. All environment variables specified in the envFile are
+	 * added as long as they do not modifiy pre-existeing environment variables.
+	 *
+	 * Format for envFile is the following: ENV_VAR_NAME1=ENV_VAR_VALUE1 ...
+	 * ENV_VAR_NAMEN=ENV_VAR_VALUEN
+	 *
+	 * @param envFile The file that contains the new environment variables to be
+	 *                added
+	 * @return this
+	 */
+	public CRIUSupport registerRestoreEnvFile(Path envFile) {
+		return this;
+	}
+
+	/**
+	 * Checkpoint the JVM. This operation will use the CRIU options set by the
+	 * options setters.
+	 *
+	 * @throws UnsupportedOperationException if CRIU is not supported
+	 * @throws JVMCheckpointException        if a JVM error occurred before
+	 *                                       checkpoint
+	 * @throws SystemCheckpointException     if a CRIU operation failed
+	 * @throws RestoreException              if an error occurred during or after
+	 *                                       restore
+	 */
 	public void checkpointJVM() {
 	}
 }

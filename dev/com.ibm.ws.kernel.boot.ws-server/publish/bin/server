@@ -1351,6 +1351,15 @@ restoreServer()
   # record the start of restoreTime
   echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
 
+  # Store the current restored environment into a file that the JVM can read to restore the values.
+  # The following are filtered out of the restore env because they could be different from the checkpoint
+  # values.  The JVM only allows new values to be set into the restored environment:
+  # - JAVA_OPTIONS vars are not set the same on the restore side so we filter them out
+  # - SHLVL the shell level could be different
+  # - HOSTNAME the host name likely is always different for containers
+  # - _ holds the currently running process, here we do no need to have it set to `env`
+  env | grep -Ev "JAVA_OPTIONS=|SHLVL=|HOSTNAME=|_=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+
   criuRestore $BACKGROUND_RESTORE
   rc=$?
   if [ $rc -ne 0 ]; then
@@ -1385,6 +1394,8 @@ case "$ACTION" in
         exit 0
       fi  
     fi
+
+    serverWorkingDirectory
                   
     if restoreServer false "$@" 
     then
@@ -1411,8 +1422,6 @@ case "$ACTION" in
         fi
         JAVA_DEBUG="-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_REMOTE_HOST}${WLP_DEBUG_ADDRESS}"
       fi
-
-      serverWorkingDirectory
 
       # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
       # When WLP_JAR_CYGWIN=true (or synonym) is specied, the PID of the launching 
@@ -1461,12 +1470,12 @@ case "$ACTION" in
         rc=1
         ;;
       "1" )
+        serverWorkingDirectory
+
         if restoreServer true "$@"
         then
           exit 0
         fi
-
-        serverWorkingDirectory
 
         mkdirs "${X_LOG_DIR}"
         if [ -f "${X_LOG_DIR}/${X_LOG_FILE}" ] && [ ! -w "${X_LOG_DIR}/${X_LOG_FILE}" ]

@@ -11,6 +11,32 @@
 
 <server>
 
+	<authFilter id="authFilterNormalRS256">
+		<requestUrl
+			id="requestUrlRS256"
+			urlPattern="/simple/NormalTokenEndpointRS256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="normalTokenEndpointRS256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigning/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/OidcConfigSigning/token"  
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"  
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterNormalRS256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+	>
+	</openidConnectClient>	
+
 	<authFilter id="authFilterHS256">
 		<requestUrl
 			id="requestUrlHS256"
