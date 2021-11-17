@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -748,7 +749,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     }
 
     /**
-     * This method returns the parked connction.
+     * This method returns the parked connection.
      *
      * @return parkedMCWrapper
      */
@@ -2336,20 +2337,40 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      *
      * @param value "immediate" will result an immediate purge of the pool.
      *                  value "abort" will result in purging the pool via Connection.abort()
+     *                  value "purgeAndReset" will result in purging the pool and synchronizing pool size.
      *                  Any other value will call purgePoolContents().
      * @throws ResourceException
      */
     public void purgePoolContents(String value) throws ResourceException {
 
-        if (!"immediate".equalsIgnoreCase(value) && !"abort".equalsIgnoreCase(value)) {
-            purgePoolContents();
-            return;
+        boolean purgeWithAbort = false;
+        boolean purgeWithImmediate = false;
+
+        switch (value) {
+            case "purgeAndReset":
+                try {
+                    purgePoolAndResetTotal();
+                    return; //purge handled by another method
+                } catch (PropertyVetoException e) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Failed to recover from out of sync totalConnectionCount with exception.", e);
+                    }
+                    FFDCFilter.processException(e, "com.ibm.ejs.j2c.PoolManager.purgePoolContents", "2358", this);
+                    return;
+                }
+            case "immediate":
+                purgeWithImmediate = true;
+                break;
+            case "abort":
+                purgeWithAbort = true;
+                break;
+            default:
+                purgePoolContents();
+                return; //purge handled by another method
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "purgePoolContents");
-
-        boolean purgeWithAbort = "abort".equalsIgnoreCase(value);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Clearing free pool connections");
@@ -2381,7 +2402,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
                         if (purgeWithAbort && mcw instanceof com.ibm.ejs.j2c.MCWrapper
                             && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
-                            // The MCW aborted the connection sucessfully
+                            // The MCW aborted the connection successfully
                         } else {
                             if (purgeWithAbort && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(tc, "Unable to purge connection with abort.  Using ThreadSupportedCleanupAndDestroy.", mcw);
@@ -2411,7 +2432,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
                             if (purgeWithAbort && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
                                 && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
-                                // The MCW aborted the connection sucessfully
+                                // The MCW aborted the connection successfully
                             } else {
                                 if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
                                     ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
@@ -2459,6 +2480,117 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "purgePoolContents");
         }
+    }
+
+    /**
+     * Returns the expected size of totalConnectionCount based on the mcToMCWMap
+     * and taking into account connections that should not be counted in the total.
+     */
+    private int getExpectedTotalConnectionCount() {
+        mcToMCWMapRead.lock();
+        int count = 0;
+        try {
+            for (Map.Entry<ManagedConnection, MCWrapper> map : mcToMCWMap.entrySet()) {
+                if (map.getValue().getPoolState() != MCWrapper.ConnectionState_parkedPool)
+                    count++;
+            }
+        } finally {
+            mcToMCWMapRead.unlock();
+        }
+
+        return count;
+    }
+
+    /**
+     * Convenience method to allow Pool Manager to self correct if the pool size stored in
+     * the totalConnectionCount field somehow becomes out of sync with the actual number
+     * of connections in the mcToMCWMap.
+     *
+     * Purge: mark all connections to be destroyed, but not immediate
+     * Reset: set totalConnectionCount to result of {@link #getExpectedTotalConnectionCount()}
+     *
+     * @throws PropertyVetoException
+     */
+    public void purgePoolAndResetTotal() throws PropertyVetoException {
+        final String method = "purgePoolAndResetTotal";
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, method);
+
+        updateToPoolInProgress = true; // this should start stopping pool activity
+
+        synchronized (updateToPoolInProgressLockObject) { // this should guarantee a stop pool activity
+            // Try 5 times checking for active connection.
+            // Goal is to pause the connection pool before trying to reset totals.
+            boolean activeConnections = false;
+            for (int i = 0; i < 5; ++i) {
+                activeConnections = checkForActiveConnections(1);
+                if (activeConnections) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "checkForActiveConnections returned true with a value of " + activeRequest.get());
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "checkForActiveConnections returned false");
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    continue;
+                }
+            }
+
+            mcToMCWMapWrite.lock();
+            int expectedSize = getExpectedTotalConnectionCount();
+            int currentSize = totalConnectionCount.get();
+            String debugString = "There are " + activeRequest.get() + " active connections requests in the pool. " +
+                                 "The current connection count is " + currentSize +
+                                 " and the expected size is " + expectedSize + ".";
+
+            try {
+                if (activeConnections) { //Active connections - cannot update connection count
+                    // detected pool activity that does not allow us to reset total
+                    updateToPoolInProgress = false; // allow pool activity start running
+                    updateToPoolInProgressLockObject.notifyAll(); // allow waiting threads to start running
+
+                    if (expectedSize != currentSize) {
+                        debugString = "Total connection count cannot be changed due to pool activity. " + debugString;
+                        PropertyChangeEvent event = new PropertyChangeEvent(this, "totalConnectionCount", currentSize, expectedSize);
+                        PropertyVetoException e = new PropertyVetoException(debugString, event);
+                        throw e; // throw veto exception back to mbean request with reason
+                    }
+
+                } else { //No active connections - safe to update total based on how many connections are in the mcToMCWMap.
+
+                    // first since it's a purge, mark all current connections to be destroyed.
+                    for (int i = 0; i < maxFreePoolHashSize; ++i) {
+                        synchronized (freePool[i].freeConnectionLockObject) {
+                            //By setting fatalErrorNotificationTime
+                            //when the connection is used and returned to the free pool, it will be removed.
+                            freePool[i].incrementFatalErrorValue(i);
+                        }
+                    }
+
+                    // next try to reset the total to the new correct value in sync with mcToMCWMap
+                    try {
+                        if (expectedSize != currentSize) {
+                            debugString = "Resetting totalConnectionCount. " + debugString;
+                            totalConnectionCount.set(expectedSize);
+                        }
+                    } finally {
+                        updateToPoolInProgress = false;
+                        updateToPoolInProgressLockObject.notifyAll();
+                    }
+                }
+            } finally {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, debugString);
+
+                mcToMCWMapWrite.unlock();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, method);
     }
 
     /**
@@ -3559,6 +3691,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 } // end sync
             }
         } // end for (int j
+
         if (tc.isEntryEnabled()) {
             if (tc.isDebugEnabled()) {
                 // This information should only be printed if tc.isEntryEnabled()
@@ -3981,6 +4114,26 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                     if (isTracingEnabled && tc.isDebugEnabled())
                         Tr.debug(tc, "Alarm thread was NOT started. Number of alarm threads is " + alarmThreadCounter.get());
                 }
+            }
+        }
+
+        /*
+         * Check if totalConnectionCount returns an unexpected value
+         * At this point no need to do any locking. We want to be optimistic that these values will not deviate.
+         * If we do see that these values have deviated, then the purgePoolAndResetTotal()
+         * method will get all the heavy locks and check these values again before resetting the total.
+         */
+        if (getExpectedTotalConnectionCount() != totalConnectionCount.get()) {
+            try {
+                //TODO remove
+                if (isTracingEnabled && tc.isDebugEnabled())
+                    Tr.debug(tc, "KJA1017 calling purgePoolAndResetTotal()");
+                purgePoolAndResetTotal();
+            } catch (PropertyVetoException e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to recover from out of sync totalConnectionCount with exception.", e);
+                }
+                FFDCFilter.processException(e, "com.ibm.ejs.j2c.PoolManager.run", "4133", this);
             }
         }
 
@@ -4484,7 +4637,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                  *
                  * It will be very difficult to predict how fast the pool will
                  * reduce its size to the new max connection, but the following
-                 * code will try to reduce the size as quickly as posible.
+                 * code will try to reduce the size as quickly as possible.
                  */
                 //if (totalConnectionCount > value) {
                 /*

@@ -53,7 +53,7 @@
     </basicRegistry>
 
     <library id="derbyLib">
-        <fileset dir="${server.config.dir}/derby" includes="*.jar" scanInterval="5s" />
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar" scanInterval="5s" />
     </library>
     
     <adminObject id="InsecAdminObject" jndiName="jms/InsecAdminObject">
@@ -72,7 +72,7 @@
         <properties.gwcapp.adapter_jca16_gwc_GenericWorkContextTestRAR.FVTMessageProvider/>
     </adminObject>
 
-    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
