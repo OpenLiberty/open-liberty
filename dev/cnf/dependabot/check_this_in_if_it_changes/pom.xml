@@ -2159,7 +2159,7 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
-      <version>2.0.1</version>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -3899,7 +3899,7 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
-      <version>1.0.8</version>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.classfilewriter</groupId>
