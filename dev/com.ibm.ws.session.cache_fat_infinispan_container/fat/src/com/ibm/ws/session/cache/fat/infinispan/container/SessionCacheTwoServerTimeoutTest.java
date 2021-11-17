@@ -222,6 +222,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
      */
     @Test
     public void testInfinispanClassCastException() throws Exception {
-        appA.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
+        appA.invokeServlet("testInfinispanClassCastException&shouldFail=false", null);
     }
 }

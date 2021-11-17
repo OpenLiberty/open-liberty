@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.io.ObjectStreamConstants;
 import java.io.StreamCorruptedException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -159,16 +161,26 @@ public class CacheHashMap extends BackedHashMap {
             // Session Meta Information Cache
 
             String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
+            Class<?> cachingProviderClass = cacheStoreService.cacheManager.getClass();
+            boolean isRemoteInfinispan = "org.infinispan.jcache.remote.JCacheManager".equals(cachingProviderClass.getName());
+            
 
-            if (trace && tc.isDebugEnabled())
-                tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
-
-            sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+            // Prevent the following warning when using Infinispan in client/server mode:
+            //[WARNING ] ISPN004005: Error received from the server: org.infinispan.server.hotrod.CacheNotFoundException: Cache with name '${metaCacheName}' not found amongst the configured caches
+            if (!isRemoteInfinispan) {
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
+                
+                sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+            } else {
+                initInfinispanRemoteCache(metaCacheName, cachingProviderClass);
+            }
+            
             boolean create;
             if (create = sessionMetaCache == null) {
                 if (trace && tc.isDebugEnabled())
                     tcReturn(cacheStoreService.tcCacheManager, "getCache", "null");
-
+                
                 @SuppressWarnings("rawtypes")
                 MutableConfiguration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
                 .setTypes(String.class, ArrayList.class)
@@ -179,7 +191,7 @@ public class CacheHashMap extends BackedHashMap {
                     if (trace && tc.isDebugEnabled())
                         tcInvoke(cacheStoreService.tcCacheManager, "createCache", metaCacheName, config);
 
-                    sessionMetaCache = cacheStoreService.cacheManager.createCache(metaCacheName, config);
+                    sessionMetaCache = cacheStoreService.cacheManager.createCache(metaCacheName, config); 
                 } catch (CacheException x) {
                     create = false;
                     if (trace && tc.isDebugEnabled()) {
@@ -193,7 +205,7 @@ public class CacheHashMap extends BackedHashMap {
             }
 
             tcSessionMetaCache = "MetaCache" + Integer.toHexString(System.identityHashCode(sessionMetaCache));
-            if (trace && tc.isDebugEnabled())
+            if (!isRemoteInfinispan && trace && tc.isDebugEnabled())
                 tcReturn(cacheStoreService.tcCacheManager, create ? "createCache" : "getCache", tcSessionMetaCache, sessionMetaCache);
 
             cacheStoreService.configureMonitoring(metaCacheName);
@@ -202,11 +214,17 @@ public class CacheHashMap extends BackedHashMap {
 
             String attrCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.attr.").append(a).toString();
 
-            if (trace && tc.isDebugEnabled())
-                tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
-
-            sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
-
+            // Prevent the following warning when using Infinispan in client/server mode:
+            //[WARNING ] ISPN004005: Error received from the server: org.infinispan.server.hotrod.CacheNotFoundException: Cache with name '${attrCacheName}' not found amongst the configured caches
+            if (!isRemoteInfinispan) {
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
+                
+                sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
+            } else {
+                initInfinispanRemoteCache(attrCacheName, cachingProviderClass);
+            }
+            
             if (create = sessionAttributeCache == null) {
                 if (trace && tc.isDebugEnabled())
                     tcReturn(cacheStoreService.tcCacheManager, "getCache", "null");
@@ -243,6 +261,65 @@ public class CacheHashMap extends BackedHashMap {
             Tr.error(tc, "ERROR_SESSION_INIT", ex);
             throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
         }
+    }
+    
+    /**
+     * When the JCache session cache is backed by a remote Infinsipan server, we need to invoke Infinispan API directly
+     * to pass configuration to the remote cache server. In the future we hope to remove this method and use the main
+     * code path that utilizes the JCache API exclusively. To invoke the Infinispan API directly this method relies on 
+     * reflection, which prevents hard dependencies.
+     * 
+     * @param cacheName The name of the cache to be retrieved or created.
+     * @param cachingProviderClass The base class used for reflective calls to Infinispan API.
+     * @return Cache created or existing from the remote Infinispan server.
+     * 
+     */
+    private void initInfinispanRemoteCache(String cacheName, Class<?> cachingProviderClass) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        
+        // Get RemoteCacheManager cm field from remote JCacheManager
+        Field cmField = cachingProviderClass
+                        .getDeclaredField("cm");
+        cmField.setAccessible(true);
+        Object remoteCacheManger = cmField.get(cacheStoreService.cacheManager);
+        
+        
+        String tcRemoteCacheManager = "RemoteCacheManger" + Integer.toHexString(System.identityHashCode(remoteCacheManger));
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcRemoteCacheManager, "administration");
+
+        // Object remoteCacheManagerAdmin = remoteCacheManager.administration();
+        Object remoteCacheManagerAdmin = remoteCacheManger.getClass()
+                        .getMethod("administration")
+                        .invoke(remoteCacheManger);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcRemoteCacheManager, "administration", remoteCacheManagerAdmin);
+
+        // Create replicated Infinispan configuration XML for this attrCacheName.
+        String infinispanConfig = String.format("<infinispan>" +
+                        "<cache-container>" +
+                        "<replicated-cache name=\"%s\"/>" +
+                        "</cache-container>" +
+                        "</infinispan>",
+                        cacheName);
+        
+        // XMLStringConfiguration xMlStringConfiguration = new XMLStringConfiguration(infinispanConfig)
+        Class<?> XMLStringConfigurationClass = cachingProviderClass.getClassLoader().loadClass("org.infinispan.commons.configuration.XMLStringConfiguration");
+        Object xMlStringConfiguration = XMLStringConfigurationClass.getConstructor(String.class)
+                        .newInstance(infinispanConfig.toString());
+
+        String tcRemoteCacheManagerAdmin = "RemoteCacheManagerAdmin" + Integer.toHexString(System.identityHashCode(remoteCacheManagerAdmin));
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcRemoteCacheManagerAdmin, "getOrCreateCache", cacheName, infinispanConfig);
+
+        // remoteCacheManagerAdmin.getOrCreateCache(attrCacheName, xMlStringConfiguration);
+        Object remoteCache = remoteCacheManagerAdmin.getClass()
+                        .getMethod("getOrCreateCache", String.class, cachingProviderClass.getClassLoader().loadClass("org.infinispan.commons.configuration.BasicConfiguration"))
+                        .invoke(remoteCacheManagerAdmin, cacheName, xMlStringConfiguration);
+        
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcRemoteCacheManagerAdmin, "getOrCreateCache", remoteCache);
     }
 
     /**
