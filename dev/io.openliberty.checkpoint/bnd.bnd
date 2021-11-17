@@ -42,5 +42,6 @@ Import-Package: org.apache.felix.service.command; resolution:=optional, org.ecli
     io.openliberty.checkpoint.internal.CheckpointImpl, \
     io.openliberty.checkpoint.internal.CheckpointApplications, \
     io.openliberty.checkpoint.internal.CheckpointFeatures, \
-    io.openliberty.checkpoint.internal.CheckpointOSGiConsole
+    io.openliberty.checkpoint.internal.CheckpointOSGiConsole, \
+    io.openliberty.checkpoint.internal.PreloadClasses
 
