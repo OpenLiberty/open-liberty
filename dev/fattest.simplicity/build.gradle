@@ -57,10 +57,20 @@ task extractArquillianSupportFeature(type:Sync) {
         from(zipTree(it))
     }
     into('build/arquillian-feature-extract')
-    
+
+    configurations.arquillianJakartaFeature.each {
+        from(zipTree(it))
+    }
+    into('build/arquillian-jakarta-feature-extract')
+
     doLast {
         // Update the feature manifest to mark it as a test feature
         file('build/arquillian-feature-extract/extension/lib/features/arquillian-liberty-support.mf')
+            .append('IBM-Test-Feature: true\n')
+
+        ant.move(file:'build/arquillian-jakarta-feature-extract/extension/lib/features/arquillian-liberty-support.mf',
+                 tofile:'build/arquillian-jakarta-feature-extract/extension/lib/features/arquillian-liberty-support-2.0.mf')
+        file('build/arquillian-jakarta-feature-extract/extension/lib/features/arquillian-liberty-support-2.0.mf')
             .append('IBM-Test-Feature: true\n')
     }
 }
@@ -87,6 +97,9 @@ task publishArquillianSupportFeature(type:Copy) {
     dependsOn extractArquillianSupportJakartaFeature
     from('build/arquillian-jakarta-feature-extract/extension')
 
+    into(buildImage.file('wlp'))
+    
+    from('build/arquillian-jakarta-feature-extract/extension')
     into(buildImage.file('wlp'))
 }
 
