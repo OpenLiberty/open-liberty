@@ -113,6 +113,7 @@ import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.ServerFileUtils;
+import junit.framework.AssertionFailedError;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -1260,6 +1261,7 @@ public class LibertyServer implements LogMonitorClient {
 
         final Properties envVars = new Properties();
 
+        envVars.put("SERVER_WORKING_DIR", this.serverOutputRoot + "/workingDir");
         envVars.putAll(this.envVars);
         if (!envVars.isEmpty())
             Log.info(c, method, "Adding env vars: " + envVars);
@@ -2537,6 +2539,7 @@ public class LibertyServer implements LogMonitorClient {
             this.isTidy = true;
 
             checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
+            checkNoUnExpectedFilesInWorking();
         } finally {
             // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
             // server starts again, logs will roll into the existing logs. We also don't clear
@@ -2566,6 +2569,24 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return output;
+    }
+
+    public void checkNoUnExpectedFilesInWorking() throws Exception {
+        RemoteFile workingDir = new RemoteFile(machine, this.serverOutputRoot + "/workingDir/");
+
+        RemoteFile[] childFiles = workingDir.list(false);
+
+        if (childFiles != null && childFiles.length > 0) {
+
+            List<RemoteFile> childFileList = new ArrayList();
+	    for (RemoteFile file : childFiles) {
+	        if (!"derby.log".equals(file.getName())) childFileList.add(file);
+	    }
+
+	    if (!childFileList.isEmpty()) {
+                throw new AssertionFailedError("The following files were unexpectedly found in the Liberty server working dir: " + Arrays.asList(childFiles));
+            }    
+        }
     }
 
     /**
