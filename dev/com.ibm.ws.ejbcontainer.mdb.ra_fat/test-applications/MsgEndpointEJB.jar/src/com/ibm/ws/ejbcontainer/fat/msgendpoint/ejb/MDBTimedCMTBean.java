@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.CreateException;
@@ -39,8 +41,10 @@ import javax.transaction.UserTransaction;
 
 public class MDBTimedCMTBean implements MessageListener {
 
-    public static final long INTERVAL = 30 * 1000;
+    public static final long INTERVAL = 3 * 1000;
     public static final long TIMER_PRECISION = 900;
+    public static final long EXPIRATION = 4 * 1000;
+    public static final long MAX_TIMER_WAIT = 3 * 60 * 1000;
 
     public MessageDrivenContext myMessageDrivenCtx = null;
 
@@ -53,13 +57,23 @@ public class MDBTimedCMTBean implements MessageListener {
     public Object ivEjbCreateResults;
     public static Object svEjbTimeoutResults = null;
 
+    private static CountDownLatch svTimerResultsLatch = new CountDownLatch(1);
+    private static CountDownLatch svTimerLatch = new CountDownLatch(1);
+    private static CountDownLatch svTimerIntervalLatch = new CountDownLatch(1);
+    private static CountDownLatch svTimerIntervalWaitLatch = new CountDownLatch(1);
+
+    // The time for the container to run post invoke processing for @Timeout.
+    // Should be used after a Timer has triggered a CountDownLatch to insure
+    // the @Timeout method, including the transaction, has completed and thus
+    // updated (or even removed) the timer.
+    private static final long POST_INVOKE_DELAY = 700;
+
     public static Object resultTC41 = null;
     public static Object results[] = new Object[10];
 
     public static Timer timer[] = null;
 
-    public MDBTimedCMTBean() {
-    }
+    public MDBTimedCMTBean() {}
 
     /**
      * Test getTimerService()/TimerService access from ejbCreate on a
@@ -95,7 +109,7 @@ public class MDBTimedCMTBean implements MessageListener {
             // -----------------------------------------------------------------------
             try {
                 System.out.println("ejbCreate: Calling TimerService.createTimer()");
-                timer = createTimer(60000, (Serializable) null);
+                timer = createTimer(EXPIRATION, (Serializable) null);
                 fail("2 ---> createTimer should have failed!");
                 timer.cancel();
             } catch (IllegalStateException ise) {
@@ -125,8 +139,7 @@ public class MDBTimedCMTBean implements MessageListener {
      *
      * @exception javax.ejb.EJBException
      */
-    public void ejbRemove() {
-    }
+    public void ejbRemove() {}
 
     /**
      * This method returns the MessageDrivenContext for this Message Driven Bean.
@@ -201,26 +214,20 @@ public class MDBTimedCMTBean implements MessageListener {
             } else if (text.equalsIgnoreCase("test04")) {
                 System.out.println("Case : test04.");
                 System.out.println("Creating a Timer to test access in ejbTimeout ...");
+                svTimerResultsLatch = new CountDownLatch(1);
                 TimerService ts = myMessageDrivenCtx.getTimerService();
                 ivTimerService = ts;
                 createTimer(2000, "testTimerService");
                 System.out.println("Waiting for timer to expire ...");
 
-                Thread.sleep(4000);
-
-                int counter = 0;
-                int maxSleepTime = 180000; // d267800
-
                 System.out.println("Waiting for getEjbTimeoutResults ...");
-                while (counter < maxSleepTime) {
-                    if (svEjbTimeoutResults != null) {
-                        Thread.sleep(2000);
-                        resultTC41 = svEjbTimeoutResults;
-                        break;
-                    }
-                    Thread.sleep(1000);
-                    counter++;
+
+                boolean timerFired = waitForTimers(svTimerResultsLatch, MAX_TIMER_WAIT);
+                if (!timerFired) {
+                    System.out.println("Timed out getting svEjbTimeoutResults");
                 }
+
+                resultTC41 = svEjbTimeoutResults;
 
                 if (resultTC41 instanceof Boolean) {
                     try {
@@ -236,8 +243,10 @@ public class MDBTimedCMTBean implements MessageListener {
                             }
                             System.out.println("testTimerService: Waiting for timers to expire. . .");
 
-                            System.out.println("Sleep for 62 seconds.");
-                            Thread.sleep(62000);
+                            // -------------------------------------------------------------------
+                            // Wait up to MAX_TIMER_WAIT for all of the timers to expire
+                            // -------------------------------------------------------------------
+                            waitForTimers(svTimerLatch, MAX_TIMER_WAIT);
 
                             System.out.println("18 ---> Verify ejbTimeout is executed for valid Timers");
                             // See if all except cancelled timers have expired once...
@@ -310,6 +319,14 @@ public class MDBTimedCMTBean implements MessageListener {
                             }
                         }
 
+                        // -------------------------------------------------------------------
+                        // Wait up to MAX_TIMER_WAIT for interval timers to expire
+                        // -------------------------------------------------------------------
+                        svTimerIntervalWaitLatch.countDown(); // allow 2nd interval to run
+                        waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
+                        svTimerIntervalWaitLatch = new CountDownLatch(1);
+                        svTimerIntervalLatch = new CountDownLatch(2);
+
                         // -----------------------------------------------------------------------
                         // 21 - Verify Timer.getNextTimeout() on repeating Timer works
                         // -----------------------------------------------------------------------
@@ -329,17 +346,22 @@ public class MDBTimedCMTBean implements MessageListener {
 
                             System.out.println("testTimerService: Waiting for timers to expire. . .");
                             System.out.println("22 ---> testTimerService: Waiting for timers to expire. . .");
-                            Thread.sleep(32000);
+
+                            // -------------------------------------------------------------------
+                            // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
+                            // -------------------------------------------------------------------
+                            svTimerIntervalWaitLatch.countDown(); // allow 3rd interval to run
+                            waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
 
                             // See if all except cancelled timers have expired once...
-                            // and repeating timers have executed twice...
+                            // and repeating timers have executed thrice...
                             for (int i = 0; i < timer.length; i++) {
                                 switch (i) {
                                     case 2:
                                     case 4:
-                                        if (svTimeoutCounts[i] != 2) {
+                                        if (svTimeoutCounts[i] != 3) {
                                             successful = false;
-                                            System.out.println("Timer[" + i + "] not executed twice: " + timer[i]);
+                                            System.out.println("Timer[" + i + "] not executed thrice: " + timer[i]);
                                         }
                                         break;
 
@@ -406,23 +428,20 @@ public class MDBTimedCMTBean implements MessageListener {
                 System.out.println("Creating a Timer to test access in ejbTimeout ...");
                 TimerService ts = myMessageDrivenCtx.getTimerService();
                 ivTimerService = ts;
+                svTimerResultsLatch = new CountDownLatch(1);
 
                 createTimer(2000, "testContextMethods-CMT");
                 System.out.println("Waiting for timer to expire ...");
-                Thread.sleep(4000);
-
-                int counter = 0;
-                int maxSleepTime = 180000; // d267800
 
                 System.out.println("Waiting for getEjbTimeoutResults ...");
-                while (counter < maxSleepTime) {
-                    if (svEjbTimeoutResults != null) {
-                        results[5] = svEjbTimeoutResults;
-                        break;
-                    }
-                    Thread.sleep(1000);
-                    counter++;
+
+                boolean timerFired = waitForTimers(svTimerResultsLatch, MAX_TIMER_WAIT);
+                if (!timerFired) {
+                    System.out.println("Timed out getting svEjbTimeoutResults");
                 }
+
+                results[5] = svEjbTimeoutResults;
+
                 if (results[5] == null) {
                     System.out.println("getEjbTimeoutResults returns null.");
                 }
@@ -478,7 +497,7 @@ public class MDBTimedCMTBean implements MessageListener {
         TimerConfig tCfg = new TimerConfig();
         tCfg.setInfo(info);
         tCfg.setPersistent(false);
-        Timer timer = ivTimerService.createSingleActionTimer(60000, tCfg);
+        Timer timer = ivTimerService.createSingleActionTimer(EXPIRATION, tCfg);
         return timer;
     }
 
@@ -588,6 +607,10 @@ public class MDBTimedCMTBean implements MessageListener {
 
         svTimeoutCounts = new int[timer.length];
 
+        svTimerLatch = new CountDownLatch(timer.length - 1); // one timer cancelled
+        svTimerIntervalWaitLatch = new CountDownLatch(1); // block interval timer until ready
+        svTimerIntervalLatch = new CountDownLatch(2);
+
         // -----------------------------------------------------------------------
         // 1 - Verify getTimerService() returns a valid TimerService
         // -----------------------------------------------------------------------
@@ -602,7 +625,7 @@ public class MDBTimedCMTBean implements MessageListener {
         // -----------------------------------------------------------------------
         System.out.println("testTimerService: Calling TimerService.createTimer(duration, null)");
         System.out.println("2 ---> testTimerService: Calling TimerService.createTimer(duration, null)");
-        timer[0] = createTimer(60000, (Serializable) null);
+        timer[0] = createTimer(EXPIRATION, (Serializable) null);
         assertNotNull("2 ---> TimerService.createTimer(duration, null) worked", timer[0]);
 
         // -----------------------------------------------------------------------
@@ -610,7 +633,7 @@ public class MDBTimedCMTBean implements MessageListener {
         // -----------------------------------------------------------------------
         System.out.println("testTimerService: Calling TimerService.createTimer(duration, info)");
         System.out.println("3 ---> testTimerService: Calling TimerService.createTimer(duration, info)");
-        timer[1] = createTimer(60000, new Integer(1));
+        timer[1] = createTimer(EXPIRATION, new Integer(1));
         assertNotNull("3 ---> TimerService.createTimer(duration, info) worked", timer[1]);
 
         // -----------------------------------------------------------------------
@@ -618,7 +641,7 @@ public class MDBTimedCMTBean implements MessageListener {
         // -----------------------------------------------------------------------
         System.out.println("testTimerService: Calling TimerService.createTimer(duration, interval, info)");
         System.out.println("4 ---> testTimerService: Calling TimerService.createTimer(duration, interval, info)");
-        timer[2] = createTimer(60000, INTERVAL, new Integer(2));
+        timer[2] = createTimer(EXPIRATION, INTERVAL, new Integer(2));
         assertNotNull("4 ---> TimerService.createTimer(duration, interval, info) worked", timer[2]);
 
         // -----------------------------------------------------------------------
@@ -626,7 +649,7 @@ public class MDBTimedCMTBean implements MessageListener {
         // -----------------------------------------------------------------------
         System.out.println("testTimerService: Calling TimerService.createTimer(date, info)");
         System.out.println("5 ---> testTimerService: Calling TimerService.createTimer(date, info)");
-        expiration = new Date(System.currentTimeMillis() + 60000);
+        expiration = new Date(System.currentTimeMillis() + EXPIRATION);
         timer[3] = createTimer(expiration, new Integer(3));
         assertNotNull("5 ---> TimerService.createTimer(date, info) worked", timer[3]);
 
@@ -635,7 +658,7 @@ public class MDBTimedCMTBean implements MessageListener {
         // -----------------------------------------------------------------------
         System.out.println("testTimerService: Calling TimerService.createTimer(date, interval, info)");
         System.out.println("6 ---> testTimerService: Calling TimerService.createTimer(date, interval, info)");
-        expiration = new Date(System.currentTimeMillis() + 60000);
+        expiration = new Date(System.currentTimeMillis() + EXPIRATION);
         timer[4] = createTimer(expiration, INTERVAL, new Integer(4));
         assertNotNull("6 ---> TimerService.createTimer(date, interval, info) worked", timer[4]);
 
@@ -645,10 +668,10 @@ public class MDBTimedCMTBean implements MessageListener {
         // Create an extra timer for testing now, and testing cancel later...
         System.out.println("testTimerService: Calling TimerService.createTimer(duration, info)");
         System.out.println("7 ---> testTimerService: Calling TimerService.createTimer(duration, info)");
-        timer[5] = createTimer(60000, new Integer(5));
+        timer[5] = createTimer(EXPIRATION, new Integer(5));
         System.out.println("testTimerService: Calling Timer.getTimeRemaining()");
         remaining = timer[5].getTimeRemaining();
-        assertTrue("7 ---> Timer.getTimeRemaining() worked: " + remaining, remaining >= 1 && remaining <= 60000);
+        assertTrue("7 ---> Timer.getTimeRemaining() worked: " + remaining, remaining >= 1 && remaining <= EXPIRATION);
 
         // -----------------------------------------------------------------------
         // 8 - Verify Timer.getTimeRemaining() on repeating Timer works
@@ -656,7 +679,7 @@ public class MDBTimedCMTBean implements MessageListener {
         System.out.println("testTimerService: Calling Timer.getTimeRemaining()");
         System.out.println("8 ---> testTimerService: Calling Timer.getTimeRemaining()");
         remaining = timer[2].getTimeRemaining();
-        assertTrue("8 ---> Timer.getTimeRemaining() worked: " + remaining, remaining >= 1 && remaining <= 60000);
+        assertTrue("8 ---> Timer.getTimeRemaining() worked: " + remaining, remaining >= 1 && remaining <= EXPIRATION);
 
         // -----------------------------------------------------------------------
         // 9 - Verify Timer.getInfo() returning null works
@@ -755,7 +778,10 @@ public class MDBTimedCMTBean implements MessageListener {
                 System.out.println("testTimerService: Waiting for timers to expire. . .");
                 System.out.println("18 ---> testTimerService: Waiting for timers to expire. . .");
 
-                Thread.sleep(62000);
+                // -------------------------------------------------------------------
+                // Wait up to MAX_TIMER_WAIT for all of the timers to expire
+                // -------------------------------------------------------------------
+                waitForTimers(svTimerLatch, MAX_TIMER_WAIT);
 
                 // See if all except cancelled timers have expired once...
                 for (int i = 0; i < timer.length; i++) {
@@ -824,6 +850,14 @@ public class MDBTimedCMTBean implements MessageListener {
                 }
             }
 
+            // -------------------------------------------------------------------
+            // Wait up to MAX_TIMER_WAIT for interval timers to expire
+            // -------------------------------------------------------------------
+            svTimerIntervalWaitLatch.countDown(); // allow 2nd interval to run
+            waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
+            svTimerIntervalWaitLatch = new CountDownLatch(1);
+            svTimerIntervalLatch = new CountDownLatch(2);
+
             // -----------------------------------------------------------------------
             // 21 - Verify Timer.getNextTimeout() on repeating Timer works
             // -----------------------------------------------------------------------
@@ -840,17 +874,22 @@ public class MDBTimedCMTBean implements MessageListener {
 
             System.out.println("testTimerService: Waiting for timers to expire. . .");
             System.out.println("22 ---> testTimerService: Waiting for timers to expire. . .");
-            Thread.sleep(32000);
+
+            // -------------------------------------------------------------------
+            // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
+            // -------------------------------------------------------------------
+            svTimerIntervalWaitLatch.countDown(); // allow 3rd interval to run
+            waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
 
             // See if all except cancelled timers have expired once...
-            // and repeating timers have executed twice...
+            // and repeating timers have executed thrice...
             for (int i = 0; i < timer.length; i++) {
                 switch (i) {
                     case 2:
                     case 4:
-                        if (svTimeoutCounts[i] != 2) {
+                        if (svTimeoutCounts[i] != 3) {
                             successful = false;
-                            System.out.println("Timer[" + i + "] not executed twice: " + timer[i]);
+                            System.out.println("Timer[" + i + "] not executed thrice: " + timer[i]);
                         }
                         break;
 
@@ -977,12 +1016,27 @@ public class MDBTimedCMTBean implements MessageListener {
             timerIndex = ((Integer) info).intValue();
 
         if (timerIndex >= 0) {
+
+            if (svTimeoutCounts[timerIndex] == 1) {
+                // Don't run the 2nd interval until test is ready
+                try {
+                    svTimerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
             svTimeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " + svTimeoutCounts[timerIndex] + " time(s)");
 
-            if (svTimeoutCounts[timerIndex] > 1)
+            if (svTimeoutCounts[timerIndex] == 1) {
+                svTimerLatch.countDown();
+            } else if (svTimeoutCounts[timerIndex] > 2) {
                 timer.cancel();
+                svTimerIntervalLatch.countDown();
+            } else if (svTimeoutCounts[timerIndex] > 1) {
+                svTimerIntervalLatch.countDown();
+            }
 
             return;
         }
@@ -1012,6 +1066,7 @@ public class MDBTimedCMTBean implements MessageListener {
                 timer.cancel();
 
                 svEjbTimeoutResults = testTimerServiceIndirect(2);
+                svTimerResultsLatch.countDown();
             }
 
             // --------------------------------------------------------------------
@@ -1025,6 +1080,8 @@ public class MDBTimedCMTBean implements MessageListener {
                 } catch (Throwable t) {
                     System.out.println("test failure: " + t);
                     svEjbTimeoutResults = t;
+                } finally {
+                    svTimerResultsLatch.countDown();
                 }
             }
         }
@@ -1150,5 +1207,19 @@ public class MDBTimedCMTBean implements MessageListener {
                 System.out.println(timer + " already removed");
             }
         }
+    }
+
+    private static boolean waitForTimers(CountDownLatch latch, long maxWaitTime) {
+        try {
+            System.out.println("Waiting up to " + maxWaitTime + "ms for timers to fire...");
+            if (latch.await(maxWaitTime, TimeUnit.MILLISECONDS)) {
+                System.out.println("Timers fired; waiting for timeout postInvoke to complete");
+                Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
+                return true;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.out);
+        }
+        return false;
     }
 }
