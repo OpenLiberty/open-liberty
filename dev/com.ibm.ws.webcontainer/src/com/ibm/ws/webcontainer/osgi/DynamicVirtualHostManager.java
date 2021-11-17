@@ -17,13 +17,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -42,7 +47,8 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * When a {@link com.ibm.wsspi.http.VirtualHost} is set, all contexts roots managed by the
  * DynamicVirtualHost will be added to it.
  */
-public class DynamicVirtualHostManager implements Runnable {
+@Component(name = "com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager", property = { "service.vendor=IBM"})
+public class DynamicVirtualHostManager {
 
     private static final TraceComponent tc = Tr.register(DynamicVirtualHostManager.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
 
@@ -53,8 +59,6 @@ public class DynamicVirtualHostManager implements Runnable {
     private final ConcurrentHashMap<String, VirtualHost> transportMap = new ConcurrentHashMap<String, VirtualHost>();
 
     private volatile WsLocationAdmin locationService = null;
-    
-    private volatile ScheduledExecutorService schedExecutor = null;
 
     private Map<String, Set<String>> pluginCfgVhostUris = null;
     private final static String PLUGIN_CFG = "plugin-cfg.xml";
@@ -70,17 +74,20 @@ public class DynamicVirtualHostManager implements Runnable {
             } catch (IOException e) {
             }
         }
-        
-        // Schedule a task to run after 30 seconds to see if any virtual hosts
-        // that applications reference are missing.. 
-        schedExecutor.schedule(this, 30, TimeUnit.SECONDS);
     }
-    
-    @Override
-    public void run() {
+
+    /**
+     * Invoked once the server is started: log missing vhost warnings
+     *
+     * @param ref reference to the ServerStarted service
+     */
+    @Reference(service = ServerStarted.class,
+               policy = ReferencePolicy.DYNAMIC,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setServerStarted(ServiceReference<ServerStarted> ref) {
         List<String> missingHosts = new ArrayList<String>();
 
-        // runnable used for scheduled executor.. 
         for (DynamicVirtualHost host : hostMap.values()) {
             String name = host.getName();
             if ( transportMap.get(name) == null ) {
@@ -108,6 +115,15 @@ public class DynamicVirtualHostManager implements Runnable {
         if ( !missingHosts.isEmpty() && !FrameworkState.isStopping()) {
             Tr.warning(tc, "UNKNOWN_VIRTUAL_HOST", missingHosts);
         }
+    }
+
+    /**
+     * required DS method for unsetting the ServerStarted service
+     *
+     * @param ref reference to the service
+     */
+    protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
+        // server is shutting down
     }
 
     /**
