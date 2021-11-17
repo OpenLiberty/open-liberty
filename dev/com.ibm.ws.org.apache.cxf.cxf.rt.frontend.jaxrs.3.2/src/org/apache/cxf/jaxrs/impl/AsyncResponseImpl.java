@@ -46,10 +46,13 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs21.component.LibertyJaxRsThreadPoolAdapter;
 
 public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
+
+    private static final TraceComponent tc = Tr.register(AsyncResponseImpl.class); // Liberty Change
 
     private Continuation cont;
     private final Message inMessage;
@@ -349,9 +352,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
         ContinuationProvider provider =
             (ContinuationProvider)inMessage.get(ContinuationProvider.class.getName());
         if (provider == null) {
-            throw new IllegalArgumentException(
-                "Continuation not supported. " 
-                + "Please ensure that all servlets and servlet filters support async operations");
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "continuation.not.supported")); // Liberty Change
         }
         cont = provider.getContinuation();
         initialSuspend = true;
