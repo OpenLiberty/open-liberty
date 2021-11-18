@@ -161,18 +161,51 @@ readNativeFile() {
 ## readServerEnv: Read server.env file and export environment variables.
 readServerEnv()
 {
+  # By default, we do not attempt to resolve variables in server.env
+  variableResolutionEnabled=0
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
     for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
       case $line in
-      \#*);;
+
+      \#*)
+           # line is a comment.
+           # A comment line enables variable resolution if it contains the keyword,
+           # "enable_variable_resolution", and nothing else (ignoring case and white space).
+           # If found, we use the source command ( . ) which performs all of the server.env
+           # variable assignments while resolving any variable references.
+           if [ $variableResolutionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_resolution") ]
+           then
+              processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+              if [ "#enable_variable_resolution" = $processedLine ]
+              then
+                 eval ". $1"
+                 variableResolutionEnabled=1
+              fi
+           fi ;;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
         if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
-          extractValueAndEscapeForEval "${line}"
-          eval "${var}=${escapeForEvalResult}; export ${var}"
-        fi
+           case $var in
+           *=*)
+               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
+           *)
+              # if variable resolution is enabled, then we have already "sourced" the entire file.  As a result
+              # all of the variables in server.env have already been defined as shell variables.  To make them
+              # accessible to child processes, they need to be exported.
+              if [ $variableResolutionEnabled = 1 ]
+              then
+                 eval "export ${var}"
+              else
+                 # Variable resolution is not enabled.  Just set the variable to whatever is on the right side 
+                 # of the assignment and export it.  If a later line enables variable resolution, the source
+                 # command will reassign the variable (which is already exported) to the resolved value.
+                 extractValueAndEscapeForEval "${line}"
+                 eval "${var}=${escapeForEvalResult}; export ${var}"
+              fi
+           esac
+        fi ;;
       esac
     done
     IFS=$saveIFS
