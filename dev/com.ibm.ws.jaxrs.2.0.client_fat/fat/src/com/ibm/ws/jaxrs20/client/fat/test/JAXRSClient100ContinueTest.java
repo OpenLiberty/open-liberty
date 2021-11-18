@@ -64,6 +64,8 @@ public class JAXRSClient100ContinueTest extends AbstractTest {
         WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
                                                        "com.ibm.ws.jaxrs20.client.jaxrsclient100Continue.client");
 
+        System.setProperty("mockserver.useBouncyCastleForKeyAndCertificateGeneration", "true");
+        
         mockServerPort = Integer.getInteger("member_4.http");
         //mockServerPort = 10080; //DIAG: tcptunnel --local-port=9080 --remote-host=localhost --remote-port=10080 --stay-alive --log 
         mockServerClient = startClientAndServer(mockServerPort);
