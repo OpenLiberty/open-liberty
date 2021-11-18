@@ -20,7 +20,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("/")
 public class CacheTestResource {
-    
+
     @GET
     @Path("/test")
     @Operation(summary = "test method")
