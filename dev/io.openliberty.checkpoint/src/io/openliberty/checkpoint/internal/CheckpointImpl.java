@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -81,12 +80,12 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static volatile CheckpointImpl INSTANCE = null;
 
     @Activate
-    public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin) {
-        this(cc, null, locAdmin);
+    public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin, @Reference Phase phase) {
+        this(cc, null, locAdmin, phase);
     }
 
     // only for unit tests
-    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin) {
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin, Phase phase) {
         this.cc = cc;
         if (Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_STUB_CRIU))) {
             /*
@@ -101,8 +100,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.criu = (criu == null) ? J9CRIUSupport.create() : criu;
         }
         this.locAdmin = locAdmin;
-        String phase = cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
-        this.checkpointAt = phase == null ? null : Phase.getPhase(phase);
+        this.checkpointAt = phase;
         if (this.checkpointAt == Phase.DEPLOYMENT) {
             this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
                                                                         FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
@@ -128,7 +126,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
-                        checkpointOrExitOnFailure(Phase.FEATURES);
+                        checkpointOrExitOnFailure();
                     }
                 }
 
@@ -147,14 +145,12 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         // This catch all is necessary because it is possible that "features" and "deployment"
         // tiggers may not fire for certain applications/configuration.  For example,
         // if while deploying an application no application classes are initialized.
-        if (checkpointAt != null) {
-            checkpointOrExitOnFailure(checkpointAt);
-        }
+        checkpointOrExitOnFailure();
     }
 
-    void checkpointOrExitOnFailure(Phase phase) {
+    void checkpointOrExitOnFailure() {
         try {
-            checkpoint(phase);
+            checkpoint();
         } catch (CheckpointFailedException e) {
             // Allow auto FFDC here
             // TODO log error informing we are exiting
@@ -172,12 +168,12 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     @FFDCIgnore({ IllegalStateException.class, Exception.class })
-    void checkpoint(Phase phase) throws CheckpointFailedException {
-        debug(tc, () -> "Checkpoint for : " + phase);
+    void checkpoint() throws CheckpointFailedException {
+        debug(tc, () -> "Checkpoint for : " + checkpointAt);
 
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
-            debug(tc, () -> "Trying to checkpoint a second time" + phase);
+            debug(tc, () -> "Trying to checkpoint a second time" + checkpointAt);
             return;
         }
         if (transformerReg != null) {
@@ -189,7 +185,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
 
         Object[] factories = cc.locateServices("hookFactories");
-        List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
+        List<CheckpointHook> checkpointHooks = getHooks(factories);
         prepare(checkpointHooks);
         try {
             try {
@@ -222,7 +218,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
         }
 
-        restore(phase, checkpointHooks);
+        restore(checkpointHooks);
         createRestoreMarker();
     }
 
@@ -250,7 +246,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_ENV_PROPERTIES).asFile();
     }
 
-    List<CheckpointHook> getHooks(Object[] factories, Phase phase) {
+    List<CheckpointHook> getHooks(Object[] factories) {
         if (factories == null) {
             debug(tc, () -> "No checkpoint hook factories.");
             return Collections.emptyList();
@@ -260,7 +256,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         for (Object o : factories) {
             // if o is anything other than a CheckpointHookFactory then
             // there is a bug in SCR
-            CheckpointHook hook = ((CheckpointHookFactory) o).create(phase);
+            CheckpointHook hook = ((CheckpointHookFactory) o).create(checkpointAt);
             if (hook != null) {
                 hooks.add(hook);
             }
@@ -316,7 +312,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
+    private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks("restore",
                   checkpointHooks,
                   CheckpointHook::restore,
@@ -340,7 +336,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     public static void deployCheckpoint() {
         CheckpointImpl current = INSTANCE;
         if (current != null && current.checkpointAt == Phase.DEPLOYMENT) {
-            current.checkpointOrExitOnFailure(Phase.DEPLOYMENT);
+            current.checkpointOrExitOnFailure();
         }
     }
 
