@@ -62,6 +62,9 @@ public class ManagedBeanBndType extends com.ibm.ws.javaee.ddmodel.DDParser.Eleme
 
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }        
         this.idMap = parser.idMap;
     }
 

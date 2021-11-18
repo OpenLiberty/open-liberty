@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.clientbnd;
 
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.dd.app.Module;
 import org.osgi.service.component.annotations.*;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -32,72 +25,138 @@ import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
+/**
+ * Top level processing for application client bindings.
+ * 
+ * This uses a subset of the pattern used by EJB and Web
+ * bindings and extensions.  This implementation is a
+ * simplified copy of the later pattern.
+ * 
+ * See {@link com.ibm.ws.javaee.ddmodel.common.BndExtAdapter} for
+ * more information.
+ */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd" })
-public class ApplicationClientBndAdapter implements ContainerAdapter<com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd> {
+    property = { "service.vendor=IBM",
+                 "toType=com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd" })
+public class ApplicationClientBndAdapter extends BndExtAdapter<ApplicationClientBnd> {
 
-     private static final String MODULE_NAME_INVALID = "module.name.invalid";
-     private static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
-     private static final TraceComponent tc = Tr.register(ApplicationClientBndAdapter.class);
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    volatile List<ApplicationClientBnd> configurations;
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-volatile List<com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd> configurations;
+    @Override    
+    public List<? extends ApplicationClientBnd> getConfigurations() {
+        return configurations;
+    }
+    
+    //
 
     @Override
-    @FFDCIgnore(ParseException.class)
-    public com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
-        com.ibm.ws.javaee.dd.client.ApplicationClient primary = containerToAdapt.adapt(com.ibm.ws.javaee.dd.client.ApplicationClient.class);
-        String primaryVersion = primary == null ? null : primary.getVersion();
-        String ddEntryName;
-        boolean xmi = "1.2".equals(primaryVersion) || "1.3".equals(primaryVersion) || "1.4".equals(primaryVersion);
-        if (xmi) {
-            ddEntryName = com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd.XMI_BND_NAME;
-        } else {
-            ddEntryName = com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd.XML_BND_NAME;
+    public ApplicationClientBnd adapt(
+        Container ddRoot,
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot,
+        Container ddAdaptRoot) throws UnableToAdaptException {
+
+        String ddVersion = getAppClientVersion(ddAdaptRoot);
+        boolean xmi = ( "1.2".equals(ddVersion) ||
+                        "1.3".equals(ddVersion) ||
+                        "1.4".equals(ddVersion) );
+        String ddPath =
+                ( xmi ? ApplicationClientBnd.XMI_BND_NAME
+                      : ApplicationClientBnd.XML_BND_NAME );  
+
+        return process(
+                ddRoot, ddOverlay, ddArtifactRoot, ddAdaptRoot,
+                ddPath, xmi);
+    }
+    
+    //
+
+    /**
+     * Local operation to retrieve configuration overrides.
+     * 
+     * Other cases have a module name which is used to match
+     * overrides.  Application clients do not have a module name.
+     *
+     * @param ddOverlay The root overlay container of the descriptor.  This will be
+     *     a module overlay.
+     * @param ddArtifactRoot The root artifact container of the descriptor.  This will
+     *     be a module container.
+     *
+     * @return The selected configuration override.  Null if none is available.
+     */
+    @Override
+    protected ApplicationClientBnd getConfigOverrides(
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot) {
+
+        List<? extends ApplicationClientBnd> useConfigurations = getConfigurations();                
+        if ( (useConfigurations == null) || useConfigurations.isEmpty() ) {
+            return null;
         }
 
-        Entry ddEntry = containerToAdapt.getEntry(ddEntryName);
-com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndComponentImpl fromConfig = getConfigOverrides(rootOverlay, artifactContainer);
-if (ddEntry == null && fromConfig == null)
-    return null;
-        if (ddEntry != null) {
-            try {
-                com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd fromApp = 
-              new com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndDDParser(containerToAdapt, ddEntry, xmi).parse();
-               if (fromConfig == null) {
-                   return fromApp;
-                } else {  
-                   fromConfig.setDelegate(fromApp);
-                    return fromConfig;
-                }
-            } catch (ParseException e) {
-                throw new UnableToAdaptException(e);
+        ApplicationInfo appInfo = (ApplicationInfo)
+            ddOverlay.getFromNonPersistentCache(ddArtifactRoot.getPath(), ApplicationInfo.class);
+
+        NestedConfigHelper configHelper = null;
+        if ( (appInfo != null) && (appInfo instanceof ExtendedApplicationInfo) ) {
+            configHelper = ((ExtendedApplicationInfo) appInfo).getConfigHelper();
+        }
+        if ( configHelper == null ) {
+            return null;
+        }
+        String appServicePid = (String) configHelper.get("service.pid");
+        String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
+
+        for ( ApplicationClientBnd appClientBnd : useConfigurations ) {
+            String parentPid = getParentPid(appClientBnd);
+            if ( appServicePid.equals(parentPid) || parentPid.equals(appExtendsPid) ) {
+                return appClientBnd;
             }
         }
-
-        return fromConfig;
+        return null;
     }
-private com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndComponentImpl getConfigOverrides(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {
-     if (configurations == null || configurations.isEmpty())
-          return null;
 
-     ApplicationInfo appInfo = (ApplicationInfo) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
-     NestedConfigHelper configHelper = null;
-     if (appInfo != null && appInfo instanceof ExtendedApplicationInfo)
-          configHelper = ((ExtendedApplicationInfo) appInfo).getConfigHelper();
-      if (configHelper == null)
-          return null;
+    //
+    
+    @Override    
+    protected ApplicationClientBnd parse(Container ddAdaptRoot, Entry ddEntry, boolean xmi)
+            throws ParseException {
+        return ( new ApplicationClientBndDDParser(ddAdaptRoot, ddEntry, xmi) ).parse();                
+    }
+    
+    //
 
-     String servicePid = (String) configHelper.get("service.pid");
-     String extendsPid = (String) configHelper.get("ibm.extends.source.pid");
-     for (com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd config : configurations) {
-          com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndComponentImpl configImpl = (com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndComponentImpl) config;
-          String parentPid = (String) configImpl.getConfigAdminProperties().get("config.parentPID");
-          if ( servicePid.equals(parentPid) || parentPid.equals(extendsPid)) {
-                    return configImpl;
-          }
-     }
-     return null;
-}
+    @Override    
+    protected String getParentPid(ApplicationClientBnd appClientBnd) {
+        ApplicationClientBndComponentImpl appClientBndImpl =
+            (ApplicationClientBndComponentImpl) appClientBnd;
+        return (String) appClientBndImpl.getConfigAdminProperties().get("config.parentPID");        
+    }
+
+    @Override    
+    protected String getModuleName(ApplicationClientBnd appClientBnd) {
+        return null; // Unused
+    }
+
+    @Override    
+    protected String getElementTag() {
+        return "application-client-bnd"; // Unused
+    }
+
+    @Override    
+    protected Class<?> getCacheType() {
+        return ApplicationClientBndAdapter.class; // Unused
+    }
+    
+    @Override    
+    protected void setDelegate(
+            ApplicationClientBnd appClientBnd,
+            ApplicationClientBnd appClientBndDelegate) {
+
+        ((ApplicationClientBndComponentImpl) appClientBnd).setDelegate(appClientBndDelegate);
+    }
 }
