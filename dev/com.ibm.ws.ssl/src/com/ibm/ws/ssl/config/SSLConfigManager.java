@@ -67,8 +67,8 @@ public class SSLConfigManager {
         static final SSLConfigManager INSTANCE = new SSLConfigManager();
     }
 
-    private final String SOCKET_FACTORY_PROP = "ssl.SocketFactory.provider";
-    private final String SOCKET_FACTORY_CLASS = "com.ibm.ws.kernel.boot.security.SSLSocketFactoryProxy";
+    private static final String SOCKET_FACTORY_PROP = "ssl.SocketFactory.provider";
+    public static final String SOCKET_FACTORY_CLASS = "com.ibm.ws.kernel.boot.security.SSLSocketFactoryProxy";
 
     private boolean isServerProcess = false;
     private boolean transportSecuritySet = false;
@@ -105,11 +105,11 @@ public class SSLConfigManager {
     /***
      * This method parses the configuration.
      *
-     * @param map Global SSL configuration properties, most likely injected from SSLComponent
-     * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
-     * @param isServer Boolean flag to indiciate if the code is running within a server process
+     * @param map                      Global SSL configuration properties, most likely injected from SSLComponent
+     * @param reinitialize             Boolean flag to indicate if the configuration should be re-loaded
+     * @param isServer                 Boolean flag to indiciate if the code is running within a server process
      * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
-     * @param aliasPIDs Map of OSGi PID-indexed repertoire IDs
+     * @param aliasPIDs                Map of OSGi PID-indexed repertoire IDs
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,

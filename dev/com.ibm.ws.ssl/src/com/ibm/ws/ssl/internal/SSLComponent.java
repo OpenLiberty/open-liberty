@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ssl.internal;
 
+import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -93,6 +94,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      */
     @Activate
     protected synchronized void activate(ComponentContext ctx, Map<String, Object> properties) {
+        setTheSocketFactoryClass(LibertySSLSocketFactory.class);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activated: " + properties);
         }
@@ -140,7 +142,25 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         AbstractJSSEProvider.clearSSLContextCache();
         processConfig(true);
         this.componentContext = null;
+        setTheSocketFactoryClass(null);
+    }
 
+    /**
+     *
+     */
+    private void setTheSocketFactoryClass(Class<?> theClazz) {
+        try {
+            Class<?> theProxyClass = ClassLoader.getSystemClassLoader().loadClass(SSLConfigManager.SOCKET_FACTORY_CLASS);
+            Field theFactoryClassField = theProxyClass.getDeclaredField("theFactoryClass");
+            theFactoryClassField.setAccessible(true);
+            theFactoryClassField.set(null, theClazz);
+        } catch (ClassNotFoundException e) {
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        }
+        // Auto FFDC is fine here
+        // TODO decide if you want to have an error message.
     }
 
     @Modified
@@ -269,7 +289,8 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     @Reference(service = FeatureProvisioner.class)
     protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
