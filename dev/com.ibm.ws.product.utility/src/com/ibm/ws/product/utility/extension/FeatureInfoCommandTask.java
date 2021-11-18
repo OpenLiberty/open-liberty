@@ -78,10 +78,6 @@ public class FeatureInfoCommandTask extends BaseCommandTask {
                         int colonIndex = featureName.indexOf(":");
                         commandConsole.printInfoMessage(featureName.substring(colonIndex + 1));
                     }
-
-                    commandConsole.printInfoMessage(" [");
-                    commandConsole.printInfoMessage(featureDefintion.getVersion().toString());
-                    commandConsole.printlnInfoMessage("]");
                 }
             }
         }
