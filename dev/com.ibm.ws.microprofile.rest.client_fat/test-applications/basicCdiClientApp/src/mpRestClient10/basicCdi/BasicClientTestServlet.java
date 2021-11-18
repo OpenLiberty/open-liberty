@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,8 +72,12 @@ public class BasicClientTestServlet extends FATServlet {
             assertEquals("Widget returned from GET does not match widget POSTed", 100, w.getQuantity());
             assertEquals("Widget returned from GET does not match widget POSTed", 0.2, w.getWeight(), 0.0);
         } finally {
-            //ensure we delete so as to not throw off other tests
-            client.removeWidget("Pencils");
+            try {
+                //ensure we delete so as to not throw off other tests
+                client.removeWidget("Pencils");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

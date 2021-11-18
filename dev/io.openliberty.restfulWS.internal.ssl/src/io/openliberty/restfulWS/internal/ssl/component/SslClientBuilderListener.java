@@ -34,10 +34,10 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConstants;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 
-@Component(property = { "service.vendor=IBM" })
+@Component(immediate = true, property = { "service.vendor=IBM" }, service = ClientBuilderListener.class)
 public class SslClientBuilderListener implements ClientBuilderListener {
 
-    private JSSEHelper jsseHelper;
+    private static JSSEHelper jsseHelper;
 
     @Reference(name = "SSLSupportService",
                service = SSLSupport.class,
@@ -56,16 +56,16 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     }
 
     @Override
-    public void building(ClientBuilder clientBuilder) {
+    public void building(ClientBuilder clientBuilder) { // for JAX-RS clients
         Object sslRef = clientBuilder.getConfiguration().getProperty(JAXRSClientConstants.SSL_REFKEY);
         try {
-            getSSLContext(toString(sslRef)).ifPresent(clientBuilder::sslContext);
+            getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
         } catch (SSLException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    private Optional<SSLContext> getSSLContext(String sslRef) throws SSLException {
+    static Optional<SSLContext> getSSLContext(String sslRef) throws SSLException {
         if (jsseHelper == null) {
             return Optional.empty();
         }
@@ -91,7 +91,7 @@ public class SslClientBuilderListener implements ClientBuilderListener {
         }
     }
 
-    private String toString(Object o) {
+    static String toRefString(Object o) {
         if (o instanceof Supplier) {
             o = ((Supplier<?>)o).get();
         }
