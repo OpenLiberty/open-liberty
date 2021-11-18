@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.Permission;
-import java.security.PermissionCollection;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -40,13 +38,10 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
-
-import javax.security.auth.Policy;
 
 import org.osgi.framework.Bundle;
 
@@ -121,7 +116,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
-        // only use system transformers if IS_BETA (part of checkpoint feature)
         this.systemTransformers = systemTransformers;
         this.parent = parent;
         this.config = config;
@@ -337,7 +331,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have global tranformers");
+                    Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have system tranformers");
                 }
                 try {
                     bytes = toTransform.getActualBytes();
@@ -612,7 +606,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     } catch (PrivilegedActionException paex) {                 
                     }
 
-                    CodeSource cs = pd.getCodeSource();
 
                     final ProtectionDomain fpd = pd;
                     java.security.PermissionCollection pc = null;

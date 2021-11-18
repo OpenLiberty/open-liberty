@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s nem \u00e9szlelhet\u0151.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=A(z) {0} azonos\u00edt\u00f3 nem l\u00e9tezik a(z) {1} kulcscsom\u00f3ban. Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes kulcs az AES jelsz\u00f3 titkos\u00edt\u00e1shoz.
+saf.cert.is.not.key=A(z) {0} tan\u00fas\u00edtv\u00e1ny nem kulcsbejegyz\u00e9s. A tan\u00fas\u00edtv\u00e1nynak kulcsbejegyz\u00e9snek kell lennie ahhoz, hogy AES jelsz\u00f3 titkos\u00edt\u00e1si kulcsk\u00e9nt lehessen haszn\u00e1lni.
+saf.cert.expired=A(z) {0} tan\u00fas\u00edtv\u00e1ny lej\u00e1rt \u00e9s nem haszn\u00e1lhat\u00f3 AES jelsz\u00f3 titkos\u00edt\u00e1si kulcsk\u00e9nt.
+saf.keyring.does.not.exist=A(z) {0} kulcst\u00e1rol\u00f3 nem l\u00e9tezik. Nem k\u00e9rhet\u0151 le tan\u00fas\u00edtv\u00e1ny az AES jelsz\u00f3 titkos\u00edt\u00e1si kulcsk\u00e9nt haszn\u00e1land\u00f3 kulcst\u00e1rol\u00f3b\u00f3l.
+saf.arg.not.onZ=A --keyring, --keyringType \u00e9s --keyLabel argumentumok csak z/OS rendszeren haszn\u00e1lhat\u00f3k.
+saf.arg.not.aes=A --keyring, --keyringType \u00e9s --keyLabel argumentumok csak AES k\u00f3dol\u00e1ssal haszn\u00e1lhat\u00f3k. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

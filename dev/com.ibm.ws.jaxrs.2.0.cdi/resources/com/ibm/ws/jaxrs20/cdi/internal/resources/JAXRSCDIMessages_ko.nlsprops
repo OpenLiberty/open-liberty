@@ -9,8 +9,6 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-# NLS_MESSAGEFORMAT_ALL
-#
 #CMVCPATHNAME com.ibm.ws.jaxrs-2.0.cdi/resources/com/ibm/ws/jaxrs20/cdi/internal/resources/JAXRSCDIMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
@@ -25,7 +23,7 @@ warning.jaxrs.cdi.resource.explanation=Liberty\uac00 CDI\uc5d0\uc11c \uc778\uc2a
 warning.jaxrs.cdi.resource.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
 
 warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: JAXRS \uc790\uc6d0 {0}\uc758 \ubc94\uc704 {1}\uc774(\uac00) CDI \ubc94\uc704 {2}\uacfc(\uc640) \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. Liberty\uac00 {3}\uc5d0\uc11c \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.
-warning.jaxrs.cdi.resource.mismatch.explanation=JAXRS \uc790\uc6d0 \ubc94\uc704\uac00 CDI \ubc94\uc704\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uace0 \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\uac00 CDI\uc5d0 \uc788\uc73c\uba74 Liberty\uac00 CDI\uc5d0\uc11c \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4. JAXRS\uc5d0\uc11c \uac00\uc838\uc628 \uacbd\uc6b0 \uc778\uc2a4\ud134\uc2a4\ub294 CDI \uc778\uc81d\uc158\uc744 \ud3ec\ud568\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+warning.jaxrs.cdi.resource.mismatch.explanation=JAXRS \uc790\uc6d0 \ubc94\uc704\uac00 CDI \ubc94\uc704\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uace0 \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\uac00 CDI\uc5d0 \uc788\uc73c\uba74 Liberty\uac00 CDI\uc5d0\uc11c \uc790\uc6d0 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4. \uc778\uc2a4\ud134\uc2a4\ub97c JAXRS\uc5d0\uc11c \uac00\uc838\uc628 \uacbd\uc6b0 \uc774 \uc778\uc2a4\ud134\uc2a4\uc5d0\ub294 CDI \uc778\uc81d\uc158\uc774 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 warning.jaxrs.cdi.resource.mismatch.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
 
 warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: JAXRS \uc81c\uacf5\uc790 {0}\uc758 CDI \ubc94\uc704\ub294 {1}\uc785\ub2c8\ub2e4. Liberty\uac00 {2}\uc5d0\uc11c \uc81c\uacf5\uc790 \uc778\uc2a4\ud134\uc2a4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.

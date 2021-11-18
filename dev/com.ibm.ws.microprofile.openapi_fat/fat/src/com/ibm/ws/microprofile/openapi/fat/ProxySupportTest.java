@@ -13,16 +13,20 @@ package com.ibm.ws.microprofile.openapi.fat;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -41,14 +45,26 @@ public class ProxySupportTest extends FATServletClient {
 
     private static final String APP_NAME_1 = "appWithStaticDoc";
 
-    @Server("ProxySupportServer")
+    private static final String SERVER_NAME = "ProxySupportServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
 
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        ShrinkHelper.defaultApp(server, APP_NAME_1);
+        DeployOptions[] opts = {
+            DeployOptions.SERVER_ONLY
+        };
+        ShrinkHelper.defaultApp(server, APP_NAME_1, opts);
 
         LibertyServer.setValidateApps(false);
 
@@ -86,11 +102,13 @@ public class ProxySupportTest extends FATServletClient {
     public void testBasic() throws Exception {
         String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
-        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_1));
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(),
+            server.getHttpDefaultSecurePort(), APP_NAME_1));
 
         openapi = OpenAPIConnection.openAPIDocsConnection(server, true).download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
-        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_1));
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(),
+            server.getHttpDefaultSecurePort(), APP_NAME_1));
     }
 
     /**
@@ -101,11 +119,13 @@ public class ProxySupportTest extends FATServletClient {
      */
     @Test
     public void testRefererDifferentPort() throws Exception {
-        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).header(REFERER, "http://openliberty.io/openapi").download();
+        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false)
+            .header(REFERER, "http://openliberty.io/openapi").download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
         OpenAPITestUtil.checkServer(openapiNode, "http://openliberty.io" + "/" + APP_NAME_1);
 
-        openapi = OpenAPIConnection.openAPIDocsConnection(server, true).header(REFERER, "https://openliberty.io/openapi").download();
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true)
+            .header(REFERER, "https://openliberty.io/openapi").download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
         OpenAPITestUtil.checkServer(openapiNode, "https://openliberty.io" + "/" + APP_NAME_1);
     }
@@ -121,13 +141,15 @@ public class ProxySupportTest extends FATServletClient {
         String referer = "http://openliberty.io:" + server.getHttpDefaultPort() + "/openapi";
         String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).header(REFERER, referer).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
-        OpenAPITestUtil.checkServer(openapiNode, "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
-                                    "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
+            "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
 
         referer = "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/openapi";
         openapi = OpenAPIConnection.openAPIDocsConnection(server, true).header(REFERER, referer).download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
-        OpenAPITestUtil.checkServer(openapiNode, "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
-                                    "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
+            "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
     }
 }

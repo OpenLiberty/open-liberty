@@ -87,6 +87,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=No se detecta el cifrado de contrase\u00f1a personalizado.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=La etiqueta {0} no existe en el conjunto de claves {1}. No se puede encontrar una clave v\u00e1lida para el cifrado de contrase\u00f1as AES.
+saf.cert.is.not.key=El certificado {0} no es una entrada de clave. El certificado debe ser una entrada de clave para utilizarlo como clave de cifrado de contrase\u00f1as AES.
+saf.cert.expired=El certificado {0} ha caducado y no se puede utilizar como clave de cifrado de contrase\u00f1a AES.
+saf.keyring.does.not.exist=El almac\u00e9n de claves {0} no existe. No se puede recuperar ning\u00fan certificado del almac\u00e9n de claves para utilizarlo como clave de cifrado de contrase\u00f1a AES.
+saf.arg.not.onZ=Los argumentos --keyring, --keyringType y --keyLabel s\u00f3lo pueden utilizarse en z/OS.
+saf.arg.not.aes=Los argumentos --keyring, --keyringType y --keyLabel pueden utilizarse s\u00f3lo con la codificaci\u00f3n AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

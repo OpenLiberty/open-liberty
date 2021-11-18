@@ -9,8 +9,6 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-# NLS_MESSAGEFORMAT_ALL
-#
 #CMVCPATHNAME com.ibm.ws.jaxws.clientcontainer/resources/com/ibm/ws/jaxws/internal/resources/JaxWsClientContainerMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW

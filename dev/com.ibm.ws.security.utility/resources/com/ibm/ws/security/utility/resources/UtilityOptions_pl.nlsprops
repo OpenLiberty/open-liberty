@@ -75,6 +75,13 @@ encode.option-desc.listCustom=\tWy\u015bwietl informacje o niestandardowym szyfr
 \tname : nazwa algorytmu niestandardowego szyfrowania has\u0142a\n\
 \tfeaturename : nazwa sk\u0142adnika\n\
 \tdescription : opis niestandardowego szyfrowania has\u0142a
+encode.option-key.keyring=\ \ \ \ --keyring=[plik_kluczy]
+encode.option-desc.keyring=\tOkre\u015bl plik kluczy SAF, w kt\u00f3rym znajduje si\u0119 klucz szyfrowania AES has\u0142a.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[typ_pliku_kluczy]
+encode.option-desc.keyringType=\tOkre\u015bl typ pliku kluczy SAF, w kt\u00f3rym znajduje si\u0119 klucz\n\
+\tszyfrowania AES.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[etykieta_klucza]
+encode.option-desc.keyLabel=\tOkre\u015bl etykiet\u0119 certyfikatu SAF klucza szyfrowania AES.
 
 
 

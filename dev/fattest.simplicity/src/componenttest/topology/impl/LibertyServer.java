@@ -6150,6 +6150,7 @@ public class LibertyServer implements LogMonitorClient {
         if (stopMsg == null) {
             return false;
         }
+        removeInstalledAppForValidation(appName);
 
         return true;
     }

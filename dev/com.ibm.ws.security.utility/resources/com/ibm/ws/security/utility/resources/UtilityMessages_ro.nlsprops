@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Criptarea de parol\u0103 personalizat\u0103 nu este detectat\u0103.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=Eticheta {0} nu exist\u0103 \u00een inelul de chei {1}. Nu s-a putut g\u0103si o cheie valid\u0103 pentru criptarea parolei AES.
+saf.cert.is.not.key=Certificatul {0} nu este o intrare de cheie. Certificatul trebuie s\u0103 fie o intrare de cheie pentru a-l putea folosi ca o cheie de criptare parol\u0103 AES.
+saf.cert.expired=Certificatul {0} a expirat \u015fi nu poate fi folosit ca o cheie de criptare parol\u0103 AES.
+saf.keyring.does.not.exist=Depozitul de chei {0} nu exist\u0103. Nu poate fi extras niciun certificat din depozitul de chei pentru a fi folosit ca \u015fi cheia de criptare parol\u0103 AES.
+saf.arg.not.onZ=Argumentele --keyring, --keyringType \u015fi --keyLabel pot fi folosite doar pe z/OS.
+saf.arg.not.aes=Argumentele --keyring, --keyringType \u015fi --keyLabel pot fi folosite doar cu codificarea AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

@@ -20,7 +20,7 @@ fat.project: true
 
 fat.minimum.java.level: 1.8
 
-tested.features=mpOpenAPI-2.0
+tested.features=mpOpenAPI-2.0,restfulwsclient-3.0, transportsecurity-1.0, mpconfig-3.0, servlet-5.0, concurrent-2.0, mpopenapi-3.0, jndi-1.0, restfulws-3.0, jsonp-2.0, cdi-3.0
 
 -buildpath: \
     com.ibm.ws.microprofile.openapi;version=latest, \

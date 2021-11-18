@@ -9,8 +9,7 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-# NLS_MESSAGEFORMAT_ALL
-#
+
 #CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW

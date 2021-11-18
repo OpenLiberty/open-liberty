@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Die angepasste Kennwortverschl\u00fcsselung wurde nicht erkannt.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=Die Bezeichnung {0} ist im Schl\u00fcsselring {1} nicht vorhanden. Es konnte kein g\u00fcltiger Schl\u00fcssel f\u00fcr die AES-Kennwortverschl\u00fcsselung gefunden werden.
+saf.cert.is.not.key=Das Zertifikat {0} ist kein Schl\u00fcsseleintrag. Das Zertifikat muss ein Schl\u00fcsseleintrag sein, um ihn als AES-Kennwortverschl\u00fcsselungsschl\u00fcssel zu verwenden.
+saf.cert.expired=Das Zertifikat {0} ist abgelaufen und kann nicht als AES-Kennwortverschl\u00fcsselungsschl\u00fcssel verwendet werden.
+saf.keyring.does.not.exist=Der Schl\u00fcsselspeicher {0} ist nicht vorhanden. Es kann kein Zertifikat aus dem Schl\u00fcsselspeicher abgerufen werden, der als AES-Kennwortverschl\u00fcsselungsschl\u00fcssel verwendet werden soll.
+saf.arg.not.onZ=Die Argumente -- keyring, -- keyringType und -- keyLabel k\u00f6nnen nur unter z/OS verwendet werden.
+saf.arg.not.aes=Die Argumente -- keyring, -- keyringType, und -- keyLabel k\u00f6nnen nur mit AES-Codierung verwendet werden. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

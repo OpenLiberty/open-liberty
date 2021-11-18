@@ -286,6 +286,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u5bf9 [{0}] \u7684\
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u63a5\u6536\u5230\u7684\u8bf7\u6c42\u5305\u542b\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=\u8bf7\u9a8c\u8bc1 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u914d\u7f6e\u548c\u5ba2\u6237\u673a\u914d\u7f6e\u3002\u5982\u679c\u4fee\u6539 Cookie \u7684\u7528\u6237\u4ee3\u7406\u5177\u6709\u7684\u4e3b\u673a\u540d\u4e0e\u5411\u63d0\u4f9b\u7a0b\u5e8f\u6ce8\u518c\u7684\u91cd\u5b9a\u5411\u7684\u4e3b\u673a\u540d\u4e0d\u540c\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u5bfc\u81f4\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002\u5982\u679c\u4e3b\u673a\u540d\u7b26\u5408\u9884\u671f\uff0c\u90a3\u4e48\u5c06\u8be5\u4e3b\u673a\u540d\u6dfb\u52a0\u5230 server.xml \u4e2d\u7684 webAppSecurity \u5143\u7d20\u7684 wasReqURLRedirectDomainNames \u5c5e\u6027\u3002
 
-# 1533, 1534, 1535 used in clients.common bundle, do not use here.
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: OpenID Connect \u5ba2\u6237\u673a {0} \u65e0\u6cd5\u4ece Web \u54cd\u5e94\u4e2d\u62bd\u53d6 JSON Web \u4ee4\u724c (JWT) \u58f0\u660e\u3002{1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Web \u54cd\u5e94\u5fc5\u987b\u662f\u91c7\u7528 JSON Web \u52a0\u5bc6 (JWE) \u6216 JSON Web \u7b7e\u540d (JWS) \u683c\u5f0f\u7684 JWT\u3002\u54cd\u5e94\u53ef\u80fd\u683c\u5f0f\u4e0d\u6b63\u786e\uff0c\u6216\u8005 OpenID Connect \u5ba2\u6237\u673a\u5728\u5904\u7406\u54cd\u5e94\u65f6\u9047\u5230\u4e86\u53e6\u4e00\u4e2a\u9519\u8bef\u3002
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=\u8bf7\u53c2\u9605\u6d88\u606f\u4e2d\u7684\u9519\u8bef\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002\u8bf7\u9a8c\u8bc1\u54cd\u5e94\u662f\u5426\u4e3a JWT \u683c\u5f0f\u3002
+#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

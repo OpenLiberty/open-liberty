@@ -68,8 +68,16 @@ public class User {
      * @param phone     the phone number associated with this User instance
      * @param status    the status associated with this User instance
      */
-    public User(int id, String userName, String password, String firstName,
-        String lastName, String sex, int age, String email, String phone, int status) {
+    public User(int id,
+                String userName,
+                String password,
+                String firstName,
+                String lastName,
+                String sex,
+                int age,
+                String email,
+                String phone,
+                int status) {
         super();
         this.id = id;
         this.userName = userName;
@@ -97,8 +105,7 @@ public class User {
      *
      * @param id the unique id for this User instance
      */
-    public void setId(
-        int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -116,8 +123,7 @@ public class User {
      *
      * @param userName the user name for this User instance
      */
-    public void setUsername(
-        String userName) {
+    public void setUsername(String userName) {
         this.userName = userName;
     }
 
@@ -135,8 +141,7 @@ public class User {
      *
      * @param password the password associated with this User instance
      */
-    public void setPassword(
-        String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -154,8 +159,7 @@ public class User {
      *
      * @param firstName the first name for this User instance
      */
-    public void setFirstName(
-        String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
@@ -173,8 +177,7 @@ public class User {
      *
      * @param lastName the last name for this User instance
      */
-    public void setLastName(
-        String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -192,8 +195,7 @@ public class User {
      *
      * @param sex the sex for this User instance
      */
-    public void setSex(
-        String sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -211,8 +213,7 @@ public class User {
      *
      * @param age the age value for this User instance
      */
-    public void setAge(
-        int age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
@@ -230,8 +231,7 @@ public class User {
      *
      * @param email the email associated with this User instance
      */
-    public void setEmail(
-        String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -249,8 +249,7 @@ public class User {
      *
      * @param phone the phone number associated with this User instance
      */
-    public void setPhone(
-        String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -270,8 +269,7 @@ public class User {
      *
      * @param status an integer representing the status of this User instance
      */
-    public void setUserStatus(
-        int status) {
+    public void setUserStatus(int status) {
         this.status = status;
     }
 
@@ -285,8 +283,7 @@ public class User {
     /**
      * @param height the height to set
      */
-    public void setHeight(
-        double height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 

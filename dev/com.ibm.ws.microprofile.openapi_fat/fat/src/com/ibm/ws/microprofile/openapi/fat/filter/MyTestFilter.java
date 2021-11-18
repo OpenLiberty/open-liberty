@@ -23,8 +23,7 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 public class MyTestFilter implements OASFilter {
 
     @Override
-    public void filterOpenAPI(
-        OpenAPI openAPI) {
+    public void filterOpenAPI(OpenAPI openAPI) {
 
         Info info = OASFactory.createObject(Info.class);
 

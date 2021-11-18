@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
@@ -28,11 +29,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-@Mode
 @RunWith(FATRunner.class)
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     @Server("com.ibm.ws.transaction_LKCLOUD001")
@@ -112,7 +110,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testDynamicCloudRecovery007() throws Exception {
         dynamicTest(server1, server2, 7, 2);
     }
@@ -126,7 +123,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testDynamicCloudRecovery090() throws Exception {
         dynamicTest(server1, server2, 90, 3);
     }
@@ -141,7 +137,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testDefaultAttributesCloudRecovery007() throws Exception {
         dynamicTest(defaultAttributesServer1, defaultAttributesServer2, 7, 2);
     }
@@ -158,7 +153,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testDynamicCloudRecoveryInterruptedPeerRecovery() throws Exception {
         dynamicTest(server1, server2, "InterruptedPeerRecovery", 2);
     }
@@ -173,7 +167,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testLocalServerAcquiresLogImmediately() throws Exception {
         int test = 1;
         final String method = "testLocalServerAcquiresLogImmediately";
@@ -236,6 +229,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 testFailureString = "XAResources left in partner log on first server";
             }
 
+            FATUtils.stopServers(server1);
         }
 
         tidyServersAfterTest(server1);
@@ -258,7 +252,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testPeerServerDoesNotAcquireLogs() throws Exception {
         int test = 2;
 
@@ -373,6 +366,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
             }
         } finally {
+            FATUtils.stopServers(server1);
             tidyServersAfterTest(server1, longPeerStaleTimeServer2);
         }
 
@@ -395,7 +389,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "java.lang.RuntimeException" })
     public void testLocalServerDoesAcquireLogs() throws Exception {
         int test = 3;
@@ -459,7 +452,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testSetLatchLocalServer() throws Exception {
         int test = 1;
         final String method = "testSetLatchLocalServer";
@@ -539,6 +531,8 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                     testFailed = true;
                     testFailureString = "XAResources left in partner log on first server";
                 }
+
+                FATUtils.stopServers(peerLockingEnabledServer1);
             }
         }
 
@@ -563,7 +557,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testSetLatchPeerServer() throws Exception {
         int test = 1;
         final String method = "testSetLatchPeerServer";
@@ -675,6 +668,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 testFailureString = "XAResources left in partner log on first server";
             }
 
+            FATUtils.stopServers(peerLockingDisabledServer1);
         }
 
         tidyServersAfterTest(peerLockingDisabledServer1, server2);
@@ -692,7 +686,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testColdStartLocalAndPeerServer() throws Exception {
 
         // Delete existing DB files, so that the tables that support transaction recovery
@@ -711,8 +704,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         final String method = "dynamicTest";
 
         StringBuilder sb = null;
-        boolean testFailed = false;
-        String testFailureString = "";
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -727,82 +718,55 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
 
-        // Now start server2
-        if (!testFailed) {
-            FATUtils.startServers(server2);
+        // Start Server2
+        FATUtils.startServers(server2);
 
-            // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
-                testFailed = true;
-                testFailureString = "Second server did not perform peer recovery";
-            }
-        }
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server2.getServerName() + " did not perform peer recovery",
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
 
         // flush the resource states
-        if (!testFailed) {
-
-            try {
-                sb = runTestWithResponse(server2, servletName, "dumpState");
-                Log.info(this.getClass(), method, sb.toString());
-            } catch (Exception e) {
-                Log.error(this.getClass(), method, e);
-                throw e;
-            }
-
-            //Stop server2
-            FATUtils.stopServers(server2);
-
-            // restart 1st server
-            FATUtils.startServers(server1);
-
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on first server";
-            }
+        try {
+            sb = runTestWithResponse(server2, servletName, "dumpState");
+            Log.info(this.getClass(), method, sb.toString());
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            throw e;
         }
 
-        if (!testFailed) {
+        //Stop server2
+        FATUtils.stopServers(server2);
 
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
-            try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
+        // restart 1st server
+        FATUtils.startServers(server1);
 
-            // Bounce first server to clear log
-            FATUtils.stopServers(new String[] { "CWWKN0005W" }, server1);
-            FATUtils.startServers(server1);
+        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I", LOG_SEARCH_TIMEOUT));
 
-            // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
+        // check resource states
+        Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
 
-        }
+        sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
+
+        Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
+
+        // Bounce first server to clear log
+        FATUtils.stopServers(new String[] { "CWWKN0005W" }, server1);
+        FATUtils.startServers(server1);
+
+        // Check log was cleared
+
+        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I", LOG_SEARCH_TIMEOUT));
+        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(server1);
 
         tidyServersAfterTest(server1, server2);
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
-        if (testFailed)
-            fail(testFailureString);
     }
 
     @Override
     protected void setUp(LibertyServer server) throws Exception {
-        // TODO Auto-generated method stub
-
     }
 }

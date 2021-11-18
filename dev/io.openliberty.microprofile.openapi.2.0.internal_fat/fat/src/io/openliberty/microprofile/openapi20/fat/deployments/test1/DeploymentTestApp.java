@@ -4,4 +4,5 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
-public class DeploymentTestApp extends Application {}
+public class DeploymentTestApp extends Application {
+}

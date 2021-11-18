@@ -9,8 +9,6 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-# NLS_MESSAGEFORMAT_ALL
-#
 #CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
@@ -209,6 +207,7 @@ err.unsupported.jmx.operation.useraction=F\u00fchren Sie keine nicht unterst\u00
 error.jacksonproviderregister.exception=CWWKW0060E: Der Jackson-Provider kann nicht registriert werden. Ursache: {0}: {1}.
 error.jacksonproviderregister.exception.explanation= Der Jackson-Provider ist nicht ordnungsgem\u00e4\u00df konfiguriert.
 error.jacksonproviderregister.exception.useraction= Stellen Sie sicher, dass der Jackson-Provider ordnungsgem\u00e4\u00df konfiguriert ist. Wenn der Fehler weiter besteht, suchen Sie im FFDC-Protokoll im entsprechenden Verzeichnis logs/ffdc des Servers nach weiteren Einzelheiten. 
+
 warn.invalid.authorization.token.type=CWWKW0061W: Der in der Serverkonfiguration angegebene Berechtigungstokentyp {0} ist ung\u00fcltig und wird ignoriert.
 warn.invalid.authorization.token.type.explanation=Der in der Serverkonfiguration angegebene Berechtigungstokentyp ist ung\u00fcltig.
 warn.invalid.authorization.token.type.useraction=Geben Sie einen g\u00fcltigen Berechtigungstokentyp an. 
