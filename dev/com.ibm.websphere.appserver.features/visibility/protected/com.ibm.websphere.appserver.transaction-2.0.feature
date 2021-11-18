@@ -32,7 +32,7 @@ Subsystem-Name: Jakarta Transactions 2.0
  com.ibm.ws.transaction.cdi.jakarta, \
  com.ibm.tx.util.jakarta, \
  com.ibm.tx.ltc.jakarta, \
- com.ibm.rls.jdbc, \
+ com.ibm.rls.jdbc.jakarta, \
  com.ibm.ws.tx.embeddable.jakarta, \
  com.ibm.ws.recoverylog, \
  com.ibm.ws.cdi.interfaces.jakarta
