@@ -1358,7 +1358,7 @@ restoreServer()
   # - SHLVL the shell level could be different
   # - HOSTNAME the host name likely is always different for containers
   # - _ holds the currently running process, here we do no need to have it set to `env`
-  env | grep -Ev "JAVA_OPTIONS=|SHLVL=|HOSTNAME=|_=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  env | grep -Ev "JAVA_OPTIONS=|SHLVL=|HOSTNAME=|_=|X_LOG_FILE=|X_LOG_DIR=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?
