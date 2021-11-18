@@ -10,6 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+// Not for merging and only for test: prohibited_test_term
+
 package com.ibm.ws.example;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
