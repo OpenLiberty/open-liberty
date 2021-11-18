@@ -18,7 +18,8 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 public class OASFilterImpl implements OASFilter {
     @Override
     public Server filterServer(Server server) {
-        //throws an exception if myKey1 can not be found ... which it won't be if the TCCL has not been properly set before calling this filter
+        // throws an exception if myKey1 can not be found ... which it won't be if the
+        // TCCL has not been properly set before calling this filter
         ConfigProvider.getConfig().getValue("myKey1", String.class);
         server.setDescription(server.getDescription() + " + from filter");
         return server;

@@ -23,7 +23,8 @@ public class Airline {
     @Schema(required = true, example = "1-888-1234-567")
     private String contactPhone;
 
-    private Airline() {}
+    private Airline() {
+    }
 
     public Airline(String name, String contactPhone) {
         this.name = name;
