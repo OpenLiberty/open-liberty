@@ -40,7 +40,6 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
-import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -54,8 +53,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ServerQuiesceListener.class)
-public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListener {
+public class H2InboundLink extends HttpInboundLink {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -227,17 +225,6 @@ public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListe
 
         initialVC.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE, "true");
         initialVC.getStateMap().put("h2_frame_size", getRemoteConnectionSettings().getMaxFrameSize());
-    }
-
-    /**
-     * If server is shutting down, set this connection to close so that 
-     * no new streams are processed. 
-     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
-     */
-    @Override
-    public void serverStopping() {
-        this.isClosing = true;
-        this.closeConnectionLink(null, true);
     }
 
     public synchronized long getInitialWindowSize() {
@@ -654,7 +641,6 @@ public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListe
                     }
                     closeFuture = null;
                     connTimeout = null;
-
                 }
             }
         }
@@ -1171,15 +1157,34 @@ public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListe
             if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)
                 || (linkStatus == LINK_STATUS.WAIT_TO_SEND_GOAWAY)) {
                 // another thread is in charge of closing, or another thread has already armed the future to close
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close(vc,e): returning: close of muxLink is being done on a differnt thread" + " :close: H2InboundLink hc: " + this.hashCode());
+
+                if (e != null || FrameworkState.isStopping()) {
+                    // we'll run the close from this thread, if it's not already in progress or complete
+                    if (closeFuture != null && !closeFuture.cancel(false)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "close(vc,e): returning: could not cancel close future, close of muxLink is being done on a different thread"
+                                + " :close: H2InboundLink hc: " + this.hashCode());
+                        }
+                        return;
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): no active close runnable, will close from this thread due to server shutdown "
+                            + " :close: H2InboundLink hc: " + this.hashCode());
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): returning: close of muxLink is being done on a different thread"
+                            + " :close: H2InboundLink hc: " + this.hashCode());
+                    }
+                    return;
                 }
-                return;
             }
 
-            if (e == null) {
-                // Attempt to close down cleanly if all streams are closed.
+            if (e == null && !FrameworkState.isStopping()) {
+                // Attempt to close down cleanly if all streams are closed,
+                // OR if the server is shutting down.
 
+                //If the server is NOT shutting down:
                 //Determine if all streams are in half closed or closed state
                 //If not, do nothing and return
                 //If so, look to see if the GoAway frame has been sent
@@ -1219,13 +1224,19 @@ public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListe
             }
             connTimeout = new H2ConnectionTimeout(e);
 
-            if (e == null) {
-                // close cleanly if no other traffic has been received for this H2 connection within the timeout
-                // Save the future so we can cancel it later on
+            if (e == null && !FrameworkState.isStopping()) {
+                // close cleanly if the server is not stopping and no other traffic has been received for this H2 connection within the timeout
+                // save the future so we can cancel it later on
                 closeFuture = scheduler.schedule(connTimeout, config.getH2ConnCloseTimeout(), TimeUnit.SECONDS);
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close(vc,e): close on link called with exception: " + e);
+                if (e != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): close on link called with exception: " + e);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): close on link called due to server shutdown");
+                    }
                 }
 
                 // do the close immediately on this thread
@@ -1258,7 +1269,7 @@ public class H2InboundLink extends HttpInboundLink implements ServerQuiesceListe
 
             synchronized (linkStatusSync) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: timeout has elapsed, look to close connection. :linkStatus: " + linkStatus + " :close: H2InboundLink hc: "
+                    Tr.debug(tc, "H2ConnectionTimeout-run: close connection. :linkStatus: " + linkStatus + " :close: H2InboundLink hc: "
                                  + hcDebug);
                 }
 
