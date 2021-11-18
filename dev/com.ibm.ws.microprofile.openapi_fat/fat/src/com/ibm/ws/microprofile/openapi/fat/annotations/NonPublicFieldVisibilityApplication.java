@@ -44,8 +44,7 @@ public class NonPublicFieldVisibilityApplication extends Application {
             return privateWithGetters;
         }
 
-        public void setPrivateWithGetters(
-            String privateWithGetters) {
+        public void setPrivateWithGetters(String privateWithGetters) {
             this.privateWithGetters = privateWithGetters;
         }
 

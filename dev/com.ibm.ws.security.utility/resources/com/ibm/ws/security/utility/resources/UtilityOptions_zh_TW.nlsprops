@@ -77,6 +77,13 @@ encode.option-desc.listCustom=\t\u4ee5\u300cJavaScript \u7269\u4ef6\u8868\u793a\
 \tname\uff1a\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u6f14\u7b97\u6cd5\u7684\u540d\u7a31\n\
 \tfeaturename\uff1a\u7279\u6027\u540d\u7a31\n\
 \tdescription\uff1a\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u7684\u8aaa\u660e
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\t\u6307\u5b9a AES \u52a0\u5bc6\u91d1\u9470\u6240\u5728\u7684 SAF \u91d1\u9470\u74b0\u3002
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\t\u6307\u5b9a AES \u52a0\u5bc6\u6240\u5728\u4e4b\u91d1\u9470\u74b0\u7684 SAF \u91d1\u9470\n\
+\t\u74b0\u985e\u578b\u3002
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\t\u6307\u5b9a AES \u52a0\u5bc6\u91d1\u9470\u7684 SAF \u6191\u8b49\u6a19\u7c64\u3002
 
 
 

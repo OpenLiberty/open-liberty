@@ -23,27 +23,27 @@ public class UserData {
 
     static {
         users.add(createUser(1, "Bob1", "pswd", "Bob", "Smith", "male", 12,
-                             "bobsm@test.com", "123-456-7890", 1));
+            "bobsm@test.com", "123-456-7890", 1));
         users.add(createUser(2, "Martha2", "pswd", "Martha", "Jones", "female", 30,
-                             "marthaj@test.com", "123-456-7890", 2));
+            "marthaj@test.com", "123-456-7890", 2));
         users.add(createUser(3, "Jess3", "pswd", "Jessica", "Greene", "female", 18,
-                             "jessgr@test.com", "123-456-7890", 3));
+            "jessgr@test.com", "123-456-7890", 3));
         users.add(createUser(4, "Tom4", "pswd", "Tom", "Brown", "male", 45,
-                             "tomb@test.com", "123-456-7890", 1));
+            "tomb@test.com", "123-456-7890", 1));
         users.add(createUser(5, "Jack4", "pswd", "Jack", "Thomson", "male", 34,
-                             "jackth@test.com", "123-456-7890", 2));
+            "jackth@test.com", "123-456-7890", 2));
         users.add(createUser(6, "Helga5", "pswd", "Helga", "Miller", "female", 76,
-                             "helgam@test.com", "123-456-7890", 3));
+            "helgam@test.com", "123-456-7890", 3));
         users.add(createUser(7, "Demi6", "pswd", "Demi", "Moore", "female", 121,
-                             "demim@test.com", "123-456-7890", 1));
+            "demim@test.com", "123-456-7890", 1));
         users.add(createUser(8, "Emma7", "pswd", "Emma", "Watson", "female", 23,
-                             "emmaw@test.com", "123-456-7890", 2));
+            "emmaw@test.com", "123-456-7890", 2));
         users.add(createUser(9, "Sherlock8", "pswd", "Sherlock", "Holmes", "male", 51,
-                             "sherlockh@test.com", "123-456-7890", 3));
+            "sherlockh@test.com", "123-456-7890", 3));
         users.add(createUser(10, "Doctor9", "pswd", "Doctor", "Frankenstein", "male", 81,
-                             "franky@test.com", "123-456-7890", 1));
+            "franky@test.com", "123-456-7890", 1));
         users.add(createUser(11, "Marry10", "pswd", "Marry", "Shelly", "female", 47,
-                             "marrysh@test.com", "123-456-7890", 1));
+            "marrysh@test.com", "123-456-7890", 1));
 
     }
 
@@ -91,8 +91,16 @@ public class UserData {
         return false;
     }
 
-    private static User createUser(int id, String userName, String password, String firstName,
-                                   String lastName, String sex, int age, String email, String phone, int status) {
+    private static User createUser(int id,
+                                   String userName,
+                                   String password,
+                                   String firstName,
+                                   String lastName,
+                                   String sex,
+                                   int age,
+                                   String email,
+                                   String phone,
+                                   int status) {
 
         User user = new User(id, userName, password, firstName, lastName, sex, age, email, phone, status);
 

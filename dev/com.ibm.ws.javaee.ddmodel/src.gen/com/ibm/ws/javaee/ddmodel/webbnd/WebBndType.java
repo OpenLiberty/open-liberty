@@ -154,6 +154,10 @@ public class WebBndType extends com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsG
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
         super.finish(parser);
+        
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }
         this.idMap = parser.idMap;
     }
 

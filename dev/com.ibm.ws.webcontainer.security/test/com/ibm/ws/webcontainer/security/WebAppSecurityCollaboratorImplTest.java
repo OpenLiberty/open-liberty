@@ -729,6 +729,10 @@ public class WebAppSecurityCollaboratorImplTest {
                 allowing(request).getAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata");
                 will(returnValue(null));
                 allowing(request).setAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata", wmmd);
+                allowing(request).getHeaderNames();
+                will(returnValue("anyHeaderString"));
+                allowing(request).getContextPath();
+                will(returnValue("contextPath"));
             }
         });
     }

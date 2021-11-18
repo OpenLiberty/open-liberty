@@ -73,6 +73,12 @@ encode.option-key.listCustom=\ \ \ \ --listCustom
 encode.option-desc.listCustom=\tExiba as informa\u00e7\u00f5es da criptografia de senha customizada em formato\n \tJavaScript Object Notation (JSON).\n\
 \tAs informa\u00e7\u00f5es consistem em:\n \tname : o nome do algoritmo de criptografia de senha customizada\n \tfeaturename : o nome do recurso\n \tdescription : a descri\u00e7\u00e3o \
 da criptografia de senha customizada
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\tEspecifique o conjunto de chaves SAF no qual a chave de criptografia AES est\u00e1 localizada.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\tEspecifique o tipo de conjunto de chaves SAF no qual a criptografia\n\tis AES  est\u00e1 localizada.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\tEspecifique o r\u00f3tulo do certificado SAF da chave de criptografia AES.
 
 
 

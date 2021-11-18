@@ -44,13 +44,13 @@ public class DDValidAppTests {
     }
 
     @Test
-    public void testConfigurationSide_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testConfigurationSide");
+    public void testConfig_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testConfig");
     }
 
     @Test
-    public void testBasicBindingConfiguration_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testBindingsConfig");
     }
     
     @Test
@@ -59,13 +59,13 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testWebExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensions");
+    public void testWebExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebExtension");
     }
     
     @Test
-    public void testWebExtensionsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensionsNoBindings");
+    public void testWebExtensionNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebExtensionNoBindings");
     }
     
     @Test
@@ -74,8 +74,8 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testWebBindingsNoBnd_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebBindingsNoBnd");
+    public void testWebBindingsNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebBindingsNoBindings");
     }
     
     @Test
@@ -84,23 +84,23 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testEJBExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensions");
+    public void testEJBExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testEJBExtension");
     }
     
     @Test
-    public void testEJBBindingsNoBnd_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBBindingsNoBnd");
+    public void testEJBBindingsNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testEJBBindingsNoBindings");
     }
     
     @Test
-    public void testEJBExtensionsNoBnd_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensionsNoBnd");
+    public void testEJBExtensionNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testEJBExtensionNoBindings");
     }
     
     @Test
-    public void testApplicationExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testApplicationExtensions");
+    public void testApplicationExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testApplicationExtension");
     }
     
     @Test
@@ -113,7 +113,7 @@ public class DDValidAppTests {
         CommonTests.test(DDValidAppTests.class, "testWebserviceBindings");
     }
     @Test
-    public void testWebserviceBindingsNoBnd_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebserviceBindingsNoBnd");
+    public void testWebserviceBindingsNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebserviceBindingsNoBindings");
     }
 }

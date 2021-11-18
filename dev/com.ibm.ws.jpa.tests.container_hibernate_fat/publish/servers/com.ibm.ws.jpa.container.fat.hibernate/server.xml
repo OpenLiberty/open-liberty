@@ -1,0 +1,40 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>beanValidation-2.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>jpaContainer-2.2</feature>
+    <feature>servlet-4.0</feature>
+  </featureManager>
+
+
+  <dataSource id="DefaultDataSource" jndiName="jdbc/enlisting-ds">
+    <jdbcDriver libraryRef="derby"/>
+   	<properties.derby.embedded databaseName="memory:testdb" createDatabase="create"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/non-enlisting-ds" transactional="false">
+    <jdbcDriver libraryRef="derby"/>
+   	<properties.derby.embedded databaseName="memory:testdb" createDatabase="create"/>
+  </dataSource>
+  
+  <library id="derby">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+  
+  <library id="hibernate">
+        <fileset dir="${shared.resource.dir}/jpa22_hibernate" includes="*.jar"/>
+  </library>
+
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/antlr.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/classmate.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/dom4j.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/hibernate-commons-annotations.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/hibernate-core.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/jandex.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/javassist.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jpa22_hibernate/jboss-logging.jar" className="java.security.AllPermission"/>
+  
+</server>

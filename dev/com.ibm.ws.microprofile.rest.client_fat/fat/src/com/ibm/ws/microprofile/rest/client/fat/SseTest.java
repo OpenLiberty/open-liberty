@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -19,6 +20,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpRestClient20.sse.SseClientTestServlet;
@@ -30,6 +33,10 @@ public class SseTest extends FATServletClient {
 
     private static final String appName = "sseApp";
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
+                                                             MicroProfileActions.MP40, //mpRestClient-2.0
+                                                             MicroProfileActions.MP50); // 3.0
     /*
      * We need two servers to clearly distinguish that the "client" server
      * only has the client features enabled - it includes mpRestClient-1.0

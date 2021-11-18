@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=La codifica password personalizzata non \u00e8 rilevata.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=L''etichetta {0} non esiste nel keyring {1}. Impossibile trovare una chiave valida per la codifica password AES.
+saf.cert.is.not.key=Il certificato {0} non \u00e8 una voce chiave. Per utilizzarlo come chiave di codifica password AES, il certificato deve essere una voce chiave.
+saf.cert.expired=Il certificato {0} \u00e8 scaduto e non pu\u00f2 essere utilizzato come una chiave di codifica password AES.
+saf.keyring.does.not.exist=Il keystore {0} non esiste. Non \u00e8 possibile richiamare alcun certificato dal keystore da utilizzare come chiave di codifica password AES.
+saf.arg.not.onZ=Gli argomenti --keyring, --keyringType e --keyLabel possono essere utilizzati solo su z/OS.
+saf.arg.not.aes=Gli argomenti --keyring, --keyringType e --keyLabel possono essere utilizzati solo con la codifica AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

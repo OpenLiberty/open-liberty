@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -22,10 +23,14 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -41,11 +46,13 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
     final static String SERVER_NAME = "mpRestClient11.cdiPropsAndProviders";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT("1.2", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("2.0", SERVER_NAME));
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
+                                                             MicroProfileActions.MP20, //mpRestClient-1.1
+                                                             MicroProfileActions.MP22, // 1.2
+                                                             MicroProfileActions.MP30, // 1.3
+                                                             MicroProfileActions.MP33, // 1.4
+                                                             MicroProfileActions.MP40); // 2.0 - skipping 3.0 for now
+    
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = CdiPropsAndProvidersTestServlet.class, contextRoot = appName)
@@ -56,25 +63,33 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", "remoteApp.basic");
+        ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", new DeployOptions[] {DeployOptions.OVERWRITE}, "remoteApp.basic");
+        if (JakartaEE9Action.isActive()) {
+            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
+        }
         remoteAppServer.startServer();
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient11.cdiPropsAndProviders");
+        if (JakartaEE9Action.isActive()) {
+            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.0", "cdi-3.0", "jsonb-2.0"));
+        }
         server.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         try {
-            List<String> requestScopedIntfMsgs = server.findStringsInLogs("CWWKW0750I.*" + CdiPropsAndProvidersClient.class.getName());
-            assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
-            assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",
+            if (!JakartaEE9Action.isActive()) {
+                List<String> requestScopedIntfMsgs = server.findStringsInLogs("CWWKW0750I.*" + CdiPropsAndProvidersClient.class.getName());
+                assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
+                assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",
                          1, requestScopedIntfMsgs.size());
-            String requestScopedIntfMsg = requestScopedIntfMsgs.get(0);
-            assertTrue("Did not find expected @Dependent interface injected into @RequestScoped bean in CWWKW0750I message: " + requestScopedIntfMsg,
+                String requestScopedIntfMsg = requestScopedIntfMsgs.get(0);
+                assertTrue("Did not find expected @Dependent interface injected into @RequestScoped bean in CWWKW0750I message: " + requestScopedIntfMsg,
                        requestScopedIntfMsg.contains(UnusedClient.class.getName() + "(" + UnusedBeanWithMPRestClient.class.getName() + ")"));
+            }
         } finally {
-            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+            server.stopServer("CWWKE1102W", "CWWKZ0002E");  //ignore server quiesce timeouts due to slow test machines
             remoteAppServer.stopServer("CWWKE1102W");
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package mpRestClient20.sse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,7 +20,6 @@ import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -30,14 +28,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.InboundSseEvent;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/SseClientTestServlet")
@@ -117,6 +115,7 @@ public class SseClientTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP50_ID) // RESTEasy does not auto-detect media types - users must register custom MBR
     public void testPublisherSomeObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try (SseClient client = builder.build(SseClient.class)) {
             GenericSubscriber<SomeObject> subscriber = new GenericSubscriber<>(7);

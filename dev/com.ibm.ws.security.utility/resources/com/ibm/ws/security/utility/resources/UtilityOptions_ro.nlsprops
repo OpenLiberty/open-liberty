@@ -78,6 +78,13 @@ encode.option-desc.listCustom=\tAfi\u015feaz\u0103 informa\u0163iile de criptare
 \tname: numele algoritmului de criptare parol\u0103 personalizat\u0103\n\
 \tfeaturename: numele caracteristicii\n\
 \tdescription: descrierea cript\u0103rii de parol\u0103 personalizate
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\tSpecifica\u0163i inelul de chei SAF unde se g\u0103se\u015fte cheia de criptare AES.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\tSpecifica\u0163i tipul de inel de chei SAF al inelului de chei unde\n\
+\tse g\u0103se\u015fte cheia de criptare AES.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\tSpecifica\u0163i eticheta certificatului SAF al cheii de criptare AES.
 
 
 

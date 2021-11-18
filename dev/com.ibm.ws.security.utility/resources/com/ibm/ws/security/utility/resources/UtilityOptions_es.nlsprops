@@ -76,6 +76,12 @@ encode.option-desc.listCustom=\tMostrar la informaci\u00f3n del cifrado de contr
 \tname : el nombre del algoritmo de cifrado de contrase\u00f1a personalizado\n\
 \tfeaturename : el nombre de caracter\u00edstica\n\
 \tdescription : la descripci\u00f3n del cifrado de contrase\u00f1a personalizado
+encode.option-key.keyring=\ \ \ \ --keyring=[anillo de claves]
+encode.option-desc.keyring=\tEspecifique el conjunto de claves SAF donde se encuentra la clave de cifrado AES.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[Tipoconjuntoclaves]
+encode.option-desc.keyringType=\tEspecifique el tipo de conjunto de claves SAF del conjunto de claves donde se encuentra el cifrado\n\tAES.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[etiquetadeclave]
+encode.option-desc.keyLabel=\tEspecifique la etiqueta del certificado SAF de la clave de cifrado AES.
 
 
 
