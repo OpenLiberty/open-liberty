@@ -312,14 +312,14 @@ public class CheckpointImplTest {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
             assertNull("Unexpected Prepare Exception.", hook.abortPrepareCause);
         }
-        assertEquals("Restore not called.", true, f1.hook.restoreCalled);
-        assertEquals("Wrong cause.", restoreException, f1.hook.abortRestoreCause);
+        assertEquals("Restore not called.", true, f3.hook.restoreCalled);
+        assertEquals("Wrong cause.", restoreException, f3.hook.abortRestoreCause);
 
         assertEquals("Restore not called.", true, f2.hook.restoreCalled);
         assertNull("Wrong cause.", f2.hook.abortRestoreCause);
 
-        assertEquals("Unexpected Restore called.", false, f3.hook.restoreCalled);
-        assertNull("Wrong cause.", f3.hook.abortRestoreCause);
+        assertEquals("Unexpected Restore called.", false, f1.hook.restoreCalled);
+        assertNull("Wrong cause.", f1.hook.abortRestoreCause);
 
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }

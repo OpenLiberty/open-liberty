@@ -187,6 +187,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories);
         prepare(checkpointHooks);
+        Collections.reverse(checkpointHooks);
         try {
             try {
                 criu.checkpointSupported();
