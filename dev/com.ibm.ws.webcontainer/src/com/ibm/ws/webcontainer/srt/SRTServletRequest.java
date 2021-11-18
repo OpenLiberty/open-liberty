@@ -544,7 +544,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 header = _request.getHeader(name);
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
+            logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(name, header));
         }
         return header;
     }
@@ -571,7 +571,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             header = _request.getHeader(name);
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"getHeaderDirect", "this->"+this+": "+" name --> " + name + " header --> " + header);
+            logger.logp(Level.FINE, CLASS_NAME,"getHeaderDirect", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(name, header));
         }
         return header;
     }
