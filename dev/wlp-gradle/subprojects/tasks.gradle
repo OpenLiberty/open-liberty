@@ -265,17 +265,15 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
 
           def finalBundleShortName = bnd('jakartaFinalBundleName')
           if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
-            logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleName ] is not set' )
-          } else {
-            println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
+            finalBundleShortName = bnd('Bundle-Name')
           }
+          println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
 
           def finalBundleDescription = bnd('jakartaFinalBundleDescription')
           if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
-            logger.error( 'ERROR: BND Final bundle description property [ jakartaFinalBundleDescription ] is not set' )
-          } else {
-            println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
+            finalBundleDescription = bnd('Bundle-Description')
           }
+          println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
 
           def directBundleDataKey = initialBundleId
           def directBundleDataValue =
