@@ -22,7 +22,7 @@ import java.util.Map;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  *
@@ -185,13 +185,13 @@ public class LaunchArguments {
                     } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
                         if (isBetaEdition()) {
                             String phase = argToLower.substring("--internal-checkpoint-at=".length());
-                            if (CheckpointHookFactory.Phase.getPhase(phase) == null) {
+                            if (CheckpointPhase.getPhase(phase) == null) {
                                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
                                 System.out.println();
                                 returnValue = ReturnCode.BAD_ARGUMENT;
                             } else {
-                                initProps.put(BootstrapConstants.CHECKPOINT_PROPERTY_NAME, phase);
-                                System.clearProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+                                initProps.put(CheckpointPhase.CHECKPOINT_PROPERTY, phase);
+                                System.clearProperty(CheckpointPhase.CHECKPOINT_PROPERTY);
                             }
                         } else {
                             // we cannot efficiently do beta guard from the server script so we hard code this check here

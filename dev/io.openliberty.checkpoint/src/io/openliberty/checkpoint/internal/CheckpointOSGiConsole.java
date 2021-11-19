@@ -31,15 +31,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Component
-public class CheckpointOSGiConsole implements CheckpointHookFactory {
+public class CheckpointOSGiConsole implements CheckpointHook {
     private final Bundle console;
     private final FrameworkWiring fwkWiring;
 
     @Activate
-    public CheckpointOSGiConsole(@Reference Phase phase, BundleContext context) {
+    public CheckpointOSGiConsole(@Reference CheckpointPhase phase, BundleContext context) {
         Requirement consolePkg = new Requirement() {
 
             @Override
@@ -72,47 +72,40 @@ public class CheckpointOSGiConsole implements CheckpointHookFactory {
     }
 
     @Override
-    public CheckpointHook create(Phase phase) {
+    public void prepare() {
         if (console == null) {
-            return null;
+            return;
         }
-        return new CheckpointHook() {
-            @Override
-            public void prepare() {
-                try {
-                    // stop the console so we can restore the telnet port on restart
-                    console.stop();
-                    // The console bundle has an issue some static vars that do not get
-                    // properly reset on stop.  Refresh the bundle to start fresh on restore
-                    CountDownLatch refreshDone = new CountDownLatch(1);
-                    fwkWiring.refreshBundles(Collections.singleton(console), (e) -> {
-                        refreshDone.countDown();
-                    });
-                    refreshDone.await(30, TimeUnit.SECONDS);
-                } catch (BundleException e) {
-                    // ignore
-                    // auto FFDC is fine
-                } catch (InterruptedException e1) {
-                    // auto FFDC is fine
-                    Thread.currentThread().interrupt();
-                }
-            }
+        try {
+            // stop the console so we can restore the telnet port on restart
+            console.stop();
+            // The console bundle has an issue some static vars that do not get
+            // properly reset on stop.  Refresh the bundle to start fresh on restore
+            CountDownLatch refreshDone = new CountDownLatch(1);
+            fwkWiring.refreshBundles(Collections.singleton(console), (e) -> {
+                refreshDone.countDown();
+            });
+            refreshDone.await(30, TimeUnit.SECONDS);
+        } catch (BundleException e) {
+            // ignore
+            // auto FFDC is fine
+        } catch (InterruptedException e1) {
+            // auto FFDC is fine
+            Thread.currentThread().interrupt();
+        }
+    }
 
-            @Override
-            public void abortPrepare(Exception cause) {
-                restore();
-            }
-
-            @Override
-            public void restore() {
-                try {
-                    console.start();
-                } catch (BundleException e) {
-                    // ignore
-                    // auto FFDC is fine
-                }
-            }
-        };
+    @Override
+    public void restore() {
+        if (console == null) {
+            return;
+        }
+        try {
+            console.start();
+        } catch (BundleException e) {
+            // ignore
+            // auto FFDC is fine
+        }
     }
 
 }

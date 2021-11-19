@@ -26,7 +26,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -46,7 +46,7 @@ public class TestWithFATServlet extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: app1' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: app1", 0));

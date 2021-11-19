@@ -38,12 +38,11 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 
 /**
  * Represents the configuration of the entire system at runtime, comprising variables, all XML configuration, and all default configuration
  */
-class SystemConfiguration {
+class SystemConfiguration implements CheckpointHook {
     static final TraceComponent tc = Tr.register(SystemConfiguration.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
     private final ServerXMLConfiguration serverXMLConfig;
@@ -133,20 +132,20 @@ class SystemConfiguration {
         registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
 
         // register restore hook to reprocess config if necessary
-        bc.registerService(CheckpointHookFactory.class, (p) -> new CheckpointHook() {
-            @Override
-            public void restore() {
-                if (serverXMLConfig.isModified()) {
-                    configRefresher.refreshConfiguration();
-                } else {
-                    Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
-                    if (!deltaTypes.isEmpty()) {
-                        configRefresher.variableRefresh(deltaTypes);
-                    }
-                }
-            };
-        }, null);
+        bc.registerService(CheckpointHook.class, this, null);
     }
+
+    @Override
+    public void restore() {
+        if (serverXMLConfig.isModified()) {
+            configRefresher.refreshConfiguration();
+        } else {
+            Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
+            if (!deltaTypes.isEmpty()) {
+                configRefresher.variableRefresh(deltaTypes);
+            }
+        }
+    };
 
     private OnError getOnError() {
 

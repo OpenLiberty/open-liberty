@@ -32,8 +32,6 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  *
@@ -61,32 +59,26 @@ public class TimestampUtils {
                 // taking shortcuts because this bundle registers the WsLocationAdmin service
                 final WsLocationAdmin locServiceImpl = bc.getService(bc.getServiceReference(WsLocationAdmin.class));
                 // Look for time file created during CRIU restore. Use it to calculate more accurate server start time.
-                bc.registerService("io.openliberty.checkpoint.spi.CheckpointHookFactory", new CheckpointHookFactory() {
-
+                bc.registerService(CheckpointHook.class, new CheckpointHook() {
                     @Override
-                    public CheckpointHook create(Phase phase) {
-                        return new CheckpointHook() {
-                            @Override
-                            @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
-                            public void restore() {
-                                long restoreTime = 0;
-                                try {
-                                    WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("checkpoint/restoreTime");
-                                    List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
-                                    System.out.println("restore time: " + restoreStartTimeEnv);
-                                    if (!restoreStartTimeEnv.isEmpty()) {
-                                        long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
-                                        long currentTime = System.currentTimeMillis();
-                                        System.out.println("current time: " + currentTime);
-                                        restoreTime = currentTime - startTimeInMillis;
-                                    }
-                                } catch (NumberFormatException e) {
-                                } catch (IOException e) {
-                                } catch (IllegalArgumentException e) {
-                                }
-                                TimestampUtils.internalStartTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
+                    @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
+                    public void restore() {
+                        long restoreTime = 0;
+                        try {
+                            WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("checkpoint/restoreTime");
+                            List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
+                            System.out.println("restore time: " + restoreStartTimeEnv);
+                            if (!restoreStartTimeEnv.isEmpty()) {
+                                long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
+                                long currentTime = System.currentTimeMillis();
+                                System.out.println("current time: " + currentTime);
+                                restoreTime = currentTime - startTimeInMillis;
                             }
-                        };
+                        } catch (NumberFormatException e) {
+                        } catch (IOException e) {
+                        } catch (IllegalArgumentException e) {
+                        }
+                        TimestampUtils.internalStartTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
                     }
                 }, null);
             }

@@ -35,7 +35,7 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -64,7 +64,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
 
         server.checkpointRestore();
@@ -104,7 +104,7 @@ public class LogsVerificationTest {
         properties.put("com.ibm.ws.logging.max.files", "4");
         configureBootStrapProperties(properties);
 
-        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
 
         server.checkpointRestore();
@@ -140,7 +140,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 

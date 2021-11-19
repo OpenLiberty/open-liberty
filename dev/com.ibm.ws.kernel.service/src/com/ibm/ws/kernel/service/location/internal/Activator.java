@@ -30,9 +30,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, CheckpointHook {
     private static final TraceComponent tc = Tr.register(Activator.class);
 
     /** Reference to active BundleContext (will be null between stop and start) */
@@ -69,16 +68,6 @@ public class Activator implements BundleActivator {
                     Tr.debug(tc, "Failed to install initialContextFactoryBuilder because it was already installed", ex);
             }
 
-            // Hook to reset timer
-            context.registerService(CheckpointHookFactory.class, (p) -> {
-                return new CheckpointHook() {
-                    @Override
-                    public void restore() {
-                        CpuInfo.resetTimer();
-                    }
-                };
-            }, null);
-
         } catch (Exception t) {
             Tr.audit(tc, "frameworkShutdown");
 
@@ -87,6 +76,12 @@ public class Activator implements BundleActivator {
             // need to write a message about that to the log either
             shutdownFramework();
         }
+    }
+
+    // Hook to reset timer
+    @Override
+    public void restore() {
+        CpuInfo.resetTimer();
     }
 
     @Override

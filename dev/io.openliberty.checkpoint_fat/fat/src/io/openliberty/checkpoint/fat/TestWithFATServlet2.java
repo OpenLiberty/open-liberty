@@ -27,7 +27,7 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -46,14 +46,14 @@ public class TestWithFATServlet2 {
 
     @Test
     public void testAtFeatures() throws Exception {
-        server.setCheckpoint(Phase.FEATURES);
+        server.setCheckpoint(CheckpointPhase.FEATURES);
         server.startServer();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
     @Test
     public void testAtApplicationsMultRestore() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
@@ -69,7 +69,7 @@ public class TestWithFATServlet2 {
 
     @Test
     public void testMultCheckpointNoClean() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
@@ -83,7 +83,7 @@ public class TestWithFATServlet2 {
 
     @Test
     public void testCheckpointFeatureMissingError() throws Exception {
-        server.setCheckpoint(Phase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
         ServerConfiguration svrCfg = server.getServerConfiguration();
         Set<String> features = svrCfg.getFeatureManager().getFeatures();
         features.remove("checkpoint-1.0");

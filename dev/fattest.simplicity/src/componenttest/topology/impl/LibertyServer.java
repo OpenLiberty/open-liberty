@@ -116,7 +116,7 @@ import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.ServerFileUtils;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -454,7 +454,7 @@ public class LibertyServer implements LogMonitorClient {
 
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
-    public void setCheckpoint(Phase phase) {
+    public void setCheckpoint(CheckpointPhase phase) {
         setCheckpoint(phase, true, null);
     }
 
@@ -470,7 +470,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param autoRestore   if true initiate restore as part of serverStart
      * @param beforeRestore beforeRestore lambda is called just before the server start
      */
-    public void setCheckpoint(Phase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
+    public void setCheckpoint(CheckpointPhase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
         checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
     }
 
@@ -485,7 +485,7 @@ public class LibertyServer implements LogMonitorClient {
             Log.debug(c, "No beforeRestoreLambda supplied.");
         };
 
-        public CheckPointInfo(Phase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+        public CheckPointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
             if (phase == null) {
                 throw new IllegalArgumentException("Phase must not be null");
             }
@@ -505,7 +505,7 @@ public class LibertyServer implements LogMonitorClient {
         /*
          * parameters to configure a checkpoint/restore test
          */
-        private final Phase checkpointPhase; //Phase to checkpoint
+        private final CheckpointPhase checkpointPhase; //Phase to checkpoint
         private final boolean autoRestore; // weather or not to perform restore after checkpoint
         //AN optional function executed after checkpoint but before restore
         private final Consumer<LibertyServer> beforeRestoreLambda;
@@ -1730,7 +1730,7 @@ public class LibertyServer implements LogMonitorClient {
         }
         assertCheckpointDirAsExpected();
         //server is stopped at this point so no delay on following log searches
-        if (checkpointInfo.checkpointPhase == Phase.FEATURES) {
+        if (checkpointInfo.checkpointPhase == CheckpointPhase.FEATURES) {
             assertNull("'CWWKZ0018I: Starting application...' message found taking FEATURES checkpoint.",
                        waitForStringInLogUsingMark("CWWKZ0018I:", 0));
         }
