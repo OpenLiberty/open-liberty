@@ -15,7 +15,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 
@@ -32,7 +31,7 @@ public class MergeDisabledAlerter {
      */
     public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {
         synchronized (this) {
-            if (!multiAppWarningGiven && ProductInfo.getBetaEdition()) {
+            if (!multiAppWarningGiven) {
                 Tr.info(tc, MessageConstants.OPENAPI_MERGE_DISABLED_CWWKO1663I, firstModule);
                 multiAppWarningGiven = true;
             }
