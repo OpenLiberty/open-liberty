@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -53,14 +52,10 @@ public class CheckpointImplTest {
 
     static class Factories implements InvocationHandler {
         final Object[] factories;
-        final boolean applications;
-        final boolean features;
 
-        public Factories(Object[] factories, boolean applications, boolean features) {
+        public Factories(Object[] factories) {
             super();
             this.factories = factories;
-            this.applications = applications;
-            this.features = features;
         }
 
         @Override
@@ -71,14 +66,6 @@ public class CheckpointImplTest {
             if ("getBundleContext".equals(method.getName())) {
                 return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { BundleContext.class }, (p, m, a) -> {
                     if ("getProperty".equals(m.getName())) {
-                        if (BootstrapConstants.CHECKPOINT_PROPERTY_NAME.equals(a[0])) {
-                            if (features) {
-                                return "features";
-                            }
-                            if (applications) {
-                                return "applications";
-                            }
-                        }
                         return null;
                     }
                     throw new UnsupportedOperationException(m.getName());
@@ -171,15 +158,10 @@ public class CheckpointImplTest {
     }
 
     private ComponentContext createComponentContext(CheckpointHookFactory... factories) {
-        return createComponentContext1(false, false, factories);
-
-    }
-
-    private ComponentContext createComponentContext1(boolean applications, boolean features, CheckpointHookFactory... factories) {
         if (factories.length == 0) {
             factories = null;
         }
-        return (ComponentContext) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ComponentContext.class }, new Factories(factories, applications, features));
+        return (ComponentContext) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ComponentContext.class }, new Factories(factories));
     }
 
     private RuntimeUpdateNotification createRuntimeUpdateNotification() {
@@ -219,10 +201,10 @@ public class CheckpointImplTest {
     public void testNullFactories() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test1");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin);
-        checkDirectory(Phase.FEATURES, checkpoint, criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, Phase.FEATURES);
+        checkDirectory(checkpoint, criu, locAdmin);
         checkpoint.resetCheckpointCalled();
-        checkFailDump(Phase.FEATURES, checkpoint, criu, locAdmin);
+        checkFailDump(checkpoint, criu, locAdmin);
     }
 
     @Test
@@ -230,7 +212,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test2");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, locAdmin, Phase.APPLICATIONS);
         checkPhase(factory, checkpoint, criu, locAdmin);
     }
 
@@ -241,9 +223,9 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test3");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin, Phase.APPLICATIONS);
 
-        checkDirectory(Phase.APPLICATIONS, checkpoint, criu, locAdmin);
+        checkDirectory(checkpoint, criu, locAdmin);
         List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
@@ -261,10 +243,10 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(prepareException, null);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test4");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin, Phase.APPLICATIONS);
 
         try {
-            checkpoint.checkpoint(Phase.APPLICATIONS);
+            checkpoint.checkpoint();
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.PREPARE_ABORT, e.getType());
@@ -295,9 +277,9 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test5");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin, Phase.FEATURES);
 
-        checkFailDump(Phase.FEATURES, checkpoint, criu, locAdmin);
+        checkFailDump(checkpoint, criu, locAdmin);
 
         List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
         for (TestCheckpointHook hook : hooks) {
@@ -316,10 +298,10 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(null, restoreException);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test6");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, locAdmin, Phase.APPLICATIONS);
 
         try {
-            checkpoint.checkpoint(Phase.APPLICATIONS);
+            checkpoint.checkpoint();
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.RESTORE_ABORT, e.getType());
@@ -330,14 +312,14 @@ public class CheckpointImplTest {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
             assertNull("Unexpected Prepare Exception.", hook.abortPrepareCause);
         }
-        assertEquals("Restore not called.", true, f1.hook.restoreCalled);
-        assertEquals("Wrong cause.", restoreException, f1.hook.abortRestoreCause);
+        assertEquals("Restore not called.", true, f3.hook.restoreCalled);
+        assertEquals("Wrong cause.", restoreException, f3.hook.abortRestoreCause);
 
         assertEquals("Restore not called.", true, f2.hook.restoreCalled);
         assertNull("Wrong cause.", f2.hook.abortRestoreCause);
 
-        assertEquals("Unexpected Restore called.", false, f3.hook.restoreCalled);
-        assertNull("Wrong cause.", f3.hook.abortRestoreCause);
+        assertEquals("Unexpected Restore called.", false, f1.hook.restoreCalled);
+        assertNull("Wrong cause.", f1.hook.abortRestoreCause);
 
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
@@ -347,7 +329,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test7");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext1(true, false, factory), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, locAdmin, Phase.APPLICATIONS);
         checkpoint.check();
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
@@ -358,7 +340,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test8");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext1(false, true, factory), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, locAdmin, Phase.FEATURES);
         RuntimeUpdateNotification trn = createRuntimeUpdateNotification();
         checkpoint.notificationCreated(null, trn);
         CompletionListener<Boolean> cl = getCompletionListener();
@@ -373,7 +355,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test9");
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext1(true, false, factory), criu, locAdmin);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, locAdmin, Phase.FEATURES);
         checkpoint.check();
         assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
         checkpoint.check();
@@ -397,19 +379,19 @@ public class CheckpointImplTest {
     }
 
     private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
-        checkDirectory(Phase.APPLICATIONS, checkpoint, criu, locAdmin);
+        checkDirectory(checkpoint, criu, locAdmin);
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
     }
 
-    private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
-        checkpoint.checkpoint(phase);
+    private void checkDirectory(CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
+        checkpoint.checkpoint();
         assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
-    private void checkFailDump(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) {
+    private void checkFailDump(CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) {
         criu.throwIOException = true;
         try {
-            checkpoint.checkpoint(phase);
+            checkpoint.checkpoint();
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.SYSTEM_CHECKPOINT_FAILED, e.getType());

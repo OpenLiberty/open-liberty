@@ -16,11 +16,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestWithFATServlet.class, TestWithFATServlet2.class })
+@SuiteClasses({
+                AlwaysPassesTest.class,
+                TestWithFATServlet.class,
+                TestWithFATServlet2.class
+})
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
         RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName + ".war");

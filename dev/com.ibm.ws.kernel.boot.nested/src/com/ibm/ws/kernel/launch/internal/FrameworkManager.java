@@ -41,6 +41,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
@@ -568,7 +569,9 @@ public class FrameworkManager {
                 String phaseProp = config.get(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
                 if (phaseProp != null) {
                     // register the checkpoint phase as early as possible
-                    fwk.getBundleContext().registerService(Phase.class, Phase.getPhase(phaseProp), null);
+                    Phase phase = Phase.getPhase(phaseProp);
+                    fwk.getBundleContext().registerService(Phase.class, phase,
+                                                           FrameworkUtil.asDictionary(Collections.singletonMap(BootstrapConstants.CHECKPOINT_PROPERTY_NAME, phase)));
                 }
             }
             return fwk;
