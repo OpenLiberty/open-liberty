@@ -238,12 +238,12 @@ public class FileTransferHelper {
 
         if (!checkAccess(processedPath, readOnly)) {
             //Return an exception
-            Object[] params = new String[] { processedPath };
+            Object[] params = new String[] { filePath };
             IOException ioe = new IOException(TraceNLS.getFormattedMessage(this.getClass(),
                                                                            APIConstants.TRACE_BUNDLE_FILE_TRANSFER,
                                                                            "SERVER_ACCESS_DENIED_ERROR",
                                                                            params,
-                                                                           "CWWKX0121E: Access denied to the " + processedPath + " path."));
+                                                                           "CWWKX0121E: Access denied to the " + filePath + " path."));
             throw ErrorHelper.createRESTHandlerJsonException(ioe, null, APIConstants.STATUS_BAD_REQUEST);
         }
 
