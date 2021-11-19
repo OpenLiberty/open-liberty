@@ -27,14 +27,12 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.CommonTests.genericWebClientAuthCodeCommonTest;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 import componenttest.topology.utils.LDAPUtils;
 
-@MinimumJavaLevel(javaLevel = 8)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "com.ibm.ws.security.registry.EntryNotFoundException" }) // Defect 261748
@@ -45,19 +43,19 @@ public class OIDCWebClientAuthCodeCustomStoreBellTest extends genericWebClientAu
 
     private static final Class<?> thisClass = OIDCWebClientAuthCodeCustomStoreBellTest.class;
 
-	@BeforeClass
-	public static void setupBeforeTest() throws Exception {
-    	/*
-    	 * These tests have not been configured to run with the local LDAP server.
-    	 */
-    	Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-		msgUtils.printClassName(thisClass.toString());
-		Log.info(thisClass, "setupBeforeTest", "Prep for test, run Bell");
-		// add any additional messages that you want the "start" to wait for
-		// we should wait for any providers that this test requires
-		List<String> extraMsgs = new ArrayList<String>();
-		extraMsgs.add("CWWKZ0001I.*" + Constants.OIDCCONFIGMONGODB_START_APP);
-		extraMsgs.add("CWWKS1631I.*");
+    @BeforeClass
+    public static void setupBeforeTest() throws Exception {
+        /*
+         * These tests have not been configured to run with the local LDAP server.
+         */
+        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
+        msgUtils.printClassName(thisClass.toString());
+        Log.info(thisClass, "setupBeforeTest", "Prep for test, run Bell");
+        // add any additional messages that you want the "start" to wait for
+        // we should wait for any providers that this test requires
+        List<String> extraMsgs = new ArrayList<String>();
+        extraMsgs.add("CWWKZ0001I.*" + Constants.OIDCCONFIGMONGODB_START_APP);
+        extraMsgs.add("CWWKS1631I.*");
 
         List<String> extraApps = new ArrayList<String>();
 
@@ -71,17 +69,17 @@ public class OIDCWebClientAuthCodeCustomStoreBellTest extends genericWebClientAu
 
         testSettings = new TestSettings();
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.server-1.0_fat", "server_customstore_bell.xml",
-                Constants.OIDC_OP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, null,
-                Constants.OIDC_OP, true, true, tokenType, certType, Constants.JUNIT_REPORTING);
+                                   Constants.OIDC_OP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, null,
+                                   Constants.OIDC_OP, true, true, tokenType, certType, Constants.JUNIT_REPORTING);
 
         testSettings.setClientName("dclient01");
         testSettings.setClientID("dclient01");
         testSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(),
-                Constants.ENDPOINT_TYPE, Constants.OIDCCONFIGDERBY_APP, Constants.AUTHORIZE_ENDPOINT));
+                                                                  Constants.ENDPOINT_TYPE, Constants.OIDCCONFIGDERBY_APP, Constants.AUTHORIZE_ENDPOINT));
         testSettings.setTokenEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE,
-                Constants.OIDCCONFIGDERBY_APP, Constants.TOKEN_ENDPOINT));
+                                                              Constants.OIDCCONFIGDERBY_APP, Constants.TOKEN_ENDPOINT));
         testSettings.setProtectedResource(eSettings.assembleProtectedResource(testOPServer.getHttpsString(),
-                Constants.OIDC_TAI_ROOT, Constants.SSODEMO));
+                                                                              Constants.OIDC_TAI_ROOT, Constants.SSODEMO));
         testSettings.setStoreType(StoreType.CUSTOMBELL);
         setForClientSecretHash();
     }

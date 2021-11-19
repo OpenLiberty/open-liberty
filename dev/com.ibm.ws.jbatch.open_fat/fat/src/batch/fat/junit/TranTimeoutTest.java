@@ -20,7 +20,6 @@ import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -28,7 +27,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 7)
 public class TranTimeoutTest extends BatchFATHelper {
 
     private static final Class testClass = TranTimeoutTest.class;
