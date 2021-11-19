@@ -257,8 +257,9 @@ public class InfoStoreImpl implements InfoStore {
             try {
                 classReader.accept(infoVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG | ClassReader.SKIP_CODE);
 
-            } catch (InfoVisitor.VisitEnded e) {
+            } catch (Exception e) {
                 // Already logged a warning from the info visitor.
+                // Since we are handing ClassReader a non-valid class, we want to be prepared for any exception it might throw
 
                 String eMsg = "Target [ " + className + " ] from resource [ " + resourceName + " ] Processing exception: " + e.getMessage();
                 throw InfoStoreException.wrap(tc, CLASS_NAME, methodName, eMsg, e);
