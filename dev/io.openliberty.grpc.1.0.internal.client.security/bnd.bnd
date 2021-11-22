@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.38.1
-nettyVersion=4.1.68.Final
 
 Bundle-Name: gRPC Client security
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client.security
@@ -37,5 +36,6 @@ Export-Package: \
   com.ibm.websphere.security;version=latest,\
   org.osgi.service.component.annotations;version=latest,\
   io.grpc:grpc-netty;version=${grpcVersion},\
-  io.netty:netty-handler;version=${nettyVersion},\
-  io.openliberty.grpc.1.0.internal.client;version=latest
+  io.openliberty.grpc.1.0.internal.client;version=latest,\
+  io.openliberty.io.netty;version=latest,\
+  io.openliberty.io.netty.ssl;version=latest
