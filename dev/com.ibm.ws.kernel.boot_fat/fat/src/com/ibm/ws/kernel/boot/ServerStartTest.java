@@ -161,4 +161,246 @@ public class ServerStartTest {
             assumeTrue(false);
         }
     }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path (c:\ or /) or relative path (../ or folder). If relative,
+     * it is from the ${server.output.dir} location.
+     *
+     * This test case is for an absolute path which should resolve to ${server.output.dir}/logs/serverWorkingDir/.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSERVER_WORKING_DIR_AbsolutePath() throws Exception {
+        final String METHOD_NAME = "testSERVER_WORKING_DIR_AbsolutePath";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\") + File.separator + "logs" + File.separator + "serverWorkingDir";
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot() + File.separator + "logs" + File.separator + "serverWorkingDir";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", javaCoreLocation);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + javaCoreLocation);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Do a server javadump, and ensure the output is located in the
+        // ${server.output.dir}/logs/serverWorkingDir folder.
+        parms[0] = "javadump";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
+        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
+
+        // Make sure we got the javacore in the correct location
+        assertTrue("The message did not contain the correct folder location for the dump file. msg = " + msg + " expected " + javaCoreLocation,
+                   msg.contains(javaCoreLocation));
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path (c:\ or /) or relative path (../ or folder). If relative,
+     * it is from the ${server.output.dir} location.
+     *
+     * This test case is for a relative path which should resolve to ${server.output.dir}/../../serverWorkingDir
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSERVER_WORKING_DIR_RelativePath() throws Exception {
+        final String METHOD_NAME = "testSERVER_WORKING_DIR_RelativePath";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String relativePath = ".." + File.separator + ".." + File.separator + "serverWorkingDir";
+        String absolutePath = null;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\").trim() + File.separator + relativePath;
+            absolutePath = server.getUserDir().replace("/", "\\") + File.separator + "serverWorkingDir";
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot() + File.separator + relativePath;
+            absolutePath = server.getUserDir() + File.separator + "serverWorkingDir";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        // This test location equates to /wlp/usr/serverWorkingDir/.  Note if you create a javacore
+        // in the /wlp/usr/servers/ folder it gets picked up by the test framework as an error.
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", relativePath);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + relativePath);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Do a server javadump, and ensure the output is located in the
+        // ${server.output.dir}/../../serverWorkingDir folder.
+        parms[0] = "javadump";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
+        Log.info(c, METHOD_NAME, "msg = " + msg);
+        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
+
+        // Make sure we got the javacore in the correct location
+        assertTrue("The message did not contain the correct folder location for the dump file. msg = '" + msg + "' expected '" + absolutePath + "'",
+                   msg.contains(absolutePath));
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path (c:\ or /) or relative path (../ or folder). If relative,
+     * it is from the ${server.output.dir} location.
+     *
+     * This test case is for a relative folder which should resolve to ${server.output.dir}/javadumps/.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSERVER_WORKING_DIR_RelativeFolder() throws Exception {
+        final String METHOD_NAME = "testSERVER_WORKING_DIR_RelativeFolder";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String folder = "javadumps";
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\").trim() + File.separator + folder;
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot() + File.separator + folder;
+        }
+        Log.info(c, METHOD_NAME, "server command utilized is = " + command);
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", folder);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + envVars.getProperty("SERVER_WORKING_DIR"));
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Do a server javadump, and ensure the output is located in the
+        // ${server.output.dir}/../../serverWorkingDir folder.
+        parms[0] = "javadump";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
+        Log.info(c, METHOD_NAME, "msg = " + msg);
+        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
+
+        // Make sure we got the javacore in the correct location
+        assertTrue("The message did not contain the correct folder location for the dump file. msg = '" + msg + "' expected '" + javaCoreLocation + File.separator + folder + "'",
+                   msg.contains(javaCoreLocation));
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+    }
 }
