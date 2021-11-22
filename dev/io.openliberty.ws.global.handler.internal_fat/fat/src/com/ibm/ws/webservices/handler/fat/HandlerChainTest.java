@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 
 import java.io.FileNotFoundException;
+import java.util.Locale;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
@@ -38,6 +39,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -56,7 +59,9 @@ public class HandlerChainTest {
 
     private final static QName serviceQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterService");
     private final static QName portQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterPort");
-
+    
+    private static final int TIMEOUT = 300000;
+    
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
@@ -66,6 +71,7 @@ public class HandlerChainTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
         //server.installUserBundle("MyHandler_1.0.0.201311011651");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle", "com.ibm.ws.userbundle.myhandler");
@@ -117,7 +123,8 @@ public class HandlerChainTest {
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
         // Make server wait for application stop for the test to observe PreDestroy phase
-        //server.waitForStringInLog("CWWKE1101I");
+        server.waitForStringInLog("CWWKE1101I",TIMEOUT);     // timeout is 5 minutes
+
         
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
@@ -158,7 +165,7 @@ public class HandlerChainTest {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
-                findStr = server.waitForStringInLogUsingMark(state);
+                findStr = server.waitForStringInLogUsingMark(state,TIMEOUT);
                 assertTrue("Unable to find the output [" + state + "]  in the server log", findStr != null);
             }
         }
@@ -168,7 +175,7 @@ public class HandlerChainTest {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
-                findStr = server.waitForStringInLog(state);
+                findStr = server.waitForStringInLog(state,TIMEOUT);     // timeout is 5 minutes
                 assertTrue("Unable to find the output [" + state + "]  in the server log", findStr != null);
             }
         }
