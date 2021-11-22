@@ -35,6 +35,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.Constants;
@@ -136,12 +137,13 @@ public class ApplicationRegistry {
                 // If the removed application had any providers, invalidate the provider cache
                 cachedProvider = null;
                 
-                if (moduleSelectionConfig.useFirstModuleOnly()) {
+                if (moduleSelectionConfig.useFirstModuleOnly() && !FrameworkState.isStopping()) {
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Application Processor: Current OpenAPI application removed, looking for another application to document.");
                     }
 
-                    // We just removed the module used for the OpenAPI document, we need to find a new module to use if there is one
+                    // We just removed the module used for the OpenAPI document and the server is not shutting down.
+                    // We need to find a new module to use if there is one
                     for (ApplicationRecord app : applications.values()) {
                         Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);
                         if (!providers.isEmpty()) {

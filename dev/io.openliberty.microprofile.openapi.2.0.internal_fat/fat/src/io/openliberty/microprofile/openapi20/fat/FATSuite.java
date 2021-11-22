@@ -18,6 +18,7 @@ import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
+import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -25,7 +26,8 @@ import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
     CacheTest.class,
     DeploymentTest.class,
     MergeConfigTest.class,
-    MergeTest.class
+    MergeTest.class,
+    ShutdownTest.class
 })
 public class FATSuite {
 }
