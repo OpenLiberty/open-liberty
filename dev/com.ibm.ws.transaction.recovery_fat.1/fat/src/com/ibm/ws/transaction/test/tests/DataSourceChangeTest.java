@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
@@ -117,5 +119,9 @@ public class DataSourceChangeTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server.waitForStringInLog("Have recovered from ResourceAllocationException"));
     }
 }
