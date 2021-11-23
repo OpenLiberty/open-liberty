@@ -33,6 +33,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.resource.spi.ResourceAllocationException;
 import javax.sql.DataSource;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -167,6 +168,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      */
     private final CustomLogProperties _customLogProperties;
 
+    /**
+     * Name of the DataSource that hosts the db logs.
+     */
+    private String _dsName;
     /**
      * Flag indicating that the recovery log has suffered an internal error
      * that leaves the recovey log in an undefined or unmanageable state.
@@ -662,7 +667,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 openLogRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
                                 if (sqlTransientErrorHandlingEnabled) {
-                                    failAndReport = openLogRetry.retryAfterSQLException(this, _theDS, currentSqlEx, _transientRetryAttempts,
+                                    failAndReport = openLogRetry.retryAfterSQLException(this, currentSqlEx, _transientRetryAttempts,
                                                                                         _transientRetrySleepTime);
 
                                     if (failAndReport)
@@ -748,13 +753,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.debug(tc, "dbStringProps = " + dbStringProps);
 
         // Extract the DSName
-        String dsName = dbStringProps.getProperty("datasource");
+        _dsName = dbStringProps.getProperty("datasource");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Extracted Data Source name = " + dsName);
-        if (dsName != null && !dsName.trim().isEmpty()) {
-            dsName = dsName.trim();
+            Tr.debug(tc, "Extracted Data Source name = " + _dsName);
+        if (_dsName != null && !_dsName.trim().isEmpty()) {
+            _dsName = _dsName.trim();
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Trimmed Data Source name to = " + dsName);
+                Tr.debug(tc, "Trimmed Data Source name to = " + _dsName);
         }
 
         // Extract the optional tablesuffix
@@ -771,7 +776,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // We'll look up the DataSource definition in jndi but jndi is initialising in another
         // thread so we need to handle the situation where a first lookup does not succeed. This
         // processing is wrapped up in the SQLNonTransactionalDataSource
-        SQLNonTransactionalDataSource sqlNonTranDS = new SQLNonTransactionalDataSource(dsName, _customLogProperties);
+        SQLNonTransactionalDataSource sqlNonTranDS = new SQLNonTransactionalDataSource(_dsName, _customLogProperties);
 
         _theDS = sqlNonTranDS.getDataSource();
 
@@ -802,6 +807,71 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
         }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getConnection", conn);
+        return conn;
+    }
+
+    /**
+     * In general a DataSource object will have been retrieved and stored for the lifetime of the server. If for some reason the
+     * DataSource definition has been changed, then it will be necessary to look up the DataSource definition again, in order to
+     * get a connection.
+     *
+     * @return Connection
+     * @throws SQLException
+     */
+    protected Connection getConnection() throws SQLException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getConnection");
+        Connection conn = null;
+        boolean lookupDS = false;
+        // Get connection to database via datasource
+        try {
+            if (_theDS != null) {
+                conn = _theDS.getConnection();
+            } else
+                lookupDS = true;
+        } catch (SQLException sqlex) {
+            // Handle the special case where the DataSource has been refreshed and the Connection Pool has shut down
+            Throwable cause = sqlex.getCause();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Caught SQLException with cause: " + cause);
+
+            if (cause instanceof ResourceAllocationException) {// javax.resource.spi.ResourceAllocationException
+                // Look up the DataSource definition again
+                lookupDS = true;
+            } else {
+                // Not a ResourceAllocationException, rethrow exception
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "SQLException");
+                throw sqlex;
+            }
+        }
+
+        // Look up the DataSource definition again in order to get a Connection
+        if (lookupDS) {
+            SQLNonTransactionalDataSource sqlNonTranDS = new SQLNonTransactionalDataSource(_dsName, _customLogProperties);
+
+            try {
+                _theDS = sqlNonTranDS.getDataSource();
+                conn = _theDS.getConnection();
+                Tr.audit(tc, "WTRN0108I: " +
+                             "Have recovered from ResourceAllocationException in SQL RecoveryLog " + _logName + " for server " + _serverName);
+            } catch (Throwable exc) {
+                SQLException newsqlex;
+                if (exc instanceof SQLException) {
+                    newsqlex = (SQLException) exc;
+
+                } else {
+                    // Wrap in a SQLException
+                    newsqlex = new SQLException(exc);
+                }
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "new SQLException");
+                throw newsqlex;
+            }
+        }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getConnection", conn);
         return conn;
@@ -1275,7 +1345,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
                 } else { // the log is in the right state, we can proceed
                     try {
-                        Connection conn = _theDS.getConnection();
+                        Connection conn = getConnection();
                         dropDBTable(conn);
                     } catch (SQLException e) {
                         // FFDC exception but allow processing to continue
@@ -1868,7 +1938,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Reserved Connection is NULL, attempt to get new DataSource connection");
                         if (!_serverStopping) {
-                            conn = _theDS.getConnection();
+                            conn = getConnection();
                         } else {
                             Tr.audit(tc, "WTRN0100E: " +
                                          "Server stopping but no reserved connection when forcing SQL RecoveryLog " + _logName + " for server " + _serverName);
@@ -1963,7 +2033,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 forceSectionsRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
                                 if (sqlTransientErrorHandlingEnabled) {
-                                    failAndReport = forceSectionsRetry.retryAfterSQLException(this, _theDS, currentSqlEx, _transientRetryAttempts,
+                                    failAndReport = forceSectionsRetry.retryAfterSQLException(this, currentSqlEx, _transientRetryAttempts,
                                                                                               _transientRetrySleepTime);
                                     if (failAndReport)
                                         nonTransientException = forceSectionsRetry.getNonTransientException();
@@ -3384,7 +3454,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         SQLException transientException = null;
 
         try {
-            _reservedConn = _theDS.getConnection();
+            _reservedConn = getConnection();
             prepareConnectionForBatch(_reservedConn);
             lockingStmt = _reservedConn.createStatement();
             lockingRS = readHADBLock(lockingStmt);
@@ -3600,7 +3670,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             while (!success) {
                 try {
                     if (conn == null) {
-                        conn = _theDS.getConnection();
+                        conn = getConnection();
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Acquired connection in Database retry scenario");
                         initialIsolation = prepareConnectionForBatch(conn);
@@ -3754,7 +3824,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                        sqlSuccess = heartbeatRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
+                        sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
                                                                    _lightweightTransientRetrySleepTime);
                         if (!sqlSuccess)
                             nonTransientException = heartbeatRetry.getNonTransientException();
@@ -3949,7 +4019,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
-                        sqlSuccess = claimLocalRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
+                        sqlSuccess = claimLocalRetry.retryAndReport(this, _serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
                         // If the retry operation succeeded, retrieve the result of the underlying operation
                         if (sqlSuccess)
                             isClaimed = claimLocalRetry.isClaimed();
@@ -4194,7 +4264,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (nonTransientException == null) {
                     // In this case we will retry if we are operating in an HA DB environment
                     ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _theDS, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
                                                                _lightweightTransientRetrySleepTime);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
