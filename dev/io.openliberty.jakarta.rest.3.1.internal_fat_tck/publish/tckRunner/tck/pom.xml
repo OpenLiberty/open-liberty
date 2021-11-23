@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.openliberty.jakarta.rest</groupId>
+    <artifactId>tck-runner</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>jakarta-rest-tck-runner</name>
+    <description>A project that will run the Jakarta REST 3.1 TCK against the specified app server to test compliance</description>
+
+    <properties>
+        <!-- Global Maven settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <wlp>${wlp}</wlp>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
+
+        <!-- The default value is changed to `false` since maven-war-plugin 3.0.0 -->
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+
+        <!-- Official Maven Plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
+        <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
+
+        <!-- Jakarta EE API -->
+        <jakartaee-api.version>9.1.0</jakartaee-api.version>
+        <jakarta.ws.rs.version>3.1.0-20211123</jakarta.ws.rs.version>
+
+        <!-- TODO: update Arquillian BOM -->
+        <arquillian-bom.version>1.7.0.Alpha10</arquillian-bom.version>
+        <junit-jupiter.version>5.7.2</junit-jupiter.version>
+
+        <!-- Test Utilities -->
+        <mockito.version>3.11.1</mockito.version>
+        <json-path.version>2.6.0</json-path.version>
+        <awaitility.version>4.1.0</awaitility.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <assertj.version>3.20.1</assertj.version>
+        <!-- TODO: OpenLiberty server -->
+        <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
+        <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
+        <arquillian-liberty-jakarta.version>2.0.0</arquillian-liberty-jakarta.version>
+        <jersey.version>3.0.3</jersey.version>
+
+        <!-- By default, skip tests -->
+        <skip.unit.tests>true</skip.unit.tests>
+        <skip.integration.tests>true</skip.integration.tests>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${jakartaee-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>${jsonassert.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- JSON path -->
+            <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${json-path.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path-assert -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path-assert</artifactId>
+                <version>${json-path.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Mockito -->
+            <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+    <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-tck</artifactId>
+            <version>${jakarta.ws.rs.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>3.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- see: https://github.com/arquillian/arquillian-core/issues/248 -->
+        <!-- and https://github.com/arquillian/arquillian-core/pull/246/files -->
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--        <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-params</artifactId>
+                    <scope>test</scope>
+                </dependency>-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+        </dependency>-->
+    </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test integration-test</defaultGoal>
+        <testResources>
+            <testResource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>*</include>
+                </includes>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>-Xmx2048m -Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                        <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                        <arquillian.launch>liberty-managed</arquillian.launch>
+                        <!-- <wlp>${project.build.directory}/wlp</wlp> -->
+                        <http.port>${tck_port}</http.port>
+                        <tck.debug>true</tck.debug>
+                        <servlet.adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet.adaptor>
+                        <webServerHost>localhost</webServerHost>
+                        <webServerPort>${tck_port}</webServerPort>
+                        <servlet_adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet_adaptor>
+                        <!-- <wiremock.server.port>8765</wiremock.server.port> -->
+                        <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
+                        <!-- <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout> -->
+                        <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                        <user>j2ee</user>
+                        <password>j2ee</password>
+                        <authuser>javajoe</authuser>
+                        <authpassword>javajoe</authpassword>
+                    </systemPropertyVariables>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <dependenciesToScan>
+                        <dependency>jakarta.ws.rs:jakarta.ws.rs-tck</dependency>
+                    </dependenciesToScan>
+                    <includes>
+                        <include>**/tck/**/*Test</include>
+                        <include>**/tck/**/*IT</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/tck/**/SeBootstrapIT</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <skipTests>${skip.unit.tests}</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/it/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            --><!-- 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <skipITs>${skip.integration.tests}</skipITs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <dependenciesToScan>
+                                <dependency>jakarta.ws.rs:jakarta.ws.rs-tck</dependency>
+                            </dependenciesToScan>
+                            <includes>
+                                <include>**/tck/**/*Test</include>
+                                <include>**/tck/**/*IT</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/tck/**/SeBootstrapIT</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- Run with: mvn clean test -Parq-liberty-managed -->
+            <id>arq-liberty-managed</id>
+            <properties>
+                <skip.unit.tests>false</skip.unit.tests>
+                <skip.integration.tests>false</skip.integration.tests>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.openliberty.arquillian</groupId>
+                    <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+                    <version>${arquillian-liberty-jakarta.version}</version>
+                </dependency>
+                <!--It seems OpenLiberty 21.0.0.1 beta switched to use Resteasy as Jakarta Restful WS provider.
+                But there is no official public version for Jakarta EE 9 in the Maven central repository.
+                Use Jersey Client in the test codes here.-->
+
+                <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-json-binding</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jersey.inject</groupId>
+                    <artifactId>jersey-hk2</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-client</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-jaxb</artifactId>
+                    <version>${jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-sse</artifactId>
+                    <version>3.0.3</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <testResources>
+                    <testResource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>*</include>
+                        </includes>
+                        <excludes>
+                            <exclude>server.xml</exclude>
+                            <exclude>bootstrap.properties</exclude>
+                            <exclude>jvm.options</exclude>
+                        </excludes>
+                    </testResource>
+                </testResources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.beta</groupId>
+                                            <artifactId>openliberty-runtime</artifactId>
+                                            <version>${liberty.runtime.version}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.arquillian</groupId>
+                                            <artifactId>arquillian-liberty-support-jakarta</artifactId>
+                                            <version>${arquillian-liberty-jakarta.version}</version>
+                                            <type>zip</type>
+                                            <classifier>feature</classifier>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/wlp/usr</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-failsafe-plugin.version}</version>
+                        <configuration>
+                            <environmentVariables>
+                                <!-- WLP_HOME is not picked by arquillian liberty -->
+                                <WLP_HOME>${project.build.directory}/wlp</WLP_HOME>
+                            </environmentVariables>
+                            <systemPropertyVariables>
+                                <arquillian.launch>liberty-managed</arquillian.launch>
+                                <wlp>${project.build.directory}/wlp</wlp>
+                                <tck_server>FATServer</tck_server>
+                                <tck_port>9080</tck_port>
+                                <http.port>9080</http.port>
+                                <tck.debug>true</tck.debug>
+                                <servlet.adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet.adaptor>
+                                <webServerHost>localhost</webServerHost>
+                                <webServerPort>9080</webServerPort>
+                                <servlet_adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet_adaptor>
+                                <!-- <wiremock.server.port>8765</wiremock.server.port> -->
+                                <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
+                                <!-- <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout> -->
+                                <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                                <user>j2ee</user>
+                                <password>j2ee</password>
+                                <authuser>javajoe</authuser>
+                                <authpassword>javajoe</authpassword>
+                            </systemPropertyVariables>
+                        </configuration><!--
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-testng</artifactId>
+                                <version>3.0.0-M5</version>
+                            </dependency>
+                        </dependencies> -->
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Sonatype Nexus Staging</name>
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
