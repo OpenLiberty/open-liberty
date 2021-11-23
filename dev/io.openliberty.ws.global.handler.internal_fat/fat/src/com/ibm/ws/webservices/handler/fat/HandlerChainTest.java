@@ -59,8 +59,7 @@ public class HandlerChainTest {
 
     private final static QName serviceQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterService");
     private final static QName portQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterPort");
-    
-    private static final int TIMEOUT = 300000;
+
     
     @After
     public void tearDown() throws Exception {
@@ -123,7 +122,7 @@ public class HandlerChainTest {
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
         // Make server wait for application stop for the test to observe PreDestroy phase
-        server.waitForStringInLog("CWWKE1101I",TIMEOUT);     // timeout is 5 minutes
+        server.waitForStringInLog("CWWKE1101I",240000);     // added timeout 4 minutes
 
         
         // Test invoke sequence
@@ -165,7 +164,7 @@ public class HandlerChainTest {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
-                findStr = server.waitForStringInLogUsingMark(state,TIMEOUT);
+                findStr = server.waitForStringInLogUsingMark(state);
                 assertTrue("Unable to find the output [" + state + "]  in the server log", findStr != null);
             }
         }
@@ -175,7 +174,7 @@ public class HandlerChainTest {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
-                findStr = server.waitForStringInLog(state,TIMEOUT);     // timeout is 5 minutes
+                findStr = server.waitForStringInLog(state);
                 assertTrue("Unable to find the output [" + state + "]  in the server log", findStr != null);
             }
         }
