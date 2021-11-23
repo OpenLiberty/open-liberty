@@ -201,7 +201,6 @@ addRequiredLibraries {
     dependsOn copyToConsumerAppWarLibs
 }
 
-// Inform IDE Eclipse about the generated code.
 sourceSets {
     main {
         if (project.hasProperty('compileProtobufs')) {
