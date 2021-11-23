@@ -51,6 +51,7 @@ public class Mpjwt11TCKLauncher_noaud_noenv {
     public void launchMpjwt11TCKLauncher_noaud_noenv() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_noaud_noenv.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.preparePublicationFile();
 
     }
 }

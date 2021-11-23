@@ -46,5 +46,6 @@ public class MPContextPropagationTCKLauncher {
         // TODO use this to only test with local build
         // if (FATRunner.FAT_TEST_LOCALRUN)
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.2_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
+        MvnUtils.preparePublicationFile();
     }
 }

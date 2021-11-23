@@ -56,6 +56,7 @@ public class Mpjwt20TCKLauncher_noaud_env {
     public void launchMpjwt20TCKLauncher_noaud_env() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_noaud_env.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.preparePublicationFile();
 
     }
 }
