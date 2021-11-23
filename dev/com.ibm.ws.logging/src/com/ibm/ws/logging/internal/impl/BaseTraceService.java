@@ -219,6 +219,12 @@ public class BaseTraceService implements TrService {
     /** Configured message Ids to be suppressed in console/message.log */
     private volatile Collection<String> hideMessageids;
 
+    /** The rollover start time for time based messages/trace.log rollover. */
+    private volatile String rolloverStartTime = "";
+
+    /** The rollover start time for time based messages/trace.log rollover. */
+    private volatile long rolloverInterval = -1;
+
     /** Early msgs issued before MessageRouter is started. */
     protected volatile Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected volatile Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
@@ -245,9 +251,10 @@ public class BaseTraceService implements TrService {
     private boolean isLogRolloverScheduled = false;
 
     private static Boolean isBetaEdition;
+    private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     public Boolean betaFenceCheck() {
-        TraceComponent tc = Tr.register(BaseTraceService.class);
+        //TraceComponent tc = Tr.register(BaseTraceService.class);
         if (isBetaEdition == null) {
             if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
                 isBetaEdition = true;
@@ -1323,14 +1330,23 @@ public class BaseTraceService implements TrService {
     private void scheduleTimeBasedLogRollover(LogProviderConfigImpl config) {
         String rolloverStartTime = config.getRolloverStartTime();
         long rolloverInterval = config.getRolloverInterval();
-        TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+
 
         //if the rollover has already been scheduled, cancel it
         //this is either a reschedule, or a unschedule
         if (this.isLogRolloverScheduled) {
-            timedLogRollover_Timer.cancel();
-            timedLogRollover_Timer.purge();
-            this.isLogRolloverScheduled = false;
+            //null and empty rolloverStartTime are the same
+            if (rolloverStartTime == null)
+                rolloverStartTime = "";
+            //if neither of the rollover attributes change, return without rescheduling
+            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval) {
+                return;
+            }
+            else {
+                timedLogRollover_Timer.cancel();
+                timedLogRollover_Timer.purge();
+                this.isLogRolloverScheduled = false;
+            }
         }
 
         //if both rolloverStartTime and rolloverInterval are empty, return
@@ -1344,27 +1360,29 @@ public class BaseTraceService implements TrService {
             Tr.warning(tc, "LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING");
             rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
         }
+        //set default of interval to 1d if startTime exists but interval does not
+        if (rolloverInterval < 0)
+            rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
         if (!rolloverStartTime.isEmpty()) {
             //check ISO date format matches HH:MM
             if (!Pattern.matches(ROLLOVER_START_TIME_FORMAT, rolloverStartTime)) {
                 Tr.warning(tc, "LOG_ROLLOVER_START_TIME_FORMAT_WARNING");
                 rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT;
             } 
-            //set default of interval to 1d if startTime exists but interval does not
-            if (rolloverInterval < 0)
-                rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
         }
         else {
             //set default of non-existing startTime if interval exists
             rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT; 
         }
 
-        //tc = Tr.register(BaseTraceService.class, null, "com.ibm.ws.logging.internal.resources.LoggingMessages");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Scheduling time based log rollover...");
             Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
             Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
         }
+
+        this.rolloverStartTime = rolloverStartTime;
+        this.rolloverInterval = rolloverInterval;
 
         //parse startTimeField
         String[] hourMinPair = rolloverStartTime.split(":");
@@ -1400,7 +1418,7 @@ public class BaseTraceService implements TrService {
 
         Date firstRollover = sched.getTime();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Scheduling next log rollover after server update at "+sched.getTime()+"...");
+            Tr.debug(tc, "Log rollover settings updated - next rollover will be at ... "+sched.getTime());
         }
         //schedule rollover
         timedLogRollover_Timer = new Timer();

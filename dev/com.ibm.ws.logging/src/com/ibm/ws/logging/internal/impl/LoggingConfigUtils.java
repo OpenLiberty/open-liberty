@@ -125,8 +125,8 @@ public class LoggingConfigUtils {
      *            New parameter value to parse/evaluate
      * @param defaultValue
      *            Starting/Previous value
-     * @return defaultValue if the newValue is null or is was badly
-     *         formatted, or the converted new value
+     * @return defaultValue if the newValue is null or is badly
+     *         formatted, else the converted new value
      */
     public static long getLongValue(Object newValue, long defaultValue) {
         if (newValue != null) {

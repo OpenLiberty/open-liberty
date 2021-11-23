@@ -28,6 +28,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * A direct copy of relevant methods from com.ibm.ws.kernel.service
  * (com.ibm.wsspi.kernel.service.utils.MetatypeUtils)
  * to parse ibm:type = duration Strings to longs for ENV and bootstrap variables
+ * 
+ * When importin MetatypeUtils.java from com.ibm.ws.kernel.service, a
+ * circular build dependency is introduced, so this class copy is the workaround.
  */
 public class MetatypeUtils {
     static final TraceComponent tc = Tr.register(MetatypeUtils.class);

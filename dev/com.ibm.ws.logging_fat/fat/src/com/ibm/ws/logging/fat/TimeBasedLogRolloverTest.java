@@ -79,12 +79,14 @@ public class TimeBasedLogRolloverTest {
     //env and bootstrap server initial config
     private static final String SERVER_NAME_ENV = "com.ibm.ws.logging.timedrolloverenv";
     private static final String SERVER_NAME_BOOTSTRAP = "com.ibm.ws.logging.timedrolloverbootstrap";
+    private static final String SERVER_NAME_JSON = "com.ibm.ws.logging.timedrolloverjson";
 
     private static LibertyServer server_xml;
     private static LibertyServer server_env;
     private static LibertyServer server_bootstrap;
     private static LibertyServer server_time_rollover_disabled;
     private static LibertyServer server_no_trace;
+    private static LibertyServer server_json_logs;
 
     private static LibertyServer serverInUse; // hold on to the server currently used so cleanUp knows which server to stop
     private static final Logger LOG = Logger.getLogger(TimeBasedLogRolloverTest.class.getName());
@@ -96,6 +98,7 @@ public class TimeBasedLogRolloverTest {
         server_bootstrap = LibertyServerFactory.getLibertyServer(SERVER_NAME_BOOTSTRAP);
         server_time_rollover_disabled = LibertyServerFactory.getLibertyServer(SERVER_NAME_TIME_ROLLOVER_DISABLED);
         server_no_trace = LibertyServerFactory.getLibertyServer(SERVER_NAME_NO_TRACE);
+        server_json_logs = LibertyServerFactory.getLibertyServer(SERVER_NAME_JSON);
 
         // Preserve the original server configuration
         server_xml.saveServerConfiguration();
@@ -103,6 +106,7 @@ public class TimeBasedLogRolloverTest {
         server_bootstrap.saveServerConfiguration();
         server_time_rollover_disabled.saveServerConfiguration();
         server_no_trace.saveServerConfiguration();
+        server_json_logs.saveServerConfiguration();
 
         ShrinkHelper.defaultDropinApp(server_xml, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
 
@@ -159,6 +163,17 @@ public class TimeBasedLogRolloverTest {
     @Test
     public void testTimedRolloverXML() throws Exception {
         setUp(server_xml, "testTimedRolloverXML");
+        checkForRolledLogsAtTime(getNextRolloverTime(0,1));
+    }
+
+    /*
+     * Tests setting 
+     * <logging rolloverStartTime="00:00" rolloverInterval="1m"/> 
+     * in server.xml, with json logging.
+     */
+    @Test
+    public void testTimedRolloverJsonLogs() throws Exception {
+        setUp(server_json_logs, "testTimedRolloverXML");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1));
     }
 
@@ -304,11 +319,11 @@ public class TimeBasedLogRolloverTest {
         List<String> traceLogs = new ArrayList<String>();
 
         for (int i = 0; i < logsDirFiles.length ; i++) {
-			if (logsDirFiles[i].startsWith(MESSAGES_LOG_PREFIX))
+            if (logsDirFiles[i].startsWith(MESSAGES_LOG_PREFIX))
                 messagesLogs.add(logsDirFiles[i]);
             if (logsDirFiles[i].startsWith(TRACE_LOG_PREFIX))
                 traceLogs.add(logsDirFiles[i]);
-		}
+        }
 
         assertTrue("The number of messages prefixed log files should be equal to 2. Instead, "+
         "these are the messages prefixed logs: "+messagesLogs.toString(), messagesLogs.size() == 2);
@@ -350,8 +365,8 @@ public class TimeBasedLogRolloverTest {
         setUp(server_xml, "testMaxFileSizeRolling");
         setServerConfiguration(false, false, true, "", "", 1);
 
-         //check for rolled log first, to ensure we start writing messages at the next minute
-         checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
+        //check for rolled log first, to ensure we start writing messages at the next minute
+        checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
 
         //hit QuickLogTest endpoint (run for 10s)
         long startTime = System.currentTimeMillis();
@@ -364,9 +379,9 @@ public class TimeBasedLogRolloverTest {
         List<String> messagesLogs = new ArrayList<String>();
 
         for (int i = 0; i < logsDirFiles.length ; i++) {
-			if (logsDirFiles[i].startsWith(MESSAGES_LOG_PREFIX))
+            if (logsDirFiles[i].startsWith(MESSAGES_LOG_PREFIX))
                 messagesLogs.add(logsDirFiles[i]);
-		}
+        }
 
         //at least three messages_*.log files: the first rolled over by time,
         //the second rolloed over by size, and then the newest file
