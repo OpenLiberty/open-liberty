@@ -49,7 +49,7 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      * @param workQueueManager
      * @throws ChannelException
@@ -63,7 +63,7 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
 
         workQueueManager.addRef();
 
-        this.alists = AccessLists.getInstance(config);
+        this.alists = AccessLists.getInstance(config.accessListKeys());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "UDPChannel");
@@ -85,7 +85,6 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
     }
 
     /*
-     * 
      * see com.ibm.wsspi.channelfw.InboundChannel#getDiscriminator()
      */
     public Discriminator getDiscriminator() {
@@ -143,7 +142,6 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
 
     /**
      * Remove the reference to the provided connection link as an active one.
-     * 
      * @param connLink
      */
     public void removeConnLink(UDPConnLink connLink) {
@@ -299,7 +297,6 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
     /**
      * call the destroy on all the UDPConnLink objects related to this
      * UDPChannel which are currently "in use".
-     * 
      */
     private void destroyConnLinks() {
         synchronized (inUse) {
@@ -317,7 +314,6 @@ public class UDPChannel implements OutboundChannel, InboundChannel {
     /**
      * Verify whether the remote address is allowed to communicated with the
      * channel.
-     * 
      * @param remoteAddr
      * @return boolean - false means it is denied
      */

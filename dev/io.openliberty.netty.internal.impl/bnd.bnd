@@ -51,6 +51,7 @@ Private-Package: \
     com.ibm.ws.kernel.boot.core;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.wsbytebuffer,\
+    io.openliberty.accesslists.internal,\
     io.openliberty.io.netty;version=latest,\
     io.openliberty.netty.internal;version=latest
 

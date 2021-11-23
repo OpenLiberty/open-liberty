@@ -16,6 +16,9 @@ import java.net.InetAddress;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.accesslists.AccessListKeysFacade;
+import io.openliberty.accesslists.AccessListsConstants;
+
 /**
  * Wrapper class handling various include or exclude lists for accessing
  * a TCP channel inbound port.
@@ -28,7 +31,7 @@ public class AccessLists {
 
     private boolean caseInsensitiveHostnames = true; // F184719
 
-    private static final TraceComponent tc = Tr.register(AccessLists.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(AccessLists.class, AccessListsConstants.TCP_TRACE_GROUP, AccessListsConstants.TCP_MESSAGES);
 
     /**
      * Constructor.
@@ -48,7 +51,7 @@ public class AccessLists {
         this.caseInsensitiveHostnames = _caseInsensitiveHostnames;
     }
 
-    protected static AccessLists getInstance(TCPChannelConfiguration config) {
+    protected static AccessLists getInstance(AccessListKeysFacade keys) {
         AccessLists retVal = null;
         boolean haveAList = false;
         FilterList excludeAccess = null;
@@ -56,7 +59,7 @@ public class AccessLists {
         FilterListStr excludeAccessNames = null;
         FilterListStr includeAccessNames = null;
 
-        String[] sExclude = config.getAddressExcludeList();
+        String[] sExclude = keys.getAddressExcludeList();
         excludeAccess = new FilterList();
         if (sExclude != null) {
             excludeAccess.buildData(sExclude, false);
@@ -64,7 +67,7 @@ public class AccessLists {
             haveAList = true;
         }
 
-        sExclude = config.getHostNameExcludeList();
+        sExclude = keys.getHostNameExcludeList();
         excludeAccessNames = new FilterListFastStr();
         if (sExclude != null) {
             if (excludeAccessNames.buildData(sExclude) == false) {
@@ -75,7 +78,7 @@ public class AccessLists {
             haveAList = true;
         }
 
-        String[] sInclude = config.getAddressIncludeList();
+        String[] sInclude = keys.getAddressIncludeList();
         includeAccess = new FilterList();
         if (sInclude != null) {
             includeAccess.buildData(sInclude, false);
@@ -83,7 +86,7 @@ public class AccessLists {
             haveAList = true;
         }
 
-        sInclude = config.getHostNameIncludeList();
+        sInclude = keys.getHostNameIncludeList();
         includeAccessNames = new FilterListFastStr();
         if (sInclude != null) {
             if (includeAccessNames.buildData(sInclude) == false) {
@@ -97,7 +100,7 @@ public class AccessLists {
 
         if (haveAList) {
             retVal = new AccessLists(excludeAccess, excludeAccessNames, includeAccess, includeAccessNames,
-                            config.getCaseInsensitiveHostnames());
+                            keys.getCaseInsensitiveHostnames());
         }
 
         return retVal;
