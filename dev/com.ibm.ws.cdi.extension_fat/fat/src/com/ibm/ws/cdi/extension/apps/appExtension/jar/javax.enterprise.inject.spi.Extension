@@ -1,0 +1,5 @@
+###########blah test the comment line ignored
+com.ibm.ws.cdi.extension.apps.appExtension.jar.PlainExtension#haha
+##########ignore
+test.bean
+##########  ignore
