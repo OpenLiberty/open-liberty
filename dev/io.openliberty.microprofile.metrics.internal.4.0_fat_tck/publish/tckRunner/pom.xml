@@ -19,9 +19,9 @@
 
     <groupId>io.openliberty.microprofile.metrics</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>4.0-RC4</version>
+    <version>4.0</version>
     <packaging>pom</packaging>
-    <name>MicroProfile Metrics TCK 4.0-RC4 Runner</name>
+    <name>MicroProfile Metrics TCK 4.0 Runner</name>
 
     <properties>
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
