@@ -300,16 +300,16 @@ importSigner.required-desc.host=\
 importSigner.option-key.type=\
 \ \ \ \ --type
 importSigner.option-desc.type=\
-\tThe type of the keystore. If not provided will be guessed from keystore file extension.\n\
+\tThe type of the keystore. If no value is provided, it is determined from the keystore file extension\n\
 \tAllowed values: PKCS, JKS, PEM.
 importSigner.option-key.alias=\
 \ \ \ \ --alias
 importSigner.option-desc.alias=\
-\tThe alias to store the certificate under, will be generated if not specified.
+\tThe alias to store the certificate under. If no value is specified, it is generated.
 importSigner.option-key.accept=\
 \ \ \ \ --accept
 importSigner.option-desc.accept=\
 \tWhether to accept the cert or not. Allows non-interactive acceptance of the certificate into\n\
-\tthe keystore. If no value is specified the signer will be imported with no check. If a value\n\
-\tis specified it is a hex encoding of the certificate hash, either SHA-1 or SHA-256. Each byte\n\
+\tthe keystore. If no value is specified the signer is imported with no check. If a value is\n\
+\tspecified, it is a hex encoding of the certificate hash, either SHA-1 or SHA-256. Each byte\n\
 \tmust be separated with a colon character.

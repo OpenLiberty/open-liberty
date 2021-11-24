@@ -99,8 +99,8 @@ Include the following configuration to your server.xml\n\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 importSigner.confirm=Add signer to the trust store now? (y/n)
 importSigner.invalidPort=The provided port {0} is not a number.
-importSigner.noCertsFound=There were no certificates found to import at {0} and {1}.
-importSigner.imported=Certificate successfully imported into {0}.
-importSigner.alwaysImport=The command line has specified to import the certificate with no checks.
+importSigner.noCertsFound=No certificates were found to import at {0} and {1}.
+importSigner.imported=Certificate was successfully imported into {0}.
+importSigner.alwaysImport=The command line specified to import the certificate with no checks.
 importSigner.failWritingKeystore=An error occurred writing {0}. Error was: {1}
 importSigner.nomatch=The hash of the provided certificate did not match the accepted one.
