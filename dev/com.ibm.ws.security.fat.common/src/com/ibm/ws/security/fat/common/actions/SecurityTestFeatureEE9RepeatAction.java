@@ -15,6 +15,7 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.JakartaEE9Action;
 
@@ -22,7 +23,7 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
 
     public static Class<?> thisClass = SecurityTestFeatureEE9RepeatAction.class;
 
-    protected String complexId = JakartaEE9Action.ID;
+    protected static String complexId = JakartaEE9Action.ID;
     private TestMode testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
     private boolean notAllowedOnWindows = false;
 
@@ -75,6 +76,10 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
         return true;
     }
 
+    public static boolean isActive() {
+        return RepeatTestFilter.isRepeatActionActive(complexId);
+    }
+
     @Override
     public SecurityTestFeatureEE9RepeatAction liteFATOnly() {
         testRunMode = TestMode.LITE;
@@ -101,7 +106,6 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
      */
     @Override
     public String getID() {
-        Log.info(thisClass, "getID", "complexId: " + complexId);
         return complexId;
     }
 
