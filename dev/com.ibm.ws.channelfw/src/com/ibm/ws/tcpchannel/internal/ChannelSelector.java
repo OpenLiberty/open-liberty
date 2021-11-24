@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     boolean checkCancel = false;
 
-    boolean waitToAccept = false;
+    boolean startSelectorImmediately = false;
 
     /**
      * Create a new ChannelSelector.
@@ -97,13 +97,13 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * @param _checkCancel
      * @throws IOException
      */
-    public ChannelSelector(boolean _checkCancel, boolean _waitToAccept) throws IOException {
+    public ChannelSelector(boolean _checkCancel, boolean _startImmediately) throws IOException {
         this.selector = Selector.open();
         this.selectorYield = TCPFactoryConfiguration.getSelectorYield();
         this.checkCancel = _checkCancel;
         this.workQueue1 = new LinkedList<Object>();
         this.workQueue2 = new LinkedList<Object>();
-        waitToAccept = _waitToAccept;
+        startSelectorImmediately = _startImmediately;
     }
 
     /**
@@ -124,10 +124,10 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         long lastEmptySelectorFFDCTime = 0L;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "selector thread started for " + Thread.currentThread().getName() + " ");
+            Tr.debug(this, tc, "selector thread started for " + Thread.currentThread().getName() + " . StartImmediately: " + startSelectorImmediately);
         }
 
-        if (!waitToAccept) {
+        if (!startSelectorImmediately) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "waiting for server started signal");
             }
@@ -172,7 +172,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                     }
                     selector.selectNow();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                      Tr.debug(this, tc, "selectNow() returned. quit="+quit);
+                        Tr.debug(this, tc, "selectNow() returned. quit=" + quit);
                     }
                     nothingTimedOut = false;
                     numEmptySelects = 0;
@@ -262,7 +262,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                 updateCount();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                  Tr.debug(this, tc, "ChannelSelector.quit="+quit+" before call to checkForTimeouts()");
+                    Tr.debug(this, tc, "ChannelSelector.quit=" + quit + " before call to checkForTimeouts()");
                 }
                 checkForTimeouts();
                 updateSelector();
@@ -331,10 +331,11 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     protected void shutDown() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-          StringBuilder sb = new StringBuilder();
-          StackTraceElement st[] = Thread.currentThread().getStackTrace();
-          for (StackTraceElement ste:st) sb.append(ste+"\n");
-          Tr.debug(this, tc, "ChannelSelector.shutDown called from "+sb.toString());
+            StringBuilder sb = new StringBuilder();
+            StackTraceElement st[] = Thread.currentThread().getStackTrace();
+            for (StackTraceElement ste : st)
+                sb.append(ste + "\n");
+            Tr.debug(this, tc, "ChannelSelector.shutDown called from " + sb.toString());
         }
         this.quit = true;
         this.selector.wakeup();

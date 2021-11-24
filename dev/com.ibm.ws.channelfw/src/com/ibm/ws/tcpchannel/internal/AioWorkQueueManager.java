@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ public class AioWorkQueueManager extends WorkQueueManager {
 
     private static final TraceComponent tc = Tr.register(AioWorkQueueManager.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
+    @Override
     protected void startSelectors(boolean inBound) throws ChannelException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -50,7 +51,7 @@ public class AioWorkQueueManager extends WorkQueueManager {
                     connectCount[i] = CS_NULL;
                 }
 
-                connect[0] = new ConnectChannelSelector(this, 0, CS_CONNECTOR);
+                connect[0] = new ConnectChannelSelector(this, 0, CS_CONNECTOR, this.startImmediately);
                 createNewThread(connect[0], CS_CONNECTOR, 1);
                 connectCount[0] = CS_OK;
             }
