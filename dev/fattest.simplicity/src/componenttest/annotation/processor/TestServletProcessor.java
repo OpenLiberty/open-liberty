@@ -64,7 +64,7 @@ public class TestServletProcessor {
                 int initialSize = testMethods.size();
                 for (Method method : getTestServletMethods(anno)) {
                     if (method.isAnnotationPresent(Test.class)) {
-                        testMethods.add(new SyntheticServletTest(serverField, getQueryPath(anno), method));
+                        testMethods.add(new SyntheticServletTest(anno.servlet(), serverField, getQueryPath(anno), method));
                     }
                 }
                 Log.info(c, m, "Added " + (testMethods.size() - initialSize) + " test methods from " + anno.servlet());
