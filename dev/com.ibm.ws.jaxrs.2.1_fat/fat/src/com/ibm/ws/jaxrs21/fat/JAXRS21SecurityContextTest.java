@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.securitycontext;
+package com.ibm.ws.jaxrs21.fat;
 
 import static org.junit.Assert.assertNotNull;
 

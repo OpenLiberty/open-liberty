@@ -20,12 +20,12 @@ package org.apache.cxf.jaxrs.provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,11 +45,7 @@ import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
 
@@ -82,8 +78,10 @@ import org.apache.cxf.message.MessageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxrs21.providers.NoOpPreprocessor;
 
 public final class ServerProviderFactory extends ProviderFactory {
+    @SuppressWarnings("unused")
     private static final TraceComponent tc = Tr.register(ServerProviderFactory.class);
 
     private static final String WADL_PROVIDER_NAME = "org.apache.cxf.jaxrs.model.wadl.WadlGenerator";
@@ -207,7 +205,7 @@ public final class ServerProviderFactory extends ProviderFactory {
 
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected void setProviders(boolean custom, boolean busGlobal, Object... providers) {
         List<Object> allProviders = new LinkedList<>();
@@ -364,7 +362,15 @@ public final class ServerProviderFactory extends ProviderFactory {
     }
 
     public void setRequestPreprocessor(RequestPreprocessor rp) {
-        this.requestPreprocessor = rp;
+        // Liberty change start - don't set the requestPreprocessor if user requests the no-op preprocessor
+        if (AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+            return Boolean.getBoolean("jaxrs.cxf.use.noop.requestPreprocessor");
+        })) {
+            this.requestPreprocessor = new NoOpPreprocessor();
+        } else {
+            this.requestPreprocessor = rp;
+        }
+        // Liberty change end
     }
 
     public void clearExceptionMapperProxies() {
@@ -523,6 +529,7 @@ public final class ServerProviderFactory extends ProviderFactory {
             return application != null ? application.getProvider().getSingletons() : Collections.emptySet();
         }
 
+        @SuppressWarnings("unlikely-arg-type")
         @Override
         public boolean isEnabled(Feature f) {
             return dynamicFeatures.contains(f);

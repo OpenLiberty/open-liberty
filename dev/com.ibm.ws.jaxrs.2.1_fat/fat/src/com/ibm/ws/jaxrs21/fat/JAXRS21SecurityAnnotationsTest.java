@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.security.annotations;
+package com.ibm.ws.jaxrs21.fat;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs21.fat.security.servlet.SecurityAnnotationsRolesAsGroupsTestServlet;
+import com.ibm.ws.jaxrs21.fat.security.servlet.SecurityAnnotationsTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -25,16 +25,16 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class JAXRS21SecurityAnnotationsTestRolesAsGroups {
+public class JAXRS21SecurityAnnotationsTest {
 
     private static final String secwar = "jaxrs21security";
     private static final String secNoWebXmlWar = "jaxrs21securityNoWebXml";
 
-    @Server("com.ibm.ws.jaxrs21.fat.security_rolesAsGroups")
+    @Server("com.ibm.ws.jaxrs21.fat.securityAnnotations")
     public static LibertyServer server;
 
     @Server("com.ibm.ws.jaxrs21.fat.security.client")
-    @TestServlet(servlet = SecurityAnnotationsRolesAsGroupsTestServlet.class, contextRoot = secwar + "TestServlet")
+    @TestServlet(servlet = SecurityAnnotationsTestServlet.class, contextRoot = secwar + "TestServlet")
     public static LibertyServer clientServer;
 
     @BeforeClass
@@ -58,6 +58,8 @@ public class JAXRS21SecurityAnnotationsTestRolesAsGroups {
             server.startServer();
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("The Security Service should be ready", server.waitForStringInLog("CWWKS0008I"));
+            assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }

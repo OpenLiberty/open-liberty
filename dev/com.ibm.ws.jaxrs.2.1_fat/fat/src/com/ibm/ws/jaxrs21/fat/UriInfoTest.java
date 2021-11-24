@@ -8,13 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.uriInfo;
+package com.ibm.ws.jaxrs21.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jaxrs21.fat.uriInfo.ClientTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
