@@ -118,7 +118,7 @@ public class FATUtils {
             assertNotNull("Attempted to stop a null server", server);
             int attempt = 0;
             int maxAttempts = 5;
-
+            Log.info(c, method, "Working with server " + server);
             do {
                 if (attempt++ > 0) {
                     Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
