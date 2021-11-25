@@ -46,7 +46,7 @@ public class TestSuiteResult {
         } else {
             pass = "FAILED";
         }
-        strBuild.append("Test suite: " + name +  timestamp);
+        strBuild.append("Test suite: " + name +  " "  +  timestamp);
         strBuild.append(System.lineSeparator());
         strBuild.append("Tests:" + tests + " Failures:" + failures + " Errors:" + errors);
         strBuild.append(System.lineSeparator());
