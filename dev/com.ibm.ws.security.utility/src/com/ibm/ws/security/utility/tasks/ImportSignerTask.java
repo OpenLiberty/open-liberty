@@ -53,7 +53,7 @@ public class ImportSignerTask extends BaseCommandTask {
     void checkRequiredArguments(String[] args) throws IllegalArgumentException {
         StringBuilder message = new StringBuilder();
         // We expect at least two arguments and the task name
-        if (args.length < 4) {
+        if (args.length < 3) {
             message.append(getMessage("insufficientArgs"));
         }
 
