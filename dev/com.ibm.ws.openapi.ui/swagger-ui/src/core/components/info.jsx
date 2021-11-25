@@ -132,7 +132,7 @@ export default class Info extends React.Component {
           <h2 className="title" >{ title }
             { version && <VersionStamp version={version}></VersionStamp> }
           </h2>
-          {/*
+          { /*
           { host || basePath ? <InfoBasePath host={ host } basePath={ basePath } /> : null }
           { url && <InfoUrl getComponent={getComponent} url={url} /> }
           */}
