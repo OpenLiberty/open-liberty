@@ -48,6 +48,7 @@ public class ConfigTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfigTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config_fat_tck", this.getClass() + ":launchConfig11Tck");
+        MvnUtils.preparePublicationFile();
     }
 
 }

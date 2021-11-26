@@ -52,5 +52,6 @@ public class Config30TCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig30Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.config.3.0.internal_fat_tck", this.getClass() + ":launchConfig30Tck");
+        MvnUtils.preparePublicationFile();
     }
 }

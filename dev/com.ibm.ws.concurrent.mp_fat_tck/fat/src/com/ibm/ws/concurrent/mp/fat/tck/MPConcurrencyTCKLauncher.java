@@ -44,5 +44,6 @@ public class MPConcurrencyTCKLauncher {
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
+        MvnUtils.preparePublicationFile();
     }
 }

@@ -64,6 +64,7 @@ public class RestClientTckPackageTest {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClientTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.rest.client.2.0.internal_fat_tck", this.getClass() + ":testRestClientTck");
+        MvnUtils.preparePublicationFile();
     }
 
 }

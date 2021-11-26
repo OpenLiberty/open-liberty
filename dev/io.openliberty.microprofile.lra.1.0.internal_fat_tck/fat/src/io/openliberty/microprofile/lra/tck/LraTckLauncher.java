@@ -86,6 +86,7 @@ public class LraTckLauncher {
         additionalProps.put("test", "TckTests#*LRA*+join*");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
+        MvnUtils.preparePublicationFile();
 
     }
 
@@ -109,6 +110,7 @@ public class LraTckLauncher {
         additionalProps.put("lraTestsToRun", "**/*Test*.java");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
+        MvnUtils.preparePublicationFile();
 
     }
 }
