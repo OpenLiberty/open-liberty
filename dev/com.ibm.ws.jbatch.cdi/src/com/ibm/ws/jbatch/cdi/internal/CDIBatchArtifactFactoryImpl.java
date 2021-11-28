@@ -18,6 +18,7 @@ package com.ibm.ws.jbatch.cdi.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,7 +54,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
     /**
      * Use CDI to load the artifact with the given ID.
-     * 
+     *
      * @return the loaded artifact; or null if CDI is not enabled for the app.
      */
     @Override
@@ -105,7 +106,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
     /**
      * @param id Either the EL name of the bean, or its fully qualified class name.
-     * 
+     *
      * @return the bean for the given artifact id.
      */
     protected Bean<?> getBeanById(BeanManager bm, String id) {
@@ -126,7 +127,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup a unique CDI-registered bean
      * with bean name equal to 'batchId', using EL matching rules.
-     * 
+     *
      * @return the bean with the given bean name, or 'null' if there is an ambiguous resolution
      */
     protected Bean<?> getUniqueBeanByBeanName(BeanManager bm, String batchId) {
@@ -134,7 +135,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
         // Get all beans with the given EL name (id).  EL names are applied via @Named.
         // If the bean is not annotated with @Named, then it does not have an EL name
-        // and therefore can't be looked up that way.  
+        // and therefore can't be looked up that way.
         Set<Bean<?>> beans = bm.getBeans(batchId);
 
         try {
@@ -148,7 +149,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup a unique CDI-registered bean
      * with bean class equal to the batch.xml entry mapped to be the batchId parameter
-     * 
+     *
      * @return the bean with the given className. It returns null if there are zero matches or if there is no umabiguous resolution (i.e. more than 1 match)
      */
     @FFDCIgnore(BatchCDIAmbiguousResolutionCheckedException.class)
@@ -173,7 +174,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup the set of CDI-registered beans with
      * the given class name.
-     * 
+     *
      * @return the bean with the given className. It returns null if there are zero matches or if there is no umabiguous resolution (i.e. more than 1 match)
      */
     @FFDCIgnore({ ClassNotFoundException.class, BatchCDIAmbiguousResolutionCheckedException.class })
@@ -200,7 +201,8 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
      * @throws BatchCDIAmbiguousResolutionCheckedException if more than one match is found
      */
     protected Bean<?> findUniqueBeanForClass(BeanManager beanManager, Class<?> clazz) throws BatchCDIAmbiguousResolutionCheckedException {
-        Bean<?> match = null;
+        Set<Bean> matches = new HashSet<Bean>();
+        Bean<?> retVal = null;
         Set<Bean<?>> beans = beanManager.getBeans(clazz);
         if (beans == null || beans.isEmpty()) {
             if (logger.isLoggable(Level.FINER)) {
@@ -213,15 +215,22 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
         }
         for (Bean<?> bean : beans) {
             if (bean.getBeanClass().equals(clazz)) {
-                if (match != null) {
-                    // Not sure if this can happen but being cautious in case we're missing a subtle CDI use case.
-                    throw new BatchCDIAmbiguousResolutionCheckedException("Found both bean = " + match + ", and also bean = " + bean + " with beanClass = " + bean.getBeanClass());
-                } else {
-                    match = bean;
-                }
+                matches.add(bean);
+                //if (match != null) {
+                // Not sure if this can happen but being cautious in case we're missing a subtle CDI use case.
+                //throw new BatchCDIAmbiguousResolutionCheckedException("Found both bean = " + match + ", and also bean = " + bean + " with beanClass = " + bean.getBeanClass());
+                //} else {
+                //match = bean;
+                //}
             }
         }
-        return match;
+        try {
+            retVal = beanManager.resolve(beans);
+        } catch (AmbiguousResolutionException e) {
+            throw new BatchCDIAmbiguousResolutionCheckedException("Found beans = " + matches + ", and could not resolve unambiguously");
+        }
+
+        return retVal;
     }
 
     /**
