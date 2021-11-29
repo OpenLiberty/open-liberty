@@ -11,6 +11,22 @@
     <name>jakarta-rest-tck-runner</name>
     <description>A project that will run the Jakarta REST 3.1 TCK against the specified app server to test compliance</description>
 
+    <repositories>
+        <repository>
+            <id>ibmdhe</id>
+            <name>IBM_DHE File Server</name>
+            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <properties>
         <!-- Global Maven settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
