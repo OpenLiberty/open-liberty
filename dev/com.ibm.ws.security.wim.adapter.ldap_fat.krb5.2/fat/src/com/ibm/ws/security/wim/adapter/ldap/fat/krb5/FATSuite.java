@@ -28,6 +28,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 TicketCacheBindExpireTests.class,
                 RealmNameJVMProp.class,
                 TicketCacheBadPrincipalJava8.class,
+                TicketCacheBindLongRunTest.class,
                 /*
                  * If you add more tests and the Windows Full FAT runs start timing out, add another krb5 project
                  */
