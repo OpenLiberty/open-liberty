@@ -881,24 +881,36 @@ public class AcmeFatUtils {
 		String javaVendor = System.getProperty("java.vendor").toLowerCase();
 		String javaVersion = System.getProperty("java.version");
 		Log.info(AcmeFatUtils.class, methodName,
-				"Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
+				"isWindowsWithOpenJDK Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
+		boolean skipOnWin = false;
 
-		if (os.startsWith("win") && (javaVendor.contains("openjdk") || javaVendor.contains(("oracle")))
-				&& (javaVersion.equals("11.0.11") || javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
-						|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17"))) {
-			/*
-			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
-			 * deleting the Acme related files. Later JDK11s seem to be working. 11.0.7+10, 11.0.8+10, 11.0.10+9, 11.0.12+7
-			 * are fine.
-			 * 
-			 * "The process cannot access the file because it is being used by another
-			 * process"
-			 * 
-			 */
-			Log.info(AcmeFatUtils.class, methodName,
-					"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")
-							+ " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
-			return true;
+		if (os.startsWith("win")) {
+			if ((javaVendor.contains("openjdk") || javaVendor.contains("oracle")) && (javaVersion.equals("11.0.11") || javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
+					|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17"))) {
+				/*
+				 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
+				 * deleting the Acme related files. Later JDK11s seem to be working. 11.0.7+10, 11.0.8+10, 11.0.10+9, 11.0.12+7
+				 * are fine.
+				 * 
+				 * "The process cannot access the file because it is being used by another
+				 * process"
+				 * 
+				 */
+				skipOnWin = true;
+			} else if (javaVendor.contains("temurin") && javaVersion.equals("1.8.0_302")) {
+				/*
+				 * Delete issue popped on temurin as well. The "if" check was getting complicated to read so breaking these vendor/version checks into
+				 * more if/else branches to making it easier to follow.
+				 */
+				skipOnWin = true;
+			}
+
+			if (skipOnWin) {
+				Log.info(AcmeFatUtils.class, methodName,
+						"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")
+						+ " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
+				return true;
+			}
 		}
 		return false;
 	}
