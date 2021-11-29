@@ -203,8 +203,10 @@ public class ServerInstanceUtils {
         for (KeyStore keyStore : keyStores) {
             String name = keyStore.getId();
             Log.info(thisClass, "waitForKeyStores", "Searching for add of keystore: " + name);
-            server.waitForStringInTrace("Adding keystore: " + name);
-
+            String msg = server.waitForStringInTrace("Adding keystore: " + name);
+            Log.info(thisClass, "waitForKeyStores", "**********************************************************************");
+            Log.info(thisClass, "waitForKeyStores", msg);
+            Log.info(thisClass, "waitForKeyStores", "**********************************************************************");
         }
         Log.info(thisClass, "waitForKeyStores", "Done waiting for keystore configuration to be loaded - the waits in the method will not guarentee that the keystore setup is truly ready...");
     }
