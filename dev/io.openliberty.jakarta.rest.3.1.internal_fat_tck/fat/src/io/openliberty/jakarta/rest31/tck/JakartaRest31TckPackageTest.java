@@ -52,7 +52,7 @@ public class JakartaRest31TckPackageTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testRestClientTck() throws Exception {
+    public void testJakarta31RestTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.jakarta.rest.3.1.internal_fat_tck", this.getClass() + ":testJakartaRest31Tck");
     }
 

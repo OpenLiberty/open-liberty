@@ -25,6 +25,17 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Sonatype Nexus Staging</name>
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <properties>
@@ -67,7 +78,7 @@
         <!-- TODO: OpenLiberty server -->
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
-        <arquillian-liberty-jakarta.version>2.0.0</arquillian-liberty-jakarta.version>
+        <arquillian-liberty-jakarta.version>2.0.1</arquillian-liberty-jakarta.version>
         <jersey.version>3.0.3</jersey.version>
 
         <!-- By default, skip tests -->
@@ -154,13 +165,21 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-    <dependency>
+        <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>fattest.simplicity</artifactId>
             <version>1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
         </dependency>
+        <dependency> <!-- required by fattest.simplicity?? -->
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!--  Note that the JAX-RS dependency must be ahead of the Jakarta platform dependency until we move from EE9 to EE10. -->
+        <!--  This is required so that the JAX-RS 3.1 APIs are loaded first in the test classpath - ahead of the JAX-RS 3.0 APIs that come with EE9 platform. -->
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-tck</artifactId>
@@ -286,15 +305,12 @@
                         <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                         <arquillian.launch>liberty-managed</arquillian.launch>
-                        <!-- <wlp>${project.build.directory}/wlp</wlp> -->
                         <http.port>${tck_port}</http.port>
                         <tck.debug>true</tck.debug>
-                        <servlet.adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet.adaptor>
+                        <servlet_adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet_adaptor>
                         <webServerHost>localhost</webServerHost>
                         <webServerPort>${tck_port}</webServerPort>
-                        <servlet_adaptor>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet_adaptor>
-                        <!-- <wiremock.server.port>8765</wiremock.server.port> -->
-                        <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
+                        <!-- following line may be necessary to uncomment when using the remote debugger -->
                         <!-- <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout> -->
                         <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
                         <user>j2ee</user>
@@ -315,6 +331,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- The following commented lines may be useful for running the TCK as integration tests (failsafe) rather than unit tests (surefire). -->
             <!-- 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -390,10 +407,8 @@
                     <artifactId>arquillian-liberty-managed-jakarta</artifactId>
                     <version>${arquillian-liberty-jakarta.version}</version>
                 </dependency>
-                <!--It seems OpenLiberty 21.0.0.1 beta switched to use Resteasy as Jakarta Restful WS provider.
-                But there is no official public version for Jakarta EE 9 in the Maven central repository.
-                Use Jersey Client in the test codes here.-->
 
+                <!-- Use Jersey Client in the test codes here. -->
                 <dependency>
                     <groupId>org.glassfish.jersey.media</groupId>
                     <artifactId>jersey-media-json-binding</artifactId>
@@ -505,14 +520,7 @@
                                 <authuser>javajoe</authuser>
                                 <authpassword>javajoe</authpassword>
                             </systemPropertyVariables>
-                        </configuration><!--
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.surefire</groupId>
-                                <artifactId>surefire-testng</artifactId>
-                                <version>3.0.0-M5</version>
-                            </dependency>
-                        </dependencies> -->
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -527,17 +535,4 @@
             </plugin>
         </plugins>
     </reporting>
-    <repositories>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Sonatype Nexus Staging</name>
-            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>
