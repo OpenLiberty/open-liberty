@@ -20,25 +20,35 @@ dependencies {
       'org.apache.cxf:cxf-rt-transports-http:3.1.18'
 }
 
+def copiedClasses = "$buildDir/copied-classes/java/main"
+
+sourceSets {
+  main {
+    //let's register an output folder on the main SourceSet:
+    output.dir(copiedClasses, builtBy: 'extractInjectedClasses')
+    //it is now a part of the 'main' classpath and will be a part of the jar
+  }
+}
+
 // Copy each class from each CXF jar into the build directory
 // so the build can inject entry/exit trace into the bytecode
 task extractInjectedClasses(type: Copy) {
   from zipTree(configurations.cxf[0])
   include "**/*.class"
-  into compileJava.destinationDir
+  into copiedClasses
 
   from zipTree(configurations.cxf[1])
   include "**/*.class"
-  into compileJava.destinationDir
+  into copiedClasses
 
   from zipTree(configurations.cxf[2])
   include "**/*.class"
-  into compileJava.destinationDir
+  into copiedClasses
 
   from zipTree(configurations.cxf[3])
   include "**/*.class"
-  into compileJava.destinationDir
+  into copiedClasses
 }
 
 // uncomment this line to enable entry/exit trace for CXF
-//compileJava.dependsOn extractInjectedClasses
+compileJava.dependsOn extractInjectedClasses

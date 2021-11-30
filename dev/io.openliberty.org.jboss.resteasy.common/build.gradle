@@ -20,22 +20,32 @@ dependencies {
            'org.jboss.resteasy:resteasy-core-spi:4.7.0.Final'
 }
 
+def copiedClasses = "$buildDir/copied-classes/java/main"
+
+sourceSets {
+  main {
+    //let's register an output folder on the main SourceSet:
+    output.dir(copiedClasses, builtBy: 'extractInjectedClasses')
+    //it is now a part of the 'main' classpath and will be a part of the jar
+  }
+}
+
 task extractInjectedClasses(type: Copy) {
   from zipTree(configurations.resteasy[0])
   include '**/*.class'
-  into compileJava.destinationDir
+  into copiedClasses
   
   from zipTree(configurations.resteasy[1])
   include '**/*.class'
-  into compileJava.destinationDir
+  into copiedClasses
 
   from zipTree(configurations.resteasy[2])
   include '**/*.class'
-  into compileJava.destinationDir
+  into copiedClasses
 
   from zipTree(configurations.resteasy[3])
   include '**/*.class'
-  into compileJava.destinationDir
+  into copiedClasses
 }
 
 compileJava.dependsOn extractInjectedClasses

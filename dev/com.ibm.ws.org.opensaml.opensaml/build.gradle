@@ -17,10 +17,20 @@ dependencies {
     opensaml 'org.opensaml:opensaml:2.6.6'
 }
 
+def copiedClasses = "$buildDir/copied-classes/java/main"
+
+sourceSets {
+  main {
+    //let's register an output folder on the main SourceSet:
+    output.dir(copiedClasses, builtBy: 'extractInjectedClasses')
+    //it is now a part of the 'main' classpath and will be a part of the jar
+  }
+}
+
 task extractInjectedClasses(type: Copy) {
    from zipTree(configurations.opensaml[0])
    include "org/opensaml/saml2/binding/decoding/HTTPPostDecoder.class"
-   into compileJava.destinationDir
+   into copiedClasses
 }
 
 compileJava.dependsOn extractInjectedClasses
