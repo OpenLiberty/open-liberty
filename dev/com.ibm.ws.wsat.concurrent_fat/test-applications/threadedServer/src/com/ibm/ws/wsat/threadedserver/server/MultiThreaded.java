@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class MultiThreaded {
 					xaResInfo1);
 			result1 = TM.enlist(xaRes1, recoveryId1);
 		} catch (Exception e) {
+			e.printStackTrace(System.out);
 			return "Exception happens when enlisting XAResource: " + e.toString() 
 					+ ". Please check the web service provider.";
 		}
