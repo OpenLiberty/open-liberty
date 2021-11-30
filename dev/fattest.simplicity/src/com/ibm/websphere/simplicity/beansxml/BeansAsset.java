@@ -55,7 +55,7 @@ public class BeansAsset extends ClassLoaderAsset {
      * All the supported CDI versions
      */
     public static enum CDIVersion {
-        CDI11, CDI20, CDI30
+        CDI10, CDI11, CDI20, CDI30
     };
 
     //A static array containing cached BeansAsset instances for all combinations of DiscoveryMode and CDIVersion
@@ -63,7 +63,10 @@ public class BeansAsset extends ClassLoaderAsset {
     static {
         for (DiscoveryMode mode : DiscoveryMode.values()) {
             for (CDIVersion version : CDIVersion.values()) {
-                ASSETS[mode.ordinal()][version.ordinal()] = new BeansAsset(mode, version);
+                if ((version == CDIVersion.CDI10 && mode == DiscoveryMode.ALL) ||
+                    (version != CDIVersion.CDI10)) {
+                    ASSETS[mode.ordinal()][version.ordinal()] = new BeansAsset(mode, version);
+                }
             }
         }
     }
@@ -86,6 +89,11 @@ public class BeansAsset extends ClassLoaderAsset {
      * @return         A BeansAsset
      */
     public static BeansAsset getBeansAsset(DiscoveryMode mode, CDIVersion version) {
+
+        if (version == CDIVersion.CDI10 && mode != DiscoveryMode.ALL) {
+            throw new IllegalArgumentException("Only DiscoveryMode.ALL is supported with CDI 1.0");
+        }
+
         return ASSETS[mode.ordinal()][version.ordinal()];
     }
 
@@ -98,14 +106,19 @@ public class BeansAsset extends ClassLoaderAsset {
      */
     private static String getFileName(DiscoveryMode mode, CDIVersion version) {
         String beans;
-        if (version == CDIVersion.CDI11) {
+        if (version == CDIVersion.CDI10) {
+            beans = "beans10_";
+            if (mode != DiscoveryMode.ALL) {
+                throw new IllegalArgumentException("Only DiscoveryMode.ALL is supported with CDI 1.0");
+            }
+        } else if (version == CDIVersion.CDI11) {
             beans = "beans11_";
         } else if (version == CDIVersion.CDI20) {
             beans = "beans20_";
         } else if (version == CDIVersion.CDI30) {
             beans = "beans30_";
         } else {
-            throw new RuntimeException("Unknown CDI Version: " + version);
+            throw new IllegalArgumentException("Unknown CDI Version: " + version);
         }
         if (mode == DiscoveryMode.ALL) {
             beans = beans + "all.xml";
@@ -114,7 +127,7 @@ public class BeansAsset extends ClassLoaderAsset {
         } else if (mode == DiscoveryMode.NONE) {
             beans = beans + "none.xml";
         } else {
-            throw new RuntimeException("Unknown CDI Discovery Mode: " + mode);
+            throw new IllegalArgumentException("Unknown CDI Discovery Mode: " + mode);
         }
         return beans;
     }
