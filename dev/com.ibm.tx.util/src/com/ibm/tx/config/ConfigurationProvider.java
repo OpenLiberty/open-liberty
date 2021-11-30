@@ -338,4 +338,11 @@ public interface ConfigurationProvider {
      * @return
      */
     public boolean isDataSourceFactorySet();
+
+    /**
+     * Setting forcePrepare causes 2PC resources to be prepared even if 1PC optimization could happen.
+     *
+     * @return
+     */
+    public boolean isForcePrepare();
 }

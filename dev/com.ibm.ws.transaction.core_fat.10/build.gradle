@@ -11,7 +11,8 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.tx.embeddable"),
+  requiredLibs project(":com.ibm.ws.transaction.fat.util"),
+  			   project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.core_fat.1"),
                project(':io.openliberty.org.apache.commons.logging')
 }

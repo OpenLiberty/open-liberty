@@ -455,4 +455,9 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public List<Integer> getNonRetriableSqlCodes() {
         return null;
     }
+
+    @Override
+    public boolean isForcePrepare() {
+        return false;
+    }
 }

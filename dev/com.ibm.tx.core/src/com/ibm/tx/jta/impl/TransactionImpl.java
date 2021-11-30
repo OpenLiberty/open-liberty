@@ -800,7 +800,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                     state = TransactionState.STATE_COMMITTED;
                     _status.setState(state);
                     postCompletion(Status.STATUS_COMMITTED);
-                } else if (_resources.isOnlyAgent()) {
+                } else if (_resources.isOnlyAgent() && !_configProvider.isForcePrepare()) {
                     state = commitXAResources();
                 } else {
                     state = prepareResources();
@@ -1360,7 +1360,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     protected boolean canOptimise() {
-        final boolean ret = (!_subordinate && _configProvider.isOnePCOptimization());
+        final boolean ret = (!_subordinate && _configProvider.isOnePCOptimization() && !_configProvider.isForcePrepare());
         if (tc.isDebugEnabled())
             Tr.debug(tc, "canOptimise", ret);
         return ret;
