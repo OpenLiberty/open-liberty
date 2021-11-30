@@ -1,0 +1,33 @@
+@import 'variables';
+.swagger-ui {
+    @import 'hacks';
+}
+@import 'original/main';
+
+.swagger-ui
+{
+    @import 'original/type';
+    @import 'headerbar';
+    @import 'footer';
+    @import 'info';
+}
+
+html
+{
+  box-sizing: border-box;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after
+{
+  box-sizing: inherit;
+}
+
+body
+{
+  margin:0;
+  background: #fafafa;
+}

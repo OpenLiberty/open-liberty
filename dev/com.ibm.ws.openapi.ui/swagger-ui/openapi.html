@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    <%= htmlWebpackPlugin.tags.headTags %>
+    <link rel="stylesheet" type="text/css" href="css/custom-header.css" >
+  </head>
+
+  <body>
+    <div id="swagger"></div>
+    <script>
+    window.onload = function() {
+      const ui = SwaggerUI.SwaggerUI({
+        url: SwaggerUI.getDocsUrl(),
+        oauth2RedirectUrl: SwaggerUI.getOAuth2Url(),
+        dom_id: '#swagger',
+        plugins: [ SwaggerUI.LibertyLayout, SwaggerUI.Headerbar, SwaggerUI.FooterPlugin ],
+        layout: "LibertyLayout",
+        enable_filter: true
+      });
+    };
+  </script>
+  <%= htmlWebpackPlugin.tags.bodyTags %>
+  </body>
+</html>
