@@ -1,5 +1,0 @@
----
-swagger: '2.0'
-paths:
-  "/v1/book":
-    "$ref": "./book.yaml"
