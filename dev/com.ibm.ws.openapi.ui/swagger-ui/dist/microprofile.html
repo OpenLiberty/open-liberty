@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    <script defer src="liberty-swagger-ui-bundle-fce8b1ca9e787e6c3686.js"></script><link href="liberty-swagger-ui-d02953ea8a1cbb49e027.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/custom-header.css" >
+  </head>
+
+  <body>
+    <div id="swagger"></div>
+    <script>
+    window.onload = function() {
+      const ui = SwaggerUI.SwaggerUI({
+        url: '/openapi',
+        oauth2RedirectUrl: SwaggerUI.getMpOAuth2Url(),
+        dom_id: '#swagger',
+        plugins: [ SwaggerUI.LibertyLayout, SwaggerUI.Headerbar, SwaggerUI.FooterPlugin ],
+        layout: "LibertyLayout",
+        enable_filter: false
+      });
+    };
+  </script>
+  
+  </body>
+</html>
