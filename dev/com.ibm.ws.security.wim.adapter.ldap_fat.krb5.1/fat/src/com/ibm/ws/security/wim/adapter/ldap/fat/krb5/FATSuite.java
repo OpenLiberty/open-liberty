@@ -27,7 +27,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 KeytabBindLongRunTest.class,
                 KeytabBindMultiRegistryTest.class,
                 SimpleBindTest.class,
-                TicketCacheBindLongRunTest.class,
                 TicketCacheBindMultiRegistryTest.class
                 /*
                  * Do not add more tests to this suite or the FULL fat tends to time out on Window runs.
