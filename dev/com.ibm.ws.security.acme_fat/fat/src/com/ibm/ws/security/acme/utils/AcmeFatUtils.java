@@ -773,9 +773,10 @@ public class AcmeFatUtils {
 	}
 
 	public static void checkPortOpen(int port, long timeoutMs) {
-
+		Log.info(AcmeFatUtils.class, "checkPortOpen", "Checking if port " + port + " is open, will check for " + timeoutMs +"ms.");
 		boolean open = false;
 		long stoptime = System.currentTimeMillis() + timeoutMs;
+		Exception lastException = null;
 
 		while (!open && (stoptime > System.currentTimeMillis())) {
 			ServerSocket socket = null;
@@ -787,6 +788,7 @@ public class AcmeFatUtils {
 				socket.bind(new InetSocketAddress(port));
 				open = true;
 			} catch (Exception e) {
+				lastException = e;
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException ie) {
@@ -806,8 +808,10 @@ public class AcmeFatUtils {
 				}
 			}
 		}
-
-		assertTrue("Expected port " + port + " to be open.", open);
+		if (!open) {
+			Log.error(AcmeFatUtils.class, "checkPortOpen", lastException, "Port was not available in time.");
+		}
+		assertTrue("Expected port " + port + " to be open. Last exception while checking: " + lastException, open);
 	}
 
 	/**
