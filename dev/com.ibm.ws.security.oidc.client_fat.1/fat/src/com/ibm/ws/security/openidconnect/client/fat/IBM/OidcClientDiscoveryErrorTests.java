@@ -90,7 +90,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_orig.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
-        DiscoveryUtils.waitForDiscoveryToBeReady(testSettings);
+        DiscoveryUtils.waitForOPDiscoveryToBeReady(testSettings);
 
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rpd", "rp_server_orig.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
@@ -122,9 +122,11 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // Force discovery to run to access login page so that the discovery service is active. Then, in the actual tests the reconfig will initiate discovery and cause the
         // error messages to be generated on discovery failures during the reconfig (rather than waiting until the first authorization request in the runtime).
         CommonTestHelpers helpers = new CommonTestHelpers();
-        WebConversation wc = new WebConversation();
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        helpers.rpLoginPage("Setup", wc, testSettings, expectations, Constants.GETMETHOD);
+
+        // try to wait for discovery to have populated the RP config
+        // Don't stop if this fails (there is a chance it could be ready by the time the tests actually run
+        DiscoveryUtils.waitForRPDiscoveryToBeReady(testSettings);
+
     }
 
     /**
@@ -335,7 +337,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
         testRPServer.addIgnoredServerException("CWWKS1534E");
-        
+
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }
@@ -374,7 +376,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
         testRPServer.addIgnoredServerException("CWWKS1534E");
-        
+
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }
