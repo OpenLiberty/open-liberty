@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -50,7 +51,9 @@ import org.osgi.framework.launch.FrameworkFactory;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCConfigurator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.boot.BootstrapConfig;
@@ -68,6 +71,7 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
+import com.ibm.ws.kernel.launch.internal.LauncherDelegateImpl.ReadOnlyFrameworkProperties;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -84,6 +88,8 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
@@ -198,7 +204,7 @@ public class FrameworkManager {
      *                        framework management activities (start/stop/.. ), or null
      * @param callback
      */
-    public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
+    public void launchFramework(final BootstrapConfig config, final LogProvider logProvider) {
         if (config == null)
             throw new IllegalArgumentException("bootstrap config must not be null");
         boolean isClient = config.getProcessType().equals(BootstrapConstants.LOC_PROCESS_TYPE_CLIENT);
@@ -272,6 +278,31 @@ public class FrameworkManager {
             }
             // Set the framework variables only if everything succeeded.
             systemBundleCtx = fwk.getBundleContext();
+
+            systemBundleCtx.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
+
+                @Override
+                public CheckpointHook create(Phase phase) {
+                    CheckpointHook checkpointHook = new CheckpointHook() {
+                        @Override
+                        public void prepare() {
+                            logProvider.stop();
+                        }
+
+                        @Override
+                        public void restore() {
+                            config.put(BootstrapConstants.RESTORE_ENABLED, "true");
+                            Map<String, Object> configMap = Collections.<String, Object> unmodifiableMap(new ReadOnlyFrameworkProperties(config));
+                            TrConfigurator.update(configMap);
+                            FFDCConfigurator.update(configMap);
+                        }
+
+                    };
+                    return checkpointHook;
+                }
+
+            }, null);
+
             framework = fwk;
         } catch (BundleException e) {
             throw new RuntimeException(e);

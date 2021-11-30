@@ -56,13 +56,17 @@ public class Jsr47TraceService extends BaseTraceService {
     protected void initializeWriters(LogProviderConfigImpl config) {
         if (!WsLogManager.isConfiguredByLoggingProperties()) {
             // createFileLog may or may not return the original log holder..
+            if (config.isRestore()) {
+                messagesLog = null;
+            }
             messagesLog = FileLogHolder.createFileLogHolder(messagesLog,
                                                             null,
                                                             config.getLogDirectory(),
                                                             config.getMessageFileName(),
                                                             config.getMaxFiles(),
                                                             config.getMaxFileBytes(),
-                                                            config.getNewLogsOnStart());
+                                                            config.getNewLogsOnStart(),
+                                                            config.isRestore());
 
             // Always create a traceLog when using Tr -- this file won't actually be
             // created until something is logged to it...

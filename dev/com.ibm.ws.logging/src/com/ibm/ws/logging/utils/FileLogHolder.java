@@ -142,7 +142,7 @@ public class FileLogHolder implements TraceWriter {
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
                                                     File logDirectory, String newFileName,
                                                     int maxFiles, long maxSizeBytes) {
-        return createFileLogHolder(oldLog, logHeader, logDirectory, newFileName, maxFiles, maxSizeBytes, NEW_LOGS_ON_START_DEFAULT);
+        return createFileLogHolder(oldLog, logHeader, logDirectory, newFileName, maxFiles, maxSizeBytes, NEW_LOGS_ON_START_DEFAULT, false);
     }
 
     /**
@@ -168,7 +168,7 @@ public class FileLogHolder implements TraceWriter {
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
                                                     File logDirectory, String newFileName,
                                                     int maxFiles, long maxSizeBytes,
-                                                    boolean newLogsOnStart) {
+                                                    boolean newLogsOnStart, boolean isRestore) {
 
         final FileLogHolder logHolder;
 
@@ -203,7 +203,7 @@ public class FileLogHolder implements TraceWriter {
         // maxFiles or maxBytes
         if (oldLog != null && oldLog instanceof FileLogHolder) {
             logHolder = (FileLogHolder) oldLog;
-            logHolder.update(logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes);
+            logHolder.update(logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, isRestore);
         } else {
             if (oldLog != null) {
                 try {
@@ -213,7 +213,7 @@ public class FileLogHolder implements TraceWriter {
             }
 
             // Send to bit bucket until the file is created (true -- create/replace if needed).
-            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, newLogsOnStart);
+            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, newLogsOnStart, isRestore);
         }
 
         return logHolder;
@@ -230,16 +230,18 @@ public class FileLogHolder implements TraceWriter {
      *                             <code>maxSizeBytes</code> is greater than 0)
      * @param maxFileSizeBytes The maximum file size a single file should create when this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code>)
      * @param newLogsOnStart   Whether to fill an existing primary file if there's space (if it exists).
+     * @param isCheckpoint     Whether checkpoint is enabled or not
      */
-    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart) {
+    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart,
+                          boolean isRestore) {
         this.logHeader = logHeader;
         this.newLogsOnStart = newLogsOnStart;
 
         currentPrintStream = DummyOutputStream.psInstance;
-        update(directory, fileName, fileExtension, maxNumFiles, maxFileSizeBytes);
+        update(directory, fileName, fileExtension, maxNumFiles, maxFileSizeBytes, isRestore);
     }
 
-    private synchronized void update(File newDirectory, String newFileName, String newFileExtension, int newMaxFiles, long newMaxSizeBytes) {
+    private synchronized void update(File newDirectory, String newFileName, String newFileExtension, int newMaxFiles, long newMaxSizeBytes, boolean isRestore) {
         boolean updateLocation;
 
         Object token = ThreadIdentityManager.runAsServer();
@@ -249,12 +251,11 @@ public class FileLogHolder implements TraceWriter {
             ThreadIdentityManager.reset(token);
         }
 
-        if (updateLocation) {
+        if (updateLocation || isRestore) {
             // If the file name/extension/directory has changed,
             // change status to "INIT" to force it to be replaced
             setStreamStatus(StreamStatus.INIT, currentFileStream, currentCountingStream, currentPrintStream);
         }
-
         maxFileSizeBytes = newMaxSizeBytes;
     }
 

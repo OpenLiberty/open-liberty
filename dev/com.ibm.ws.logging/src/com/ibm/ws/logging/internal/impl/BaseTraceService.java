@@ -228,6 +228,10 @@ public class BaseTraceService implements TrService {
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
+
+    private boolean checkpoint;
+    private volatile boolean restore = false;
+
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
 
     /** Flags for suppressing traceback output to the console */
@@ -320,6 +324,9 @@ public class BaseTraceService implements TrService {
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
+        checkpoint = trConfig.isCheckpoint();
+        restore = trConfig.isRestore();
+
         //add hideMessageIds to log header, only for default logging, since for binary logging, the messages will be only hidden in console.log.
         //This is printed when its configured in bootstrap.properties
         if (hideMessageids.size() > 0 && !isHpelEnabled) {
@@ -676,6 +683,14 @@ public class BaseTraceService implements TrService {
         }
     }
 
+    private boolean isCheckpoint() {
+        return checkpoint;
+    }
+
+    private boolean isRestore() {
+        return restore;
+    }
+
     /**
      * common MessageLogHandlerUpdates
      */
@@ -700,9 +715,20 @@ public class BaseTraceService implements TrService {
 
         unregisterLoggerHandlerSingleton();
 
-        // Close writers, however they were allocated
-        LoggingFileUtils.tryToClose(messagesLog);
-        LoggingFileUtils.tryToClose(traceLog);
+        if (isCheckpoint() && !isRestore()) {
+            if (messageLogHandler != null) {
+                messageLogHandler.setWriter(systemOut);
+            }
+            TraceWriter traceWriter = traceLog;
+            traceLog = systemOut;
+
+            LoggingFileUtils.tryToClose(messagesLog);
+            LoggingFileUtils.tryToClose(traceWriter);
+        } else {
+            // Close writers, however they were allocated
+            LoggingFileUtils.tryToClose(messagesLog);
+            LoggingFileUtils.tryToClose(traceLog);
+        }
     }
 
     @Override
@@ -1215,6 +1241,10 @@ public class BaseTraceService implements TrService {
      *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
+        if (config.isRestore()) {
+            messagesLog = null;
+            traceLog = null;
+        }
         // createFileLog may or may not return the original log holder..
         messagesLog = FileLogHolder.createFileLogHolder(messagesLog,
                                                         newFileLogHeader(false, config),
@@ -1222,7 +1252,8 @@ public class BaseTraceService implements TrService {
                                                         config.getMessageFileName(),
                                                         config.getMaxFiles(),
                                                         config.getMaxFileBytes(),
-                                                        config.getNewLogsOnStart());
+                                                        config.getNewLogsOnStart(),
+                                                        config.isRestore());
 
         // Always create a traceLog when using Tr -- this file won't actually be
         // created until something is logged to it...
@@ -1238,7 +1269,8 @@ public class BaseTraceService implements TrService {
                                                          config.getTraceFileName(),
                                                          config.getMaxFiles(),
                                                          config.getMaxFileBytes(),
-                                                         config.getNewLogsOnStart());
+                                                         config.getNewLogsOnStart(),
+                                                         config.isRestore());
             if (!TraceComponent.isAnyTracingEnabled()) {
                 ((FileLogHolder) traceLog).releaseFile();
             }

@@ -279,4 +279,6 @@ public final class BootstrapConstants {
     public static final String ENV_VARIABLE_SOURCE_DIRS = "VARIABLE_SOURCE_DIRS";
 
     public static final String LOC_PROPERTY_VARIABLE_SOURCE_DIRS = "wlp.var.src.dirs";
+
+    public static final String RESTORE_ENABLED = "RESTORE_ENABLED";
 }

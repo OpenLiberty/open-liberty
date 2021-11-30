@@ -24,7 +24,8 @@ import componenttest.topology.impl.LibertyServer;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 TestWithFATServlet.class,
-                TestWithFATServlet2.class
+                TestWithFATServlet2.class,
+                LogsVerificationTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {

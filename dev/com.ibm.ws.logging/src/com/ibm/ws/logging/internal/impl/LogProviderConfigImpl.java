@@ -126,6 +126,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Allow JSON from applications write directly to System.out/System.err */
     protected volatile boolean appsWriteJson = false;
 
+    private final boolean checkpoint;
+
+    private volatile boolean restore = false;
+
     /**
      * Initial configuration of BaseTraceService from TrServiceConfig.
      *
@@ -196,6 +200,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         serverName = config.get("wlp.server.name");
 
         wlpUsrDir = config.get("wlp.user.dir");
+
+        checkpoint = config.get(LoggingConstants.CHECKPOINT_PROPERTY_NAME) != null ? true : false;
     }
 
     /**
@@ -244,6 +250,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
         appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
+
+        restore = LoggingConfigUtils.getBooleanValue(c.get(LoggingConstants.RESTORE_ENABLED), restore);
     }
 
     /**
@@ -432,6 +440,14 @@ public class LogProviderConfigImpl implements LogProviderConfig {
      */
     public boolean loggerUsesTr() {
         return loggerUsesTr;
+    }
+
+    public boolean isCheckpoint() {
+        return checkpoint;
+    }
+
+    public boolean isRestore() {
+        return restore;
     }
 
     @Override
