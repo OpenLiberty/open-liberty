@@ -20,7 +20,7 @@ Subsystem-Name: MicroProfile GraphQL 2.0
   io.openliberty.org.eclipse.microprofile.graphql-2.0
 
 -bundles= \
- com.ibm.ws.com.graphql.java, \
+ com.ibm.ws.com.graphql.java.jakarta, \
  com.ibm.ws.io.smallrye.graphql.jakarta, \
  com.ibm.ws.org.jboss.logging
 #already provided by kernel...

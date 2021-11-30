@@ -33,7 +33,7 @@
     <name>MicroProfile GraphQL TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.graphql.version>2.0-20211112</microprofile.graphql.version>
+        <microprofile.graphql.version>2.0-RC1</microprofile.graphql.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
