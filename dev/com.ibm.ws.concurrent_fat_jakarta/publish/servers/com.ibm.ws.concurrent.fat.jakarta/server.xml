@@ -1,0 +1,69 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>concurrent-3.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-5.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="ConcurrencyTestApp.ear">
+    <classloader commonLibraryRef="ThirdPartyLibrariesWithCustomContext"/>
+  </application>
+
+  <!-- third-party context provider that is available to all applications -->
+  <bell>
+    <library id="PriorityContextLib">
+      <file name="${server.config.dir}/lib/priority-context.jar"/>
+    </library>
+  </bell>
+
+  <library id="ThirdPartyLibrariesWithCustomContext">
+    <fileset dir="${server.config.dir}/lib" include="location-utils.jar,stat-utils.jar"/>
+  </library>
+
+  <contextService id="AppContext" jndiName="concurrent/appContext">
+    <classloaderContext/>
+    <jeeMetadataContext/>
+  </contextService>
+
+  <managedExecutorService id="executor1" jndiName="concurrent/executor1">
+    <concurrencyPolicy max="1" maxQueueSize="1"/>
+    <contextService>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedExecutorService>
+
+  <!-- Do not use directly. Tests must only use this through its nested contextService. -->
+  <managedScheduledExecutorService id="executor2" jndiName="concurrent/executor2">
+    <concurrencyPolicy max="2" maxQueueSize="2"/>
+    <contextService jndiName="concurrent/context2">
+      <classloaderContext/>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedScheduledExecutorService>
+
+  <managedScheduledExecutorService id="executor3" jndiName="concurrent/executor3" contextServiceRef="AppContext">
+    <concurrencyPolicy max="3" maxQueueSize="3"/>
+  </managedScheduledExecutorService>
+
+  <managedScheduledExecutorService id="executor4" jndiName="concurrent/executor4" contextServiceRef="AppContext">
+    <concurrencyPolicy max="4" maxQueueSize="4"/>
+  </managedScheduledExecutorService>
+
+  <!-- needed by ForkJoinPool, which the test application uses -->
+  <javaPermission codebase="${server.config.dir}/apps/ConcurrencyTestApp.ear" className="java.lang.RuntimePermission" name="modifyThread"/>
+
+</server>

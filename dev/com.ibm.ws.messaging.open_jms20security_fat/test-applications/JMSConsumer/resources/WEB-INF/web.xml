@@ -80,6 +80,11 @@
   <resource-env-ref>
     <resource-env-ref-name>jndi_INPUT_Q1</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref> 
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_RedeliveryQueue1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
   </resource-env-ref>  
   
   <resource-env-ref>
@@ -102,4 +107,23 @@
     <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
   </resource-env-ref>
 
+ <resource-env-ref>
+    <resource-env-ref-name>eis/localTopicNonDurableMDB</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/remoteTopicNonDurableMDB</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+   <resource-env-ref>
+    <resource-env-ref-name>eis/localTopicDurableMDB</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/remoteTopicDurableMDB</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
 </web-app>

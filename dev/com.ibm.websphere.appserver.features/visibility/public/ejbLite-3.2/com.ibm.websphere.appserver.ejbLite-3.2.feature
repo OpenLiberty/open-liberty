@@ -7,7 +7,7 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: ejbLite-3.2
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api", \
- com.ibm.websphere.ejbcontainer; type="internal"
+ com.ibm.websphere.ejbcontainer; type="ibm-api"
 Subsystem-Category: JavaEE7Application
 -features=com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.ejbLiteCore-1.0, \

@@ -1,5 +1,5 @@
 ##
-## Velocity Template for communicating the logout propagation result to the master controller
+## Velocity Template for communicating the logout propagation result to the primary controller
 ##
 ## Velocity context will contain the following properties
 ## logoutPropCtx - LogoutPropagationContext

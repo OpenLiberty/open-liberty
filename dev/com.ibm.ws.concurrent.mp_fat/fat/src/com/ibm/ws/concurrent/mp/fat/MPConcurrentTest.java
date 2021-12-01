@@ -35,7 +35,7 @@ import concurrent.mp.fat.web.MPConcurrentTestServlet;
 public class MPConcurrentTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTestServer", MPContextPropActions.CTX12);
 
     private static final String APP_NAME = "MPConcurrentApp";
 

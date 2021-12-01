@@ -18,6 +18,6 @@ Subsystem-Name: Messaging Server 3.0 Client
  com.ibm.ws.messaging.jms.common.jakarta, \
  com.ibm.ws.messaging.jms.2.0.jakarta, \
  com.ibm.ws.messaging.comms.client
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

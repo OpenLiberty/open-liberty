@@ -35,9 +35,14 @@ public class SAFEncryptionKey {
     private KeyStore keystore = null;
 
     /**
-     * SAF keyring URL pattern.
+     * SAF keyring URL pattern with two slashes and no username: "safkeyring://My.Keyring"
      */
-    Pattern safKeyringPattern = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid)):/{2,3}\\w.*");
+    Pattern safKeyringPatternTwoSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://\\w.*");
+
+    /**
+     * SAF keyring URL pattern with three slashes: "safkeyring:///My.Keyring" OR "safkeyring://MyUser1/My.Keyring"
+     */
+    Pattern safKeyringPatternThreeSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://.*/\\w.*");
 
     /**
      * SAF crypto handlers
@@ -200,9 +205,13 @@ public class SAFEncryptionKey {
      */
     private String processKeyringURL(String safKeyringURL) {
         String processedUrl = null;
-        if (safKeyringURL != null && safKeyringPattern.matcher(safKeyringURL).matches()) {
-            processedUrl = safKeyringURL;
-            if (!safKeyringURL.contains("///")) {
+        if (safKeyringURL != null) {
+            if (safKeyringPatternThreeSlashes.matcher(safKeyringURL).matches()) {
+                // The keyring url is already in the correct format
+                processedUrl = safKeyringURL;
+            } else if (safKeyringPatternTwoSlashes.matcher(safKeyringURL).matches()) {
+                // The user specified a url in this format: "safkeyring://My.Keyring". This is supported,
+                // but we will want to reformat this to have three slashes: "safkeyring:///My.Keyring".
                 int index = safKeyringURL.indexOf("//");
                 StringBuffer sb = new StringBuffer(safKeyringURL);
                 sb.insert(index, "/");

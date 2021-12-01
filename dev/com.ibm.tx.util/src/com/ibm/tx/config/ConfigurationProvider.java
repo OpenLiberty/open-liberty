@@ -11,6 +11,7 @@
 // comment
 package com.ibm.tx.config;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import com.ibm.tx.util.alarm.AlarmManager;
@@ -281,32 +282,55 @@ public interface ConfigurationProvider {
     public int getPeerTimeBeforeStale();
 
     /**
-     * Configures the length of time between retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     * Configures the length of time between retries for HADB transient errors for standard operations (open and force) where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getStandardTransientErrorRetryTime();
+    public int getLogRetryInterval();
 
     /**
-     * Configures the number of retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     * Configures the number of retries for HADB transient errors for standard operations (open and force)where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getStandardTransientErrorRetryAttempts();
+    public int getLogRetryLimit();
 
     /**
      * Configures the length of time between retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getLightweightTransientErrorRetryTime();
+    public int getLightweightLogRetryInterval();
 
     /**
      * Configures the number of retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
      *
      * @return
      */
-    public int getLightweightTransientErrorRetryAttempts();
+    public int getLightweightLogRetryLimit();
+
+    /**
+     * Return true when all SQLExceptions should be retried when logging to a database.
+     *
+     * @return
+     */
+    public boolean enableLogRetries();
+
+    /**
+     * Retrieves an Integer list of sqlcodes for SQLExceptions that are thrown on Transaction recovery log operations. These operations will be retried.
+     * This property is only relevant where the Transaction recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public List<Integer> getRetriableSqlCodes();
+
+    /**
+     * Retrieves an Integer list of sqlcodes for SQLExceptions that are thrown on Transaction recovery log operations. These operations will not be retried and
+     * the recovery log will be invalidated. This property is only relevant where the Transaction recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public List<Integer> getNonRetriableSqlCodes();
 
     /**
      * Returns true if a DataSourceFactory reference has been set through Declarative Services

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,18 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
-@SuiteClasses( { AlwaysPassesTest.class,
-                 DDValidAppTests.class,
-                 DDValidModTests.class,
-                 DDNonValidTests.class })
+@SuiteClasses( {
+    AlwaysPassesTest.class,
+
+    DDValidAppTests.class,
+    DDValidAppPartialHeaderTests.class,
+    DDValidAppMinimalHeaderTests.class,
+
+    DDValidModTests.class,
+    DDValidModPartialHeaderTests.class,
+    DDValidModMinimalHeaderTests.class,
+
+    DDNonValidTests.class })
 public class FATSuite {
     // EMPTY
 }

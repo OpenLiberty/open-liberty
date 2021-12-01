@@ -19,6 +19,8 @@ IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: /openapi
 
+jakartaeeMe: true
+
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
     io.openliberty.microprofile.openapi.internal.resources,\
@@ -39,7 +41,10 @@ Private-Package: \
 
 Include-Resource: \
     META-INF/services=resources/META-INF/services,\
-    WEB-INF=resources/WEB-INF
+    WEB-INF=resources/WEB-INF,\
+    OSGI-INF/wlp=resources/OSGI-INF/wlp
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\

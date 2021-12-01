@@ -52,10 +52,7 @@ import app.web.airlines.model.Booking;
 
 @Path("/bookings")
 @Tag(ref = "Bookings")
-@Tags(
-    value = @Tag(
-        name = "Reservations",
-        description = "All the reservation methods"))
+@Tags(value = @Tag(name = "Reservations", description = "All the reservation methods"))
 @SecurityScheme(
     securitySchemeName = "bookingSecurityScheme",
     type = SecuritySchemeType.OPENIDCONNECT,
@@ -70,29 +67,22 @@ public class BookingResource {
     @GET
     @Tag(ref = "bookings")
     @APIResponses(value = {
-                            @APIResponse(
-                                responseCode = "200",
-                                description = "Bookings retrieved",
-                                content = @Content(
-                                    schema = @Schema(
-                                        type = SchemaType.ARRAY,
-                                        implementation = Booking.class))),
-                            @APIResponse(
-                                responseCode = "404",
-                                description = "No bookings found for the user.")
+        @APIResponse(
+            responseCode = "200",
+            description = "Bookings retrieved",
+            content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = Booking.class))),
+        @APIResponse(responseCode = "404", description = "No bookings found for the user.")
     })
-    @Operation(
-        summary = "Retrieve all bookings for current user",
-        operationId = "getAllBookings")
+    @Operation(summary = "Retrieve all bookings for current user", operationId = "getAllBookings")
     @Produces("application/json")
     public Response getBookings() {
         return Response.ok().entity(bookings.values()).build();
     }
 
     @POST
-    @SecurityRequirement(
-        name = "bookingSecurityScheme",
-        scopes = { "write:bookings", "read:bookings" })
+    @SecurityRequirement(name = "bookingSecurityScheme", scopes = {
+        "write:bookings", "read:bookings"
+    })
     @Callback(
         name = "bookingCallback",
         callbackUrlExpression = "http://localhost:9080/airlines/bookings",
@@ -100,26 +90,19 @@ public class BookingResource {
             method = "get",
             summary = "Retrieve all bookings for current user",
             responses = {
-                          @APIResponse(
-                              responseCode = "200",
-                              description = "Bookings retrieved",
-                              content = @Content(
-                                  mediaType = "application/json",
-                                  schema = @Schema(
-                                      type = SchemaType.ARRAY,
-                                      implementation = Booking.class))),
-                          @APIResponse(
-                              responseCode = "404",
-                              description = "No bookings found for the user.")
+                @APIResponse(
+                    responseCode = "200",
+                    description = "Bookings retrieved",
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(type = SchemaType.ARRAY, implementation = Booking.class))),
+                @APIResponse(responseCode = "404", description = "No bookings found for the user.")
             }))
     @APIResponse(
         responseCode = "201",
         description = "Booking created",
         content = @Content(
-            schema = @Schema(
-                name = "id",
-                description = "id of the new booking",
-                type = SchemaType.STRING)))
+            schema = @Schema(name = "id", description = "id of the new booking", type = SchemaType.STRING)))
     @Operation(
         summary = "Create a booking",
         description = "Create a new booking record with the booking information provided.",
@@ -142,31 +125,23 @@ public class BookingResource {
     @GET
     @Path("{id}")
     @Parameters({
-                  @Parameter(
-                      name = "id",
-                      description = "ID of the booking",
-                      required = true,
-                      in = ParameterIn.PATH,
-                      style = ParameterStyle.SIMPLE)
+        @Parameter(
+            name = "id",
+            description = "ID of the booking",
+            required = true,
+            in = ParameterIn.PATH,
+            style = ParameterStyle.SIMPLE)
     })
-
     @Produces("application/json")
-    @Operation(
-        summary = "Get a booking with ID",
-        operationId = "getBookingById")
+    @Operation(summary = "Get a booking with ID", operationId = "getBookingById")
     @APIResponses(value = {
-                            @APIResponse(
-                                responseCode = "200",
-                                description = "Booking retrieved",
-                                content = @Content(
-                                    schema = @Schema(
-                                        implementation = Booking.class))),
-                            @APIResponse(
-                                responseCode = "404",
-                                description = "Booking not found")
+        @APIResponse(
+            responseCode = "200",
+            description = "Booking retrieved",
+            content = @Content(schema = @Schema(implementation = Booking.class))),
+        @APIResponse(responseCode = "404", description = "Booking not found")
     })
-    public Response getBooking(
-                               @PathParam("id") int id) {
+    public Response getBooking(@PathParam("id") int id) {
         Booking booking = bookings.get(id);
         if (booking != null) {
             return Response.ok().entity(booking).build();
@@ -179,17 +154,11 @@ public class BookingResource {
     @Path("{id}")
     @Consumes("application/json")
     @Produces("text/plain")
-    @APIResponse(
-        responseCode = "200",
-        description = "Booking updated")
-    @APIResponse(
-        responseCode = "404",
-        description = "Booking not found")
-    @Operation(
-        summary = "Update a booking with ID",
-        operationId = "updateBookingId")
-    public Response updateBooking(
-                                  @PathParam("id") int id, Booking booking) {
+    @APIResponse(responseCode = "200", description = "Booking updated")
+    @APIResponse(responseCode = "404", description = "Booking not found")
+    @Operation(summary = "Update a booking with ID", operationId = "updateBookingId")
+    public Response updateBooking(@PathParam("id") int id,
+                                  Booking booking) {
         if (bookings.get(id) != null) {
             bookings.put(id, booking);
             return Response.ok().build();
@@ -201,18 +170,11 @@ public class BookingResource {
     @DELETE
     @Path("{id}")
     @Tag()
-    @APIResponse(
-        responseCode = "200",
-        description = "Booking deleted successfully.")
-    @APIResponse(
-        responseCode = "404",
-        description = "Booking not found.")
-    @Operation(
-        summary = "Delete a booking with ID",
-        operationId = "deleteBookingById")
+    @APIResponse(responseCode = "200", description = "Booking deleted successfully.")
+    @APIResponse(responseCode = "404", description = "Booking not found.")
+    @Operation(summary = "Delete a booking with ID", operationId = "deleteBookingById")
     @Produces("text/plain")
-    public Response deleteBooking(
-                                  @PathParam("id") int id) {
+    public Response deleteBooking(@PathParam("id") int id) {
         if (bookings.get(id) != null) {
             bookings.remove(id);
             return Response.ok().build();

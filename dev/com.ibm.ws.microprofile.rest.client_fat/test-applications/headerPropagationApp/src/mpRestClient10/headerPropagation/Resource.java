@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package mpRestClient10.headerPropagation;
 import java.net.URI;
 import java.net.URL;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.ApplicationPath;
@@ -37,8 +35,6 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 @Consumes(MediaType.TEXT_PLAIN)
 public class Resource extends Application {
 
-    private HeaderPropagationFilter propagationFilter = new HeaderPropagationFilter();
-
     @Context
     UriInfo uriInfo;
 
@@ -48,23 +44,13 @@ public class Resource extends Application {
     @Context
     HttpHeaders headers;
 
-    @Override
-    public Set<Object> getSingletons() {
-        return Collections.singleton(propagationFilter);
-    }
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        return Collections.singleton(Resource.class);
-    }
-
     @GET
     public String initial() throws Exception {
         URI uri = uriInfo.getAbsolutePath();
         String baseUrl = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/headerPropagationApp";
         RestClient client = RestClientBuilder.newBuilder()
                                              .baseUrl(new URL(baseUrl))
-                                             .register(propagationFilter)
+                                             .register(HeaderPropagationFilter.class)
                                              .build(RestClient.class);
         System.out.println("auth scheme: " + securityContext.getAuthenticationScheme());
         Principal p = securityContext.getUserPrincipal();
@@ -95,6 +81,7 @@ public class Resource extends Application {
                                                                       .append("=")
                                                                       .append(value.get(0))
                                                                       .append(";"));
+        System.out.println("allHeaders = " + allHeaders);
         return allHeaders.toString();
     }
 }

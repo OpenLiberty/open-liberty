@@ -13,8 +13,10 @@
 
         <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
         <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/-" actions="POST:"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/-" actions="POST:"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/-" actions="POST:*"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/-" actions="POST:*"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/-" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/-" actions="POST:AcceptSOAPActionUser-Agent"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
@@ -29,6 +31,11 @@
         <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/> 
         <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
+        <javaPermission className="javax.security.auth.AuthPermission" name="getSubject"/>
+        <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+	    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.jaxp"/>
+	    <javaPermission clasSName="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.activation.registries"/>
+	    <javaPermission className="java.util.PropertyPermission" name="javax.activation.debug" actions="read"/>
          
 </server>
 

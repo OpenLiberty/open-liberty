@@ -12,6 +12,7 @@
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
+               project(":com.ibm.ws.transaction.fat.util"),
                project(":com.ibm.ws.transaction.recovery_fat.1"),
                project(':io.openliberty.org.apache.commons.logging')
 }
@@ -22,6 +23,12 @@ File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 task addDerbyToSharedDir(type: Copy) {
   from configurations.derby
   into new File(sharedDir, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyToSharedDir2(type: Copy) {
+  from configurations.derby
+  into new File(sharedDir, 'derby2')
   rename 'derby-.*.jar', 'derby.jar'
 }
 
@@ -58,6 +65,7 @@ task copyCommonFiles {
 
 addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
+addRequiredLibraries.dependsOn addDerbyToSharedDir2
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {

@@ -141,7 +141,7 @@ public abstract class AbstractProxyServices implements ProxyServices {
 		synchronized (classLoaderLock) {
 			try {
 				//First check we haven't defined this in another thread.
-				return loadClass​(className, loader);
+				return loadClass(className, loader);
 			} catch (ClassNotFoundException e) {
 				//Do nothing, move on to defining the class. 
 			}
@@ -170,10 +170,10 @@ public abstract class AbstractProxyServices implements ProxyServices {
 	@Override
 	public Class<?> loadClass(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
 		ClassLoader cl = loaderMap.get(originalClass);
-		return loadClass​(classBinaryName, cl);
+		return loadClass(classBinaryName, cl);
 	}
 
-	private Class<?> loadClass​(String classBinaryName, ClassLoader cl) throws ClassNotFoundException {
+	private Class<?> loadClass(String classBinaryName, ClassLoader cl) throws ClassNotFoundException {
 		return Class.forName(classBinaryName, true, cl);
 	}
 

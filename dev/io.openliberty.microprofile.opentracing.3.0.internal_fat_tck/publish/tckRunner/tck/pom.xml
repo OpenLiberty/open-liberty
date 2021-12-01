@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2020, 2021 IBM Corporation and others. All rights reserved. 
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+    IBM Corporation - initial API and implementation -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.openliberty.microprofile.opentracing</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>MicroProfile Opentracing TCK Runner TCK Module</name>
+
+    <properties>
+        <microprofile.opentracing.version>3.0-RC4</microprofile.opentracing.version>
+        <microprofile.config.version>3.0-RC5</microprofile.config.version>
+        <microprofile.rest.client.version>3.0-RC5</microprofile.rest.client.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
+
+        <!-- the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+              <groupId>jakarta.platform</groupId>
+              <artifactId>jakarta.jakartaee-bom</artifactId>
+              <version>9.1.0</version>
+              <type>pom</type>
+              <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.microprofile.opentracing</groupId>
+            <artifactId>microprofile-opentracing-tck</artifactId>
+            <version>${microprofile.opentracing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.opentracing</groupId>
+            <artifactId>microprofile-opentracing-tck-rest-client</artifactId>
+            <version>${microprofile.opentracing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.opentracing</groupId>
+            <artifactId>microprofile-opentracing-api</artifactId>
+            <version>${microprofile.opentracing.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>${microprofile.config.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <version>${microprofile.rest.client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${arquillian.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>org.jboss.resteasy.common</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.jboss.logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+            <groupId>com.ibm.websphere</groupId>
+            <artifactId>org.reactivestreams.reactive-streams</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath> 
+         </dependency>
+         
+         <dependency>
+              <groupId>jakarta.activation</groupId>
+              <artifactId>jakarta.activation-api</artifactId>
+              <version>2.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.eclipse.yasson.2.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.eclipse.yasson.2.0_}</systemPath>
+         </dependency>
+         <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.restfulWS30.jsonb20provider.jakarta</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.restfulWS30.jsonb20provider.jakarta_}</systemPath>
+         </dependency>
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>2.0.0</version>
+         </dependency>  
+         
+
+         <dependency>
+             <groupId>jakarta.annotation</groupId>
+             <artifactId>jakarta.annotation-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.enterprise</groupId>
+             <artifactId>jakarta.enterprise.cdi-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.ws.rs</groupId>
+             <artifactId>jakarta.ws.rs-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.json</groupId>
+             <artifactId>jakarta.json-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>jakarta.json.bind</groupId>
+             <artifactId>jakarta.json.bind-api</artifactId>
+         </dependency>
+
+
+        <!-- Include JAX-B API+Impl for Java 9+ -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>3.0.0</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}
+                        -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). 
+                        Attach is needed becuase because arquillian uses com.sun.tools.attach to 
+                        find VMs -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

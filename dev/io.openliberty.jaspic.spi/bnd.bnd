@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.1
+
+Bundle-Name: Jakarta Authentication Extensions SPI
+Bundle-Description: Jakarta Authentication Extensions SPI, version ${bVersion}
+Bundle-SymbolicName: io.openliberty.jaspic.spi.javaee
+
+-pom: artifactid=io.openliberty.jaspic.spi
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.jaspic.spi.jar
+jakartaFinalBundleId: io.openliberty.jaspic.spi
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.jaspic.spi.jar
+publish.wlp.javadoc.include: io.openliberty.jaspic.spi.javadoc.zip
+
+Import-Package: com.ibm.wsspi.security.jaspi
+
+Export-Package: com.ibm.wsspi.security.jaspi
+
+-includeresource: {META-INF/maven/io.openliberty.spi/io.openliberty.jaspic.spi/pom.xml=io.openliberty.jaspic.spi.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.security.jaspic.1.1

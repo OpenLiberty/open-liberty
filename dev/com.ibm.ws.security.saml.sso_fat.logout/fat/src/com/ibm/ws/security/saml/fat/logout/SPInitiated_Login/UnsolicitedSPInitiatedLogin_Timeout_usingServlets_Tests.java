@@ -77,10 +77,10 @@ public class UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests extends Tim
         ShibbolethHelpers.ShibbolethServerVars[] shibUpdateVars = { shibbolethHelpers.new ShibbolethServerVars("conf", "idp.properties", varMap) };
 
         // the config filenames are the same for server 1 and 2, but their content is just a little different (and they live in different sub-directories)
-        serverMasterConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + "_unsolicited.xml";
+        serverMainConfig = "server_SPLogoutFalse" + cookieInfo.getCookieFileExtension() + "_unsolicited.xml";
         serverOtherConfig = "server_SPLogoutTrue" + cookieInfo.getCookieFileExtension() + "_unsolicited.xml";
 
-        startSPWithIDPServer("com.ibm.ws.security.saml.sso_fat.logout", serverMasterConfig, SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, null, null, shibUpdateVars);
+        startSPWithIDPServer("com.ibm.ws.security.saml.sso_fat.logout", serverMainConfig, SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, null, null, shibUpdateVars);
 
         testSAMLServer.addIgnoredServerException(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
 
@@ -94,28 +94,28 @@ public class UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests extends Tim
     @Test
     public void UnsolicitedSPInitiatedLogin_Timeout_usingServlets_TestsIDPInitiated_LogoutUrl_IDPSessionTimeout() throws Exception {
 
-        testSAMLServer.reconfigServer(serverMasterConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
+        testSAMLServer.reconfigServer(serverMainConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
         test_logoutAfterIDPSessionExpires(SAMLConstants.UNSOLICITED_SP_INITIATED, SAMLConstants.IDP_INITIATED, LOGOUT_INVOLVES_IDP, null);
     }
 
     @Test
     public void UnsolicitedSPInitiatedLogin_Timeout_usingServlets_TestsIDPInitiated_LogoutUrl_SPSessionTimeout() throws Exception {
 
-        testSAMLServer.reconfigServer(serverMasterConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
+        testSAMLServer.reconfigServer(serverMainConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
         test_logoutAfterSAMLTokenExpires(SAMLConstants.UNSOLICITED_SP_INITIATED, SAMLConstants.IDP_INITIATED, LOGOUT_INVOLVES_IDP, null);
     }
 
     @Test
     public void UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests_servletRequestLogout_spLogoutFalse_IDPSessionTimeout() throws Exception {
 
-        testSAMLServer.reconfigServer(serverMasterConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
+        testSAMLServer.reconfigServer(serverMainConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
         test_logoutAfterIDPSessionExpires(SAMLConstants.UNSOLICITED_SP_INITIATED, SAMLConstants.HTTPSERVLET_INITIATED, LogoutStaysInSPOnly, null);
     }
 
     @Test
     public void UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests_servletRequestLogout_spLogoutFalse_SPSessionTimeout() throws Exception {
 
-        testSAMLServer.reconfigServer(serverMasterConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
+        testSAMLServer.reconfigServer(serverMainConfig, _testName, null, SAMLConstants.JUNIT_REPORTING);
         test_logoutAfterSAMLTokenExpires(SAMLConstants.UNSOLICITED_SP_INITIATED, SAMLConstants.HTTPSERVLET_INITIATED, LogoutStaysInSPOnly, null);
     }
 

@@ -32,13 +32,11 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -73,12 +71,12 @@ public class CxfInteropX509Tests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
         }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_wss4j.xml");
@@ -119,29 +117,26 @@ public class CxfInteropX509Tests {
 
         String vendorName = System.getProperty("java.vendor");
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
-        //7/2021
+
         String javaVersion = System.getProperty("java.version");
         Log.info(thisClass, thisMethod, "JDK Version is: " + javaVersion);
 
         ibmJDK = true;
-        //7/2027
         if ((vendorName.contains("IBM")) & (javaVersion.contains("1.8.0"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK 8");
         } else {
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!");
             ibmJDK = false;
-        } // End 7/2021
+        }
 
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -167,12 +162,10 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
@@ -198,12 +191,10 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";
         if (!ibmJDK) {
-            //7/2021
             Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
             System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;

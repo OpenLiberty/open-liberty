@@ -57,6 +57,7 @@ public class HealthTCKLauncher {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.health.1.0_fat_tck", this.getClass() + ":launchHealthTck", additionalProps);
+        MvnUtils.preparePublicationFile();
     }
 
 }

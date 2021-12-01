@@ -12,7 +12,7 @@
  * require() will cause us to load all of our test modules. This is the equivalent
  * functionality of a test suite in JUnit.
  *
- * This is the 'master' suite. It loads the 'all' suites for all of our components.
+ * This is the 'primary' suite. It loads the 'all' suites for all of our components.
  */
 define([
          'unittest/widgets/graphs/MetricsPersistenceTests'

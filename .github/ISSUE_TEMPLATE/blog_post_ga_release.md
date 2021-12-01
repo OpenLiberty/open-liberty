@@ -3,7 +3,7 @@ name: Open Liberty GA release blog post
 about: Information to be included in the Open Liberty GA release blog post.
 title: GA BLOG - title_of_your_update
 labels: 'Blog, target:ga'
-assignees: austin0, jakub-pomykala
+assignees: ryan-storey
 
 ---
 

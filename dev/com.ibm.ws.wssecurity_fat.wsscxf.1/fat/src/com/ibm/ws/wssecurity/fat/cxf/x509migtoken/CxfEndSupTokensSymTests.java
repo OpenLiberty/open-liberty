@@ -34,7 +34,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -65,13 +64,12 @@ public class CxfEndSupTokensSymTests extends CommonTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             commonSetUp(serverName, "server_sym.xml", true,
                         "/endsuptokensclient/CxfEndSupTokensSvcClient");
-        }
-        if (features.contains("usr:wsseccbh-2.0")) {
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_sym_wss4j.xml", true,
@@ -92,7 +90,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens4() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4";
@@ -136,7 +133,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens4ClAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4ClAddEncrypted";
@@ -180,7 +176,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens4ClAddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4ClAddSigned";
@@ -225,7 +220,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens4ClAddSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4ClAddSignedEncrypted";
@@ -269,7 +263,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens5() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5";
@@ -314,7 +307,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens5AddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5AddEncrypted";
@@ -360,7 +352,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens5MissingSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSigned";
@@ -406,7 +397,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens5MissingSignedAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSignedAddEncrypted";
@@ -451,7 +441,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens6() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6";
@@ -496,7 +485,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens6AddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6AddSigned";
@@ -542,7 +530,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens6MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncrypted";
@@ -588,7 +575,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens6MissingEncryptedAddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncryptedAddSigned";
@@ -633,7 +619,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens7() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7";
@@ -678,7 +663,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens7MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingEncrypted";
@@ -770,7 +754,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens7MissingSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingSignedEncrypted";

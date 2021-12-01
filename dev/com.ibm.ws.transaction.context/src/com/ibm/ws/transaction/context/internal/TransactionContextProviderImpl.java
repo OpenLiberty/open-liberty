@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,16 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
             value = execProps.get(key = ManagedTask.TRANSACTION);
             if (value == null)
                 value = execProps.get(key = OTHER_SPEC_TRANSACTION_CONSTANT);
+        }
+        if (value == null && threadContextConfig != null) {
+            // Concurrency 3.0+ application-defined context service configuration
+            value = (String) threadContextConfig.get("transaction");
+            if ("cleared".equals(value))
+                value = ManagedTask.SUSPEND;
+            else if ("propagated".equals(value))
+                value = "PROPAGATE";
+            else if ("unchanged".equals(value))
+                value = ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD;
         }
         if (value == null || ManagedTask.SUSPEND.equals(value))
             return new TransactionContextImpl(true);

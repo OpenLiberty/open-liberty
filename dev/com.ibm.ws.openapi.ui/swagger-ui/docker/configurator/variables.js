@@ -71,9 +71,17 @@ const standardVariables = {
     type: "boolean",
     name: "showCommonExtensions"
   },
+  USE_UNSAFE_MARKDOWN: {
+    type: "boolean",
+    name: "useUnsafeMarkdown"
+  },
   OAUTH2_REDIRECT_URL: {
     type: "string",
     name: "oauth2RedirectUrl"
+  },
+  PERSIST_AUTHORIZATION: {
+    type: "boolean",
+    name: "persistAuthorization"
   },
   SHOW_MUTATED_REQUEST: {
     type: "boolean",
@@ -82,6 +90,10 @@ const standardVariables = {
   SUPPORTED_SUBMIT_METHODS: {
     type: "array",
     name: "supportedSubmitMethods"
+  },
+  TRY_IT_OUT_ENABLED: {
+    type: "boolean",
+    name: "tryItOutEnabled"
   },
   VALIDATOR_URL: {
     type: "string",

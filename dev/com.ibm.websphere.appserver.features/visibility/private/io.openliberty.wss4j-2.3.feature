@@ -5,10 +5,10 @@ singleton=true
 -bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0.jakarta, \
  com.ibm.ws.com.google.guava, \
  com.ibm.ws.org.apache.wss4j.bindings.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.policy.2.3.0.jakarta, \
+ com.ibm.ws.org.apache.wss4j.policy.2.3.0, \
  com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0.jakarta, \
  com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.ws.security.policy.stax.2.3.0.jakarta, \
+ com.ibm.ws.org.apache.wss4j.ws.security.policy.stax.2.3.0, \
  com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0.jakarta, \
  com.ibm.ws.org.apache.wss4j.ws.security.web.2.3.0.jakarta, \
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
@@ -18,5 +18,5 @@ singleton=true
  com.ibm.ws.org.joda.time.2.9.9, \
  com.ibm.ws.org.opensaml.opensaml.core.3.4.5.jakarta, \
  com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1.jakarta
-kind=beta
+kind=ga
 edition=base

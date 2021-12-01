@@ -64,3 +64,31 @@ OPENAPI_APPLICATION_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u01
 OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania aplikacji {0} i nie przedstawiono dokumentu OpenAPI. B\u0142\u0105d: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Podczas przetwarzania aplikacji wyst\u0105pi\u0142 b\u0142\u0105d.
 OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Podczas scalania dokument\u00f3w OpenAPI wyst\u0105pi\u0142y nast\u0119puj\u0105ce problemy: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Nie mo\u017cna pomy\u015blnie scali\u0107 dokumentacji OpenAPI z wi\u0119cej ni\u017c jednego modu\u0142u WWW. Punkty ko\u0144cowe zg\u0142oszonych modu\u0142\u00f3w nie s\u0105 uwzgl\u0119dnione w wygenerowanym dokumencie OpenAPI.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Przejrzyj informacje o problemach ze scalaniem, aby ustali\u0107, dlaczego nie mo\u017cna scali\u0107 wygenerowanych dokument\u00f3w OpenAPI.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=\u015acie\u017cka {0} z modu\u0142u {1} koliduje ze \u015bcie\u017ck\u0105 z modu\u0142u {2}. Modu\u0142 {1} nie zostanie scalony.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=\u015acie\u017cka dotyczy dw\u00f3ch modu\u0142\u00f3w. Obie instancje \u015bcie\u017cki nie mog\u0105 by\u0107 uwzgl\u0119dnione w tym samym dokumencie OpenAPI. Ten komunikat jest zwracany jako cz\u0119\u015b\u0107 CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Zmie\u0144 jeden z koliduj\u0105cych modu\u0142\u00f3w albo skonfiguruj sk\u0142adnik mpOpenApi-2.0 w celu wykluczenia jednego z nich. Ten problem mo\u017ce wyst\u0105pi\u0107, je\u015bli w dokumencie OpenAPI s\u0105 uwzgl\u0119dnione serwery, a adres URL serwera nie ko\u0144czy si\u0119 kontekstowym katalogiem g\u0142\u00f3wnym aplikacji (na przyk\u0142ad dlatego, \u017ce dost\u0119p do aplikacji odbywa si\u0119 pod innym adresem URL przez odwrotne proxy).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: \u0141\u0105czenie dokumentacji OpenAPI z wi\u0119cej ni\u017c jednego modu\u0142u jest wy\u0142\u0105czone. Do wygenerowania dokumentacji OpenAPI zostanie u\u017cyty tylko modu\u0142 {0}. Aby umo\u017cliwi\u0107 scalanie dokumentacji OpenAPI ze wszystkich modu\u0142\u00f3w, ustaw w\u0142a\u015bciwo\u015b\u0107 konfiguracji mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=Je\u015bli scalanie dokumentacji OpenAPI nie jest w\u0142\u0105czone, dokumentacja OpenAPI jest generowana tylko dla pierwszego wdro\u017conego modu\u0142u OpenAPI.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Je\u015bli dokumentacja OpenAPI ma by\u0107 generowana ze wszystkich modu\u0142\u00f3w WWW, ustaw w\u0142a\u015bciwo\u015b\u0107 konfiguracji MicroProfile w spos\u00f3b wskazany w komunikacie. T\u0119 w\u0142a\u015bciwo\u015b\u0107 mo\u017cna ustawi\u0107 w dowolnym miejscu, w kt\u00f3rym poszukiwane s\u0105 w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile, na przyk\u0142ad we w\u0142a\u015bciwo\u015bci systemowej Java lub w zmiennej \u015brodowiskowej.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: Obiekt info skonfigurowany z w\u0142a\u015bciwo\u015bci\u0105 {0} nie jest prawid\u0142owy. Musz\u0105 by\u0107 ustawione w\u0142a\u015bciwo\u015bci title i version. Nieprawid\u0142owa warto\u015b\u0107 to: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Je\u015bli w\u0142a\u015bciwo\u015b\u0107 jest ustawiona, to musi zawiera\u0107 kompletn\u0105 sekcj\u0119 info w formacie JSON, z w\u0142a\u015bciwo\u015bciami title i version ustawionymi na poprawne warto\u015bci.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Popraw skonfigurowan\u0105 warto\u015b\u0107 info.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Nie mo\u017cna przeanalizowa\u0107 w\u0142a\u015bciwo\u015bci konfiguracji {0} jako danych JSON. Warto\u015b\u0107: {1}\nB\u0142\u0105d: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Je\u015bli w\u0142a\u015bciwo\u015b\u0107 jest ustawiona, to musi zawiera\u0107 kompletn\u0105 sekcj\u0119 info w formacie JSON.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Zapoznaj si\u0119 z tekstem komunikatu o b\u0142\u0119dzie, aby zidentyfikowa\u0107 problem, i popraw warto\u015b\u0107 info w konfiguracji, aby zawiera\u0142a prawid\u0142owy kod JSON.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: {0} zawiera nieprawid\u0142ow\u0105 nazw\u0119: {1}. Ka\u017cda z nazw musi mie\u0107 format "applicationName" lub "applicationName/moduleName".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=W\u0142a\u015bciwo\u015b\u0107 konfiguracji musi zawiera\u0107 list\u0119 rozdzielanych przecinkami nazw aplikacji i modu\u0142\u00f3w albo jedn\u0105 z warto\u015bci specjalnych: "all", "first" albo "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Zapoznaj si\u0119 z tekstem komunikatu o b\u0142\u0119dzie, aby zidentyfikowa\u0107 problem, i popraw wskazan\u0105 w\u0142a\u015bciwo\u015b\u0107 konfiguracji.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: W\u0142a\u015bciwo\u015b\u0107 konfiguracji {0} zawiera warto\u015b\u0107 "{1}", kt\u00f3ra nie pasuje do \u017cadnej z wdro\u017conych aplikacji ani \u017cadnego z wdro\u017conych modu\u0142\u00f3w WWW.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Serwer jest skonfigurowany tak, by tworzy\u0142 dokumentacj\u0119 OpenAPI z aplikacji lub modu\u0142u o podanej nazwie, ale nie wdro\u017cono aplikacji ani modu\u0142u WWW o podanej nazwie.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Upewnij si\u0119, \u017ce wszystkie aplikacje uruchomi\u0142y si\u0119 poprawnie, a nazwy we w\u0142a\u015bciwo\u015bci konfiguracji s\u0105 podane prawid\u0142owo.

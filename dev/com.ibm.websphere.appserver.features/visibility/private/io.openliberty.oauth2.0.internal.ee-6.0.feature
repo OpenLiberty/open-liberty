@@ -9,7 +9,5 @@ visibility = private
   com.ibm.ws.security.oauth.2.0, \
   com.ibm.ws.security.jwt, \
   com.ibm.ws.security.common
--files=\
-  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oauth_1.2-javadoc.zip
 kind=ga
 edition=core

@@ -34,10 +34,7 @@ Require-Bundle:\
 	com.ibm.ws.crypto.passwordutil; version="[1,1.0.100)",\
 	com.ibm.ws.kernel.feature; version="[1,1.0.100)",\
 	com.ibm.ws.config; version="[1,1.0.100)",\
-	com.ibm.ws.kernel.boot; version="[1,1.0.100)"\  
- 	com.ibm.ws.kernel.feature; version="[1,1.0.100)",\
- 	com.ibm.ws.config; version="[1,1.0.100)",\
-  	com.ibm.ws.logging; version="[1,1.0.100)"
+	com.ibm.ws.kernel.boot; version="[1,1.0.100)"
 
 Command-Class: com.ibm.ws.install.featureUtility.FeatureUtilityExecutor
 

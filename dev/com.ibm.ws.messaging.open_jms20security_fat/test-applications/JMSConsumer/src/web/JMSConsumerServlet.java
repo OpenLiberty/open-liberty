@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,21 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Enumeration;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jms.InvalidDestinationRuntimeException;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.JMSRuntimeException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageFormatRuntimeException;
 import javax.jms.Queue;
-import javax.jms.QueueBrowser;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -45,22 +48,60 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSConsumerServlet extends HttpServlet {
 
+    /** 
+     * To enable trace, update .../publish/servers/<TestServer>/bootstrap.properties 
+     * eg. add... com.ibm.ws.logging.trace.specification=web.JMSConsumerServlet=all:*=info
+     * 
+     * Or instrument this class with...
+     * Logger.getLogger(JMSConsumerServlet.class.getName()).setLevel(Level.FINER);
+     * 
+     * The trace output goes to: .../build/libs/autoFVT/output/servers/<TestServer-...>/logs/trace.log
+     */
+    final static TraceComponent tc = Tr.register(JMSConsumerServlet.class);
+    
+    
     public static QueueConnectionFactory jmsQCFBindings;
     public static QueueConnectionFactory jmsQCFTCP;
     public static TopicConnectionFactory jmsTCFBindings;
     public static TopicConnectionFactory jmsTCFTCP;
     public static Topic jmsTopic;
     public static Topic jmsTopic2;
-    public static Topic jmsTopic3;
-    public static Queue jmsQueue;
+    public static Queue jmsQueue;  
     // public static Queue jmsReplyQueue;
     public static JMSContext jmsContext;
     public static JMSConsumer jmsConsumer;
     public static JMSProducer jmsProducer;
     public static boolean exceptionFlag;
 
-    private static int DEFAULT_TIMEOUT = 30000;
+    private final static int DEFAULT_TIMEOUT = 30000;
 
+    /** @return the methodName of the caller. */
+    private final static String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(timeStamp() +" "+message);
+        }
+    }
+    
+    // The current time, formatted with millisecond resolution.
+    private static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
+    private static final String timeStamp() { return timeStampFormat.format(new Date());}
+    
+    public void emptyQueue(QueueConnectionFactory qcf, Queue queue) throws TestException {
+
+        long messagesReceived = 0;
+        try (JMSContext jmsContext = qcf.createContext(JMSContext.SESSION_TRANSACTED)) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+            while (jmsConsumer.receiveNoWait() != null) {
+                messagesReceived++;
+            }
+            jmsContext.commit();
+        }
+        if (messagesReceived != 0)
+            throw new TestException("Queue:" + queue + "contained " + messagesReceived + " messages");
+    }
+    
     @Override
     public void init() throws ServletException {
         // TODO Auto-generated method stub
@@ -70,12 +111,12 @@ public class JMSConsumerServlet extends HttpServlet {
             jmsQCFBindings = getQCFBindings();
             jmsQCFTCP = getQCFTCP();
             jmsQueue = getQueue("jndi_INPUT_Q");
+          
             // jmsReplyQueue = getQueue("MDBREPLYQ");
             jmsTCFBindings = getTCFBindings();
             jmsTCFTCP = getTCFTCP();
             jmsTopic = getTopic("eis/topic1");
             jmsTopic2 = getTopic("eis/topic2");
-            jmsTopic3 = getTopic("eis/topic3");
 
         } catch (NamingException e) {
             // TODO Auto-generated catch block
@@ -88,19 +129,10 @@ public class JMSConsumerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
         String test = request.getParameter("test");
+        Tr.entry(this, tc, test);
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-        final TraceComponent tc = Tr.register(JMSConsumerServlet.class); // injection
-        // engine
-        // doesn't
-        // like
-        // this
-        // at
-        // the
-        // class
-        // level
-        Tr.entry(this, tc, test);
-        try {
+         try {
             System.out.println(" Start: " + test);
             getClass().getMethod(test, HttpServletRequest.class,
                                  HttpServletResponse.class).invoke(this, request, response);
@@ -118,106 +150,60 @@ public class JMSConsumerServlet extends HttpServlet {
         }
     }
 
-    public void testCloseConsumer_B(HttpServletRequest request,
-                                    HttpServletResponse response) throws Throwable {
+    public void testCloseConsumer_B(HttpServletRequest request, HttpServletResponse response) throws TestException {
+        testCloseConsumer(jmsQCFBindings);
+    }
+    
+    public void testCloseConsumer_TCP(HttpServletRequest request, HttpServletResponse response) throws TestException {
+        testCloseConsumer(jmsQCFTCP);
+    }
 
-        exceptionFlag = false;
-        try {
+    private void testCloseConsumer(QueueConnectionFactory queueConnectionFactory) throws TestException {
+        try (JMSContext jmsContext = queueConnectionFactory.createContext();) {
 
-            JMSContext jmsContext = jmsQCFBindings.createContext();
             JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
             jmsConsumer.close();
             jmsConsumer.receive();
+            // Should not reach here.
+            throw new TestException("Called receive() after close() without throwing JMSRuntimeException");
 
-        } catch (JMSRuntimeException ex) {
-
-            exceptionFlag = true;
-
+        } catch (JMSRuntimeException jmsRuntimeException) {
+            Tr.debug(tc, "Expected jmsRuntimeException was found:" + jmsRuntimeException);
         }
-
-        if (!exceptionFlag)
-            throw new WrongException("testCloseConsumer_B failed: Expected exception was not seen");
-
-        jmsContext.close();
-
     }
 
-    public void testCloseConsumer_TCP(HttpServletRequest request,
-                                      HttpServletResponse response) throws Throwable {
-
-        exceptionFlag = false;
-        try {
-
-            JMSContext jmsContext = jmsQCFTCP.createContext();
-            JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-            jmsConsumer.close();
-            jmsConsumer.receive();
-
-        } catch (JMSRuntimeException ex) {
-
-            exceptionFlag = true;
-
-        }
-        if (!exceptionFlag)
-            throw new WrongException("testCloseConsumer_B failed: Expected exception was not seen");
-        jmsContext.close();
-
-    }
-
-    public void testReceive_B(HttpServletRequest request,
-                              HttpServletResponse response) throws Throwable {
-
-        exceptionFlag = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
+    public void testReceive_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        TextMessage m = jmsContext.createTextMessage("testReceive_B");
-        jmsProducer.send(jmsQueue, m);
-
-        TextMessage msg = (TextMessage) jmsConsumer.receive();
-
-        if (!(msg.getText().equals("testReceive_B")))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testReceive_B failed: Expected message was not received");
-        jmsConsumer.close();
-        jmsContext.close();
-
+        testReceive(jmsQCFBindings);
+    }
+    
+    public void testReceive_TCP(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        emptyQueue(jmsQCFTCP, jmsQueue);
+        testReceive(jmsQCFTCP);
     }
 
-    public void testReceive_TCP(HttpServletRequest request,
-                                HttpServletResponse response) throws Throwable {
+    private void testReceive(QueueConnectionFactory queueConnectionFactory) throws JMSException, TestException {          
+        try (JMSContext jmsContext = queueConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        exceptionFlag = false;
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
+            jmsProducer.send(jmsQueue, sentMessage);
 
-        TextMessage m = jmsContext.createTextMessage("testReceive_TCP");
-        jmsProducer.send(jmsQueue, m);
-
-        TextMessage msg = (TextMessage) jmsConsumer.receive();
-
-        if (!(msg.getText().equals("testReceive_TCP")))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testReceive_TCP failed: Expected message was not received");
-        jmsConsumer.close();
-        jmsContext.close();
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received, receivedMessage:" + receivedMessage + " sentMessage:" + sentMessage);
+        }
     }
 
     public void testReceiveBody_B(HttpServletRequest request,
                                   HttpServletResponse response) throws Throwable {
 
+        emptyQueue(jmsQCFBindings, jmsQueue);
         exceptionFlag = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
-        emptyQueue(jmsQCFBindings, jmsQueue);
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
         JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.send(jmsQueue, "testReceiveBody_B");
@@ -234,9 +220,9 @@ public class JMSConsumerServlet extends HttpServlet {
     public void testReceiveBody_TCP(HttpServletRequest request,
                                     HttpServletResponse response) throws Throwable {
 
+        emptyQueue(jmsQCFTCP, jmsQueue);
         exceptionFlag = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
         jmsContext.createProducer().send(jmsQueue, "testReceiveBody_TCP");
         String msg1 = jmsConsumer.receiveBody(String.class);
@@ -447,7 +433,7 @@ public class JMSConsumerServlet extends HttpServlet {
             byte[] msgBody = jmsConsumer.receiveBody(byte[].class,
                                                      DEFAULT_TIMEOUT);
         } catch (MessageFormatRuntimeException e) {
-            System.out.println("Expected MessageFormatRuntimeException was found in testReceiveBodyWithTimeOutUnspecifiedType_B_SecOn");
+            Tr.debug(tc, "Expected MessageFormatRuntimeException was found in testReceiveBodyWithTimeOutUnspecifiedType_B_SecOn");
             exceptionFlag = true;
         }
 
@@ -822,91 +808,64 @@ public class JMSConsumerServlet extends HttpServlet {
             throw new WrongException("testReceiveBodyWithTimeOutUnspecifiedTypeTopic_TcpIp_SecOn failed: Expected exception not seen");
     }
 
-    public void testReceiveBodyNoWaitUnsupportedTypeTopic_B_SecOn(
-                                                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        exceptionFlag = false;
-        JMSContext context = jmsTCFBindings.createContext(JMSContext.SESSION_TRANSACTED);
-        JMSConsumer consumer = context.createConsumer(jmsTopic);
-        JMSProducer producer = context.createProducer();
-        MapMessage m = context.createMapMessage();
-        producer.send(jmsTopic, m);
-        context.commit();
-        try {
-            String msgBody = consumer.receiveBodyNoWait(String.class);
-        } catch (MessageFormatRuntimeException e) {
-            exceptionFlag = true;
-        }
-
-        context.commit();
-        context.close();
-
-        if (!exceptionFlag)
-            throw new WrongException("testReceiveBodyNoWaitUnsupportedTypeTopic_B_SecOn failed: Expected exception not seen");
+    public void testReceiveBodyNoWaitUnsupportedTypeTopic_B_SecOn(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testReceiveBodyNoWaitUnsupportedTypeTopic(jmsTCFBindings);
     }
+   
+    public void testReceiveBodyNoWaitUnsupportedTypeTopic_TcpIp_SecOn(HttpServletRequest request, HttpServletResponse response)
+            throws JMSException, TestException, InterruptedException {
+        testReceiveBodyNoWaitUnsupportedTypeTopic(jmsTCFTCP);
+    }
+    
+    public void testReceiveBodyNoWaitUnsupportedTypeTopic(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException, InterruptedException {
 
-    public void testReceiveBodyNoWaitUnsupportedTypeTopic_TcpIp_SecOn(
-                                                                      HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        try (JMSContext context = jmsTCFBindings.createContext(JMSContext.SESSION_TRANSACTED)) {
+            JMSConsumer consumer = context.createConsumer(jmsTopic);
+            JMSProducer producer = context.createProducer();
+            MapMessage sentMessage = context.createMapMessage();
+            producer.send(jmsTopic, sentMessage);
+            context.commit();
+            try {
+                // JMS does not specify when the message is available to be received, 
+                // so repeat attempts to receive the message.
+               String receivedMessageBody = null;
+               
+                for (int i = 0; i<10 &&  receivedMessageBody == null; i++) {
+                    receivedMessageBody = consumer.receiveBodyNoWait(String.class);
+                    Thread.sleep(100);
+                }
+                // Should not reach here.
+                if (receivedMessageBody == null)                    
+                    throw new TestException("Sent Map message and no message received, sent:"+sentMessage);             
+                throw new TestException("Sent Map message and received a Text message without throwing MessageFormatRuntimeException, receivedMessaegBody:" + receivedMessageBody);
+            
+            } catch (MessageFormatRuntimeException messageFormatRuntimeException) {
+                Tr.debug(tc, "Expected MessageFormatRuntimeException was found:"+messageFormatRuntimeException);
+                // Expected Exception.
+            }
 
-        exceptionFlag = false;
-        JMSContext context = jmsTCFTCP.createContext(JMSContext.SESSION_TRANSACTED);
-        System.out.println("DEBUG: context:" + context);
-        JMSConsumer consumer = context.createConsumer(jmsTopic3);
-        System.out.println("DEBUG: consumer:" + consumer);
-        JMSProducer producer = context.createProducer();
-        System.out.println("DEBUG: producer:" + producer);
-        MapMessage m = context.createMapMessage();
-        System.out.println("DEBUG: m:" + m);
-        producer.send(jmsTopic3, m);
-        System.out.println("DEBUG: sent to:" + jmsTopic3);
-        context.commit();
-        System.out.println("DEBUG: committed");
-        try {
-            String msgBody = consumer.receiveBodyNoWait(String.class);
-            if (null == msgBody) {
-                System.out.println("testReceiveBodyNoWaitUnsupportedTypeTopic_TcpIp_SecOn: There was no message.");
-            } else {
-                System.out.println("testReceiveBodyNoWaitUnsupportedTypeTopic_TcpIp_SecOn: No exception, body: " + msgBody);
-            }
-            // roll back so we can receive it again, if it was received the first time
-            context.rollback();
-            Message msg = consumer.receiveNoWait();
-            if (null == msg) {
-                System.out.println("DEBUG: Second receive returns null message.");
-            } else {
-                System.out.println("DEBUG: JMSType:" + msg.getJMSType());
-                System.out.println("DEBUG: isBodyAssignableTo(String.class):" + msg.isBodyAssignableTo(String.class));
-                System.out.println("DEBUG: msg:" + msg);
-            }
-        } catch (MessageFormatRuntimeException e) {
-            exceptionFlag = true;
+            context.commit();
         }
-
-        context.commit();
-        context.close();
-
-        if (!exceptionFlag)
-            throw new WrongException("testReceiveBodyNoWaitUnsupportedTypeTopic_TcpIp_SecOn failed: Expected exception not seen");
     }
 
     public void testRDC_B(HttpServletRequest request,
-                          HttpServletResponse response) throws Throwable {
+                          HttpServletResponse response) throws Throwable {       
+        Queue jmsRedeliveryQueue1 = getQueue("jndi_RedeliveryQueue1");
         jmsContext = jmsQCFBindings.createContext();
         jmsProducer = jmsContext.createProducer();
         TextMessage msg = jmsContext.createTextMessage("testRDC_B");
-        jmsProducer.send(jmsQueue, msg);
-        Thread.sleep(1000);
+        jmsProducer.send(jmsRedeliveryQueue1, msg);
 
     }
 
     public void testRDC_TcpIp(HttpServletRequest request,
                               HttpServletResponse response) throws Throwable {
+        Queue jmsRedeliveryQueue1 = getQueue("jndi_RedeliveryQueue1");
         jmsContext = jmsQCFTCP.createContext();
         jmsConsumer = jmsContext.createConsumer(jmsQueue);
         jmsProducer = jmsContext.createProducer();
         TextMessage msg = jmsContext.createTextMessage("testRDC_TcpIp");
-        jmsContext.createProducer().send(jmsQueue, msg);
-        Thread.sleep(1000);
+        jmsContext.createProducer().send(jmsRedeliveryQueue1, msg);
 
     }
 
@@ -1031,66 +990,50 @@ public class JMSConsumerServlet extends HttpServlet {
             throw new WrongException("testCreateSharedDurableConsumerWithMsgSel_create_TCP failed: Expected message was not received");
 
     }
-
+    
+    private static final String nonDurableSubscriptionIdentifier = "NonDurableSubscriptionIdentifier";
+    
     public void testCreateSharedNonDurableConsumer_create(
-                                                          HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        jmsContext = jmsTCFBindings.createContext();
-        JMSConsumer jmsNonDurConsumer = jmsContext.createSharedConsumer(
-                                                                        jmsTopic, "SUBID5");
-        jmsProducer = jmsContext.createProducer();
-        TextMessage msg = jmsContext.createTextMessage("testCreateSharedNonDurableConsumer_create");
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testCreateSharedNonDurableConsumer_create(jmsTCFBindings);
+    }
+    
+    public void testCreateSharedNonDurableConsumer_create_TCP(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testCreateSharedNonDurableConsumer_create(jmsTCFTCP);
 
-        jmsProducer.send(jmsTopic, msg);
-        jmsContext.close();
+    }
+    
+    private void testCreateSharedNonDurableConsumer_create(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException { 
+   
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsNonDurableConsumer = jmsContext.createSharedConsumer(jmsTopic, nonDurableSubscriptionIdentifier);
+            jmsProducer = jmsContext.createProducer();
+            TextMessage msg = jmsContext.createTextMessage("testCreateSharedNonDurableConsumer_create");
 
+            jmsProducer.send(jmsTopic, msg);
+        }
+        // The non durable subscription is now closed so the message is now deleted.
+        
     }
 
     public void testCreateSharedNonDurableConsumer_consume(
-                                                           HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        exceptionFlag = false;
-        jmsContext = jmsTCFBindings.createContext();
-        JMSConsumer jmsNonDurConsumer = jmsContext.createSharedConsumer(
-                                                                        jmsTopic, "SUBID5");
-        TextMessage msg = (TextMessage) jmsNonDurConsumer.receive(DEFAULT_TIMEOUT);
-        if (!(msg == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_create failed: Expected message was not received");
-        jmsContext.close();
-
+                                                           HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testCreateSharedNonDurableConsumer_consume(jmsTCFBindings);
     }
 
-    public void testCreateSharedNonDurableConsumer_create_TCP(
-                                                              HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-        JMSConsumer jmsNonDurConsumer = jmsContext.createSharedConsumer(
-                                                                        jmsTopic, "SUBID6");
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        TextMessage msg = jmsContext.createTextMessage("testCreateSharedNonDurableConsumer_create_TCP");
-        jmsProducer.send(jmsTopic, msg);
-
-        jmsContext.close();
+    public void testCreateSharedNonDurableConsumer_consume_TCP(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testCreateSharedNonDurableConsumer_consume(jmsTCFTCP);
 
     }
+    
+    private void testCreateSharedNonDurableConsumer_consume(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException {
 
-    public void testCreateSharedNonDurableConsumer_consume_TCP(
-                                                               HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        exceptionFlag = false;
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-        JMSConsumer jmsNonDurConsumer = jmsContext.createSharedConsumer(
-                                                                        jmsTopic, "SUBID6");
-
-        TextMessage msg = (TextMessage) jmsNonDurConsumer.receive(DEFAULT_TIMEOUT);
-        if (!(msg == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_create_TCP failed: Expected message was not received");
-
-        jmsNonDurConsumer.close();
-
-        jmsContext.close();
-
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsNonDurableConsumer = jmsContext.createSharedConsumer(jmsTopic, nonDurableSubscriptionIdentifier);
+            Message receivedMessage = jmsNonDurableConsumer.receive(DEFAULT_TIMEOUT);
+            if (receivedMessage != null)
+                throw new TestException("Enexpected message received, receivedMessage:" + receivedMessage);
+        }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSel_create(
@@ -1151,6 +1094,7 @@ public class JMSConsumerServlet extends HttpServlet {
 
     public void testBasicMDBTopic(HttpServletRequest request,
                                   HttpServletResponse response) throws Throwable {
+        Topic jmsTopic = getTopic("eis/localTopicNonDurableMDB");
         jmsContext = jmsTCFBindings.createContext();
         jmsProducer = jmsContext.createProducer();
         int msgs = 3;
@@ -1162,6 +1106,7 @@ public class JMSConsumerServlet extends HttpServlet {
 
     public void testBasicMDBTopic_TCP(HttpServletRequest request,
                                       HttpServletResponse response) throws Throwable {
+        Topic jmsTopic = getTopic("eis/remoteTopicNonDurableMDB");
         jmsContext = jmsTCFTCP.createContext();
         jmsProducer = jmsContext.createProducer();
         int msgs = 3;
@@ -1171,64 +1116,54 @@ public class JMSConsumerServlet extends HttpServlet {
         }
     }
 
-    public void testBasicMDBTopicDurShared(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        jmsContext = jmsTCFBindings.createContext();
-        jmsConsumer = jmsContext.createConsumer(jmsTopic2);
-        jmsProducer = jmsContext.createProducer();
-        int msgs = 3;
-
-        for (int i = 0; i < msgs; i++) {
-            jmsProducer.send(jmsTopic2, "testBasicMDBTopic:" + i);
+    public void testBasicMDBTopicDurShared(HttpServletRequest request, HttpServletResponse response) throws NamingException {
+        try (JMSContext jmsContext = jmsTCFBindings.createContext()) {
+            Topic jmsTopic = getTopic("eis/localTopicDurableMDB");
+            jmsProducer = jmsContext.createProducer();
+            for (int i = 0; i < 3; i++) {
+                jmsProducer.send(jmsTopic, "testBasicMDBTopic:" + i);
+            }
         }
     }
 
-    public void testBasicMDBTopicDurShared_TCP(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
-        jmsContext = jmsTCFTCP.createContext();
-        jmsProducer = jmsContext.createProducer();
-        int msgs = 3;
-
-        for (int i = 0; i < msgs; i++) {
-            jmsProducer.send(jmsTopic2, "testBasicMDBTopic_TCP:" + i);
+    public void testBasicMDBTopicDurShared_TCP(HttpServletRequest request, HttpServletResponse response) throws NamingException {
+        try (JMSContext jmsContext = jmsTCFTCP.createContext()) {
+            Topic jmsTopic = getTopic("eis/remoteTopicDurableMDB");
+            jmsProducer = jmsContext.createProducer();
+            for (int i = 0; i < 3; i++) {
+                jmsProducer.send(jmsTopic, "testBasicMDBTopic_TCP:" + i);
+            }
         }
     }
 
-    public void testSetMessageProperty_Bindings_SecOn(
-                                                      HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        exceptionFlag = false;
-        JMSContext jmsContext = jmsQCFBindings.createContext();
-        emptyQueue(jmsQCFBindings, jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        jmsProducer.setDisableMessageID(true);
-        jmsProducer.send(jmsQueue, "testSetMessageProperty_Bindings_SecOn");
-
-        TextMessage msg = (TextMessage) jmsConsumer.receive(DEFAULT_TIMEOUT);
-
-        if (!(msg.getJMSMessageID() == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testSetMessageProperty_Bindings_SecOn failed: Expected message was not received");
-
+    public void testSetMessageProperty_Bindings_SecOn(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetMessageProperty_SecOn(jmsQCFBindings);
     }
 
-    public void testSetMessageProperty_TCP_SecOn(HttpServletRequest request,
-                                                 HttpServletResponse response) throws Throwable {
-        exceptionFlag = false;
-        jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-        jmsProducer = jmsContext.createProducer();
-        jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        jmsProducer.setDisableMessageID(true);
-        jmsProducer.send(jmsQueue, "testSetMessageProperty_TCp_SecOn");
-        TextMessage msg = (TextMessage) jmsConsumer.receive(DEFAULT_TIMEOUT);
+    public void testSetMessageProperty_TCP_SecOn(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetMessageProperty_SecOn(jmsQCFTCP);
+    }
+    
+    private void testSetMessageProperty_SecOn(QueueConnectionFactory queueConnectionFactory) throws JMSException, TestException { 
+          
+        emptyQueue(queueConnectionFactory, jmsQueue);
+        
+        try (JMSContext jmsContext = jmsQCFBindings.createContext()) {
 
-        if (!(msg.getJMSMessageID() == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testSetMessageProperty_TCp_SecOn failed: Expected message was not received");
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+            jmsProducer.setDisableMessageID(true);
+            String sentMessageBody = methodName() + " at " + timeStamp();
+            jmsProducer.send(jmsQueue, sentMessageBody);
 
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(DEFAULT_TIMEOUT);
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessageBody);
+            if (!receivedMessage.getText().equals(sentMessageBody))
+                throw new TestException("Wrong message received, receivedMessage:" + receivedMessage + "\n sentMessageBody:" + sentMessageBody);
+            if (receivedMessage.getJMSMessageID() != null)
+                throw new TestException("MessageID not null receivedMessage:" + receivedMessage);
+        }
     }
 
     public void testTopicName_temp_B(HttpServletRequest request,
@@ -1270,39 +1205,35 @@ public class JMSConsumerServlet extends HttpServlet {
     }
 
     public void testQueueNameCaseSensitive_Bindings(HttpServletRequest request,
-                                                    HttpServletResponse response) throws Throwable {
-
-        exceptionFlag = false;
-        jmsContext = jmsQCFBindings.createContext();
-        emptyQueue(jmsQCFBindings, jmsQueue);
-        jmsProducer = jmsContext.createProducer();
-        try {
-            Queue queue = jmsContext.createQueue("queue1");
-            jmsProducer.send(queue, "testQueueNameCaseSensitive_Bindings");
-        } catch (InvalidDestinationRuntimeException e) {
-            exceptionFlag = true;
-        }
-
-        if (!exceptionFlag)
-            throw new WrongException("testQueueNameCaseSensitive_Bindings failed: expected exception was not seen");
+                                                    HttpServletResponse response) throws JMSException, TestException {
+        testQueueNameCaseSensitive_Bindings(jmsQCFBindings);
     }
-
+    
     public void testQueueNameCaseSensitive_TCP(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
-        jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-        jmsProducer = jmsContext.createProducer();
-        try {
-            Queue queue = jmsContext.createQueue("queue1");
-            jmsProducer.send(queue, "testQueueNameCaseSensitive_TCP");
-        } catch (InvalidDestinationRuntimeException e) {
-            exceptionFlag = true;
-        }
-
-        if (!exceptionFlag)
-            throw new WrongException("testQueueNameCaseSensitive_TCP failed: expected exception was not seen");
-
+                                               HttpServletResponse response) throws JMSException, TestException {
+        testQueueNameCaseSensitive_Bindings(jmsQCFTCP);
     }
+    
+    /**
+     * Check that we are unable to send a message to a non existent queue.
+     */
+    private void testQueueNameCaseSensitive_Bindings(QueueConnectionFactory queueConnectionFactory) 
+        throws JMSException, TestException {
+
+        try (JMSContext jmsContext = queueConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            try {
+                Queue queue = jmsContext.createQueue("queue1");
+                String sentMessageBody = methodName()+" at " + timeStamp();
+                jmsProducer.send(queue, sentMessageBody);
+                
+                // Should not reach here.
+                throw new TestException("Sent message to non existent queue1 without throwing InvalidDestinationRuntimeException, sent:" + sentMessageBody);
+            } catch (InvalidDestinationRuntimeException e) {
+                // Expected
+            }
+        }    
+    }    
 
     public static QueueConnectionFactory getQCFBindings() throws NamingException {
 
@@ -1350,26 +1281,6 @@ public class JMSConsumerServlet extends HttpServlet {
                                                           + name);
 
         return topic;
-    }
-
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
-
-        JMSContext context = qcf.createContext();
-        QueueBrowser qb = context.createBrowser(q);
-        Enumeration e = qb.getEnumeration();
-        JMSConsumer consumer = context.createConsumer(q);
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            Message message = (Message) e.nextElement();
-            numMsgs++;
-        }
-
-        for (int i = 0; i < numMsgs; i++) {
-            Message message = consumer.receive();
-        }
-
-        context.close();
     }
 
     public class WrongException extends Exception {

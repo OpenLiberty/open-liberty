@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Reinicie el servidor.  Cuando a
 reaper.reopen.active=CWWKM0127W: Reabrir {0}
 reaper.reopen.active.explanation=Un cambio inesperado ha provocado la reapertura de un archivo de archivado de aplicaci\u00f3n ya abierto.  El servidor ha intentado obtener el contenido actualizado del archivo de archivado, pero quiz\u00e1 no haya listados internos actualizados completos del contenido del archivo.
 reaper.reopen.active.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Falta el archivo zip {0}.
+missing.zip.file.explanation=Se ha producido una excepci\u00f3n durante el proceso de archivado porque no se ha encontrado el archivo especificado. 
+missing.zip.file.useraction=Compruebe se sale del archivo especificado y que tiene permisos que el servidor puede leer.

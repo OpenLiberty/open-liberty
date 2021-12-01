@@ -1184,10 +1184,16 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
             {
                 one(httpResponse).getEntity();
                 will(returnValue(entity));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
             }
         });
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
-        assertNull("Result should have been null but was " + result + ".", result);
+        try {
+            JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1539E");
+        }
     }
 
     @Test
@@ -1201,9 +1207,18 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_notJwt() throws Exception {
         String rawResponse = "This is not in JWT format";
-
-        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-        assertNull("Result should have been null but was " + result + ".", result);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got [" + result + "].");
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1539E");
+        }
     }
 
     @Test
@@ -1217,9 +1232,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-            fail("Should have thrown an exception, but got " + result + ".");
+            fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
-            verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.jwt.consumer.InvalidJwtException"));
+            verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.json.internal.json_simple.parser.ParseException"));
         }
     }
 
@@ -1241,7 +1256,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
-            fail("Should have thrown an exception, but got " + result + ".");
+            fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
             verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
         }

@@ -31,7 +31,7 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 /**
  * Tests specific to appConfig
  *
- * BasicConfigTests repeats across all MP Config versions (EE8)
+ * BasicConfigTests repeats across all MP Config versions
  * the rest repeat against the lastest version of MP Config (where appropriate) and then one other combination of MP Config and EE version
  * the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
  * some classes do not repeat against the latest due to functional changes between MP Config 1.4 -> 2.0

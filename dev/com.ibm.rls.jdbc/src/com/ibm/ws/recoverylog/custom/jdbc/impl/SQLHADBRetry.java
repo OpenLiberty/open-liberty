@@ -13,8 +13,6 @@ package com.ibm.ws.recoverylog.custom.jdbc.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
@@ -37,7 +35,6 @@ public abstract class SQLHADBRetry {
      * This method provides drives the retry loop in retryAfterSQLException and reports and handles the outcome.
      *
      * @param recoveryLog
-     * @param dataSource
      * @param serverName
      * @param currentSqlEx
      * @param batchSQLOperation
@@ -46,10 +43,10 @@ public abstract class SQLHADBRetry {
      * @param sqlTransientErrorHandlingEnabled
      * @return
      */
-    public boolean retryAndReport(SQLMultiScopeRecoveryLog recoveryLog, DataSource dataSource, String serverName, SQLException currentSqlEx,
+    public boolean retryAndReport(SQLMultiScopeRecoveryLog recoveryLog, String serverName, SQLException currentSqlEx,
                                   int transientRetryAttempts, int transientRetrySleepTime) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "retryAndReport ", new Object[] { recoveryLog, dataSource, serverName, currentSqlEx, transientRetryAttempts,
+            Tr.entry(tc, "retryAndReport ", new Object[] { recoveryLog, serverName, currentSqlEx, transientRetryAttempts,
                                                            transientRetrySleepTime });
         boolean failAndReport = true;
         if (currentSqlEx != null) {
@@ -58,7 +55,7 @@ public abstract class SQLHADBRetry {
                 Tr.debug(tc, "Set the exception that will be reported: " + currentSqlEx);
             _nonTransientException = currentSqlEx;
             // The following method will reset "_nonTransientException" if it cannot recover
-            failAndReport = retryAfterSQLException(recoveryLog, dataSource, currentSqlEx, transientRetryAttempts, transientRetrySleepTime);
+            failAndReport = retryAfterSQLException(recoveryLog, currentSqlEx, transientRetryAttempts, transientRetrySleepTime);
         }
 
         // We've been through the while loop
@@ -78,16 +75,15 @@ public abstract class SQLHADBRetry {
      * RDBMS error condition has been encountered.
      *
      * @param recoveryLog
-     * @param dataSource
      * @param sqlex
      * @param transientRetryAttempts
      * @param transientRetrySleepTime
      * @return
      */
-    public boolean retryAfterSQLException(SQLMultiScopeRecoveryLog recoveryLog, DataSource dataSource, SQLException sqlex,
+    public boolean retryAfterSQLException(SQLMultiScopeRecoveryLog recoveryLog, SQLException sqlex,
                                           int transientRetryAttempts, int transientRetrySleepTime) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "retryAfterSQLException ", new Object[] { recoveryLog, dataSource, sqlex, transientRetryAttempts,
+            Tr.entry(tc, "retryAfterSQLException ", new Object[] { recoveryLog, sqlex, transientRetryAttempts,
                                                                    transientRetrySleepTime });
         boolean shouldRetry = true;
         boolean failAndReport = false;
@@ -110,69 +106,63 @@ public abstract class SQLHADBRetry {
                 operationRetries++;
                 if (shouldRetry) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Try to reexecute the SQL using connection from DS: " + dataSource + ", attempt number: " + operationRetries);
-                    if (dataSource != null) {
-                        // Re-execute the SQL
+                        Tr.debug(tc, "Try to reexecute the SQL, attempt number: " + operationRetries);
+
+                    // Re-execute the SQL
+                    try {
+                        // Get a connection to database via its datasource
+                        conn = recoveryLog.getConnection();
+
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Acquired connection in Database retry scenario");
+                        initialIsolation = recoveryLog.prepareConnectionForBatch(conn);
+                        // Retry logic here
+                        retryCode(conn);
+                        conn.commit();
+                        // The Operation has executed successfully and we can continue processing
+                        shouldRetry = false;
+                    } catch (SQLException sqlex2) {
+                        // We've caught another SQLException. Assume that we've retried the connection too soon.
+                        // Make sure we inspect the latest exception
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "reset the sqlex to " + sqlex2);
+                        sqlex = sqlex2;
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "sleeping for " + transientRetrySleepTime + " millisecs");
                         try {
-                            // Get a connection to database via its datasource
-                            conn = dataSource.getConnection();
+                            Thread.sleep(transientRetrySleepTime);
+                        } catch (InterruptedException ie) {
+                        }
+                    } catch (Throwable exc) {
+                        // Not a SQLException, break out of the loop and report the exception
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Failed got exception: ", exc);
 
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Acquired connection in Database retry scenario");
-                            initialIsolation = recoveryLog.prepareConnectionForBatch(conn);
-                            // Retry logic here
-                            retryCode(conn);
-                            conn.commit();
-                            // The Operation has executed successfully and we can continue processing
-                            shouldRetry = false;
-                        } catch (SQLException sqlex2) {
-                            // We've caught another SQLException. Assume that we've retried the connection too soon.
-                            // Make sure we inspect the latest exception
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "reset the sqlex to " + sqlex2);
-                            sqlex = sqlex2;
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "sleeping for " + transientRetrySleepTime + " millisecs");
-                            try {
-                                Thread.sleep(transientRetrySleepTime);
-                            } catch (InterruptedException ie) {
-                            }
-                        } catch (Throwable exc) {
-                            // Not a SQLException, break out of the loop and report the exception
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Failed got exception: ", exc);
-
-                            failAndReport = true;
-                            _nonTransientException = exc;
-                        } finally {
-                            if (conn != null) {
-                                // Used for retrying on log open and force operations
-                                if (shouldRetry) {
-                                    // Attempt a rollback. If it fails, trace the failure but allow processing to continue
-                                    try {
-                                        conn.rollback();
-                                    } catch (Throwable exc) {
-                                        // Trace the exception
-                                        if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Rollback Failed, when handling SQLException, got exception: " + exc);
-                                    }
-                                }
-                                // Attempt a close. If it fails, trace the failure but allow processing to continue
+                        failAndReport = true;
+                        _nonTransientException = exc;
+                    } finally {
+                        if (conn != null) {
+                            // Used for retrying on log open and force operations
+                            if (shouldRetry) {
+                                // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                                 try {
-                                    recoveryLog.closeConnectionAfterBatch(conn, initialIsolation);
+                                    conn.rollback();
                                 } catch (Throwable exc) {
                                     // Trace the exception
                                     if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "Close Failed, when handling SQLException, got exception: " + exc);
+                                        Tr.debug(tc, "Rollback Failed, when handling SQLException, got exception: " + exc);
                                 }
-                            } else if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Connection was NULL");
-                        }
-                    } else {
-                        // This is unexpected and catastrophic, the reference to the DataSource is null
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "NULL DataSource reference");
-                        failAndReport = true;
+                            }
+                            // Attempt a close. If it fails, trace the failure but allow processing to continue
+                            try {
+                                recoveryLog.closeConnectionAfterBatch(conn, initialIsolation);
+                            } catch (Throwable exc) {
+                                // Trace the exception
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Close Failed, when handling SQLException, got exception: " + exc);
+                            }
+                        } else if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Connection was NULL");
                     }
                 } else
                     failAndReport = true;

@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +26,8 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -43,8 +46,17 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class UICustomizationTest extends FATServletClient {
 
-    @Server("UICustomizationServer")
+    private static final String SERVER_NAME = "UICustomizationServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
 
     private final static int TIMEOUT = 10000; // in ms
     private final static int START_TIMEOUT = 60000; // in ms
@@ -159,10 +171,10 @@ public class UICustomizationTest extends FATServletClient {
         validateOpenAPIUI(CSS_CONTENT_CUSTOM_IMAGE, true, true);
     }
 
-    private boolean validateOpenAPIUI(
-        String expectedContent,
-        boolean validateImage,
-        boolean assertion) throws IOException, Exception {
+    private boolean validateOpenAPIUI(String expectedContent,
+                                      boolean validateImage,
+                                      boolean assertion)
+        throws IOException, Exception {
         // UI endpoint - HTTP
         String cssContent = downloadUrl(UI_CUSTOM_HEADER_CSS);
         boolean valid = validateCSS(cssContent, expectedContent, assertion);
@@ -176,10 +188,9 @@ public class UICustomizationTest extends FATServletClient {
         return valid;
     }
 
-    private static boolean validateCSS(
-        String body,
-        String referenceText,
-        boolean assertion) {
+    private static boolean validateCSS(String body,
+                                       String referenceText,
+                                       boolean assertion) {
         if (assertion) {
             assertNotNull("FAIL: Unexpected null content", body);
             assertTrue("FAIL: Unexpected content : Didn't find '" + referenceText + "' within content : " + body,
@@ -194,8 +205,8 @@ public class UICustomizationTest extends FATServletClient {
         return true;
     }
 
-    private String downloadUrl(
-        String path) throws IOException, Exception {
+    private String downloadUrl(String path)
+        throws IOException, Exception {
         return new OpenAPIConnection(server, path).download();
     }
 }

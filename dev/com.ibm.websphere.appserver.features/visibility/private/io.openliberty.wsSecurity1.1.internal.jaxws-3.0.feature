@@ -15,8 +15,8 @@ singleton=true
  com.ibm.ws.org.jasypt.jasypt.1.9.3, \
  com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1.jakarta, \
  com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1.jakarta, \
- com.ibm.ws.org.apache.cxf.rt.security.3.4.1.jakarta, \
+ com.ibm.ws.org.apache.cxf.rt.security.3.4.1, \
  com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1.jakarta, \
  com.ibm.ws.wssecurity.3.4.1.jakarta
-kind=beta
+kind=ga
 edition=base

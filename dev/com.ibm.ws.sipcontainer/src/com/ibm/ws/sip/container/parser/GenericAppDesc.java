@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,27 +12,7 @@ package com.ibm.ws.sip.container.parser;
 
 import java.util.List;
 
-import com.ibm.ws.javaee.dd.common.AdministeredObject;
-import com.ibm.ws.javaee.dd.common.ConnectionFactory;
-import com.ibm.ws.javaee.dd.common.DataSource;
-import com.ibm.ws.javaee.dd.common.Description;
-import com.ibm.ws.javaee.dd.common.DisplayName;
-import com.ibm.ws.javaee.dd.common.EJBRef;
-import com.ibm.ws.javaee.dd.common.EnvEntry;
-import com.ibm.ws.javaee.dd.common.Icon;
-import com.ibm.ws.javaee.dd.common.JMSConnectionFactory;
-import com.ibm.ws.javaee.dd.common.JMSDestination;
-import com.ibm.ws.javaee.dd.common.LifecycleCallback;
-import com.ibm.ws.javaee.dd.common.Listener;
-import com.ibm.ws.javaee.dd.common.MailSession;
-import com.ibm.ws.javaee.dd.common.MessageDestination;
-import com.ibm.ws.javaee.dd.common.MessageDestinationRef;
-import com.ibm.ws.javaee.dd.common.ParamValue;
-import com.ibm.ws.javaee.dd.common.PersistenceContextRef;
-import com.ibm.ws.javaee.dd.common.PersistenceUnitRef;
-import com.ibm.ws.javaee.dd.common.ResourceEnvRef;
-import com.ibm.ws.javaee.dd.common.ResourceRef;
-import com.ibm.ws.javaee.dd.common.SecurityRole;
+import com.ibm.ws.javaee.dd.common.*;
 import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.jsp.JSPConfig;
 import com.ibm.ws.javaee.dd.web.WebApp;
@@ -176,6 +156,11 @@ public class GenericAppDesc implements WebApp {
 		return _ddWebApp.getSessionConfig();
 	}
 
+    @Override
+    public List<ContextService> getContextServices() {
+        return _ddWebApp.getContextServices();
+    }
+
 	public List<DataSource> getDataSources() {
 		return _ddWebApp.getDataSources();
 	}
@@ -203,6 +188,21 @@ public class GenericAppDesc implements WebApp {
 	public List<MailSession> getMailSessions() {
 		return _ddWebApp.getMailSessions();
 	}
+
+    @Override
+    public List<ManagedExecutor> getManagedExecutors() {
+        return _ddWebApp.getManagedExecutors();
+    }
+
+    @Override
+    public List<ManagedScheduledExecutor> getManagedScheduledExecutors() {
+        return _ddWebApp.getManagedScheduledExecutors();
+    }
+
+    @Override
+    public List<ManagedThreadFactory> getManagedThreadFactories() {
+        return _ddWebApp.getManagedThreadFactories();
+    }
 
 	public JSPConfig getJSPConfig() {
 		return _ddWebApp.getJSPConfig();
@@ -255,8 +255,4 @@ public class GenericAppDesc implements WebApp {
 	public ResponseEncoding getResponseEncoding() {
 		return null;
 	}
-
-
-
-
 }

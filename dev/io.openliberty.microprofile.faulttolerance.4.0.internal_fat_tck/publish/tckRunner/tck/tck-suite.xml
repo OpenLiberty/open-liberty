@@ -12,11 +12,7 @@
 
     <test name="microprofile-faulttolerance 4.0 TCK">
         <packages>
-            <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
-                <!-- Metrics integration is not yet implemented -->
-                <exclude name="org.eclipse.microprofile.fault.tolerance.tck.metrics"/>
-                <exclude name="org.eclipse.microprofile.fault.tolerance.tck.metrics.util"/>
-            </package>
+            <package name="org.eclipse.microprofile.fault.tolerance.tck.*"/>
         </packages>
     </test>
 </suite>

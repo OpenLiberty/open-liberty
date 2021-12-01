@@ -11,9 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11sig;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -50,6 +48,8 @@ public class CxfWss11SigTests extends CommonTests {
     static private UpdateWSDLPortNum newWsdl = null;
     static private String newClientWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.wss11sig";
+    //issue 18363
+    private static String featureVersion = "";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -59,14 +59,17 @@ public class CxfWss11SigTests extends CommonTests {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
+        if (features.contains("jaxws-2.2")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-        }
-        if (features.contains("usr:wsseccbh-2.0")) {
+            //issue 18363
+            featureVersion = "EE7";
+        } else if (features.contains("jaxws-2.3")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            //issue 18363
+            featureVersion = "EE8";
         }
 
         ShrinkHelper.defaultDropinApp(server, "wss11sigclient", "com.ibm.ws.wssecurity.fat.wss11sigclient", "test.wssecfvt.wss11sig", "test.wssecfvt.wss11sig.types");
@@ -89,7 +92,6 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigConfirm() throws Exception {
 
         genericTest(
@@ -131,7 +133,6 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigConfirmNoSig() throws Exception {
 
         genericTest(
@@ -174,7 +175,7 @@ public class CxfWss11SigTests extends CommonTests {
 
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClConfSrvNoConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClConfSrvNoConf";
@@ -222,7 +223,6 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClNoConfSrvConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoConfSrvConf";
@@ -271,9 +271,8 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCXFClientBasicEncryptedElementMisMatchEE7Only() throws Exception {
+    public void testCXFClientBasicEncryptedElementMisMatch() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElement";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
@@ -282,69 +281,59 @@ public class CxfWss11SigTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService6",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "WSS11Sig6",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Body not SIGNED",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "WSS11SigService6",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "WSS11Sig6",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Body not SIGNED",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
-
-        String thisMethod = "testCXFClientBasicEncryptedElementMisMatchEE8Only";
-        printMethodName(thisMethod, "Start Prep for " + thisMethod);
-        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_Elements.wsdl",
-                                         defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
-        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
-        printMethodName(thisMethod, "End Prep for " + thisMethod);
-
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService6",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "WSS11Sig6",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    //messagetoexpect,
-                    "Soap Body is not SIGNED",
-                    //End
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        } else if (featureVersion.equals("EE8")) {
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "WSS11SigService6",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "WSS11Sig6",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        //messagetoexpect,
+                        "Soap Body is not SIGNED",
+                        //End
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
+        } //End of issue 18363
 
     }
 
@@ -364,11 +353,16 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientBasicEncryptedElementEE7Only() throws Exception {
+    public void testCXFClientBasicEncryptedElement() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElement";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
+        } else if (featureVersion.equals("EE8")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
+        } //End of issue 18363
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -393,42 +387,12 @@ public class CxfWss11SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientBasicEncryptedElementEE8Only() throws Exception {
-
-        String thisMethod = "testCXFClientBasicEncryptedElementEE8Only";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService6a",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSS11Sig6a",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is Wss11SigWebSvc6a Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        } else if (featureVersion.equals("EE8")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+        } //End of issue 18363
 
     }
 
@@ -446,9 +410,8 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCXFClientBasicSigSignedElementMisMatchEE7Only() throws Exception {
+    public void testCXFClientBasicSigSignedElementMisMatch() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
@@ -457,69 +420,59 @@ public class CxfWss11SigTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService7",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "WSS11Sig7",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Body not SIGNED",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "WSS11SigService7",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "WSS11Sig7",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Body not SIGNED",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
 
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
-
-        String thisMethod = "testCXFClientBasicSigSignedElementMisMatchEE8Only";
-        printMethodName(thisMethod, "Start Prep for " + thisMethod);
-        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_Elements.wsdl",
-                                         defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
-        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
-        printMethodName(thisMethod, "End Prep for " + thisMethod);
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService7",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "WSS11Sig7",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Soap Body is not SIGNED",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        } else if (featureVersion.equals("EE8")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "WSS11SigService7",
+                        // wsdl that the svc client code should use
+                        newClientWsdl,
+                        // wsdl port that svc client code should use
+                        "WSS11Sig7",
+                        // msg to send from svc client to server
+                        "",
+                        // expected response from server
+                        "Soap Body is not SIGNED",
+                        // msg to issue if do NOT get the expected result
+                        "The test expected a succesful message from the server.");
+        } //End of issue 18363
 
     }
 
@@ -536,44 +489,16 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientBasicSigSignedElementEE7Only() throws Exception {
+    public void testCXFClientBasicSigSignedElement() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService7a",
-                    // wsdl that the svc client code should use
-                    "",
-                    // wsdl port that svc client code should use
-                    "WSS11Sig7a",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Response: This is Wss11SigWebSvc7a Web Service.",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if (featureVersion.equals("EE8")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientBasicSigSignedElementEE8Only() throws Exception {
-
-        String thisMethod = "testCXFClientBasicSigSignedElement";
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -611,8 +536,7 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES })
-    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE7Only() throws Exception {
+    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
@@ -621,46 +545,13 @@ public class CxfWss11SigTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
-        genericTest(
-                    // test name for logging
-                    thisMethod,
-                    // Svc Client Url that generic test code should use
-                    clientHttpUrl,
-                    // Port that svc client code should use
-                    "",
-                    // user that svc client code should use
-                    "user1",
-                    // pw that svc client code should use
-                    "security",
-                    // wsdl sevice that svc client code should use
-                    "WSS11SigService8",
-                    // wsdl that the svc client code should use
-                    newClientWsdl,
-                    // wsdl port that svc client code should use
-                    "WSS11Sig8",
-                    // msg to send from svc client to server
-                    "",
-                    // expected response from server
-                    "Wss11: Signature Confirmation policy validation failed",
-                    // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+        //issue 18363
+        if (featureVersion.equals("EE7")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if (featureVersion.equals("EE8")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of issue 18363
 
-    }
-
-    @Test
-    @SkipForRepeat({ NO_MODIFICATION })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE8Only() throws Exception {
-
-        String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
-        printMethodName(thisMethod, "Start Prep for " + thisMethod);
-        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServer.wsdl",
-                                         defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServerUpdated.wsdl");
-        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
-        printMethodName(thisMethod, "End Prep for " + thisMethod);
-
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,

@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
 }
 
 // eslint-disable-next-line no-undef
-const { GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION, HOSTNAME, BUILD_TIME } = buildInfo
+const { GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION, BUILD_TIME } = buildInfo
 
 export default function SwaggerUI(opts) {
 
@@ -21,7 +21,6 @@ export default function SwaggerUI(opts) {
     gitRevision: GIT_COMMIT,
     gitDirty: GIT_DIRTY,
     buildTimestamp: BUILD_TIME,
-    machine: HOSTNAME
   }
 
   const defaults = {
@@ -37,11 +36,13 @@ export default function SwaggerUI(opts) {
     filter: null,
     validatorUrl: "https://validator.swagger.io/validator",
     oauth2RedirectUrl: `${window.location.protocol}//${window.location.host}/oauth2-redirect.html`,
+    persistAuthorization: false,
     configs: {},
     custom: {},
     displayOperationId: false,
     displayRequestDuration: false,
     deepLinking: false,
+    tryItOutEnabled: false,
     requestInterceptor: (a => a),
     responseInterceptor: (a => a),
     showMutatedRequest: true,
@@ -51,6 +52,25 @@ export default function SwaggerUI(opts) {
     showExtensions: false,
     showCommonExtensions: false,
     withCredentials: undefined,
+    requestSnippetsEnabled: false,
+    requestSnippets: {
+      generators: {
+        "curl_bash": {
+          title: "cURL (bash)",
+          syntax: "bash"
+        },
+        "curl_powershell": {
+          title: "cURL (PowerShell)",
+          syntax: "powershell"
+        },
+        "curl_cmd": {
+          title: "cURL (CMD)",
+          syntax: "bash"
+        },
+      },
+      defaultExpanded: true,
+      languages: null, // e.g. only show curl bash = ["curl_bash"]
+    },
     supportedSubmitMethods: [
       "get",
       "put",
@@ -72,12 +92,24 @@ export default function SwaggerUI(opts) {
     plugins: [
     ],
 
+    pluginsOptions: {
+      // Behavior during plugin registration. Can be :
+      // - legacy (default) : the current behavior for backward compatibility – last plugin takes precedence over the others
+      // - chain : chain wrapComponents when targeting the same core component
+      pluginLoadType: "legacy"
+    },
+
     // Initial state
     initialState: { },
 
     // Inline Plugin
     fn: { },
     components: { },
+
+    syntaxHighlight: {
+      activated: true,
+      theme: "agate"
+    }
   }
 
   let queryConfig = parseSearch()
@@ -92,6 +124,7 @@ export default function SwaggerUI(opts) {
       configs: constructorConfig.configs
     },
     plugins: constructorConfig.presets,
+    pluginsOptions: constructorConfig.pluginsOptions,
     state: deepExtend({
       layout: {
         layout: constructorConfig.layout,
@@ -100,7 +133,8 @@ export default function SwaggerUI(opts) {
       spec: {
         spec: "",
         url: constructorConfig.url
-      }
+      },
+      requestSnippets: constructorConfig.requestSnippets
     }, constructorConfig.initialState)
   }
 
@@ -110,7 +144,7 @@ export default function SwaggerUI(opts) {
     // known usage: Swagger-Editor validate plugin tests
     for (var key in constructorConfig.initialState) {
       if(
-        constructorConfig.initialState.hasOwnProperty(key)
+        Object.prototype.hasOwnProperty.call(constructorConfig.initialState, key)
         && constructorConfig.initialState[key] === undefined
       ) {
         delete storeConfigs.state[key]
@@ -171,15 +205,15 @@ export default function SwaggerUI(opts) {
 
   const configUrl = queryConfig.config || constructorConfig.configUrl
 
-  if (!configUrl || !system.specActions || !system.specActions.getConfigByUrl || system.specActions.getConfigByUrl && !system.specActions.getConfigByUrl({
-    url: configUrl,
-    loadRemoteConfig: true,
-    requestInterceptor: constructorConfig.requestInterceptor,
-    responseInterceptor: constructorConfig.responseInterceptor,
-  }, downloadSpec)) {
-    return downloadSpec()
+  if (configUrl && system.specActions && system.specActions.getConfigByUrl) {
+    system.specActions.getConfigByUrl({
+      url: configUrl,
+      loadRemoteConfig: true,
+      requestInterceptor: constructorConfig.requestInterceptor,
+      responseInterceptor: constructorConfig.responseInterceptor,
+    }, downloadSpec)
   } else {
-    system.specActions.getConfigByUrl(configUrl, downloadSpec)
+    return downloadSpec()
   }
 
   return system

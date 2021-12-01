@@ -86,7 +86,7 @@ public class ConvertersTestServlet extends FATServlet {
             CustomType p1 = c.getValue("aKey", CustomType.class);
             fail("FAILED: IllegalArgumentException not thrown");
         } catch (IllegalArgumentException e) {
-            TestUtils.assertEquals("Converter throwing intentional exception", e.getMessage());
+            TestUtils.assertContains("Converter throwing intentional exception", e.getMessage());
         }
     }
 

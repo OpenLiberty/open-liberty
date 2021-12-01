@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Le chiffrement personnalis\u00e9 de mot de passe n'a pas \u00e9t\u00e9 d\u00e9tect\u00e9.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=Le libell\u00e9 {0} n''existe pas dans le fichier de cl\u00e9s {1}. Impossible de trouver une cl\u00e9 valide pour le chiffrement des mots de passe AES.
+saf.cert.is.not.key=Le certificat {0} n''est pas une entr\u00e9e de cl\u00e9. Le certificat doit \u00eatre une entr\u00e9e de cl\u00e9 pour \u00eatre utilis\u00e9 comme cl\u00e9 de chiffrement de mot de passe AES.
+saf.cert.expired=Le certificat {0} est arriv\u00e9 \u00e0 expiration et ne peut pas \u00eatre utilis\u00e9 comme cl\u00e9 de chiffrement de mot de passe AES.
+saf.keyring.does.not.exist=Le fichier de cl\u00e9s {0} n''existe pas. Aucun certificat ne peut \u00eatre extrait du fichier de cl\u00e9s \u00e0 utiliser comme cl\u00e9 de chiffrement du mot de passe AES.
+saf.arg.not.onZ=Les arguments --keyring, --keyringType et --keyLabel ne peuvent \u00eatre utilis\u00e9s que sur z/OS.
+saf.arg.not.aes=Les arguments --keyring, --keyringType et --keyLabel ne peuvent \u00eatre utilis\u00e9s qu'avec le codage AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

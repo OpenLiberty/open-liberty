@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.instrument.ClassDefinition;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
@@ -249,8 +251,18 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             // Doing the conversion that the shared class cache logic does for jar
             // URLs in order to do less work while holding a shared class cache monitor.
             if ("jar".equals(protocol) || "wsjar".equals(protocol)) {
+                String path = resourceURL.getPath();
+                // Can only do this for jar files.  Shared class cache logic
+                // cannot handle a file reference that is a war for instance.
+                // Need to use the full path for war files.
+                if (path.endsWith(resourceName)) {
+                    path = path.substring(0, path.length() - resourceName.length());
+                    if (path.endsWith(".jar!/") || path.endsWith(".zip!/")) {
+                        path = path.substring(0, path.length() - 2);
+                    }
+                }
                 try {
-                    sharedClassCacheURL = new URL(resourceURL.getPath());
+                    sharedClassCacheURL = new URL(path);
                 } catch (MalformedURLException e) {
                     sharedClassCacheURL = null;
                 }
@@ -291,6 +303,10 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         return bytes;
     }
 
+    @SuppressWarnings("unchecked")
+    static <E extends Throwable> void sneakyThrow(Throwable e) throws E {
+            throw (E) e;
+    }
     /**
      * Implementation of UniversalResource backed by an adaptable Entry.
      */
@@ -339,16 +355,24 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             boolean foundInClassCache = bytes != null;
             if (!foundInClassCache) {
+                bytes = getActualBytes();
+            }
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, this::getActualBytes);
+        }
+
+        private byte[] getActualBytes() {
+            try {
                 try {
                     InputStream is = this.entry.adapt(InputStream.class);
-                    bytes = ContainerClassLoader.getBytes(is, (int) entry.getSize());
+                    return ContainerClassLoader.getBytes(is, (int) entry.getSize());
                 } catch (UnableToAdaptException e) {
                     throw new IOException(e);
                 }
+            } catch (IOException e) {
+                sneakyThrow(e);
+                return null; //never gets here
             }
-            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache);
         }
-
         @Override
         public String getNativeLibraryPath() {
             try {
@@ -589,12 +613,20 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             boolean foundInClassCache = bytes != null;
             if (!foundInClassCache) {
-                InputStream is = this.entry.getInputStream();
-                bytes = ContainerClassLoader.getBytes(is, (int) entry.getSize());
+                bytes = getActualBytes();
             }
-            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache);
+            return new ByteResourceInformation(bytes, this.entry.getResource(), this.container, resourceName, foundInClassCache, this::getActualBytes);
         }
 
+        byte[] getActualBytes() {
+            try {
+                InputStream is = this.entry.getInputStream();
+                return ContainerClassLoader.getBytes(is, (int) entry.getSize());
+            } catch (IOException e) {
+                sneakyThrow(e);
+                return null; // never actually get here
+            }
+        }
         @Override
         public String getNativeLibraryPath() {
             try {
@@ -1289,17 +1321,19 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         private final UniversalContainer resourceContainer;
         private final String resourcePath;
         private final boolean fromClassCache;
+        private final Supplier<byte[]> actualBytes;
 
         /**
          * @param bytes
          * @param resourceUrl
          */
-        ByteResourceInformation(byte[] bytes, URL resourceUrl, UniversalContainer root, String resourcePath, boolean fromClassCache) {
+        ByteResourceInformation(byte[] bytes, URL resourceUrl, UniversalContainer root, String resourcePath, boolean fromClassCache, Supplier<byte[]> actualBytes) {
             this.bytes = bytes;
             this.resourceEntry = resourceUrl;
             this.resourceContainer = root;
             this.resourcePath = resourcePath;
             this.fromClassCache = fromClassCache;
+            this.actualBytes = actualBytes;
         }
 
         /**
@@ -1340,6 +1374,10 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         public boolean foundInClassCache() {
             return fromClassCache;
+        }
+
+        public byte[] getActualBytes() throws IOException {
+            return actualBytes.get();
         }
     }
 

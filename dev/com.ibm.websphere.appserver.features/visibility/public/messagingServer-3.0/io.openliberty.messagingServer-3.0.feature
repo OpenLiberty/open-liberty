@@ -19,6 +19,6 @@ Subsystem-Name: Messaging Server 3.0
  com.ibm.websphere.security
 -jars=com.ibm.websphere.appserver.api.messaging; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

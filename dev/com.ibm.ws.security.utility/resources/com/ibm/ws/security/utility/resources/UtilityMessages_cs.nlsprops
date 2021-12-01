@@ -88,6 +88,17 @@ encode.option-desc.custom.description=\n\
 # encryption is enabled.
 no.custom.encyption=Vlastn\u00ed \u0161ifrov\u00e1n\u00ed hesel nen\u00ed zji\u0161t\u011bno.
 
+# The following messages are for retrieving an encryption key from a 
+# SAF keyring.
+saf.label.does.not.exist=\u0160t\u00edtek {0} ve svazku kl\u00ed\u010d\u016f {1} neexistuje. Nelze naj\u00edt platn\u00fd kl\u00ed\u010d pro \u0161ifrov\u00e1n\u00ed hesel AES.
+saf.cert.is.not.key=Certifik\u00e1t {0} nen\u00ed polo\u017ekou kl\u00ed\u010de. Certifik\u00e1t mus\u00ed b\u00fdt polo\u017ekou kl\u00ed\u010de, aby mohl b\u00fdt pou\u017eit jako \u0161ifrovac\u00ed kl\u00ed\u010d hesla AES.
+saf.cert.expired=Platnost certifik\u00e1tu {0} vypr\u0161ela a nelze jej pou\u017e\u00edt jako \u0161ifrovac\u00ed kl\u00ed\u010d hesla AES.
+saf.keyring.does.not.exist=\u00dalo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0} neexistuje. Z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nelze na\u010d\u00edst \u017e\u00e1dn\u00fd certifik\u00e1t, kter\u00fd by bylo mo\u017en\u00e9 pou\u017e\u00edt jako \u0161ifrovac\u00ed kl\u00ed\u010d hesla AES.
+saf.arg.not.onZ=Argumenty --keyring, --keyringType a --keyLabel lze pou\u017e\u00edt pouze v syst\u00e9mu z/OS.
+saf.arg.not.aes=Argumenty --keyring, --keyringType a --keyLabel lze pou\u017e\u00edt pouze s k\u00f3dov\u00e1n\u00edm AES. 
+
+
+
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated

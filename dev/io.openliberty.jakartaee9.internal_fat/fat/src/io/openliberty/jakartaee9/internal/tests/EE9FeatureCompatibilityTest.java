@@ -138,7 +138,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
-        incompatibleValueAddFeatures.add("jwtSso-1.0"); // depends on mpJWT
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
         incompatibleValueAddFeatures.add("openapi-3.1"); // depends on mpOpenAPI
         incompatibleValueAddFeatures.add("opentracing-1.0"); // opentracing depends on mpConfig
@@ -312,14 +311,11 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         // faces and facesContainer conflict with each other
         specialEE9Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
-        // the jakartaee-9.1 convenience feature conflicts with itself and with 9.0
-        specialEE9Conflicts.put("jakartaee-9.0", "io.openliberty.jakartaee");
+        // the jakartaee-9.1 convenience feature conflicts with itself
         specialEE9Conflicts.put("jakartaee-9.1", "io.openliberty.jakartaee");
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3
         specialEE9Conflicts.put("jdbc-4.0", "com.ibm.websphere.appserver.jdbc");
         specialEE9Conflicts.put("jdbc-4.1", "com.ibm.websphere.appserver.jdbc");
-        // the webProfile-9.1 convenience feature conflicts with the 9.0 one
-        specialEE9Conflicts.put("webProfile-9.0", "io.openliberty.webProfile");
 
         // Add EE10 features that are not part of EE9
         // They will conflict by their long name
@@ -402,6 +398,45 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
                     errors.add("Got unexpected conflict for " + feature + " " + conflicts.keySet() + '\n');
                 }
             }
+        }
+    }
+
+    @Test
+    public void transportSecurityUsed() {
+        List<String> errors = new ArrayList<>();
+
+        Set<String> ee9FeaturesThatEnableSsl = new HashSet<>();
+        ee9FeaturesThatEnableSsl.add("appSecurity-4.0");
+        ee9FeaturesThatEnableSsl.add("connectorsInboundSecurity-2.0");
+        ee9FeaturesThatEnableSsl.add("messagingSecurity-3.0");
+
+        for (String feature : features) {
+            if (nonEE9JavaEEFeatures.contains(feature) || nonEE9MicroProfileFeatures.contains(feature) || incompatibleValueAddFeatures.contains(feature)) {
+                continue;
+            }
+            Set<String> featuresToTest;
+            if (ee9FeaturesThatEnableSsl.contains(feature)) {
+                featuresToTest = Collections.singleton(feature);
+            } else {
+                featuresToTest = new HashSet<>();
+                featuresToTest.add(feature);
+                Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(),
+                                                         false);
+                if (!result.getResolvedFeatures().contains("ssl-1.0")) {
+                    featuresToTest.add("ssl-1.0");
+                }
+                featuresToTest.add(!feature.equals("jsonp-2.0") ? "jsonp-2.0" : "jsonb-2.0");
+            }
+            Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false);
+            if (!result.getConflicts().isEmpty()) {
+                errors.add("Got unexpected conflicts for feature " + feature + '\n');
+            } else if (!result.getResolvedFeatures().contains("transportSecurity-1.0")) {
+                errors.add("Did not enable transportSecurity for feature " + feature + '\n');
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            Assert.fail("Found errors while checking EE9 features enable transportSecurity-1.0 when ssl-1.0 is used:\n" + errors);
         }
     }
 }

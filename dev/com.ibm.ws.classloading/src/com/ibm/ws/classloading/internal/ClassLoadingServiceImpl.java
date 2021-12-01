@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -52,6 +53,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -75,6 +77,7 @@ import com.ibm.ws.classloading.internal.util.MultiMap;
 import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -141,6 +144,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     private GlobalClassloadingConfiguration globalConfig;
 
+    // These services are not expected to come and go often,
+    // but we want quick iteration so using copy on write approach
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+                    policy = ReferencePolicy.DYNAMIC,
+                    policyOption = ReferencePolicyOption.GREEDY,
+                    fieldOption = FieldOption.UPDATE,
+                    target = "(io.openliberty.classloading.system.transformer=true)")
+    private final List<ClassFileTransformer> systemTransformers = new CopyOnWriteArrayList<>();
+    List<ClassFileTransformer> unitTestOnlyGetSystemTransformers() {
+        return systemTransformers;
+    }
+    private final boolean isBeta;
+
     /**
      * Mapping from META-INF services file names to the corresponding service provider implementation class name.
      */
@@ -172,6 +188,14 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         if(this.globalConfig == globalConfig) {
             this.globalConfig = null;
         }      
+    }
+
+    public ClassLoadingServiceImpl() {
+        this.isBeta = ProductInfo.getBetaEdition();
+    }
+
+    List<ClassFileTransformer> getSystemTransformers() {
+        return isBeta ? systemTransformers : Collections.emptyList();
     }
 
     @Activate
@@ -290,7 +314,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
         if (clConfig.getIncludeAppExtensions())
             addAppExtensionLibs(clConfig);
-        AppClassLoader result = createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig)
+        AppClassLoader result = createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setClassPath(classPath)
             .configure(gwConfig)
             .configure(clConfig));
@@ -301,7 +325,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createBundleAddOnClassLoader(List<File> classPath, ClassLoader gwClassLoader, ClassLoaderConfiguration clConfig) {
-        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig)
+        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setSharedLibPath(classPath)
             .configure(createGatewayConfiguration())
             .useBundleAddOnLoader(gwClassLoader)
@@ -312,7 +336,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createChildClassLoader(List<Container> classPath, ClassLoaderConfiguration config) {
         if (config.getIncludeAppExtensions())
             addAppExtensionLibs(config);
-        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig)
+        return createAppClassLoader(new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
             .setClassPath(classPath)
             .configure(config));
     }
@@ -420,7 +444,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             }
         }
 
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig)
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
                                         .setApiTypeVisibility(apiTypeVisibility))

@@ -18,11 +18,13 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -41,10 +44,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
-import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -71,6 +76,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -142,10 +148,12 @@ public class ContextServiceImpl implements ContextService, //
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
-     * MicroProfile ManagedExecutor that uses this ThreadContext. Otherwise null.
-     * TODO this will be used for Jakarta EE 10 as well
+     * Reference to the
+     * managed executor service under which this context service is nested,
+     * or a MicroProfile ManagedExecutor that uses this ThreadContext.
+     * Otherwise null.
      */
-    ManagedExecutor managedExecutor;
+    final AtomicReference<Executor> managedExecutorRef = new AtomicReference<Executor>();
 
     /**
      * These listeners (other contextService instances which are using this instance as the base instance)
@@ -570,6 +578,87 @@ public class ContextServiceImpl implements ContextService, //
         }
     }
 
+    /**
+     * Determines the backing executor to use for completion stages that are created by the
+     * withContextCapture methods.
+     *
+     * @return executor to use for completion stages.
+     */
+    private final Executor executorForCompletionStages() {
+        Executor executor;
+        if (MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1)) {
+            if ((executor = managedExecutorRef.get()) == null) {
+                if (mpBuilderConfig == null) {
+                    lock.readLock().lock();
+                    try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
+                        if (properties == null)
+                            throw new IllegalStateException(name);
+                        String parentPid = (String) properties.get("config.parentPID");
+                        if (parentPid != null) {
+                            String filter = FilterUtils.createPropertyFilter("service.pid", parentPid);
+                            BundleContext bc = priv.getBundleContext(componentContext);
+                            Collection<ServiceReference<ManagedExecutorService>> refs = //
+                                            priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, filter + " found:", refs);
+                            Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
+                            if (it.hasNext()) {
+                                ServiceReference<ManagedExecutorService> ref = refs.iterator().next();
+                                executor = priv.getService(bc, ref);
+                                if (executor == null)
+                                    throw new IllegalStateException(filter);
+                                else
+                                    managedExecutorRef.set(executor);
+                            } // else parent pid might be something other than a managed executor service
+                        }
+                    } catch (InvalidSyntaxException x) {
+                        throw new RuntimeException(x); // internal error - this should never happen
+                    } finally {
+                        lock.readLock().unlock();
+                    }
+                }
+                if (executor == null)
+                    executor = new ContextualDefaultExecutor(this);
+            }
+        } else {
+            executor = new UnusableExecutor(this);
+        }
+        return executor;
+    }
+
+    /**
+     * A ContextService (preferably this same instance) that is backed by the managed executor.
+     *
+     * This same ContextService instance can be used if it has a one-to-one relationship with the
+     * managed executor due to the contextService config being a nested element of the managed
+     * executor service config, or due to it being created by a MicroProfile ManagedExecutor builder.
+     *
+     * If this same instance cannot be used, then a new instance must be created for this purpose.
+     *
+     * @param executor           managed executor.
+     * @param executorServicePid service.pid of the managed executor.
+     * @return a ContextService that is backed by this managed executor.
+     */
+    ContextService forManagedExecutor(ManagedExecutorService executor, String executorServicePid) {
+        if (executor == managedExecutorRef.get())
+            return this;
+
+        lock.readLock().lock();
+        try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
+            if (properties == null)
+                throw new IllegalStateException(name);
+            String parentPid = (String) properties.get("config.parentPID");
+            if (parentPid != null && parentPid.equals(executorServicePid)) {
+                managedExecutorRef.set(executor);
+                return this;
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        return new ContextServiceWithExecutor(this, executor);
+    }
+
     @Override
     public ApplicationRecycleContext getContext() {
         return null;
@@ -892,9 +981,7 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
-                        ? (managedExecutor == null ? new ContextualDefaultExecutor(this) : managedExecutor) //
-                        : new UnusableExecutor(this);
+        Executor executor = executorForCompletionStages();
 
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
@@ -917,9 +1004,7 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
-                        ? (managedExecutor == null ? new ContextualDefaultExecutor(this) : managedExecutor) //
-                        : new UnusableExecutor(this);
+        Executor executor = executorForCompletionStages();
 
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);

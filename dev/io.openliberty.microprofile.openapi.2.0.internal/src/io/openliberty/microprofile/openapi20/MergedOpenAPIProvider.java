@@ -22,6 +22,7 @@ public class MergedOpenAPIProvider implements OpenAPIProvider {
     
     private OpenAPI model;
     private List<String> mergeProblems;
+    private String applicationPath;
     
     /**
      * @param model the merged OpenAPI model
@@ -30,11 +31,23 @@ public class MergedOpenAPIProvider implements OpenAPIProvider {
     public MergedOpenAPIProvider(OpenAPI model, List<String> mergeProblems) {
         this.model = model;
         this.mergeProblems = Collections.unmodifiableList(mergeProblems);
+        this.applicationPath = null;
+    }
+    
+    /**
+     * @param model the merged OpenAPI model
+     * @param mergeProblems the list of merge problems
+     * @param applicationPath the application path for the merged model
+     */
+    public MergedOpenAPIProvider(OpenAPI model, List<String> mergeProblems, String applicationPath) {
+        this.model = model;
+        this.mergeProblems = Collections.unmodifiableList(mergeProblems);
+        this.applicationPath = applicationPath;
     }
 
     @Override
     public String getApplicationPath() {
-        return null;
+        return applicationPath;
     }
 
     @Override

@@ -18,7 +18,9 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -45,6 +47,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -222,8 +225,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Use this constructor only for Java SE 8.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor   managed executor service
+     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -250,7 +253,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Construct a completable future with a managed executor as its default asynchronous execution facility.
      *
      * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param futureRef       reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -281,7 +284,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.completedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param value result of the completed future
+     * @param value    result of the completed future
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -363,7 +366,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x the exception.
+     * @param x        the exception.
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -396,7 +399,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedStage(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x the exception.
+     * @param x        the exception.
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
@@ -447,7 +450,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.runAsync(action, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action the action to run asynchronously.
+     * @param action   the action to run asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
@@ -496,7 +499,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action the supplier to invoke asynchronously.
+     * @param action   the supplier to invoke asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
@@ -920,28 +923,87 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#get()
      */
+    @FFDCIgnore({ CancellationException.class, ExecutionException.class })
     @Override
+    @Trivial
     public T get() throws ExecutionException, InterruptedException {
-        return JAVA8 ? completableFuture.get() : //
-                        super.get();
+        if (tc.isEntryEnabled())
+            Tr.entry(this, tc, "get");
+        try {
+            T result = JAVA8 ? completableFuture.get() : //
+                            super.get();
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", result);
+            return result;
+        } catch (CancellationException x) {
+            if (CancellationException.class.equals(x.getClass())) // don't replace subclasses
+                x = (CancellationException) new CancellationException(x.getMessage()).initCause(x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", x);
+            throw x;
+        } catch (ExecutionException x) {
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", x);
+            throw x;
+        }
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#get(long, java.util.concurrent.TimeUnit)
      */
+    @FFDCIgnore({ CancellationException.class, ExecutionException.class })
     @Override
+    @Trivial
     public T get(long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
-        return JAVA8 ? completableFuture.get(timeout, unit) : //
-                        super.get(timeout, unit);
+        if (tc.isEntryEnabled())
+            Tr.entry(this, tc, "get");
+        try {
+            T result = JAVA8 ? completableFuture.get(timeout, unit) : //
+                            super.get(timeout, unit);
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", result);
+            return result;
+        } catch (CancellationException x) {
+            if (CancellationException.class.equals(x.getClass())) // don't replace subclasses
+                x = (CancellationException) new CancellationException(x.getMessage()).initCause(x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", x);
+            throw x;
+        } catch (ExecutionException x) {
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "get", x);
+            throw x;
+        }
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#getNow(java.lang.Object)
      */
+    @FFDCIgnore({ CancellationException.class, CompletionException.class })
     @Override
+    @Trivial
     public T getNow(T valueIfAbsent) {
-        return JAVA8 ? completableFuture.getNow(valueIfAbsent) : //
-                        super.getNow(valueIfAbsent);
+        if (tc.isEntryEnabled())
+            Tr.entry(this, tc, "getNow");
+        try {
+            T result = JAVA8 ? completableFuture.getNow(valueIfAbsent) : //
+                            super.getNow(valueIfAbsent);
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "getNow", result);
+            return result;
+        } catch (CancellationException x) {
+            if (CancellationException.class.equals(x.getClass())) // don't replace subclasses
+                x = (CancellationException) new CancellationException(x.getMessage()).initCause(x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "getNow", x);
+            throw x;
+        } catch (CompletionException x) {
+            if (CompletionException.class.equals(x.getClass())) // don't replace subclasses
+                x = new CompletionException(x.getMessage(), x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "getNow", x);
+            throw x;
+        }
     }
 
     /**
@@ -1046,10 +1108,31 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#join()
      */
+    @FFDCIgnore({ CancellationException.class, CompletionException.class })
     @Override
+    @Trivial
     public T join() {
-        return JAVA8 ? completableFuture.join() : //
-                        super.join();
+        if (tc.isEntryEnabled())
+            Tr.entry(this, tc, "join");
+        try {
+            T result = JAVA8 ? completableFuture.join() : //
+                            super.join();
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "join", result);
+            return result;
+        } catch (CancellationException x) {
+            if (CancellationException.class.equals(x.getClass())) // don't replace subclasses
+                x = (CancellationException) new CancellationException(x.getMessage()).initCause(x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "join", x);
+            throw x;
+        } catch (CompletionException x) {
+            if (CompletionException.class.equals(x.getClass())) // don't replace subclasses
+                x = new CompletionException(x.getMessage(), x.getCause());
+            if (tc.isEntryEnabled())
+                Tr.exit(this, tc, "join", x);
+            throw x;
+        }
     }
 
     /**
@@ -1088,8 +1171,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * ManagedCompletionStage overrides to ensure that an instance of that class is created instead.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor   managed executor service
+     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      * @return a new instance of this class.
      */
     @Trivial

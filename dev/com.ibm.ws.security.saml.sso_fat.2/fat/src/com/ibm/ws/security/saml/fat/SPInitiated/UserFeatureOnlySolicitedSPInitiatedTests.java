@@ -18,7 +18,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureRepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.saml.fat.common.UserFeatureOnlySAMLTests;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
@@ -54,7 +54,7 @@ public class UserFeatureOnlySolicitedSPInitiatedTests extends UserFeatureOnlySAM
     // only allow test class to run in full mode - tests in "UserFeatureOnlySAMLTests" are used by
     // several classes - some of which do need to run in lite mode...
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new SecurityTestFeatureRepeatAction("").fullFATOnly());
+    public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction().fullFATOnly());
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {

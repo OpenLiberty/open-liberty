@@ -12,5 +12,4 @@
         <feature>ejbLite-3.2</feature>
     </featureManager>
 
-    <application location="observeProcessProducerMethod.war"/>
 </server>

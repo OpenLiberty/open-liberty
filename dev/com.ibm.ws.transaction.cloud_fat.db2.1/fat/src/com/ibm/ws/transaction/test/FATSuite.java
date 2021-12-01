@@ -10,16 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest1;
 
@@ -44,34 +42,25 @@ public class FATSuite {
     // In this test we allow one of the flavours of supported database to be selected either through
     // specifying the fat.bucket.db.type property or it is chosen based on the date. That database is
     // used in all 3 runs of the tests against the different version of EE.
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-    .andWith(new JakartaEE9Action().fullFATOnly());
+	@ClassRule
+	public static RepeatTests r = RepeatTests.withoutModification()
+	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+	.andWith(new JakartaEE9Action().fullFATOnly());
 
     public static DatabaseContainerType type = DatabaseContainerType.DB2;
     public static JdbcDatabaseContainer<?> testContainer;
 
-    @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(type);
-        Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
-        testContainer.start();
+        Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
+        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();
+        Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + type);
     }
 
-    @AfterClass
     public static void afterSuite() {
         Log.info(FATSuite.class, "afterSuite", "stop test container");
         testContainer.stop();
-    }
-
-    //Private Method: used to setup logging for containers to this class.
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "dbrotation", msg);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,14 +106,16 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final Iterable<LibertyLoader> delegateLoaders;
     private final List<File> nativeLibraryFiles = new ArrayList<File>();
     private final List<ClassFileTransformer> transformers = new ArrayList<ClassFileTransformer>();
+    private final List<ClassFileTransformer> systemTransformers;
     private final DeclaredApiAccess apiAccess;
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     protected final ClassLoader parent;
     private final ClassLoaderHook hook;
 
-    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
+    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
+        this.systemTransformers = systemTransformers;
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
@@ -270,7 +272,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      */
     @Override
     protected final Class<?> findClass(String name) throws ClassNotFoundException {
-        if (transformers.isEmpty()) {
+        if (transformers.isEmpty() && systemTransformers.isEmpty()) {
             Class<?> clazz = null;
             Object token = ThreadIdentityManager.runAsServer();
             try {
@@ -305,6 +307,12 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
+        byte[] bytes = transformClassBytes(name, byteResourceInformation);
+
+        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
+    }
+
+    byte[] transformClassBytes(String name, ByteResourceInformation toTransform) throws ClassNotFoundException {
         // If a class is loaded from the shared classes cache it cannot be transformed.  The bytes are not in 
         // the normal class bytes format, but rather a cookie to where the bytes are stored in the classes cache.
         // Since the class was put into the classes cache, it was not transformed previously.  We are
@@ -314,41 +322,60 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         // types of exceptions or quitting out of the transformation code which will result in the class not being
         // transformed anyway.
         byte[] bytes;
-        if (byteResourceInformation.foundInClassCache()) {
-            bytes = byteResourceInformation.getBytes(); 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
+        if (toTransform.foundInClassCache()) {
+            if (systemTransformers.isEmpty()) {
+                bytes = toTransform.getBytes(); 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have system tranformers");
+                }
+                try {
+                    bytes = toTransform.getActualBytes();
+                    bytes = transformClassBytes(bytes, name, systemTransformers);
+                } catch (IOException e) {
+                    // auto FFDC
+                    // fallback to the cached class
+                    bytes = toTransform.getBytes();
+                }
             }
         } else {
-            bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
+            bytes = transformClassBytes(toTransform.getBytes(), name, transformers);
+            bytes = transformClassBytes(bytes, name, systemTransformers);
         }
-
-        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
+        return bytes;
     }
 
-    byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
+    private byte[] transformClassBytes(final byte[] originalBytes, String name, List<ClassFileTransformer> cfts) throws ClassNotFoundException {
         byte[] bytes = originalBytes;
-        for (ClassFileTransformer transformer : transformers) {
-            try {
-                byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
-                if (newBytes != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        if (bytes == newBytes)
-                            Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
-                        else
-                            Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
-                    }
-                    bytes = newBytes;
-                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
-                }
-            } catch (IllegalClassFormatException ex) {
-                // FFDC
+        for (ClassFileTransformer transformer : cfts) {
+            bytes = doTransformation(name, bytes, transformer);
+        }
+        return bytes;
+    }
+
+    private byte[] doTransformation(String name, byte[] bytes, ClassFileTransformer transformer) throws ClassNotFoundException {
+        try {
+            byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+            if (newBytes != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "bad transform - transformer: " + transformer + " attempting to transform class: " + name, ex);
+                    if (bytes == newBytes)
+                        Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
+                    else
+                        Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
                 }
-                throw new ClassNotFoundException(name, ex);
+                bytes = newBytes;
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
             }
+        } catch (IllegalClassFormatException ex) {
+            // FFDC
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "bad transform - transformer: " + transformer + " attempting to transform class: " + name, ex);
+            }
+            throw new ClassNotFoundException(name, ex);
         }
         return bytes;
     }
@@ -365,9 +392,27 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
 
+        final ProtectionDomain fpd = pd;
+        java.security.PermissionCollection pc = null;
+        if (pd.getPermissions() == null) {
+            try {
+                pc = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.PermissionCollection>() {
+                    @Override
+                    public java.security.PermissionCollection run() {
+                        java.security.Policy p = java.security.Policy.getPolicy();
+                        java.security.PermissionCollection fpc = p.getPermissions(fpd.getCodeSource());
+                        return fpc;
+                    }
+                });
+            } catch (PrivilegedActionException paex) {
+            } 
+            pd = new ProtectionDomain(pd.getCodeSource(), pc);
+        }
+
         Class<?> clazz = null;
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
+
         } finally {
             final TraceComponent cltc;
             if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
@@ -390,6 +435,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 }
             }
         }
+        
         return clazz;
     }
 
@@ -429,15 +475,16 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
             String containerUrlString = containerUrl.toString();
             pd = protectionDomains.get(containerUrlString);
+            
             if (pd == null) {
                 ProtectionDomain pdFromConfig = config.getProtectionDomain();
                 CodeSource cs = new CodeSource(containerUrl, pdFromConfig.getCodeSource().getCertificates());
                 pd = new ProtectionDomain(cs, pdFromConfig.getPermissions());
-                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);
+                ProtectionDomain oldPD = protectionDomains.putIfAbsent(containerUrlString, pd);                
                 if (oldPD != null) {
                     pd = oldPD;
                 }
-            }
+            } 
         } catch (IOException ex) {
             // Auto-FFDC - and then use the protection domain from the classloader configuration
             pd = config.getProtectionDomain();
@@ -528,8 +575,66 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             if (bytes != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "defining generated class " + name);
-                generatedClass = defineClass(name, bytes, 0, bytes.length, config.getProtectionDomain());
-            }
+
+
+                String remoteInterfaceClassName = null;
+                ProtectionDomain pd = null;
+
+                if (name != null && name.endsWith("_Stub") && !name.endsWith("._Stub"))
+                {
+
+                    StringBuilder nameBuilder = new StringBuilder(name);
+                    nameBuilder.setLength(nameBuilder.length() - 5);
+
+                    int packageOffset = nameBuilder.lastIndexOf(".") + 1;
+                    if (nameBuilder.charAt(packageOffset) == '_')
+                        nameBuilder.deleteCharAt(packageOffset);
+
+
+                    remoteInterfaceClassName = nameBuilder.toString();
+
+                    try {
+                        Class<?> remoteClass = super.loadClass(remoteInterfaceClassName, false);
+
+                        pd = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.ProtectionDomain>() {
+                            @Override
+                            public java.security.ProtectionDomain run() {
+                                return remoteClass.getProtectionDomain();
+                            }
+                        });
+                    } catch (PrivilegedActionException paex) {                 
+                    }
+
+
+                    final ProtectionDomain fpd = pd;
+                    java.security.PermissionCollection pc = null;
+                    if (pd.getPermissions() == null) {
+                        try {
+                            pc = AccessController.doPrivileged(new PrivilegedExceptionAction<java.security.PermissionCollection>() {
+                                @Override
+                                public java.security.PermissionCollection run() {
+                                    java.security.Policy p = java.security.Policy.getPolicy();
+
+                                    java.security.PermissionCollection fpc = p.getPermissions(fpd.getCodeSource());
+
+                                 return fpc;
+                                }
+                            });
+
+                            pd = new ProtectionDomain(pd.getCodeSource(), pc);
+                            generatedClass = defineClass(name, bytes, 0, bytes.length, pd);
+
+                        } catch (PrivilegedActionException paex) {
+                        } 
+
+                    } else {
+                        generatedClass = defineClass(name, bytes, 0, bytes.length, pd);
+                    }
+
+                } else {
+                    generatedClass = defineClass(name, bytes, 0, bytes.length, config.getProtectionDomain());
+                }
+          }
         }
         return generatedClass;
     }
@@ -665,7 +770,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
         });
         return fExists &&
-               (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
+                        (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
     }
 
     @Override
@@ -702,7 +807,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     public String toDiagString() {
         StringBuilder sb = new StringBuilder();
         sb.append(config).append(LS);
-        
+
         sb.append("    API Visibility: ");
         for (ApiType type : apiAccess.getApiTypeVisibility()) {
             sb.append(type).append(" ");
@@ -722,7 +827,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         sb.append("    CodeSources: ");
         for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
             sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
-              .append(entry.getValue().getCodeSource().getLocation());
+            .append(entry.getValue().getCodeSource().getLocation());
         }
         sb.append(LS);
 

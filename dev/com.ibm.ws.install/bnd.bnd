@@ -25,7 +25,8 @@ Private-Package: \
 
 instrument.disabled: true
 
--includeresource: \ @${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+-includeresource: \
+	@${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
 -buildpath: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\

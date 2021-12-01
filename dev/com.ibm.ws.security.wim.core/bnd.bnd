@@ -22,6 +22,7 @@ Private-Package: \
  
 Import-Package: \
  com.ibm.websphere.ssl, \
+ com.ibm.wsspi.security.wim.model; version="[1.1,11)", \
  !com.ibm.ws.security.wim.adapter.urbridge,!com.ibm.ws.security.wim.adapter.urbridge.*,*;
 
 #TODO do we need to export all these packages? Can we move stuff to only expose a few interfaces?

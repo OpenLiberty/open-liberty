@@ -17,12 +17,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.fat.wc.tests.WC5CloseWrappedResponseOutputAfterForwardTest;
 import com.ibm.ws.fat.wc.tests.WC5GetContextPath;
 import com.ibm.ws.fat.wc.tests.WC5JakartaServletTest;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
-import com.ibm.ws.fat.wc.tests.WCCloseWrappedResponseOutputAfterForwardTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
@@ -42,6 +40,7 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMappingTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
+import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -96,8 +95,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCResponseHeadersTest.class,
                 WCServerMiscTest.class,
                 WCServerPropertyTest.class,
-                WCCloseWrappedResponseOutputAfterForwardTest.class,
-                WC5CloseWrappedResponseOutputAfterForwardTest.class
+                WCTestEncodedX590.class
 })
 
 public class FATSuite {

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -68,8 +70,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    private boolean _setRetriableSqlcodes = false;
+    private boolean _setNonRetriableSqlcodes = false;
+    List<Integer> retriableSqlCodeList;
+    List<Integer> nonRetriableSqlCodeList;
+
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -140,6 +146,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  retrieved datasourceFactory is " + _theDataSourceFactory);
 
+        // Configuration has changed, may need to reset the lists of sqlcodes
+        _setRetriableSqlcodes = false;
+        _setNonRetriableSqlcodes = false;
     }
 
     protected void deactivate(int reason, ComponentContext cc, Map<String, Object> properties) {
@@ -153,9 +162,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      */
     protected void modified(Map<String, Object> newProperties) {
         Map<String, Object> newProps = Collections.unmodifiableMap(new HashMap<>(newProperties));
+
         synchronized (this) {
             _props = newProps;
         }
+
+        // Configuration has changed, may need to reset the lists of sqlcodes
+        _setRetriableSqlcodes = false;
+        _setNonRetriableSqlcodes = false;
     }
 
     /*
@@ -683,45 +697,118 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
-    public int getLightweightTransientErrorRetryTime() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryTime");
+    public int getLightweightLogRetryInterval() {
+        Number num = (Number) _props.get("lightweightLogRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
-    public int getLightweightTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryAttempts");
+    public int getLightweightLogRetryLimit() {
+        Number num = (Number) _props.get("lightweightLogRetryLimit");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
-    public int getStandardTransientErrorRetryTime() {
-        Number num = (Number) _props.get("standardTransientErrorRetryTime");
+    public int getLogRetryInterval() {
+        Number num = (Number) _props.get("logRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
-    public int getStandardTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
+    public int getLogRetryLimit() {
+        Number num = (Number) _props.get("logRetryLimit");
         return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
+     */
+    @Override
+    public boolean enableLogRetries() {
+        return (Boolean) _props.get("enableLogRetries");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("retriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRetriableSqlCodes " + sqlcodes);
+
+        if (!_setRetriableSqlcodes) {
+            retriableSqlCodeList = parseSqlCodes(sqlcodes);
+            _setRetriableSqlcodes = true;
+        }
+
+        return retriableSqlCodeList;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getNonRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("nonRetriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getNonRetriableSqlCodes " + sqlcodes);
+
+        if (!_setNonRetriableSqlcodes) {
+            nonRetriableSqlCodeList = parseSqlCodes(sqlcodes);
+            _setNonRetriableSqlcodes = true;
+        }
+
+        return nonRetriableSqlCodeList;
+    }
+
+    private List<Integer> parseSqlCodes(String sqlCodesStr) {
+        List<Integer> sqlCodeList = new ArrayList<Integer>();
+        if (sqlCodesStr != null && !sqlCodesStr.trim().isEmpty()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "There are sqlcodes to parse " + sqlCodesStr);
+            List<String> sqlCodeStringList = Arrays.asList(sqlCodesStr.split(","));
+
+            for (String sqlcode : sqlCodeStringList) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Isolated string sqlcode " + sqlcode);
+                int intSqlCode = 0;
+                try {
+                    intSqlCode = Integer.parseInt(sqlcode.trim());
+                } catch (NumberFormatException nfe) {
+                    Tr.audit(tc, "WTRN0107W: " +
+                                 "Malformed sqlcode " + sqlcode + " in configuration " + sqlCodesStr);
+                }
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Isolated integer sqlcode " + intSqlCode);
+                sqlCodeList.add(intSqlCode);
+            }
+        }
+        return sqlCodeList;
     }
 
     @Override

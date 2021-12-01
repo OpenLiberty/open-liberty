@@ -212,5 +212,6 @@ error.jacksonproviderregister.exception.useraction= Make sure the Jackson provid
 
 warn.invalid.authorization.token.type=CWWKW0061W: The  {0} authorization token type specified in the server configuration is invalid and will be ignored.
 warn.invalid.authorization.token.type.explanation=The authorization token type specified in the server configuration is invalid.
-warn.invalid.authorization.token.type.useraction=Specify a valid authorization token type. 
-  
+warn.invalid.authorization.token.type.useraction=Specify a valid authorization token type.
+
+continuation.not.supported=Continuation not supported. Ensure that all servlets and servlet filters support async operations.

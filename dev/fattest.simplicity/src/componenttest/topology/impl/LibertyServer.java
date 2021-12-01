@@ -13,17 +13,20 @@ package componenttest.topology.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -37,6 +40,9 @@ import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,6 +95,7 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.Props;
 import com.ibm.ws.fat.util.jmx.JmxException;
 import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
@@ -221,7 +228,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 30) * 1000;
+    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 120) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
 
     // How long to wait for an app to start before failing out
@@ -1037,10 +1044,29 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void printProcesses() {
+        printProcesses(machine);
+    }
+
+    public static void printProcesses(Machine host) {
+        printProcesses(host, "");
+    }
+
+    public static void printProcesses(Machine host, String prefix) {
         final String m = "printProcesses";
-        try {
-            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
-            Log.info(c, m, detector.listProcesses());
+
+        String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss")).toString();
+        String fileName = "processes-" + timeStamp + ".txt";
+        if (prefix != null && !prefix.isEmpty()) {
+            fileName = prefix + "-" + fileName;
+        }
+        Props properties = Props.getInstance();
+
+        Log.info(c, m, "Printing processes to file: " + fileName);
+
+        String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
+        try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
+            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
+            stream.print(detector.listProcesses());
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
         }
@@ -2416,7 +2442,24 @@ public class LibertyServer implements LogMonitorClient {
      *                                   logs that were not in the list of ignored warnings/errors.
      */
     public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... expectedFailuresRegExps) throws Exception {
+        return stopServer(postStopServerArchive, forceStop, true, expectedFailuresRegExps);
+    }
 
+    /**
+     * Stops the server and checks for any warnings or errors that appeared in logs.
+     * If warnings/errors are found, an exception will be thrown after the server stops.
+     *
+     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                   would be redundant)
+     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives          Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                   If regIgnore is null, logs will not be checked for warnings/errors
+     * @return                       the output of the stop command
+     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
+     *                                   logs that were not in the list of ignored warnings/errors.
+     */
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... expectedFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -2532,21 +2575,9 @@ public class LibertyServer implements LogMonitorClient {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
             }
-            if (postStopServerArchive)
-                while (true) {
-                    try {
-                        postStopServerArchive();
-                        break;
-                    } catch (Exception e) {
-                        Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
-                        printProcesses();
-                        try {
-                            Thread.sleep(500);
-                        } catch (Exception x) {
-                            Log.error(c, method, x);
-                        }
-                    }
-                }
+            if (postStopServerArchive) {
+                postStopServerArchive(true, skipArchives);
+            }
             // Delete marker for stopped server
             // deleteServerMarkerFile();
         }
@@ -2740,10 +2771,73 @@ public class LibertyServer implements LogMonitorClient {
      * This is particularly required for tWAS FAT buckets as it is not known
      * when these finish, using this method will ensure logs are collected.
      * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * The operation will be retried
      */
     public void postStopServerArchive() throws Exception {
+        postStopServerArchive(true, true);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry if true and the operation fails, retry
+     */
+    public void postStopServerArchive(boolean retry) throws Exception {
+        postStopServerArchive(retry, true);
+    }
+
+    /**
+     * This method is used to archive server logs and archives after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry        if true and the operation fails, retry
+     * @param skipArchives whether or not to skip packaging of archive files (JARs, WARs, EARs, etc.)
+     */
+    public void postStopServerArchive(boolean retry, boolean skipArchives) throws Exception {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
+
+        while (true) {
+            try {
+                _postStopServerArchive(skipArchives);
+                break;
+            } catch (FileNotFoundException ex) {
+                Log.error(c, method, ex, "Failed to archive " + getServerName() + " because of missing files. ");
+                // The file is never going to appear, so break here.
+                break;
+            } catch (Exception e) {
+                Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
+                printProcesses();
+            }
+            if (retry) {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception x) {
+                    Log.error(c, method, x);
+                }
+            } else {
+                break;
+            }
+        }
+
+        Log.exiting(c, method);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     */
+    private void _postStopServerArchive(boolean skipArchives) throws Exception {
+        final String method = "_postStopServerArchive";
+        Log.entering(c, method, skipArchives);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
@@ -2762,7 +2856,7 @@ public class LibertyServer implements LogMonitorClient {
         runJextract(serverFolder);
 
         // Copy the log files: try to move them instead if we can
-        recursivelyCopyDirectory(serverFolder, logFolder, false, true, true);
+        recursivelyCopyDirectory(serverFolder, logFolder, false, skipArchives, true);
 
         deleteServerMarkerFile();
 
@@ -5065,7 +5159,9 @@ public class LibertyServer implements LogMonitorClient {
                             String regexp = it.next();
                             if (Pattern.compile(regexp).matcher(line).find()) {
                                 it.remove();
-                                break;
+                                //There used to be a break here but if a user passed in a
+                                //pattern that overlapped with one of the ones above only
+                                //one was removed. The watchFor list is usually small.
                             }
                         }
                     }
@@ -5871,6 +5967,7 @@ public class LibertyServer implements LogMonitorClient {
         if (stopMsg == null) {
             return false;
         }
+        removeInstalledAppForValidation(appName);
 
         return true;
     }

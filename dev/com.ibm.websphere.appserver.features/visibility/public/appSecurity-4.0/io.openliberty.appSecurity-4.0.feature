@@ -17,6 +17,7 @@ Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
   com.ibm.websphere.appserver.servlet-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.security-1.0, \
+  io.openliberty.securityAPI.jakarta-1.0, \
   io.openliberty.jakarta.security.enterprise-2.0, \
   io.openliberty.expressionLanguage-4.0
 -bundles=\
@@ -26,7 +27,7 @@ Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
   io.openliberty.security.authentication.internal.tai, \
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal
-kind=beta
+kind=ga
 edition=core
--jars=io.openliberty.jaspic.2.0.spi; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
+-jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
+-files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip

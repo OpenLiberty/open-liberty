@@ -17,6 +17,8 @@
 		<property name="mail.pop3.port" value="3110" />
 	</mailSession>
 -->
-	
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.activation.registries"/>
 	<enterpriseApplication location="JavaMailClientEAR.ear" clientModule="JavaMailClientApp.jar" />
 </client>

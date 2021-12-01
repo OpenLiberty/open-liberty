@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,13 +63,13 @@ public abstract class DBTestBase extends WSATTest {
 	public static String appNameServiceOptional;
 
 	public static void initWSATTest(LibertyServer s) throws Exception {
-		s.setServerStartTimeout(300000);
+		s.setServerStartTimeout(START_TIMEOUT);
 		s.removeAllInstalledAppsForValidation();
 		s.deleteDirectoryFromLibertyServerRoot("dropins");
 	}
 
 	public static void cleanupWSATTest(LibertyServer s) throws Exception {
-    s.removeAllInstalledAppsForValidation();
+		s.removeAllInstalledAppsForValidation();
 		s.deleteDirectoryFromLibertyServerRoot("dropins");
 	}
 

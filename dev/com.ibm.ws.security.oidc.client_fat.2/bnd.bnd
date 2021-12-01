@@ -15,11 +15,18 @@ src: \
   fat/src
 
 fat.project: true
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 
 tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
     appsecurity-4.0, expressionlanguage-4.0, pages-3.0
 
+Import-Package: \
+    !*.internal.*, \
+    !com.ibm.ws.kernel.boot.cmdline, \
+    org.apache.commons.codec.binary,\
+    org.jose4j.*, \
+    *
+    
 -buildpath: \
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -39,4 +46,8 @@ tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	com.ibm.ws.org.apache.directory.server;version=latest,\
-	com.ibm.ws.org.apache.commons.lang3;version=latest
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.json4j;version=latest
+	
+	

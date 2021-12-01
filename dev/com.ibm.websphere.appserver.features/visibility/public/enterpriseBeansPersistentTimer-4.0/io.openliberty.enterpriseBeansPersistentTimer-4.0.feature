@@ -12,6 +12,6 @@ Subsystem-Name: Jakarta Enterprise Beans 4.0 Persistent Timers
   io.openliberty.persistentExecutorSubset-2.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.ejbcontainer.timer.persistent.jakarta
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Starten Sie den Server erneut. 
 reaper.reopen.active=CWWKM0127W: {0} erneut \u00f6ffnen
 reaper.reopen.active.explanation=Eine nicht erwartete \u00c4nderung hat dazu gef\u00fchrt, dass eine ge\u00f6ffnete Anwendungsarchivdatei erneut ge\u00f6ffnet wurde. Der Server hat versucht, den aktualisierten Inhalt der Archivdatei abzurufen, hat aber m\u00f6glicherweise nicht alle internen Listen des Archivinhalts vollst\u00e4ndig aktualisiert.
 reaper.reopen.active.useraction=Starten Sie den Server erneut. Wenn Sie Anwendungsdateien aktualisieren, warten Sie, bis der Server in den Wartemodus versetzt wurde, und warten Sie anschlie\u00dfend mindestens eine halbe Sekunde, damit die Anwendungsdateien geschlossen werden k\u00f6nnen.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Die komprimierte Datei {0} fehlt.
+missing.zip.file.explanation=W\u00e4hrend der Archivverarbeitung ist eine Ausnahmebedingung aufgetreten, weil die angegebene Datei nicht gefunden wurde. 
+missing.zip.file.useraction=Stellen Sie sicher, dass die angegebenen Datei existiert und die Berechtigungen, die vom Server gelesen werden k\u00f6nnen, vorhanden sind.

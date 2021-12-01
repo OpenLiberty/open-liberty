@@ -138,7 +138,13 @@
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256J,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256IJ,
-							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256UJ"
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/rs256UJ,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Supported_None,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Required_None,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Supported_Allow,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Required_Allow,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Supported_Require,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RS256_Required_Require"
 				scope="ALL_SCOPES"
 				introspectTokens="true"
 				enabled="true" />

@@ -15,8 +15,6 @@ Bundle-Name: PersistenceService Utility
 Bundle-SymbolicName: com.ibm.ws.persistence.utility
 Bundle-Description: WebSphere Persistence Service Utility; version=${bVersion}
 
-jakartaeeMe: true
-
 Main-Class: com.ibm.ws.persistence.utility.DDLGenerationUtility
 
 WS-TraceGroup: persistenceservice

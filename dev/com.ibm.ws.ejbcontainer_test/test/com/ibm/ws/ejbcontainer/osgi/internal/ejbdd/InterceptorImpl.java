@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.ibm.ws.javaee.dd.common.AdministeredObject;
 import com.ibm.ws.javaee.dd.common.ConnectionFactory;
+import com.ibm.ws.javaee.dd.common.ContextService;
 import com.ibm.ws.javaee.dd.common.DataSource;
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.EJBRef;
@@ -23,6 +24,9 @@ import com.ibm.ws.javaee.dd.common.JMSConnectionFactory;
 import com.ibm.ws.javaee.dd.common.JMSDestination;
 import com.ibm.ws.javaee.dd.common.LifecycleCallback;
 import com.ibm.ws.javaee.dd.common.MailSession;
+import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
 import com.ibm.ws.javaee.dd.common.MessageDestinationRef;
 import com.ibm.ws.javaee.dd.common.PersistenceContextRef;
 import com.ibm.ws.javaee.dd.common.PersistenceUnitRef;
@@ -95,6 +99,11 @@ class InterceptorImpl implements Interceptor {
     }
 
     @Override
+    public List<ContextService> getContextServices() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<DataSource> getDataSources() {
         throw new UnsupportedOperationException();
     }
@@ -106,6 +115,21 @@ class InterceptorImpl implements Interceptor {
 
     @Override
     public List<JMSDestination> getJMSDestinations() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<ManagedExecutor> getManagedExecutors() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<ManagedScheduledExecutor> getManagedScheduledExecutors() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<ManagedThreadFactory> getManagedThreadFactories() {
         throw new UnsupportedOperationException();
     }
 

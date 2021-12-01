@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +26,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -46,9 +49,16 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final Class<?> c = ApplicationProcessorTest.class;
     private static final String APP_NAME_11 = "complete-flow";
 
-    @Server("ApplicationProcessorServer")
+    private static final String SERVER_NAME = "ApplicationProcessorServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
@@ -61,8 +71,11 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
         server.startServer(c.getSimpleName() + ".log");
-        assertNotNull("Web application is not available at /openapi/", server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
-        assertNotNull("Web application is not available at /openapi/ui/", server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi/",
+            server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi/ui/",
+            server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become
+                                                                    // available
         assertNotNull("Server did not report that it has started", server.waitForStringInLog("CWWKF0011I.*"));
     }
 
@@ -95,8 +108,7 @@ public class ApplicationProcessorTest extends FATServletClient {
             "https://test-server.com:80/#1",
             "https://test-server.com:80/#2",
             "https://test-server.com:80/#3",
-            "https://test-server.com:80/#4"
-        );
+            "https://test-server.com:80/#4");
 
         OpenAPITestUtil.checkPaths(openapiNode, 3, "/test-service/test", "/modelReader", "/staticFile");
         JsonNode infoNode = openapiNode.get("info");

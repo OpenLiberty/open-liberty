@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,23 +50,23 @@ public class JSF23SelectOneRadioGroupTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23SelectOneRadioGroupServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23SelectOneRadioGroup.war", "com.ibm.ws.jsf23.fat.selectoneradio");
+        ShrinkHelper.defaultDropinApp(server, "JSF23SelectOneRadioGroup.war", "com.ibm.ws.jsf23.fat.selectoneradio");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        jsf23CDIServer.startServer(JSF23SelectOneRadioGroupTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23SelectOneRadioGroupTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -84,7 +84,7 @@ public class JSF23SelectOneRadioGroupTests {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -144,7 +144,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupDefaultID.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupDefaultID.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -193,7 +193,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupIndividual.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupIndividual.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -242,7 +242,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupInterweaveGroups.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupInterweaveGroups.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -299,7 +299,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleGroups.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupMultipleGroups.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -356,7 +356,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupMultipleSelectItem.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupMultipleSelectItem.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -405,7 +405,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupOneValue.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupOneValue.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -455,7 +455,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItems.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupSelectItems.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -504,7 +504,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsCollection.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupSelectItemsCollection.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -553,7 +553,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupSelectItemsOverride.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupSelectItemsOverride.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -602,7 +602,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupStaticValue.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupStaticValue.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -653,7 +653,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupTable.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupTable.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -704,7 +704,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "selectOneRadioGroupUIRepeat.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupUIRepeat.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -756,7 +756,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDEndingWithNumberNextWithLetter.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "myFaces4169IDEndingWithNumberNextWithLetter.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -787,7 +787,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDNumberGreaterThanSelectItems.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "myFaces4169IDNumberGreaterThanSelectItems.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -818,7 +818,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDStartingWithIndex1.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "myFaces4169IDStartingWithIndex1.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 
@@ -848,7 +848,7 @@ public class JSF23SelectOneRadioGroupTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "myFaces4169IDWithoutNumberAtTheEnd.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "myFaces4169IDWithoutNumberAtTheEnd.xhtml");
 
             HtmlPage testPage = (HtmlPage) webClient.getPage(url);
 

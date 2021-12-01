@@ -9,6 +9,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 -bundles=io.openliberty.restfulWS30.appSecurity, \
  com.ibm.ws.security.authorization.util.jakarta
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

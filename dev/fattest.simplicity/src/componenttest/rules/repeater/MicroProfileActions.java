@@ -204,11 +204,11 @@ public class MicroProfileActions {
                                                           "mpConfig-3.0",
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
-                                                          "mpJwt-2.0" };
-//                                                          "mpMetrics-4.0",
-//                                                          "mpOpenAPI-3.0",
-//                                                          "mpOpenTracing-3.0",
-//                                                          "mpRestClient-3.0" };
+                                                          "mpJwt-2.0",
+                                                          "mpOpenAPI-3.0",
+                                                          "mpMetrics-4.0",
+                                                          "mpOpenTracing-3.0",
+                                                          "mpRestClient-3.0" };
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
@@ -416,7 +416,7 @@ public class MicroProfileActions {
      * Get a FeatureReplacementAction instance for a given FeatureSet. It will be run in the mode specified.
      *
      * @param  allFeatureSets All known FeatureSets. The features not in the specified FeatureSet are removed from the repeat action
-     * @param  featureSet     The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  featureSet     The FeatureSet to repeat with.
      * @param  server         The server to repeat on
      * @param  testMode       The test mode to run the FeatureSet
      * @return                A FeatureReplacementAction instance

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +60,7 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
     public static final ArrayList<String> groupList = new ArrayList<String>();
     Map<Long, Set<MonitorObject>> processedBundles = new HashMap<Long, Set<MonitorObject>>();
     public static final ConcurrentMap<Object, Set<ObjectName>> mxmap = new ConcurrentHashMap<Object, Set<ObjectName>>();
-    MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    MBeanServer mbeanServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
     public final ConcurrentMap<Object, MonitorObject> objectMap = new ConcurrentHashMap<Object, MonitorObject>();
     private final static String MONITORING_GROUP_FILTER = "filter";
     private final static String MONITORING_TRADITIONALPMI = "enableTraditionalPMI";
@@ -147,8 +149,8 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
 
     /**
      * @param bundle
-     *            Starting point for activation/processing/registration/filtering process of any bundle which is eligible for monitoring.This will be
-     *            decided by scanning each bundle for bundle header "Liberty-Monitoring-Components".
+     *                   Starting point for activation/processing/registration/filtering process of any bundle which is eligible for monitoring.This will be
+     *                   decided by scanning each bundle for bundle header "Liberty-Monitoring-Components".
      */
     synchronized void activateMonitors(Bundle bundle) {
         Long bundleId = bundle.getBundleId();
@@ -207,7 +209,7 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
 
     /**
      * @param monitor
-     *            Initate calls for processing the Monitor Object( which includes generating ObectNames) and registering of the object.
+     *                    Initate calls for processing the Monitor Object( which includes generating ObectNames) and registering of the object.
      */
     private void processANDregister(Object monitor, MonitorObject mob) {
         // TODO Auto-generated method stub
@@ -259,8 +261,8 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
 
     /**
      * @param instance
-     *            Takes care of creating ObjectNames for Monitor which has MeterType Ex:JVM and later add it to the mxMap set which
-     *            maintains the MBean objectNames.
+     *                     Takes care of creating ObjectNames for Monitor which has MeterType Ex:JVM and later add it to the mxMap set which
+     *                     maintains the MBean objectNames.
      */
     private void processMeters(Object instance) {
         try {
@@ -281,7 +283,7 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
                             Tr.debug(tc, "need to create MBEAN for " + o);
                         }
                         publishedFields.add(f);
-                        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+                        MBeanServer mbeanServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
                         StringBuilder sb = new StringBuilder("WebSphere:");
                         sb.append("type=").append(o.getClass().getSimpleName());
                         ObjectName objectName = new ObjectName(sb.toString());
@@ -310,14 +312,14 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
 
     /**
      * @param bundle
-     *            Checks to see if the bundle being deactivated is Monitoring bundle ,if so unregister the PerfMBean which
-     *            is registered if traditional PMI is enabled .Later initiate call for unregisterMonitor.
+     *                   Checks to see if the bundle being deactivated is Monitoring bundle ,if so unregister the PerfMBean which
+     *                   is registered if traditional PMI is enabled .Later initiate call for unregisterMonitor.
      */
     synchronized void deactivateMonitors(Bundle bundle) {
         if (bundle.getSymbolicName().equals("com.ibm.ws.monitor")) {
             //deregister MBean
             try {
-                MBeanServer mServer = ManagementFactory.getPlatformMBeanServer();
+                MBeanServer mServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
                 mServer.unregisterMBean(new ObjectName(PmiConstants.MBEAN_NAME));
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
@@ -332,14 +334,14 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
     /**
      * @param bundleId
      * @param monitor
-     *            This method is used to unregister the monitor and cleansup the Mbeans associated with those monitors.
-     *            The call to this method happens during deactivation of any bundle(Which includes monitor bundles) or
-     *            from the modified method.
+     *                     This method is used to unregister the monitor and cleansup the Mbeans associated with those monitors.
+     *                     The call to this method happens during deactivation of any bundle(Which includes monitor bundles) or
+     *                     from the modified method.
      */
     public synchronized void unregisterMonitor(Long bundleId, MonitorObject monitor) {
         if (monitor != null) {
             if (mbeanServer == null)
-                mbeanServer = ManagementFactory.getPlatformMBeanServer();
+                mbeanServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
 
             Set<ObjectName> onameSet = mxmap.remove(monitor.getMonitor());
             unregisterMbeans(onameSet);
@@ -363,14 +365,14 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
     }
 
     /**
-     * @param context ComponentContext
+     * @param context       ComponentContext
      * @param newProperties
      * @throws Exception
-     *             This method is called when ever there is change in server.xml.In Here we will be looking for the list of monitor's which needs
-     *             to be instrumented.If groupMonitoring is specified and there is no input ex: groupMonitoring="" we assume that all the monitors
-     *             needs to be instrumented.If atleast one is preset as part of groupMonitoring i.e, groupMonitoring="WebContainer,JVM,ThreadPool"
-     *             then those present will be instrumented.Please note that rest all monitors which are nor present in groupMonitoring will be
-     *             unregistered and respective Mbeans are removed from the MBeanServer.
+     *                       This method is called when ever there is change in server.xml.In Here we will be looking for the list of monitor's which needs
+     *                       to be instrumented.If groupMonitoring is specified and there is no input ex: groupMonitoring="" we assume that all the monitors
+     *                       needs to be instrumented.If atleast one is preset as part of groupMonitoring i.e, groupMonitoring="WebContainer,JVM,ThreadPool"
+     *                       then those present will be instrumented.Please note that rest all monitors which are nor present in groupMonitoring will be
+     *                       unregistered and respective Mbeans are removed from the MBeanServer.
      */
     protected void modified(ComponentContext context, Map<String, Object> newProperties) throws Exception {
         try {
@@ -444,11 +446,11 @@ public class MonitoringFrameworkExtender implements SynchronousBundleListener {
 
     /**
      * @param onameset
-     *            Used to Unregister Mbeans and takes set as Input.This set contains ObjectNames of the Mbeans which needs to be unregistered.
+     *                     Used to Unregister Mbeans and takes set as Input.This set contains ObjectNames of the Mbeans which needs to be unregistered.
      */
     private void unregisterMbeans(Set<ObjectName> onameset) {
         if (mbeanServer != null) {
-            mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            mbeanServer = AccessController.doPrivileged((PrivilegedAction<MBeanServer>) () -> ManagementFactory.getPlatformMBeanServer());
         }
         if (onameset == null) {
             if (tc.isDebugEnabled()) {

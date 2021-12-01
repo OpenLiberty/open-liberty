@@ -7,6 +7,6 @@ IBM-Process-Types: client, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.anno-2.0
 -bundles=com.ibm.ws.injection.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

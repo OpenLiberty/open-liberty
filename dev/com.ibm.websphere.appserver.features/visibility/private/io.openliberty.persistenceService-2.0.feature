@@ -9,13 +9,13 @@ IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
   com.ibm.websphere.appserver.jndi-1.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.persistence.jakarta, \
- com.ibm.ws.persistence.mbean.jakarta, \
- com.ibm.websphere.appserver.api.persistence.jakarta; location:="dev/api/ibm/", \
- com.ibm.ws.persistence.utility.jakarta
+ com.ibm.ws.persistence.mbean, \
+ com.ibm.websphere.appserver.api.persistence; location:="dev/api/ibm/", \
+ com.ibm.ws.persistence.utility
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.persistence_1.0-javadoc.zip, \
  bin/tools/ws-generateddlutil.jar, \
  bin/ddlGen.bat, \
  bin/ddlGen; ibm.file.encoding:=ebcdic
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

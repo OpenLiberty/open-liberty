@@ -36,7 +36,6 @@ import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -48,7 +47,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class S4U2ProxyTest extends CommonTest {
 
     private static final Class<?> c = S4U2ProxyTest.class;

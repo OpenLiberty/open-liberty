@@ -76,6 +76,13 @@ encode.option-desc.listCustom=\tMegjelen\u00edti az egy\u00e9ni jelsz\u00f3titko
 \tname : az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si algoritmus neve \n\
 \tfeaturename : a szolg\u00e1ltat\u00e1s neve\n\
 \tdescription : az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s le\u00edr\u00e1sa
+encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
+encode.option-desc.keyring=\tAdja meg az SAF kulcscsom\u00f3t, ahol az AES titkos\u00edt\u00e1si kulcs tal\u00e1lhat\u00f3.
+encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
+encode.option-desc.keyringType=\tAdja meg annak a kulcscsom\u00f3nak az SAF kulcscsom\u00f3t\u00edpus\u00e1t, ahol az AES titkos\u00edt\u00e1s\n\
+\ttal\u00e1lhat\u00f3.
+encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
+encode.option-desc.keyLabel=\tAdja meg az AES titkos\u00edt\u00e1si kulcs SAF tan\u00fas\u00edtv\u00e1ny\u00e1nak azonos\u00edt\u00f3j\u00e1t.
 
 
 
@@ -196,14 +203,14 @@ createLTPAKeys.option-desc.password.key=\tMegad egy, az LTPA kulcs jelsz\u00f3 A
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-tlsProfiler.desc=\tTesztelje a c\u00e9l hoszt \u00e9s port kompatibilit\u00e1s\u00e1t az el\u00e9rhet\u0151 TLS protokollokkal \u00e9s rejtjelk\u00e9szletekkel.
+tlsProfiler.desc=\tTesztelje a c\u00e9lhoszt \u00e9s -portok kompatibilit\u00e1s\u00e1t az el\u00e9rhet\u0151 TLS protokollokkal \u00e9s rejtjelk\u00e9szletekkel.
 tlsProfiler.usage.options=\t{0} tlsProfiler [param\u00e9terek]
 tlsProfiler.required-key.port=\ \ \ \ --port
-tlsProfiler.required-desc.port=\tMegadja a portot.
+tlsProfiler.required-desc.port=\tAdja meg a portot.
 tlsProfiler.required-key.host=\ \ \ \ --host
-tlsProfiler.required-desc.host=\tMegadja a hosztot.
+tlsProfiler.required-desc.host=\tAdja meg a hosztot.
 tlsProfiler.option-key.file=\ \ \ \ --file
-tlsProfiler.option-desc.file=\tNem k\u00f6telez\u0151. Az eredm\u00e9ny a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra\n\
+tlsProfiler.option-desc.file=\tNem k\u00f6telez\u0151. Az eredm\u00e9ny a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra \n\
 \ta konzolk\u00e9perny\u0151 helyett.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
-tlsProfiler.option-desc.verbose=\tTov\u00e1bbi inform\u00e1ci\u00f3k a nem biztons\u00e1gos protokollokr\u00f3l.
+tlsProfiler.option-desc.verbose=\tA nem biztons\u00e1gos protokollokkal kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k tartalmaz\u00e1sa.

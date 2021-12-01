@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,8 +102,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
-    	FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
+        transformApps(builderServer);
+        transformApps(rsServer);
 
         // Start server that will build the JWT Token
         serverTracker.addServer(builderServer);

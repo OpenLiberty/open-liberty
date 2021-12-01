@@ -23,6 +23,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.DiscoveryUtils;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.openidconnect.client.fat.CommonTests.GenericOidcClientTests;
@@ -89,7 +90,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_orig.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
-        DiscoveryUtils.waitForDiscoveryToBeReady(testSettings);
+        DiscoveryUtils.waitForOPDiscoveryToBeReady(testSettings);
 
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rpd", "rp_server_orig.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
@@ -121,9 +122,11 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // Force discovery to run to access login page so that the discovery service is active. Then, in the actual tests the reconfig will initiate discovery and cause the
         // error messages to be generated on discovery failures during the reconfig (rather than waiting until the first authorization request in the runtime).
         CommonTestHelpers helpers = new CommonTestHelpers();
-        WebConversation wc = new WebConversation();
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        helpers.rpLoginPage("Setup", wc, testSettings, expectations, Constants.GETMETHOD);
+
+        // try to wait for discovery to have populated the RP config
+        // Don't stop if this fails (there is a chance it could be ready by the time the tests actually run
+        DiscoveryUtils.waitForRPDiscoveryToBeReady(testSettings);
+
     }
 
     /**
@@ -195,22 +198,15 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
 
-        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
-
-        // Client get login page
-        expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.OK_STATUS);
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
-
-        // login will fail
-        expectations = vData.addNoTokensInResponseExpectations(expectations, Constants.LOGIN_USER);
-
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log should contain msg indicating that ssl failure", "CWWKS1708E:.*unable to contact the OpenID Connect provider.*");
-
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log should contain msg indicating an SSL handshake error occurred.", "CWPKI0823E: SSL HANDSHAKE FAILURE.*");
+        List<validationData> expectations = validationTools.add401Responses(Constants.GET_LOGIN_PAGE);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log should contain msg indicating an SSL handshake error occurred.", "CWPKI0823E: SSL HANDSHAKE FAILURE.*");
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1525E message indicating a successful response was not returned from the discovery endpoint.", MessageConstants.CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1524E message saying we failed to obtain info from the OP.", MessageConstants.CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1534E message saying the authorization endpoint URL is missing.", MessageConstants.CWWKS1534E_MISSING_AUTH_ENDPOINT);
 
         WebConversation wc = new WebConversation();
 
-        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
 
     }
 
@@ -341,7 +337,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
         testRPServer.addIgnoredServerException("CWWKS1534E");
-        
+
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }
@@ -380,7 +376,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         expectations = vData.addResponseStatusExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.UNAUTHORIZED_STATUS);
 
         testRPServer.addIgnoredServerException("CWWKS1534E");
-        
+
         WebConversation wc = new WebConversation();
         genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
     }

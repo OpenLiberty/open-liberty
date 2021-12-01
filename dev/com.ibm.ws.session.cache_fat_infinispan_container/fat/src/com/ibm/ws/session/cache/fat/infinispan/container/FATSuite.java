@@ -24,6 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -88,7 +90,8 @@ public class FATSuite {
      */
     @ClassRule
     public static GenericContainer<?> infinispan = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.1.Final")
+                    .withDockerfileFromBuilder(builder -> builder.from(
+                    		ImageNameSubstitutor.instance().apply(DockerImageName.parse("infinispan/server:10.0.1.Final")).asCanonicalNameString())
                                     .user("root")
                                     .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
                                     .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")

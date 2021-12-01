@@ -22,9 +22,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.SignatureEncryptionUserinfoUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
-import com.ibm.ws.security.openidconnect.client.fat.utils.SignatureEncryptionUserinfoUtils;
 import com.meterware.httpunit.WebConversation;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -62,7 +62,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
     public static String test_FinalAction = Constants.LOGIN_USER;
     protected static String hostName = "localhost";
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
-    private static final SignatureEncryptionUserinfoUtils signingUtils = new SignatureEncryptionUserinfoUtils();
+    protected static SignatureEncryptionUserinfoUtils signingUtils = new SignatureEncryptionUserinfoUtils();
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -142,7 +142,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + sigAlgForRP));
         updatedTestSettings.setSignatureAlg(adjustSigAlg(sigAlgForBuilder));
 
-        List<validationData> expectations = signingUtils.setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, updatedTestSettings);
+        List<validationData> expectations = signingUtils.setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, updatedTestSettings, Constants.LOGIN_USER);
 
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", sigAlgForBuilder + "Builder");
 

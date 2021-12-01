@@ -57,6 +57,7 @@ public class Health40TCKLauncher {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.health.4.0.internal_fat_tck", this.getClass() + ":launchHealth40Tck", additionalProps);
+        MvnUtils.preparePublicationFile();
     }
 
 }

@@ -10,13 +10,18 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +39,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -57,6 +64,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.AssertionFailedError;
 
@@ -1052,4 +1060,53 @@ public class MvnUtils {
         return version;
     }
 
+    public static void preparePublicationFile() {
+        Path outputPath = Paths.get("results", "CertificationResults.txt");
+        File outputFile = outputPath.toFile();
+        SAXParserFactory factory = null;
+        SAXParser saxParser = null;
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        try {
+            factory = SAXParserFactory.newInstance();
+            saxParser = factory.newSAXParser();
+        } catch (ParserConfigurationException e) {
+             throw new RuntimeException(e);
+        } catch (SAXException e) {
+             throw new RuntimeException(e);
+        }
+        TestSuiteXmlParser xmlParser = new TestSuiteXmlParser();
+
+        try (FileWriter output = new FileWriter(outputFile)) {
+            Path junitPath = Paths.get("results", "junit");
+            File junitDirectory = junitPath.toFile();
+            for (final File xmlFile : junitDirectory.listFiles()) {
+                if (xmlFile.isDirectory()){ 
+                    continue; //this shouldn't happen.
+                }
+                if (xmlFile.length() == 0) {
+                    continue; //this probably will happen. We create an empty file then populate it after we're expecting this method to run.
+                }
+                saxParser.parse(xmlFile, xmlParser);
+            }
+
+            output.write("Summary" + System.lineSeparator() + System.lineSeparator());
+            output.write("Product Name, Version and download URL (if applicable): " + System.lineSeparator());
+            output.write("Specification Name, Version and download URL: " + System.lineSeparator());
+            output.write("Public URL of TCK Results Summary: " + System.lineSeparator());
+            output.write("Java runtime used to run the implementation: " + System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ") + System.lineSeparator());
+            output.write("Summary of the information for the certification environment, operating system, cloud: " + System.getProperty("os.name") + System.lineSeparator());
+
+            output.write(System.lineSeparator());
+
+            output.write("Java "+ javaInfo.majorVersion() +" Test results:" + System.lineSeparator());
+
+            for (TestSuiteResult result : xmlParser.getResults()) {
+                output.write(result.toString());
+            }
+        } catch (IOException e) {
+             throw new RuntimeException(e);
+        } catch (SAXException e) {
+             throw new RuntimeException(e);
+        }
+    }
 }

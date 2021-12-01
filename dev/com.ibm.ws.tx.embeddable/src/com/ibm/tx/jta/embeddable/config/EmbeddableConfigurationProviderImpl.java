@@ -1,5 +1,6 @@
 package com.ibm.tx.jta.embeddable.config;
 
+import java.util.List;
 /*******************************************************************************
  * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -489,40 +490,40 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
-    public int getLightweightTransientErrorRetryTime() {
+    public int getLightweightLogRetryInterval() {
         return 1;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
-    public int getLightweightTransientErrorRetryAttempts() {
+    public int getLightweightLogRetryLimit() {
         return 2;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
-    public int getStandardTransientErrorRetryTime() {
+    public int getLogRetryInterval() {
         return 10;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
-    public int getStandardTransientErrorRetryAttempts() {
+    public int getLogRetryLimit() {
         return 180;
     }
 
@@ -533,11 +534,41 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#isDataSourceFactorySet()
      */
     @Override
     public boolean isDataSourceFactorySet() {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
+     */
+    @Override
+    public boolean enableLogRetries() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getRetriableSqlCodes() {
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getNonRetriableSqlCodes() {
+        return null;
     }
 }

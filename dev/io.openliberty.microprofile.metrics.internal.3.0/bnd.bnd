@@ -17,11 +17,15 @@ Bundle-SymbolicName: io.openliberty.microprofile.metrics.internal.3.0
 
 Bundle-Description: MicroProfile Metrics Common, version ${bVersion}
 
+jakartaeeMe: true
+
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Import-Package: \
 	javax.enterprise.inject; version="[1.1,3)",\
+	org.eclipse.microprofile.metrics;version="[1.0,5)",\
+	org.eclipse.microprofile.metrics.*;version="[1.0,5)",\
 	*
 
 Private-Package: \
@@ -61,6 +65,7 @@ WS-TraceGroup: METRICS
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest,\
+	io.openliberty.org.eclipse.microprofile.metrics.4.0;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.api.json;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\

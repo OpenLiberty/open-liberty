@@ -13,6 +13,7 @@ package web.war.annotatedbasic.deferred;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -21,6 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * This bean will read LDAP identity store configuration settings from a well-known file
@@ -34,7 +37,8 @@ public class LdapSettingsBean {
 
     private Properties props;
 
-    public LdapSettingsBean() {}
+    public LdapSettingsBean() {
+    }
 
     public String getBindDn() throws IOException {
         refreshConfiguration();
@@ -44,11 +48,11 @@ public class LdapSettingsBean {
         return prop;
     }
 
+    @Trivial
     public String getBindDnPassword() throws IOException {
         refreshConfiguration();
 
         String prop = getProperty("bindDnPassword");
-        System.out.println(CLASS_NAME + ".getBindDnPassword() returns: " + prop);
         return prop;
     }
 
@@ -223,7 +227,7 @@ public class LdapSettingsBean {
         if (resultsSet.size() > 0) {
             results = resultsSet.toArray(new ValidationType[resultsSet.size()]);
         }
-        System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
+        System.out.println(CLASS_NAME + ".getUseFor() returns: " + Arrays.toString(results));
         return results;
     }
 

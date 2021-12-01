@@ -35,9 +35,7 @@ import app.web.airlines.JAXRSApp;
 import app.web.airlines.model.Flight;
 
 @Path("/availability")
-@Tag(
-    name = "Availability",
-    description = "All the availability methods")
+@Tag(name = "Availability", description = "All the availability methods")
 public class AvailabilityResource {
 
     @GET
@@ -53,21 +51,15 @@ public class AvailabilityResource {
         description = "successful operation",
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(
-                type = SchemaType.ARRAY,
-                implementation = Flight.class)))
+            schema = @Schema(type = SchemaType.ARRAY, implementation = Flight.class)))
     @APIResponse(
         responseCode = "404",
         description = "No available flights found",
-        content = @Content(
-            mediaType = "n/a"))
-    @Operation(
-        summary = "Retrieve all available flights",
-        operationId = "getFlights")
+        content = @Content(mediaType = "n/a"))
+    @Operation(summary = "Retrieve all available flights", operationId = "getFlights")
     @Produces("application/json")
-    public Response getFlights(
-                               @Parameter(
-                                   ref = "#/components/parameters/departureDate") @QueryParam("departureDate") String departureDate,
+    public Response getFlights(@Parameter(
+        ref = "#/components/parameters/departureDate") @QueryParam("departureDate") String departureDate,
                                @Parameter(
                                    name = "airportFrom",
                                    required = true,
@@ -106,26 +98,33 @@ public class AvailabilityResource {
         return Response.ok().entity(findFlights(airportFrom, airportTo, departureDate, returningDate)).build();
     }
 
-    private static List<Flight> findFlights(String airportFrom, String airportTo, String departureDate, String returningDate) {
+    private static List<Flight> findFlights(String airportFrom,
+                                            String airportTo,
+                                            String departureDate,
+                                            String returningDate) {
 
         List<Flight> flights = new ArrayList<Flight>(6);
 
-        //Departure flights
+        // Departure flights
         departureDate = extractDate(departureDate);
         for (int i = 0; i < 3; i++) {
             flights.add(new Flight(AirlinesResource.getRandomAirline(), departureDate
-                                                                        + getRandomTime(), "AC"
-                                                                                           + JAXRSApp.getRandomNumber(200,
-                                                                                                                      10), "on schedule", airportFrom, airportTo, getRandomPrice()));
+                + getRandomTime(),
+                "AC"
+                    + JAXRSApp.getRandomNumber(200,
+                        10),
+                "on schedule", airportFrom, airportTo, getRandomPrice()));
         }
 
-        //Returning flights
+        // Returning flights
         returningDate = extractDate(returningDate);
         for (int i = 0; i < 3; i++) {
             flights.add(new Flight(AirlinesResource.getRandomAirline(), returningDate
-                                                                        + getRandomTime(), "AC"
-                                                                                           + JAXRSApp.getRandomNumber(200,
-                                                                                                                      10), "on schedule", airportFrom, airportTo, getRandomPrice()));
+                + getRandomTime(),
+                "AC"
+                    + JAXRSApp.getRandomNumber(200,
+                        10),
+                "on schedule", airportFrom, airportTo, getRandomPrice()));
         }
 
         return flights;

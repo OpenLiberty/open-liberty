@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.test.tests.RecoveryTest;
-import com.ibm.ws.transaction.test.tests.XAFlowTest;
+import com.ibm.ws.transaction.test.tests.DataSourceChangeTest;
 import com.ibm.ws.transaction.test.tests.WaitForRecoveryTest;
+import com.ibm.ws.transaction.test.tests.XAFlowTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -27,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 XAFlowTest.class,
                 WaitForRecoveryTest.class,
+                DataSourceChangeTest.class,
 })
 public class FATSuite {
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.

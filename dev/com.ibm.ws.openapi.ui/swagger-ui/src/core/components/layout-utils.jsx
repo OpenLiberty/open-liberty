@@ -15,7 +15,7 @@ export class Container extends React.Component {
 
     let containerClass = "swagger-container" + (full ? "-full" : "")
     return (
-      <section {...rest} aria-label="swagger container" className={xclass(rest.className, containerClass)}/>
+      <section {...rest} className={xclass(rest.className, containerClass)}/>
     )
   }
 }
@@ -56,7 +56,7 @@ export class Col extends React.Component {
     let classesAr = []
 
     for (let device in DEVICES) {
-      if (!DEVICES.hasOwnProperty(device)) {
+      if (!Object.prototype.hasOwnProperty.call(DEVICES, device)) {
         continue
       }
       let deviceClass = DEVICES[device]
@@ -73,10 +73,14 @@ export class Col extends React.Component {
       }
     }
 
+    if (hide) {
+      classesAr.push("hidden")
+    }
+
     let classes = xclass(rest.className, ...classesAr)
 
     return (
-      <section {...rest} aria-label="swagger container" style={{display: hide ? "none": null}} className={classes}/>
+      <section {...rest} className={classes}/>
     )
   }
 
@@ -213,7 +217,7 @@ Link.propTypes = {
   className: PropTypes.string
 }
 
-const NoMargin = ({children}) => <div style={{height: "auto", border: "none", margin: 0, padding: 0}}> {children} </div>
+const NoMargin = ({children}) => <div className="no-margin"> {children} </div>
 
 NoMargin.propTypes = {
   children: PropTypes.node

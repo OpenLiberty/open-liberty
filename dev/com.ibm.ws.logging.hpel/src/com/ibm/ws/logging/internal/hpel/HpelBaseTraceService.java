@@ -28,10 +28,19 @@ import com.ibm.wsspi.logging.MessageRouter;
 //Just a comment
 public class HpelBaseTraceService extends BaseTraceService {
     private final HpelTraceServiceWriter trWriter = new HpelTraceServiceWriter(this);
+    private final String SYSOUT = "SystemOut";
+    private final String SYSERR = "SystemErr";
 
     /** {@inheritDoc} */
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
+
+        if (logRecord.getLoggerName() != null && (logRecord.getLoggerName().equals(SYSOUT) || logRecord.getLoggerName().equals(SYSERR))) {
+            logRecord.setSourceClassName("");
+            logRecord.setSourceMethodName("");
+
+        }
+
         RoutedMessage routedMessage = null;
         if (externalMessageRouter.get() != null) {
             String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());

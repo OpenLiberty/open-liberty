@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
+import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
@@ -73,7 +74,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.transformApps(consumerServer, "test-apps/jwtbuilder.war", "test-apps/jwtconsumerclient.war", "dropins/testmarker.war");
+        transformApps(consumerServer);
 
         serverTracker.addServer(consumerServer);
         skipRestoreServerTracker.addServer(consumerServer);
@@ -86,6 +87,10 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         // set the default signing key for this test class (individual test cases can override if needed)
         consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
+
+        // for some reason some of the keystore configs were taking too long to be loaded
+        ServerInstanceUtils.waitForKeyStores(consumerServer);
+
     }
 
     @Override

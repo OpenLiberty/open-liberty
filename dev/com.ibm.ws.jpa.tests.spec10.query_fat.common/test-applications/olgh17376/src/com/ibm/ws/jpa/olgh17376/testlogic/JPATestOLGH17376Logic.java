@@ -439,8 +439,8 @@ public class JPATestOLGH17376Logic extends AbstractTestLogic {
                                                                      + "SELECT t FROM SimpleEntityOLGH17376 t "
                                                                      + "WHERE t.itemString1 IN ("
                                                                      + "SELECT u.itemString1 FROM SimpleEntityOLGH17376 u "
-                                                                     + "WHERE u.itemString2 = ?2)", SimpleEntityOLGH17376.class);
-            query.setParameter(2, "SEVEN");
+                                                                     + "WHERE u.itemString2 = ?1)", SimpleEntityOLGH17376.class);
+            query.setParameter(1, "SEVEN");
             List<SimpleEntityOLGH17376> dto01 = query.getResultList();
             Assert.assertNotNull(dto01);
             Assert.assertEquals(1, dto01.size());
@@ -655,10 +655,10 @@ public class JPATestOLGH17376Logic extends AbstractTestLogic {
                                                                      + "SELECT t FROM SimpleEntityOLGH17376 t "
                                                                      + "WHERE t.itemString1 IN ("
                                                                      + "SELECT u.itemString1 FROM SimpleEntityOLGH17376 u "
-                                                                     + "WHERE u.itemString2 IN (?2, ?3, ?4))", SimpleEntityOLGH17376.class);
-            query.setParameter(2, "TEN");
-            query.setParameter(3, "SEVEN");
-            query.setParameter(4, "ELEVEN");
+                                                                     + "WHERE u.itemString2 IN (?1, ?2, ?3))", SimpleEntityOLGH17376.class);
+            query.setParameter(1, "TEN");
+            query.setParameter(2, "SEVEN");
+            query.setParameter(3, "ELEVEN");
             List<SimpleEntityOLGH17376> dto01 = query.getResultList();
             Assert.assertNotNull(dto01);
             Assert.assertEquals(1, dto01.size());

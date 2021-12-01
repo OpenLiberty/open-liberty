@@ -39,8 +39,15 @@ Read more about the plugin system in the [Customization documentation](/docs/cus
 Parameter name | Docker variable | Description
 --- | --- | -----
 <a name="layout"></a>`layout` | _Unavailable_ | `String="BaseLayout"`. The name of a component available via the plugin system to use as the top-level layout for Swagger UI.
+<a name="pluginsOptions"></a>`pluginsOptions` | _Unavailable_ | `Object`. A Javascript object to configure plugin integration and behaviors (see below).
 <a name="plugins"></a>`plugins` | _Unavailable_ | `Array=[]`. An array of plugin functions to use in Swagger UI.
 <a name="presets"></a>`presets` | _Unavailable_ | `Array=[SwaggerUI.presets.ApisPreset]`. An array of presets to use in Swagger UI. Usually, you'll want to include `ApisPreset` if you use this option.
+
+##### Plugins options
+
+Parameter name | Docker variable | Description
+--- | --- | -----
+<a name="pluginLoadType"></a>`pluginLoadType` | _Unavailable_ | `String=["legacy", "chain"]`. Control behavior of plugins when targeting the same component with wrapComponent.<br/>- `legacy` (default) : last plugin takes precedence over the others<br/>- `chain` : chain wrapComponents when targeting the same core component, allowing multiple plugins to wrap the same component
 
 ##### Display
 
@@ -56,10 +63,17 @@ Parameter name | Docker variable | Description
 <a name="filter"></a>`filter` | `FILTER` | `Boolean=false OR String`. If set, enables filtering. The top bar will show an edit box that you can use to filter the tagged operations that are shown. Can be Boolean to enable or disable, or a string, in which case filtering will be enabled using that string as the filter expression. Filtering is case sensitive matching the filter expression anywhere inside the tag.
 <a name="maxDisplayedTags"></a>`maxDisplayedTags` | `MAX_DISPLAYED_TAGS` | `Number`. If set, limits the number of tagged operations displayed to at most this many. The default is to show all operations.
 <a name="operationsSorter"></a>`operationsSorter` | _Unavailable_ | `Function=(a => a)`. Apply a sort to the operation list of each API. It can be 'alpha' (sort by paths alphanumerically), 'method' (sort by HTTP method) or a function (see Array.prototype.sort() to know how sort function works). Default is the order returned by the server unchanged.
-<a name="showExtensions"></a>`showExtensions` | `SHOW_EXTENSIONS` | `Boolean=false`. Controls the display of vendor extension (`x-`) fields and values for Operations, Parameters, and Schema.
+<a name="showExtensions"></a>`showExtensions` | `SHOW_EXTENSIONS` | `Boolean=false`. Controls the display of vendor extension (`x-`) fields and values for Operations, Parameters, Responses, and Schema.
 <a name="showCommonExtensions"></a>`showCommonExtensions` | `SHOW_COMMON_EXTENSIONS` | `Boolean=false`. Controls the display of extensions (`pattern`, `maxLength`, `minLength`, `maximum`, `minimum`) fields and values for Parameters.
 <a name="tagSorter"></a>`tagsSorter` | _Unavailable_ | `Function=(a => a)`. Apply a sort to the tag list of each API. It can be 'alpha' (sort by paths alphanumerically) or a function (see [Array.prototype.sort()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) to learn how to write a sort function). Two tag name strings are passed to the sorter for each pass. Default is the order determined by Swagger UI.
+<a name="useUnsafeMarkdown"></a>`useUnsafeMarkdown` | `USE_UNSAFE_MARKDOWN` | `Boolean=false`. When enabled, sanitizer will leave `style`, `class` and `data-*` attributes untouched on all HTML Elements declared inside markdown strings. This parameter is **Deprecated** and will be removed in `4.0.0`.
 <a name="onComplete"></a>`onComplete` | _Unavailable_ | `Function=NOOP`. Provides a mechanism to be notified when Swagger UI has finished rendering a newly provided definition.
+<a name="syntaxHighlight"></a>`syntaxHighlight` | _Unavailable_ | Set to `false` to deactivate syntax highlighting of payloads and cURL command, can be otherwise an object with the `activate` and `theme` properties.
+<a name="syntaxHighlight.activate"></a>`syntaxHighlight.activate` | _Unavailable_ | `Boolean=true`. Whether syntax highlighting should be activated or not.
+<a name="syntaxHighlight.theme"></a>`syntaxHighlight.theme` | _Unavailable_ | `String=["agate"*, "arta", "monokai", "nord", "obsidian", "tomorrow-night"]`. [Highlight.js](https://highlightjs.org/static/demo/) syntax coloring theme to use. (Only these 6 styles are available.)
+<a name="tryItOutEnabled"></a>`tryItOutEnabled` | `TRY_IT_OUT_ENABLED` | `Boolean=false`. Controls whether the "Try it out" section should be enabled by default.
+<a name="requestSnippets"></a>`requestSnippets` | _Unavailable_ | `Object`. This is the default configuration section for the the requestSnippets plugin.<br>requestSnippets: {<br>&nbsp;&nbsp;generators: {<br>&nbsp;&nbsp;&nbsp;&nbsp;"curl_bash": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: "cURL (bash)",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;syntax: "bash"<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;"curl_powershell": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: "cURL (PowerShell)",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;syntax: "powershell"<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;"curl_cmd": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: "cURL (CMD)",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;syntax: "bash"<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;defaultExpanded: true,<br>&nbsp;&nbsp;languages: null, // e.g. only show curl bash = \["curl_bash"\]<br>},
+
 
 ##### Network
 
@@ -67,10 +81,11 @@ Parameter name | Docker variable | Description
 --- | --- | -----
 <a name="oauth2RedirectUrl"></a>`oauth2RedirectUrl` | `OAUTH2_REDIRECT_URL` | `String`. OAuth redirect URL.
 <a name="requestInterceptor"></a>`requestInterceptor` | _Unavailable_ | `Function=(a => a)`. MUST be a function.  Function to intercept remote definition, "Try it out", and OAuth 2.0 requests.  Accepts one argument requestInterceptor(request) and must return the modified request, or a Promise that resolves to the modified request.
+<a name="request.curlOptions"></a>`request.curlOptions` | _Unavailable_ | `Array`.  If set, MUST be an array of command line options available to the `curl` command.  This can be set on the mutated request in the `requestInterceptor` function. For example `request.curlOptions = ["-g", "--limit-rate 20k"]`
 <a name="responseInterceptor"></a>`responseInterceptor` | _Unavailable_ | `Function=(a => a)`. MUST be a function.  Function to intercept remote definition, "Try it out", and OAuth 2.0 responses.  Accepts one argument responseInterceptor(response) and must return the modified response, or a Promise that resolves to the modified response.
 <a name="showMutatedRequest"></a>`showMutatedRequest` | `SHOW_MUTATED_REQUEST` | `Boolean=true`. If set to `true`, uses the mutated request returned from a requestInterceptor to produce the curl command in the UI, otherwise the request before the requestInterceptor was applied is used.
 <a name="supportedSubmitMethods"></a>`supportedSubmitMethods` | `SUPPORTED_SUBMIT_METHODS` | `Array=["get", "put", "post", "delete", "options", "head", "patch", "trace"]`. List of HTTP methods that have the "Try it out" feature enabled. An empty array disables "Try it out" for all operations. This does not filter the operations from the display.
-<a name="validatorUrl"></a>`validatorUrl` | `VALIDATOR_URL` | `String="https://validator.swagger.io/validator" OR null`. By default, Swagger UI attempts to validate specs against swagger.io's online validator. You can use this parameter to set a different validator URL, for example for locally deployed validators ([Validator Badge](https://github.com/swagger-api/validator-badge)). Setting it to `null` will disable validation.
+<a name="validatorUrl"></a>`validatorUrl` | `VALIDATOR_URL` | `String="https://validator.swagger.io/validator" OR null`. By default, Swagger UI attempts to validate specs against swagger.io's online validator. You can use this parameter to set a different validator URL, for example for locally deployed validators ([Validator Badge](https://github.com/swagger-api/validator-badge)). Setting it to either `none`, `127.0.0.1` or `localhost` will disable validation.
 <a name="withCredentials"></a>`withCredentials` | `WITH_CREDENTIALS` | `Boolean=false` If set to `true`, enables passing credentials, [as defined in the Fetch standard](https://fetch.spec.whatwg.org/#credentials), in CORS requests that are sent by the browser. Note that Swagger UI cannot currently set cookies cross-domain (see [swagger-js#1163](https://github.com/swagger-api/swagger-js/issues/1163)) - as a result, you will have to rely on browser-supplied cookies (which this setting enables sending) that Swagger UI cannot control.
 
 ##### Macros
@@ -79,6 +94,12 @@ Parameter name | Docker variable | Description
 --- | --- | -----
 <a name="modelPropertyMacro"></a>`modelPropertyMacro` | _Unavailable_ | `Function`. Function to set default values to each property in model. Accepts one argument modelPropertyMacro(property), property is immutable
 <a name="parameterMacro"></a>`parameterMacro` | _Unavailable_ | `Function`. Function to set default value to parameters. Accepts two arguments parameterMacro(operation, parameter). Operation and parameter are objects passed for context, both remain immutable
+
+##### Authorization
+
+Parameter name | Docker variable | Description
+--- | --- | -----
+<a name="persistAuthorization"></a>`persistAuthorization` | `PERSIST_AUTHORIZATION` | `Boolean=false`. If set to `true`, it persists authorization data and it would not be lost on browser close/refresh
 
 ### Instance methods
 
@@ -148,4 +169,12 @@ Example:
 
 ```sh
 SPEC="{ \"openapi\": \"3.0.0\" }"
+```
+
+### Docker-Compose
+
+#### .env file example encoding
+```sh
+SUPPORTED_SUBMIT_METHODS=['get', 'post']
+URLS=[ { url: 'http://petstore.swagger.io/v2/swagger.json', name: 'Petstore' } ]
 ```

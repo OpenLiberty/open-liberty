@@ -35,6 +35,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   io.openliberty.jakarta.restfulWS-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
+  io.openliberty.concurrent-2.0, \
   io.openliberty.jsonp-2.0
 # com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \ # not sure about these...
 # com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:=2.3, \
@@ -46,6 +47,10 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   com.ibm.ws.org.jboss.logging, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
   io.openliberty.restfulWS.internal.globalhandler.jakarta
-kind=beta
+-jars=\
+  io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
+-files=\
+  dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

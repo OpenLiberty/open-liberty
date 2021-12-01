@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,26 +45,26 @@ public class JSF23ComponentSearchTests {
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23CDIServer")
-    public static LibertyServer jsf23CDIServer;
+    @Server("jsf23ComponentSearchServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf23CDIServer,
+        ShrinkHelper.defaultDropinApp(server,
                                       "ComponentSearchExpression.war",
                                       "com.ibm.ws.jsf23.fat.searchexpression",
                                       "com.ibm.ws.jsf23.fat.searchexpression.beans");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        jsf23CDIServer.startServer(JSF23ComponentSearchTests.class.getSimpleName() + ".log");
+        server.startServer(JSF23ComponentSearchTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23CDIServer != null && jsf23CDIServer.isStarted()) {
-            jsf23CDIServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -81,7 +81,7 @@ public class JSF23ComponentSearchTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -156,7 +156,7 @@ public class JSF23ComponentSearchTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -201,7 +201,7 @@ public class JSF23ComponentSearchTests {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "newFacesConfigElements.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "newFacesConfigElements.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
