@@ -56,3 +56,6 @@ instrument.classesExcludes: io/openliberty/concurrent/cdi/resources/*.class
 -dependson com.ibm.ws.cdi.interfaces
 
 jakartaeeMe: true
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.concurrent.cdi.jakarta.jar
