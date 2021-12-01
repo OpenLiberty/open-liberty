@@ -57,7 +57,7 @@ public class AsyncInterceptor implements Serializable {
         Class<?> returnType = method.getReturnType();
         if (!returnType.equals(CompletableFuture.class)
             && !returnType.equals(CompletionStage.class)
-            && !returnType.equals(Void.class))
+            && !returnType.equals(Void.TYPE)) // void
             throw new UnsupportedOperationException("@Asynchronous " + returnType.getName() + " " + method.getName()); // TODO NLS?
 
         ManagedExecutorService executor;
