@@ -12,9 +12,9 @@ Subsystem-Endpoint-Urls: className=com.ibm.ws.security.openidconnect.server.plug
 Subsystem-Endpoint-ShortNames: clientManagement=clientManagement-1.0, personalTokenManagement=personalTokenManagement-1.0, usersTokenManagement=usersTokenManagement-1.0
 Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSGI-INF/clientManagement_78.png;size=78,OSGI-INF/clientManagement_142.png;size=142, personalTokenManagement=OSGI-INF/personalTokenManagement_142.png,OSGI-INF/personalTokenManagement_78.png;size=78,OSGI-INF/personalTokenManagement_142.png;size=142, usersTokenManagement=OSGI-INF/usersTokenManagement_142.png,OSGI-INF/usersTokenManagement_78.png;size=78,OSGI-INF/usersTokenManagement_142.png;size=142
 -features= com.ibm.websphere.appserver.oauth-2.0, \
-  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0", \
+  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  io.openliberty.openidConnectServer1.0.internal.ee-6.0; ibm.tolerates:="9.0", \
+  io.openliberty.openidConnectServer1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
   com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=\
   com.ibm.ws.net.oauth.jsontoken.1.1-r42, \
