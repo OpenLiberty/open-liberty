@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.mprestclient
 
+Multi-Release: true
+
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.mprestclient.jakarta.jar
 
