@@ -119,12 +119,8 @@ public class HandlerChainTest {
             throw se;
         }
         // Uninstall Applications
-        server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
+        server.deleteAllDropinApplications(); // This method might be more efficient removing apps from dropins
 
-        // Make server wait for application stop for the test to observe PreDestroy phase
-        server.waitForStringInLog("CWWKE1101I",240000);     // added timeout 4 minutes
-
-        
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
@@ -132,10 +128,11 @@ public class HandlerChainTest {
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
         // Test initParams
-        assertStatesExsited(".*init param \"arg0\" = testInitParam");
-
+        assertStatesExisted(".*init param \"arg0\" = testInitParam");
+        
         // Test postConstruct and preDestroy
-        assertStatesExsited(new String[] {
+        assertStatesExistedFromMark(true, new String[] {      // This method is converted to assertStatesExistedFromMark because 
+                                                              //this method is resetting the log mark each time with true parameter 
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
@@ -170,7 +167,7 @@ public class HandlerChainTest {
         }
     }
 
-    private void assertStatesExsited(String... states) {
+    private void assertStatesExisted(String... states) {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
