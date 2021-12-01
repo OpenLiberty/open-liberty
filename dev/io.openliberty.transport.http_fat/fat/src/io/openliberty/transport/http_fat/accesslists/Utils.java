@@ -165,6 +165,7 @@ public class Utils {
      *
      * @param server
      * @param test   used to get the specific file name and app
+     * @throws InterruptedException
      */
     public static void setUpServer(LibertyServer server, HttpTest test) {
         String testMethod = test.toString();
@@ -173,12 +174,28 @@ public class Utils {
         }
         String serverXml = testMethod + "_server.xml";
         String customized = customize(server, serverXml, test.clientDetails);
-        try {
-            // We will wait for the app to come up
-            replaceServerXmlContents(server, customized, test.app, READY);
-        } catch (Exception e) {
-            debug(e.getMessage());
-            Assert.fail(e.getMessage());
+
+        // We are not testing server startup glitches in the test cloud infrastructure here
+        // so have some tolerance for when there is a temporary problem in starting
+        // the server on time (due to cloud CPU resources usually).
+        final int SLOW_SERVER_START_TOLERANCE = 5;
+        for (int i = 1; i <= SLOW_SERVER_START_TOLERANCE; i++) {
+            try {
+                // We will wait for the app to come up
+                replaceServerXmlContents(server, customized, test.app, READY);
+                // We will have thrown an exception on having a problem if not we are finished
+                return;
+            } catch (Exception e) {
+                debug(e.getMessage());
+                if (i >= SLOW_SERVER_START_TOLERANCE) {
+                    Assert.fail("Failed to start server promptly " + SLOW_SERVER_START_TOLERANCE + " times." + e.getMessage());
+                }
+                try {
+                    Thread.sleep(i * 1000);
+                } catch (InterruptedException ie) {
+                    continue; // we will be finished soon
+                }
+            }
         }
     }
 
