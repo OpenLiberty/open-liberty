@@ -25,6 +25,23 @@
   <link href="login/login.css" rel="stylesheet"></link>
 
 <%
+    // delete the JSESSION cookie
+    // so that invalidate will generate a new session
+    Cookie[] cookies = request.getCookies();
+    response.setContentType("text/html");
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+          if ("JSESSIONID".equals(cookie.getName())) {
+              String value = cookie.getValue();
+              cookie.setMaxAge(0);
+              cookie.setValue(null);
+              cookie.setPath("/");
+              response.addCookie(cookie);
+              break;
+          }
+      }
+    }
+    
     // If a user is logged in or there is a valid session, logout and invalidate
     // Create a session if there isn't on as it will still be set on response even when invalidated,
     // allowing reverse proxies to route via session affinity.  The initial/immediate session is necessary
