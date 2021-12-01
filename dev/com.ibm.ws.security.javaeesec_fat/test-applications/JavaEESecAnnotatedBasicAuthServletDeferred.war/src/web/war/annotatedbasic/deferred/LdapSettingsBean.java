@@ -23,6 +23,8 @@ import javax.inject.Named;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * This bean will read LDAP identity store configuration settings from a well-known file
  * allowing tests to update the LDAP identity store dynamically by simply updating the
@@ -46,11 +48,11 @@ public class LdapSettingsBean {
         return prop;
     }
 
+    @Trivial
     public String getBindDnPassword() throws IOException {
         refreshConfiguration();
 
         String prop = getProperty("bindDnPassword");
-        System.out.println(CLASS_NAME + ".getBindDnPassword() returns: " + prop);
         return prop;
     }
 
