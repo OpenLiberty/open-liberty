@@ -244,7 +244,7 @@ public class AcmeDisableTriggerSimpleTest {
 			 * Start the server. The domain2.com domain will fail to validate.
 			 * 
 			 **********************************************************************/
-			Log.info(AcmeSimpleTest.class, testName.getMethodName(), "Starting server.");
+			Log.info(AcmeDisableTriggerSimpleTest.class, testName.getMethodName(), "Starting server.");
 			server.startServer();
 			server.waitForStringInLog("CWPKI2001E.*authorization challenge failed for the domain2.com domain");
 			AcmeFatUtils.waitForSslEndpoint(server);
