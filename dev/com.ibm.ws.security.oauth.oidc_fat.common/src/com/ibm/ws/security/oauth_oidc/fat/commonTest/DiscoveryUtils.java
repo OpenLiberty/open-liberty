@@ -16,11 +16,13 @@ import java.util.List;
 import org.joda.time.Instant;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
+import com.meterware.httpunit.WebRequest;
 
 public class DiscoveryUtils {
 
@@ -32,7 +34,7 @@ public class DiscoveryUtils {
     public static CommonValidationTools validationTools = new CommonValidationTools();
 
     // wait up to 20 seconds for discovery to be ready
-    public static void waitForDiscoveryToBeReady(TestSettings settings) throws Exception {
+    public static void waitForOPDiscoveryToBeReady(TestSettings settings) throws Exception {
 
         msgUtils.printMethodName("waitForDiscoveryToBeReady");
 
@@ -57,9 +59,34 @@ public class DiscoveryUtils {
         msgUtils.printMethodName("waitForDiscoveryToBeReady");
     }
 
+    public static void waitForRPDiscoveryToBeReady(TestSettings testSettings) throws Exception {
+
+        String thisMethod = "waitForRPDiscoveryToBeReady";
+        int maxAttempts = 5;
+        int tryNum = 1;
+
+        while (tryNum <= maxAttempts) {
+            WebConversation wc = new WebConversation();
+            WebRequest request = new GetMethodWebRequest(testSettings.getTestURL());
+            WebResponse response = wc.getResponse(request);
+            msgUtils.printResponseParts(response, thisMethod, "Response when trying to use Discovered Server settings: ");
+
+            int status = AutomationTools.getResponseStatusCode(response);
+            if (status == Constants.OK_STATUS) {
+                Log.info(thisClass, thisMethod, "Was able to to use one of the OpenidConnect clients discovery data");
+                break;
+            } else {
+                Log.info(thisClass, thisMethod, "Discovery does not appear to be ready yet - try #" + tryNum);
+                helpers.testSleep(5); // sleep 5 seconds before the next attempt
+                tryNum++;
+            }
+        }
+
+    }
+
     public static void invokeDiscovery(WebConversation wc, TestSettings settings, String action, List<validationData> expectations) throws Exception {
 
-        com.meterware.httpunit.WebRequest request = null;
+        WebRequest request = null;
         WebResponse response = null;
         String thisMethod = "invokeDiscovery";
 
