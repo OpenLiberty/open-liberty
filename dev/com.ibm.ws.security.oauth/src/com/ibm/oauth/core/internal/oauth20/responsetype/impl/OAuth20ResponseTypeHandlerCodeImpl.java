@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.oauth.core.internal.oauth20.responsetype.impl;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,10 +22,13 @@ import com.ibm.oauth.core.api.error.OAuthException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20AccessDeniedException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
+import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.oauth20.plugins.IDTokenImpl;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
 public class OAuth20ResponseTypeHandlerCodeImpl implements
@@ -111,6 +115,33 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
 
             result = new ArrayList<OAuth20Token>();
             result.add(code);
+
+            SubjectHelper subjectHelper = new SubjectHelper();
+            Hashtable<String, ?> hashtableFromCallerSubject = subjectHelper.getHashtableFromCallerSubject();
+            if (hashtableFromCallerSubject != null) {
+                OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
+
+                String idTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ID_TOKEN);
+                int expiresIn = Integer.parseInt((String) hashtableFromCallerSubject.get(OAuth20Constants.EXPIRES_IN));
+
+                if (idTokenString != null) {
+                    String thirdPartyTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
+                    OAuth20Token idTokenCacheEntry = new IDTokenImpl(
+                            thirdPartyTokenId,
+                            idTokenString,
+                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
+                            clientId,
+                            username,
+                            redirectUri,
+                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
+                            scope,
+                            expiresIn, // TODO: revisit appropriate value here (currently using expires in from hashtable)
+                            null,
+                            OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+
+                    tokenCache.add(idTokenCacheEntry.getId(), idTokenCacheEntry, idTokenCacheEntry.getLifetimeSeconds());
+                }
+            }
 
         } finally {
             _log.exiting(CLASS, methodName);

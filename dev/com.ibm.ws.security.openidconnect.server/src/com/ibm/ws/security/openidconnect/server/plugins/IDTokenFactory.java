@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,10 @@ public class IDTokenFactory extends OAuth20TokenFactory {
      * @return
      */
     public OAuth20Token createIDToken(Map<String, String[]> tokenMap) {
+        return createIDToken(tokenMap, null);
+    }
+        
+    public OAuth20Token createIDToken(Map<String, String[]> tokenMap, String thirdPartyIDToken) {
         String methodName = "createIDToken";
         log.entering(CLASS, methodName);
         OAuth20Token token = null;
@@ -121,7 +125,7 @@ public class IDTokenFactory extends OAuth20TokenFactory {
                         String sharedKey = baseClient.getClientSecret();
                         idTokenMap.put(SHARED_KEY, new String[] { sharedKey });
                     }
-                    token = handler.createToken(idTokenMap);
+                    token = ((IDTokenHandler) handler).createToken(idTokenMap, thirdPartyIDToken);
                     if (token != null) {
                         OidcServerConfig oidcServerConfig = OIDCProvidersConfig.getOidcServerConfigForOAuth20Provider(componentId);
                         if (oidcServerConfig != null && oidcServerConfig.cacheIDToken()) {

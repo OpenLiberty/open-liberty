@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,19 @@ public class SubjectHelper {
             wsCredential = wsCredentialsIterator.next();
         }
         return wsCredential;
+    }
+
+    /**
+     * Gets the ID token from the caller subject.
+     *
+     * @return The ID token as a String or null.
+     */
+    public String getIDTokenFromCallerSubject() {
+        Hashtable<String, ?> hashtableFromCallerSubject = getHashtableFromCallerSubject();
+        if (hashtableFromCallerSubject == null) {
+            return null;
+        }
+        return (String) hashtableFromCallerSubject.get("id_token");
     }
 
     /**
@@ -317,6 +330,18 @@ public class SubjectHelper {
             return getHashtableFromSubject(subject);
         } else {
             return AccessController.doPrivileged(new GetHashtablePrivilegedAction(subject));
+        }
+    }
+
+    public Hashtable<String, ?> getHashtableFromCallerSubject() {
+        try {
+            Subject callerSubject = WSSubject.getCallerSubject();
+            if (callerSubject == null) {
+                return null;
+            }
+            return getHashtableFromSubject(callerSubject);
+        } catch (Exception e) {
+            return null;
         }
     }
 

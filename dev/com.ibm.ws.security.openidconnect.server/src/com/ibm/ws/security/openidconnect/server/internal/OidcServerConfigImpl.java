@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
     public static final String CFG_KEY_CUSTOM_CLAIMS_ENABLED = "customClaimsEnabled";
     public static final String CFG_KEY_CUSTOM_CLAIMS = "customClaims";
+    public static final String CFG_KEY_THIRD_PARTY_ID_TOKEN_CLAIMS = "thirdPartyIDTokenClaims";
     public static final String CFG_KEY_JTI_CLAIM_ENABLED = "jtiClaimEnabled";
     public static final String CFG_KEY_KEYSTORE_REF = "keyStoreRef";
     public static final String CFG_KEYSTORE_REF_DEFAULT = "opKeyStore";
@@ -146,6 +147,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         defaultCustomClaims.add("groupIds");
     };
     private Set<String> customClaims;
+    private Set<String> thirdPartyIDTokenClaims;
     private boolean jtiClaimEnabled;
     private boolean sessionManaged;
     private String keyStoreRef;
@@ -320,6 +322,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         customClaimsEnabled = (Boolean) props.get(CFG_KEY_CUSTOM_CLAIMS_ENABLED);
         String[] aCustomClaims = (String[]) props.get(CFG_KEY_CUSTOM_CLAIMS);
         customClaims = newCustomClaims(aCustomClaims);
+        thirdPartyIDTokenClaims = newThirdPartyClaims((String[]) props.get(CFG_KEY_THIRD_PARTY_ID_TOKEN_CLAIMS));
         jtiClaimEnabled = (Boolean) props.get(CFG_KEY_JTI_CLAIM_ENABLED);
         sessionManaged = (Boolean) props.get(CFG_KEY_SESSION_MANAGED);
         keyStoreRef = trimIt(fixUpKeyStoreRef((String) props.get(CFG_KEY_KEYSTORE_REF)));
@@ -369,6 +372,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             Tr.debug(tc, "groupIdentifier: " + groupIdentifier);
             Tr.debug(tc, "customClaimsEnabled: " + customClaimsEnabled);
             Tr.debug(tc, "customClaims: " + customClaims);
+            Tr.debug(tc, "thirdPartyIDTokenClaims: " + thirdPartyIDTokenClaims);
             Tr.debug(tc, "jtiClaimEnabled: " + jtiClaimEnabled);
             Tr.debug(tc, "defaultScope: " + defaultScope);
             Tr.debug(tc, "externalClaimNames: " + externalClaimNames);
@@ -433,6 +437,17 @@ public class OidcServerConfigImpl implements OidcServerConfig {
                 if (!defaultCustomClaims.contains(claim)) {
                     result.add(claim);
                 }
+            }
+        }
+        return result;
+    }
+
+    protected Set<String> newThirdPartyClaims(String[] aCustomClaims) {
+        Set<String> result = new HashSet<String>();
+        if (aCustomClaims != null) {
+            for (String claim : aCustomClaims) {
+                claim = claim.trim();
+                result.add(claim);
             }
         }
         return result;
@@ -1246,6 +1261,11 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     @Override
     public Set<String> getCustomClaims() {
         return new HashSet<String>(this.customClaims);
+    }
+
+    @Override
+    public Set<String> getThirdPartyIDTokenClaims() {
+        return new HashSet<String>(this.thirdPartyIDTokenClaims);
     }
 
     @Override
