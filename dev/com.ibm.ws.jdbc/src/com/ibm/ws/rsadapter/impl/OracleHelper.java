@@ -291,10 +291,6 @@ public class OracleHelper extends DatabaseHelper {
      * @return XA start flag value for the specified coupling type
      */
     public int branchCouplingSupported(int couplingType) {
-        // TODO remove this check at GA
-        if (!mcf.dsConfig.get().enableBranchCouplingExtension)
-            return super.branchCouplingSupported(couplingType);
-
         if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE)
             if (dataStoreHelper == null)
                 return 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
