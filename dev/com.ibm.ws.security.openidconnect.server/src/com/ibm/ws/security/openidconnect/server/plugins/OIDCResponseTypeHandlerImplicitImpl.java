@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.openidconnect.common.cl.BuildResponseTypeUtil;
 
@@ -151,6 +152,13 @@ public class OIDCResponseTypeHandlerImplicitImpl implements
                         if (nonce != null && nonce.length() > 0) {
                             idTokenMap.put(OIDCConstants.OIDC_AUTHZ_PARAM_NONCE, new String[] { nonce });
                         }
+
+                        SubjectHelper subjectHelper = new SubjectHelper();
+                        String thirdPartyIDToken = subjectHelper.getIDTokenFromRunAsSubject();
+                        if (thirdPartyIDToken != null) {
+                            idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken });
+                        }
+
                         OAuth20Token id = oidc10TokenFactory.createIDToken(idTokenMap);
 
                         if (id != null) {

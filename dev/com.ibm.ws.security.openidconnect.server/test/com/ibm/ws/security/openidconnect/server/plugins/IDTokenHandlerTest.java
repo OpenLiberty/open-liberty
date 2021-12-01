@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
@@ -88,6 +90,8 @@ public class IDTokenHandlerTest {
     private final String groupIdentifier = "groupsIds";
     private final String differentGroupIdentifier = "groups";
     private final String accessToken = "testAccessToken";
+    // third party id token contains claims: {"test1":["test2","test3"],"test4":"test5"}
+    private final String thirdPartyIDToken = "eyJhbGciOiJIUzI1NiJ9.eyJ0ZXN0MSI6WyJ0ZXN0MiIsInRlc3QzIl0sInRlc3Q0IjoidGVzdDUifQ.ccc";
     private final boolean jtiClaimEnabledDefault = false;
     private final boolean customClaimsEnabledDefault = true;
     private final String signatureAlgorithmDefault = SIGNATURE_ALG_HS256;
@@ -304,6 +308,72 @@ public class IDTokenHandlerTest {
         JSONObject idTokenClaimsJSON = getIdTokenClaims(idToken);
 
         assertCustomClaims(idTokenClaimsJSON);
+    }
+
+    @Test
+    public void createToken_customClaims_thirdPartyIDToken() throws Exception {
+        idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken });
+        createOIDCTestDefaultExpectations();
+
+        Set<String> allowedThirdPartyIDTokenClaims = new HashSet<String>();
+        allowedThirdPartyIDTokenClaims.add("test1");
+        allowedThirdPartyIDTokenClaims.add("test4");
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getThirdPartyIDTokenClaims();
+                will(returnValue(allowedThirdPartyIDTokenClaims));
+            }
+        });
+
+        OAuth20Token idToken = idTokenHandler.createToken(idTokenMap);
+        JSONObject idTokenClaimsJSON = getIdTokenClaims(idToken);
+
+        assertTrue("ID token should contain third-party claim 'test1'.", idTokenClaimsJSON.containsKey("test1"));
+        assertTrue("ID token should contain third-party claim 'test4'.", idTokenClaimsJSON.containsKey("test4"));
+    }
+
+    @Test
+    public void createToken_customClaims_thirdPartyIDToken_noClaimsSpecified() throws Exception {
+        idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken });
+        createOIDCTestDefaultExpectations();
+
+        Set<String> allowedThirdPartyIDTokenClaims = new HashSet<String>();
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getThirdPartyIDTokenClaims();
+                will(returnValue(allowedThirdPartyIDTokenClaims));
+            }
+        });
+
+        OAuth20Token idToken = idTokenHandler.createToken(idTokenMap);
+        JSONObject idTokenClaimsJSON = getIdTokenClaims(idToken);
+
+        assertFalse("ID token should not contain third-party claim 'test1'.", idTokenClaimsJSON.containsKey("test1"));
+        assertFalse("ID token should not contain third-party claim 'test4'.", idTokenClaimsJSON.containsKey("test4"));
+    }
+
+    @Test
+    public void createToken_customClaims_thirdPartyIDToken_someClaimsNotSpecified() throws Exception {
+        idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken });
+        createOIDCTestDefaultExpectations();
+
+        Set<String> allowedThirdPartyIDTokenClaims = new HashSet<String>();
+        allowedThirdPartyIDTokenClaims.add("test1");
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getThirdPartyIDTokenClaims();
+                will(returnValue(allowedThirdPartyIDTokenClaims));
+            }
+        });
+
+        OAuth20Token idToken = idTokenHandler.createToken(idTokenMap);
+        JSONObject idTokenClaimsJSON = getIdTokenClaims(idToken);
+
+        assertTrue("ID token should contain third-party claim 'test1'.", idTokenClaimsJSON.containsKey("test1"));
+        assertFalse("ID token should not contain third-party claim 'test4'.", idTokenClaimsJSON.containsKey("test4"));
     }
 
     @Test
