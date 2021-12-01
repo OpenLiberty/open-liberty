@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -81,7 +82,12 @@ public class MDB20Test extends FATServletClient {
     @Test
     @ExpectedFFDC({ "javax.transaction.NotSupportedException" })
     public void testBMTIA() throws Exception {
-        runTest();
+        try {
+            runTest();
+        } catch (Throwable t) {
+            Log.info(this.getClass(), "testBMTIA", "dumping server for throwable=" + t);
+            server.dumpServer("testBMTIA_dump");
+        }
     }
 
     @Test
