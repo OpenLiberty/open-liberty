@@ -81,7 +81,10 @@ public class TrConfigZapper extends TrConfigurator {
         }
 
         LogProviderConfigImpl config = new LogProviderConfigImpl(rasSettings, logDirectory, fileStreamFactory);
+
+        System.out.println("    TrConfigZapper.zapTrConfig : start invoke init()");
         init(config);
+        System.out.println("    TrConfigZapper.zapTrConfig : finished invoke init()");
         TrService delegate = config.getTrDelegate();
         if (delegate instanceof CapturedOutputHolder)
             return (CapturedOutputHolder) delegate;

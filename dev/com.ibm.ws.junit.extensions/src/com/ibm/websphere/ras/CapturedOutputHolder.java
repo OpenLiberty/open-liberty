@@ -65,14 +65,15 @@ public class CapturedOutputHolder extends BaseTraceService {
 
     @Override
     public void init(LogProviderConfig config) {
-        systemOut.getOriginalStream().println("init: Did BaseTraceService.captureSystemStreams() already get excuted? : " + isCaptureSystemStreamsExecuted);
+        systemOut.getOriginalStream().println("init: Did BaseTraceService.captureSystemStreams() already get excuted? : " + isCaptureSystemStreamsExecuted + ". Current COH is "
+                                              + this);
         super.init(config);
     }
 
     @Override
     protected void registerLoggerHandlerSingleton() {
         systemOut.getOriginalStream().println("registerLoggerHandlerSingleton: Did BaseTraceService.captureSystemStreams() already get excuted? : "
-                                              + isCaptureSystemStreamsExecuted);
+                                              + isCaptureSystemStreamsExecuted + ". Current COH is " + this);
         super.registerLoggerHandlerSingleton();
     }
 
@@ -89,8 +90,9 @@ public class CapturedOutputHolder extends BaseTraceService {
 
         PrintStream trSysOut = systemOut.getOriginalStream();
         PrintStream trSysErr = systemErr.getOriginalStream();
-
+        System.out.println("captureSystemStreams: CurrentCOH is : " + this);
         if (sysOut != trSysOut) {
+
             throw new ConcurrentModificationException("Someone else has reset or cached System.out. Current System.out value: " + System.out + " and current original stream: "
                                                       + systemOut.getOriginalStream() + ". Did someone already execute BaseTraceService.captureSystemStreams : "
                                                       + isCaptureSystemStreamsExecuted);
