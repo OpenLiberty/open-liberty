@@ -1,18 +1,18 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jsonbContainer-2.0
+symbolicName=io.openliberty.jsonb-2.1
 visibility=public
 singleton=true
+IBM-ShortName: jsonb-2.1
+Subsystem-Name: Jakarta JSON Binding 2.1
 IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.adapter; type="spec", \
  jakarta.json.bind.annotation; type="spec", \
  jakarta.json.bind.config; type="spec", \
  jakarta.json.bind.serializer; type="spec", \
  jakarta.json.bind.spi; type="spec"
-IBM-ShortName: jsonbContainer-2.0
-Subsystem-Name: Jakarta JSON Binding 2.0 Container
--features=io.openliberty.jsonbImpl-2.0.0, \
-  com.ibm.websphere.appserver.eeCompatible-9.0
+-features=com.ibm.websphere.appserver.eeCompatible-10.0, \
+  io.openliberty.jsonbInternal-2.1
 -bundles=com.ibm.ws.jsonb.service
-kind=ga
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel
