@@ -52,6 +52,8 @@ public interface OidcServerConfig {
 
     Set<String> getThirdPartyIDTokenClaims();
 
+    Set<String> getThirdPartyAccessTokenClaims();
+
     boolean isJTIClaimEnabled();
 
     String getDefaultScope();

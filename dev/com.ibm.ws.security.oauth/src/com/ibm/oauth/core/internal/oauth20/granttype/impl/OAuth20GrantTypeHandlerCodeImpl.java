@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20AuthorizationCodeInvalidClien
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MismatchedRedirectUriException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
+import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Util;
 import com.ibm.oauth.core.internal.oauth20.granttype.OAuth20GrantTypeHandler;
@@ -169,8 +170,11 @@ public class OAuth20GrantTypeHandlerCodeImpl implements OAuth20GrantTypeHandler 
                             .getAttributeValueByName(OAuth20Constants.PROXY_HOST);
                     accessTokenMap.put(OAuth20Constants.PROXY_HOST, new String[] { proxy });
 
-                    OAuth20Token access = tokenFactory
-                            .createAccessToken(accessTokenMap);
+                    OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
+                    OAuth20Token thirdPartyAccessToken = tokenCache.get(code.getTokenString() + OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN_SUFFIX);
+                    String thirdPartyAccessTokenString = thirdPartyAccessToken != null ? thirdPartyAccessToken.getTokenString() : null;
+
+                    OAuth20Token access = tokenFactory.createAccessToken(accessTokenMap, thirdPartyAccessTokenString);
 
                     tokenList = new ArrayList<OAuth20Token>();
                     tokenList.add(access);

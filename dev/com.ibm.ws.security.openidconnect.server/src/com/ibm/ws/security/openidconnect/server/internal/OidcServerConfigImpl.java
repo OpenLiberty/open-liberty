@@ -80,6 +80,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_CUSTOM_CLAIMS_ENABLED = "customClaimsEnabled";
     public static final String CFG_KEY_CUSTOM_CLAIMS = "customClaims";
     public static final String CFG_KEY_THIRD_PARTY_ID_TOKEN_CLAIMS = "thirdPartyIDTokenClaims";
+    public static final String CFG_KEY_THIRD_PARTY_ACCESS_TOKEN_CLAIMS = "thirdPartyAccessTokenClaims";
     public static final String CFG_KEY_JTI_CLAIM_ENABLED = "jtiClaimEnabled";
     public static final String CFG_KEY_KEYSTORE_REF = "keyStoreRef";
     public static final String CFG_KEYSTORE_REF_DEFAULT = "opKeyStore";
@@ -148,6 +149,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     };
     private Set<String> customClaims;
     private Set<String> thirdPartyIDTokenClaims;
+    private Set<String> thirdPartyAccessTokenClaims;
     private boolean jtiClaimEnabled;
     private boolean sessionManaged;
     private String keyStoreRef;
@@ -323,6 +325,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         String[] aCustomClaims = (String[]) props.get(CFG_KEY_CUSTOM_CLAIMS);
         customClaims = newCustomClaims(aCustomClaims);
         thirdPartyIDTokenClaims = newThirdPartyClaims((String[]) props.get(CFG_KEY_THIRD_PARTY_ID_TOKEN_CLAIMS));
+        thirdPartyAccessTokenClaims = newThirdPartyClaims((String[]) props.get(CFG_KEY_THIRD_PARTY_ACCESS_TOKEN_CLAIMS));
         jtiClaimEnabled = (Boolean) props.get(CFG_KEY_JTI_CLAIM_ENABLED);
         sessionManaged = (Boolean) props.get(CFG_KEY_SESSION_MANAGED);
         keyStoreRef = trimIt(fixUpKeyStoreRef((String) props.get(CFG_KEY_KEYSTORE_REF)));
@@ -373,6 +376,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             Tr.debug(tc, "customClaimsEnabled: " + customClaimsEnabled);
             Tr.debug(tc, "customClaims: " + customClaims);
             Tr.debug(tc, "thirdPartyIDTokenClaims: " + thirdPartyIDTokenClaims);
+            Tr.debug(tc, "thirdPartyAccessTokenClaims: " + thirdPartyAccessTokenClaims);
             Tr.debug(tc, "jtiClaimEnabled: " + jtiClaimEnabled);
             Tr.debug(tc, "defaultScope: " + defaultScope);
             Tr.debug(tc, "externalClaimNames: " + externalClaimNames);
@@ -1266,6 +1270,11 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     @Override
     public Set<String> getThirdPartyIDTokenClaims() {
         return new HashSet<String>(this.thirdPartyIDTokenClaims);
+    }
+
+    @Override
+    public Set<String> getThirdPartyAccessTokenClaims() {
+        return new HashSet<String>(this.thirdPartyAccessTokenClaims);
     }
 
     @Override

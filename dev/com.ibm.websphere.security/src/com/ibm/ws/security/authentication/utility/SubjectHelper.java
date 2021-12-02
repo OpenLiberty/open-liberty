@@ -102,6 +102,19 @@ public class SubjectHelper {
     }
 
     /**
+     * Gets the access token from the caller subject.
+     *
+     * @return The access token as a String or null.
+     */
+    public String getAccessTokenFromCallerSubject() {
+        Hashtable<String, ?> hashtableFromCallerSubject = getHashtableFromCallerSubject();
+        if (hashtableFromCallerSubject == null) {
+            return null;
+        }
+        return (String) hashtableFromCallerSubject.get("access_token");
+    }
+
+    /**
      * Gets a Hashtable of values from the Subject.
      *
      * @param subject    {@code null} is not supported.

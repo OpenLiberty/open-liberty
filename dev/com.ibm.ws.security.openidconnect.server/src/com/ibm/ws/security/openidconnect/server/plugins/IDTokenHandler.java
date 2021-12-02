@@ -118,7 +118,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         return createToken(tokenMap, null);
     }
 
-    public OAuth20Token createToken(@Sentitive Map<String, String[]> tokenMap, String thirdPartyIDToken) {
+    public OAuth20Token createToken(@Sensitive Map<String, String[]> tokenMap, String thirdPartyIDToken) {
         OAuth20Token token = null;
         String sharedKey = OAuth20Util.getValueFromMap(SHARED_KEY, tokenMap);
         String componentId = OAuth20Util.getValueFromMap(OAuth20Constants.COMPONENTID, tokenMap);

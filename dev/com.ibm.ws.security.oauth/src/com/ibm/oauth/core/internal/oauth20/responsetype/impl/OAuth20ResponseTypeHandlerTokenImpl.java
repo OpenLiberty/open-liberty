@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Util;
 import com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
 public class OAuth20ResponseTypeHandlerTokenImpl implements
@@ -114,7 +115,10 @@ public class OAuth20ResponseTypeHandlerTokenImpl implements
                     .getAttributeValueByName(OAuth20Constants.PROXY_HOST);
             tokenMap.put(OAuth20Constants.PROXY_HOST, new String[] { proxy });
 
-            OAuth20Token token = tokenFactory.createAccessToken(tokenMap);
+            SubjectHelper subjectHelper = new SubjectHelper();
+            String thirdPartyAccessToken = subjectHelper.getAccessTokenFromCallerSubject();
+
+            OAuth20Token token = tokenFactory.createAccessToken(tokenMap, thirdPartyAccessToken);
 
             tokenList = new ArrayList<OAuth20Token>();
             tokenList.add(token);

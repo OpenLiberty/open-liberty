@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.plugins.BaseClient;
+import com.ibm.ws.security.oauth20.plugins.BaseTokenHandler;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.MessageDigestUtil;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
@@ -246,6 +247,10 @@ public class OAuth20TokenFactory {
      * @return
      */
     public OAuth20Token createAccessToken(Map<String, String[]> tokenMap) {
+        return createAccessToken(tokenMap, null);
+    }
+
+    public OAuth20Token createAccessToken(Map<String, String[]> tokenMap, String thirdPartyAccessToken) {
         String methodName = "createAccessToken";
         _log.entering(CLASS, methodName);
         OAuth20Token token = null;
@@ -295,7 +300,8 @@ public class OAuth20TokenFactory {
                 // shouldn't happen, but if it does, log the exception
                 _log.throwing(CLASS, methodName, e);
             }
-            token = handler.createToken(accessTokenMap);
+
+            token = ((BaseTokenHandler) handler).createToken(accessTokenMap, thirdPartyAccessToken);
 
             // In extremely unlikely event we got a duplicate, try again.
             // Don't do this check for jwt's as their id is a hash of their string value

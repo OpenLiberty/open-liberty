@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,6 +93,10 @@ public class JwtCreator {
                 }
                 if (!mpJwt) {
                     claims.setClaim(AZP, clientId);// 227327, authorizingParty
+                }
+                if (userClaims != null) {
+                    for (Map.Entry<String, Object> e : userClaims.entrySet())
+                        claims.setClaim(e.getKey(), e.getValue());
                 }
 
             } else { // this is for an ID token used by RP

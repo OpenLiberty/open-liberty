@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,17 @@ package com.ibm.ws.security.oauth20.plugins;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
+
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.JwtContext;
 
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
@@ -40,6 +45,7 @@ import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.security.oauth20.JwtAccessTokenMediator;
 
@@ -63,6 +69,10 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
 
     @Override
     public OAuth20Token createToken(Map<String, String[]> tokenMap) {
+        return createToken(tokenMap, null);
+    }
+
+    public OAuth20Token createToken(Map<String, String[]> tokenMap, String thirdPartyAccessToken) {
         String methodName = "createToken";
         _log.entering(CLASS, methodName);
         OAuth20Token token = null;
@@ -129,6 +139,7 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
                         tokenId = com.ibm.ws.security.oauth20.util.HashUtils.digest(tokenContent);
                     }
                 } else if (jwtAccessToken) {
+                    Map<String, Object> thirdPartyClaims = getThirdPartyClaims(thirdPartyAccessToken, oidcServerConfig);
                     JWTData jwtData = getJwtData(tokenMap, oidcServerConfig);
                     tokenContent = JwtCreator.createJwtAsString(oidcServerConfig,
                             clientId,
@@ -136,7 +147,7 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
                             scope,
                             lifetime,
                             tokenMap,
-                            (Map<String, Object>) null,
+                            thirdPartyClaims,
                             jwtData,
                             oauth20Provider.isMpJwt());
                     tokenId = com.ibm.ws.security.oauth20.util.HashUtils.digest(tokenContent);
@@ -156,6 +167,29 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
         }
 
         return token;
+    }
+
+    private Map<String, Object> getThirdPartyClaims(String thirdPartyAccessToken, OidcServerConfig oidcServerConfig) {
+        Map<String, Object> thirdPartyAccessTokenClaims = new HashMap<String, Object>();
+        if (thirdPartyAccessToken == null || thirdPartyAccessToken.isEmpty()) {
+            return thirdPartyAccessTokenClaims;
+        }
+        try {
+            Set<String> allowedThirdPartyAccessTokenClaims = oidcServerConfig.getThirdPartyAccessTokenClaims();
+
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(thirdPartyAccessToken);
+            JwtClaims jwtClaims = jwtContext.getJwtClaims();
+            Map<String, Object> jwtClaimsMap = jwtClaims.getClaimsMap();
+
+            for (String thirdPartyClaim : allowedThirdPartyAccessTokenClaims) {
+                if (jwtClaimsMap.containsKey(thirdPartyClaim)) {
+                    thirdPartyAccessTokenClaims.put(thirdPartyClaim, jwtClaimsMap.get(thirdPartyClaim));
+                }
+            }
+        } catch (Exception e) {
+            // ignore for now
+        }
+        return thirdPartyAccessTokenClaims;
     }
 
     private JWTData getJwtData(Map<String, String[]> tokenMap, OidcServerConfig oidcServerConfig) {

@@ -36,6 +36,8 @@
             required="false" type="String" cardinality="2147483647"/>            
          <AD id="thirdPartyIDTokenClaims" name="thirdPartyIDTokenClaims" description="thirdPartyIDTokenClaims.desc"
             required="false" type="String" cardinality="2147483647"/>
+         <AD id="thirdPartyAccessTokenClaims" name="thirdPartyAccessTokenClaims" description="thirdPartyAccessTokenClaims.desc"
+            required="false" type="String" cardinality="2147483647"/>
          <AD id="jtiClaimEnabled" name="internal" description="internal use only"
             required="false" type="Boolean" default="false"/>            
          <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc"

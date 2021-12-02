@@ -29,6 +29,7 @@ import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.oauth20.plugins.IDTokenImpl;
+import com.ibm.ws.security.oauth20.plugins.OAuth20BearerTokenImpl;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
 public class OAuth20ResponseTypeHandlerCodeImpl implements
@@ -122,6 +123,7 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
                 OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
 
                 String idTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ID_TOKEN);
+                String accessTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ACCESS_TOKEN);
                 int expiresIn = Integer.parseInt((String) hashtableFromCallerSubject.get(OAuth20Constants.EXPIRES_IN));
 
                 if (idTokenString != null) {
@@ -140,6 +142,24 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
                             OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
                     tokenCache.add(idTokenCacheEntry.getId(), idTokenCacheEntry, idTokenCacheEntry.getLifetimeSeconds());
+                }
+
+                if (accessTokenString != null) {
+                    String thirdPartyTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN_SUFFIX;
+                    OAuth20Token accessTokenCacheEntry = new OAuth20BearerTokenImpl(
+                            thirdPartyTokenId,
+                            accessTokenString,
+                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
+                            clientId,
+                            username,
+                            redirectUri,
+                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
+                            scope,
+                            expiresIn, // TODO: revisit appropriate value here (currently using expires in from hashtable)
+                            null,
+                            OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+
+                    tokenCache.add(accessTokenCacheEntry.getId(), accessTokenCacheEntry, accessTokenCacheEntry.getLifetimeSeconds());
                 }
             }
 
