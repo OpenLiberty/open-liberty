@@ -661,7 +661,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                          new Object[] { Constants.IBMJSSE2_NAME, alias, configURL, ex.getMessage() });
                 throw new SSLException(message, ex);
             } else {
-                throw new SSLException(ex);
+                String message = ex.getMessage(); 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception received. Exception message is :" + message); 
+                throw new SSLException(message, ex);
             }
         }
 
