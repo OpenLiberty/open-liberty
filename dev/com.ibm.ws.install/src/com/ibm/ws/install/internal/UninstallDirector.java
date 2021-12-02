@@ -62,8 +62,8 @@ class UninstallDirector extends AbstractDirector {
      * Creates array and calls method below
      *
      * @param checkDependency if uninstall should check for dependencies
-     * @param productId product id to uninstall
-     * @param toBeDeleted Collection of files to uninstall
+     * @param productId       product id to uninstall
+     * @param toBeDeleted     Collection of files to uninstall
      * @throws InstallException
      */
     void uninstall(boolean checkDependency, String productId, Collection<File> toBeDeleted) throws InstallException {
@@ -88,8 +88,8 @@ class UninstallDirector extends AbstractDirector {
      * Uninstalls product depending on dependencies
      *
      * @param checkDependency if uninstall should check for dependencies
-     * @param productIds product ids to uninstall
-     * @param toBeDeleted Collection of files to uninstall
+     * @param productIds      product ids to uninstall
+     * @param toBeDeleted     Collection of files to uninstall
      * @throws InstallException
      */
     void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
@@ -121,7 +121,10 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.UNINSTALL, progress, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_UNINSTALLING", uninstallAsset.getName()));
             progress += interval;
             try {
-                retrieveUninstallFileList(uninstallAsset, checkDependency);
+                if (!InstallUtils.isWindows) {
+
+                    retrieveUninstallFileList(uninstallAsset, checkDependency);
+                }
                 engine.uninstall(uninstallAsset, checkDependency, filesRestored);
                 log(Level.FINE, uninstallAsset.uninstalledLogMsg());
             } catch (IOException e) {
@@ -172,7 +175,7 @@ class UninstallDirector extends AbstractDirector {
      *
      * @param featureNames a list of the feature names and feature symbolic names to uninstall
      * @throws InstallException if there is a feature not installed or
-     *             there is another feature still requires the uninstalling features.
+     *                              there is another feature still requires the uninstalling features.
      */
     void uninstallFeatures(Collection<String> featureNames, Collection<String> uninstallInstallFeatures, boolean force) {
         product.refresh();
@@ -209,7 +212,7 @@ class UninstallDirector extends AbstractDirector {
     /**
      * Creates array and calls method below
      *
-     * @param productId product id to uninstall
+     * @param productId              product id to uninstall
      * @param exceptPlatfromFeatuers If platform features should be ignored
      * @throws InstallException
      */
@@ -222,7 +225,7 @@ class UninstallDirector extends AbstractDirector {
     /**
      * Uninstalls features by product id
      *
-     * @param productIds product ids to uninstall
+     * @param productIds             product ids to uninstall
      * @param exceptPlatfromFeatuers If platform features should be ignored
      * @throws InstallException
      */
