@@ -17,7 +17,7 @@
     <name>MicroProfile Config 3.0 TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.config.version>3.0</microprofile.config.version>
+        <microprofile.config.version>3.0.1</microprofile.config.version>
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>3.0-RC5</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
 
         <dependency>
