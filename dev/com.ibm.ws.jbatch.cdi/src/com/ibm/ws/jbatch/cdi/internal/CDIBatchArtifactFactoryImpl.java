@@ -55,6 +55,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use CDI to load the artifact with the given ID.
      *
+     *
      * @return the loaded artifact; or null if CDI is not enabled for the app.
      */
     @Override
@@ -216,16 +217,10 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
         for (Bean<?> bean : beans) {
             if (bean.getBeanClass().equals(clazz)) {
                 matches.add(bean);
-                //if (match != null) {
-                // Not sure if this can happen but being cautious in case we're missing a subtle CDI use case.
-                //throw new BatchCDIAmbiguousResolutionCheckedException("Found both bean = " + match + ", and also bean = " + bean + " with beanClass = " + bean.getBeanClass());
-                //} else {
-                //match = bean;
-                //}
             }
         }
         try {
-            retVal = beanManager.resolve(beans);
+            retVal = beanManager.resolve(matches);
         } catch (AmbiguousResolutionException e) {
             throw new BatchCDIAmbiguousResolutionCheckedException("Found beans = " + matches + ", and could not resolve unambiguously");
         }
