@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fix id="VERSIONNODOTS-wlp-archive-TFPM0222" version="VERSIONDOTS">
+    <applicability>
+        <offering id="com.ibm.websphere.liberty.BASE.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.BASETRIAL.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.EXPRESS.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.WEBENAB.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.ND.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.NDTRIAL.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.zOS.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERS.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERSILAN.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.v85" tolerance="TOLERANCE"/>
+        <offering id="com.ibm.websphere.liberty.TRIAL.v85" tolerance="TOLERANCE"/>
+    </applicability>
+    <categories/>
+    <information name="VERSIONNODOTS-wlp-archive-TFPM0222" version="VERSIONDOTS">RUNNING &quot;PRODUCTINFO VALIDATE&quot; AFTER INSTALLING FIXES RESULTS IN ERRORS</information>
+    <property name="com.ibm.ws.superseded.apars" value=""/>
+    <property name="recommended" value="false"/>    
+    <resolves problemCount="1" description="This fix resolves APARS:" showList="true">
+        <problem id="com.ibm.ws.apar.PM0222" displayId="PM0222" description="PM0222"/>
+    </resolves>
+    <updates>
+        <file date="2021-12-01 11:05" hash="09746e1e160c908927e80ee7bcbdbdd6" size="750" id="lib/com.ibm.ws.install.testIfix_1.0.jar"/>
+    </updates>
+</fix>

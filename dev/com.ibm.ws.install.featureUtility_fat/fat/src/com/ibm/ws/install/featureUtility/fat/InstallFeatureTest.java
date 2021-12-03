@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -180,8 +181,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		replaceWlpProperties("21.0.0.4");
 		String[] autoFeaturesFilesList = {
 				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.eventLogging-1.0.mf",
-				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf"
-		};
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf" };
 		deleteFiles(METHOD_NAME, "autoFeatures eventLogging-1.0,osgiConsole-1.0", autoFeaturesFilesList);
 
 		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
@@ -436,7 +436,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 				"../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.ssl-1.0.esa");
 
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-
 
 		// Begin Test
 		String[] param1s = { "installFeature", "ssl-1.0", "--verbose" };
@@ -759,4 +758,61 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		deleteEtcFolder(METHOD_NAME);
 		Log.exiting(c, METHOD_NAME);
 	}
+
+	/*
+	 * Test installFeature with iFix applied. With iFix applied, it will usually
+	 * copy the new jar into wlp/lib folder without modifying the original jar (by
+	 * appending date to the file name). However, some iFixes will directly replace
+	 * the jar inside wlp/lib and the file needs to be revalidated. This test case
+	 * will mimic this case.
+	 */
+	@Test
+	public void testInstallFeatureWithIfix() throws Exception {
+		final String METHOD_NAME = "testInstallFeatureWithIfix";
+		Log.entering(c, METHOD_NAME);
+
+		// Set up to install json-1.0 feature locally
+		replaceWlpProperties("21.0.0.4");
+		String[] json10FilesList = {
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+		deleteFiles(METHOD_NAME, "json-1.0", json10FilesList);
+
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		// Set up test iFix
+		copyFileToMinifiedRoot("lib", "../../publish/tmp/iFix/com.ibm.ws.install.testIfix_1.0.jar");
+		// Feature manifest file so the tool picks up the new testIfix_1.0.jar
+		copyFileToMinifiedRoot("lib/platform", "../../publish/tmp/iFix/testIfix-1.0.mf");
+		// Checksum file for testIfix_1.0.jar - Has incorrect checksum so that it fails
+		// initial validation
+		// If 1st check fails, then the tool looks up xml and lpmf files
+		copyFileToMinifiedRoot("lib/platform/checksums",
+				"../../publish/tmp/iFix/com.ibm.websphere.appserver.testIfix-1.0.cs");
+		// These files will have the correct checksum.
+		copyFileToMinifiedRoot("lib/fixes", "../../publish/tmp/iFix/xml.xml");
+		copyFileToMinifiedRoot("lib/fixes", "../../publish/tmp/iFix/lpmf.lpmf");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+
+		// Begin Test
+		String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		// delete manifest file so the tool doesn't pick up.
+		deleteFiles(METHOD_NAME, "testIfix-1.0",
+				new String[] { relativeMinifiedRoot + "/wlp/lib/platform/testIfix-1.0.mf" });
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
 }
