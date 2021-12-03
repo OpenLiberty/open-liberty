@@ -17,13 +17,23 @@ dependencies {
   cxf 'org.apache.cxf:cxf-core:3.4.3'
 }
 
-// Copy each class from the CXF jar into the build directory
-// so the build can inject entry/exit trace into the bytecode
-task extractInjectedClasses(type: Copy) {
-  from zipTree(configurations.cxf[0])
-  into compileJava.destinationDir
+def copiedClasses = "$buildDir/copied-classes/java/main"
+
+sourceSets {
+  main {
+    //let's register an output folder on the main SourceSet:
+    output.dir(copiedClasses, builtBy: 'extractInjectedClasses')
+    //it is now a part of the 'main' classpath and will be a part of the jar
+  }
 }
 
 // Copy each class from the CXF jar into the build directory
 // so the build can inject entry/exit trace into the bytecode
-//compileJava.dependsOn extractInjectedClasses
+task extractInjectedClasses(type: Copy) {
+  from zipTree(configurations.cxf[0])
+  into copiedClasses
+}
+
+// Copy each class from the CXF jar into the build directory
+// so the build can inject entry/exit trace into the bytecode
+compileJava.dependsOn extractInjectedClasses

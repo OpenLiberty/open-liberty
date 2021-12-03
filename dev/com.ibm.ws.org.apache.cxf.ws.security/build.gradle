@@ -21,6 +21,16 @@ dependencies {
     cxfJar 'org.apache.cxf:cxf-rt-ws-security:2.6.2-ibm-s20180529-1900'
 }
 
+def copiedClasses = "$buildDir/copied-classes/java/main"
+
+sourceSets {
+  main {
+    //let's register an output folder on the main SourceSet:
+    output.dir(copiedClasses, builtBy: 'extractInjectedClasses')
+    //it is now a part of the 'main' classpath and will be a part of the jar
+  }
+}
+
 task extractInjectedClasses(type: Copy) {
    from zipTree(configurations.cxfJar[0])
    include "org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class",
@@ -30,7 +40,7 @@ task extractInjectedClasses(type: Copy) {
            "org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JOutInterceptor.class",
            "org/apache/cxf/ws/security/wss4j/WSS4JInInterceptor.class",
            "org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class"
-   into compileJava.destinationDir
+   into copiedClasses
 }
 
 compileJava.dependsOn extractInjectedClasses
