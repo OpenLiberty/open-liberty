@@ -79,6 +79,8 @@ public class ServerEnvTest {
 
     /**
      * Test - Variable expansion in server.env does NOT work when it is NOT enabled.
+     * -- Note it is ALWAYS enabled for Windows --
+     * -- So this test not applicable to Windows --
      * server.env contents:
      * [
      * LOG_FILE=${CONSOLE_LOG_FILE_NAME}
@@ -91,7 +93,9 @@ public class ServerEnvTest {
     public void testVariableExpansionInServerEnvWhenExpansionNotEnabled() throws Exception {
         final String METHOD_NAME = "testVariableExpansionInServerEnvWhenExpansionNotEnabled";
         Log.entering(c, METHOD_NAME);
-
+        if (OS.contains("win")) {
+            return;
+        }
         varsExpandInServerEnv(false);
 
         Log.exiting(c, METHOD_NAME);
