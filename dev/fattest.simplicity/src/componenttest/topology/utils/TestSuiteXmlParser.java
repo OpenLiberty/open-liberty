@@ -35,7 +35,7 @@ public class TestSuiteXmlParser extends DefaultHandler {
     public List<TestSuiteResult> getResults() {
         return results;
     }
-
+    
     @Override
     public void startDocument() throws SAXException {
     }
@@ -78,21 +78,22 @@ public class TestSuiteXmlParser extends DefaultHandler {
         }
     }
 
-    @Override
-    public void endElement(String uri, String lName, String qName) throws SAXException {
-        switch (qName) {
-            case TEST_SUITE:
-                currentSuite = null;
-                break;
-            case TEST_CASE:
-                currentCase = null;
-                break;
-            case ERROR:
-                //Empty
-                break;
-            case FAILURE:
-                //Empty
-                break;
+    public String capitalise(String spec){
+        char[] charArray = spec.toCharArray();
+        boolean foundSpace = true;
+
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
         }
+        spec = String.valueOf(charArray);
+        return spec;
     }
 }

@@ -1061,7 +1061,7 @@ public class MvnUtils {
     }
 
     public static void preparePublicationFile() {
-        Path outputPath = Paths.get("results", "CertificationResults.txt");
+        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");        
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -1089,17 +1089,43 @@ public class MvnUtils {
                 saxParser.parse(xmlFile, xmlParser);
             }
 
-            output.write("Summary" + System.lineSeparator() + System.lineSeparator());
-            output.write("Product Name, Version and download URL (if applicable): " + System.lineSeparator());
-            output.write("Specification Name, Version and download URL: " + System.lineSeparator());
-            output.write("Public URL of TCK Results Summary: " + System.lineSeparator());
-            output.write("Java runtime used to run the implementation: " + System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ") + System.lineSeparator());
-            output.write("Summary of the information for the certification environment, operating system, cloud: " + System.getProperty("os.name") + System.lineSeparator());
+            String adocContent= "";
+            String MPversion = "";
+            String specName = "";
+            String specVersion = "";
+            String OLVersion = "";
+            String osVersion = System.getProperty("os.name");
+            String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
+            String directory = junitDirectory.getAbsolutePath();
+            String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
+            Pattern specNamePattern = Pattern.compile("microprofile\\.(.*?)\\.internal", Pattern.DOTALL);
+            Matcher nameMatcher = specNamePattern.matcher(directory);
+
+            while (nameMatcher.find()) {
+                specName = nameMatcher.group(1);
+            }
+            Pattern specVersionPattern = Pattern.compile("[0-9]+(.*?)[0-9]+");
+            Matcher versionMatcher = specVersionPattern.matcher(directory);
+
+            while (versionMatcher.find()) {
+                specVersion = versionMatcher.group(0);
+            }
+            specName = specName.replaceAll("." + specVersion,"");
+            specName = specName.replaceAll("\\."," ");
+            specName = capitalise(specName) + " " + specVersion;
+            String MPSpecLower = (specName.toLowerCase()).replace(" ","-");
+
+            String[] documentParts = {":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",specName,".\n\n== Open Liberty ",OLVersion," - MicroProfile ",specName," Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",OLVersion,"/openliberty-runtime-",OLVersion,".zip[Open Liberty ",OLVersion,"]\n\n","* Specification Name, Version and download URL:\n+\n","link:https://download.eclipse.org/microprofile/microprofile-",MPSpecLower,"/microprofile-",MPSpecLower,".html[MicroProfile ",specName,"]\n\n* Public URL of TCK Results Summary:\n+\n","link:",OLVersion,"-TCKResults.html[TCK results summary]\n\n","* Java runtime used to run the implementation:\n+\nJava ",javaMajorVersion, ": ",javaVersion,"\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n","Java ", javaMajorVersion,": ",osVersion};
+            
+            for(String part : documentParts){
+                adocContent += part;
+            }
+            output.write(adocContent);
 
             output.write(System.lineSeparator());
+            output.write(System.lineSeparator());
 
-            output.write("Java "+ javaInfo.majorVersion() +" Test results:" + System.lineSeparator());
-
+            output.write("Java "+ javaMajorVersion +" Test results:" + System.lineSeparator() + System.lineSeparator() + "[source,xml]" + System.lineSeparator() + "----" + System.lineSeparator());
             for (TestSuiteResult result : xmlParser.getResults()) {
                 output.write(result.toString());
             }
@@ -1108,5 +1134,23 @@ public class MvnUtils {
         } catch (SAXException e) {
              throw new RuntimeException(e);
         }
+    }
+
+    public static String capitalise(String spec){
+        char[] charArray = spec.toCharArray();
+        boolean foundSpace = true;
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        spec = String.valueOf(charArray);
+        return spec;
     }
 }
