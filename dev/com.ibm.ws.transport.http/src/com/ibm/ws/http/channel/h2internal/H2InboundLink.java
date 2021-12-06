@@ -679,11 +679,11 @@ public class H2InboundLink extends HttpInboundLink {
                 }
                 frameReadProcessor.processCompleteFrame();
             }
-        } catch (Http2Exception e) {
+        } catch (Exception e) {
             // If we get here we either couldn't determine a frame type, had encountered an error processing a connection-oriented frame.
             // In either case we need to send out a connection error.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "processRead: an error occurred processing a frame: " + e.getErrorString());
+                Tr.debug(tc, "processRead: an error occurred processing a frame: " + e.getMessage());
             }
             close(vc, e);
 
@@ -1154,11 +1154,10 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "close(vc,e): :linkstatus: is: " + linkStatus + " :close: H2InboundLink hc: " + this.hashCode() + "exception: " + e);
             }
 
-            if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)
-                || (linkStatus == LINK_STATUS.WAIT_TO_SEND_GOAWAY)) {
+            if (linkStatus != LINK_STATUS.INIT || linkStatus != LINK_STATUS.OPEN) {
                 // another thread is in charge of closing, or another thread has already armed the future to close
-
-                if (e != null || FrameworkState.isStopping()) {
+                // howeverdon't attempt to cancel the runnable if it's already at GOAWAY_SENDING
+                if (linkStatus != LINK_STATUS.GOAWAY_SENDING && linkStatus != LINK_STATUS.CLOSING && (e != null || FrameworkState.isStopping())) {
                     // we'll run the close from this thread, if it's not already in progress or complete
                     if (closeFuture != null && !closeFuture.cancel(false)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
