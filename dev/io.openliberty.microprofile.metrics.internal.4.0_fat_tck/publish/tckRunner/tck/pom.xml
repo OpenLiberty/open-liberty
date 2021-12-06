@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>1.3</version>
+            <version>3.0.1</version>
         </dependency>
         
         <dependency>

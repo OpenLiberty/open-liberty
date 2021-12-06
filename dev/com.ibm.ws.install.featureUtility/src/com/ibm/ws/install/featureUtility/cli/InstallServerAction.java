@@ -43,6 +43,7 @@ import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.CommandConsole;
+import com.ibm.ws.product.utility.CommandConstants;
 import com.ibm.ws.product.utility.CommandTaskRegistry;
 import com.ibm.ws.product.utility.ExecutionContext;
 import com.ibm.ws.product.utility.extension.ValidateCommandTask;
@@ -376,6 +377,9 @@ public class InstallServerAction implements ActionHandler {
 
                         @Override
                         public <T> T getAttribute(String name, Class<T> cls) {
+						if (name.equals(CommandConstants.WLP_INSTALLATION_LOCATION)) {
+							return (T) Utils.getInstallDir();
+						}
                                 return null;
                         }
 

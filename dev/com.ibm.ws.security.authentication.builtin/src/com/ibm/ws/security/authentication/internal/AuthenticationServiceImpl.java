@@ -215,7 +215,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return authenticatedSubject;
             }
         } finally {
-            releaseLock(authenticationData, currentLock);
+            releaseLock(authenticationData, hashtableAuthData, currentLock);
             CertificateLoginModule.collectiveCertificate.set(false);
         }
     }
@@ -295,7 +295,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return authenticatedSubject;
             }
         } finally {
-            releaseLock(authenticationData, currentLock);
+            releaseLock(authenticationData, hashtableAuthData, currentLock);
         }
     }
 
@@ -331,8 +331,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * The authentication cache may have been removed dynamically
      * after the lock was obtained.
      */
-    private void releaseLock(AuthenticationData authenticationData, ReentrantLock currentLock) {
-        authenticationGuard.relinquishAccess(authenticationData, currentLock);
+    private void releaseLock(AuthenticationData authenticationData, AuthenticationData hashtableAuthData, ReentrantLock currentLock) {
+        if (!hashtableAuthData.isEmpty()) {
+            authenticationGuard.relinquishAccess(hashtableAuthData, currentLock);
+        } else {
+            authenticationGuard.relinquishAccess(authenticationData, currentLock);
+        }
     }
 
     private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject,
