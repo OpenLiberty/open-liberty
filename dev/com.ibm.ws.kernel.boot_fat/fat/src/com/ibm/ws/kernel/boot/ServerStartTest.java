@@ -17,6 +17,7 @@ import static org.junit.Assume.assumeTrue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Properties;
 
 import org.junit.After;
@@ -216,12 +217,13 @@ public class ServerStartTest {
         // Use jcmd to generate a heap dump
         String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String output = null;
-        while ((output = br.readLine()) != null) {
-            Log.info(c, METHOD_NAME, "jcmd output = " + output);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
         }
-        br.close();
         assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
         // Make sure we got the java heap dump at the expected location
@@ -300,12 +302,13 @@ public class ServerStartTest {
         // Use jcmd to generate a heap dump
         String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String output = null;
-        while ((output = br.readLine()) != null) {
-            Log.info(c, METHOD_NAME, "jcmd output = " + output);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
         }
-        br.close();
         assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
         // Make sure we got the java heap dump at the expected location
@@ -384,12 +387,13 @@ public class ServerStartTest {
         // Use jcmd to generate a heap dump
         String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String output = null;
-        while ((output = br.readLine()) != null) {
-            Log.info(c, METHOD_NAME, "jcmd output = " + output);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
         }
-        br.close();
         assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
         // Make sure we got the java heap dump at the expected location
@@ -491,6 +495,92 @@ public class ServerStartTest {
         server.waitForStringInLog("CWWKE0036I");
 
         Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path beginning with (c:\ or /) or relative path (../ or folder).
+     * If relative, it is from the ${server.output.dir} location.
+     *
+     * This test case is for when the user just specifies a base drive letter like c:\ on Windows or a /
+     * on Linux. In both cases we should default to ${server.output.dir}.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SWD_RootDefault() throws Exception {
+        final String METHOD_NAME = "test_SWD_RootDefault";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String serverWorkingDir = null;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\");
+            serverWorkingDir = "C:\\";
+        } else { // Linux
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot();
+            serverWorkingDir = "/";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", serverWorkingDir);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + serverWorkingDir);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
+
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+
     }
 
     /**

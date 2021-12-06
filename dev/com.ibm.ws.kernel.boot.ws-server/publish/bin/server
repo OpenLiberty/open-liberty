@@ -822,7 +822,10 @@ serverWorkingDirectory()
     SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR
   else
     case "${SERVER_WORKING_DIR}" in
-      /*) ;;
+      /*) len=${#SERVER_WORKING_DIR}
+          if [ $len -eq 1 ]; then
+            SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR 
+          fi ;;
       *) SERVER_WORKING_DIR="${SERVER_OUTPUT_DIR}/${SERVER_WORKING_DIR}" ;;
     esac
   fi
