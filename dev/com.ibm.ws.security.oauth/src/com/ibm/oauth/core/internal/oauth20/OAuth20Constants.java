@@ -205,7 +205,9 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String HASH_LENGTH = "hash_len";
 
     // constants for identifying third party tokens
-    public static final String THIRD_PARTY_ID_TOKEN_SUFFIX = "_third_party_idtoken";
-    public static final String THIRD_PARTY_ACCESS_TOKEN_SUFFIX = "_third_party_accesstoken";
+    public static final String THIRD_PARTY_ID_TOKEN = "third_party_idtoken";
+    public static final String THIRD_PARTY_ID_TOKEN_SUFFIX = "_" + THIRD_PARTY_ID_TOKEN;
+    public static final String THIRD_PARTY_ACCESS_TOKEN = "third_party_accesstoken";
+    public static final String THIRD_PARTY_ACCESS_TOKEN_SUFFIX = "_" + THIRD_PARTY_ACCESS_TOKEN;
 
 }

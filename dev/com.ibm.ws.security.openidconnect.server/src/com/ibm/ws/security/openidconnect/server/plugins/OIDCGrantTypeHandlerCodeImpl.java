@@ -103,9 +103,11 @@ public class OIDCGrantTypeHandlerCodeImpl extends OAuth20GrantTypeHandlerCodeImp
 
                                     OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
                                     OAuth20Token thirdPartyIDToken = tokenCache.get(code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX);
-                                    String thirdPartyIDTokenString = thirdPartyIDToken != null ? thirdPartyIDToken.getTokenString() : null;
+                                    if (thirdPartyIDToken != null) {
+                                        idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken.getTokenString() });
+                                    }
 
-                                    OAuth20Token id = idTokenFactory.createIDToken(idTokenMap, thirdPartyIDTokenString);
+                                    OAuth20Token id = idTokenFactory.createIDToken(idTokenMap);
 
                                     if (id != null) {
                                         tokenList.add(id);

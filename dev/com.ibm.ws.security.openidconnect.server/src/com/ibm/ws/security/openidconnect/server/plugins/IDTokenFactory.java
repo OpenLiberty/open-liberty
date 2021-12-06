@@ -63,10 +63,6 @@ public class IDTokenFactory extends OAuth20TokenFactory {
      * @return
      */
     public OAuth20Token createIDToken(Map<String, String[]> tokenMap) {
-        return createIDToken(tokenMap, null);
-    }
-        
-    public OAuth20Token createIDToken(Map<String, String[]> tokenMap, String thirdPartyIDToken) {
         String methodName = "createIDToken";
         log.entering(CLASS, methodName);
         OAuth20Token token = null;
@@ -125,7 +121,7 @@ public class IDTokenFactory extends OAuth20TokenFactory {
                         String sharedKey = baseClient.getClientSecret();
                         idTokenMap.put(SHARED_KEY, new String[] { sharedKey });
                     }
-                    token = ((IDTokenHandler) handler).createToken(idTokenMap, thirdPartyIDToken);
+                    token = handler.createToken(idTokenMap);
                     if (token != null) {
                         OidcServerConfig oidcServerConfig = OIDCProvidersConfig.getOidcServerConfigForOAuth20Provider(componentId);
                         if (oidcServerConfig != null && oidcServerConfig.cacheIDToken()) {

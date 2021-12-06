@@ -69,10 +69,6 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
 
     @Override
     public OAuth20Token createToken(Map<String, String[]> tokenMap) {
-        return createToken(tokenMap, null);
-    }
-
-    public OAuth20Token createToken(Map<String, String[]> tokenMap, String thirdPartyAccessToken) {
         String methodName = "createToken";
         _log.entering(CLASS, methodName);
         OAuth20Token token = null;
@@ -102,6 +98,7 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
             if (isAppPasswordOrTokenGT) {
                 length = length + 2;
             }
+            String thirdPartyAccessToken = OAuth20Util.getValueFromMap(OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN, tokenMap);
             String tokenId = OAuth20Util.getRandom(length);
             String tokenContent = tokenId;
             OidcServerConfig oidcServerConfig = ConfigUtils.getOidcServerConfigForOAuth20Provider(componentId);

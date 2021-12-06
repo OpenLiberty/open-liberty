@@ -273,8 +273,11 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
 
                     SubjectHelper subjectHelper = new SubjectHelper();
                     String thirdPartyAccessToken = subjectHelper.getAccessTokenFromCallerSubject();
+                    if (thirdPartyAccessToken != null) {
+                        tokenMap.put(OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN_SUFFIX, new String[] { thirdPartyAccessToken });
+                    }
 
-                    OAuth20Token token = tokenFactory.createAccessToken(tokenMap, thirdPartyAccessToken);
+                    OAuth20Token token = tokenFactory.createAccessToken(tokenMap);
 
                     tokenList = new ArrayList<OAuth20Token>();
                     tokenList.add(token);

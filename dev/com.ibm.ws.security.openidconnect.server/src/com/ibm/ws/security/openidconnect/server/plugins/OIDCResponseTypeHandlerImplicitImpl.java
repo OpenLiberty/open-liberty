@@ -155,8 +155,11 @@ public class OIDCResponseTypeHandlerImplicitImpl implements
 
                         SubjectHelper subjectHelper = new SubjectHelper();
                         String thirdPartyIDToken = subjectHelper.getIDTokenFromCallerSubject();
+                        if (thirdPartyIDToken != null) {
+                            idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken });
+                        }
 
-                        OAuth20Token id = oidc10TokenFactory.createIDToken(idTokenMap, thirdPartyIDToken);
+                        OAuth20Token id = oidc10TokenFactory.createIDToken(idTokenMap);
 
                         if (id != null) {
                             tokenList.add(id);

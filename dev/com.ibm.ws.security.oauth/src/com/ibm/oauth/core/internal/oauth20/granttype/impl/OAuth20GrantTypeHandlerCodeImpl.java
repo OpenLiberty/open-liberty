@@ -172,9 +172,11 @@ public class OAuth20GrantTypeHandlerCodeImpl implements OAuth20GrantTypeHandler 
 
                     OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
                     OAuth20Token thirdPartyAccessToken = tokenCache.get(code.getTokenString() + OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN_SUFFIX);
-                    String thirdPartyAccessTokenString = thirdPartyAccessToken != null ? thirdPartyAccessToken.getTokenString() : null;
+                    if (thirdPartyAccessToken != null) {
+                        accessTokenMap.put(OAuth20Constants.THIRD_PARTY_ACCESS_TOKEN, new String[] { thirdPartyAccessToken.getTokenString() });
+                    }
 
-                    OAuth20Token access = tokenFactory.createAccessToken(accessTokenMap, thirdPartyAccessTokenString);
+                    OAuth20Token access = tokenFactory.createAccessToken(accessTokenMap);
 
                     tokenList = new ArrayList<OAuth20Token>();
                     tokenList.add(access);

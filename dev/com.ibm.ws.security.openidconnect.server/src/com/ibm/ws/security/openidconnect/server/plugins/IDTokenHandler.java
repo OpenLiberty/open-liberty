@@ -115,10 +115,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
     /** {@inheritDoc} */
     @Override
     public OAuth20Token createToken(@Sensitive Map<String, String[]> tokenMap) {
-        return createToken(tokenMap, null);
-    }
 
-    public OAuth20Token createToken(@Sensitive Map<String, String[]> tokenMap, String thirdPartyIDToken) {
         OAuth20Token token = null;
         String sharedKey = OAuth20Util.getValueFromMap(SHARED_KEY, tokenMap);
         String componentId = OAuth20Util.getValueFromMap(OAuth20Constants.COMPONENTID, tokenMap);
@@ -129,6 +126,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         String stateId = getStateId(tokenMap);
         String[] scopes = tokenMap.get(OAuth20Constants.SCOPE);
         String grantType = OAuth20Util.getValueFromMap(OAuth20Constants.GRANT_TYPE, tokenMap);
+        String thirdPartyIDToken = OAuth20Util.getValueFromMap(OAuth20Constants.THIRD_PARTY_ID_TOKEN, tokenMap);
 
         OidcServerConfig oidcServerConfig = OIDCProvidersConfig.getOidcServerConfigForOAuth20Provider(componentId);
         int lifetime = getLifetime(oidcServerConfig);
