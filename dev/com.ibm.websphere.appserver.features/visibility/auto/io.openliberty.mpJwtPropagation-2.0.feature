@@ -8,5 +8,5 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.security.mp.jwt.propagation, \
  io.openliberty.org.jboss.resteasy.common.jakarta, \
  io.openliberty.restfulWS.internal.globalhandler.jakarta
-kind=beta
+kind=ga
 edition=core

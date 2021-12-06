@@ -14,5 +14,5 @@ IBM-API-Package: \
   io.openliberty.mpCompatible-5.0
 -bundles=\
   com.ibm.ws.microprofile.contextpropagation.1.0
-kind=beta
+kind=ga
 edition=core
