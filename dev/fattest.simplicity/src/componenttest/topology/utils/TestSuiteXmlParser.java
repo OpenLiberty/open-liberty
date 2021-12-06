@@ -77,23 +77,4 @@ public class TestSuiteXmlParser extends DefaultHandler {
                 break;
         }
     }
-
-    public String capitalise(String spec){
-        char[] charArray = spec.toCharArray();
-        boolean foundSpace = true;
-
-        for(int i = 0; i < charArray.length; i++) {
-            if(Character.isLetter(charArray[i])) {
-                if(foundSpace) {
-                    charArray[i] = Character.toUpperCase(charArray[i]);
-                    foundSpace = false;
-                }
-            }
-            else {
-                foundSpace = true;
-            }
-        }
-        spec = String.valueOf(charArray);
-        return spec;
-    }
 }
