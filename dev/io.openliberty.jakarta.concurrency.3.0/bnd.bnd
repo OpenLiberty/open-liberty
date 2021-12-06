@@ -27,11 +27,11 @@ Import-Package:
   *
 
 Include-Resource: \
-  @${repo;io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0.20211103;EXACT}!/META-INF/NOTICE
+  @${repo;io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0.20211206;EXACT}!/META-INF/NOTICE
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0.20211103
+  io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0.20211206
