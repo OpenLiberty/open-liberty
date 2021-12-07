@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration(), Collections.emptyList());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();
@@ -125,7 +125,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration(), Collections.emptyList());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();

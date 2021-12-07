@@ -15,6 +15,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/jaxrs21security/src,\
+  test-applications/jaxrs21typeAndCType/src,\
   test-applications/jaxrs21uriInfo/src
 
 fat.project: true

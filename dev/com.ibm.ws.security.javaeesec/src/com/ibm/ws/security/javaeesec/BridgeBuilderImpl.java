@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,25 +48,28 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
     @Deactivate
     protected void deactivate(ComponentContext cc) {}
 
-    // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
     @Override
-    public synchronized void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
-        AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
-        if (authConfigProvider != null) {
-            // A provider was registered already for this application context.
-            return;
-        }
+    public void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
 
-        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
-            // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
-            Map<String, String> props = new ConcurrentHashMap<String, String>();
-            authConfigProvider = new AuthProvider(props, providerFactory);
-            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
-        } else {
+        if (!getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
-        }
+        } else {
+            AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
+            if (authConfigProvider == null) {
+                // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
+                synchronized (this) {
+                    authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
+                    if (authConfigProvider == null) {
+                        // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
+                        Map<String, String> props = new ConcurrentHashMap<String, String>();
+                        authConfigProvider = new AuthProvider(props, providerFactory);
+                        providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
+                    }
+                }
+            }
+        }        
     }
 
     @Override

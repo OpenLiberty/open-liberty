@@ -170,7 +170,7 @@ public class PackageRunnableTest {
 
         Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
-        executeTheJar(extractDirectory2, true, true, false);
+        executeTheJar(extractDirectory2, true, true, true);
         checkDirStructure(extractDirectory2, true);
     }
 

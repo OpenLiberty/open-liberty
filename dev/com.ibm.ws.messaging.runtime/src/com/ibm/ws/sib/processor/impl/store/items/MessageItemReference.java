@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,24 +79,20 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
 
     private MessageEventListener PRE_COMMIT_ADD;
     private MessageEventListener PRE_COMMIT_REMOVE;
-    private MessageEventListener POST_COMMIT_ADD_1;
-    private MessageEventListener POST_COMMIT_ADD_2;
-    private MessageEventListener POST_COMMIT_REMOVE_1;
-    private MessageEventListener POST_COMMIT_REMOVE_2;
-    private MessageEventListener POST_COMMIT_REMOVE_3;
-    private MessageEventListener POST_COMMIT_REMOVE_4;
-    private MessageEventListener POST_ROLLBACK_ADD_1;
-    private MessageEventListener POST_ROLLBACK_ADD_2;
-    private MessageEventListener POST_ROLLBACK_REMOVE_1;
-    private MessageEventListener POST_ROLLBACK_REMOVE_2;
-    private MessageEventListener POST_ROLLBACK_REMOVE_3;
-    private MessageEventListener POST_ROLLBACK_REMOVE_4;
-    private MessageEventListener UNLOCKED_1;
-    private MessageEventListener UNLOCKED_2;
-    private MessageEventListener UNLOCKED_3;
-    private MessageEventListener PRE_UNLOCKED_1;
-    private MessageEventListener PRE_UNLOCKED_2;
     private MessageEventListener REFERENCES_DROPPED_TO_ZERO;
+    
+    private final MessageEventListeners postCommitAddListeners = new MessageEventListeners(MessageEvents.POST_COMMIT_ADD, 2);
+    // The ConsumerDispatcher, PtoPMessageItemStream (or SubscriptionItemStream) and optionally a JSLocalConsumerPoint, 
+    // and then the same again if the transaction rolls back.
+    private final MessageEventListeners postCommitRemoveListeners = new MessageEventListeners(MessageEvents.POST_COMMIT_REMOVE, 5);
+    private final MessageEventListeners postRollbackAddListeners = new MessageEventListeners(MessageEvents.POST_ROLLBACK_ADD, 2);
+    // The ConsumerDispatcher, PtoPMessageItemStream (or SubscriptionItemStream) and optionally a JSLocalConsumerPoint, 
+    // and then the same again if the transaction rolls back.    
+    private final MessageEventListeners postRollbackRemoveListeners = new MessageEventListeners(MessageEvents.POST_ROLLBACK_REMOVE, 5);
+    private final MessageEventListeners preUnlockedListeners = new MessageEventListeners(MessageEvents.PRE_UNLOCKED, 2);
+    // The ConsumerDispatcher, and optionally a JSLocalConsumerPoint, 
+    // and then the same again if the transaction rolls back.
+    private final MessageEventListeners unlockedListeners = new MessageEventListeners(MessageEvents.UNLOCKED, 4);
 
     // Can this reference be downgraded if the message is assured?
     private boolean downgradePersistence = false;
@@ -367,18 +363,10 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
 
         if (!transaction.isAutoCommit())
         {
-            try
-            {
-                if (POST_COMMIT_ADD_1 != null)
-                {
-                    POST_COMMIT_ADD_1.messageEventOccurred(MessageEvents.POST_COMMIT_ADD, this, transaction);
-                }
-                if (POST_COMMIT_ADD_2 != null)
-                {
-                    POST_COMMIT_ADD_2.messageEventOccurred(MessageEvents.POST_COMMIT_ADD, this, transaction);
-                }
-            } catch (SIException e)
-            {
+            try {
+                postCommitAddListeners.messageEventOccurred(this, transaction);
+            
+            } catch (SIException e) {
                 FFDCFilter.processException(
                                             e,
                                             "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.eventPostCommitAdd",
@@ -423,24 +411,8 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
 
         try
         {
-            if (POST_COMMIT_REMOVE_4 != null)
-            {
-                POST_COMMIT_REMOVE_4.messageEventOccurred(MessageEvents.POST_COMMIT_REMOVE, this, transaction);
-            }
-            if (POST_COMMIT_REMOVE_3 != null)
-            {
-                POST_COMMIT_REMOVE_3.messageEventOccurred(MessageEvents.POST_COMMIT_REMOVE, this, transaction);
-            }
-            if (POST_COMMIT_REMOVE_2 != null)
-            {
-                POST_COMMIT_REMOVE_2.messageEventOccurred(MessageEvents.POST_COMMIT_REMOVE, this, transaction);
-            }
-            if (POST_COMMIT_REMOVE_1 != null)
-            {
-                POST_COMMIT_REMOVE_1.messageEventOccurred(MessageEvents.POST_COMMIT_REMOVE, this, transaction);
-            }
-        } catch (SIException e)
-        {
+            postCommitRemoveListeners.messageEventOccurred(this, transaction);
+        } catch (SIException e) {
             FFDCFilter.processException(
                                         e,
                                         "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.eventPostCommitRemove",
@@ -484,36 +456,10 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
             failedInitInRestore = false;
         }
 
-        /**
-         * Message was rolled back. Call the handleUndeliverableMessage routine on the
-         * consumer. This may or may not redirect the message depending on the cicumstances
-         * of the delivery
-         */
+        try {    
+            postRollbackRemoveListeners.messageEventOccurred(this, transaction);
 
-        // TODO : wrap in an if statement ?
-
-        // consumerPoint.handleUndeliverableMessage(this, null);                                 
-
-        try
-        {
-            if (POST_ROLLBACK_REMOVE_4 != null)
-            {
-                POST_ROLLBACK_REMOVE_4.messageEventOccurred(MessageEvents.POST_ROLLBACK_REMOVE, this, transaction);
-            }
-            if (POST_ROLLBACK_REMOVE_3 != null)
-            {
-                POST_ROLLBACK_REMOVE_3.messageEventOccurred(MessageEvents.POST_ROLLBACK_REMOVE, this, transaction);
-            }
-            if (POST_ROLLBACK_REMOVE_2 != null)
-            {
-                POST_ROLLBACK_REMOVE_2.messageEventOccurred(MessageEvents.POST_ROLLBACK_REMOVE, this, transaction);
-            }
-            if (POST_ROLLBACK_REMOVE_1 != null)
-            {
-                POST_ROLLBACK_REMOVE_1.messageEventOccurred(MessageEvents.POST_ROLLBACK_REMOVE, this, transaction);
-            }
-        } catch (SIException e)
-        {
+        } catch (SIException e) {
             FFDCFilter.processException(
                                         e,
                                         "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.eventPostRollbackRemove",
@@ -544,23 +490,14 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
         // Reset all callbacks
         PRE_COMMIT_ADD = null;
         PRE_COMMIT_REMOVE = null;
-        POST_COMMIT_ADD_1 = null;
-        POST_COMMIT_ADD_2 = null;
-        POST_COMMIT_REMOVE_1 = null;
-        POST_COMMIT_REMOVE_2 = null;
-        POST_COMMIT_REMOVE_3 = null;
-        POST_COMMIT_REMOVE_4 = null;
-        POST_ROLLBACK_ADD_1 = null;
-        POST_ROLLBACK_ADD_2 = null;
-        POST_ROLLBACK_REMOVE_1 = null;
-        POST_ROLLBACK_REMOVE_2 = null;
-        POST_ROLLBACK_REMOVE_3 = null;
-        POST_ROLLBACK_REMOVE_4 = null;
-        UNLOCKED_1 = null;
-        UNLOCKED_2 = null;
-        UNLOCKED_3 = null;
-        PRE_UNLOCKED_1 = null;
-        PRE_UNLOCKED_2 = null;
+        
+        postCommitAddListeners.reset();
+        postCommitRemoveListeners.reset();
+        postRollbackAddListeners.reset();
+        postRollbackRemoveListeners.reset();
+        unlockedListeners.reset();
+        preUnlockedListeners.reset();
+       
         REFERENCES_DROPPED_TO_ZERO = null;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -592,18 +529,10 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
 
         }
 
-        try
-        {
-            if (POST_ROLLBACK_ADD_1 != null)
-            {
-                POST_ROLLBACK_ADD_1.messageEventOccurred(MessageEvents.POST_ROLLBACK_ADD, this, transaction);
-            }
-            if (POST_ROLLBACK_ADD_2 != null)
-            {
-                POST_ROLLBACK_ADD_2.messageEventOccurred(MessageEvents.POST_ROLLBACK_ADD, this, transaction);
-            }
-        } catch (SIException e)
-        {
+        try {
+            postRollbackAddListeners.messageEventOccurred(this, transaction);
+        
+        } catch (SIException e) {
             FFDCFilter.processException(
                                         e,
                                         "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.eventPostRollbackAdd",
@@ -649,45 +578,10 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
 
         reavailable = true;
 
-        try
-        {
-            // 541867
-            // When a message is unlocked, a registered ConsumerDispatcher will try to deliver
-            // it to a ready consumer. When this happens the consumer will register for the UNLOCK
-            // event. If that is added to a later slot (e.g. UNLOCKED_3) than the one that's currently
-            // being processed (the ConsumerDispatcher) it is possible for us to drive the new consumer's
-            // unlock event straight away (even though the message has just been locked).
-
-            // This can also result in two (or more) consumers (or multiple instances of the same consumer)
-            // being registered on the same message as we may not have deregistered the initial consumer
-            // at the time that the ConsumerDispatcher delivers the to the second (or the same) consumer
-            // after the unlock.
-
-            // The solution is to proccess all the non-ConsumerDispatchers registered before going back
-            // and driving the ConsumerDispatcher.
-            for (int pass = 0; pass < 2; pass++)
-            {
-                if ((UNLOCKED_1 != null) &&
-                    (((pass == 0) && !(UNLOCKED_1 instanceof ConsumerDispatcher)) ||
-                    ((pass == 1) && (UNLOCKED_1 instanceof ConsumerDispatcher))))
-                {
-                    UNLOCKED_1.messageEventOccurred(MessageEvents.UNLOCKED, this, null);
-                }
-                if ((UNLOCKED_2 != null) &&
-                    (((pass == 0) && !(UNLOCKED_2 instanceof ConsumerDispatcher)) ||
-                    ((pass == 1) && (UNLOCKED_2 instanceof ConsumerDispatcher))))
-                {
-                    UNLOCKED_2.messageEventOccurred(MessageEvents.UNLOCKED, this, null);
-                }
-                if ((UNLOCKED_3 != null) &&
-                    (((pass == 0) && !(UNLOCKED_3 instanceof ConsumerDispatcher)) ||
-                    ((pass == 1) && (UNLOCKED_3 instanceof ConsumerDispatcher))))
-                {
-                    UNLOCKED_3.messageEventOccurred(MessageEvents.UNLOCKED, this, null);
-                }
-            }
-        } catch (SIException e)
-        {
+        try {
+            unlockedListeners.messageEventOccurred(this, null);
+           
+        } catch (SIException e) {
             FFDCFilter.processException(
                                         e,
                                         "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.eventUnlocked",
@@ -921,47 +815,19 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
         switch (event)
         {
             case MessageEvents.POST_COMMIT_ADD: {
-                if (POST_COMMIT_ADD_1 == null)
-                    POST_COMMIT_ADD_1 = listener;
-                else if (POST_COMMIT_ADD_2 == null)
-                    POST_COMMIT_ADD_2 = listener;
-                else
-                    error = true;
+                postCommitAddListeners.add(listener);
                 break;
             }
             case MessageEvents.POST_COMMIT_REMOVE: {
-                if (POST_COMMIT_REMOVE_1 == null)
-                    POST_COMMIT_REMOVE_1 = listener;
-                else if (POST_COMMIT_REMOVE_2 == null)
-                    POST_COMMIT_REMOVE_2 = listener;
-                else if (POST_COMMIT_REMOVE_3 == null)
-                    POST_COMMIT_REMOVE_3 = listener;
-                else if (POST_COMMIT_REMOVE_4 == null)
-                    POST_COMMIT_REMOVE_4 = listener;
-                else
-                    error = true;
+                postCommitRemoveListeners.add(listener);               
                 break;
             }
             case MessageEvents.POST_ROLLBACK_ADD: {
-                if (POST_ROLLBACK_ADD_1 == null)
-                    POST_ROLLBACK_ADD_1 = listener;
-                else if (POST_ROLLBACK_ADD_2 == null)
-                    POST_ROLLBACK_ADD_2 = listener;
-                else
-                    error = true;
+                postRollbackAddListeners.add(listener);
                 break;
             }
             case MessageEvents.POST_ROLLBACK_REMOVE: {
-                if (POST_ROLLBACK_REMOVE_1 == null)
-                    POST_ROLLBACK_REMOVE_1 = listener;
-                else if (POST_ROLLBACK_REMOVE_2 == null)
-                    POST_ROLLBACK_REMOVE_2 = listener;
-                else if (POST_ROLLBACK_REMOVE_3 == null)
-                    POST_ROLLBACK_REMOVE_3 = listener;
-                else if (POST_ROLLBACK_REMOVE_4 == null)
-                    POST_ROLLBACK_REMOVE_4 = listener;
-                else
-                    error = true;
+                postRollbackRemoveListeners.add(listener); 
                 break;
             }
             case MessageEvents.PRE_COMMIT_ADD: {
@@ -986,23 +852,11 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
                 break;
             }
             case MessageEvents.UNLOCKED: {
-                if (UNLOCKED_1 == null)
-                    UNLOCKED_1 = listener;
-                else if (UNLOCKED_2 == null)
-                    UNLOCKED_2 = listener;
-                else if (UNLOCKED_3 == null)
-                    UNLOCKED_3 = listener;
-                else
-                    error = true;
+                unlockedListeners.add(listener);
                 break;
             }
             case MessageEvents.PRE_UNLOCKED: {
-                if (PRE_UNLOCKED_1 == null)
-                    PRE_UNLOCKED_1 = listener;
-                else if (PRE_UNLOCKED_2 == null)
-                    PRE_UNLOCKED_2 = listener;
-                else
-                    error = true;
+                preUnlockedListeners.add(listener);
                 break;
             }
         }
@@ -1051,39 +905,19 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
         switch (event)
         {
             case MessageEvents.POST_COMMIT_ADD: {
-                if (POST_COMMIT_ADD_1 == listener)
-                    POST_COMMIT_ADD_1 = null;
-                else if (POST_COMMIT_ADD_2 == listener)
-                    POST_COMMIT_ADD_2 = null;
+                postCommitAddListeners.remove(listener);
                 break;
             }
             case MessageEvents.POST_COMMIT_REMOVE: {
-                if (POST_COMMIT_REMOVE_1 == listener)
-                    POST_COMMIT_REMOVE_1 = null;
-                else if (POST_COMMIT_REMOVE_2 == listener)
-                    POST_COMMIT_REMOVE_2 = null;
-                else if (POST_COMMIT_REMOVE_3 == listener)
-                    POST_COMMIT_REMOVE_3 = null;
-                else if (POST_COMMIT_REMOVE_4 == listener)
-                    POST_COMMIT_REMOVE_4 = null;
+                postCommitRemoveListeners.remove(listener);
                 break;
             }
             case MessageEvents.POST_ROLLBACK_ADD: {
-                if (POST_ROLLBACK_ADD_1 == listener)
-                    POST_ROLLBACK_ADD_1 = null;
-                else if (POST_ROLLBACK_ADD_2 == listener)
-                    POST_ROLLBACK_ADD_2 = null;
+                postRollbackAddListeners.remove(listener);
                 break;
             }
             case MessageEvents.POST_ROLLBACK_REMOVE: {
-                if (POST_ROLLBACK_REMOVE_1 == listener)
-                    POST_ROLLBACK_REMOVE_1 = null;
-                else if (POST_ROLLBACK_REMOVE_2 == listener)
-                    POST_ROLLBACK_REMOVE_2 = null;
-                else if (POST_ROLLBACK_REMOVE_3 == listener)
-                    POST_ROLLBACK_REMOVE_3 = null;
-                else if (POST_ROLLBACK_REMOVE_4 == listener)
-                    POST_ROLLBACK_REMOVE_4 = null;
+                postRollbackRemoveListeners.remove(listener);
                 break;
             }
             case MessageEvents.PRE_COMMIT_ADD: {
@@ -1102,19 +936,11 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
                 break;
             }
             case MessageEvents.UNLOCKED: {
-                if (UNLOCKED_1 == listener)
-                    UNLOCKED_1 = null;
-                else if (UNLOCKED_2 == listener)
-                    UNLOCKED_2 = null;
-                else if (UNLOCKED_3 == listener)
-                    UNLOCKED_3 = null;
+                unlockedListeners.remove(listener);
                 break;
             }
             case MessageEvents.PRE_UNLOCKED: {
-                if (PRE_UNLOCKED_1 == listener)
-                    PRE_UNLOCKED_1 = null;
-                else if (PRE_UNLOCKED_2 == listener)
-                    PRE_UNLOCKED_2 = null;
+                preUnlockedListeners.remove(listener);
                 break;
             }
         }
@@ -1491,18 +1317,10 @@ public final class MessageItemReference extends ItemReference implements SIMPMes
         {
             redeliveryCountReached = false;
 
-            try
-            {
-                if (PRE_UNLOCKED_1 != null)
-                {
-                    PRE_UNLOCKED_1.messageEventOccurred(MessageEvents.PRE_UNLOCKED, this, transaction);
-                }
-                if (PRE_UNLOCKED_2 != null)
-                {
-                    PRE_UNLOCKED_2.messageEventOccurred(MessageEvents.PRE_UNLOCKED, this, transaction);
-                }
-            } catch (SIException e)
-            {
+            try {
+                preUnlockedListeners.messageEventOccurred(this, transaction);
+          
+            } catch (SIException e) {
                 FFDCFilter.processException(
                                             e,
                                             "com.ibm.ws.sib.processor.impl.store.items.MessageItemReference.unlockMsg",

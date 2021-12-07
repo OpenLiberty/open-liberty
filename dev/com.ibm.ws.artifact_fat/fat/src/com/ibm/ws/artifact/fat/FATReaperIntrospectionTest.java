@@ -141,13 +141,15 @@ public class FATReaperIntrospectionTest{
         String methodName = "tearDownClass";
         logInfo(methodName, "Entering: " + methodName);
 
+        if(dump != null){
+            dump.close();
+        }
+        
         if(server != null && server.isStarted()){
             server.stopServer();
         }
 
-        if(dump != null){
-            dump.close();
-        }
+   
 
 
         logInfo(methodName, "Exiting: " + methodName);

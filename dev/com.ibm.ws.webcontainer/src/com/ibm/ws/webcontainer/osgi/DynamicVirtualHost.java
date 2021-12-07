@@ -124,9 +124,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
                     WebApp originalWebApp = (WebApp) list.get(0);
                     originalName = originalWebApp.getWebAppName();
                 }
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.SEVERE)){
-                    logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
-                }
+                logger.logp(Level.SEVERE, CLASS_NAME, "addWebApplication", "context.root.already.in.use", new Object[] { displayName, contextRoot, originalName, displayName });
                 throw new WebAppNotLoadedException("Context root " + contextRoot + " is already bound. Cannot start application " + displayName);
                 // end 296368 Nested exceptions lost for problems during application
                 // startup WAS.webcontainer
@@ -154,9 +152,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
             try {
                 webGroup.addWebApplication(deployedModule, extensionFactories);
                 Object[] args = { displayName, vHostConfig.toString() };
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)){
-                    logger.logp(Level.INFO, CLASS_NAME, "addWebApplication", "module.[{0}].successfully.bound.to.virtualhost.[{1}]", args);
-                }
+                logger.logp(Level.INFO, CLASS_NAME, "addWebApplication", "module.[{0}].successfully.bound.to.virtualhost.[{1}]", args);
             } catch (Throwable t) {
                 //PI58875
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)){

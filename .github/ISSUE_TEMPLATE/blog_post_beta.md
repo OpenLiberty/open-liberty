@@ -3,7 +3,7 @@ name: Open Liberty BETA blog post
 about: Information to be included in the Open Liberty BETA blog post.
 title: BETA BLOG - title_of_your_update
 labels: 'Blog, target:beta'
-assignees: austin0, jakub-pomykala
+assignees: ryan-storey
 
 ---
 

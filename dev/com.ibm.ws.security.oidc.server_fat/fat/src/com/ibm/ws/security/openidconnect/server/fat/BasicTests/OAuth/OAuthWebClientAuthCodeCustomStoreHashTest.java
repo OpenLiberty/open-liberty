@@ -24,13 +24,11 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.CommonTests.genericWebClientAuthCodeCommonTest;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 
-@MinimumJavaLevel(javaLevel = 8)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "com.ibm.ws.security.registry.EntryNotFoundException" }) // Defect 261748
@@ -54,17 +52,17 @@ public class OAuthWebClientAuthCodeCustomStoreHashTest extends genericWebClientA
 
         testSettings = new TestSettings();
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.server-1.0_fat", "server_customstore.xml",
-                Constants.OAUTH_OP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, null, null,
-                true, true, Constants.ACCESS_TOKEN_KEY, Constants.X509_CERT, Constants.JUNIT_REPORTING);
+                                   Constants.OAUTH_OP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, null, null,
+                                   true, true, Constants.ACCESS_TOKEN_KEY, Constants.X509_CERT, Constants.JUNIT_REPORTING);
 
         testSettings.setClientName("dclient01");
         testSettings.setClientID("dclient01");
         testSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(),
-                Constants.ENDPOINT_TYPE, Constants.OAUTHCONFIGDERBY_APP, Constants.AUTHORIZE_ENDPOINT));
+                                                                  Constants.ENDPOINT_TYPE, Constants.OAUTHCONFIGDERBY_APP, Constants.AUTHORIZE_ENDPOINT));
         testSettings.setTokenEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE,
-                Constants.OAUTHCONFIGDERBY_APP, Constants.TOKEN_ENDPOINT));
+                                                              Constants.OAUTHCONFIGDERBY_APP, Constants.TOKEN_ENDPOINT));
         testSettings.setProtectedResource(eSettings.assembleProtectedResource(testOPServer.getHttpsString(),
-                Constants.OAUTH_TAI_ROOT, Constants.SSODEMO));
+                                                                              Constants.OAUTH_TAI_ROOT, Constants.SSODEMO));
         testSettings.setStoreType(StoreType.CUSTOM);
         setForClientSecretHash();
     }

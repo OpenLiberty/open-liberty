@@ -9,11 +9,11 @@
         IBM Corporation - initial API and implementation
  -->
 <taglib>
-  <tlib-version>1.0</tlib-version>
-  <jsp-version>2.0</jsp-version>
-  <short-name>tag1</short-name>
-  <tag>
-    <name>hitMe</name>
-    <tag-class>com.ibm.ws.jsp23.fat.testinjection.tagHandler.JspCdiHitMeTag</tag-class>
-  </tag>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>tag1</short-name>
+    <tag>
+        <name>hitMe</name>
+        <tag-class>com.ibm.ws.jsp23.fat.testinjection.tagHandler.JspCdiHitMeTag</tag-class>
+    </tag>
 </taglib>

@@ -24,7 +24,6 @@ import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP12ConfigSettings;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,7 +42,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
 
     public static Class<?> thisClass = MPJwt12MPConfigInApp_Tests.class;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.ThreadPool;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -354,19 +355,52 @@ public class IRequestImpl implements IRequestExtended
    */
   private String armor (String str)
   {
-      StringBuffer sb = new StringBuffer();
-      sb.append("-----BEGIN CERTIFICATE-----\r\n");
-      for (int begin = 0; begin < str.length();)
-      {
-          int end = Math.min(begin+76,str.length());
-          sb.append (str.substring(begin,end) + "\r\n");
-          begin += 76;
-      }
-      sb.append("-----END CERTIFICATE-----\r\n");
-     //321485
-      String buffer = sb.toString();
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-          Tr.debug(tc, "armor", " " + buffer);
+          Tr.debug(tc, "armor", "Enter");
+
+      String buffer = null;
+
+      if (str.indexOf("BEGIN") != -1) {
+          if (str.indexOf("%") != -1) {
+              //Not running beta edition, return as-is instead of throw exception. Invalid peer cert exception will be thrown eventually
+              if (!ProductInfo.getBetaEdition()) {
+                  Tr.debug(tc, "armor", "Not beta edition. Return as-is");
+                  buffer = str;
+              }
+              else {
+                  try {
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, "armor", "Armored certificate is encoded. Returning a decoded armor");
+
+                      buffer = java.net.URLDecoder.decode(str, "UTF-8");
+                  }
+                  catch (Exception e) {
+                      //Return as-is; if the armor cert is invalid, it will be rejected later.
+                      Tr.debug(tc, "armor", "Can not decode armored certificate. Return as-is");
+
+                      buffer = str;
+                  }
+              }
+          }
+          else {
+              buffer = str;
+          }
+      }
+      else {
+          StringBuffer sb = new StringBuffer();
+          sb.append("-----BEGIN CERTIFICATE-----\r\n");
+          for (int begin = 0; begin < str.length();)
+          {
+              int end = Math.min(begin+76,str.length());
+              sb.append (str.substring(begin,end) + "\r\n");
+              begin += 76;
+          }
+          sb.append("-----END CERTIFICATE-----\r\n");
+          buffer = sb.toString();
+      }
+
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+          Tr.debug(tc, "armor", "Exit [" + buffer + "]");
 
       return buffer;
   }

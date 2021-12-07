@@ -25,7 +25,6 @@ import org.eclipse.microprofile.config.Config;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.MessageConstants;
@@ -54,16 +53,6 @@ public class ModuleSelectionConfig {
      */
     public static ModuleSelectionConfig fromConfig(Config config) {
         ModuleSelectionConfig result = new ModuleSelectionConfig();
-        
-        // BETA Guard - do no merging, returning the first module only, unless running as beta
-        if (!ProductInfo.getBetaEdition()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(null, tc, "Not beta, so setting config to useFirstModuleOnly");
-            }
-            
-            result.isFirst = true;
-            return result;
-        }
         
         String inclusion = config.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first").trim();
         

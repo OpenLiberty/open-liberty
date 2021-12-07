@@ -45,6 +45,8 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -63,7 +65,8 @@ public class LdapIdentityStore implements IdentityStore {
      *
      * @param idStoreDefinition The definitions to use to configure the {@link IdentityStore}.
      */
-    public LdapIdentityStore(LdapIdentityStoreDefinition idStoreDefinition) {
+    @Sensitive
+    public LdapIdentityStore(@Sensitive LdapIdentityStoreDefinition idStoreDefinition) {
         this.idStoreDefinition = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
     }
 
@@ -124,15 +127,11 @@ public class LdapIdentityStore implements IdentityStore {
         return getDirContext(env);
     }
 
+    @Sensitive
     @FFDCIgnore(PrivilegedActionException.class)
-    private DirContext getDirContext(Hashtable<Object, Object> env) throws NamingException {
+    private DirContext getDirContext(@Sensitive Hashtable<Object, Object> env) throws NamingException {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<DirContext>() {
-                @Override
-                public DirContext run() throws NamingException {
-                    return new InitialLdapContext(env, null);
-                }
-            });
+            return AccessController.doPrivileged(new GetDirContextAction(env));
         } catch (PrivilegedActionException e) {
             Exception oe = e.getException();
             if (oe instanceof NamingException) {
@@ -142,6 +141,24 @@ public class LdapIdentityStore implements IdentityStore {
             } else {
                 throw new UndeclaredThrowableException(oe);
             }
+        }
+    }
+
+    /**
+     * Made this method non-anonymous to add the trivial annotation to avoid
+     * printing out the password.
+     */
+    @Trivial
+    private class GetDirContextAction implements PrivilegedExceptionAction<DirContext> {
+        private final Hashtable<Object, Object> env;
+
+        private GetDirContextAction(Hashtable<Object, Object> env) {
+            this.env = env;
+        }
+
+        @Override
+        public DirContext run() throws NamingException {
+            return new InitialLdapContext(env, null);
         }
     }
 
@@ -285,8 +302,8 @@ public class LdapIdentityStore implements IdentityStore {
      * </ul>
      *
      * @param callerName The caller's name.
-     * @param filter The filter to search for the caller.
-     * @param controls The {@link SearchControls} object.
+     * @param filter     The filter to search for the caller.
+     * @param controls   The {@link SearchControls} object.
      * @return The user's DN.
      */
     private String getUserDn(String callerName, String filter, SearchControls controls) {
@@ -325,7 +342,7 @@ public class LdapIdentityStore implements IdentityStore {
     /**
      * Get the groups for the caller
      *
-     * @param context The {@link DirContext} to use when performing the search.
+     * @param context  The {@link DirContext} to use when performing the search.
      * @param callerDn The caller's distinguished name.
      * @return The set of groups the caller is a member of.
      */
@@ -344,10 +361,10 @@ public class LdapIdentityStore implements IdentityStore {
     /**
      * Get the groups for the caller by using a member-style attribute found on group LDAP entities.
      *
-     * @param context The {@link DirContext} to use when performing the search.
-     * @param callerDn The caller's distinguished name.
+     * @param context           The {@link DirContext} to use when performing the search.
+     * @param callerDn          The caller's distinguished name.
      * @param groupSearchFilter The filter to use when searching for groups
-     * @param groupSearchBase The base of the tree to start the group search from
+     * @param groupSearchBase   The base of the tree to start the group search from
      * @return The set of groups the caller is a member of.
      */
     private Set<String> getGroupsByMember(DirContext context, String callerDn, String groupSearchBase, String groupSearchFilter) {
@@ -409,8 +426,8 @@ public class LdapIdentityStore implements IdentityStore {
      * filter using the name attribute of the group or caller.
      *
      * @param searchFilter The filter set in LdapIdentityStore
-     * @param caller The name of the caller whose groups or DN we are searching for
-     * @param attribute The attribute to use when forming the filter
+     * @param caller       The name of the caller whose groups or DN we are searching for
+     * @param attribute    The attribute to use when forming the filter
      * @return The new filter after string replacements or constructing the filter
      */
     private String getFormattedFilter(String searchFilter, String caller, String attribute) {
@@ -430,7 +447,7 @@ public class LdapIdentityStore implements IdentityStore {
     /**
      * Get the groups for the caller by using the memberOf-style attribute found on user LDAP entities.
      *
-     * @param context The {@link DirContext} to use when performing the search.
+     * @param context  The {@link DirContext} to use when performing the search.
      * @param callerDn The caller's distinguished name.
      * @return The set of groups the caller is a member of.
      */

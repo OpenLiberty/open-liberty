@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -242,12 +242,14 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
     @Override
     public void finish(DDParser parser) throws ParseException {
         super.finish(parser);
-        if (version == null) {
-            if (parser.version < 12) {
-                version = parser.parseToken(parser.version == 10 ? "1.0" : "1.1");
-            } else {
-                throw new ParseException(parser.requiredAttributeMissing("version"));
-            }
+        if ( version == null ) {
+            // Ensure that the local version variable is assigned.
+            //
+            // Previously, only the two DTD based formats might
+            // be missing a version attribute.  Changes to enable
+            // more descriptor deviations mean that other cases
+            // might also be missing a version attribute.
+            version = parser.parseToken( parser.getDottedVersionText() );            
         }
     }
 

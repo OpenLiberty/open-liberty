@@ -28,12 +28,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/BasicClientTestServlet")
@@ -133,14 +134,14 @@ public class BasicClientTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP50_ID) // timeout property not supported in Rest Client 3.0 - use timeout method instead
     public void testReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try {
             builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "5");
             long startTime = System.nanoTime();
             WaitServiceClient client = builder.build(WaitServiceClient.class);
-            Response r = null;
             try {
-                r = client.waitFor(20);
+                client.waitFor(20);
                 fail("Did not throw expected ProcessingException");
             } catch (ProcessingException expected) {
                 LOG.info("Caught expected ProcessingException");

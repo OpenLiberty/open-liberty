@@ -29,5 +29,8 @@ Subsystem-Name: OpenAPI 3.1
 -jars= \
  com.ibm.websphere.appserver.spi.openapi.3.1; location:=dev/spi/ibm/
 
+-files=\
+  dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.openapi.3.1_1.0-javadoc.zip
+
 kind=ga
 edition=core

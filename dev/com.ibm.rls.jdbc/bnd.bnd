@@ -35,5 +35,8 @@ instrument.disabled: true
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.transaction;version=latest,\
 	com.ibm.ws.recoverylog;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.appserver.spi.logging
+	
+jakartaeeMe: true

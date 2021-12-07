@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,91 +10,69 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppClientTestBase extends DDTestBase {
 
-    protected ApplicationClient parse(String xml) throws Exception {
-        return parse(xml, ApplicationClient.VERSION_6);
-    }
-
-    protected ApplicationClient parse(final String xml, final int maxVersion) throws Exception {
-        ApplicationClientEntryAdapter adapter = new ApplicationClientEntryAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+    protected static ApplicationClientEntryAdapter createAdapter(int maxSchemaVersion) {
         @SuppressWarnings("unchecked")
-        final ServiceReference<ApplicationClientDDParserVersion> versionRef =
-            mockery.mock(ServiceReference.class, "sr" + mockId++);
+        ServiceReference<ApplicationClientDDParserVersion> versionRef =
+        mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + ApplicationClient.DD_NAME));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + ApplicationClient.DD_NAME));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-
+            {        
                 allowing(versionRef).getProperty(ApplicationClientDDParserVersion.VERSION);
-                will(returnValue(maxVersion));
+                will(returnValue(maxSchemaVersion));
             }
         });
 
+        ApplicationClientEntryAdapter adapter = new ApplicationClientEntryAdapter();
         adapter.setVersion(versionRef);
-
-        try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
-            Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
-        }
+        
+        return adapter;
+    }
+    
+    protected ApplicationClient parse(
+            String ddText,
+            int maxSchemaVersion) throws Exception {
+        return parse(ddText, maxSchemaVersion, null);
     }
 
-    // 1.2
-    // 1.3
-    // 1.4, http://java.sun.com/xml/ns/j2ee
-    // 5,   http://java.sun.com/xml/ns/javaee
-    // 6,   http://java.sun.com/xml/ns/javaee
-    // 7,   http://xmlns.jcp.org/xml/ns/javaee
-    // 8,   http://xmlns.jcp.org/xml/ns/javaee
+    protected static ApplicationClient parse(
+        String ddText,
+        int maxSchemaVersion,
+        String altMessage, String... messages) throws Exception {
 
-    protected static String appClient12() {
-        return "<!DOCTYPE application-client PUBLIC" +
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/myClient.jar";
+        String fragmentPath = null;
+        String ddPath = ApplicationClient.DD_NAME;
+
+        ApplicationClientEntryAdapter ddAdapter = createAdapter(maxSchemaVersion);
+
+        return parse(appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                altMessage, messages);
+    }
+
+    protected static String appClient12Head =
+        "<!DOCTYPE application-client PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN\"" + 
                " \"http://java.sun.com/j2ee/dtds/application_client_1_2.dtd\">" +
                "<application-client>";
-    }
 
-    protected static String appClient13() {
-        return "<!DOCTYPE application-client PUBLIC" +
+    protected static String appClient13Head =
+        "<!DOCTYPE application-client PUBLIC" +
                 " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.3//EN\"" + 
                 " \"http://java.sun.com/j2ee/dtds/application_client_1_3.dtd\">" +
                 "<application-client>";
-    }
 
-    protected static String appClient14() {
-        return "<application-client" +
+    protected static String appClient14Head =
+        "<application-client" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -102,10 +80,9 @@ public class AppClientTestBase extends DDTestBase {
                " version=\"1.4\"" +
                " id=\"ApplicationClient_ID\"" +
                ">";
-    }
 
-    protected static String appClient50() {
-        return "<application-client" +
+    protected static String appClient50Head = 
+        "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -113,10 +90,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"5\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClient60() {
-        return "<application-client" +
+    protected static String appClient60Head =
+        "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -124,10 +100,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"6\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClient70() {
-        return "<application-client" +
+    protected static String appClient70Head =
+        "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -135,10 +110,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"7\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }    
 
-    protected static String appClient80() {
-        return "<application-client" +
+    protected static String appClient80Head = 
+        "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -146,10 +120,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"8\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClient90() {
-        return "<application-client" +
+    protected static String appClient90Head =
+        "<application-client" +
                 " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
@@ -157,9 +130,32 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"9\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClientTail() {
-        return "</application-client>";
-   }
+    protected static String appClientTail =
+        "</application-client>";
+    
+    protected static String appClientXML(int schemaVersion, String body) {
+        String appClientHead;
+        if ( schemaVersion == ApplicationClient.VERSION_1_2 ) {
+            appClientHead = appClient12Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_1_3) {
+            appClientHead = appClient13Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_1_4 ) {
+            appClientHead = appClient14Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_5) {
+            appClientHead = appClient50Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_6 ) {
+            appClientHead = appClient60Head;            
+        } else if ( schemaVersion == ApplicationClient.VERSION_7 ) {
+            appClientHead = appClient70Head;            
+        } else if ( schemaVersion == ApplicationClient.VERSION_8 ) {
+            appClientHead = appClient80Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_9 ) {
+            appClientHead = appClient90Head;
+        } else {
+            throw new IllegalArgumentException("Unsupported application client version [ " + schemaVersion + " ]");
+        }
+
+        return appClientHead + body + appClientTail;
+    }
 }

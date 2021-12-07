@@ -416,7 +416,7 @@ public class MicroProfileActions {
      * Get a FeatureReplacementAction instance for a given FeatureSet. It will be run in the mode specified.
      *
      * @param  allFeatureSets All known FeatureSets. The features not in the specified FeatureSet are removed from the repeat action
-     * @param  featureSet     The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  featureSet     The FeatureSet to repeat with.
      * @param  server         The server to repeat on
      * @param  testMode       The test mode to run the FeatureSet
      * @return                A FeatureReplacementAction instance

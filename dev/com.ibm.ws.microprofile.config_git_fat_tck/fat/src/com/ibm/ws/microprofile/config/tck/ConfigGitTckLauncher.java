@@ -105,6 +105,7 @@ public class ConfigGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config_fat_tck", this
                         .getClass() + ":launchConfigTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
+        MvnUtils.preparePublicationFile();
     }
 
     @Mode(TestMode.LITE)

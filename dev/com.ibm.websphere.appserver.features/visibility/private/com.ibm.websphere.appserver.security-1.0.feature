@@ -7,7 +7,7 @@ IBM-API-Package: com.ibm.wsspi.security.tai; type="ibm-api", \
  com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
  com.ibm.websphere.security.auth.callback; type="ibm-api"
 -features=com.ibm.websphere.appserver.basicRegistry-1.0, \
-  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0,5.0", \
+  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0,5.0,6.0", \
   com.ibm.websphere.appserver.builtinAuthorization-1.0, \
   com.ibm.websphere.appserver.ssl-1.0, \
   com.ibm.websphere.appserver.securityInfrastructure-1.0, \

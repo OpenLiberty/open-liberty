@@ -1,5 +1,6 @@
 com.ibm.ws.jpa.container.ormdiagnostics_fat
 com.ibm.ws.jpa.container.ormdiagnostics_3.0_fat
+com.ibm.ws.jpa.tests.container_hibernate_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_2.1_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_2.2_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_3.0_fat

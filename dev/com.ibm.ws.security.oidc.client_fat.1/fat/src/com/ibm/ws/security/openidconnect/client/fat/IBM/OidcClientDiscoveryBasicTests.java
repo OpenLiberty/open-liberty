@@ -85,7 +85,7 @@ public class OidcClientDiscoveryBasicTests extends GenericOidcClientTests {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_orig.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
-        DiscoveryUtils.waitForDiscoveryToBeReady(testSettings);
+        DiscoveryUtils.waitForOPDiscoveryToBeReady(testSettings);
 
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rpd", "rp_server_orig.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
@@ -112,6 +112,10 @@ public class OidcClientDiscoveryBasicTests extends GenericOidcClientTests {
         test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
         test_FinalAction = Constants.LOGIN_USER;
         testSettings.setFlowType(Constants.RP_FLOW);
+
+        // try to wait for discovery to have populated the RP config
+        // Don't stop if this fails (there is a chance it could be ready by the time the tests actually run
+        DiscoveryUtils.waitForRPDiscoveryToBeReady(testSettings);
 
     }
 

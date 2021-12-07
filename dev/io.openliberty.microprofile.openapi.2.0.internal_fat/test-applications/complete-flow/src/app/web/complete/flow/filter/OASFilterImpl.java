@@ -21,10 +21,10 @@ public class OASFilterImpl implements OASFilter {
         // Test using app classloader
         // (unusual but this case exposed subtle problems with DefaultsConfigSource)
         ConfigProvider.getConfig(this.getClass().getClassLoader()).getValue("myKey1", String.class);
-        
+
         // Test using tccl (this is the normal use case)
         ConfigProvider.getConfig().getValue("myKey1", String.class);
-        
+
         server.setDescription(server.getDescription() + " + from filter");
         return server;
     }

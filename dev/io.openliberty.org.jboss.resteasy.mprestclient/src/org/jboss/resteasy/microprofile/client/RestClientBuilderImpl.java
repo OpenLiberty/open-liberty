@@ -256,7 +256,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
         builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
 
-        ClassLoader classLoader = aClass.getClassLoader();
+        ClassLoader classLoader = getClassLoader(aClass); // Liberty change - use doPriv method
 
 
 
@@ -378,6 +378,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     private Optional<InetSocketAddress> selectHttpProxy() {
+    // Liberty change start:
+        if (System.getSecurityManager() == null) {
+            return selectHttpProxyActual();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<Optional<InetSocketAddress>>) this::selectHttpProxyActual);
+    }
+
+    private Optional<InetSocketAddress> selectHttpProxyActual() {
+    // Liberty change end
         return ProxySelector.getDefault().select(baseURI).stream()
                 .filter(proxy -> proxy.type() == java.net.Proxy.Type.HTTP)
                 .map(java.net.Proxy::address)
@@ -774,6 +783,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key, def));
     }
 
+    // Liberty change start:
+    private ClassLoader getClassLoader(Class<?> clazz) {
+        if (System.getSecurityManager() == null) {
+            return clazz.getClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) clazz::getClassLoader);
+    }
+    //Liberty change end
     private final MpClientBuilderImpl builderDelegate;
 
     private final ConfigurationWrapper configurationWrapper;

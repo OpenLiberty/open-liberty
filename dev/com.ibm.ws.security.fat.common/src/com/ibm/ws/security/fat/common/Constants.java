@@ -180,6 +180,8 @@ public class Constants {
 
     public static final String OPENID_APP = "formlogin";
     public static final String DEFAULT_SERVLET = "SimpleServlet";
+    public static final String TOKENENDPT_APP = "TokenEndpointServlet";
+    public static final String USERINFOENDPT_APP = "UserinfoEndpointServlet";
 
     public static final String LTPA_TOKEN = "LtpaToken2";
     public static final String JWT_SSO_COOKIE_NAME = "JWT";

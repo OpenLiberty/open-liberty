@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -39,11 +40,13 @@ public class AsyncMethodTest extends FATServletClient {
     final static String SERVER_NAME = "mpRestClient11.async";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT("1.2", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("2.0", SERVER_NAME));
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
+                                                             MicroProfileActions.MP20, //mpRestClient-1.1
+                                                             MicroProfileActions.MP22, // 1.2
+                                                             MicroProfileActions.MP30, // 1.3
+                                                             MicroProfileActions.MP33, // 1.4
+                                                             MicroProfileActions.MP40, // 2.0
+                                                             MicroProfileActions.MP50); // 3.0
 
     private static final String appName = "asyncApp";
 

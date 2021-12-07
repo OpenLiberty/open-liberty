@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017,2020 IBM Corporation and others.
+    Copyright (c) 2017,2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@
     <application location="transaction.war"/>
 	
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/derby2/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="getClassLoader"/>

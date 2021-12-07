@@ -171,7 +171,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         concurrencyPolicyProps.put(ID, concurrencyPolicyId);
         concurrencyPolicyProps.put(CONFIG_DISPLAY_ID, concurrencyPolicyId);
         concurrencyPolicyProps.put("expedite", 0);
-        if (maxAsync > 0)
+        if (maxAsync != null && maxAsync > 0)
             concurrencyPolicyProps.put("max", maxAsync);
         concurrencyPolicyProps.put("maxPolicy", "loose");
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);

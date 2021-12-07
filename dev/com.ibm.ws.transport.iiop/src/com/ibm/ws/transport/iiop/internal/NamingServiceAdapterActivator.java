@@ -13,8 +13,9 @@ package com.ibm.ws.transport.iiop.internal;
 import static org.apache.yoko.orb.spi.naming.NameServiceInitializer.createPOAPolicies;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.omg.CORBA.Policy;
 import org.omg.PortableServer.POA;
@@ -47,34 +48,42 @@ public class NamingServiceAdapterActivator implements AdapterActivatorOp {
 
     @Override
     public boolean unknown_adapter(POA parent, String name, ORBRef orbRef) {
-        ServerPolicySource serverPolicySource = this.serverPolicySource;
-        if (serverPolicySource == null) {
-            if (orbRef instanceof ServerPolicySource) {
-                serverPolicySource = (ServerPolicySource) orbRef;
-            } else {
-                return false;
-            }
-        }
-        if (poaName.equals(name)) {
-            List<Policy> policies = new ArrayList<>();
-            try {
-                serverPolicySource.addConfiguredPolicies(policies, orbRef);
-            } catch (Exception e) { //TODO figure out what exceptions can occur
-                throw new IllegalStateException(e);
-            }
+	return Optional.ofNullable(name)
+		.filter(poaName::equals)
+		.map(n -> getServerPolicies(orbRef))
+		.map(l -> createPoa(parent, orbRef.getPOA(), l))
+		.orElse(false);
+    }
 
-            POA rootPOA = orbRef.getPOA();
-            policies.addAll(Arrays.asList(createPOAPolicies(rootPOA)));
+    private List<Policy> getServerPolicies(ORBRef orbRef) {
+	return Optional.ofNullable(serverPolicySource)
+		.map(Optional::of)
+		.orElse(Optional.of(orbRef)
+			.filter(ServerPolicySource.class::isInstance)
+			.map(ServerPolicySource.class::cast))
+		.map(sps -> listServerPolicies(orbRef, sps))
+		.orElse(null);
+    }
 
-            try {
-                parent.create_POA(poaName, parent.the_POAManager(), policies.toArray(new Policy[policies.size()]));
-            } catch (AdapterAlreadyExists e) {
-                throw new IllegalStateException(e);
-            } catch (InvalidPolicy e) {
-                throw new IllegalStateException(e);
-            }
-            return true;
-        }
-        return false;
+    private List<Policy> listServerPolicies(ORBRef orbRef, ServerPolicySource svrPolicySrc) {
+	try {
+	    final List<Policy> policies = new ArrayList<>();
+	    svrPolicySrc.addConfiguredPolicies(policies, orbRef);
+	    return policies;
+	} catch (Exception e) { //TODO figure out what exceptions can occur
+	    throw new IllegalStateException(e);
+	}
+    }
+
+    private boolean createPoa(POA parent, POA rootPOA, List<Policy> policies) {
+	Stream.of(createPOAPolicies(rootPOA)).forEach(policies::add);
+	try {
+	    parent.create_POA(poaName, parent.the_POAManager(), policies.toArray(new Policy[0]));
+	    return true;
+	} catch (AdapterAlreadyExists e) {
+	    return false;
+	} catch (InvalidPolicy e) {
+	    throw new IllegalStateException(e);
+	}
     }
 }

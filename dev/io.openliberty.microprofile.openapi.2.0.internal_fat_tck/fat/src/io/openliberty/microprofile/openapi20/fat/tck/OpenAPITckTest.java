@@ -56,6 +56,7 @@ public class OpenAPITckTest {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.openapi.2.0.internal_fat_tck", "testOpenAPITck", additionalProps);
+        MvnUtils.preparePublicationFile();
    }
 
 }

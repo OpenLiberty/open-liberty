@@ -49,6 +49,21 @@
 </script>
 
 <%
+    Cookie[] cookies = request.getCookies();
+    response.setContentType("text/html");
+    if (cookies != null) {
+        for (Cookie cookie : cookies) {
+            if ("JSESSIONID".equals(cookie.getName())) {
+                String value = cookie.getValue();
+                cookie.setMaxAge(0);
+                cookie.setValue(null);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                break;
+            }
+        }
+    }
+
     // Prevent any session fixation/hijacking hijinx by getting new session after logging in 
     request.getSession().invalidate();
     HttpSession newSession = request.getSession(true);

@@ -42,7 +42,7 @@ Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
      implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsRouterServletContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
      immediate:=true;\
-     properties:="service.vendor=IBM"\
+     properties:="service.vendor=IBM"
   
 
 Export-Package: \

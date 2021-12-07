@@ -34,7 +34,7 @@ public class StressTestServlet extends FATServlet {
 
     @Test
     public void testLargeConfigSources() throws Exception {
-        int size = 1000;
+        int size = 10000;
         Config config = setupLargeConfigSource(size);
         try {
             //env
@@ -175,6 +175,8 @@ public class StressTestServlet extends FATServlet {
         ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
 
         // Add 500 sources each with 3 parms overriding and overridden
+        //Note that we have now seen problems with SmallRye Config if it has over around 2500 sources
+        //See https://github.com/smallrye/smallrye-config/issues/661
         int size = 500;
         for (int i = 0; i < size; i++) {
             MySource s = new MySource();
@@ -217,7 +219,12 @@ public class StressTestServlet extends FATServlet {
         System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
         boolean passed = true;
 
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+        //Previously this test used a single ConfigBuilder throughout
+        //This actually meant that number of sources added to each Config was cumulative
+        //When SmallRye Config reached around 2500 sources, a StackOverFlowError was seen
+        //However, since that is not the aim of this test, it has been changed to use a
+        //fresh builder for each config.
+        //See https://github.com/smallrye/smallrye-config/issues/661
 
         int size = 1000;
         for (int i = 0; i < size; i++) {
@@ -225,11 +232,13 @@ public class StressTestServlet extends FATServlet {
 
             MySource s = new MySource();
             s.put("p" + i, "v" + i);
+            ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
             b.withSources(s);
             Config configA = b.build();
             ConfigProviderResolver.instance().registerConfig(configA, Thread.currentThread().getContextClassLoader());
             ConfigProviderResolver.instance().releaseConfig(configA);
 
+            b = ConfigProviderResolver.instance().getBuilder();
             Config configB = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
             ConfigProviderResolver.instance().registerConfig(configB, Thread.currentThread().getContextClassLoader());
 
@@ -240,6 +249,7 @@ public class StressTestServlet extends FATServlet {
             }
             ConfigProviderResolver.instance().releaseConfig(configB2);
 
+            b = ConfigProviderResolver.instance().getBuilder();
             Config configC = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
 
             ConfigBuilder emptyB = ConfigProviderResolver.instance().getBuilder();

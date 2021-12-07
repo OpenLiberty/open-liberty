@@ -143,6 +143,6 @@ public class Review {
     @Override
     public String toString() {
         return "Review [userID=" + user + ", airlinesID=" + airlines + ", rating=" + rating
-               + ", comment=" + comment + "]";
+            + ", comment=" + comment + "]";
     }
 }

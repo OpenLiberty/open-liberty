@@ -25,13 +25,11 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.CommonTests.genericWebClientAuthCodeCommonTest;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 
-@MinimumJavaLevel(javaLevel = 8)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "com.ibm.ws.security.registry.EntryNotFoundException" }) // Defect 261748
@@ -59,7 +57,8 @@ public class OAuthWebClientAuthCodeDerbyHashTest extends genericWebClientAuthCod
 
         testSettings.setClientName("dclient01");
         testSettings.setClientID("dclient01");
-        testSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, Constants.OAUTHCONFIGDERBY_APP, Constants.AUTHORIZE_ENDPOINT));
+        testSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, Constants.OAUTHCONFIGDERBY_APP,
+                                                                  Constants.AUTHORIZE_ENDPOINT));
         testSettings.setTokenEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, Constants.OAUTHCONFIGDERBY_APP, Constants.TOKEN_ENDPOINT));
         testSettings.setProtectedResource(eSettings.assembleProtectedResource(testOPServer.getHttpsString(), Constants.OAUTH_TAI_ROOT, Constants.SSODEMO));
         testSettings.setStoreType(StoreType.DATABASE);

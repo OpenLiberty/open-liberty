@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.KeyStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
@@ -189,5 +190,24 @@ public class ServerInstanceUtils {
         Map<String, String> vars = new HashMap<String, String>();
         vars.put(key, value);
         updateServerSettings(server, vars);
+    }
+
+    public static void waitForKeyStores(LibertyServer server) throws Exception {
+
+        Log.info(thisClass, "waitForKeyStores", "Waiting for keystore configurations to be loaded");
+
+        ConfigElementList<KeyStore> keyStores = server.getServerConfiguration().getKeyStores();
+        if (keyStores == null) {
+            Log.info(thisClass, "waitForKeyStores", "No keystores were found in the configuration");
+        }
+        for (KeyStore keyStore : keyStores) {
+            String name = keyStore.getId();
+            Log.info(thisClass, "waitForKeyStores", "Searching for add of keystore: " + name);
+            String msg = server.waitForStringInTrace("Adding keystore: " + name);
+            Log.info(thisClass, "waitForKeyStores", "**********************************************************************");
+            Log.info(thisClass, "waitForKeyStores", msg);
+            Log.info(thisClass, "waitForKeyStores", "**********************************************************************");
+        }
+        Log.info(thisClass, "waitForKeyStores", "Done waiting for keystore configuration to be loaded - the waits in the method will not guarentee that the keystore setup is truly ready...");
     }
 }

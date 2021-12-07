@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,123 +10,224 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.bval;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
+import com.ibm.ws.javaee.ddmodel.DDTestBase;
 
-public class ValidationConfigTestBase {
-
-    protected static SharedOutputManager outputMgr;
-
-    private final Mockery mockery = new Mockery();
-    private int mockId;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
-        outputMgr.captureStreams();
+public class ValidationConfigTestBase extends DDTestBase {
+    
+    protected static ValidationConfigEntryAdapter createValidationConfigAdapter() {
+        return new ValidationConfigEntryAdapter();    
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        outputMgr.restoreStreams();
+    protected ValidationConfig parse(String xml) throws Exception {
+        return parse(xml, !NOT_BVAL_XML, null);
+    }
+    
+    protected ValidationConfig parse(String xml, String altMessage, String... messages) throws Exception {
+        return parse(xml, !NOT_BVAL_XML, altMessage, messages);
     }
 
-    ValidationConfig parse(final String xml) throws Exception {
-        return parse(xml, false);
+    public static final boolean NOT_BVAL_XML = true;
+
+    protected ValidationConfig parse(String ddText, boolean notBvalXml) throws Exception {
+        return parse(ddText, notBvalXml, null);
     }
 
-    ValidationConfig parse(final String xml, final boolean notBvalXml) throws Exception {
-        ValidationConfigEntryAdapter adapter = new ValidationConfigEntryAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        final ModuleInfo moduleInfo = mockery.mock(ModuleInfo.class, "moduleInfo" + mockId++);
+    protected ValidationConfig parse(String ddText, boolean notBvalXml,
+                                     String altMessage, String... messages) throws Exception {
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue("META-INF/validation.xml"));
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/ejbJar.jar";
+        String fragmentPath = null;
+        String ddPath = "META-INF/validation.xml";
 
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(null));
-
-                allowing(entry).getPath();
-                will(returnValue("META-INF/validation.xml"));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(ValidationConfig.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(ValidationConfig.class), with(any(ValidationConfig.class)));
-
-                if (notBvalXml) {
-                    allowing(root).getName();
-                    will(returnValue("testModule"));
-
-                    allowing(nonPC).getFromCache(ModuleInfo.class);
-                    will(returnValue(moduleInfo));
-
+        ModuleInfo moduleInfo;
+        if ( !notBvalXml ) {
+            moduleInfo = mockery.mock(ModuleInfo.class, "moduleInfo" + mockId++);
+            mockery.checking(new Expectations() {
+                {
                     allowing(moduleInfo).getName();
                     will(returnValue("thisModule"));
                 }
-            }
-        });
+            });
+        } else {
+            moduleInfo = null;
+        }
 
-        return adapter.adapt(root, rootOverlay, artifactEntry, entry);
+        return parse(appPath, modulePath, fragmentPath,
+                     ddText, createValidationConfigAdapter(), ddPath,
+                     null, null,
+                     ModuleInfo.class, moduleInfo,
+                     altMessage, messages);
     }
 
-    static final String validationConfig() {
+    protected static final String validationConfigTail =
+            "</validation-config>";
+    
+    protected static String processBody(String body) {
+        if ( body == null ) {
+            return "";
+        } else if ( body.isEmpty() ) {
+            return "";
+        } else {
+            return body + "\n";
+        }
+    }
+
+    //
+    
+    protected ValidationConfig parseNoVersion(String body) throws Exception {
+        return parse( validationConfigNoVersion(body) );
+    }
+    
+    protected ValidationConfig parseNoVersion() throws Exception {
+        return parse( validationConfigNoVersion() );
+    }    
+
+    protected ValidationConfig parse10(String body) throws Exception {
+        return parse( validationConfig10(body) );
+    }
+    
+    protected ValidationConfig parse10() throws Exception {
+        return parse( validationConfig10() );
+    }    
+    
+    protected ValidationConfig parse11(String body) throws Exception {
+        return parse( validationConfig11(body) );
+    }
+    
+    protected ValidationConfig parse11() throws Exception {
+        return parse( validationConfig11() );
+    }        
+    
+    //
+
+    protected static String validationConfigNoVersion() {
+        return validationConfigNoVersion(null);
+    }
+
+    protected static String validationConfig10() {
+        return validationConfig10(null);
+    }
+    
+    protected static String validationConfig11() {
+        return validationConfig11(null);
+    }
+
+    //
+
+    protected static String validationConfigNoVersion(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd\"" +
-               ">";
+               "<validation-config" + "\n" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd\"" +
+               ">" + "\n" +
+               processBody(body) +
+               validationConfigTail;
     }
 
-    static final String validationConfig10() {
+    protected static String validationConfig10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
-               " version=\"1.0\"" +
-               ">";
+               "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.0\"" +
+               ">" + "\n" +
+               processBody(body) +
+               validationConfigTail;
     }
 
-    static final String validationConfig11() {
+    protected static String validationConfig11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
-               " version=\"1.1\"" +
-               ">";
+               "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+               processBody(body) +
+               validationConfigTail;
+    }
+    
+    //
+
+    protected static String notValidationConfig() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<not-validation-config>" + "\n" +
+               "</not-validation-config>";
+    }    
+
+    //
+
+    protected static String validationConfig11NoNamespace() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+                "<validation-config" +
+                   // " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+               validationConfigTail;
+    }
+    
+    protected static String validationConfig11NoSchemaInstance() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+                "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+               validationConfigTail;
+    }
+    
+    protected static String validationConfig11NoSchemaLocation() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+                "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+               validationConfigTail;
+    }
+    
+    protected static String validationConfig11NoXSI() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+                "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   // " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+               validationConfigTail;
     }
 
-    static final String notValidationConfig() {
+    protected static String validationConfigNamespaceOnly() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <not-validation-config><not-validation-config>";
-    }
+               "<validation-config xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\">" + "\n" +
+               validationConfigTail;
+    }    
+    protected static String validationConfigVersion10Only() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<validation-config version=\"1.0\">" + "\n" +
+               validationConfigTail;
+    }    
+    
+    protected static String validationConfigVersion11Only() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<validation-config version=\"1.1\">" + "\n" +
+               validationConfigTail;
+    }        
+    
+    protected static String validationConfigVersion12Only() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<validation-config version=\"1.2\">" + "\n" +
+               validationConfigTail;
+    }            
 }

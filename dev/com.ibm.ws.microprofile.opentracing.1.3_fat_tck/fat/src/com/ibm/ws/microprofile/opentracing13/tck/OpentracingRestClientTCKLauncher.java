@@ -58,5 +58,6 @@ public class OpentracingRestClientTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpentracingRestClientTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingRestClientTck", "rest-client-tck-suite.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.preparePublicationFile();
     }
 }

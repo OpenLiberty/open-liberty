@@ -7,7 +7,7 @@ WLP-AlsoKnownAs: wasJmsServer-3.0
 Subsystem-Name: Messaging Server 3.0
 -features=com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.channelfw-1.0, \
-  com.ibm.websphere.appserver.eeCompatible-9.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.messaging.comms.server, \
  com.ibm.ws.messaging.msgstore.jakarta, \

@@ -31,7 +31,7 @@ dependencies {
 				'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
 				'org.eclipse.jetty:jetty-util:9.4.7.RC0',
 				'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
-				'xerces:xercesImpl:2.11.0',
+				project(':io.openliberty.org.apache.xercesImpl'),
 				'xml-apis:xml-apis:1.4.01'
       
       

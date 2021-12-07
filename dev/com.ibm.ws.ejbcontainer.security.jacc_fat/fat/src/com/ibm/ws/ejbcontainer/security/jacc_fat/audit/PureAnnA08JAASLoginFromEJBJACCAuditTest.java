@@ -27,7 +27,6 @@ import com.ibm.ws.security.audit.fat.common.tooling.AuditAsserts;
 import com.ibm.ws.security.audit.fat.common.tooling.AuditCommonTest;
 import com.ibm.ws.security.audit.fat.common.tooling.RecentAuditFileStream;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,7 +42,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * (which are hard-coded users in SecurityEJBA08Bean.java). Therefore, this test requires the basic user
  * registry to be configured with user1 in group1 and user3 in group3.
  **/
-@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class PureAnnA08JAASLoginFromEJBJACCAuditTest extends EJBAnnTestBase {

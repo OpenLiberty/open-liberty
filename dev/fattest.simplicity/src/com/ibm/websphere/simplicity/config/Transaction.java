@@ -30,6 +30,9 @@ public class Transaction extends ConfigElement {
     private String transactionLogDirectory;
     private Integer transactionLogSize;
     private Boolean waitForRecovery;
+    private Boolean enableLogRetries;
+    private String retriableSqlCodes;
+    private String nonRetriableSqlCodes;
 
     @XmlAttribute(name = "acceptHeuristicHazard")
     public void setAcceptHeuristicHazard(Boolean acceptHeuristicHazard) {
@@ -157,6 +160,33 @@ public class Transaction extends ConfigElement {
         return this.waitForRecovery;
     }
 
+    @XmlAttribute(name = "enableLogRetries")
+    public void setEnableLogRetries(Boolean enableLogRetries) {
+        this.enableLogRetries = enableLogRetries;
+    }
+
+    public Boolean getEnableLogRetries() {
+        return this.enableLogRetries;
+    }
+
+    @XmlAttribute(name = "retriableSqlCodes")
+    public void setRetriableSqlCodes(String retriableSqlCodes) {
+        this.retriableSqlCodes = retriableSqlCodes;
+    }
+
+    public String getRetriableSqlCodes() {
+        return this.retriableSqlCodes;
+    }
+
+    @XmlAttribute(name = "nonRetriableSqlCodes")
+    public void setNonRetriableSqlCodes(String nonRetriableSqlCodes) {
+        this.nonRetriableSqlCodes = nonRetriableSqlCodes;
+    }
+
+    public String getNonRetriableSqlCodes() {
+        return this.nonRetriableSqlCodes;
+    }
+
     /**
      * Returns a String listing the properties and their values used on this
      * transaction element.
@@ -192,6 +222,12 @@ public class Transaction extends ConfigElement {
             buf.append("transactionLogSize=\"" + transactionLogSize + "\" ");
         if (waitForRecovery != null)
             buf.append("waitForRecovery=\"" + waitForRecovery + "\" ");
+        if (enableLogRetries != null)
+            buf.append("enableLogRetries=\"" + enableLogRetries + "\" ");
+        if (retriableSqlCodes != null)
+            buf.append("retriableSqlCodes=\"" + retriableSqlCodes + "\" ");
+        if (nonRetriableSqlCodes != null)
+            buf.append("nonRetriableSqlCodes=\"" + nonRetriableSqlCodes + "\" ");
         buf.append("}");
         return buf.toString();
     }

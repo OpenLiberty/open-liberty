@@ -44,18 +44,18 @@ public class DDValidModTests {
     }
 
     @Test
-    public void testBasicBindingConfiguration_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testBindingsConfig");
     }   
     
     @Test
-    public void testWebExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensions");
+    public void testWebExtension_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testWebExtension");
     }
     
     @Test
-    public void testWebExtensionsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensionsNoBindings");
+    public void testWebExtensionNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testWebExtensionNoBindings");
     }
     
     @Test
@@ -64,8 +64,8 @@ public class DDValidModTests {
     }
     
     @Test
-    public void testWebBindingsNoBnd_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebBindingsNoBnd");
+    public void testWebBindingsNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testWebBindingsNoBindings");
     }
     
     @Test
@@ -74,18 +74,18 @@ public class DDValidModTests {
     }
     
     @Test
-    public void testEJBExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensions");
+    public void testEJBExtension_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testEJBExtension");
     }
     
     @Test
-    public void testEJBBindingsNoBnd_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBBindingsNoBnd");
+    public void testEJBBindingsNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testEJBBindingsNoBindings");
     }
     
     @Test
-    public void testEJBExtensionsNoBnd_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensionsNoBnd");
+    public void testEJBExtensionNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testEJBExtensionNoBindings");
     }
     
     @Test

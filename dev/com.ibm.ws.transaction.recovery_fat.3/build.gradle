@@ -26,6 +26,12 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyToSharedDir2(type: Copy) {
+  from configurations.derby
+  into new File(sharedDir, 'derby2')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
 task copyFAT {
     copy {
       from project(':com.ibm.ws.transaction.recovery_fat.1').file('fat/src/com/ibm/ws/transaction/test/tests')
@@ -59,6 +65,7 @@ task copyCommonFiles {
 
 addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
+addRequiredLibraries.dependsOn addDerbyToSharedDir2
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {

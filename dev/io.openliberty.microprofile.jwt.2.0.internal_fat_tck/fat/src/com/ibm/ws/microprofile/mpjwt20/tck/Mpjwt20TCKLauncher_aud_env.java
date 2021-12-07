@@ -52,5 +52,6 @@ public class Mpjwt20TCKLauncher_aud_env {
     public void launchMpjwt20TCKLauncher_aud_env() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_aud_env.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.preparePublicationFile();
     }
 }

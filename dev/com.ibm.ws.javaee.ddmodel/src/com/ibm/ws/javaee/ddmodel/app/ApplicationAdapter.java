@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import org.osgi.framework.Version;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -28,150 +27,122 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
     private ServiceReference<JavaEEVersion> versionRef;
-    // TODO: Why is this volatile?
-    private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
+    private Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
     public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
         this.versionRef = referenceRef;
         this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
+
+        if ( this.platformVersion == null ) {
+            this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
+        }
     }
 
     public synchronized void unsetVersion(ServiceReference<JavaEEVersion> versionRef) {
-        if (versionRef == this.versionRef) {
+        if ( versionRef == this.versionRef ) {
             this.versionRef = null;
             this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
         }
     }
 
+    public synchronized Version getVersion() {
+        return platformVersion;
+    }
+
+    public int getVersionInt() {
+        Version usePlatformVersion = getVersion();
+
+        return ( usePlatformVersion.getMajor() * 10 +
+                 usePlatformVersion.getMinor() );
+    }
+
+    public static final boolean FAILED = true;
+
+    public static class ApplicationRef {
+        public final Application application;
+        public final String failure;
+
+        public ApplicationRef(Application application) {
+            this.application = application;
+            this.failure = null;
+        }
+
+        public ApplicationRef(String failure) {
+            this.application = null;
+            this.failure = failure;
+        }        
+
+        public Application getApplication () {
+            return application;
+        }
+
+        public String getFailure() {
+            return failure;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T cacheGet(OverlayContainer rootOverlay, String targetPath, Class<T> targetType) {
+        return (T) rootOverlay.getFromNonPersistentCache(targetPath, targetType);
+    }
+
+    private <T> void cachePut(OverlayContainer rootOverlay, String targetPath, Class<T> targetType, T value) {
+        rootOverlay.addToNonPersistentCache(targetPath, targetType, value);
+    }    
+
+    
     @FFDCIgnore(ParseException.class)
     @Override
-    public Application adapt(
-                             Container root,
+    public Application adapt(Container root,
                              OverlayContainer rootOverlay,
                              ArtifactContainer artifactContainer,
                              Container containerToAdapt) throws UnableToAdaptException {
-
-        Application appDD = (Application) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Application.class);
-        if (appDD != null) {
+        
+        String containerPath = artifactContainer.getPath();
+        
+        Application appDD = cacheGet(rootOverlay, containerPath, Application.class);
+        if ( appDD != null ) {
             return appDD;
         }
+
+        ApplicationRef appDDRef = cacheGet(rootOverlay, containerPath, ApplicationRef.class);
+        if ( appDDRef != null ) {
+            String failure = appDDRef.getFailure();
+            if ( failure != null ) {
+                throw new UnableToAdaptException(failure);
+            } else {
+                return appDDRef.getApplication();
+            }
+        }
+
+        ParseException pe = null;
+
         Entry ddEntry = containerToAdapt.getEntry(Application.DD_NAME);
-        if (ddEntry != null) {
+        if ( ddEntry != null ) {
             try {
-                ApplicationDDParser ddParser = new ApplicationDDParser(containerToAdapt, ddEntry, platformVersion);
+                ApplicationDDParser ddParser =
+                    new ApplicationDDParser( containerToAdapt, ddEntry, getVersionInt() );
                 appDD = ddParser.parse();
-                rootOverlay.addToNonPersistentCache(artifactContainer.getPath(), Application.class, appDD);
-                return appDD;
-            } catch (ParseException e) {
-                throw new UnableToAdaptException(e);
+            } catch ( ParseException e ) {
+                pe = e;
             }
         }
-        return null;
-    }
 
-    private static final class ApplicationDDParser extends DDParser {
-        private final Version eeVersion;
-
-        public ApplicationDDParser(Container ddRootContainer, Entry ddEntry, Version platformVersion) throws ParseException {
-            super(ddRootContainer, ddEntry);
-            eeVersion = platformVersion;
+        if ( pe != null ) {
+            appDDRef = new ApplicationRef(pe.getMessage());
+        } else {
+            appDDRef = new ApplicationRef(appDD);
         }
 
-        Application parse() throws ParseException {
-            super.parseRootElement();
-            return (Application) rootParsable;
+        if ( appDD != null ) {
+            cachePut(rootOverlay, containerPath, Application.class, appDD);
         }
+        cachePut(rootOverlay, containerPath, ApplicationRef.class, appDDRef);
 
-        private static final String APPLICATION_DTD_PUBLIC_ID_12 = "-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN";
-        private static final String APPLICATION_DTD_PUBLIC_ID_13 = "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN";
-
-        @Override
-        protected DDParser.ParsableElement createRootParsable() throws ParseException {
-            if (!"application".equals(rootElementLocalName)) {
-                throw new ParseException(invalidRootElement());
-            }
-
-            // Old DTD based descriptor.
-
-            if (namespace == null) {
-                if (dtdPublicId != null) {
-                    if (APPLICATION_DTD_PUBLIC_ID_12.equals(dtdPublicId)) {
-                        version = Application.VERSION_1_2;
-                        eePlatformVersion = Application.VERSION_1_2;
-                        return new ApplicationType(getDeploymentDescriptorPath());
-                    }
-                    if (APPLICATION_DTD_PUBLIC_ID_13.equals(dtdPublicId)) {
-                        version = Application.VERSION_1_3;
-                        eePlatformVersion = Application.VERSION_1_3;
-                        return new ApplicationType(getDeploymentDescriptorPath());
-                    }
-                }
-                throw new ParseException(unknownDeploymentDescriptorVersion());
-            }
-
-            // Schema based descriptor.
-
-            // A version must always be specified.
-            String vers = getAttributeValue("", "version");
-
-            if (vers == null) {
-                throw new ParseException(missingDeploymentDescriptorVersion());
-            }
-
-            if ("1.4".equals(vers)) {
-                // Always supported. The namespace must be correct for the version.
-                if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
-                    version = Application.VERSION_1_4;
-                    eePlatformVersion = Application.VERSION_1_4;
-                    return new ApplicationType(getDeploymentDescriptorPath());
-                }
-            } else if ("5".equals(vers)) {
-                // Always supported. The namespace must be correct for the version.
-                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                    version = Application.VERSION_5;
-                    eePlatformVersion = Application.VERSION_5;
-                    return new ApplicationType(getDeploymentDescriptorPath());
-                }
-            } else if ("6".equals(vers)) {
-                // Always supported. The namespace must be correct for the version.
-                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                    version = Application.VERSION_6;
-                    eePlatformVersion = Application.VERSION_6;
-                    return new ApplicationType(getDeploymentDescriptorPath());
-                }
-            } else if ("7".equals(vers)) {
-                // Supported only when provisioned for java 7 or higher.
-                // The namespace must still be correctly set.
-                if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
-                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                        version = Application.VERSION_7;
-                        eePlatformVersion = Application.VERSION_7;
-                        return new ApplicationType(getDeploymentDescriptorPath());
-                    }
-                }
-            } else if ("8".equals(vers)) {
-                // Supported only when provisioned for java 8 or higher.
-                // The namespace must still be correctly set.
-                if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) {
-                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                        version = Application.VERSION_8;
-                        eePlatformVersion = Application.VERSION_8;
-                        return new ApplicationType(getDeploymentDescriptorPath());
-                    }
-                }
-            } else if ("9".equals(vers)) {
-                // Supported only when provisioned for java 9 or higher.
-                // The namespace must still be correctly set.
-                if (eeVersion.compareTo(JavaEEVersion.VERSION_9_0) >= 0) {
-                    if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
-                        version = Application.VERSION_9;
-                        eePlatformVersion = Application.VERSION_9;
-                        return new ApplicationType(getDeploymentDescriptorPath());
-                    }
-                }
-            }
-
-            throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
+        if ( pe != null ) {
+            throw new UnableToAdaptException(pe);
+        } else {
+            return appDD;
         }
     }
 }

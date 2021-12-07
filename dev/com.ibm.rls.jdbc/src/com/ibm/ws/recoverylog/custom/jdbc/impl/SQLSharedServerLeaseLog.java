@@ -20,6 +20,7 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.resource.spi.ResourceAllocationException;
 import javax.sql.DataSource;
 
 import com.ibm.tx.util.Utils;
@@ -54,6 +55,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     private final CustomLogProperties _customLogProperties;
 
+    /**
+     * Flag whether the database type has ever been determined
+     */
+    boolean _determineDBType = false;
     /**
      * Are we working against Oracle, PostgreSQL or Generic (DB2 or SQL Server at least)
      */
@@ -114,17 +119,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         ResultSet lockingRS = null;
         Statement lockingStmt = null;
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {
@@ -258,17 +254,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             recoveryGroup = "";
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (conn == null) {
@@ -527,15 +514,65 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         return dataSource;
     }
 
-    private Connection getConnection(DataSource dataSource) throws Exception {
+    private Connection getConnection() throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getConnection", this);
         Connection conn = null;
 
-        // Get connection to database via first datasource
-        conn = dataSource.getConnection();
+        boolean retryOnRAExc = false;
 
-        if (conn != null) {
+        // Have we acquired the reference to the DataSource yet?
+        if (_theDS == null) {
+            _theDS = getDataSourceFromProperties();
+        }
+
+        // Get connection to database via datasource
+        try {
+            if (_theDS != null)
+                conn = _theDS.getConnection();
+        } catch (SQLException sqlex) {
+            // Handle the special case where the DataSource has been refreshed and the Connection Pool has shut down
+            Throwable cause = sqlex.getCause();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Caught SQLException with cause: " + cause);
+
+            if (cause instanceof ResourceAllocationException) {// javax.resource.spi.ResourceAllocationException
+                // Look up the DataSource definition again
+                retryOnRAExc = true;
+            } else {
+                // Not a ResourceAllocationException, rethrow exception
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "SQLException");
+                throw sqlex;
+            }
+        }
+
+        // Look up the DataSource definition again in order to get a Connection
+        if (retryOnRAExc) {
+            _theDS = getDataSourceFromProperties();
+
+            try {
+                if (_theDS != null) {
+                    conn = _theDS.getConnection();
+                    Tr.audit(tc, "WTRN0108I: " +
+                                 "Have recovered from ResourceAllocationException in connection to SQL Lease Log");
+                }
+            } catch (Throwable exc) {
+                SQLException newsqlex;
+                if (exc instanceof SQLException) {
+                    newsqlex = (SQLException) exc;
+
+                } else {
+                    // Wrap in a SQLException
+                    newsqlex = new SQLException(exc);
+                }
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "new SQLException");
+                throw newsqlex;
+            }
+        }
+
+        if (conn != null && !_determineDBType) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Got connection: " + conn);
             DatabaseMetaData mdata = conn.getMetaData();
@@ -585,6 +622,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             String dbVersion = mdata.getDatabaseProductVersion();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
+            _determineDBType = true;
         }
 
         if (tc.isEntryEnabled())
@@ -600,8 +638,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                             encountered when accessing the
-     *                             Database.
+     *                encountered when accessing the
+     *                Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -661,17 +699,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         Statement deleteStmt = null;
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {
@@ -739,17 +768,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             Tr.debug(tc, "Recovering server with recoveryIdentity - ", recoveryIdentityToRecover);
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {

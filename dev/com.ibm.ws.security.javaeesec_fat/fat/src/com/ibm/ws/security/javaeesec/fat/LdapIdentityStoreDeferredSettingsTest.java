@@ -55,6 +55,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.vulnerability.LeakedPasswordChecker;
 import web.war.annotatedbasic.deferred.LdapSettingsBean;
 
 /**
@@ -86,6 +87,11 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     private static final String LDAP_USER3_PASSWORD = LDAP_USER3_UID + "pass";
     private static final String LDAP_USER4_UID = "ldapuser4";
     private static final String LDAP_USER4_PASSWORD = LDAP_USER4_UID + "pass";
+
+    //LDAP bind pass
+    private final String password = "ldapuser1pass";
+
+    private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
 
     public LdapIdentityStoreDeferredSettingsTest() {
         super(myServer, logClass);
@@ -315,6 +321,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
 
+        passwordChecker.checkForPasswordInAnyFormat(password);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -341,6 +348,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
+        passwordChecker.checkForPasswordInAnyFormat(password);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -367,6 +375,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
+        passwordChecker.checkForPasswordInAnyFormat(password);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
