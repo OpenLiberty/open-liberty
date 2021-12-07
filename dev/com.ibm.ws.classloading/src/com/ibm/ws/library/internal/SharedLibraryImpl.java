@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoadingService;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
@@ -184,10 +185,27 @@ public class SharedLibraryImpl implements Library {
     }
 
     @Override 
-    public boolean getSpiTypeVisibility() {
+    public EnumSet<SpiType> getSpiTypeVisibility() {
+        if (!betaFenceCheck()) {
+            return null; // no-op
+        }
         final LibraryGeneration currentGen = currentGeneration;
         return currentGen == null ? null : currentGen.getSpiTypeVisibility();
+    }
 
+    private static boolean issuedBetaMessage = false;
+
+    private boolean betaFenceCheck() {
+        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
+        if (!issuedBetaMessage) {
+            if (!isBeta) {
+                // no-op beta SPI
+            } else {
+                Tr.info(tc, "BETA: Library SPI type visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
+            }
+            issuedBetaMessage = true;
+        }
+        return isBeta;
     }
 
     @Override

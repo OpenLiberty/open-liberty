@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=To reference a class loader in the server co
 cls.classloader.missing.useraction=Check the server configuration to ensure that the class loader has been defined and that the ID is correct.
 
 cls.fileset.not.ready=CWWKL0011W: The system could not retrieve fileset [{0}] for shared library [{1}].
-cls.fileset.not.ready.explanation=A shared library is in use but one of the associated filesets canot be retrieved in time.
+cls.fileset.not.ready.explanation=A shared library is in use but one of the associated filesets cannot be retrieved in time.
 cls.fileset.not.ready.useraction=Check for and redress any errors or warnings associated with the fileset.
 
 cls.library.file.invalid=CWWKL0012W: The library [{0}] specifies a file with name [{1}]. This file either does not exist or is incorrectly specified.
@@ -97,6 +97,13 @@ cls.library.archive.useraction=Edit the server configuration and ensure any file
 cls.library.destroyed=CWWKL0018I: The library [{0}] is unavailable.
 cls.library.destroyed.explanation=A library has become unavailable, for example because it was removed from the server configuration.
 cls.library.destroyed.useraction=If the library is still required, ensure that it is still configured correctly.
+
+# {0} - application identifier
+# {1} - library identifier
+# {2} - library allowedSpiTypes
+cls.library.spi.type.visible=CWWKL0019W: Application [{0}] is incompatible with the common class loader for library [{1}], because the library is configured with SPI visibility {2}. Library [{1}] will be ignored.
+cls.library.spi.type.visible.explanation=An application references a library through a common class loader that can see SPI packages. The application will not be able to load classes or resources from the specified library.
+cls.library.spi.type.visible.useraction=Either remove SPI type visibility from the library configuration, or configure the application to use the library privately.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
@@ -168,11 +175,10 @@ cls.classloader.suggested.feature=CWWKL0084W: The {0} class could not be loaded.
 cls.classloader.suggested.feature.explanation=A class that is typically provided by one or more server features could not be loaded.
 cls.classloader.suggested.feature.useraction=Try enabling the specified feature or a newer version of the feature in the server.xml file.
 
-# CWWKL0085E is required iff server supports multiple SPI types
 # {0} The invalid SPI type
-# {1} The library containing the invalid SPI type
+# {1} The configured SPI types
 # {2} A list of valid SPI types
-cls.library.config.typo=CWWKL0085E: The SPI type [{0}] for {1} is not valid and needs to be changed to one of the valid {2} SPI types.
+cls.library.config.typo=CWWKL0085E: [{0}] SPI type is not valid in this [{1}] list and needs to be changed to one of the valid {2} SPI types.
 cls.library.config.typo.explanation=Change the invalid SPI type to a valid SPI type.
 cls.library.config.typo.useraction=Check the server configuration for invalid SPI type to ensure that the SPI type is correct.
 

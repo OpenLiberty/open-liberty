@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2019 IBM Corporation and others.
+ * Copyright (c) 2014,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.classloading.internal.util.BlockingListMaker;
 import com.ibm.ws.classloading.internal.util.CompositeIterable;
 import com.ibm.ws.library.internal.SharedLibraryFactory;
 import com.ibm.wsspi.classloading.ApiType;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
@@ -195,6 +196,21 @@ public class Providers {
         if (tc.isWarningEnabled())
             Tr.warning(tc, "cls.provider.class.space.conflict", cid, consumerApiTypes, pid, providerApiTypes);
         return true;
+    }
+
+    static boolean checkSpiTypeVisibility(Library sharedLibrary, String loaderID, EnumSet<ApiType> loaderAPIs) {
+        final String methodName = "checkSpiTypeVisibility(for library): ";
+        EnumSet<SpiType> libSpiTypeVisibility = sharedLibrary.getSpiTypeVisibility();
+        if (libSpiTypeVisibility == null || libSpiTypeVisibility.isEmpty()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, methodName + "Loader " + loaderID + " was allowed to use library " + sharedLibrary.id()
+                             + " because the library does not allow SPI types",
+                         libSpiTypeVisibility);
+            return true;
+        }
+        if (tc.isWarningEnabled())
+            Tr.warning(tc, "cls.library.spi.type.visible", loaderID, sharedLibrary.id(), libSpiTypeVisibility);
+        return false;
     }
 
     /**

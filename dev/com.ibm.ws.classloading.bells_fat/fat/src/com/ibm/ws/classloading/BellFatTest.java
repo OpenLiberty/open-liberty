@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import static com.ibm.ws.classloading.TestUtils.IS_DROPIN;
 import static com.ibm.ws.classloading.TestUtils.buildAndExportBellLibrary;
-import static com.ibm.ws.classloading.TestUtils.buildAndExportWebApp;
-import static com.ibm.ws.classloading.TestUtils.isBeta;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -32,7 +29,6 @@ import org.junit.Test;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.HttpUtils;
 
 /**
  * Tests for {@link LibraryServiceExporter}.
@@ -55,9 +51,6 @@ public class BellFatTest {
         buildAndExportBellLibrary(server, "testImplClassNotFound.jar", "ImplClassNotFound");
         buildAndExportBellLibrary(server, "testImplClassNotConstructible.jar", "ImplClassNotConstructible");
         buildAndExportBellLibrary(server, "testReadingServicesFile.jar", "MyService", "MySecondService");
-        buildAndExportBellLibrary(server, "testSpiTypeVisible.jar", "SpiTypeVisible");
-
-        buildAndExportWebApp(server, !IS_DROPIN, "SpiTypeVisibility.war", "com.ibm.ws.classloading.bells");
 
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
@@ -265,77 +258,6 @@ public class BellFatTest {
         assertThat("The 'testReadingServicesFile' library should not produce any warnings.",
                    server.findStringsInLogs(".*W: .*testReadingServicesFile"),
                    equalTo(Collections.EMPTY_LIST));
-    }
-
-
-    private static final String
-            IBMSPI_CLASS_NAME = "com.ibm.wsspi.rest.handler.RESTHandler",  // SPI type="ibm-spi" from restConnector-2.0
-            SPI_CLASS_NAME = "com.ibm.wsspi.webcontainer",  // SPI from servlet-3.1
-            LIB_CLASS_NAME = "com.ibm.ws.test.SpiTypeVisible";
-
-    /**
-     * Verify BELL services can see SPI packages when library spiTypeVisibility is set to "spi".
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testLibSpiIsVisibleToBell() throws Exception {
-
-        if (isBeta(server)) {
-            assertNotNull("The server should report library spi visibility has been invoked in beta images.",
-                          server.waitForStringInLog(".*BETA: Library SPI type visibility has been invoked by class"));
-
-            final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible");
-            final String logEntry2 = server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader");
-
-            assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL.", logEntry1);
-            assertNotNull("IBM-SPI packages should be visible to the BELL service when library spiTypeVisibility is 'spi'", logEntry2);
-        } else {
-            assertNotNull("The server should report library spi visibility is not available in a non-beta image.",
-                          server.waitForStringInLog(".*BETA: Library SPI type visibility is beta and is not available"));
-
-            final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible");
-            final String logEntry2 = server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader");
-
-            assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL.", logEntry1);
-            assertNull("NON-BETA EDITION: IBM-SPI packages should NOT BE VISIBIBLE to the BELL service when library spiTypeVisibility is 'spi'", logEntry2);
-        }
-    }
-
-    /**
-     * Verify BELL services cannot see SPI packages when library spiTypeVisibility is not set (i.e. the default.)
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testLibSpiIsNotVisibleToBell() throws Exception {
-
-        if (isBeta(server)) {
-            final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiTypeVisible.*SpiTypeVisible");
-            final String logEntry2 = server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is not visible to the BELL library classloader");
-
-            assertNotNull("The server should load the META-INF service in the 'testNoSpiTypeVisible' library referenced by the BELL.", logEntry1);
-            assertNotNull("IBM-SPI packages should not be visible to the BELL service when library spiTypeVisibility is not set", logEntry2);
-        }
-    }
-
-    /**
-     * Verify the application cannot see SPI packages when spiTypeVisibility is set on a shared library.
-     * In this test the shared library is also referenced by a BELL.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testLibSpiIsNotVisibleToApp() throws Exception {
-
-        if (isBeta(server)) {
-            server.waitForStringInLog(".*CWWKT0016I: Web application available.*SpiTypeVisibility");
-
-            // Ensure commonLibraryRef="testSpiTypeVisible" is configured on the app
-            HttpUtils.findStringInUrl(server, "/SpiTypeVisibility/TestServlet?className=" + LIB_CLASS_NAME,
-                                      LIB_CLASS_NAME + " is visible to the application classloader");
-
-            // Verify SPI is not visible to the application via library delegation
-            HttpUtils.findStringInUrl(server, "/SpiTypeVisibility/TestServlet?className=" + IBMSPI_CLASS_NAME,
-                                      IBMSPI_CLASS_NAME + " is not visible to the application classloader");
-        }
     }
 
     private void assertLogSpecifiesImplementationType(final String logEntry, final String implClass) {

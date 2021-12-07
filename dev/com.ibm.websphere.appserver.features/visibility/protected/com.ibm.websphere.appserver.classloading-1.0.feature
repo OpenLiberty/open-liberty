@@ -15,7 +15,7 @@ IBM-Process-Types: server, client
   com.ibm.websphere.javaee.activity.1.0; require-java:=9; location:="dev/api/spec/,lib/",\
   com.ibm.ws.classloading
 -jars=com.ibm.websphere.appserver.spi.classloading; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.classloading_1.4-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.classloading_1.5-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,11 +90,20 @@ public interface GatewayConfiguration {
     GatewayConfiguration setApiTypeVisibility(Iterable<ApiType> types);
 
     /**
-     * Sets the allowed SPI type to "spi".  Once set, it cannot be unset
+     * Sets the allowed SPI types. 
      *
-     * @param isSpiVisible A boolean that indicates SPI type "spi" is allowed to be loaded by the gateway classloader.
+     * @param types The type that of SPIs that are allowed to be loaded by the gateway class loader
+     * @return The GatewayConfiguration with this property set
      */
-    GatewayConfiguration setSpiTypeVisibility(boolean isSpiVisible);
+    GatewayConfiguration setSpiTypeVisibility(SpiType... types);
+    
+    /**
+     * Sets the allowed SPI types. 
+     *
+     * @param types The type that of SPIs that are allowed to be loaded by the gateway class loader
+     * @return The GatewayConfiguration with this property set
+     */
+    GatewayConfiguration setSpiTypeVisibility(Iterable<SpiType> types);
 
     Iterable<String> getRequireBundle();
 
@@ -117,10 +126,18 @@ public interface GatewayConfiguration {
     EnumSet<ApiType> getApiTypeVisibility();
 
     /**
-     * Returns true whenever SPI packages are allowed to be seen by a gateway classloader from this configuration.
-     * @return
+     * <p>
+     * Returns a set of the SPI types that are allowed to be seen by a gateway class loader created from this configuration, the options for the set are:
+     * </p>
+     * <ul>
+     * <li><code>null</code>: Do not restrict the packages visible to the class loader</li>
+     * <li>Empty: Restrict the packages available to just "internal" packages</li>
+     * <li>Non Empty Set: Restrict the packages available to just the types supplied</li>
+     * </ul>
+     * 
+     * @return The set of allowed SPI types
      */
-    boolean getSpiTypeVisibility();
+    EnumSet<SpiType> getSpiTypeVisibility();
 
     String getApplicationName();
 

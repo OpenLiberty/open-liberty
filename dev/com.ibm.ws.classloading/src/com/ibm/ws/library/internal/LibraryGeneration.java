@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ApiType;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.config.Fileset;
 import org.osgi.framework.ServiceRegistration;
 
@@ -34,6 +35,7 @@ final class LibraryGeneration {
     private final Dictionary<? extends String, ? extends Object> libraryProps;
     private final List<? extends String> filesetRefs;
     private final EnumSet<? extends ApiType> apiTypeVisibility;
+    private final EnumSet<? extends SpiType> spiTypeVisibility;
     private final Collection<? extends File> files;
     private final Collection<? extends File> folders;
     private final Collection<? extends ArtifactContainer> fileAndFolderContainers;
@@ -43,8 +45,6 @@ final class LibraryGeneration {
 
     private volatile boolean cancelled;
     private final SharedLibraryImpl library;
-
-    private final boolean isSpiVisible;
 
     LibraryGeneration(SharedLibraryImpl library, String libraryId, Dictionary<String, Object> props) {
         this.library = library;
@@ -58,6 +58,7 @@ final class LibraryGeneration {
 
         String[] fsRefs = null;
         EnumSet<ApiType> apiTypeVisibility = EnumSet.noneOf(ApiType.class);
+        EnumSet<SpiType> spiTypeVisibility = EnumSet.noneOf(SpiType.class);
         String[] fileRef = null;
         String[] folderRef = null;
         for (SharedLibraryConstants.SharedLibraryAttribute attr : SharedLibraryConstants.SharedLibraryAttribute.values()) {
@@ -68,6 +69,11 @@ final class LibraryGeneration {
                     continue;
                 case apiTypeVisibility:
                     apiTypeVisibility = ApiType.createApiTypeSet((String) o);
+                    continue;
+                case spiTypeVisibility:
+                    if (betaFenceCheck()) {
+                        spiTypeVisibility = SpiType.createSpiTypeSet((String) o);
+                    }
                     continue;
                 case fileRef:
                     fileRef = (String[]) o;
@@ -90,18 +96,7 @@ final class LibraryGeneration {
         this.files = files;
         this.folders = folders;
         this.apiTypeVisibility = apiTypeVisibility;
-
-        // BETA: Library SPI visibility
-        String spiTypeVisibility = (String) props.get("spiTypeVisibility");
-        if (spiTypeVisibility == null) {
-            this.isSpiVisible = false;
-        } else if (betaFenceCheck()) {
-            this.isSpiVisible = "spi".equalsIgnoreCase(spiTypeVisibility);
-            if (!this.isSpiVisible && tc.isErrorEnabled())  // Config should handle invalid value
-                Tr.error(tc, "cls.library.config.typo", spiTypeVisibility, displayId, Arrays.asList("spi"));
-        } else {
-            this.isSpiVisible = false;
-        }
+        this.spiTypeVisibility = spiTypeVisibility;
 
         if (this.filesetRefs.isEmpty()) {
             filesets = Collections.emptyList();
@@ -116,7 +111,7 @@ final class LibraryGeneration {
         boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
         if (!issuedBetaMessage) {
             if (!isBeta) {
-                Tr.info(tc, "BETA: Library SPI type visibility is beta and is not available.");
+                // Don't throw an exception for beta internals
             } else {
                 Tr.info(tc, "BETA: Library SPI type visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
             }
@@ -179,8 +174,8 @@ final class LibraryGeneration {
         return EnumSet.copyOf((EnumSet<ApiType>) apiTypeVisibility);
     }
 
-    boolean getSpiTypeVisibility() {
-        return isSpiVisible;
+    EnumSet<SpiType> getSpiTypeVisibility() {
+        return EnumSet.copyOf((EnumSet<SpiType>) spiTypeVisibility);
     }
 
     Collection<File> getFiles() {

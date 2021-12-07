@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,23 +11,60 @@
 
 package com.ibm.ws.test;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
 import com.ibm.ws.classloading.exporting.test.TestInterface;
 
+/**
+ * Class SpiTypeVisible is used to verify class visibility from within a
+ * BELL service.
+ */
 public class SpiTypeVisible implements TestInterface {
 
     @Override
     public String isThere(String name) {
 
         final String IBMSPI_CLASS_NAME = "com.ibm.wsspi.rest.handler.RESTHandler";
+
+        String className = getSysPropPrivileged("className", IBMSPI_CLASS_NAME);
+        String loadOp = getSysPropPrivileged("loadOp", "loadClass");
+
+        // attempt to load a class using the library classloader
+        System.out.println("SpiTypeVisible.isThere: loading class " + className + " using " + loadOp);
         Class<?> clazz = null;
         try {
-            ClassLoader libCl = this.getClass().getClassLoader();
-            System.out.println("SpiTypeVisible.isThere: loading spi class " + IBMSPI_CLASS_NAME);
-            clazz = libCl.loadClass(IBMSPI_CLASS_NAME);
-        } catch (Exception e) {
-            //
+            if ("loadClass".equals(loadOp)) {
+                clazz = this.getClass().getClassLoader().loadClass(className);
+            }
+            else if ("forName".equals(loadOp)) {
+                // If this class load succeeds, the JVM records the library class loader as the
+                // "initiating classloader".  That means all subsequent loads of the class will
+                // be found by this library classloader when it invokes findLoadedClass() during
+                // find().
+                clazz = Class.forName(className);
+            }
+            else {
+                throw new IllegalArgumentException("Invalid loadOp: " + loadOp);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
         }
-        return name + " is there, SPI class " + IBMSPI_CLASS_NAME + (clazz==null ? " is not" : " is") + " visible to the BELL library classloader";
+
+        return name + " is there, SPI class " + className + (clazz==null ? " is not" : " is") + " visible to the BELL library classloader";
     }
 
+    String getSysPropPrivileged(String key, String defaultValue) throws IllegalArgumentException {
+        try {
+            return (String)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                @Override
+                public String run() throws IllegalArgumentException {
+                    return System.getProperty(key, defaultValue);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IllegalArgumentException)e.getException();
+        }
+    }
 }

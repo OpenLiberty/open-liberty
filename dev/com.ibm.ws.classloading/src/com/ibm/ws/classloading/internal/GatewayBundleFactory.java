@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.ws.dynamic.bundle.DynamicBundleException;
 import com.ibm.ws.kernel.feature.ApiRegion;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.classloading.ApiType;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoadingServiceException;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
@@ -156,7 +157,7 @@ class GatewayBundleFactory {
                         .dynamicallyImportPackages(gwConfig.getDynamicImportPackage())
                         .addAttributeValues(GATEWAY_BUNDLE_MARKER, "true")
                         .addManifestAttribute(MANIFEST_GATEWAY_ALLOWEDAPITYPES_PROPERTY_KEY, gwConfig.getApiTypeVisibility())
-                        .addAttributeValues(MANIFEST_GATEWAY_ALLOWEDSPITYPES_PROPERTY_KEY, gwConfig.getSpiTypeVisibility() ? "spi" : "")
+                        .addAttributeValues(MANIFEST_GATEWAY_ALLOWEDSPITYPES_PROPERTY_KEY, gwConfig.getSpiTypeVisibility())
                         .setBundleLocationPrefix(BUNDLE_LOCATION_PREFIX)
                         .setBundleLocation(clConfig.getId().toString())
                         .setBundleContext(bundleContext)
@@ -165,7 +166,7 @@ class GatewayBundleFactory {
                         .createBundle();
     }
 
-    private Region getRegion(EnumSet<ApiType> apiTypeVisibility, final boolean isSpiVisible) {
+    private Region getRegion(EnumSet<ApiType> apiTypeVisibility, EnumSet<SpiType> spiTypeVisibility) {
         if (digraph == null) {
             // this is for testing purposes
             return null;
@@ -180,8 +181,9 @@ class GatewayBundleFactory {
         for (ApiType apiType : apiTypeVisibility) {
             regionName.append('.').append(apiType.toString());
         }
+        final boolean isSpiVisible = spiTypeVisibility != null && !spiTypeVisibility.isEmpty();
         if (isSpiVisible) {
-            regionName.append('.').append("spi");
+            regionName.append('.').append(REGION_ALL_SPI);  // .append(spiTypeVisibility.toString());
         }
         regionName.append(REGION_POSTFIX);
         Region region = digraph.getRegion(regionName.toString());
@@ -205,7 +207,7 @@ class GatewayBundleFactory {
                             return null;
                         }
                         region = copy.createRegion(regionName);
-                        connectToApiRegions(region, apiTypeVisibility, isSpiVisible, copy);
+                        connectToApiSpiRegions(region, apiTypeVisibility, isSpiVisible, copy);
                         connectProductHubToGatewayRegion(region, copy);
                         return copy;
                     } catch (BundleException e) {
@@ -221,7 +223,7 @@ class GatewayBundleFactory {
         return digraph.getRegion(regionName);
     }
 
-    private void connectToApiRegions(Region region, EnumSet<ApiType> apiTypeVisibility, boolean isSpiVisible, RegionDigraph copy) throws BundleException {
+    private void connectToApiSpiRegions(Region region, EnumSet<ApiType> apiTypeVisibility, boolean isSpiVisible, RegionDigraph copy) throws BundleException {
         RegionFilterBuilder allBuilder = copy.createRegionFilterBuilder();
         // We want to import ALL from the api regions
         allBuilder.allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE);
@@ -234,7 +236,6 @@ class GatewayBundleFactory {
             region.connectRegion(apiRegion, allBuilder.build());
         }
         if (isSpiVisible) {
-            connectToInternal |= true;
             Region spiRegion = copy.getRegion(REGION_ALL_SPI);
             region.connectRegion(spiRegion, allBuilder.build());
         }

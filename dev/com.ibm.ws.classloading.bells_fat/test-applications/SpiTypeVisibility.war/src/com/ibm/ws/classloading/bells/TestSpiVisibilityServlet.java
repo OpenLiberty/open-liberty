@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,21 @@ public class TestSpiVisibilityServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        // Attempt to load a class using the application classloader
         String className = req.getParameter("className");
-        ClassLoader appCl = this.getClass().getClassLoader();
+        String loadOp = req.getParameter("loadOp");
+        System.out.println("TestSpiVisibilityServlet.doGet: loading class " + className + ", using " + loadOp);
         Class<?> clazz = null;
         try {
-            clazz = appCl.loadClass(className);
-        } catch (Exception e) {
-            //
+            if (loadOp == null || "loadClass".equals(loadOp)) {
+                clazz = this.getClass().getClassLoader().loadClass(className);
+            } else if ("forName".equals(loadOp)) {
+                clazz = this.getClass().getClassLoader().loadClass(className);
+            } else {
+                throw new IllegalArgumentException("Invalid loadOp: " + loadOp);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
         }
         resp.getOutputStream().println("TestSpiVisibilityServlet: class " + className + (clazz==null ? " is not" : " is") + " visible to the application classloader");
     }

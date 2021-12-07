@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static com.ibm.ws.classloading.internal.TestUtil.getClassLoadingService;
 import static com.ibm.ws.classloading.internal.TestUtil.getTestJarURL;
 import static com.ibm.wsspi.classloading.ApiType.API;
 import static com.ibm.wsspi.classloading.ApiType.SPEC;
+import static com.ibm.wsspi.classloading.SpiType.SPI;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -148,6 +149,8 @@ public class ProtectionDomainTest {
                 will(returnValue("testSharedLibrary"));
                 allowing(lib).getApiTypeVisibility();
                 will(returnValue(EnumSet.of(API, SPEC)));
+                allowing(lib).getSpiTypeVisibility();
+                will(returnValue(EnumSet.of(SPI)));
                 allowing(lib).getFilesets();
                 will(returnValue(Collections.emptyList()));
                 one(lib).getFiles();

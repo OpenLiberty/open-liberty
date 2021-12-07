@@ -88,6 +88,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.ClassTransformer;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.classloading.ResourceProvider;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -429,7 +430,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         if (loader != null)
             return loader;
         EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
-        boolean isSpiVisible = lib.getSpiTypeVisibility();
+        EnumSet<SpiType> spiTypeVisibility = lib.getSpiTypeVisibility();
 
         ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration().setId(clId).setSharedLibraries(lib.id());
 
@@ -449,7 +450,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
                                         .setApiTypeVisibility(apiTypeVisibility)
-                                        .setSpiTypeVisibility(isSpiVisible))
+                                        .setSpiTypeVisibility(spiTypeVisibility))
                         .configure(clsCfg)
                         .onCreate(listenForLibraryChanges(lib.id()))
                         .getCanonical();

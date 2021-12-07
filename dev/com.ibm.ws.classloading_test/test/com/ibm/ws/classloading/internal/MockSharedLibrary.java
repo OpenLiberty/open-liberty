@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.classloading.internal;
 
 import static com.ibm.wsspi.classloading.ApiType.API;
 import static com.ibm.wsspi.classloading.ApiType.SPEC;
+import static com.ibm.wsspi.classloading.SpiType.SPI;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import java.util.EnumSet;
 
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ApiType;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.library.Library;
 
@@ -50,6 +52,11 @@ class MockSharedLibrary implements Library {
     @Override
     public EnumSet<ApiType> getApiTypeVisibility() {
         return EnumSet.of(API, SPEC);
+    }
+
+    @Override
+    public EnumSet<SpiType> getSpiTypeVisibility() {
+        return EnumSet.of(SPI);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,23 @@ import java.util.List;
 
 import org.osgi.framework.Version;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.classloading.ApiType;
+import com.ibm.wsspi.classloading.SpiType;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 
 @Trivial
 class GatewayConfigurationImpl implements GatewayConfiguration {
+    private static final TraceComponent tc = Tr.register(GatewayConfigurationImpl.class);
+
     private Iterable<String> bundleRequirements;
     private Iterable<String> packageImports;
     private Iterable<String> dynamicPackageImports;
     private boolean delegateToSystem = true;
     private volatile EnumSet<ApiType> apiTypeVisibility;
-    private boolean isSpiVisible;
+    private volatile EnumSet<SpiType> spiTypeVisibility;
     private String appName;
     private Version appVersion;
 
@@ -141,13 +146,49 @@ class GatewayConfigurationImpl implements GatewayConfiguration {
     }
 
     @Override
-    public boolean getSpiTypeVisibility() {
-        return this.isSpiVisible;
+    public EnumSet<SpiType> getSpiTypeVisibility() {
+        if (!betaFenceCheck()) {
+           return null; // no-op
+        }
+        return spiTypeVisibility == null ? null : spiTypeVisibility.clone();
     }
 
     @Override
-    public GatewayConfiguration setSpiTypeVisibility(boolean isSpiVisible) {
-        this.isSpiVisible = isSpiVisible;
+    public GatewayConfiguration setSpiTypeVisibility(SpiType... types) {
+        if (!betaFenceCheck()) {
+            return this; // no-op
+        }
+        EnumSet<SpiType> set = EnumSet.noneOf(SpiType.class);
+        for (SpiType t : types)
+            if (t != null)
+                set.add(t);
+        this.spiTypeVisibility = set;
+        return this;
+    }
+
+
+    private static boolean issuedBetaMessage = false;
+    private boolean betaFenceCheck() {
+        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
+        if (!issuedBetaMessage) {
+            if (!isBeta) {
+                // no-op beta SPI
+            } else {
+                Tr.info(tc, "BETA: Library SPI type visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
+            }
+            issuedBetaMessage = true;
+        }
+        return isBeta;
+    }
+
+    @Override
+    public GatewayConfiguration setSpiTypeVisibility(Iterable<SpiType> types) {
+        EnumSet<SpiType> set = EnumSet.noneOf(SpiType.class);
+        if (types != null)
+            for (SpiType t : types)
+                if (t != null)
+                    set.add(t);
+        this.spiTypeVisibility = set;
         return this;
     }
 }

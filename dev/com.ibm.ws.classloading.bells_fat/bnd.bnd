@@ -36,14 +36,15 @@ tested.features: \
 	restConnector-2.0
 
 -buildpath: \
+	com.ibm.websphere.appserver.spi.restHandler;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.componenttest, \
 	com.ibm.ws.context, \
 	com.ibm.ws.logging, \
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.serialization, \
 	fattest.simplicity

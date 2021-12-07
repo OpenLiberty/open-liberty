@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2021 IBM Corporation and others.
+    Copyright (c) 2011, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -58,8 +58,16 @@
         id="apiTypeVisibility"
         required="false"
         type="String"
-        default="spec\,ibm-api\,api\,stable">
-     </AD>
+        default="spec\,ibm-api\,api\,stable"
+    />
+
+     <!-- Use "%library.spis" description="%library.spis.desc" -->
+     <AD name="internal" description="internal"
+        id="spiTypeVisibility"
+        required="false"
+        type="String"
+        ibm:beta="true"
+    />
 
     <!-- Revisit this in the first fixpack to give proper multi-choice support with defaults.
     <AD name="%library.apis" description="%library.apis.desc"
@@ -72,15 +80,16 @@
       <Option label="%library.api.ibmapi" value="ibm-api" description="%library.api.ibmapi.desc"/>
       <Option label="%library.api.api" value="api" description="%library.api.api.desc"/>
       <Option label="%library.api.thirdparty" value="third-party" description="%library.api.thirdparty.desc"/>
-    </AD> -->
+    </AD>
 
-     <AD name="%library.spis" description="%library.spis.desc"
-        id="spiTypeVisibility"
-        required="false"
-        type="String"
-        ibm:beta="true">
-        <Option label="%library.spi.spi" value="spi" description="%library.spi.spi.desc"/>
-     </AD>
+    <AD name="%library.spis" description="%library.spis.desc"
+       id="spiTypeVisibility"
+       required="false"
+       type="String"
+       ibm:beta="true">
+       <Option label="%library.spi.spi" value="spi" description="%library.spi.spi.desc"/>
+    </AD>
+    -->
 
   </OCD>
 

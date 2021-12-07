@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import org.eclipse.equinox.region.Region;
+
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
 import org.eclipse.equinox.region.RegionDigraphVisitor;
@@ -810,9 +811,9 @@ public class Provisioner {
                 continue;
             }
             String clause = "(" + PackageNamespace.PACKAGE_NAMESPACE + "=" + packageName + ")";
-            // all types of gateway packages are available to osgi apps
             osgiAppsAPIFilters.add(clause);
             PackageType type = featureManager.packageInspector.getExportedPackageType(packageName);
+            // all types of api gateway packages are available to osgi apps
             if (type.isInternalApi()) {
                 // TODO For internal types only add to the internal region
                 // All the defined api type regions delegate to internal
@@ -932,8 +933,8 @@ public class Provisioner {
             toProductBuilder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, packageFilter);
         }
 
-        Region regionApiHub = digraph.getRegion(REGION_ALL_SPI);
-        regionApiHub.connectRegion(productRegion, toProductBuilder.build());
+        Region regionSpiHub = digraph.getRegion(REGION_ALL_SPI);
+        regionSpiHub.connectRegion(productRegion, toProductBuilder.build());
     }
 
     /**

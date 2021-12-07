@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.ibm.ws.classloading.internal.LibertyLoader;
 import com.ibm.ws.classloading.internal.util.BlockingList.Listener;
 import com.ibm.ws.classloading.internal.util.BlockingList.Retriever;
 import com.ibm.ws.classloading.internal.util.BlockingList.Slot;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.classloading.internal.util.ElementNotReadyException;
 import com.ibm.ws.classloading.internal.util.ElementNotValidException;
 import com.ibm.wsspi.classloading.ApiType;
@@ -33,10 +34,13 @@ public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, List
     private final EnumSet<ApiType> ownerAPIs;
     private final String ownerID;
 
+    private final boolean isBeta;
+
     /** Create a listener that does not listen straight away */
     GetLibraryLoaders(String ownerId, EnumSet<ApiType> ownerAPIs) {
         this.ownerID = ownerId;
         this.ownerAPIs = ownerAPIs;
+        isBeta = ProductInfo.getBetaEdition();
     }
 
     @Override
@@ -45,6 +49,8 @@ public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, List
         if (lib == null)
             throw new ElementNotReadyException(id);
         if (libraryAndLoaderApiTypesDoNotMatch(lib))
+            throw new ElementNotValidException();
+        if (isBeta && libraryHasSpiTypeVisibility(lib)) 
             throw new ElementNotValidException();
         return (LibertyLoader) lib.getClassLoader();
     }
@@ -70,6 +76,8 @@ public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, List
                     // The owning class loader's declared API types do not match those for this library.
                     // We have no choice but to invalidate this element - already logged in apiTypesMatch()
                     slot.delete();
+                } else if (isBeta && libraryHasSpiTypeVisibility(library)) {
+                    slot.delete();
                 } else {
                     final LibertyLoader libCL = (LibertyLoader) library.getClassLoader();
                     slot.fill(libCL);
@@ -81,5 +89,9 @@ public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, List
 
     private boolean libraryAndLoaderApiTypesDoNotMatch(Library sharedLibrary) {
         return !!!Providers.checkAPITypesMatch(sharedLibrary, ownerID, ownerAPIs);
+    }
+
+    private boolean libraryHasSpiTypeVisibility(Library sharedLibrary) {
+        return !!!Providers.checkSpiTypeVisibility(sharedLibrary, ownerID, ownerAPIs);
     }
 }
