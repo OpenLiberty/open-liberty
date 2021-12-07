@@ -98,7 +98,7 @@ All features (both "Design Approved" and "No Design Approved")
 1 week before GA
 - [ ] Create, populate, and link to the [Blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update)
 
-## **Other deliverbles**
+## **Other deliverables**
 - [ ] **OL Guides** - ([Yee-Kang Chang](https://github.com/yeekangc)). Assessment for OL Guides is complete or N/A.
 - [ ] **WDT** - (Leonard Theivendra). WDT work complete or N/A.
 - [ ] **Blog** - ([Laura Cowen](https://github.com/lauracowen)) Blog article writeup (Epic owner / Feature owner / Laura Cowen)
