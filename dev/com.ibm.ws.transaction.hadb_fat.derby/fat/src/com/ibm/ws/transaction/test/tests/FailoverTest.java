@@ -519,6 +519,11 @@ public class FailoverTest extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
         assertNotNull("No warning message signifying failover", recoverServer.waitForStringInLog("Have recovered from SQLException"));
 
+        // Tweak the config update timeout, it can be slooooooooooooooooooooow
+        final int configUpdateTimeout = recoverServer.getConfigUpdateTimeout();
+        if (configUpdateTimeout < 120000) {
+            recoverServer.setConfigUpdateTimeout(120000);
+        }
         // Update the server configuration on the fly to make the simulated sqlcode non-retriable.
         ServerConfiguration config = recoverServer.getServerConfiguration();
         Transaction tranConfig = config.getTransaction();
@@ -565,6 +570,13 @@ public class FailoverTest extends FATServletClient {
         // RTC 169082), so wait until the "recover("
         // string appears in the messages.log
         recoverServer.waitForStringInLog("recover\\(");
+
+        // Reset the tran config to its initial state
+        Log.info(this.getClass(), method, "Reset transaction config");
+        tranConfig.setNonRetriableSqlCodes("");
+        recoverServer.setMarkToEndOfLog();
+        recoverServer.updateServerConfiguration(config);
+        recoverServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
         Log.info(this.getClass(), method, "call stopserver");
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, recoverServer);
@@ -638,6 +650,11 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, defaultServer);
 
+        // Tweak the config update timeout, it can be slooooooooooooooooooooow
+        final int configUpdateTimeout = defaultServer.getConfigUpdateTimeout();
+        if (configUpdateTimeout < 120000) {
+            defaultServer.setConfigUpdateTimeout(120000);
+        }
         // Update the server configuration on the fly to make the simulated sqlcode retriable.
         ServerConfiguration config = defaultServer.getServerConfiguration();
         Transaction tranConfig = config.getTransaction();
@@ -655,6 +672,13 @@ public class FailoverTest extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
         assertNotNull("No warning message signifying failover", defaultServer.waitForStringInLog("Have recovered from SQLException"));
+
+        // Reset the config back to the initial state.
+        Log.info(this.getClass(), method, "Reset the transaction config");
+        tranConfig.setRetriableSqlCodes("");
+        defaultServer.setMarkToEndOfLog();
+        defaultServer.updateServerConfiguration(config);
+        defaultServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
         Log.info(this.getClass(), method, "Complete");
