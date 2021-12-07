@@ -55,7 +55,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "componenttest-2.0", // replaces "componenttest-1.0"
                                                   "txtest-2.0",
                                                   "appAuthentication-3.0",
-                                                  "appAuthorization-3.0",
+                                                  "appAuthorization-2.1",
                                                   "appSecurity-5.0",
                                                   "batch-2.1",
                                                   "beanValidation-3.0",

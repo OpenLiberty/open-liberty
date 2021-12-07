@@ -18,7 +18,7 @@ Subsystem-Name: Jakarta EE Platform 10.0
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.concurrent-3.0, \
-  io.openliberty.appAuthorization-3.0, \
+  io.openliberty.appAuthorization-2.1, \
   io.openliberty.xmlWS-4.0, \
   io.openliberty.appClientSupport-2.0, \
   io.openliberty.enterpriseBeans-4.0, \
