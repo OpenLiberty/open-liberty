@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -41,15 +41,32 @@ public class ServerStartTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     private static final String SYMLINK_NAME = "com.ibm.ws.kernel.boot.serverstart.fat.symlink";
+    private static boolean isIBM_v8_JVM = false;
 
     private static LibertyServer server;
 
     @Rule
     public TestName testName = new TestName();
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+
+        // IBM J9 does not contain the jcmd applicaiton to create dumps!
+        String javaHome = server.getMachineJavaJDK();
+        Properties env = new Properties();
+        env.setProperty("JAVA_HOME", javaHome);
+        String javaBinDir = javaHome + "/bin";
+        ProgramOutput javaVersionOutput = server.getMachine().execute(javaBinDir + "/java", new String[] { "-version" }, javaBinDir, env);
+        String stdout = javaVersionOutput.getStdout();
+        String stderr = javaVersionOutput.getStderr();
+        Log.info(c, "before", "java -version  stdout: " + stdout);
+        Log.info(c, "before", "java -version  stderr: " + stderr);
+        assertEquals("Unexpected return code from java -version", 0, javaVersionOutput.getReturnCode());
+
+        if ((stdout != null && stdout.contains("IBM J9 VM")) || (stderr != null && stderr.contains("IBM J9 VM"))) {
+            isIBM_v8_JVM = true;
+        }
     }
 
     @After
@@ -178,6 +195,7 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_AbsolutePath() throws Exception {
+        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_AbsolutePath";
         Log.entering(c, METHOD_NAME);
 
@@ -257,6 +275,7 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RelativePath() throws Exception {
+        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RelativePath";
         Log.entering(c, METHOD_NAME);
 
@@ -342,6 +361,7 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RelativeFolder() throws Exception {
+        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RelativeFolder";
         Log.entering(c, METHOD_NAME);
 
@@ -510,6 +530,7 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RootDefault() throws Exception {
+        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RootDefault";
         Log.entering(c, METHOD_NAME);
 
@@ -584,6 +605,189 @@ public class ServerStartTest {
     }
 
     /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path beginning with (c:\ or /) or relative path (../ or folder).
+     * If relative, it is from the ${server.output.dir} location.
+     *
+     * This test case is for when the user just specifies an invalid URL. The OS for the given environment
+     * would be the underlying handler of this scenario, and whatever the mkdir command does with the URL
+     * would be the result. In most cases this results in a path being created similar to the following:
+     *
+     * export SERVER_WORKING_DIR=https://google.net would result in a path with the following location
+     * \https*\google.net\dumpfile.hprof
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SWD_InvalidURL() throws Exception {
+        assumeTrue(!isIBM_v8_JVM);
+        final String METHOD_NAME = "test_SWD_InvalidURL";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String serverWorkingDir = "https://google.net";
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getInstallRoot().replace("/", "\\");
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot() + File.separator + "https:/google.net";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", serverWorkingDir);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + serverWorkingDir);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
+
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+
+    }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path beginning with (c:\ or /) or relative path (../ or folder).
+     * If relative, it is from the ${server.output.dir} location.
+     *
+     * This test case is for when the user just specifies a string ('not a path'). The OS for the given
+     * environment would be the underlying handler of this scenario, and whatever the mkdir command does
+     * with the URL would be the result.
+     *
+     * For Windows: The server would not start as the mkdir command causes the server.bat script to exit.
+     *
+     * For Linux: The server should start but the mkdir command will only create the first word as a path
+     * (ie 'not' which should be relative to the ${server.output.dir} location).
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SWD_InvalidPath() throws Exception {
+        final String METHOD_NAME = "test_SWD_InvalidPath";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String serverWorkingDir = "not a path";
+        boolean isWindows = false;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getInstallRoot().replace("/", "\\") + File.separator + "not";
+            isWindows = true;
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot() + File.separator + "not a path";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", serverWorkingDir);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + serverWorkingDir);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        if (isWindows) {
+            assertTrue("The server should NOT have started due to a bad SERVER_WORKING_DIR = not a path", !server.isStarted());
+        } else {
+            // Use jcmd to generate a heap dump
+            String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+            Process process = Runtime.getRuntime().exec(execParameters);
+
+            try (Reader reader = new InputStreamReader(process.getInputStream());
+                            BufferedReader br = new BufferedReader(reader);) {
+                String output = null;
+                while ((output = br.readLine()) != null) {
+                    Log.info(c, METHOD_NAME, "jcmd output = " + output);
+                }
+            }
+
+            assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
+
+            // Make sure we got the java heap dump at the expected location
+            File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+            assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+            Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+            core.delete();
+
+            // Stop the server
+            parms[0] = "stop";
+            parms[1] = SERVER_NAME;
+
+            po = server.getMachine().execute(command, parms, executionDir, envVars);
+            Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+            Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+            server.waitForStringInLog("CWWKE0036I");
+        }
+
+        Log.exiting(c, METHOD_NAME);
+
+    }
+
+    /**
      * Find the servers process and return its corresponding pid via jcmd.
      *
      * NOTE: The server.getPid() method does not seem to return a pid given
@@ -598,14 +802,17 @@ public class ServerStartTest {
         String pid = null;
         String[] cmd = new String[] { "jcmd" };
         Process process = Runtime.getRuntime().exec(cmd);
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String output = null;
-        while ((output = br.readLine()) != null) {
-            if (output.contains("ws-server.jar")) {
-                pid = output.substring(0, output.indexOf(" "));
+
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                if (output.contains("ws-server.jar")) {
+                    pid = output.substring(0, output.indexOf(" "));
+                    return pid;
+                }
             }
         }
-        br.close();
 
         return pid;
     }
