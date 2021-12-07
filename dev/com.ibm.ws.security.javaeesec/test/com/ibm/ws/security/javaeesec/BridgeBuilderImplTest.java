@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public class BridgeBuilderImplTest {
 
     @Test
     public void testNoAuthMechDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().doesNotRegisterProvider();
+        withNoHAM().doesNotRegisterProvider();
         isHAM = false;
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
     }
@@ -121,15 +121,25 @@ public class BridgeBuilderImplTest {
 
     @Test
     public void testWithCachedProviderDoesNotRegisterProvider() throws Exception {
+        isHAM = true;
         withCachedProvider().doesNotRegisterProvider();
-
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
     }
 
     private BridgeBuilderImplTest withNoCachedProvider() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(providerFactory).getConfigProvider("HttpServlet", APP_CONTEXT, null);
+                exactly(2).of(providerFactory).getConfigProvider("HttpServlet", APP_CONTEXT, null);
+                will(returnValue(null));
+            }
+        });
+        return this;
+    }
+
+    private BridgeBuilderImplTest withNoHAM() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                never(providerFactory).getConfigProvider("HttpServlet", APP_CONTEXT, null);
                 will(returnValue(null));
             }
         });
