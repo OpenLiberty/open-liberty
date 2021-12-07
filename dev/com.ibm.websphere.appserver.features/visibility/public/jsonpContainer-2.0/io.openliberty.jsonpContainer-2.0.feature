@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.jsonpContainer-2.0
 visibility=public
+singleton=true
 IBM-API-Package: jakarta.json; type="spec", \
  jakarta.json.stream; type="spec", \
  jakarta.json.spi; type="spec"

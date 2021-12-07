@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.jsonb-2.0
 visibility=public
+singleton=true
 IBM-ShortName: jsonb-2.0
 Subsystem-Name: Jakarta JSON Binding 2.0
 IBM-API-Package: jakarta.json.bind; type="spec", \
