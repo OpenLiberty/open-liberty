@@ -10,20 +10,25 @@
  *******************************************************************************/
 package componenttest.app;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 
 /**
- * Serializes and Deserializes an AssertionError to JSON
+ * Serializes and Deserializes an AssertionError to/from JSON
  */
 public class AssertionErrorSerializer {
 
@@ -41,40 +46,10 @@ public class AssertionErrorSerializer {
     //The FATServlet.doGet method name
     private static final String DO_GET = "doGet";
 
-    /**
-     * Simplify an AssertionError that has been thrown from a test in a subclass of FATServlet.
-     * This will change the error message to include the FAT classname and test method name.
-     * It will also shorten the stacktrace to stop at FATServlet.doGet because everything after that
-     * will always be the same and is not of any interest.
-     *
-     * @param fatClass      The FAT class which originally threw the AssertionError
-     * @param fatMethodName The FAT method which originally threw the AssertionError
-     * @param e             The original AssertionError
-     * @return A simplified AssertionError
-     */
-    public static <T extends FATServlet> AssertionError simplify(Class<T> fatClass, String fatMethodName, AssertionError e) {
-        AssertionError assertionError = new AssertionError(fatClass.getSimpleName() + "." + fatMethodName + ": " + e.getMessage());
-        StackTraceElement[] originalStack = e.getStackTrace();
-        ArrayList<StackTraceElement> shortenedStack = new ArrayList<>();
-
-        for (StackTraceElement element : originalStack) {
-            String declaringClass = element.getClassName();
-            String methodName = element.getMethodName();
-            String fileName = element.getFileName();
-            int lineNumber = element.getLineNumber();
-            StackTraceElement newElement = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
-
-            shortenedStack.add(newElement);
-
-            //the stack beyond doGet is always the same so don't output any more
-            if ((FATServlet.class.getSimpleName() + ".java").equals(fileName) && DO_GET.equals(methodName)) {
-                break;
-            }
-        }
-
-        assertionError.setStackTrace(shortenedStack.toArray(new StackTraceElement[shortenedStack.size()]));
-        return assertionError;
-    }
+    //JSON Factories
+    private static final JsonBuilderFactory BUILDER_FACTORY = Json.createBuilderFactory(null);
+    private static final JsonReaderFactory READER_FACTORY = Json.createReaderFactory(null);
+    private static final JsonWriterFactory WRITER_FACTORY = Json.createWriterFactory(null);
 
     /**
      * Serialize out an AssertionError as a JSON String
@@ -83,12 +58,21 @@ public class AssertionErrorSerializer {
      * @return A JSON String
      */
     public static String serialize(AssertionError e) {
-        JsonObject json = serializeAssertionError(e);
         StringWriter writer = new StringWriter();
-        JsonWriter jsonWriter = Json.createWriter(writer);
-        jsonWriter.writeObject(json);
-        jsonWriter.close();
+        serialize(e, writer);
         return writer.toString();
+    }
+
+    /**
+     * Serialize out an AssertionError as a JSON String via the given writer
+     *
+     * @param e      The AssertionError
+     * @param writer A Writer to writer out the JSON String to
+     */
+    public static void serialize(AssertionError e, Writer writer) {
+        JsonObject json = serializeAssertionError(e);
+        JsonWriter jsonWriter = WRITER_FACTORY.createWriter(writer);
+        jsonWriter.writeObject(json);
     }
 
     /**
@@ -97,7 +81,16 @@ public class AssertionErrorSerializer {
      */
     public static AssertionError deserialize(String json) {
         StringReader reader = new StringReader(json);
-        JsonReader jsonReader = Json.createReader(reader);
+        AssertionError e = deserialize(reader);
+        return e;
+    }
+
+    /**
+     * @param reader A Reader to read the json from; the serialized form of an AssertionError
+     * @return An instance of AssertionError
+     */
+    public static AssertionError deserialize(Reader reader) {
+        JsonReader jsonReader = READER_FACTORY.createReader(reader);
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
 
@@ -112,7 +105,7 @@ public class AssertionErrorSerializer {
      * @return A JsonObject
      */
     private static JsonObject serializeAssertionError(AssertionError e) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = BUILDER_FACTORY.createObjectBuilder();
         builder.add(EXCEPTION_TYPE_KEY, "AssertionError");
         builder.add(MESSAGE_KEY, e.getMessage());
 
@@ -155,7 +148,7 @@ public class AssertionErrorSerializer {
      * @return A JsonArray
      */
     private static JsonArray serializeStack(StackTraceElement[] stack) {
-        JsonArrayBuilder stackBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder stackBuilder = BUILDER_FACTORY.createArrayBuilder();
 
         for (StackTraceElement element : stack) {
             JsonObject elementJson = serializeStackTraceElement(element);
@@ -190,7 +183,7 @@ public class AssertionErrorSerializer {
      * @return A JsonObject
      */
     private static JsonObject serializeStackTraceElement(StackTraceElement stackTraceElement) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = BUILDER_FACTORY.createObjectBuilder();
         builder.add(CLASS_NAME_KEY, stackTraceElement.getClassName());
         builder.add(METHOD_NAME_KEY, stackTraceElement.getMethodName());
         builder.add(FILE_NAME_KEY, stackTraceElement.getFileName());
@@ -213,4 +206,38 @@ public class AssertionErrorSerializer {
         return element;
     }
 
+    /**
+     * Simplify an AssertionError that has been thrown from a test in a subclass of FATServlet.
+     * This will change the error message to include the FAT classname and test method name.
+     * It will also shorten the stacktrace to stop at FATServlet.doGet because everything after that
+     * will always be the same and is not of any interest.
+     *
+     * @param fatClass      The FAT class which originally threw the AssertionError
+     * @param fatMethodName The FAT method which originally threw the AssertionError
+     * @param e             The original AssertionError
+     * @return A simplified AssertionError
+     */
+    public static <T extends FATServlet> AssertionError simplify(Class<T> fatClass, String fatMethodName, AssertionError e) {
+        AssertionError assertionError = new AssertionError(fatClass.getSimpleName() + "." + fatMethodName + ": " + e.getMessage());
+        StackTraceElement[] originalStack = e.getStackTrace();
+        ArrayList<StackTraceElement> shortenedStack = new ArrayList<>();
+
+        for (StackTraceElement element : originalStack) {
+            String declaringClass = element.getClassName();
+            String methodName = element.getMethodName();
+            String fileName = element.getFileName();
+            int lineNumber = element.getLineNumber();
+            StackTraceElement newElement = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
+
+            shortenedStack.add(newElement);
+
+            //the stack beyond doGet is always the same so don't output any more
+            if ((FATServlet.class.getSimpleName() + ".java").equals(fileName) && DO_GET.equals(methodName)) {
+                break;
+            }
+        }
+
+        assertionError.setStackTrace(shortenedStack.toArray(new StackTraceElement[shortenedStack.size()]));
+        return assertionError;
+    }
 }

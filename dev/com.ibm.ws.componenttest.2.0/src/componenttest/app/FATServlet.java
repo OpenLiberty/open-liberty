@@ -85,13 +85,12 @@ public abstract class FATServlet extends HttpServlet {
                 StringWriter sw = new StringWriter();
                 t.printStackTrace(new PrintWriter(sw));
                 System.err.print(sw);
-                if (t instanceof AssertionError) {
+                if (t instanceof AssertionError && t.getCause() == null) {
                     AssertionError e = (AssertionError) t;
                     System.out.println("ASSERTION ERROR: " + e);
                     writer.write(AssertionErrorSerializer.START_TAG);
                     AssertionError simple = AssertionErrorSerializer.simplify(getClass(), method, e);
-                    String json = AssertionErrorSerializer.serialize(simple);
-                    writer.write(json);
+                    AssertionErrorSerializer.serialize(simple, writer);
                     writer.write(AssertionErrorSerializer.END_TAG);
                 } else {
                     System.out.println("ERROR: " + t);
