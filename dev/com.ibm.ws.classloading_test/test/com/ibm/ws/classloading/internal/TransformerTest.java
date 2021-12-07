@@ -40,7 +40,9 @@ import test.common.SharedOutputManager;
 /**
  * Test to make sure that transformers can be correctly added to/removed from an AppClassLoader
  */
+@SuppressWarnings("restriction")
 public class TransformerTest {
+
     @Rule
     public SharedOutputManager outputManager = SharedOutputManager.getInstance();
 
@@ -225,13 +227,19 @@ public class TransformerTest {
         byte[] transformedBytes = loader.transformClassBytes("greetings", toTransform);
 
         if (systemTransformer && isBeta) {
+            // System transformers invoke in beta-editions, only
             assertTrue(transformerInvoked.get());
             assertFalse(Arrays.equals(originalBytes, transformedBytes));
             assertEquals("Greetings and salutations!", new String(transformedBytes));
-        } else {
+        } else if (systemTransformer) {
             assertFalse(transformerInvoked.get());
             assertTrue(Arrays.equals(originalBytes, transformedBytes));
             assertEquals("Greetings", new String(transformedBytes));
+        } else {
+            // Transformers invoke
+            assertTrue(transformerInvoked.get());
+            assertFalse(Arrays.equals(originalBytes, transformedBytes));
+            assertEquals("Greetings and salutations!", new String(transformedBytes));
         }
     }
 }

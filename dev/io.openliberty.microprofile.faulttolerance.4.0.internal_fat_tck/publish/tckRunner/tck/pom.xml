@@ -15,9 +15,9 @@
     <name>MicroProfile Fault Tolerance TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.config.version>3.0-RC5</microprofile.config.version>
-        <microprofile.faulttolerance.version>4.0-RC3</microprofile.faulttolerance.version>
-        <microprofile.metrics.version>4.0-RC4</microprofile.metrics.version>
+        <microprofile.config.version>3.0.1</microprofile.config.version>
+        <microprofile.faulttolerance.version>4.0</microprofile.faulttolerance.version>
+        <microprofile.metrics.version>4.0</microprofile.metrics.version>
 
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
 

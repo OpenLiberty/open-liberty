@@ -13,7 +13,7 @@
 
     <groupId>com.ibm.ws.microprofile.mpjwt20</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>2.0-RC2-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <name>MicroProfile JWT 2.0 TCK Runner TCK Module</name>
 
     <properties>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
-            <version>2.0-RC2</version>
+            <version>2.0</version>
         </dependency>
         
         <!--  impl -->
@@ -72,16 +72,16 @@
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>2.0-RC2</version>
+            <version>2.0</version>
         </dependency>
        
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>2.0-RC2</version>
+            <version>2.0</version>
             <type>test-jar</type>        
-            <!--   <systemPath>/Users/mypath/microprofile-jwt-auth-2.0-RC2/tck/target/microprofile-jwt-auth-tck-2.0-RC2-SNAPSHOT-tests.jar</systemPath>   -->
+            <!--   <systemPath>/Users/mypath/microprofile-jwt-auth-2.0/tck/target/microprofile-jwt-auth-tck-2.0-SNAPSHOT-tests.jar</systemPath>   -->
             <!--   <scope>system</scope>   -->
         </dependency>
         

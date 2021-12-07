@@ -5,7 +5,7 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: managedBeans-2.0
 Subsystem-Name: Jakarta Managed Beans 2.0
--features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
   io.openliberty.jakarta.interceptor-2.0, \
   io.openliberty.jakarta.enterpriseBeans-4.0; apiJar=false, \
   com.ibm.websphere.appserver.transaction-2.0, \

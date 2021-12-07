@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Properties;
 
 import org.junit.After;
@@ -173,8 +177,8 @@ public class ServerStartTest {
      * @throws Exception
      */
     @Test
-    public void testSERVER_WORKING_DIR_AbsolutePath() throws Exception {
-        final String METHOD_NAME = "testSERVER_WORKING_DIR_AbsolutePath";
+    public void test_SWD_AbsolutePath() throws Exception {
+        final String METHOD_NAME = "test_SWD_AbsolutePath";
         Log.entering(c, METHOD_NAME);
 
         String executionDir = server.getInstallRoot();
@@ -210,21 +214,23 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        // Do a server javadump, and ensure the output is located in the
-        // ${server.output.dir}/logs/serverWorkingDir folder.
-        parms[0] = "javadump";
-        parms[1] = SERVER_NAME;
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
-        po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
-
-        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
-        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
-
-        // Make sure we got the javacore in the correct location
-        assertTrue("The message did not contain the correct folder location for the dump file. msg = " + msg + " expected " + javaCoreLocation,
-                   msg.contains(javaCoreLocation));
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
 
         // Stop the server
         parms[0] = "stop";
@@ -250,8 +256,8 @@ public class ServerStartTest {
      * @throws Exception
      */
     @Test
-    public void testSERVER_WORKING_DIR_RelativePath() throws Exception {
-        final String METHOD_NAME = "testSERVER_WORKING_DIR_RelativePath";
+    public void test_SWD_RelativePath() throws Exception {
+        final String METHOD_NAME = "test_SWD_RelativePath";
         Log.entering(c, METHOD_NAME);
 
         String executionDir = server.getInstallRoot();
@@ -279,7 +285,7 @@ public class ServerStartTest {
         // in the /wlp/usr/servers/ folder it gets picked up by the test framework as an error.
         Properties envVars = new Properties();
         envVars.put("SERVER_WORKING_DIR", relativePath);
-        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + relativePath);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + relativePath + " and absolute path is " + absolutePath);
 
         ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
         Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
@@ -293,22 +299,23 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        // Do a server javadump, and ensure the output is located in the
-        // ${server.output.dir}/../../serverWorkingDir folder.
-        parms[0] = "javadump";
-        parms[1] = SERVER_NAME;
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
-        po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
-
-        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
-        Log.info(c, METHOD_NAME, "msg = " + msg);
-        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
-
-        // Make sure we got the javacore in the correct location
-        assertTrue("The message did not contain the correct folder location for the dump file. msg = '" + msg + "' expected '" + absolutePath + "'",
-                   msg.contains(absolutePath));
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
 
         // Stop the server
         parms[0] = "stop";
@@ -334,22 +341,25 @@ public class ServerStartTest {
      * @throws Exception
      */
     @Test
-    public void testSERVER_WORKING_DIR_RelativeFolder() throws Exception {
-        final String METHOD_NAME = "testSERVER_WORKING_DIR_RelativeFolder";
+    public void test_SWD_RelativeFolder() throws Exception {
+        final String METHOD_NAME = "test_SWD_RelativeFolder";
         Log.entering(c, METHOD_NAME);
 
         String executionDir = server.getInstallRoot();
         String command = null;
         String javaCoreLocation = null;
         String folder = "javadumps";
+        String absolutePath = null;
 
         // Cover executing both scripts that utilize this environment variable
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
             command = "bin" + File.separator + "server.bat";
             javaCoreLocation = server.getServerRoot().replace("/", "\\").trim() + File.separator + folder;
+            absolutePath = server.getServerRoot().replace("/", "\\") + File.separator + folder;
         } else {
             command = "bin" + File.separator + "server";
             javaCoreLocation = server.getServerRoot() + File.separator + folder;
+            absolutePath = server.getServerRoot() + File.separator + folder;
         }
         Log.info(c, METHOD_NAME, "server command utilized is = " + command);
 
@@ -359,7 +369,7 @@ public class ServerStartTest {
 
         Properties envVars = new Properties();
         envVars.put("SERVER_WORKING_DIR", folder);
-        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + envVars.getProperty("SERVER_WORKING_DIR"));
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + javaCoreLocation);
 
         ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
 
@@ -374,22 +384,23 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        // Do a server javadump, and ensure the output is located in the
-        // ${server.output.dir}/../../serverWorkingDir folder.
-        parms[0] = "javadump";
-        parms[1] = SERVER_NAME;
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
 
-        po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
-
-        String msg = server.waitForStringInLogUsingMark("CWWKE0068I.*javacore");
-        Log.info(c, METHOD_NAME, "msg = " + msg);
-        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
-
-        // Make sure we got the javacore in the correct location
-        assertTrue("The message did not contain the correct folder location for the dump file. msg = '" + msg + "' expected '" + javaCoreLocation + File.separator + folder + "'",
-                   msg.contains(javaCoreLocation));
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
 
         // Stop the server
         parms[0] = "stop";
@@ -402,5 +413,200 @@ public class ServerStartTest {
         server.waitForStringInLog("CWWKE0036I");
 
         Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * This test validates that the SERVER_WORKING_DIR is not utilized by the server whenever a
+     * server javadump command is executed. This is considered 'server' output and should be
+     * modified via the WLP_OUTPUT_DIR variable.
+     *
+     * This test case sets the SERVER_WORKING_DIR as ${server.output.dir}/logs/serverWorkingDir/ and
+     * the server javadump being executed should utilize the ${server.output.dir} folder.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SWD_ServerJavaDump() throws Exception {
+        final String METHOD_NAME = "test_SWD_ServerJavaDump";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String serverWorkingDir = null;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\");
+            serverWorkingDir = server.getServerRoot().replace("/", "\\") + File.separator + "logs" + File.separator + "serverWorkingDir";
+        } else {
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot();
+            serverWorkingDir = server.getServerRoot() + File.separator + "logs" + File.separator + "serverWorkingDir";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", serverWorkingDir);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + serverWorkingDir);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Do a server javadump, and ensure the output is located in the
+        // ${server.output.dir} folder.
+        parms[0] = "javadump";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        String msg = server.waitForStringInLogUsingMark("CWWKE0068I");
+        assertTrue("The CWWKE0068I message was not found in the log. msg = " + msg, msg.contains("CWWKE0068I"));
+
+        // Make sure we got the java core dump at the expected location
+        File dumpFile = new File(msg.substring(msg.lastIndexOf(" ")).trim());
+        assertTrue("The heap file did not exist at location = " + dumpFile.getAbsolutePath(), dumpFile.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + dumpFile.getAbsolutePath());
+        dumpFile.delete();
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * This test validates that the server start script functions correctly when the SERVER_WORKING_DIR
+     * environment variable is set. Output from the JVM (ex, javadumps) should be written to the value
+     * specified. This can be an absolute path beginning with (c:\ or /) or relative path (../ or folder).
+     * If relative, it is from the ${server.output.dir} location.
+     *
+     * This test case is for when the user just specifies a base drive letter like c:\ on Windows or a /
+     * on Linux. In both cases we should default to ${server.output.dir}.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SWD_RootDefault() throws Exception {
+        final String METHOD_NAME = "test_SWD_RootDefault";
+        Log.entering(c, METHOD_NAME);
+
+        String executionDir = server.getInstallRoot();
+        String command = null;
+        String javaCoreLocation = null;
+        String serverWorkingDir = null;
+
+        // Cover executing both scripts that utilize this environment variable
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            command = "bin" + File.separator + "server.bat";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\");
+            serverWorkingDir = "C:\\";
+        } else { // Linux
+            command = "bin" + File.separator + "server";
+            javaCoreLocation = server.getServerRoot();
+            serverWorkingDir = "/";
+        }
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("SERVER_WORKING_DIR", serverWorkingDir);
+        Log.info(c, METHOD_NAME, "SERVER_WORKING_DIR = " + serverWorkingDir);
+
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+
+        // because we didn't start the server using the LibertyServer APIs, we need to have it detect
+        // its started state so it will stop and save logs properly
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
+
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
+
+        Log.exiting(c, METHOD_NAME);
+
+    }
+
+    /**
+     * Find the servers process and return its corresponding pid via jcmd.
+     *
+     * NOTE: The server.getPid() method does not seem to return a pid given
+     * how the server was started via a machine vs a server start, and using the
+     * ManagementFactory.getRuntimeMXBean().getName() returns the java process
+     * of the framework. Thus using jcmd to obtain the pid for the server.
+     *
+     * @return
+     * @throws Exception
+     */
+    private String findServerPid() throws Exception {
+        String pid = null;
+        String[] cmd = new String[] { "jcmd" };
+        Process process = Runtime.getRuntime().exec(cmd);
+        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String output = null;
+        while ((output = br.readLine()) != null) {
+            if (output.contains("ws-server.jar")) {
+                pid = output.substring(0, output.indexOf(" "));
+            }
+        }
+        br.close();
+
+        return pid;
     }
 }

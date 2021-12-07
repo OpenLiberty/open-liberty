@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,10 +37,12 @@ import com.ibm.ws.install.internal.InstallKernelImpl;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
+import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.CommandConsole;
+import com.ibm.ws.product.utility.CommandConstants;
 import com.ibm.ws.product.utility.CommandTaskRegistry;
 import com.ibm.ws.product.utility.ExecutionContext;
 import com.ibm.ws.product.utility.extension.ValidateCommandTask;
@@ -412,6 +414,9 @@ public class ExeInstallAction implements ActionHandler {
 
             @Override
             public <T> T getAttribute(String name, Class<T> cls) {
+                if (name.equals(CommandConstants.WLP_INSTALLATION_LOCATION)) {
+                    return (T) Utils.getInstallDir();
+                }
                 return null;
             }
 
@@ -421,10 +426,12 @@ public class ExeInstallAction implements ActionHandler {
             }
 
             @Override
-            public void setAttribute(String name, Object value) {}
+            public void setAttribute(String name, Object value) {
+            }
 
             @Override
-            public void setOverrideOutputStream(PrintStream outputStream) {}
+            public void setOverrideOutputStream(PrintStream outputStream) {
+            }
         });
     }
 
