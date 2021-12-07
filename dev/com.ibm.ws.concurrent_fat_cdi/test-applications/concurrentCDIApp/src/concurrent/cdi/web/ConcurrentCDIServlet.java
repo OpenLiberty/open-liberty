@@ -650,7 +650,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
             // Run inline on an unmanaged thread,
             Future<Entry<Integer, Object>> unmanagedThreadFuture = unmanagedThreads.submit(() -> futureB.join());
-            Entry<Integer, Object> resultsB = unmanagedThreadFuture.get(TIMEOUT_MS, TimeUnit.NANOSECONDS);
+            Entry<Integer, Object> resultsB = unmanagedThreadFuture.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
             assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), resultsB.getKey());
             assertTrue("looked up " + resultsB.getValue(), resultsB.getValue() instanceof ManagedExecutorService);
