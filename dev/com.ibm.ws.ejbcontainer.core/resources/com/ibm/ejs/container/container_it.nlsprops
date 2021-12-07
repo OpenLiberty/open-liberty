@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1451,9 +1451,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: Il bean enterprise {0} nel
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=Il descrittore di distribuzione definisce un timer che assegna il metodo specificato, ma non indica quanti parametri tale metodo accetta.  Pi\u00f9 metodi risultano avere lo stesso nome nella gerarchia della classe del bean e sono idonei a ricevere pi\u00f9 callback del timer.  Di conseguenza, il contenitore EJB non \u00e8 riuscito a determinare quale metodo il timer deve assegnare.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Modificare il descrittore di distribuzione in modo tale che il timer indichi esplicitamente se assegna la versione del parametro zero o del parametro uno del metodo.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Il bean di sessione con stato {0} nel modulo {1} nell''applicazione {2} non ha dichiarato una dipendenza sul riferimento della persistenza {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Quando un bean di sessione con stato si trova in un WAR, deve dichiarare le dipendenze in tutti i riferimenti di contesto della persistenza e nei riferimenti dell'unit\u00e0 di persistenza in cui esso intende accedere.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Aggiungere l'annotazione del codice sorgente @PersistenceContext o @PersistenceUnit appropriata nel bean di sessione con stato oppure aggiungere l'elemento persistence-context-ref o persistence-unit-ref appropriato nell'elemento session appropriato nel descrittore di distribuzione XML.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Rilevato conflitto nel riferimento.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=\u00c8 stato definito un riferimento risorsa in pi\u00f9 ubicazioni, con informazioni in conflitto.

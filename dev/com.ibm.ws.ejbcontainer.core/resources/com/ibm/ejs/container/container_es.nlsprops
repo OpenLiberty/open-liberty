@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1442,9 +1442,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: El enterprise bean {0} en 
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=El descriptor de despliegue define un temporizador que tiene como destino el m\u00e9todo especificado, pero no indica cu\u00e1ntos par\u00e1metros acepta el m\u00e9todo. Varios m\u00e9todos tienen el mismo nombre en la jerarqu\u00eda de clases del bean que se ha elegido para recibir los retornos de llamadas del temporizador. Esto provoca que el contenedor EJB no pueda determinar qu\u00e9 m\u00e9todo debe ser el destino del temporizador.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Cambie el descriptor de despliegue para que el temporizador indique de forma expl\u00edcita si el m\u00e9todo de destino es de la versi\u00f3n con par\u00e1metro o sin par\u00e1metro.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: El bean de sesi\u00f3n con estado {0} del m\u00f3dulo {1} en la aplicaci\u00f3n {2} no ha declarado una dependencia en la referencia de persistencia {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Cuando un bean de sesi\u00f3n con estado se encuentra en un WAR, debe declarar dependencias en todas las referencias de contexto de persistencia y en las referencias de unidades de persistencia a las que tiene previsto acceder.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=A\u00f1ada la anotaci\u00f3n del c\u00f3digo fuente @PersistenceContext o @PersistenceUnit apropiada al bean de sesi\u00f3n con estado o a\u00f1ada el elemento de referencia de contexto de persistencia o referencia de unidad de persistencia apropiado al elemento de sesi\u00f3n apropiado en el descriptor de despliegue XML.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Se ha detectado un conflicto de referencia de recursos. {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Se ha definido una referencia de recursos en varios sitios que contiene informaci\u00f3n en conflicto.

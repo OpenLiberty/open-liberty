@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1440,9 +1440,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: Le bean enterprise {0} du 
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=Le descripteur de d\u00e9ploiement d\u00e9finit un temporisateur qui cible la m\u00e9thode sp\u00e9cifi\u00e9e mais n'indique pas le nombre de param\u00e8tres admis par cette m\u00e9thode.  Plusieurs m\u00e9thodes portent le m\u00eame nom dans la hi\u00e9rarchie des classes du bean et peuvent recevoir des rappels de temporisateur.  Par cons\u00e9quent, le conteneur d'EJB ne peut pas d\u00e9terminer la m\u00e9thode que le temporisateur doit cibler.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Changez le descripteur de d\u00e9ploiement pour que le temporisateur indique explicitement s'il cible la version sans param\u00e8tre ou la version avec un param\u00e8tre de la m\u00e9thode.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Le bean session avec \u00e9tat {0} du module {1} dans l''application {2} n''a pas d\u00e9clar\u00e9 de d\u00e9pendance \u00e0 la r\u00e9f\u00e9rence de persistance {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Lorsqu'un bean session avec \u00e9tat se trouve dans un fichier WAR, il doit d\u00e9clarer les d\u00e9pendances \u00e0 toutes les r\u00e9f\u00e9rences de contexte de persistance et d'unit\u00e9 de persistance auxquelles il pr\u00e9voit d'acc\u00e9der.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Ajoutez l'annotation de code source @PersistenceContext ou @PersistenceUnit appropri\u00e9e au bean session avec \u00e9tat ou ajoutez l'\u00e9l\u00e9ment persistence-context-ref ou persistence-unit-ref pertinent pour l'\u00e9l\u00e9ment de session appropri\u00e9 dans le descripteur de d\u00e9ploiement XML.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Un conflit de r\u00e9f\u00e9rences de ressource a \u00e9t\u00e9 d\u00e9tect\u00e9.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Une r\u00e9f\u00e9rence de ressource a \u00e9t\u00e9 d\u00e9finie \u00e0 plusieurs endroits avec des informations conflictuelles.
