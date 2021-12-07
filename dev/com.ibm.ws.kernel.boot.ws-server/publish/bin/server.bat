@@ -718,6 +718,14 @@ goto:eof
     goto:checkDir
   )
   
+  @REM Default to SERVER_OUTPUT_DIR if user only specifies a drive letter, ex c:\
+  if /I "%SERVER_WORKING_DIR:~1,2%" == ":\" (
+    if "%SERVER_WORKING_DIR:~3,1%"=="" (
+      set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!
+      goto:checkDir
+    )
+  )
+  
   @REM Check if we are relative or absolute path based on a : in the path string.
   if x%SERVER_WORKING_DIR::=%==x%SERVER_WORKING_DIR% (
     set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!\!SERVER_WORKING_DIR!
