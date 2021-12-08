@@ -11,21 +11,25 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<%@ page import="com.ibm.ws.kernel.productinfo.ProductInfo" %>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title data-externalizedString="SERVER_CONFIGURATION_EDITOR"></title>
 		<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="lib/orion_editor/code_edit/built-codeEdit.css" rel="stylesheet">
+		<link href="lib/carbon/css/carbon-components.min.css" rel="stylesheet">
 		<link href="css/editor.css" rel="stylesheet">
 		<link rel="icon" type="image/png" href="img/server-config-16-D.png">
-
-
+		
 		<%
 			boolean isAdmin = request.isUserInRole("Administrator");
+			boolean isBetaMode = ProductInfo.getBetaEdition() ? true: false;
 		%>
+
 		<script type="text/javascript">
-			globalIsAdmin=<%=isAdmin%>
+			globalIsAdmin = <%=isAdmin%>;
+			globalIsBetaMode = <%=isBetaMode%>;
 		</script>
 
         <%
@@ -211,55 +215,130 @@
 			</div>
 		</div> <!-- dialog remove element end -->
 
-		<label id="labelDatabaseValidateElement" class="hidden" data-externalizedString="VALIDATE_DATASOURCE_DIALOG"></label>
-		<div class="modal" id="dialogDatasourceValidateElement" role="dialog" aria-labelledby="labelDatabaseValidateElement" tabindex="-1"> <!-- dialog validate database element start -->
+		
+		<label id="labelValidateElement" class="hidden" data-externalizedString="VALIDATE_CONNECTION_DIALOG"></label>
+		<div class="modal" id="dialogValidateConnectionElement" role="dialog" aria-labelledby="labelValidateElement" tabindex="-1"> <!-- dialog validate connection element start -->
   			<div class="modal-dialog">
     			<div class="modal-content">
 					<div class="modal-body">
 						<a class="dialog-close-link" href="#" draggable="false" data-dismiss="modal">
 							<span class="sr-only" data-externalizedString="CANCEL"></span>
 						</a>
-       					<h3 class="modal-title text-center" data-externalizedString="VALIDATE_DATASOURCE"></h3>
+       					<h3 class="modal-title text-center" data-externalizedString="TEST_CONNECTION"></h3>
 
        					<div id="authModeTabs">
-							<a tabindex="0" draggable="false" href="#" id="useContainerValidationButton" class="tabs active" data-externalizedString="CONTAINER_AUTHENTICATION"></a>
-							<a tabindex="0" draggable="false" href="#" id="useApplicationValidationButton" class="tabs" data-externalizedString="APPLICATION_AUTHENTICATION"></a>
+							<a tabindex="0" draggable="false" href="#" id="useContainerValidationButton" class="validationTabs tabs active" data-externalizedString="CONTAINER_AUTHENTICATION"></a>
+							<a tabindex="0" draggable="false" href="#" id="useApplicationValidationButton" class="validationTabs tabs" data-externalizedString="APPLICATION_AUTHENTICATION"></a>
+							<a tabindex="0" draggable="false" href="#" id="useNoResourceReferenceButton" class="validationTabs tabs" data-externalizedString="NO_RESOURCE_REFERENCE"></a>
 						</div>
 
-						<label id="betaLabel" class="hidden">Beta Feature</label> <!-- TODO PII -->
+						<label id="betaLabel" class="hidden">Beta Feature</label>
 						<form id="testParameters" aria-labelledby="betaLabel">
-							<div id="testUserPassParameters" class="form-group hidden">
-								<div id="testNoReference" class="form-check">
-									<input id="testNoReferenceCheckbox" type="checkbox" class="checkbox-btn" aria-labelledby="betaLabel">
-									<label id="labelTestNoReferenceCheckbox" data-externalizedString="NO_RESOURCE_REFERENCE"></label>
+
+							<div id="testNoResourceReference" class="validationTabBody form-group hidden">
+								<legend id="NoResourceReferenceNotice" class="bx--label validationTypeDescription" data-externalizedString="RESOURCE_REFERENCE_IN_USE"></legend>
+
+								<div id="NoResourceReferenceUserCredentials">
+									<legend class="bx--label validationTypeDescription" data-externalizedString="NO_RESOURCE_REFERENCE_IN_USE"></legend>
+									<div id="noResourceReferenceInput">
+										<label id="testUsernameInputTitle" data-externalizedString="USER_NAME" for="testUsernameInput" class="bx--label"></label>
+										<input id="testUsernameInputNoResourceReference" list="testUsernameInputListNoResourceReference" type="text" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
+										<datalist id="testUsernameInputListNoResourceReference"data-externalizedStringTitle="USER_NAME"></datalist>
+										<label id="testPasswordInputTitle" data-externalizedString="PASSWORD" for="testPasswordInput" class="bx--label"></label>
+										<input id="testPasswordInputNoResourceReference" list="testPasswordInputList" type="password" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
+									</div>
 								</div>
-								<h4 id="testUsernameInputTitle" data-externalizedString="USER_NAME"></h4>
-								<input id="testUsernameInput" type="text" class="form-control" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
-								<h4 id="testPasswordInputTitle" data-externalizedString="PASSWORD"></h4>
-								<input id="testPasswordInput" type="password" class="form-control" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
 							</div>
-							<div id="testAuthAliasParameter" class="form-group">
-								<h4 id="authAliasInputTitle" data-externalizedString="AUTH_ALIAS"></h4>
-								<input id="authAliasInput" type="text" class="form-control" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
+
+							<div id="testUserPassParameters" class="validationTabBody form-group hidden">
+								<div id="testNoReference" class="form-check">
+									<legend class="bx--label validationTypeDescription" data-externalizedString="RESOURCE_REFERENCE_WITH_APPILCATION_AUTHENTICATION_IN_USE"></legend>
+								</div>
+								<label id="testUsernameInputTitle" data-externalizedString="USER_NAME" for="testUsernameInput" class="bx--label"></label>
+								<input id="testUsernameInput" list="testUsernameInputList" type="text" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
+								<datalist id="testUsernameInputList"data-externalizedStringTitle="USER_NAME"></datalist>
+								<label id="testPasswordInputTitle" data-externalizedString="PASSWORD" for="testPasswordInput" class="bx--label"></label>
+								<input id="testPasswordInput" list="testPasswordInputList" type="password" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
+							</div>
+
+							<div id="testAuthAliasParameter" class="validationTabBody form-group">
+								<fieldset>
+									<legend class="bx--label validationTypeDescription" data-externalizedString="RESOURCE_REFERENCE_WITH_CONTAINER_AUTHENTICATION_IN_USE"></legend>
+
+									<div class="containerAuthenticationRow">
+										<div class="containerAuthenticationFullRowSection">
+											<input type="radio" id="containerAuthRadioDefaultAuthentication" name="containerAuthenticationRadioElement" class="containerAuthenticationRadioElement bx--radio-button" checked>
+											<label for="containerAuthRadioDefaultAuthentication" data-externalizedString="DEFAULT_AUTHENTICATION_ALIAS" class="containerAuthenticationRadioLabel bx--radio-button__label">
+												<span class="bx--radio-button__appearance"></span>
+											</label>
+										</div>
+									</div>
+									
+									<div class="containerAuthenticationRow containerAuthenticationRowSpecifyAuthSection">
+										<div class="containerAuthenticationFullRowSection">
+											<input type="radio" id="containerAuthRadioSpecifyAuthentication" name="containerAuthenticationRadioElement" class="containerAuthenticationRadioElement bx--radio-button">
+											<label for="containerAuthRadioSpecifyAuthentication" data-externalizedString="SPECIFY_AUTHENTICATION_ALIAS" class="containerAuthenticationRadioLabel bx--radio-button__label">
+												<span class="bx--radio-button__appearance"></span>
+											</label>
+											<div class="bx--form-item containerAuthSubSection">
+												<div class="bx--select">
+													<select  id="authAliasInput" class="bx--select-input" data-externalizedStringTitle="AUTH_ALIAS"></select>
+													<svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5">
+														<path d="M0 0l5 4.998L10 0z" fill-rule="evenodd" />
+													</svg>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="containerAuthenticationRow containerAuthenticationRowLoginConfigSection">
+										<div class="containerAuthenticationFullRowSection">
+											<input type="radio" id="containerAuthRadioLoginConfig" name="containerAuthenticationRadioElement" class="containerAuthenticationRadioElement bx--radio-button">
+											<label for="containerAuthRadioLoginConfig" data-externalizedString="LOGIN_CONFIG" class="containerAuthenticationRadioLabel bx--radio-button__label">
+												<span class="bx--radio-button__appearance"></span>
+											</label>
+											<div class="bx--form-item containerAuthSubSection">
+												<div class="bx--select">
+													<select  id="loginConfigId" class="bx--select-input" data-externalizedStringTitle="LOGIN_CONFIG_ID"></select>
+													<svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5">
+														<path d="M0 0l5 4.998L10 0z" fill-rule="evenodd" />
+													</svg>
+												</div>
+											</div>
+										
+											<div class="keyValueTable containerAuthSubSection" id="keyValueTable">
+												<div class="keyValueTableRow">
+													<div class="keyValueTableItemAction">
+														<div class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></div>
+													</div>
+												</div>
+												<div id="keyValueTableRowValueSection">
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
 							</div>
 						</form>
 
-						<button draggable="false" id="dialogTestDatabaseButton" data-externalizedString="TEST_CONNECTION" class="btn btn-primary dialog-btn"></button>
+						<button draggable="false" id="dialogTestConnectionButton" data-externalizedString="TEST_CONNECTION" class="btn btn-primary dialog-btn"></button>
 
 						<div id="testEndResult">
-							<h4 id="testDatasourceResponseSuccess" class="hidden" data-externalizedString="SUCCESS"></h4>
-							<h4 id="testDatasourceResponseFailed" class="hidden" data-externalizedString="FAILED"></h4> <!-- Has different messages -->
+							<h4 id="testConnectionResponseSuccess" class="hidden" data-externalizedString="SUCCESS"></h4>
+							<h4 id="testConnectionResponseFailed" class="hidden" data-externalizedString="FAILED"></h4> <!-- Has different messages -->
 						</div>
 
-						<div id="dialogTestDatasourceJSONContainer" class="hidden">
-							<h4 id="testDatasourceResponseLabel" class="" data-externalizedString="RESPONSE"></h4>
-							<h4 for="dialogTestDatasourceDescription" class="hidden" data-externalizedString="TEST_RESULTS"></h4>
-							<textarea aria-labelledby="betaLabel" id="dialogTestDatasourceDescription" data-externalizedPlaceholder="TEST_RESULTS" class="form-control descriptionTextArea" rows="3" readonly="readonly"></textarea>
+						<div id="dialogTestConnectionJSONContainer" class="hidden">
+							<h4 id="testConnectionResponseLabel" class="" data-externalizedString="RESPONSE"></h4>
+							<h4 for="dialogTestConnectionDescription" class="hidden" data-externalizedString="TEST_RESULTS"></h4>
+							<textarea aria-labelledby="betaLabel" id="dialogTestConnectionDescription" data-externalizedPlaceholder="TEST_RESULTS" class="form-control descriptionTextArea" rows="3" readonly="readonly"></textarea>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div> <!-- dialog validate database element end -->
+		</div> <!-- dialog validate connection element end -->
+
 
 		<label id="labelDialogEnumerationSelection" class="hidden" data-externalizedString="ENUMERATION_SELECTION_DIALOG"></label>
 		<div class="modal" id="dialogEnumerationSelect" role="dialog" aria-labelledby="dialogEnumerationSelectTitle" tabindex="-1"> <!-- dialog enumeration select start -->
@@ -402,8 +481,9 @@
 		</div>
 
 		<div id="uiBlock" class="hidden"></div>
-
+		
     	<script src="lib/jquery.min.js"></script>
+    	<script src="lib/carbon/scripts/carbon-components.min.js"></script>
 
     	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
     	<script src="lib/orion_editor/code_edit/built-codeEdit.min.js"></script>

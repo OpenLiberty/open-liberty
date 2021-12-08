@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Valoare",
 "SELECT": "Selectare",
 "ADD": "Adăugare",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Căutare element",
 "ADD_CHILD_ELEMENT_DIALOG": "Dialog de adăugare element copil",
 "REMOVE_ELEMENT_DIALOG": "Dialog de înlăturare element",
-"VALIDATE_DATASOURCE_DIALOG": "Dialog de validare conexiune la sursa de date",
-"VALIDATE_DATASOURCE": "Testare conexiune la sursa de date",
 "ENUMERATION_SELECTION_DIALOG": "Dialog selecţie enumerare",
 "SAVE_BEFORE_CLOSING_DIALOG": "Dialog de salvare înainte de închidere",
 "ERROR_SAVING_FILE_DIALOG": "Dialog de eroare salvare fişier",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias de autentificare (Opţional)",
 "AUTH_ALIAS": "Alias de autentificare",
 "CONTAINER_AUTHENTICATION": "Autentificare container",
-"NO_RESOURCE_REFERENCE": "Nici o referinţă de resursă",
 "APPLICATION_AUTHENTICATION": "Autentificare aplicaţie",
 "CUSTOM_LOGIN_MODULE": "Modul de logare personalizat (Opţional)",
 "LOGIN_PROPERTIES": "Proprietăţi de logare (Opţional)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Selectaţi o caracteristică pentru a-i vizualiza descrierea.",
 "SUPPORT_MESSAGE" : "Configuraţia serverului nu este disponibilă pentru serverele Node.js şi nici pentru serverele dintr-un container Docker accesate prin controlerul de colectiv.",
 "NO_ROLE_MESSAGE": "Utilizatorul nu este într-un rol care are permisiunea să facă modificări de configuraţie. Fişierele sunt accesibile doar în modul numai-citire.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ACŢIUNI NECESARE PENTRU MEMBRII COLECTIVULUI:",
 "RUN_UPDATE_HOST" : "Rulaţi 'collective updateHost' sau 'collective registerHost' cu '--hostWritePath' specificând o cale la care rpcUser are permisiuni de scriere.  Trebuie furnizate de asemenea acreditări valide pentru gazdă.",

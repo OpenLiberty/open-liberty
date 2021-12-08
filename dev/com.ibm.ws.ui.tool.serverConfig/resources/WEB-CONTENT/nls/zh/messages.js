@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "值",
 "SELECT": "选择",
 "ADD": "添加",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "元素搜索",
 "ADD_CHILD_ELEMENT_DIALOG": "添加子元素对话框",
 "REMOVE_ELEMENT_DIALOG": "移除元素对话框",
-"VALIDATE_DATASOURCE_DIALOG": "验证数据源连接对话框",
-"VALIDATE_DATASOURCE": "测试数据源连接",
 "ENUMERATION_SELECTION_DIALOG": "枚举选择对话框",
 "SAVE_BEFORE_CLOSING_DIALOG": "关闭对话框之前保存",
 "ERROR_SAVING_FILE_DIALOG": "保存文件对话框时发生错误",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "认证别名（可选）",
 "AUTH_ALIAS": "认证别名",
 "CONTAINER_AUTHENTICATION": "容器认证",
-"NO_RESOURCE_REFERENCE": "无资源参考",
 "APPLICATION_AUTHENTICATION": "应用程序认证",
 "CUSTOM_LOGIN_MODULE": "定制登录模块（可选）",
 "LOGIN_PROPERTIES": "登录属性（可选）",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "选择一个功能部件以查看其描述。",
 "SUPPORT_MESSAGE" : "服务器配置不适用于通过集合体控制器访问的 Node.js 服务器或 Docker 容器中的服务器。",
 "NO_ROLE_MESSAGE": "该用户所具有的角色无权进行配置更改。可以只读方式访问文件。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "集合体成员所需的操作：",
 "RUN_UPDATE_HOST" : "带“--hostWritePath”参数（指定一个 rpcUser 具有写权限的路径）运行“collective updateHost”或“collective registerHost”。 同时必须提供有效的主机凭证。",

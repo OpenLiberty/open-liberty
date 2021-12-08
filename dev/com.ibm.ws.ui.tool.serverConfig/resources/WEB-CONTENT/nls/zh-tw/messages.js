@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "值",
 "SELECT": "選取",
 "ADD": "新增",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "元素搜尋",
 "ADD_CHILD_ELEMENT_DIALOG": "「新增子元素」對話框",
 "REMOVE_ELEMENT_DIALOG": "「移除元素」對話框",
-"VALIDATE_DATASOURCE_DIALOG": "驗證資料來源連線對話框",
-"VALIDATE_DATASOURCE": "測試資料來源連線",
 "ENUMERATION_SELECTION_DIALOG": "「列舉選擇」對話框",
 "SAVE_BEFORE_CLOSING_DIALOG": "關閉對話框之前先儲存",
 "ERROR_SAVING_FILE_DIALOG": "「儲存檔案時發生錯誤」對話框",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "鑑別別名（選用）",
 "AUTH_ALIAS": "鑑別別名",
 "CONTAINER_AUTHENTICATION": "儲存器鑑別",
-"NO_RESOURCE_REFERENCE": "無資源參照",
 "APPLICATION_AUTHENTICATION": "應用程式鑑別",
 "CUSTOM_LOGIN_MODULE": "自訂登入模組（選用）",
 "LOGIN_PROPERTIES": "登入內容（選用）",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "選取功能，以檢視其說明。",
 "SUPPORT_MESSAGE" : "無論是 Node.js 伺服器或 Docker 儲存器中的伺服器，都無法透過群體控制器來存取「伺服器配置」。",
 "NO_ROLE_MESSAGE": "使用者的角色不具有執行配置變更的權限。將提供唯讀模式的檔案。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "群體成員的必要動作：",
 "RUN_UPDATE_HOST" : "執行 'collective updateHost' 或 'collective registerHost'，並將 '--hostWritePath' 指定成 rpcUser 具備寫入權的路徑。同時必須提供有效的主機認證。",

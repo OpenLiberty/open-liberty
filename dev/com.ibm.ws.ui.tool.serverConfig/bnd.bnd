@@ -24,6 +24,7 @@ Include-Resource: \
   ${if;${driver;gradle};lib/orion_editor=lib/orion}, \
   ${if;${driver;gradle};lib=lib/jquery}, \
   ${if;${driver;gradle};lib/bootstrap=lib/bootstrap}, \
+  ${if;${driver;gradle};lib/carbon=lib/carbon}, \
   ${if;${driver;gradle};fonts=lib/fonts}, \
   ${if;${driver;gradle};404=lib/404}, \
   ${if;${driver;gradle};js/prod.min.js=lib/prod.min.js}, \
@@ -33,3 +34,5 @@ Include-Resource: \
   css=resources/WEB-CONTENT/css, \
   img=resources/WEB-CONTENT/img, \
   nls=resources/WEB-CONTENT/nls
+
+Import-Package: com.ibm.ws.kernel.productinfo

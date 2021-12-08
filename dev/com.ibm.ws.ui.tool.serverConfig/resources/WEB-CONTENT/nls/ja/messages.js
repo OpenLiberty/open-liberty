@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "値",
 "SELECT": "選択",
 "ADD": "追加",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "エレメント検索",
 "ADD_CHILD_ELEMENT_DIALOG": "「子エレメントの追加」ダイアログ",
 "REMOVE_ELEMENT_DIALOG": "「エレメントの削除」ダイアログ",
-"VALIDATE_DATASOURCE_DIALOG": "「データ・ソース接続の検証」ダイアログ",
-"VALIDATE_DATASOURCE": "データ・ソース接続のテスト",
 "ENUMERATION_SELECTION_DIALOG": "「列挙選択」ダイアログ",
 "SAVE_BEFORE_CLOSING_DIALOG": "「閉じる前に保存」ダイアログ",
 "ERROR_SAVING_FILE_DIALOG": "「ファイル保存エラー」ダイアログ",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "認証別名 (オプション)",
 "AUTH_ALIAS": "認証別名",
 "CONTAINER_AUTHENTICATION": "コンテナー認証",
-"NO_RESOURCE_REFERENCE": "リソース参照がありません",
 "APPLICATION_AUTHENTICATION": "アプリケーション認証",
 "CUSTOM_LOGIN_MODULE": "カスタム・ログイン・モジュール (オプション)",
 "LOGIN_PROPERTIES": "ログイン・プロパティー (オプション)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "機能を選択すると、その機能の説明が表示されます。",
 "SUPPORT_MESSAGE" : "サーバー構成は、Node.js サーバーに対しても、集合コントローラーを介してアクセスされる Docker コンテナー内のサーバーに対しても使用できません。",
 "NO_ROLE_MESSAGE": "ユーザーは構成変更の権限を持つロールに属していません。 ファイルは読み取り専用モードで使用可能です。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "集合メンバーに必要なアクション:",
 "RUN_UPDATE_HOST" : "rpcUser が書き込み権限を持つパスを '--hostWritePath' に指定して、'collective updateHost' または 'collective registerHost' を実行してください。  ホストの有効な資格情報も指定する必要があります。",

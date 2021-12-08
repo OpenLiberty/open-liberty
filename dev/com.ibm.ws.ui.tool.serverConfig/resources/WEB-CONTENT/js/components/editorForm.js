@@ -9,8 +9,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorForm = (function() {
+ var editorForm = (function() {
     "use strict";
+
+
+    // Returns true if current node is supported by validation API
+    var isValidationSupportedOnNode = function (nodeName) {
+        return validationUtils.isSupportedNode(nodeName);
+    };
+
+    
+    // Set validation metadata properties for the model window to use
+    var getMetaDataStringForTestButton = function (nodeName) {
+        return validationUtils.getMetaDataStringForTestButton(nodeName);
+    };
+
 
     var renderEditorForm = function(element) {
 
@@ -77,10 +90,11 @@ var editorForm = (function() {
 
                 editorForm.append("<a href=\"#\" draggable=\"false\" role=\"button\" " + deleteButtonEnablement + " id=\"removeButton\" class=\"btn btn-default\">" + editorMessages.REMOVE + "</a>");
 
+                var nodeName = element.nodeName;
                 // Add "Test" button only if the element is supported by the validator APIs
-                var validatorList = editor.getValidatorList();
-                if(validatorList && $.inArray(element.nodeName, validatorList) !== -1) {
-                    editorForm.append("<a draggable=\"false\" role=\"button\" id=\"testButton\" class=\"btn btn-default\">" + editorMessages.TEST + "</a>");
+                if(isValidationSupportedOnNode(nodeName)) {
+                    var validatorMetaDataParameters = getMetaDataStringForTestButton(nodeName);
+                    editorForm.append("<a draggable=\"false\" role=\"button\" id=\"testButton\" class=\"btn btn-default\"" + validatorMetaDataParameters + ">" + editorMessages.TEST + "</a>");
                 }
 
                 // Create form
@@ -547,12 +561,6 @@ var editorForm = (function() {
         $("#editorForm").on("click", "#unrecognizedElementSwitchToSourceLink", function(event) {
             event.preventDefault();
             editor.switchToSourceView();
-        });
-
-        // Handle test button
-        $("#editorForm").on("click", "#testButton", function(event) {
-            event.preventDefault();
-            $("#dialogDatasourceValidateElement").modal("show");
         });
 
     });

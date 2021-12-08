@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Hodnota",
 "SELECT": "Vybrat",
 "ADD": "Přidat",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Hledání prvku",
 "ADD_CHILD_ELEMENT_DIALOG": "Dialogové okno Přidat podřízený prvek",
 "REMOVE_ELEMENT_DIALOG": "Dialogové okno Odebrat prvek",
-"VALIDATE_DATASOURCE_DIALOG": "Dialogové okno Ověřit připojení zdroje dat",
-"VALIDATE_DATASOURCE": "Testování připojení zdroje dat",
 "ENUMERATION_SELECTION_DIALOG": "Dialogové okno Výběr výčtu",
 "SAVE_BEFORE_CLOSING_DIALOG": "Dialogové okno Uložit před zavřením",
 "ERROR_SAVING_FILE_DIALOG": "Dialogové okno Chyba při ukládání souboru",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias ověřování (volitelné)",
 "AUTH_ALIAS": "Alias ověřování",
 "CONTAINER_AUTHENTICATION": "Ověření kontejneru",
-"NO_RESOURCE_REFERENCE": "Bez odkazu na prostředek",
 "APPLICATION_AUTHENTICATION": "Ověření aplikace",
 "CUSTOM_LOGIN_MODULE": "Vlastní přihlašovací modul (volitelné)",
 "LOGIN_PROPERTIES": "Vlastnosti přihlášení (volitelné)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Vybráním funkce zobrazíte její popis.",
 "SUPPORT_MESSAGE" : "Konfigurace serveru není dostupná pro servery Node.js ani servery v kontejneru Docker přístupné přes kolektivní řadič.",
 "NO_ROLE_MESSAGE": "Uživatel nemá roli, která má oprávnění provádět změny konfigurace. Soubory jsou k dispozici v režimu jen pro čtení.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "NEZBYTNÉ AKCE PRO ČLENY KOLEKTIVU:",
 "RUN_UPDATE_HOST" : "Spusťte 'collective updateHost' nebo 'collective registerHost' s '--hostWritePath' určující cestu, ke které má rpcUser oprávnění k zápisu. Lze zadat i platná pověření hostitele.",

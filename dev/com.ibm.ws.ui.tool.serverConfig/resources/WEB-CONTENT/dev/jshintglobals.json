@@ -10,6 +10,8 @@
 	"xmlUtils": "true",
 	"source": "true",
 	"fileUtils": "true",
+	"validationUtils": "true",
+	"validateConnection": "true",
 	"includesCustomization": "true",
 	"featureListCustomization": "true",
 	"settings": "true",

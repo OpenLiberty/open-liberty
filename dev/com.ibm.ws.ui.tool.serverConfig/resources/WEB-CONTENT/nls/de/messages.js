@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Wert",
 "SELECT": "Auswählen",
 "ADD": "Hinzufügen",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Elementsuche",
 "ADD_CHILD_ELEMENT_DIALOG": "Dialog für untergeordnetes Element hinzufügen",
 "REMOVE_ELEMENT_DIALOG": "Elementdialog entfernen",
-"VALIDATE_DATASOURCE_DIALOG": "Datenquellenverbindungsdialog überprüfen",
-"VALIDATE_DATASOURCE": "Datenquellenverbindung wird getestet.",
 "ENUMERATION_SELECTION_DIALOG": "Dialog für Aufzählungsauswahl",
 "SAVE_BEFORE_CLOSING_DIALOG": "Vor dem Schließen des Dialogs speichern",
 "ERROR_SAVING_FILE_DIALOG": "Fehler beim Speichern des Dateidialogs",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Authentifizierungsalias (Optional)",
 "AUTH_ALIAS": "Authentifizierungsalias",
 "CONTAINER_AUTHENTICATION": "Containerauthentifizierung",
-"NO_RESOURCE_REFERENCE": "Keine Ressourcenreferenz",
 "APPLICATION_AUTHENTICATION": "Anwendungsauthentifizierung",
 "CUSTOM_LOGIN_MODULE": "Angepasstes Anmeldemodul (Optional)",
 "LOGIN_PROPERTIES": "Anmeldeeigenschaften (Optional)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Wählen Sie ein Feature aus, um dessen Beschreibung anzuzeigen.",
 "SUPPORT_MESSAGE" : "Es ist weder eine Serverkonfiguration für Node.js-Server noch eine Serverkonfiguration für Docker-Server, auf die über den Verbundcontroller zugegriffen wird, verfügbar.",
 "NO_ROLE_MESSAGE": "Der Benutzer hat nicht die Rolle, die für die Durchführung der Konfigurationsänderungen berechtigt ist. Die Dateien sind im Lesezugriffsmodus verfügbar. ",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "Erforderliche Aktionen für Verbundmember:",
 "RUN_UPDATE_HOST" : "Führen Sie 'collective updateHost' oder 'collective registerHost' mit '--hostWritePath' aus und geben Sie dabei einen Pfad an, für den der RPC-Benutzer schreibberechtigt ist. Gültige Hostberechtigungsnachweise müssen ebenfalls angegeben werden.",

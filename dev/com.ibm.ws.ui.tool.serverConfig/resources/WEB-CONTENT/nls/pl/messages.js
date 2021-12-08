@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Wartość",
 "SELECT": "Wybierz",
 "ADD": "Dodaj",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Wyszukiwanie elementu",
 "ADD_CHILD_ELEMENT_DIALOG": "Okno dialogowe dodawania elementu potomnego",
 "REMOVE_ELEMENT_DIALOG": "Okno dialogowe usuwania elementu",
-"VALIDATE_DATASOURCE_DIALOG": "Okno dialogowe sprawdzania poprawności połączenia ze źródłem danych",
-"VALIDATE_DATASOURCE": "Testowanie połączenia ze źródłem danych",
 "ENUMERATION_SELECTION_DIALOG": "Okno dialogowe wyboru wyliczenia",
 "SAVE_BEFORE_CLOSING_DIALOG": "Okno dialogowe zapisywania przed zamknięciem",
 "ERROR_SAVING_FILE_DIALOG": "Okno dialogowe błędu podczas zapisywania pliku",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias uwierzytelniania (opcjonalny)",
 "AUTH_ALIAS": "Alias uwierzytelniania",
 "CONTAINER_AUTHENTICATION": "Uwierzytelnianie kontenera",
-"NO_RESOURCE_REFERENCE": "Brak odwołania do zasobu",
 "APPLICATION_AUTHENTICATION": "Uwierzytelnianie aplikacji",
 "CUSTOM_LOGIN_MODULE": "Niestandardowy moduł logowania (opcjonalny)",
 "LOGIN_PROPERTIES": "Właściwości uwierzytelniania (opcjonalne)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Wybierz składnik, aby wyświetlić jego opis.",
 "SUPPORT_MESSAGE" : "Konfiguracje serwerów nie są dostępne dla serwerów Node.js i serwerów w kontenerze Docker udostępnianych za pomocą kontrolera kolektywu.",
 "NO_ROLE_MESSAGE": "Użytkownik nie pełni roli, która ma uprawnienia do wprowadzania zmian w konfiguracji. Pliki są dostępne w trybie tylko do odczytu.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "WYMAGANE DZIAŁANIA DLA CZŁONKÓW KOLEKTYWU:",
 "RUN_UPDATE_HOST" : "Uruchom komendę collective updateHost lub collective registerHost z parametrem --hostWritePath zawierającym ścieżkę, do której użytkownik rpcUser ma uprawnienia.  Należy także podać poprawne referencje hosta.",

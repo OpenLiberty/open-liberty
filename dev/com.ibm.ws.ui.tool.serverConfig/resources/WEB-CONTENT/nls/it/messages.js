@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Valore",
 "SELECT": "Seleziona",
 "ADD": "Aggiungi",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Ricerca elemento",
 "ADD_CHILD_ELEMENT_DIALOG": "Finestra di dialogo Aggiungi elemento child",
 "REMOVE_ELEMENT_DIALOG": "Finestra di dialogo Rimuovi elemento",
-"VALIDATE_DATASOURCE_DIALOG": "Finestra di dialogo Convalida connessione origine dati",
-"VALIDATE_DATASOURCE": "Verifica della connessione dell'origine dati",
 "ENUMERATION_SELECTION_DIALOG": "Finestra di dialogo Selezione enumerazione",
 "SAVE_BEFORE_CLOSING_DIALOG": "Finestra di dialogo Salva prima di chiudere",
 "ERROR_SAVING_FILE_DIALOG": "Finestra di dialogo Errore durante il salvataggio del file",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias di autenticazione (facoltativo)",
 "AUTH_ALIAS": "Alias di autenticazione",
 "CONTAINER_AUTHENTICATION": "Autenticazione contenitore",
-"NO_RESOURCE_REFERENCE": "Nessun riferimento risorsa",
 "APPLICATION_AUTHENTICATION": "Autenticazione applicazione",
 "CUSTOM_LOGIN_MODULE": "Modulo di login personalizzato (facoltativo)",
 "LOGIN_PROPERTIES": "Proprietà di login (facoltativo)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Selezionare una funzione per visualizzarne la descrizione.",
 "SUPPORT_MESSAGE" : "Configurazione server non disponibile per server Node.js nè per server in un contenitore Docker cui si accede tramite il Collective Controller.",
 "NO_ROLE_MESSAGE": "L'utente non ha un ruolo che dispone dell'autorizzazione per effettuare modifiche di configurazione. I file sono disponibili in modalità di sola lettura.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "AZIONI RICHIESTE PER I MEMBRI COLLECTIVE:",
 "RUN_UPDATE_HOST" : "Eseguire 'collective updateHost' o 'collective registerHost' con '--hostWritePath' specificando un percorso per cui l'utente rpc ha autorizzazioni di scrittura.  Occorre anche fornire credenzili host valide.",

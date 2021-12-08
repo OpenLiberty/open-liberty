@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Valor",
 "SELECT": "Seleccionar",
 "ADD": "Añadir",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Búsqueda de elemento",
 "ADD_CHILD_ELEMENT_DIALOG": "Diálogo Añadir elemento hijo",
 "REMOVE_ELEMENT_DIALOG": "Diálogo Eliminar elemento",
-"VALIDATE_DATASOURCE_DIALOG": "Diálogo Validar conexión de origen de datos",
-"VALIDATE_DATASOURCE": "Probando conexión de origen de datos",
 "ENUMERATION_SELECTION_DIALOG": "Diálogo Selección de enumeración",
 "SAVE_BEFORE_CLOSING_DIALOG": "Diálogo Guardar antes de cerrar",
 "ERROR_SAVING_FILE_DIALOG": "Diálogo Error al guardar archivo",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias de autenticación (opcional)",
 "AUTH_ALIAS": "Alias de autenticación",
 "CONTAINER_AUTHENTICATION": "Autenticación de contenedor",
-"NO_RESOURCE_REFERENCE": "Ninguna referencia de recurso",
 "APPLICATION_AUTHENTICATION": "Autenticación de aplicación",
 "CUSTOM_LOGIN_MODULE": "Módulo de inicio de sesión personalizado (opcional)",
 "LOGIN_PROPERTIES": "Propiedades de inicio de sesión (opcional)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Seleccione una característica para visualizar la descripción.",
 "SUPPORT_MESSAGE" : "La configuración de servidor no está disponible para los servidores Node.js ni los servidores en un contenedor Docker al que se accede a través del controlador colectivo.",
 "NO_ROLE_MESSAGE": "El usuario no está en un rol que tenga permiso para realizar cambios de configuración. Los archivos están disponibles en modalidad de sólo lectura.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ACCIONES NECESARIAS PARA MIEMBROS DE COLECTIVO:",
 "RUN_UPDATE_HOST" : "Ejecute 'collective updateHost' o 'collective registerHost' con '--hostWritePath' especificando una vía de acceso a la que rpcUser tenga permisos de escritura.  También se deben proporcionar credenciales de host válidas.",

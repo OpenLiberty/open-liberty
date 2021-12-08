@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Valor",
 "SELECT": "Selecionar",
 "ADD": "Incluir",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Procura de elemento",
 "ADD_CHILD_ELEMENT_DIALOG": "Incluir diálogo de elemento-filho",
 "REMOVE_ELEMENT_DIALOG": "Remover diálogo de elemento",
-"VALIDATE_DATASOURCE_DIALOG": "Validar caixa de diálogo de conexão com a origem de dados",
-"VALIDATE_DATASOURCE": "Testando a conexão com a origem de dados",
 "ENUMERATION_SELECTION_DIALOG": "Diálogo de seleção de enumeração",
 "SAVE_BEFORE_CLOSING_DIALOG": "Salvar antes de fechar diálogo",
 "ERROR_SAVING_FILE_DIALOG": "Erro ao salvar diálogo do arquivo",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias de autenticação (opcional)",
 "AUTH_ALIAS": "Alias de Autenticação",
 "CONTAINER_AUTHENTICATION": "Autenticação do contêiner",
-"NO_RESOURCE_REFERENCE": "Nenhuma referência de recurso",
 "APPLICATION_AUTHENTICATION": "Autenticação do aplicativo",
 "CUSTOM_LOGIN_MODULE": "Módulo de login customizado (opcional)",
 "LOGIN_PROPERTIES": "Propriedades de login (opcional)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Selecione um recurso para visualizar sua descrição.",
 "SUPPORT_MESSAGE" : "A Configuração do servidor não está disponível para servidores Node.js nem servidores em um contêiner do Docker acessado por meio do controlador coletivo.",
 "NO_ROLE_MESSAGE": "O usuário não tem uma função com permissão para fazer mudanças na configuração. Os arquivos estão disponíveis em modo de somente leitura.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "AÇÕES NECESSÁRIAS PARA MEMBROS COLETIVOS:",
 "RUN_UPDATE_HOST" : "Execute 'collective updateHost' ou 'collective registerHost' com '--hostWritePath', especificando um caminho para o qual o rpcUser tem permissões de gravação.  As credenciais válidas de host também devem ser fornecidas.",

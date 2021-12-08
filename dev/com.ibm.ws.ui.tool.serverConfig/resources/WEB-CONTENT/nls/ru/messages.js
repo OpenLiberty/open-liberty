@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Значение",
 "SELECT": "Выбрать",
 "ADD": "Добавить",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Поиск элементов",
 "ADD_CHILD_ELEMENT_DIALOG": "Окно Добавить дочерний элемент",
 "REMOVE_ELEMENT_DIALOG": "Окно Удалить элемент",
-"VALIDATE_DATASOURCE_DIALOG": "Окно Проверить соединение с источником данных",
-"VALIDATE_DATASOURCE": "Проверка соединения с источником данных",
 "ENUMERATION_SELECTION_DIALOG": "Окно Выбор перечисления",
 "SAVE_BEFORE_CLOSING_DIALOG": "Окно Сохранить перед закрытием",
 "ERROR_SAVING_FILE_DIALOG": "Окно Ошибка сохранения файла",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Псевдоним идентификации (необязательный)",
 "AUTH_ALIAS": "Псевдоним идентификации",
 "CONTAINER_AUTHENTICATION": "Идентификация контейнера",
-"NO_RESOURCE_REFERENCE": "Нет ссылки на ресурс",
 "APPLICATION_AUTHENTICATION": "Идентификация приложения",
 "CUSTOM_LOGIN_MODULE": "Пользовательский модуль сеанса (необязательный)",
 "LOGIN_PROPERTIES": "Свойства входа (необязательные)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Выберите функцию для просмотра ее описания.",
 "SUPPORT_MESSAGE" : "Конфигурация сервера недоступна ни для серверов Node.js, ни для серверов в контейнере Docker, доступ к которым осуществляется через групповой контроллер.",
 "NO_ROLE_MESSAGE": "Пользователю не присвоена роль, обладающая правами на внесение изменений в конфигурацию. Файлы доступны в режиме только чтения.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ТРЕБУЕМЫЕ ДЕЙСТВИЯ ДЛЯ ЧЛЕНОВ КОЛЛЕКТИВА:",
 "RUN_UPDATE_HOST" : "Выполните 'collective updateHost' или 'collective registerHost' с параметром '--hostWritePath', указав в нем путь к каталогу, к которому у rpcUser есть права доступа на запись.  Правильные идентификационные данные хоста тоже должны быть указаны.",

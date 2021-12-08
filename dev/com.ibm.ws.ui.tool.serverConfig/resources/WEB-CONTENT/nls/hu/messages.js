@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Érték",
 "SELECT": "Kiválasztás",
 "ADD": "Hozzáadás",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Elemkeresés",
 "ADD_CHILD_ELEMENT_DIALOG": "Leszármazott elem hozzáadása párbeszédablak",
 "REMOVE_ELEMENT_DIALOG": "Elem eltávolítása párbeszédablak",
-"VALIDATE_DATASOURCE_DIALOG": "Adatforrás-kapcsolat érvényesítése párbeszédpanel",
-"VALIDATE_DATASOURCE": "Adatforrás-kapcsolat tesztelése",
 "ENUMERATION_SELECTION_DIALOG": "Felsorolás választási párbeszédablak",
 "SAVE_BEFORE_CLOSING_DIALOG": "Mentés bezárás előtt párbeszédablak",
 "ERROR_SAVING_FILE_DIALOG": "Hiba a fájl mentésekor párbeszédablak",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Hitelesítési álnév (Elhagyható)",
 "AUTH_ALIAS": "Hitelesítési álnév",
 "CONTAINER_AUTHENTICATION": "Tároló hitelesítés",
-"NO_RESOURCE_REFERENCE": "Nincs erőforrás-hivatkozás",
 "APPLICATION_AUTHENTICATION": "Alkalmazáshitelesítés",
 "CUSTOM_LOGIN_MODULE": "Egyéni bejelentkezési modul (Elhagyható)",
 "LOGIN_PROPERTIES": "Bejelentkezési tulajdonságok (Elhagyható)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Válasszon ki egy szolgáltatást a leírásának megtekintéséhez.",
 "SUPPORT_MESSAGE" : "Nem érhető el kiszolgálóbeállítás a Node.js kiszolgálókra és a kollektív vezérlőn keresztül elért Docker tároló kiszolgálókra.",
 "NO_ROLE_MESSAGE": "A felhasználó nem olyan szerephez tartozik, amelynek engedélye van konfigurációs módosítások végrehajtására. A fájlok írásvédett módban érhetők el.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "KOLLEKTÍVA TAGOK ESETÉN SZÜKSÉGES MŰVELETEK:",
 "RUN_UPDATE_HOST" : "Futtassa a 'collective updateHost' vagy 'collective registerHost' parancsot a '--hostWritePath' paraméterrel, olyan útvonal megadásával, amelyhez az rpcUser felhasználónak írási engedélye van.  Az érvényes hoszt hitelesítési adatokat szintén meg kell adnia.",

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "Valeur",
 "SELECT": "Sélectionner",
 "ADD": "Ajouter",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "Recherche d'élément",
 "ADD_CHILD_ELEMENT_DIALOG": "Boîte de dialogue Ajout d'un élément enfant",
 "REMOVE_ELEMENT_DIALOG": "Boîte de dialogue Retrait d'un élément",
-"VALIDATE_DATASOURCE_DIALOG": "Boîte de dialogue Validation de la connexion de source de données",
-"VALIDATE_DATASOURCE": "Test de la connexion de source de données",
 "ENUMERATION_SELECTION_DIALOG": "Boîte de dialogue Sélection d'une énumération",
 "SAVE_BEFORE_CLOSING_DIALOG": "Boîte de dialogue Sauvegarde avant fermeture",
 "ERROR_SAVING_FILE_DIALOG": "Boîte de dialogue Erreur de sauvegarde du fichier",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "Alias d'authentification (facultatif)",
 "AUTH_ALIAS": "Alias d'authentification",
 "CONTAINER_AUTHENTICATION": "Authentification des conteneurs",
-"NO_RESOURCE_REFERENCE": "Aucune référence de ressource",
 "APPLICATION_AUTHENTICATION": "Authentification des applications",
 "CUSTOM_LOGIN_MODULE": "Module de connexion personnalisé (facultatif)",
 "LOGIN_PROPERTIES": "Propriétés de connexion (facultatif)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Sélectionnez une fonction pour afficher sa description.",
 "SUPPORT_MESSAGE" : "La configuration du serveur n'est pas disponible pour les serveurs Node.js, ni pour les serveurs se trouvant dans un conteneur Docker accessible via le contrôleur de collectivité.",
 "NO_ROLE_MESSAGE": "Le rôle de l'utilisateur ne l'autorise pas à modifier la configuration. Les fichiers sont disponibles en mode lecture seule.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ACTIONS REQUISES POUR LES MEMBRES D'UNE COLLECTIVITE :",
 "RUN_UPDATE_HOST" : "Exécutez 'collective updateHost' ou 'collective registerHost' avec '--hostWritePath' en spécifiant un chemin pour lequel l'utilisateur rpcUser dispose du droit d'accès en écriture.  Des données d'identification d'hôte valides doivent également être fournies.",

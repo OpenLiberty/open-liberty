@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorMessages = {
+ var editorMessages = {
 "VALUE": "값",
 "SELECT": "선택",
 "ADD": "추가",
@@ -130,8 +130,6 @@ var editorMessages = {
 "ELEMENT_SEARCH": "요소 검색",
 "ADD_CHILD_ELEMENT_DIALOG": "하위 요소 추가 대화 상자",
 "REMOVE_ELEMENT_DIALOG": "하위 요소 제거 대화 상자",
-"VALIDATE_DATASOURCE_DIALOG": "데이터 소스 연결 유효성 검증 대화 상자",
-"VALIDATE_DATASOURCE": "데이터 소스 연결 테스트",
 "ENUMERATION_SELECTION_DIALOG": "열거 선택 대화상자",
 "SAVE_BEFORE_CLOSING_DIALOG": "닫기 전에 저장 대화 상자",
 "ERROR_SAVING_FILE_DIALOG": "파일 저장 중 오류 대화 상자",
@@ -146,7 +144,6 @@ var editorMessages = {
 "AUTH_ALIAS_OPTIONAL": "인증 별명(선택사항)",
 "AUTH_ALIAS": "인증 별명",
 "CONTAINER_AUTHENTICATION": "컨테이너 인증",
-"NO_RESOURCE_REFERENCE": "자원 참조 없음",
 "APPLICATION_AUTHENTICATION": "애플리케이션 인증",
 "CUSTOM_LOGIN_MODULE": "사용자 정의 로그인 모듈(선택사항)",
 "LOGIN_PROPERTIES": "로그인 특성(선택사항)",
@@ -158,7 +155,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "기능을 선택하여 해당 설명을 봅니다.",
 "SUPPORT_MESSAGE" : "서버 구성은 집합체 제어기를 통해 액세스되는 Docker 컨테이너의 서버와 Node.js 서버에 사용할 수 없습니다.",
 "NO_ROLE_MESSAGE": "사용자가 구성을 변경할 수 있는 권한이 있는 역할에 없습니다. 파일은 읽기 전용 모드에서 사용할 수 있습니다.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "집합체 멤버에 필요한 조치:",
 "RUN_UPDATE_HOST" : "rpcUser에 쓰기 권한이 있는 경로를 지정하는 '--hostWritePath'를 사용하여 'collective updateHost' 또는 'collective registerHost'를 실행하십시오. 올바른 호스트 신임 정보도 제공되어야 합니다.",
