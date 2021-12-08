@@ -839,46 +839,50 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
 
     private static Map<Method, List<InterceptorInvoker>> initInterceptorInvokers(BeanManager beanManager,
                                                                                  Class<?> restClient) {
-        CreationalContext<?> creationalContext = beanManager != null ? beanManager.createCreationalContext(null) : null;
+
         Map<Method, List<InterceptorInvoker>> invokers = new HashMap<>();
-        // Interceptor as a key in a map is not entirely correct (custom interceptors) but should work in most cases
-        Map<Interceptor<?>, Object> interceptorInstances = new HashMap<>();
-        
-        AnnotatedType<?> restClientType = beanManager.createAnnotatedType(restClient);
+        if (beanManager != null) {
+            CreationalContext<?> creationalContext = beanManager != null ? beanManager.createCreationalContext(null) : null;
 
-        List<Annotation> classBindings = getBindings(restClientType.getAnnotations(), beanManager);
+            // Interceptor as a key in a map is not entirely correct (custom interceptors) but should work in most cases
+            Map<Interceptor<?>, Object> interceptorInstances = new HashMap<>();
 
-        for (AnnotatedMethod<?> method : restClientType.getMethods()) {
-            Method javaMethod = method.getJavaMember();
-            if (javaMethod.isDefault() || method.isStatic()) {
-                continue;
-            }
-            List<Annotation> methodBindings = getBindings(method.getAnnotations(), beanManager);
+            AnnotatedType<?> restClientType = beanManager.createAnnotatedType(restClient);
 
-            if (!classBindings.isEmpty() || !methodBindings.isEmpty()) {
-                if (FT_ANNO_CLASS != null && containsFTannotation(methodBindings)) {
-                    methodBindings.add(getFTAnnotation());
+            List<Annotation> classBindings = getBindings(restClientType.getAnnotations(), beanManager);
+
+            for (AnnotatedMethod<?> method : restClientType.getMethods()) {
+                Method javaMethod = method.getJavaMember();
+                if (javaMethod.isDefault() || method.isStatic()) {
+                    continue;
                 }
-                Annotation[] interceptorBindings = merge(methodBindings, classBindings);
+                List<Annotation> methodBindings = getBindings(method.getAnnotations(), beanManager);
 
-                List<Interceptor<?>> interceptors =
-                    new ArrayList<>(beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, 
-                                                                    interceptorBindings));
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Resolved interceptors from beanManager, " + beanManager + ":" + interceptors);
-                }
-
-                if (!interceptors.isEmpty()) {
-                    List<InterceptorInvoker> chain = new ArrayList<>();
-                    for (Interceptor<?> interceptor : interceptors) {
-                        chain.add(
-                            new InterceptorInvoker(interceptor, 
-                                                   interceptorInstances.computeIfAbsent(interceptor, 
-                                                       i -> beanManager.getReference(i, 
-                                                                                     i.getBeanClass(), 
-                                                                                     creationalContext))));
+                if (!classBindings.isEmpty() || !methodBindings.isEmpty()) {
+                    if (FT_ANNO_CLASS != null && containsFTannotation(methodBindings)) {
+                        methodBindings.add(getFTAnnotation());
                     }
-                    invokers.put(javaMethod, chain);
+                    Annotation[] interceptorBindings = merge(methodBindings, classBindings);
+
+                    List<Interceptor<?>> interceptors =
+                                    new ArrayList<>(beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, 
+                                                                                    interceptorBindings));
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Resolved interceptors from beanManager, " + beanManager + ":" + interceptors);
+                    }
+
+                    if (!interceptors.isEmpty()) {
+                        List<InterceptorInvoker> chain = new ArrayList<>();
+                        for (Interceptor<?> interceptor : interceptors) {
+                            chain.add(new InterceptorInvoker(
+                                          interceptor, 
+                                          interceptorInstances.computeIfAbsent(interceptor, 
+                                                                               i -> beanManager.getReference(i, 
+                                                                                                             i.getBeanClass(), 
+                                                                                                             creationalContext))));
+                        }
+                        invokers.put(javaMethod, chain);
+                    }
                 }
             }
         }
