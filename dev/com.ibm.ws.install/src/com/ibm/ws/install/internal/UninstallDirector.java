@@ -12,16 +12,24 @@ package com.ibm.ws.install.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallProgressEvent;
@@ -96,21 +104,30 @@ class UninstallDirector extends AbstractDirector {
         if (uninstallAssets.isEmpty())
             return;
 
-        // Run file checking only on Windows
         if (InstallUtils.isWindows) {
             // check any file is locked
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
+            Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                retrieveUninstallFileList(uninstallAsset, checkDependency);
-                engine.preCheck(uninstallAsset);
+                baseDirs.add(engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()));
             }
-            if (toBeDeleted != null) {
-                for (File f : toBeDeleted) {
-                    for (String productId : productIds) {
-                        InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+            System.out.println("BaseDirs: " + Arrays.toString(baseDirs.toArray()));
+            Instant start = Instant.now();
+            for (File baseDir : baseDirs) {
+                try {
+                    List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
+                    System.out.println("Paths from BaseDir size = " + allPathsFromBaseDir.size());
+                    StringJoiner sj = new StringJoiner(",");
+                    for (Path path : allPathsFromBaseDir) {
+                        sj.add(path.toString());
+                        InstallUtils.isFileLocked("ERROR_UNINSTALL_FEATURE_FILE_LOCKED", path.toString(), path.toFile());
                     }
+                    System.out.println("Paths checked for locks: [" + sj.toString() + "]");
+                } catch (IOException e) {
+                    throw ExceptionUtils.create(e);
                 }
             }
+            System.out.println("Lock check took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
         }
 
         // proceed to uninstall
@@ -121,10 +138,7 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.UNINSTALL, progress, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_UNINSTALLING", uninstallAsset.getName()));
             progress += interval;
             try {
-                if (!InstallUtils.isWindows) {
-
-                    retrieveUninstallFileList(uninstallAsset, checkDependency);
-                }
+                retrieveUninstallFileList(uninstallAsset, checkDependency);
                 engine.uninstall(uninstallAsset, checkDependency, filesRestored);
                 log(Level.FINE, uninstallAsset.uninstalledLogMsg());
             } catch (IOException e) {
