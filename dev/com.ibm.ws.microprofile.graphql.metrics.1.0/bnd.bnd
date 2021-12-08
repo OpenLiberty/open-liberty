@@ -19,6 +19,15 @@ Bundle-Description: MicroProfile Metrics Support for MP GraphQL
 Export-Package: \
   com.ibm.ws.microprofile.graphql.metrics.component;thread-context=true
 
+Import-Package: \
+  !com.ibm.ws.microprofile.metrics.cdi23.producer.*,\
+  org.eclipse.microprofile.metrics;version="[2.3,4.1)",\
+  *
+
+DynamicImport-Package: \
+  com.ibm.ws.microprofile.metrics.cdi23.producer.*,\
+  io.openliberty.microprofile.metrics.internal.cdi30.producer.*
+
 Include-Resource: \
   META-INF=resources/META-INF
 

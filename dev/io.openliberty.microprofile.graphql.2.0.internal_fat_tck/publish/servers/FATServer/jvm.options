@@ -6,6 +6,3 @@
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777
 
 -Xmx2048m
-
-# required for TCK:
--Dmp.graphql.tck.endpoint.port=8010

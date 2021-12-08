@@ -1,11 +1,12 @@
 package com.ibm.ws.microprofile.graphql.metrics.component;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.ibm.ws.microprofile.metrics.cdi23.producer.MetricRegistryFactory;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -21,10 +22,34 @@ public class MetricsService implements EventingService {
 
 	private static final String PRE = "mp_graphql_";
     private static final String UNDERSCORE = "_";
-    
-    private final MetricRegistry metricRegistry = MetricRegistryFactory.getVendorRegistry();
+
+    private final MetricRegistry metricRegistry;
 
     private final Map<Context, Long> startTimes = Collections.synchronizedMap(new IdentityHashMap<>());
+
+    @FFDCIgnore(Throwable.class) // note, only ignoring the first catch block - the second & third should still be logged to FFDC
+    public MetricsService() {
+        Class<?> metricRegistryFactoryClass = null;
+        try {
+            metricRegistryFactoryClass = Class.forName("com.ibm.ws.microprofile.metrics.cdi23.producer.MetricRegistryFactory");
+        } catch (Throwable t) {
+            try {
+                metricRegistryFactoryClass = Class.forName("io.openliberty.microprofile.metrics.internal.cdi30.producer.MetricRegistryFactory");
+            } catch (Throwable t2) {
+                // Auto FFDC
+            }
+        }
+        if (metricRegistryFactoryClass == null) {
+            throw new RuntimeException("Unable to find MetricRegistryFactory implementation");
+        }
+        try {
+            Method getVendorRegisterMethod = metricRegistryFactoryClass.getMethod("getVendorRegistry");
+            metricRegistry =  (MetricRegistry) getVendorRegisterMethod.invoke(null);
+        } catch (Throwable t) {
+            // Auto FFDC
+            throw new RuntimeException("Unable to obtain vendor registry from MetricRegistryFactory");
+        }
+    }
 
     @Override
     public Operation createOperation(Operation operation) {
@@ -75,8 +100,4 @@ public class MetricsService implements EventingService {
                 + operation.getName()
                 + "'";
     }
-
-    
-
 }
-

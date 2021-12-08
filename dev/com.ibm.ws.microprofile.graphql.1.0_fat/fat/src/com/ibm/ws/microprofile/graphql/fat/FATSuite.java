@@ -22,6 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 
 
@@ -55,7 +56,8 @@ public class FATSuite {
                                                       .removeFeatures(setOf("mpConfig-1.4", "mpConfig-2.0")).addFeature("mpConfig-3.0")
                                                       .removeFeatures(setOf("mpMetrics-3.0", "mpMetrics-2.3")).addFeature("mpMetrics-4.0")
                                                       .removeFeatures(setOf("mpRestClient-2.0", "mpRestClient-1.4")).addFeature("mpRestClient-3.0")
-                                                      .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0"));
+                                                      .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0")
+                                                      .withID(MicroProfileActions.STANDALONE9_ID));
 
     private static Set<String> setOf(String... strings) {
         // basically does what Java 11's Set.of(...) does
