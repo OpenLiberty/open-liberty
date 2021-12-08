@@ -40,6 +40,18 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR0000-CNTR3999 are reserved for use in container.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
 
 # --------------------------------
 PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban l\u00e9v\u0151 {0} \u00e1llapotnyilv\u00e1ntart\u00f3 munkamenet komponens nem adott meg a(z) {3} \u00e1lland\u00f3 hivatkoz\u00e1st\u00f3l val\u00f3 f\u00fcgg\u0151s\u00e9get.

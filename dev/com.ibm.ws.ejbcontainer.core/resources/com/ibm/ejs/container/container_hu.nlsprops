@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1445,9 +1445,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: A(z) {1} modul {0} nagyv\u
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 meghat\u00e1roz egy id\u0151z\u00edt\u0151t, mely a megadott met\u00f3dust c\u00e9lozza meg, de nem jelzi ki, hogy az adott met\u00f3dus h\u00e1ny param\u00e9tert fogad el.  A komponens oszt\u00e1lyhierarchi\u00e1j\u00e1ban t\u00f6bb met\u00f3dus is viseli ugyanazt a nevet, ezek a met\u00f3dusok alkalmasak az id\u0151z\u00edt\u0151 visszah\u00edv\u00e1sainak a fogad\u00e1s\u00e1ra.  Ennek eredm\u00e9nyek\u00e9nt az EJB t\u00e1rol\u00f3 nem tudja meg\u00e1llap\u00edtani, hogy az id\u0151z\u00edt\u0151nek melyik met\u00f3dust kell megc\u00e9loznia.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=M\u00f3dos\u00edtsa \u00fagy a telep\u00edt\u00e9sle\u00edr\u00f3t, hogy az id\u0151z\u00edt\u0151 kifejezetten jelezze, hogy a met\u00f3dus nullaparam\u00e9teres vagy az egyes param\u00e9teres v\u00e1ltozat\u00e1t c\u00e9lozza-e meg.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban l\u00e9v\u0151 {0} \u00e1llapotnyilv\u00e1ntart\u00f3 munkamenet komponens nem adott meg a(z) {3} \u00e1lland\u00f3 hivatkoz\u00e1st\u00f3l val\u00f3 f\u00fcgg\u0151s\u00e9get.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Ha a WAR elemben \u00e1llapotnyilv\u00e1ntart\u00f3 munkamenet komponens tal\u00e1lhat\u00f3, f\u00fcgg\u0151s\u00e9geket kell megadnia az \u00f6sszes olyan \u00e1lland\u00f3 kontextushivatkoz\u00e1st\u00f3l \u00e9s \u00e1lland\u00f3 egys\u00e9ghivatkoz\u00e1st\u00f3l, amelyet el sz\u00e1nd\u00e9kozik \u00e9rni.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Adja hozz\u00e1 a megfelel\u0151 @PersistenceContext vagy @PersistenceUnit forr\u00e1sk\u00f3d-magyar\u00e1zatot az \u00e1llapotnyilv\u00e1ntart\u00f3 munkamenet komponenshez, vagy adja hozz\u00e1 a megfelel\u0151 persistence-context-ref (\u00e1lland\u00f3 kontextushivatkoz\u00e1s) vagy persistence-unit-ref (\u00e1lland\u00f3 egys\u00e9ghivatkoz\u00e1s) elemet a megfelel\u0151 munkamenethez az XML telep\u00edt\u00e9sle\u00edr\u00f3ban.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: A program er\u0151forr\u00e1s-hivatkoz\u00e1si \u00fctk\u00f6z\u00e9st \u00e9szlelt.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=T\u00f6bb helyen volt meghat\u00e1rozva er\u0151forr\u00e1s-hivatkoz\u00e1s, mely \u00fctk\u00f6z\u0151 inform\u00e1ci\u00f3kat tartalmazott.

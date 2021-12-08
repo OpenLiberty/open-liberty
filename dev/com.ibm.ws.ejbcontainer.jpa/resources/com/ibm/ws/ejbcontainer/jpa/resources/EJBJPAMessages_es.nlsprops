@@ -40,8 +40,20 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR0000-CNTR3999 are reserved for use in container.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
 
 # --------------------------------
 PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: El bean de sesi\u00f3n con estado {0} del m\u00f3dulo {1} en la aplicaci\u00f3n {2} no ha declarado una dependencia en la referencia de persistencia {3}.
 PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Cuando un bean de sesi\u00f3n con estado se encuentra en un WAR, debe declarar dependencias en todas las referencias de contexto de persistencia y en las referencias de unidades de persistencia a las que tiene previsto acceder.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=A\u00f1ada la anotaci\u00f3n de c\u00f3digo fuente @PersistenceContext o @PersistenceUnit correspondiente al bean de sesi\u00f3n con estado, o a\u00f1ada el elemento <persistence-context-ref> o <persistence-unit-ref> correspondiente al elemento <session> correspondiente en el archivo ejb-jar.xml. 
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=A\u00f1ada la anotaci\u00f3n de c\u00f3digo fuente @PersistenceContext o @PersistenceUnit correspondiente al bean de sesi\u00f3n con estado, o a\u00f1ada el elemento <persistence-context-ref> o <persistence-unit-ref> correspondiente al elemento <session> correspondiente en el archivo ejb-jar.xml.

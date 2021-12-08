@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1441,9 +1441,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: Pro objekt enterprise bean
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=Deskriptor implementace definuje \u010dasova\u010d, jeho\u017e c\u00edlem je uveden\u00e1 metoda, ale neur\u010duje, kolik parametr\u016f tato metoda p\u0159ij\u00edm\u00e1. V hierarchii t\u0159\u00edd objektu typu bean se vyskytuje v\u00edce metod se stejn\u00fdm n\u00e1zvem, kter\u00e9 mohou p\u0159ijmout zp\u011btn\u00e9 vol\u00e1n\u00ed \u010dasova\u010de. Kontejner EJB proto nem\u016f\u017ee ur\u010dit, kterou metodu m\u00e1 \u010dasova\u010d pou\u017e\u00edt jako c\u00edlovou.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Zm\u011b\u0148te deskriptor implementace tak, aby \u010dasova\u010d v\u00fdslovn\u011b ur\u010doval, zda je jeho c\u00edlem verze metody bez parametr\u016f nebo s jedn\u00edm parametrem.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Objekt typu stateful session bean {0} v modulu {1} v aplikaci {2} nedeklaroval z\u00e1vislost na odkaz perzistence {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Je-li objekt typu stateful session bean um\u00edst\u011bn ve webov\u00e9m archivu (WAR), mus\u00ed deklarovat v\u0161echny odkazy na kontext perzistence a odkazy na jednotku perzistence, ke kter\u00fdm hodl\u00e1 p\u0159istupovat.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=P\u0159idejte k objektu typu stateful session bean p\u0159\u00edslu\u0161n\u00e9 anotace zdrojov\u00e9ho k\u00f3du @PersistenceContext \u010di @PersistenceUnit nebo p\u0159idejte k p\u0159\u00edslu\u0161n\u00e9mu prvku relace v deskriptoru implementace XML p\u0159\u00edslu\u0161n\u00fd prvek persistence-context-ref \u010di persistence-unit-ref.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Byl zji\u0161t\u011bn konflikt odkaz\u016f na prost\u0159edky. {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Odkaz na prost\u0159edek byl definov\u00e1n na v\u00edce m\u00edstech s konfliktn\u00edmi informacemi.
