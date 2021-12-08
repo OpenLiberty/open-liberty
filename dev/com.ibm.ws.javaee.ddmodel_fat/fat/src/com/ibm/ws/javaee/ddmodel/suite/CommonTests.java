@@ -313,7 +313,56 @@ public abstract class CommonTests {
             this.expectedErrors = expectedErrors;
         }
     }
+    
+//    Expected output:
+//
+//    First update (introduce error):
+//        CWWKG0016I, CWWKG0017I, CWWKZ0009I, ERROR, CWWKZ0003I,
+//    Second update (restore to good):
+//        CWWKG0016I, CWWKG0017I, CWWKZ0009I, CWWKZ0003I
+//
+//    Usual first update:
+//
+//    [AUDIT   ] CWWKG0016I: Starting server configuration update.
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestPorts.xml
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestCommon.xml
+//    [AUDIT   ] CWWKT0017I: Web application removed (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/nobindings/
+//    [AUDIT   ] CWWKT0017I: Web application removed (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/autoctx/
+//    [AUDIT   ] CWWKZ0009I: The application Test has stopped successfully.
+//    [AUDIT   ] CWWKG0017I: The server configuration was successfully updated in 0.286 seconds.
+//    [ERROR   ] CWWKC2276E: The 'moduleName' attribute is missing from one or more 'web-bnd' bindings and extension configuration elements of the Test.ear application.
+//    [AUDIT   ] CWWKT0016I: Web application available (fromApp): http://localhost:8030/autoctx/
+//    [AUDIT   ] CWWKT0016I: Web application available (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/nobindings/
+//    [AUDIT   ] CWWKZ0003I: The application Test updated in 0.369 seconds.
+//
+//    Usual second update:
+//
+//    [AUDIT   ] CWWKG0016I: Starting server configuration update.
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestPorts.xml
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestCommon.xml
+//    [AUDIT   ] CWWKT0017I: Web application removed (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/nobindings/
+//    [AUDIT   ] CWWKT0017I: Web application removed (fromApp): http://localhost:8030/autoctx/
+//    [AUDIT   ] CWWKZ0009I: The application Test has stopped successfully.
+//    [AUDIT   ] CWWKG0017I: The server configuration was successfully updated in 0.074 seconds.
+//    [AUDIT   ] CWWKT0016I: Web application available (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/autoctx/
+//    [AUDIT   ] CWWKT0016I: Web application available (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/nobindings/
+//    [AUDIT   ] CWWKZ0003I: The application Test updated in 0.467 seconds.
+//
+//    Failed second update:
+//    [AUDIT   ] CWWKG0016I: Starting server configuration update.
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestPorts.xml
+//    [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/jazz_build/Build/jbe/build/dev/image/output/wlp/usr/servers/fatTestCommon.xml
+//    [AUDIT   ] CWWKT0017I: Web application removed (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/nobindings/
+//    [AUDIT   ] CWWKT0017I: Web application removed (default_host): http://ebcprh01433494-n.fyre.ibm.com:8010/autoctx/
+//    [AUDIT   ] CWWKZ0009I: The application Test has stopped successfully.
+//    [AUDIT   ] CWWKG0017I: The server configuration was successfully updated in 0.126 seconds.
+//    [AUDIT   ] CWWKE0055I: Server shutdown requested on Wednesday, December 8, 2021 at 2:51 AM. The server ddmodel_fat is shutting down.
+//    [AUDIT   ] CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
+//    [ERROR   ] CWWKZ0004E: An exception occurred while starting the application Test. The exception message was: java.lang.NullPointerException
+//    [AUDIT   ] CWWKI0002I: The CORBA name server is no longer available at corbaloc:iiop:localhost:2809/NameService.
+//    [AUDIT   ] CWWKE0036I: The server ddmodel_fat stopped after 30.636 seconds.
 
+    
     protected static void errorTest(Class<?> testClass, ErrorTest errorTest) throws Exception {
         String methodName = "errorTest";
         String description = "[ " + errorTest.description + " ]";
@@ -335,13 +384,23 @@ public abstract class CommonTests {
 
         String errorMessage;
 
+        // Issue 19577: Wait for the CWWKZ0003I message.  Otherwise,
+        // after running the last test, the application restart which is
+        // triggered by restoring the server configuration can overlap with the
+        // server shutdown which is performed after all tests have completed.
+        
         server.saveServerConfiguration(); // throws Exception
         server.setMarkToEndOfLog(); // throws Exception
         try {
+            // CWWKG0016I, CWWKG0017I, CWWKZ0009I, ERROR, CWWKZ0003I,            
             server.setServerConfigurationFromFilePath(newConfigPath); // throws Exception
             errorMessage = server.waitForStringInLogUsingMark(errorTest.expectedErrors);
+            server.waitForStringInLogUsingMark("CWWKZ0003I");
         } finally {
+            // CWWKG0016I, CWWKG0017I, CWWKZ0009I, CWWKZ0003I            
+            server.setMarkToEndOfLog(); // throws Exception
             server.restoreServerConfiguration(); // throws Exception
+            server.waitForStringInLogUsingMark("CWWKZ0003I");            
         }
 
         if ( errorMessage == null ) {
