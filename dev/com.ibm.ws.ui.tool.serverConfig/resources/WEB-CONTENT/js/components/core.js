@@ -43,12 +43,6 @@ var core = (function() {
     // List of server features
     var featureList = null;
 
-    // The base uri for the validator feature
-    var validatorUri = "/ibm/api/validator";
-
-    // List of server configuration validators
-    var validatorList = null;
-
     // See if the collective member is running.
     // This variable is only used in a collective environment, not standalone server
     var collectiveServerIsRunning = null;
@@ -222,19 +216,7 @@ var core = (function() {
             if(filePath !== null && filePath !== undefined) {
                 // Attempt to retrieve file
                 fileUtils.retrieveFile(filePath).done(function(file) {
-                    // Check to see if Beta validator feature is enabled so we can expose the validator test button in server config
-                    var getListOfValidatorsPromise = getListOfValidators();
-                    $.when(getListOfValidatorsPromise).done(function(list) {
-                        validatorList = list;
-                        openFileForEditing(file);
-                    }).fail(function() {
-                        // TODO: Determine how to alert end user that validators could not be determiend
-                        var errorMessage = "Problem getting list of supported server configuration validators"; // TODO: PII
-                        console.error(errorMessage);
-                        validatorList = null;
-                         // We still want server configuration to work without the validator test buttons
-                        openFileForEditing(file);
-                    });
+                openFileForEditing(file);
                 }).fail(function() {
                     
                     // Show error message
@@ -405,7 +387,7 @@ var core = (function() {
         // Show editor buttons on navigation bar
         showControlById("navbarEditorSection", false);
         
-        editor.openFileForEditing(file, serverSchemaInTextFormat, featureList, validatorList);
+        editor.openFileForEditing(file, serverSchemaInTextFormat, featureList);
         
         showControlById("editor", false);
         
@@ -558,10 +540,12 @@ var core = (function() {
             var retrieveServerVariableValuesPromise = fileUtils.retrieveServerVariableValues();
             var retrieveSchemaFilePromise = fileUtils.retrieveSchemaFile();
             var retrieveFeatureListPromise = fileUtils.retrieveFeatureList();
-            $.when(retrieveServerWritePathsPromise, retrieveServerVariableValuesPromise, retrieveSchemaFilePromise, retrieveFeatureListPromise).done(function(serverWritePaths, serverVariableValues, schemaFile, serverFeatureList) {
+            var retrieveValidatorSchemaPromise = validationUtils.retrieveSchema();
+            $.when(retrieveServerWritePathsPromise, retrieveServerVariableValuesPromise, retrieveSchemaFilePromise, retrieveFeatureListPromise, retrieveValidatorSchemaPromise).done(function(serverWritePaths, serverVariableValues, schemaFile, serverFeatureList, validatorMetaDataObject) {
                 serverDataInitialized = true;
                 serverSchemaInTextFormat = schemaFile;
                 featureList = serverFeatureList;
+
                 deferred.resolve();
             }).fail(function(jqXHR) {
                 errorOnLastLoad = true;
@@ -704,83 +688,6 @@ var core = (function() {
     var isInIFrame = function() {
         return window.frameElement !== null && window.frameElement !== undefined;
     };
-
-
-    // Ask the server what configuration validators are available
-    // return null if unable to find the validators
-    var getListOfValidators = function() {
-        var deferred = new $.Deferred();
-        
-        var isServerRunningPromise = isServerRunning(serverId);
-        $.when(isServerRunningPromise).done(function(isRunning){
-            if(! isRunning) {
-                deferred.resolve(null);
-            }
-            var uri = "/ibm/api/docs?root=" + validatorUri;
-            $.ajax({
-                url: uri,
-                type: 'GET',
-                dataType: 'json',
-                beforeSend: collectiveRoutingRequired() ? applyRestRoutingHeaders: null,
-                success: function(data) {
-                    var elementWithValidators = parseOutValidators(data);
-                    deferred.resolve(elementWithValidators);
-                },
-                error: function() {
-                    deferred.resolve(null);
-                }
-            });
-        });
-        return deferred;
-    };
-
-
-    // Parse out the elements that are supposed by the validator APIs
-    // We want only the validators that can be performed against single configuration elements
-    // There may be validators that automatically validate all the elements in the server's 
-    // configuration which we do not want
-    // return null if unable to find the validators
-    var parseOutValidators = function(data) {
-        if(!data || !data.paths) {
-            // input check to make sure paths exist in the apiDiscovery payload for validator docs
-            return null;
-        }
-        var listOfValidators = [];
-        var listOfValidatorApis = Object.keys(data.paths);
-        for(var i = 0; i < listOfValidatorApis.length; i++) {
-            // We want to parse the string right after the base validator URI
-            // to build a list of types that can be validated by the validator feature
-            var uri = listOfValidatorApis[i];
-            if(uri.indexOf(validatorUri) === -1) {
-                continue; // skip this loop iteration if unsupported api
-            }
-            var temp = uri.substring(validatorUri.length);
-            var uriParts = temp.split("/"); // index 0 should be blank
-            var resourceType = uriParts[1];
-            var individualResource = uriParts[2];
-            if($.inArray(resourceType, listOfValidators) === -1 && individualResource) {
-                // Only add if the resource has a validator and the validator can be used against individual
-                // resources (vs. the entire server configuration);
-                // TODO: This is not always true.  Do not have to have a singleton to indicate singleton support.
-                if(individualResource.search("{.*}") === 0) {
-                    // Typically REST APIs are formulated as 
-                    // /<resourceType>/<individual resource identification>/...
-                    // Make sure we see a parameterized uri part after the resource type in the REST API
-                    // so that we know the validator can be performed on a single resource in the configuration.
-                    listOfValidators.push(resourceType);
-                }
-            }
-        }
-        return listOfValidators;
-    };
-
-
-    // Parse the api docs json for HTTP methods and their parameters
-    var getListOfHttpMethodsAndParameters = function(apiDocs) {
-        var listOfHttpMethods = [];
-        // TODO: Implement
-        return listOfHttpMethods;
-    };
     
     
     var encodeServerId = function(serverId) {
@@ -792,63 +699,6 @@ var core = (function() {
         var serverName = serverId.substring(lastCommaIndex + 1, serverId.length);
         
         return hostName + "," + encodeURIComponent(userDir) + "," + serverName;
-    };
-
-
-    var isServerRunning = function(hostAndServerId) {
-        if(environment === constants.ENVIRONMENT_LOCAL) {
-            return isStandaloneServerRunning();
-        } else if (environment === constants.ENVIRONMENT_COLLECTIVE) {
-            return isCollectiveServerRunning(hostAndServerId);
-        } else {
-            // Unknown environment, return false since we do not know 
-            // the status of the server
-            var deferred = new $.Deferred();
-            deferred.resolve(false);
-            return deferred;
-        }
-    };
-
-
-    var isStandaloneServerRunning = function() {
-        var deferred = new $.Deferred();
-        var serverInfoUri = "/IBMJMXConnectorREST/mbeans/WebSphere%3Afeature%3Dkernel%2Cname%3DServerInfo/attributes";
-        $.ajax({
-            url: serverInfoUri,
-            type: "get",
-            dataType: "json",
-            success: function() {
-                deferred.resolve(true);
-            },
-            error: function() {
-                deferred.resolve(false);
-            }
-        });
-        return deferred;
-
-    };
-
-
-    // When looking at a server configuration in a collective environment, 
-    // return true if that server is running, false otherwise
-    var isCollectiveServerRunning = function(hostAndServerId) {
-        var deferred = new $.Deferred();
-        var serverUri = "/ibm/api/collective/v1/servers/" + hostAndServerId;
-        $.getJSON(serverUri, function(data) {
-            var isServerStarted = false;
-            collectiveServerData = data;
-            var serverStatus = collectiveServerData.state;
-            if(serverStatus === constants.STARTED) {
-                isServerStarted = true;
-            }
-            deferred.resolve(isServerStarted);
-        })
-        .fail(function() {
-            // If the controller cannot tell us if the server is running,
-            // then we should just assume the server status is unknown.
-            deferred.resolve(false);
-        });
-        return deferred;
     };
 
 
@@ -868,10 +718,8 @@ var core = (function() {
                 if(embedded === constants.EMBEDDED_EXPLORE_TOOL) {
                     var filePath = getDataFromURLHash().filePath;
                     if(environment === constants.ENVIRONMENT_COLLECTIVE) {
-//                        window.top.history.pushState(null, null, "#" + constants.EXPLORE_TOOL_HASH + "/" + constants.EXPLORE_TOOL_SERVERS_SEGMENT + "/" + serverId + "/" + constants.EXPLORE_TOOL_CONFIGURE_SEGMENT + (filePath !== null && filePath !== undefined? "/" + filePath : ""));
                         window.top.location.hash = "#" + constants.EXPLORE_TOOL_HASH + "/" + constants.EXPLORE_TOOL_SERVERS_SEGMENT + "/" + serverId + "/" + constants.EXPLORE_TOOL_CONFIGURE_SEGMENT + (filePath !== null && filePath !== undefined? "/" + filePath : "");
                     } else {
-//                        window.top.history.pushState(null, null, "#" + constants.EXPLORE_TOOL_HASH  + "/" + constants.EXPLORE_TOOL_CONFIGURE_SEGMENT + (filePath !== null && filePath !== undefined? "/" + filePath : ""));
                         window.top.location.hash = "#" + constants.EXPLORE_TOOL_HASH  + "/" + constants.EXPLORE_TOOL_CONFIGURE_SEGMENT + (filePath !== null && filePath !== undefined? "/" + filePath : "");
                     }
                 } 
@@ -897,7 +745,7 @@ var core = (function() {
         setNavbarTitleText: setNavbarTitleText,
         centerDialog: centerDialog,
         setServer: setServer,
-        clearServer: clearServer,        
+        clearServer: clearServer,
         setFile: setFile,
         clearFile: clearFile,
         setUIBlocked: setUIBlocked,
@@ -915,3 +763,4 @@ var core = (function() {
     };
     
 })();
+ 
