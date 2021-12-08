@@ -64,13 +64,13 @@ public class HandlerChainTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
+            server.deleteAllDropinApplications();
+//            server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
             server.stopServer();
         }
     }
 
     @Test
-    @Mode(TestMode.FULL)
     public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
         //server.installUserBundle("MyHandler_1.0.0.201311011651");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle", "com.ibm.ws.userbundle.myhandler");
@@ -120,6 +120,7 @@ public class HandlerChainTest {
         }
         // Uninstall Applications
         server.deleteAllDropinApplications(); // This method might be more efficient removing apps from dropins
+        //server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {

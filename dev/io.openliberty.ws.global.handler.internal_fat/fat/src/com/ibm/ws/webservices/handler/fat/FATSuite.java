@@ -28,18 +28,18 @@ import componenttest.rules.repeater.RepeatTests;
  * in a combined total of 5 minutes or less.
  */
 @SuiteClasses({
-               TransportSecurityUsingDispatchClientCertTest.class,
-               EJBHandlerTest.class,
-               EJBServiceRefBndTest.class,
-               AddNumbersTest.class,
-               HandlerChainTest.class,
-               JAXRSDynamicHandlerTest.class,
-               HandlerRuleTest.class,
-               JAXRSMessageContextAPITest.class,
-               CDIRolesAllowedTest.class,
-               //NoInterfaceEJBTest.class, // some unexpected migration (from CL to OL) failures
-               //OneInterfaceEJBTest.class,// ditto
-               JAXRSClientHandlerTest.class
+//               TransportSecurityUsingDispatchClientCertTest.class,
+//               EJBHandlerTest.class,
+//               EJBServiceRefBndTest.class,
+//               AddNumbersTest.class,
+               HandlerChainTest.class
+//               JAXRSDynamicHandlerTest.class,
+//               HandlerRuleTest.class,
+//               JAXRSMessageContextAPITest.class,
+//               CDIRolesAllowedTest.class,
+//               //NoInterfaceEJBTest.class, // some unexpected migration (from CL to OL) failures
+//               //OneInterfaceEJBTest.class,// ditto
+//               JAXRSClientHandlerTest.class
 })
 public class FATSuite {
     @ClassRule
