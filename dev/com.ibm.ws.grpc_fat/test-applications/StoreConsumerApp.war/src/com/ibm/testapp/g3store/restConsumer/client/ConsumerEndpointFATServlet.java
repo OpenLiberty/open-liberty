@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -122,6 +123,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testGetAppInfo_Bad_BasicAuth(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppInfo_BadBasicAuth(req, resp);
     }
