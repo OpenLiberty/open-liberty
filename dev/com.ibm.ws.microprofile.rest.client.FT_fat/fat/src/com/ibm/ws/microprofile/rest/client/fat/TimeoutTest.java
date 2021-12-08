@@ -18,6 +18,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -57,7 +58,7 @@ public class TimeoutTest extends FATServletClient {
         StringAsset mpConfig = new StringAsset(TimeoutClient.class.getName() + "/mp-rest/uri=http://localhost:"
                         + System.getProperty("bvt.prop.HTTP_default", "8010") + "/timeoutApp");
         war.addAsWebInfResource(mpConfig, "classes/META-INF/microprofile-config.properties");
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();
     }
 
