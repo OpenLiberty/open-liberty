@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
@@ -46,6 +48,7 @@ import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -116,8 +119,20 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Resource(lookup = "java:comp/TransactionSynchronizationRegistry")
     private TransactionSynchronizationRegistry tranSyncRegistry;
 
+    private ExecutorService unmanagedThreads;
+
     @Inject
     private ManagedExecutorService injectedExec; // produced by ResourcesProducer.exec field
+
+    @Override
+    public void destroy() {
+        unmanagedThreads.shutdownNow();
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        unmanagedThreads = Executors.newFixedThreadPool(5);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -592,6 +607,66 @@ public class ConcurrentCDIServlet extends HttpServlet {
             future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
         } finally {
             future.cancel(true);
+        }
+    }
+
+    /**
+     * Verify that an asynchronous method can run inline upon CompletableFuture.join
+     * when maxAsync prevents running on a thread from the Liberty global thread pool.
+     */
+    // TODO this isn't implemented yet @Test
+    public void testInlineAsyncMethod() throws Exception {
+        CountDownLatch started = new CountDownLatch(2);
+        CountDownLatch blocker = new CountDownLatch(1);
+
+        Callable<Boolean> wait = () -> {
+            started.countDown();
+            return blocker.await(TIMEOUT_MS * 2, TimeUnit.MILLISECONDS);
+        };
+
+        // Use up maxAsync of 2
+        try {
+            injectedExec.submit(wait);
+            injectedExec.submit(wait);
+            assertTrue(started.await(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+
+            // Queue up 2 asynchronous methods that won't be able to run yet
+            CompletableFuture<Entry<Integer, Object>> futureA = //
+                            dependentScopedBean.lookUpAndGetTransactionStatus("java:app/env/concurrent/sampleExecutorRef");
+            CompletableFuture<Entry<Integer, Object>> futureB = //
+                            dependentScopedBean.lookUpAndGetTransactionStatus("java:app/env/concurrent/sampleExecutorRef");
+
+            // Run one of them inline,
+            Entry<Integer, Object> resultsA = futureA.join();
+
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), resultsA.getKey());
+            assertTrue("looked up " + resultsA.getValue(), resultsA.getValue() instanceof ManagedExecutorService);
+
+            tran.begin();
+
+            // Should be able to queue up another
+            CompletableFuture<Entry<Integer, Object>> futureC = //
+                            dependentScopedBean.lookUpAndGetTransactionStatus("java:app/env/concurrent/sampleExecutorRef");
+
+            // Run inline on an unmanaged thread,
+            Future<Entry<Integer, Object>> unmanagedThreadFuture = unmanagedThreads.submit(() -> futureB.join());
+            Entry<Integer, Object> resultsB = unmanagedThreadFuture.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), resultsB.getKey());
+            assertTrue("looked up " + resultsB.getValue(), resultsB.getValue() instanceof ManagedExecutorService);
+
+            // Run inline again,
+            Entry<Integer, Object> resultsC = futureC.join();
+
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), resultsC.getKey());
+            assertTrue("looked up " + resultsC.getValue(), resultsC.getValue() instanceof ManagedExecutorService);
+
+            // Transaction that was active on this thread should be restored,
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            blocker.countDown();
+            if (tran.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tran.rollback();
         }
     }
 

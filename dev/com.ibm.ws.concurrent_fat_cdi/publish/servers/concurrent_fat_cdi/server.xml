@@ -29,4 +29,7 @@
         <concurrencyPolicy max="1" maxQueueSize="1" maxWaitForEnqueue="1m" startTimeout="3s"/>
     </managedScheduledExecutorService>
 
+    <!-- needed to shut down pool of unmanaged threads that is used by the application -->
+    <javaPermission codebase="${server.config.dir}/dropins/concurrentCDIApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+
 </server>
