@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jakarta.authorization-3.0
+symbolicName=io.openliberty.jakarta.authorization-2.1
 singleton=true
 -features=\
   com.ibm.websphere.appserver.eeCompatible-10.0

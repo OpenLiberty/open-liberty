@@ -10,7 +10,7 @@ Subsystem-Name: Jakarta EE 10.0 Application Client
   io.openliberty.mail-2.1, \
   io.openliberty.messagingClient-3.0, \
   io.openliberty.jakarta.jndiClient-2.0, \
-  io.openliberty.jsonb-2.1, \
+  io.openliberty.jsonb-3.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.1, \
   io.openliberty.xmlBinding-4.0, \
