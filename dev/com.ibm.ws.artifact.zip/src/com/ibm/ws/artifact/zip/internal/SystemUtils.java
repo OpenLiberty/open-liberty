@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 /**
@@ -20,44 +17,23 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
  */
 public class SystemUtils {
     /**
-     * Run {@link System#getProperty(String)} as a privileged action.
+     * Run {@link System#getProperty(String)}.
      *
      * @param propertyName The name of the property which is to be retrieved.
 
      * @return The string property value.  Null if the property is not set.
      */
     public static String getProperty(final String propertyName) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged( new PrivilegedAction<String>() {
-                @Override
-                public String run() {
-                    return System.getProperty(propertyName);
-                }
-
-            } );
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return System.getProperty(propertyName);
     }
 
     /**
-     * Run {@link System#getNanoTime} as a privileged action.
+     * Get the system time in nano-seconds.
      *
      * @return The system time in nano-seconds.
      */
     public static long getNanoTime() {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged( new PrivilegedAction<Long>() {
-                @Override
-                public Long run() {
-                    return System.nanoTime();
-                }
-            } ).longValue();
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return System.nanoTime();
     }
 
     /**
@@ -68,17 +44,6 @@ public class SystemUtils {
      * @param shutdownHook The thread to add as a shutdown hook.
      */
     public static void addShutdownHook(final Thread shutdownHook) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            AccessController.doPrivileged( new PrivilegedAction<Void>() {
-                @Override
-                public Void run() {
-                    Runtime.getRuntime().addShutdownHook(shutdownHook);
-                    return null; // Nothing to return
-                }
-            } );
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 }
