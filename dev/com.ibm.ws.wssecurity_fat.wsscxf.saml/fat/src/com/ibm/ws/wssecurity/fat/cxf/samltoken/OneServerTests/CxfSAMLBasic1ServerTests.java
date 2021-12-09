@@ -203,12 +203,12 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         //issue 18363
         if ("EE7".equals(getFeatureVersion())) {
             List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "A Bearer Assertion was not signed");
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
         } else if ("EE8".equals(getFeatureVersion())) {
         	String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
             List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "verifySubjectConfirmationMethod A Bearer Assertion was not signed");
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_TRACE_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the assertion did NOT require a signature.", "A Bearer Assertion was not signed");
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
         } // End of 18363
         
