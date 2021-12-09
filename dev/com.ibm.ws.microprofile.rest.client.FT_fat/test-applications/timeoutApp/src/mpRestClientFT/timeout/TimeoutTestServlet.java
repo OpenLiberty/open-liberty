@@ -52,7 +52,9 @@ public class TimeoutTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(JakartaEE9Action.ID) // not timing out as expected.. TODO: investigate and resolve
+    @SkipForRepeat(JakartaEE9Action.ID) // this is proper behavior - @Timeout not expected to stop blocking I/O operations
+                                        // note that this works with previous MP Rest Client versions because we set the http
+                                        // connect and read timeouts based on the value of the @Timeout annotation.
     public void testTimeoutOnSyncMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         testTimeout(() -> {return client.sync(WAIT_TIME);}, WAIT_TIME);
     }

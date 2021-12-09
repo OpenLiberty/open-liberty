@@ -59,12 +59,21 @@ public class RetryTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(JakartaEE9Action.ID) // CDI not resolving app-supplied interceptor here TODO: investigate and resolve
     public void testCustomLoggingInterceptorInvoked(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         LoggableInterceptor.invocations.clear();
         client.alwaysSucceed();
         assertEquals(1, LoggableInterceptor.invocations.size());
         Integer invocationCount = LoggableInterceptor.invocations.get(RetryClient.class.getName()+"."+"alwaysSucceed");
+        assertNotNull(invocationCount);
+        assertEquals(1, (int) invocationCount);
+    }
+
+    @Test
+    public void testCustomLoggingInterceptorInvoked_separateMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        LoggableInterceptor.invocations.clear();
+        driver.alwaysSucceed();
+        //assertEquals(2, LoggableInterceptor.invocations.size()); // should have 2 entries - 1 for driver bean, and 1 for rest client bean
+        Integer invocationCount = LoggableInterceptor.invocations.get(Driver.class.getName()+"."+"alwaysSucceed");
         assertNotNull(invocationCount);
         assertEquals(1, (int) invocationCount);
     }
