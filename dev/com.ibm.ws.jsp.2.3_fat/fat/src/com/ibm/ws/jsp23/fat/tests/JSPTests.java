@@ -869,7 +869,7 @@ public class JSPTests {
         LOG.info("Servlet response : " + response1.getText());
         assertTrue("The response did not contain: " + expect1, response1.getText().contains(expect1));
 
-        Thread.sleep(5000L); // delay a bit to be ensure noticeable time diff on updated EDR file
+        Thread.sleep(5000L); // delay a bit to ensure a noticeable time diff on updated EDR file
         server.copyFileToLibertyServerRoot(relEdrPath, updEdrFile);
         server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile);
         server.renameLibertyServerRootFile(relEdrPath + updEdrFile, relEdrPath + orgEdrFile);
