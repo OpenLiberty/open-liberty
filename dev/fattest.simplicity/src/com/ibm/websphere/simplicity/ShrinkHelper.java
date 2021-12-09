@@ -216,7 +216,8 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
-        return exportArtifact(a, dest, printArchiveContents, false);
+        // overwrite by default when transforming to EE9 to EE10
+        return exportArtifact(a, dest, printArchiveContents, JakartaEE9Action.isActive() || JakartaEE10Action.isActive());
     }
 
     /**

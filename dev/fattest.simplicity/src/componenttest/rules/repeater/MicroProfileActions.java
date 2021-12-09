@@ -269,8 +269,8 @@ public class MicroProfileActions {
                                                                  "mpReactiveMessaging-1.0",
                                                                  "mpReactiveStreams-1.0" };
 
-    private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3" };
-//                                                                 "mpGraphQL-2.0",
+    private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
+                                                                 "mpGraphQL-2.0" };//,
 //                                                                 "mpLRA-2.0",
 //                                                                 "mpLRACoordinator-2.0",
 //                                                                 "mpReactiveMessaging-3.0",

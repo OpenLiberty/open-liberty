@@ -29,8 +29,8 @@ com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
 com.google.protobuf:protobuf-java-util:3.13.0
 com.google.protobuf:protobuf-java:3.13.0
-com.graphql-java:graphql-java:14.0
-com.graphql-java:java-dataloader:2.2.1
+com.graphql-java:graphql-java:16.2
+com.graphql-java:java-dataloader:2.2.3
 com.ibm.async:asyncutil:0.1.0
 com.ibm.db2:jcc:11.1.4.4
 com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
@@ -125,9 +125,14 @@ io.smallrye.common:smallrye-common-function:1.6.0
 io.smallrye.config:smallrye-config-common:2.5.1
 io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config:2.5.1
-io.smallrye:smallrye-graphql-client-api:1.0.9
-io.smallrye:smallrye-graphql-client:1.0.9
-io.smallrye:smallrye-graphql-schema-model:1.0.9
+io.smallrye:smallrye-graphql-api:1.0.26
+io.smallrye:smallrye-graphql-cdi:1.0.26
+io.smallrye:smallrye-graphql-client-api:1.0.26
+io.smallrye:smallrye-graphql-client:1.0.26
+io.smallrye:smallrye-graphql-schema-builder:1.0.26
+io.smallrye:smallrye-graphql-schema-model:1.0.26
+io.smallrye:smallrye-graphql-servlet:1.0.26
+io.smallrye:smallrye-graphql:1.0.26
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
 jakarta.authentication:jakarta.authentication-api:2.0.0
@@ -199,7 +204,7 @@ net.sourceforge.htmlunit:neko-htmlunit:2.28
 net.sourceforge.htmlunit:neko-htmlunit:2.44.0
 net.sourceforge.htmlunit:webdriver:2.6
 net.sourceforge.serp:serp:1.15.1
-org.antlr:antlr4-runtime:4.7.1
+org.antlr:antlr4-runtime:4.8
 org.apache.ant:ant-junit:1.10.10
 org.apache.ant:ant:1.10.10
 org.apache.commons:commons-collections4:4.4
@@ -379,6 +384,7 @@ org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:2.1
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:3.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:4.0
 org.eclipse.microprofile.graphql:microprofile-graphql-api:1.0.2
+org.eclipse.microprofile.graphql:microprofile-graphql-api:2.0-RC1
 org.eclipse.microprofile.health:microprofile-health-api:1.0
 org.eclipse.microprofile.health:microprofile-health-api:2.0.1
 org.eclipse.microprofile.health:microprofile-health-api:2.1
