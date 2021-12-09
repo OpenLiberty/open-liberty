@@ -574,7 +574,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
             int numUrs = userRegistries.size();
             for (String id : userRegistries.keySet()) {
                 if (numUrs > 1 && id.equals("NullUserRegistry"))
-                    continue;
+                continue;
                 urs.add(userRegistries.getServiceWithException(id));
             }
             federationRegistry.addFederationRegistries(urs);

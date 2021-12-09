@@ -248,4 +248,4 @@ public class NullUserRegistry implements UserRegistry {
     private void throwsRegistryException() throws RegistryException {
         throw new RegistryException("NullUserRegistry will not authenticate any user. Authentication is always rejected.");
     }
-}
+} 

@@ -81,3 +81,6 @@ instrument.classesExcludes: com/ibm/ws/security/wim/util/resources/*.class
 	com.ibm.ws.kernel.boot.logging;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest
 	
+IBM-Interim-Fixes: PH38929
+IBM-Test-Fixes:OLGH15145
+	
