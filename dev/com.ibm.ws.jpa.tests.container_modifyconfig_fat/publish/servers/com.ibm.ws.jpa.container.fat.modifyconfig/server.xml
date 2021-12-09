@@ -1,0 +1,32 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>jpaContainer-2.1</feature>
+    <feature>bells-1.0</feature>
+    <feature>jdbc-4.2</feature>
+  </featureManager>
+
+  <application location="jpaContainerApp.war">
+    <classloader id="app_classloader" commonLibraryRef="jdbclib,ecl"/>
+  </application>
+  
+  <dataSource jndiName="jdbc/ds">
+    <jdbcDriver libraryRef="jdbclib"/>
+   	<properties.derby.embedded databaseName="memory:ds" createDatabase="create"/>
+  </dataSource>
+  
+  <bell id="bell_ecl" libraryRef="ecl"/>
+   
+  <library id="jdbclib">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+  
+  <library id="ecl">
+    <fileset dir="${shared.resource.dir}/ecl" includes="*.jar"  scanInterval="5s"/>
+  </library>
+  
+</server>

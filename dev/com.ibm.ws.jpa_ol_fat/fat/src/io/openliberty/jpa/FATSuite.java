@@ -15,30 +15,29 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import io.openliberty.jpa.concurrent_enhancement.TestConcurrentEnhancement;
+import io.openliberty.jpa.defaultdatasource.JPADefaultDataSourceTest;
+import io.openliberty.jpa.dserror.JPADSErrorTest;
+import io.openliberty.jpa.dsoverride.DSOverrideTest;
+import io.openliberty.jpa.ejbpassivation.JPAPassivationTest;
+import io.openliberty.jpa.emlocking.EMLockingTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestConcurrentEnhancement.class
+//                JPAFATTest.class,
+                TestConcurrentEnhancement.class,
+                JPADefaultDataSourceTest.class,
+                JPADSErrorTest.class,
+                DSOverrideTest.class,
+                EMLockingTest.class,
+                JPAPassivationTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
-
-    @ClassRule
-    public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
