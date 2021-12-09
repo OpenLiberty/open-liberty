@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonValue;
 
 import org.eclipse.microprofile.jwt.Claim;
@@ -46,6 +47,8 @@ import com.ibm.websphere.ras.TraceComponent;
 public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
     private static final TraceComponent tc = Tr.register(ClaimBean.class);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     private final Class<T> beanClass;
     private Type beanType;
@@ -278,7 +281,7 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
     private JsonValue getJsonValue(JsonWebToken jsonWebToken) {
         String jsonWebTokenAsString = jsonWebToken.toString();
-        JsonReader reader = Json.createReader(new StringReader(jsonWebTokenAsString));
+        JsonReader reader = readerFactory.createReader(new StringReader(jsonWebTokenAsString));
         JsonObject jsonObject = reader.readObject();
         return jsonObject.get(claimName);
     }
@@ -314,7 +317,7 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
                         return value;
                     } catch (IllegalStateException e) {
-                       return null;
+                        return null;
                     }
                 }
             };

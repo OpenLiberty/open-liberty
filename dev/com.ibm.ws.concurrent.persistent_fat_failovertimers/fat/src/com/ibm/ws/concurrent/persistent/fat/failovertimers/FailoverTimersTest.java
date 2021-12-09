@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -163,10 +163,16 @@ public class FailoverTimersTest extends FATServletClient {
     public static void tearDown() throws Exception {
         try {
             if (serverA.isStarted())
-                serverA.stopServer("CWWKC1503W");
+                serverA.stopServer("CWWKC1503W",
+                                   "DSRA0302E", // can happen if timer tries to run while the server stops
+                                   "DSRA0304E" // can happen if timer tries to run while the server stops
+                );
         } finally {
             if (serverB.isStarted())
-                serverB.stopServer("CWWKC1503W");
+                serverB.stopServer("CWWKC1503W",
+                                   "DSRA0302E", // can happen if timer tries to run while the server stops
+                                   "DSRA0304E" // can happen if timer tries to run while the server stops
+                );
         }
     }
 
@@ -384,7 +390,10 @@ public class FailoverTimersTest extends FATServletClient {
         assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));
 
         LibertyServer serverToStop = SERVER_A_NAME.equals(serverName) ? serverA : serverB;
-        serverToStop.stopServer("CWWKC1503W");
+        serverToStop.stopServer("CWWKC1503W",
+                                "DSRA0302E", // can happen if timer tries to run while the server stops
+                                "DSRA0304E" // can happen if timer tries to run while the server stops
+        );
 
         String nameOfServerForFailover = serverToStop == serverA ? SERVER_B_NAME : SERVER_A_NAME;
         LibertyServer serverForFailover = serverToStop == serverA ? serverB : serverA;
@@ -392,6 +401,9 @@ public class FailoverTimersTest extends FATServletClient {
         runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
                 "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
 
-        serverForFailover.stopServer("CWWKC1503W");
+        serverForFailover.stopServer("CWWKC1503W",
+                                     "DSRA0302E", // can happen if timer tries to run while the server stops
+                                     "DSRA0304E" // can happen if timer tries to run while the server stops
+        );
     }
 }

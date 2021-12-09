@@ -37,7 +37,7 @@ public class WASURLObjectFactoryFinder implements URLObjectFactoryFinder {
 
     @Override
     public ObjectFactory findFactory(String urlSchema, Hashtable<?, ?> env) throws NamingException {
-        final List<String> pkgPrefixes = new ArrayList<String>();
+        final List<String> pkgPrefixes = new ArrayList<>();
 
         // Collect any package prefixes specified by the environment
         if (env != null) {
@@ -107,6 +107,7 @@ public class WASURLObjectFactoryFinder implements URLObjectFactoryFinder {
                         if (!ObjectFactory.class.isAssignableFrom(clazz)) {
                             throw new ClassCastException(ObjectFactory.class.getName() + " is not assignable from " + clazz.getName());
                         }
+                        @SuppressWarnings("unchecked")
                         Class<? extends ObjectFactory> ofc = (Class<? extends ObjectFactory>) clazz;
                         return ofc.getConstructor();
                     }

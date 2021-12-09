@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ bVersion=1.0
 Bundle-Name: Liberty gRPC
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal
 Bundle-Description: Libery gRPC, version ${bVersion}
+
+jakartaeeMe: true
 
 -dsannotations: \
   io.openliberty.grpc.internal.servlet.GrpcServerComponent,\
@@ -65,7 +67,7 @@ Include-Resource: \
   com.ibm.ws.webcontainer,\
   com.ibm.ws.managedobject,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=27.0.1,\
+  com.google.guava:guava;version=30.1,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\

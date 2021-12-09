@@ -36,42 +36,37 @@ import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class SingleRecoveryTest {
-	private static LibertyServer server = LibertyServerFactory
+	private static LibertyServer server1 = LibertyServerFactory
 			.getLibertyServer("WSATSingleRecovery");
-	private static String BASE_URL = "http://" + server.getHostname() + ":"
-			+ server.getHttpDefaultPort();
+	private static String BASE_URL = "http://" + server1.getHostname() + ":"
+			+ server1.getHttpDefaultPort();
 	private final static int REQUEST_TIMEOUT = 10;
+    private static final int LOG_SEARCH_TIMEOUT = 300000;
+
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		if (server != null && server.isStarted()) {
-			server.stopServer();
-		}
+		ShrinkHelper.defaultDropinApp(server1, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+		ShrinkHelper.defaultDropinApp(server1, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 
-		ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
-		ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+		server1.setServerStartTimeout(600000);
 
-		if (server != null && !server.isStarted()) {
-			server.startServer(true);
-		}
-
-		server.setServerStartTimeout(600000);
+		FATUtils.startServers(server1);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		if (server != null && server.isStarted()) {
-			server.stopServer(true, true, ".*"); // ensure server has stopped
-		}
+		FATUtils.stopServers((String[])null, server1);
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC001FVT() throws Exception {
 		recoveryTest("01");
 	}
@@ -87,7 +82,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.RollbackException" })
 	public void WSTXREC004FVT() throws Exception {
@@ -109,8 +104,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
-  @Mode(TestMode.LITE)
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+	@Mode(TestMode.LITE)
 	public void WSTXREC007FVT() throws Exception {
 		recoveryTest("07");
 	}
@@ -127,7 +122,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC010FVT() throws Exception {
 		recoveryTest("10");
 	}
@@ -146,7 +141,7 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	public void WSTXREC013FVT() throws Exception {
 		recoveryTest("13");
 	}
@@ -167,7 +162,7 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	// Should be expected but that doesn't seem to work with multiple ffdc
 	// summaries
 	public void WSTXREC016FVT() throws Exception {
@@ -191,7 +186,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"com.ibm.tx.jta.XAResourceNotAvailableException" })
 	public void WSTXREC037FVT() throws Exception {
@@ -213,7 +208,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.SystemException" })
 	public void WSTXREC040FVT() throws Exception {
@@ -237,8 +232,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
-//	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
+	@Mode(TestMode.LITE)
+	//	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
 	public void WSTXREC043FVT() throws Exception {
 		recoveryTest("43");
 	}
@@ -262,7 +257,8 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
+	@AllowedFFDC(value = { "java.net.SocketException" })
 	public void WSTXREC046FVT() throws Exception {
 		recoveryTest("46");
 	}
@@ -298,40 +294,40 @@ public class SingleRecoveryTest {
 				+ result);
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
-		server.waitForStringInLog("Dump State:");
+		server1.waitForStringInLog("Dump State:");
 		System.out.println(logKeyword + "waitForStringInLog Dump State end");
 
 		ProgramOutput po;
 		// Some tests kill the server twice so we need an extra restart here
 		if (id.equals("42") || id.equals("41")) {
 			try {
-				po = server.startServerAndValidate(false, false, false, true);
+				po = server1.startServerAndValidate(false, false, false, true);
 				System.out.println("Start server return code: " + po.getReturnCode());
 			} catch (TopologyException e) {
 				e.printStackTrace(System.out);
 			}
 
 			// make sure it's dead
-			server.waitForStringInLog("Dump State:");
+			server1.waitForStringInLog("Dump State:");
 		}
 
-		po = server.startServerAndValidate(false, true, true);
+		po = server1.startServerAndValidate(false, true, true);
 		System.out.println("Start server return code: " + po.getReturnCode());
 
 		// Server appears to have started ok
-		server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+		server1.waitForStringInTrace("Performed recovery for "+server1.getServerName(), LOG_SEARCH_TIMEOUT);
 
-		if (id.equals("37") || id.equals("38") || id.equals("39")
-				|| id.equals("40") || id.equals("45")) {
-			try {
-				System.out
-						.println("Sleep some seconds for test " + id + " before RecoveryCheckServlet...");
-				Thread.sleep(30000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		if (id.equals("37") || id.equals("38") || id.equals("39")
+//				|| id.equals("40") || id.equals("45")) {
+//			try {
+//				System.out
+//						.println("Sleep some seconds for test " + id + " before RecoveryCheckServlet...");
+//				Thread.sleep(30000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 		Log.info(this.getClass(), method, "callServlet checkRec" + id);
 		try {

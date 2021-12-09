@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,9 +40,11 @@ tested.features:\
   messagingServer-3.0,\
   mdb-4.0,\
   messaging-3.0,\
+  connectors-2.0,\
   ejbLite-3.2,\
   enterprisebeanslite-4.0,\
-  pages-3.0
+  pages-3.0,\
+  cdi-3.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -57,6 +59,7 @@ tested.features:\
 #   componenttest-1.0
 
 -buildpath:\
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   com.ibm.ws.security.registry_test.servlet;version=latest,\

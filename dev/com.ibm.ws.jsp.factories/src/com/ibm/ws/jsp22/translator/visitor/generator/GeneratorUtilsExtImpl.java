@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils;
 import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExt;
 import com.ibm.ws.jsp.translator.visitor.generator.JavaCodeWriter;
 import com.ibm.ws.jsp.translator.visitor.validator.ValidateResult;
+import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
 
 public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
 	
@@ -82,7 +83,7 @@ public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
 	
 	@Override
     public String getClassFileVersion() {
-        return "2.2";
+        return JSPExtensionFactory.getLoadedPagesSpecLevel();
     }
 
     //PI59436 start

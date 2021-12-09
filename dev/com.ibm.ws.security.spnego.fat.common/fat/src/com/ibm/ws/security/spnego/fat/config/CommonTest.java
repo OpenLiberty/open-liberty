@@ -313,14 +313,19 @@ public class CommonTest {
             Log.info(c, thisMethod, "Using initial config: " + config);
         }
 
+        /*
+         * Configure the KdcHelper appropriately.
+         */
+        if (getKdcHelper() == null) {
+            setKdcHelper(getKdcHelper(getMyServer()));
+        } else {
+            getKdcHelper().server = getMyServer();
+            createKrbConf(getKdcHelper().server);
+        }
+
         if (createSpnAndKeytab) {
             try {
                 Log.info(c, thisMethod, "Creating SPN and keytab");
-                if (getKdcHelper() == null) {
-                    setKdcHelper(getKdcHelper(getMyServer()));
-                } else {
-                    createKrbConf(getKdcHelper().server);
-                }
                 getKdcHelper().createSpnAndKeytab(spnRealm, useCanonicalHostName, SPNEGOConstants.DEFAULT_CMD_ARGS);
             } catch (Exception e) {
                 Log.info(c, thisMethod, "Got unexpected exception; no tests will be run: " + CommonTest.maskHostnameAndPassword(e.getMessage()));

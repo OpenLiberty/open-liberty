@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.rsadapter.impl;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -23,6 +25,7 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,12 +36,14 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.resource.ResourceException;
+import javax.security.auth.Subject;
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
 
 import org.ietf.jgss.GSSCredential;
 
@@ -51,11 +56,12 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
-import com.ibm.ws.rsadapter.DSConfig.IdentifyException.Target;
+import com.ibm.ws.rsadapter.IdentifyExceptionAs;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
  * Helper for generic relational databases, coded to the most common cases.
@@ -64,9 +70,19 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 public class DatabaseHelper {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
-    private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
-    private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
-    private transient PrintWriter genPw = null; 
+    private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null);
+    private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE);
+    transient PrintWriter genPw;
+
+    /**
+     * Legacy data store helper if providing legacy API, otherwise null.
+     */
+    public Object dataStoreHelper;
+
+    /**
+     * Class name of corresponding legacy data store helper class.
+     */
+    String dataStoreHelperClassName = "com.ibm.websphere.rsadapter.GenericDataStoreHelper";
 
     /**
      * Default query timeout configured on the data source.
@@ -78,6 +94,22 @@ public class DatabaseHelper {
     int driverMajorVersion; 
 
     /**
+     * Legacy operations, or null if legacy API isn't enabled.
+     */
+    private Method doConnectionCleanup,
+                   doConnectionCleanupPerCloseConnection,
+                   doConnectionSetup,
+                   doConnectionSetupPerGetConnection,
+                   doConnectionSetupPerTransaction,
+                   doStatementCleanup,
+                   modifyXAFlag;
+
+    /**
+     * Indicates if the user provides their own custom legacy data store helper.
+     */
+    public boolean isCustomHelper;
+
+    /**
      * The managed connection factory associated with this internal data store helper.
      */
     WSManagedConnectionFactoryImpl mcf;
@@ -87,32 +119,22 @@ public class DatabaseHelper {
      * at the beginning we assume holdability is supported, if we get an exception when calling the getHolidablity
      * then we will mark the flag as false so that getHoldability is not called all the time
      */
-    protected boolean holdabilitySupported = true; 
+    protected boolean holdabilitySupported = true;
 
     private boolean setCursorNameSupported = true;
     
     /**
-     * SQLException error codes that indicate a stale connection.
+     * SQLException SQL State and error codes (and combination of both via SQLStateAndCode)
+     * that indicate a stale connection.
      */
-    final Set<Integer> staleErrorCodes = new HashSet<Integer>();
+    final Set<Object> staleConCodes = new HashSet<Object>();
 
     /**
-     * SQLException SQL States that indicate a stale connection.
+     * SQLException SQL State and error codes (and combination of both via SQLStateAndCode)
+     * that indicate a stale statement.
      */
-    final Set<String> staleSQLStates = new HashSet<String>();
-    
-    /**
-     * Pairs of SQLException error codes and SQL states that indicate a stale exception.
-     * This differs from staleErrorCodes and staleSQLStates because here both items must
-     * match in order to be considered stale.
-     * The entries are of the format: SQLSTATE/SQLCODE created by {@link #createStaleMapKey(String, Integer)}
-     * If any SQLState or SQLCode matches, then a start (*) is used.
-     * Examples:
-     * - match state=E1234 && code 456 has key E1234/456
-     * - match state=E1234 and any code has key E1234/*
-     */
-    private final Map<String,IdentifyException.Target> userDefinedStales = new HashMap<>();
-    
+    final Set<Object> staleStmtCodes = new HashSet<Object>();
+
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
      */
@@ -140,7 +162,7 @@ public class DatabaseHelper {
             Tr.debug(this, tc, "init", "Default query timeout=" + defaultQueryTimeout);
 
         // X/OPEN standard SQLSTATE mappings
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                            "08001",
                            "08003",
                            "08006",
@@ -148,24 +170,6 @@ public class DatabaseHelper {
                            "40003",
                            "55032",
                            "S1000");
-        
-        customizeStaleStates();
-        
-        // Process user-defined error mappings from the <identifyException> config elements
-        for (IdentifyException mapping : mcf.dsConfig.get().identifyExceptions) {
-            String key = createStaleMapKey(mapping.sqlState, mapping.errorCode);
-            userDefinedStales.put(key, mapping.as);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
-            Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
-        }
-    }
-    
-    /**
-     * Override this method to customize vendor-specific SQL States and SQL Codes that should map to stale
-     */
-    void customizeStaleStates() {
     }
     
     /**
@@ -182,6 +186,142 @@ public class DatabaseHelper {
      */
     public boolean alwaysSetAutoCommit() {
         return false;
+    }
+
+    /**
+     * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
+     *
+     * @throws ClassNotFoundException if unable to load a data store helper class.
+     * @throws Exception if an error occurs.
+     */
+    final void createDataStoreHelper() throws Exception {
+        DSConfig config = mcf.dsConfig.get();
+        Properties helperProps = new Properties();
+        Object value;
+
+        if ((value = config.vendorProps.get("currentSQLID")) != null)
+            helperProps.setProperty("currentSQLID", value.toString());
+
+        helperProps.setProperty("dataSourceClass", mcf.vendorImplClass.getName());
+
+        if ((value = config.vendorProps.get("driverType")) != null)
+            helperProps.put("driverType", value.toString());
+
+        if ((value = config.vendorProps.get("informixAllowNewLine")) != null)
+            helperProps.put("informixAllowNewLine", value.toString());
+
+        if ((value = config.vendorProps.get("longDataCacheSize")) != null)
+            helperProps.put("longDataCacheSize", value.toString());
+
+        if (config.queryTimeout != null)
+            helperProps.put("queryTimeout", Integer.toString(config.queryTimeout));
+
+        // reauthentication is not configurable, defaults to false
+
+        if ((value = config.vendorProps.get("responseBuffering")) != null)
+            helperProps.put("responseBuffering", value.toString());
+
+        // useTrustedContextWithAuthentication is not configurable, defaults to false
+
+        if (config.isolationLevel != -1)
+            helperProps.put("webSphereDefaultIsolationLevel", Integer.toString(config.isolationLevel));
+
+        String helperClassName = config.heritageHelperClass == null ? dataStoreHelperClassName : config.heritageHelperClass;
+
+        isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
+
+        Map<Object, Class<?>> map = new HashMap<Object, Class<?>>();
+        for (Map.Entry<Object, String> entry : config.identifyExceptions.entrySet())
+            try {
+                String className = entry.getValue();
+                if (!className.contains("."))
+                    try {
+                        IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
+                        if (identifyAs.legacyClassName == null)
+                            className = IdentifyExceptionAs.None.legacyClassName; // no equivalent legacy exception class, do not replace it
+                        else
+                            className = identifyAs.legacyClassName;
+                    } catch (IllegalArgumentException x) {
+                        // probably an error, but maybe the user has a custom exception class without a package, so continue on...
+                    }
+                Class<?> exceptionClass = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, className);
+                Object key = entry.getKey();
+                if (key instanceof String || key instanceof Integer)
+                    map.put(key, exceptionClass);
+                else
+                    throw new IllegalArgumentException(Tr.formatMessage(tc, "8068_EXC_REPLACE_CONFLICT", config.jndiName == null ? config.id : config.jndiName));
+            } catch (ClassNotFoundException x) {
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()));
+                throw x;
+            }
+
+        try {
+            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
+                Class<?> c = mcf.jdbcDriverLoader.loadClass(helperClassName);
+                Object h = c.getConstructor(Properties.class).newInstance(helperProps);
+
+                // dataStoreHelper.setConfig(mcf.dsConfig);
+                c.getMethod("setConfig", Object.class).invoke(h, mcf.dsConfig);
+
+                // genPw = dataStoreHelper.getPrintWriter();
+                if (genPw == null)
+                    genPw = (PrintWriter) c.getMethod("getPrintWriter").invoke(h);
+
+                // mcf.defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+                Class<?> AccessIntent = mcf.jdbcDriverLoader.loadClass("com.ibm.websphere.appprofile.accessintent.AccessIntent");
+                mcf.defaultIsolationLevel = (Integer) c.getMethod("getIsolationLevel", AccessIntent).invoke(h, (Object) null);
+
+                // dataStoreHelper.setUserDefinedMap(map);
+                if (!map.isEmpty())
+                    c.getMethod("setUserDefinedMap", Map.class).invoke(h, map);
+
+                // DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+                Object metadata = c.getMethod("getMetaData").invoke(h);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "createDataStoreHelper", dataStoreHelper, metadata, map);
+
+                doConnectionCleanup = c.getMethod("doConnectionCleanup", Connection.class);
+                doConnectionCleanupPerCloseConnection = c.getMethod("doConnectionCleanupPerCloseConnection", Connection.class, boolean.class, Object.class);
+                doConnectionSetup = c.getMethod("doConnectionSetup", Connection.class);
+                doConnectionSetupPerGetConnection = c.getMethod("doConnectionSetupPerGetConnection", Connection.class, boolean.class, Object.class);
+                doConnectionSetupPerTransaction = c.getMethod("doConnectionSetupPerTransaction", Subject.class, String.class, Connection.class, boolean.class, Object.class);
+                doStatementCleanup = c.getMethod("doStatementCleanup", PreparedStatement.class);
+                modifyXAFlag = c.getMethod("modifyXAFlag", int.class);
+
+                Class<?> mdc = metadata.getClass();
+
+                // mcf.doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+                mcf.doesStatementCacheIsoLevel = (Boolean) mdc.getMethod("doesStatementCacheIsoLevel").invoke(metadata);
+
+                // mcf.supportsGetCatalog = metadata.supportsGetCatalog();
+                mcf.supportsGetCatalog = (Boolean) mdc.getMethod("supportsGetCatalog").invoke(metadata);
+
+                // mcf.supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+                mcf.supportsGetNetworkTimeout = (Boolean) mdc.getMethod("supportsGetNetworkTimeout").invoke(metadata);
+
+                // mcf.supportsGetSchema = metadata.supportsGetSchema();
+                mcf.supportsGetSchema = (Boolean) mdc.getMethod("supportsGetSchema").invoke(metadata);
+
+                // mcf.supportsGetTypeMap = metadata.supportsGetTypeMap();
+                mcf.supportsGetTypeMap = (Boolean) mdc.getMethod("supportsGetTypeMap").invoke(metadata);
+
+                // mcf.supportsIsReadOnly = metadata.supportsIsReadOnly();
+                mcf.supportsIsReadOnly = (Boolean) mdc.getMethod("supportsIsReadOnly").invoke(metadata);
+
+                return h;
+            });
+        } catch (Throwable x) {
+            if (x instanceof PrivilegedActionException)
+                x = x.getCause();
+            if (x instanceof InvocationTargetException)
+                x = x.getCause();
+            Tr.error(tc, "8069_HELPER_INIT_ERR", config.jndiName == null ? config.id : config.jndiName, helperClassName, x);
+            if (x instanceof Exception)
+                throw (Exception) x;
+            else
+                throw (Error) x;
+        }
     }
 
     /**
@@ -205,15 +345,76 @@ public class DatabaseHelper {
      * connection property was modified. A value of false should be returned only if
      * <i>no</i> standard connection properties were modified.</p>
      * 
-     * @param conn the connection to attempt to cleanup.
+     * @param conn the connection to attempt to clean up.
      * @return true if <i>any</i> standard connection property was modified, otherwise false.
      * @exception SQLException if an error occurs while cleaning up the connection.
      */
     public boolean doConnectionCleanup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "doConnectionCleanup: no cleanup is done return false");
 
         return false;
+    }
+
+    /**
+     * Invokes the legacy DataStoreHelper API to perform connection cleanup.
+     *
+     * @param con the connection to attempt to clean up.
+     * @return true if <i>any</i> standard connection property was modified, otherwise false.
+     * @throws SQLException if an error occurs while cleaning up the connection.
+     */
+    final boolean doConnectionCleanupLegacy(Connection con) throws SQLException {
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                return (Boolean) doConnectionCleanup.invoke(dataStoreHelper, WSJdbcTracer.getImpl(con));
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "370", this);
+            if (cause instanceof SQLException)
+                throw (SQLException) cause;
+            else
+                throw new SQLException(cause);
+        }
+    }
+
+    /**
+     * Legacy DataStoreHelper method to invoke after the last active connection handle is closed.
+     * This provides an opportunity to undo connection setup that was previously performed by
+     * <code>doConnectionSetupPerGetConnection</code>.
+     *
+     * @param con the connection to clean up.
+     * @return SQLException if it fails.
+     */
+    public final SQLException doConnectionCleanupPerCloseConnection(Connection con) {
+        try {
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            boolean conCleanupPerformed = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                return (Boolean) doConnectionCleanupPerCloseConnection.invoke(dataStoreHelper, conn, false, null);
+            });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", dataStoreHelper, con, conCleanupPerformed);
+            return null;
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", x);
+
+            if (cause instanceof SQLException)
+                return AdapterUtil.mapSQLException((SQLException) cause, mcf);
+            else
+                return new SQLException(x.getMessage(), null, 999999); // 999999 matches legacy behavior
+        }
     }
 
     /**
@@ -233,15 +434,99 @@ public class DatabaseHelper {
      * @exception SQLException if connection setup cannot be completed successfully.
      */
     public void doConnectionSetup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
     }
 
     /**
-     * Indicates whether or not the JDBC vendor statement implementation caches a copy of the transaction isolation level.
-     * 
-     * @return true if statements cache the isolation level, otherwise false.
+     * Invokes the legacy DataStoreHelper API to perform connection setup.
+     *
+     * @param con the connection to set up.
+     * @throws SQLException if an error occurs.
      */
-    public boolean doesStatementCacheIsoLevel() {
-        return false;
+    final void doConnectionSetupLegacy(Connection con) throws SQLException {
+        Connection conn = isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+        try {
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                doConnectionSetup.invoke(dataStoreHelper, conn);
+                return null;
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "448", this);
+            if (cause instanceof SQLException)
+                throw (SQLException) cause;
+            else
+                throw new SQLException(cause);
+        }
+    }
+
+    /**
+     * Legacy DataStoreHelper method to invoked per getConnection request when the connection handle count is 1,
+     * meaning that the second, third, and so forth sharable connection handles are skipped over.
+     *
+     * @param conn connection to set up.
+     * @param subject Subject, if available.
+     * @throws ResourceException if it fails.
+     */
+    final void doConnectionSetupPerGetConnection(Connection con, Subject subject) throws ResourceException {
+        try {
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("SUBJECT", subject);
+
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            boolean conSetupPerformed = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                return (Boolean) doConnectionSetupPerGetConnection.invoke(dataStoreHelper, conn, false, props);
+            });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionSetupPerGetConnection", dataStoreHelper, this, con, conSetupPerformed);
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "435", this);
+            if (cause instanceof SQLException)
+                cause = AdapterUtil.mapSQLException((SQLException) cause, mcf);
+            throw new DataStoreAdapterException("DSA_ERROR", cause, getClass());
+        }
+    }
+
+    /**
+     * Legacy DataStoreHelper method to invoke prior to a connection being used in a transaction.
+     *
+     * @param subject subject for the newly requested connection if container authentication is used, otherwise null.
+     * @param user user name for the newly requested connection. Null if container authentication is used and a subject is provided.
+     * @param con the connection.
+     * @param reauthRequired indicates whether reauthentication is required to get the connection in sync with the subject or user name.
+     * @param props contains a property with key, "FIRST_TIME_CALLED", and value of "true" or "false"
+     *        depending on whether or not this is the first time invoking this method for the specified connection.
+     * @throws ResourceException to indicate failure of this method.
+     */
+    final void doConnectionSetupPerTransaction(Subject subject, String user, Connection con, boolean reauthRequired, Properties props) throws ResourceException {
+        try {
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            // if we have a subject, it will take precedence
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                doConnectionSetupPerTransaction.invoke(dataStoreHelper, subject, user, conn, reauthRequired, props);
+                return null;
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "433", this);
+            throw new DataStoreAdapterException("DSA_ERROR", cause, getClass());
+        }
     }
 
     /**
@@ -279,10 +564,15 @@ public class DatabaseHelper {
      * @exception SQLException if an error occurs cleaning up the statement.
      */
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (setCursorNameSupported) {
             try{        
-                stmt.setCursorName(null);            
+                stmt.setCursorName(null);
             } catch (SQLFeatureNotSupportedException supportX) {
                 setCursorNameSupported = false;
                 if (isTraceOn && tc.isDebugEnabled()) Tr.debug(tc, "Statement.setCursorName() is not supported.", supportX);
@@ -300,6 +590,30 @@ public class DatabaseHelper {
     }
 
     /**
+     * Invokes the legacy DataStoreHelper API to perform statement cleanup.
+     *
+     * @param stmt the statement to attempt to clean up.
+     * @throws SQLException if an error occurs.
+     */
+    final void doStatementCleanupLegacy(PreparedStatement stmt) throws SQLException {
+        try {
+            PreparedStatement s = isCustomHelper ? (PreparedStatement) WSJdbcTracer.getImpl(stmt) : stmt;
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                doStatementCleanup.invoke(dataStoreHelper, s);
+                return null;
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "573", this);
+            if (cause instanceof SQLException)
+                throw (SQLException) cause;
+            else
+                throw new SQLException(cause);
+        }
+    }
+
+    /**
      * Determines if the exception indicates failover occurred.
      * 
      * @param sqlX an exception that might indicate connection failover.
@@ -307,15 +621,6 @@ public class DatabaseHelper {
      */
     public boolean failoverOccurred(SQLException sqlX) {
         return false;
-    }
-
-    /**
-     * This method returns a default isolation level based on the database backend.
-     * 
-     * @return default isolation level
-     */
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_READ_COMMITTED;
     }
 
     /**
@@ -397,6 +702,18 @@ public class DatabaseHelper {
      * @return detailed information about the <code>XAException</code>, for inclusion in trace.
      */
     public String getXAExceptionContents(XAException x) {
+        // Use the equivalent method on DataStoreHelper if legacy API is available.
+        if (dataStoreHelper != null)
+            try {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> {
+                    return (String) dataStoreHelper.getClass()
+                                    .getMethod("getXAExceptionContents", XAException.class)
+                                    .invoke(dataStoreHelper, x);
+                });
+            } catch (PrivilegedActionException ex) {
+                FFDCFilter.processException(ex, getClass().getName(), "623", this);
+            }
+
         StringBuilder xsb = new StringBuilder(200);
         Throwable cause = x.getCause();
         if (cause != null) {
@@ -412,6 +729,28 @@ public class DatabaseHelper {
     }
 
     /**
+     * Initializes the unit-of-work detection support indicator from the legacy DataStoreHelper.
+     * The value returned by the DataStoreHelper overrides the previously inferred value.
+     *
+     * @throws SQLException if an error occurs.
+     */
+    final void initUOWDetection() throws SQLException {
+        try {
+            mcf.supportsUOWDetection = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                Object metadata = dataStoreHelper.getClass().getMethod("getMetaData").invoke(dataStoreHelper);
+                return (Boolean) metadata.getClass().getMethod("supportsUOWDetection").invoke(metadata);
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            if (cause instanceof SQLException)
+                throw (SQLException) cause;
+            else
+                throw new SQLException(cause);
+        }
+    }
+
+    /**
      * This method determines whether a <code>SQLException</code> indicates a stale connection error.
      * 
      * @param ex the <code>SQLException</code> to check.
@@ -420,54 +759,208 @@ public class DatabaseHelper {
     public boolean isConnectionError(SQLException ex) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isConnectionError", ex);
+        // Use the equivalent method on DataStoreHelper if possible.
+        if (dataStoreHelper != null)
+            try {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                    return (Boolean) dataStoreHelper.getClass()
+                                    .getMethod("isConnectionError", SQLException.class)
+                                    .invoke(dataStoreHelper, ex);
+                });
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x, getClass().getName(), "673", this);
+            }
+
+        DSConfig config = mcf.dsConfig.get();
 
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
-        
-        boolean stale = false;
-        for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
-            SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "checking " + t,
-                         sqlX == null ? null : sqlX.getSQLState(),
-                         sqlX == null ? null : sqlX.getErrorCode());
-            
-            if (sqlX != null) {
-                // first check user-defined mappings
-                IdentifyException.Target target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), sqlX.getErrorCode()));
-                if (target == null)
-                    target = userDefinedStales.get(createStaleMapKey(null, sqlX.getErrorCode()));
-                if (target == null)
-                    target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), null));
-                
-                if (target == Target.None) {
-                    stale = false;
-                } else if (target == Target.StaleConnection) {
-                    stale = true;
-                } else {
-                    // No user-defined mappings, use default handling
-                    stale |= sqlX instanceof SQLRecoverableException ||
-                             sqlX instanceof SQLNonTransientConnectionException ||
-                             sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
-                             staleErrorCodes.contains(sqlX.getErrorCode()) ||
-                             staleSQLStates.contains(sqlX.getSQLState());
-                }
-            }
-        }
-        
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "isConnectionError", stale);
 
+        boolean stale = false;
+        for (Throwable t = ex; !stale && t != null && chain.add(t); t = t.getCause())
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
+                String sqlState = sqlX.getSQLState();
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                // First look for identifyException overrides
+                String target = combo == null ? null : config.identifyExceptions.get(combo);
+                if (target == null) {
+                    target = config.identifyExceptions.get(errorCode);
+                    if (target == null && sqlState != null)
+                        target = config.identifyExceptions.get(sqlState);
+                }
+                if (target == null) {
+                    // No overrides, use built-in handling
+                    stale = sqlX instanceof SQLRecoverableException
+                                    || sqlX instanceof SQLNonTransientConnectionException
+                                    || sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX)
+                                    || combo != null && staleConCodes.contains(combo)
+                                    || staleConCodes.contains(errorCode)
+                                    || sqlState != null && staleConCodes.contains(sqlState);
+                } else {
+                    // Override was found, need to interpret it
+                    stale = IdentifyExceptionAs.StaleConnection.name().equals(target);
+                    if (!stale && target.contains(".")) {
+                        // legacy behavior of identification by class name
+                        try {
+                            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
+                            for (; !stale && c != null; c = c.getSuperclass())
+                                stale = c.getClass().getName().equals(IdentifyExceptionAs.StaleConnection.legacyClassName);
+                        } catch (ClassNotFoundException cnfx) {
+                            Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
+                        }
+                    }
+                }
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + stale + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + stale + ": " + t.getClass().getName());
+            }
         return stale;
     }
 
     /**
      * @return true if the exception or a cause exception in the chain is known to indicate a stale statement. Otherwise false.
      */
-    public boolean isStaleStatement(SQLException x) {
-        return false;
+    public final boolean isStaleStatement(SQLException x) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        DSConfig config = mcf.dsConfig.get();
+
+        // check for cycles
+        Set<Throwable> chain = new HashSet<Throwable>();
+
+        boolean stale = false;
+        for (Throwable t = x; !stale && t != null && chain.add(t); t = t.getCause())
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
+                String sqlState = sqlX.getSQLState();
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                // First look for identifyException overrides
+                String target = combo == null ? null : config.identifyExceptions.get(combo);
+                if (target == null) {
+                    target = config.identifyExceptions.get(errorCode);
+                    if (target == null && sqlState != null)
+                        target = config.identifyExceptions.get(sqlState);
+                }
+                if (target == null) {
+                    // No overrides, use built-in handling
+                    stale = combo != null && staleStmtCodes.contains(combo)
+                                    || staleStmtCodes.contains(errorCode)
+                                    || sqlState != null && staleStmtCodes.contains(sqlState);
+                } else {
+                    // Override was found, need to interpret it
+                    stale = IdentifyExceptionAs.StaleStatement.name().equals(target);
+                    if (!stale && target.contains(".")) {
+                        // legacy behavior of identification by class name
+                        try {
+                            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
+                            for (; !stale && c != null; c = c.getSuperclass())
+                                stale = c.getClass().getName().equals(IdentifyExceptionAs.StaleStatement.legacyClassName);
+                        } catch (ClassNotFoundException cnfx) {
+                            Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
+                        }
+                    }
+                }
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isStaleStatement? " + stale + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
+            } else {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isStaleStatement? " + stale + ": " + t.getClass().getName());
+            }
+        return stale;
+    }
+
+    /**
+     * Identifies if an exception indicates an unsupported operation.
+     *
+     * @param sqle the exception.
+     * @return true if unsupported, otherwise false.
+     */
+    final boolean isUnsupported(SQLException sqlX) {
+        DSConfig config = mcf.dsConfig.get();
+        boolean unsupported = false;
+
+        String sqlState = sqlX.getSQLState();
+        int errorCode = sqlX.getErrorCode();
+        SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+        // First look for identifyException overrides
+        String target = combo == null ? null : config.identifyExceptions.get(combo);
+        if (target == null) {
+            target = config.identifyExceptions.get(errorCode);
+            if (target == null && sqlState != null)
+                target = config.identifyExceptions.get(sqlState);
+        }
+        if (target == null) {
+            // No overrides, use built-in handling
+            if (dataStoreHelper == null)
+                unsupported = sqlX instanceof SQLFeatureNotSupportedException
+                                || sqlState != null && sqlState.startsWith("0A")
+                                || 0x0A000 == errorCode // standard code for unsupported operation
+                                || sqlState != null && sqlState.startsWith("HYC00") // ODBC error code
+                                || errorCode == -79700 && "IX000".equals(sqlState); // Informix specific
+            else
+                try {
+                    unsupported = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                        // dataStoreHelper.isUnsupported(sqlX)
+                        return (Boolean) dataStoreHelper.getClass().getMethod("isUnsupported", SQLException.class).invoke(dataStoreHelper, sqlX);
+                    });
+                } catch (PrivilegedActionException x) {
+                    FFDCFilter.processException(x, getClass().getName(), "799", this);
+                }
+        } else {
+            // Override was found, need to interpret it
+            unsupported = IdentifyExceptionAs.Unsupported.name().equals(target);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isUnsupported? " + unsupported + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
+        return unsupported;
+    }
+
+    /**
+     * Invokes mapException on the legacy DataStoreHelper to identify an exception
+     * and possibly replace it (if replaceExceptions=true).
+     *
+     * @param x an exception.
+     * @return the exception to identify as or replace with.
+     */
+    public final SQLException mapException(SQLException sqlX) {
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                Method mapException = dataStoreHelper.getClass().getMethod("mapException", SQLException.class);
+                return (SQLException) mapException.invoke(dataStoreHelper, sqlX);
+            });
+        } catch (PrivilegedActionException x) {
+            FFDCFilter.processException(x, DatabaseHelper.class.getName(), "819", this);
+            return sqlX;
+        }
+    }
+
+    /**
+     * Invokes modifyXAFlag on the legacy DataStoreHelper.
+     *
+     * @param xaStartFlags XA start flags to add to.
+     * @return updated XA start flags which are a combination of the flags supplied to this method
+     *         and the flag for loosely coupled transaction branches.
+     */
+    final int modifyXAFlag(int xaStartFlags) {
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Integer>) () -> {
+                return (Integer) modifyXAFlag.invoke(dataStoreHelper, xaStartFlags);
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(x, DatabaseHelper.class.getName(), "839", this);
+            throw new RuntimeException(cause);
+        }
     }
 
     /**
@@ -540,11 +1033,11 @@ public class DatabaseHelper {
     public void enableJdbcLogging(WSManagedConnectionFactoryImpl mcf) throws ResourceException {
         // in the Generic case (internalGeneric) just pass the pw
 
-        PrintWriter pw = getPrintWriter(); 
+        PrintWriter pw = getPrintWriter();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "enabling logging", mcf, pw);
-        mcf.reallySetLogWriter(pw); 
+        mcf.reallySetLogWriter(pw);
         mcf.loggingEnabled = true;
     }
 
@@ -639,7 +1132,7 @@ public class DatabaseHelper {
             return 0;
         }
         catch (SQLException sqe) {
-            if ((isConnectionError(sqe))) {
+            if (isConnectionError(sqe)) {
                 throw sqe; // if this is a stale we need to throw exception here.
             }
 
@@ -810,7 +1303,7 @@ public class DatabaseHelper {
         java.sql.DatabaseMetaData mData = conn.getMetaData();
 
         String databaseProductName = mData.getDatabaseProductName();
-        String driverName = mData.getDriverName(); 
+        String driverName = mData.getDriverName();
 
         String driverVersion = null;
         String databaseProductVersion = null;
@@ -825,13 +1318,20 @@ public class DatabaseHelper {
         }
 
         setDatabaseProductName(databaseProductName);
-        setDriverName(driverName); 
-        setDriverMajorVersion(mData.getDriverMajorVersion()); 
+        setDriverName(driverName);
+        setDriverMajorVersion(mData.getDriverMajorVersion());
 
         Tr.info(tc, "DB_PRODUCT_NAME", databaseProductName);
-        Tr.info(tc, "DB_PRODUCT_VERSION", databaseProductVersion); 
-        Tr.info(tc, "JDBC_DRIVER_NAME", driverName); 
-        Tr.info(tc, "JDBC_DRIVER_VERSION", driverVersion); 
+        Tr.info(tc, "DB_PRODUCT_VERSION", databaseProductVersion);
+        Tr.info(tc, "JDBC_DRIVER_NAME", driverName);
+        Tr.info(tc, "JDBC_DRIVER_VERSION", driverVersion);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "exception identification",
+                     "stale connection: " + staleConCodes,
+                     "stale statement:  " + staleStmtCodes,
+                     "overrides: " + mcf.dsConfig.get().identifyExceptions
+                     );
 
         try {
             if (mData.supportsResultSetHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT) &&
@@ -850,7 +1350,7 @@ public class DatabaseHelper {
         } catch (Throwable x) {
             if (x instanceof SQLException) {
                 SQLException sqe = (SQLException) x;
-                if ((isConnectionError(sqe))) {
+                if (isConnectionError(sqe)) {
                     throw sqe; // if this is a stale we need to throw exception here.
                 }
 
@@ -1020,27 +1520,20 @@ public class DatabaseHelper {
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "getPooledConnection", AdapterUtil.toString(pConn));
 
-            return new ConnectionResults(pConn, null); 
+            return new ConnectionResults(pConn, null);
         } catch (PrivilegedActionException pae) {
-            FFDCFilter.processException(pae.getException(), getClass().getName(), "1298");
-
+            // FFDC covered by caller
             ResourceException resX = new DataStoreAdapterException("JAVAX_CONN_ERR", pae.getException(), DatabaseHelper.class, is2Phase ? "XAConnection" : "PooledConnection");
 
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "getPooledConnection", "Exception");
             throw resX;
         } catch (ClassCastException castX) {
-            // There's a possibility this occurred because of an error in the JDBC driver
-            // itself.  The trace should allow us to determine this.
-            FFDCFilter.processException(castX, getClass().getName(), "1312");
-
-            if (tc.isDebugEnabled())
-                Tr.debug(this, tc, "Caught ClassCastException", castX);
-
+            // FFDC covered by caller
             ResourceException resX = new DataStoreAdapterException(castX.getMessage(), null, DatabaseHelper.class, is2Phase ? "NOT_A_2_PHASE_DS" : "NOT_A_1_PHASE_DS");
 
             if (tc.isEntryEnabled())
-                Tr.exit(this, tc, "getPooledConnection", "Exception");
+                Tr.exit(this, tc, "getPooledConnection", castX);
             throw resX;
         }
     }
@@ -1074,10 +1567,10 @@ public class DatabaseHelper {
      * @param SQLException the exception to check.
      * @return boolean true if determined to be an authorization exception, otherwise false.
      */
-    public boolean isAnAuthorizationException(SQLException x) {
+    public final boolean isAnAuthorizationException(SQLException x) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isAnAuthorizationException", x);
+
+        DSConfig config = mcf.dsConfig.get();
 
         boolean isAuthError = false;
         LinkedList<SQLException> stack = new LinkedList<SQLException>();
@@ -1088,7 +1581,27 @@ public class DatabaseHelper {
         for (int depth = 0; depth < 20 && !isAuthError && !stack.isEmpty(); depth++) {
             x = stack.pop();
 
-            isAuthError |= isAuthException(x);
+            String sqlState = x.getSQLState();
+            int errorCode = x.getErrorCode();
+            SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+            // First look for identifyException overrides
+            String target = combo == null ? null : config.identifyExceptions.get(combo);
+            if (target == null) {
+                target = config.identifyExceptions.get(errorCode);
+                if (target == null && sqlState != null)
+                    target = config.identifyExceptions.get(sqlState);
+            }
+            if (target == null) {
+                // No overrides, use built-in handling
+                isAuthError = isAuthException(x);
+            } else {
+                // Override was found, need to interpret it
+                isAuthError = IdentifyExceptionAs.AuthorizationError.name().equals(target);
+            }
+
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(this, tc, "isAnAuthorizationException? " + isAuthError + ": " + sqlState + ' ' + errorCode + ' ' + x.getClass().getName());
 
             // Add the chained exceptions to the stack.
 
@@ -1098,8 +1611,6 @@ public class DatabaseHelper {
                 stack.push((SQLException) x.getCause());
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "isAnAuthorizationException", isAuthError);
         return isAuthError;
     }
 
@@ -1142,19 +1653,21 @@ public class DatabaseHelper {
      * @param couplingType
      * @return xa_start flag value
      */
-    public int branchCouplingSupported(int couplingType) 
-    {
-        // Return -1 as we have no support for resref branch coupling
-        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE || couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT) 
-        {
+    public int branchCouplingSupported(int couplingType) {
+        int result = couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && dataStoreHelper != null
+                   ? modifyXAFlag(XAResource.TMNOFLAGS)
+                   : XAResource.TMNOFLAGS;
+
+        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && result == XAResource.TMNOFLAGS
+         || couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Specified branch coupling type not supported");
             }
-            return -1;
+            // -1 indicates the JDBC driver has no support for setting the transaction branch coupling per xa.start
+            result = -1;
         }
 
-        // If resref branch coupling unset then return default xa_start flags
-        return javax.transaction.xa.XAResource.TMNOFLAGS;
+        return result;
     }
 
     /**
@@ -1189,7 +1702,7 @@ public class DatabaseHelper {
      * 
      * Currently the Oracle helper is the only helper that implements this method
      * 
-     * @param conn the connection to attempt to cleanup.
+     * @param conn the connection to attempt to clean up.
      * @param props the default properties to be applied to the connection
      * 
      * @return true if properties were successfully applied.
@@ -1211,11 +1724,5 @@ public class DatabaseHelper {
      */
     public boolean supportsSubjectDoAsForKerberos() {
         return false;
-    }
-    
-    private static String createStaleMapKey(String sqlState, Integer sqlCode) {
-        return (sqlState == null ? "*" : sqlState) + 
-               "/" + 
-               (sqlCode == null ? "*" : sqlCode);
     }
 }

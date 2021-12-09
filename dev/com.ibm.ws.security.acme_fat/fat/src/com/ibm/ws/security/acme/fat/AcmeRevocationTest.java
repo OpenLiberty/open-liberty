@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -38,7 +36,6 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -51,12 +48,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -70,8 +67,9 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeRevocationTest {
-
+	
 	@Server("com.ibm.ws.security.acme.fat.revocation")
 	public static LibertyServer server;
 
@@ -145,7 +143,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -163,9 +161,17 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server and we should now see that
 			 * the certificate is replaced since it was revoked.
 			 */
+			long markStop = System.currentTimeMillis();
 			stopServer();
+			
+			// account for possible time from Boulder: welcome-to-the-purge, purge expected in: 153s
+			long sleepFor = (153 * 1000) - (System.currentTimeMillis() - markStop);
+			if (sleepFor > 0) {
+				Log.info(AcmeRevocationTest.class, methodName, "Before restarting server, sleep for " + sleepFor);
+				Thread.sleep(sleepFor);
+			}
 			server.startServer();
-			server.waitForStringInLog("CWPKI2059I"); // Detected cert revoked!
+			assertNotNull("Did not find revoke in the logs: CWPKI2059I", server.waitForStringInLog("CWPKI2059I")); // Detected cert revoked!
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);
@@ -205,7 +211,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -265,7 +271,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -417,8 +423,9 @@ public class AcmeRevocationTest {
 			/*
 			 * Wait for the cert checker to run and update
 			 */
+			// account for possible delay time from Boulder: welcome-to-the-purge, purge expected in: 153s
 			assertNotNull("Should log message that the certificate was revoked",
-					server.waitForStringInLogUsingMark("CWPKI2067I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
+					server.waitForStringInLogUsingMark("CWPKI2067I", (153 * 1000) +2000 ));
 
 			assertNotNull("Should log message that the certificate was renewed",
 					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 3)) );
@@ -611,7 +618,7 @@ public class AcmeRevocationTest {
 			configureAcmeRevocation(configuration, true);
 			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server with Pebble");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server with Pebble");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -620,18 +627,18 @@ public class AcmeRevocationTest {
 
 			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap to Boulder");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap to Boulder");
 			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
 			server.setMarkToEndOfLog(server.getDefaultLogFile());
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Pebble");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap back to Pebble");
 			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, pebble, certificates1);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Boulder");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap back to Boulder");
 			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);

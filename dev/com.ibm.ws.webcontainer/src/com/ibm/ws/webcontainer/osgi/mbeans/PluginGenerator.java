@@ -21,8 +21,8 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
@@ -43,6 +43,9 @@ import java.util.Set;
 
 import javax.servlet.SessionCookieConfig;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -50,13 +53,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import org.apache.commons.io.FileUtils;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -66,27 +73,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.commons.io.FileUtils;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -137,10 +129,6 @@ public class PluginGenerator {
     private static final String HTTP_ALLOWED_ENDPOINT = "allowFromEndpointRef";
     private static final String LOCALHOST = "localhost";
 
-    private static final String TRANSFORMER_FACTORY_JVM_PROPERTY_NAME = "javax.xml.transform.TransformerFactory";
-
-    private static final Object transformerLock = new Object();
-
     protected enum Role {
         PRIMARY, SECONDARY
     }
@@ -158,17 +146,10 @@ public class PluginGenerator {
     private Integer previousConfigHash = null;
     private File cachedFile;
 
-    private static final boolean CHANGE_TRANSFORMER;
-
-    static {
-        if (!JavaInfo.vendor().equals(Vendor.IBM)) {
-            CHANGE_TRANSFORMER = false;
-        } else {
-            int majorVersion = JavaInfo.majorVersion();
-            CHANGE_TRANSFORMER = majorVersion == 8;
-        }
-    }
-
+    public static final String XALAN_TRANSFORMER_FACTORY_CLASS_NAME = "org.apache.xalan.processor.TransformerFactoryImpl";
+    public static final String IBM_XLTXEJ_COMPILED_TRANSFORMER_FACTORY_CLASS_NAME = "com.ibm.xtq.xslt.jaxp.compiler.TransformerFactoryImpl";
+    public static final String SAX_LEXICAL_HANDLER_CLASS_NAME = "org.xml.sax.ext.LexicalHandler";
+    
     /**
      * Constructor.
      *
@@ -206,10 +187,6 @@ public class PluginGenerator {
         }
     }
 
-    private boolean isBundleUninstalled() {
-        return bundle.getState() == Bundle.UNINSTALLED;
-    }
-
     /**
      * Generate the XML configuration with the current container information.
      *
@@ -232,9 +209,9 @@ public class PluginGenerator {
 
         // Because this method is synchronized there can become a queue of requests waiting which then don't get started
         // for a significant time period. As a result if the servers is now shutting down skip generation.
-        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+        if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
+                Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || WebContainer.isServerStopping()) ? "Server is stopping" : "pcd is null"));
             }
             // add error message in next update
             return;
@@ -359,14 +336,7 @@ public class PluginGenerator {
             rootElement.appendChild(esiProp5);
 
             HttpEndpointInfo httpEndpointInfo;
-            try {
-                httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
-            } catch(IllegalStateException e) { //  BundleContext is no longer valid
-                if(!this.isBundleUninstalled()){
-                    throw e; // Missing for some other reason
-                }
-                return;
-            }
+            httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
 
             // Map of virtual host name to the list of alias data being collected...
             Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
@@ -479,7 +449,7 @@ public class PluginGenerator {
             }
 
             // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
-            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+            if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
                 return;
             }
 
@@ -502,7 +472,7 @@ public class PluginGenerator {
                 // create a server element for each server in the cluster
                 for (ServerData sd : scd.clusterServers) {
                     // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
-                    if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                    if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
                         return;
                     }
 
@@ -760,7 +730,7 @@ public class PluginGenerator {
             // bunch of PMI stuff?
 
             // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
-            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+            if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
                 return;
             }
 
@@ -809,7 +779,7 @@ public class PluginGenerator {
                 try {
                     if (!cachedFile.exists() || writeFile) {
                         fOutputStream = new FileOutputStream(cachedFile);
-                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
+                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, StandardCharsets.ISO_8859_1));
 
                         // Write the plugin config file
                         // Create a style sheet to indent the output
@@ -826,11 +796,6 @@ public class PluginGenerator {
                         serializer.setOutputProperties(oprops);
                         serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
                     }
-                } catch(IOException e){
-                    //path to the cachedFile is broken when bundle was uninstalled
-                    if(!this.isBundleUninstalled()){
-                        throw e; // Missing for some other reason
-                    }
                 } finally {
                     if (pluginCfgWriter != null) {
                         pluginCfgWriter.flush();
@@ -838,19 +803,20 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    try {
-                        copyFile(cachedFile, outFile.asFile());
-                    } catch (IOException e){
-                        //cachedFile no longer exists if the bundle was uninstalled
-                        if(!this.isBundleUninstalled()){
-                            throw e; // Missing for some other reason
-                        }
-                    }
+                    copyFile(cachedFile, outFile.asFile());
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "A new plugin configuration file was not written: the configuration did not change.");
                 }
+            }
+        } catch (IOException | IllegalStateException exception) {
+            // only FFDC if the bundle is in the expected state, otherwise we shouldn't be concerned
+            if (bundle.getState() == Bundle.ACTIVE) {
+                FFDCFilter.processException(exception, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Error creating plugin config xml; " + exception.getMessage());
             }
         } catch (Throwable t) {
             FFDCFilter.processException(t, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
@@ -860,24 +826,26 @@ public class PluginGenerator {
         } finally {
             try {
                 // check to see if the server is shutting down; if it is, bail out
-                if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                        Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
+                        Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || WebContainer.isServerStopping()) ? "Server is stopping" : "pcd is null"));
                     }
                     return;
                 }
+                
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
                 }
                 // Construct the actual plugin file path
                 File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+                
 
                 if (pluginFile.exists()) {
                     FileUtils.forceDelete(pluginFile);
                 }
 
-                outFile.asFile().renameTo(pluginFile);
+                Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                 // tell the user where the file is - quietly for implicit requests
                 String fullFilePath = pluginFile.getAbsolutePath();
@@ -897,85 +865,48 @@ public class PluginGenerator {
     }
 
     @FFDCIgnore(IOException.class)
-    public static void copyFile(File in, File out)
-                    throws IOException
-                {
-                    FileChannel inChannel = new
-                        FileInputStream(in).getChannel();
-                    FileChannel outChannel = new
-                        FileOutputStream(out).getChannel();
-                    try {
-                        inChannel.transferTo(0, inChannel.size(),
-                                outChannel);
-                    }
-                    catch (IOException e) {
-                        throw e;
-                    }
-                    finally {
-                        if (inChannel != null) inChannel.close();
-                        if (outChannel != null) outChannel.close();
-                    }
-                }
+    public static void copyFile(File in, File out) throws IOException {
+        FileChannel inChannel = new FileInputStream(in).getChannel();
+        FileChannel outChannel = new FileOutputStream(out).getChannel();
+        try {
+            inChannel.transferTo(0, inChannel.size(),
+                                 outChannel);
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            if (inChannel != null)
+                inChannel.close();
+            if (outChannel != null)
+                outChannel.close();
+        }
+    }
 
-    private static TransformerFactory getTransformerFactory() {
+    public static TransformerFactory getTransformerFactory() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getTransformerFactory", "CHANGE_TRANSORMER = " + CHANGE_TRANSFORMER);
+            Tr.entry(tc, "getTransformerFactory");
         }
 
         TransformerFactory tf = null;
 
-        if (CHANGE_TRANSFORMER) {
+        //The IBM XLTXEJ Compiled Transformer (some versions of IBM Java 8) does not work properly
+        //If it is present then try to use the Apache Xalan Interpretive processor instead
+        boolean useApacheXalanTransformer = JavaInfo.isSystemClassAvailable(IBM_XLTXEJ_COMPILED_TRANSFORMER_FACTORY_CLASS_NAME) &&
+                                    JavaInfo.isSystemClassAvailable(XALAN_TRANSFORMER_FACTORY_CLASS_NAME) &&
+                                    JavaInfo.isSystemClassAvailable(SAX_LEXICAL_HANDLER_CLASS_NAME);
 
-            // Synchronize setting and restoring the jvm property to prevent this sequence:
-            // 1. Thread 1 gets jvm property
-            // 2. Thread 1 sets jvm property
-            // 3. Thread 2 gets jvm property set by Thread 1
-            // 4. Thread 1 resets jvm property to value obtained at 1.
-            // 5. Thread 2 resets jvm property to value set by Thread 1.
-            synchronized (transformerLock) {
-
-                final String defaultTransformerFactory = getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() + ", current TF jvm property value = "
-                                 + defaultTransformerFactory);
-                }
-
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        System.setProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME, "org.apache.xalan.processor.TransformerFactoryImpl");
-                        return null;
-                    }
-                });
-
-                tf = TransformerFactory.newInstance();
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IBM JDK : Use transformer factory: " + tf.getClass().getName());
-                }
-
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        if (defaultTransformerFactory != null)
-                            System.setProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME, defaultTransformerFactory);
-                        else
-                            System.clearProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
-                        return null;
-                    }
-                });
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IBM JDK : TF jvm property value restored: " + getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME));
-                }
-            }
-        } else {
-            tf = TransformerFactory.newInstance();
+        if (useApacheXalanTransformer) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not IBM JDK : Use transformer factory: " + tf.getClass().getName());
+                Tr.debug(tc, "JDK : Use transformer factory: " + XALAN_TRANSFORMER_FACTORY_CLASS_NAME);
             }
+
+            tf = TransformerFactory.newInstance(XALAN_TRANSFORMER_FACTORY_CLASS_NAME, ClassLoader.getSystemClassLoader());
+        } else {
+            tf = TransformerFactory.newInstance();
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "JDK : Actual transformer factory: " + tf.getClass().getName());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -983,16 +914,6 @@ public class PluginGenerator {
         }
         return tf;
 
-    }
-
-    private static String getJVMProperty(final String propertyName) {
-        String propValue = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty(propertyName);
-            }
-        });
-        return propValue;
     }
 
     /**
@@ -1060,22 +981,6 @@ public class PluginGenerator {
             }
         }
         return currentHash;
-    }
-
-    /**
-     * Return the hash value stored in the cached document
-     */
-    private Integer getHashValue(Document doc) {
-        if (doc == null) {
-            return null;
-        }
-        Element root = doc.getDocumentElement();
-        String hash = root.getAttribute("ConfigHash");
-        if (hash != null)
-            return new Integer(hash);
-        return null;
-
-
     }
 
     Set<DynamicVirtualHost> processVirtualHosts(DynamicVirtualHostManager vhostMgr,
@@ -1383,7 +1288,7 @@ public class PluginGenerator {
         sd.nodeName = GeneratePluginConfig.DEFAULT_NODE_NAME;
 
         // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the caller.
-        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+        if (pcd == null || FrameworkState.isStopping() || WebContainer.isServerStopping()) {
             return false;
         }
 
@@ -1433,8 +1338,6 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                         super((String) null);
                 }
         }
-
-        private String hashValue = null;
 
         /**
          * This is the name of the top-level element found in the XML file. This
@@ -1884,6 +1787,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             StashfileLocation = (String) config.get("sslStashfileLocation");
             CertLabel = (String) config.get("sslCertlabel");
             IPv6Preferred = (Boolean) config.get("ipv6Preferred");
+            ignoreAffinityRequests = (Boolean) config.get("ignoreAffinityRequests");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");

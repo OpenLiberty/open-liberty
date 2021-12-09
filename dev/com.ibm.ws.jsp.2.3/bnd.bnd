@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,6 +23,12 @@ jakartaeeMe: true
 com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
 com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
 com.ibm.ws.jsp23.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
+
+Service-Component: \
+   com.ibm.ws.jsp.v23.dd; \
+      implementation:=com.ibm.ws.javaee.version.PagesVersion; \
+      provide:=com.ibm.ws.javaee.version.PagesVersion; \
+      properties:="version:String=2.3"
 
 Export-Package: \
 	com.ibm.ws.jsp23.webcontainerext;version="2.3", \
@@ -73,12 +79,12 @@ Import-Package: \
    org.apache.el.lang; version="3.0.0", \
    org.apache.el.parser; version="3.0.0", \
    org.apache.el.util; version="3.0.0", \
-   org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.env;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.impl;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.core.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.classfmt;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.env;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.impl;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.problem;usage="JSP", \
    sun.io;resolution:=optional, \
    *
    
@@ -100,4 +106,6 @@ instrument.classesExcludes: org/apache/**/*.class
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.javaee.version;version=latest, \
+	io.openliberty.el.internal.cdi;version=latest

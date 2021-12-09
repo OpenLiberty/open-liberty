@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,19 +14,14 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-	test-applications/defaultDecoratorApp.war/src,\
-	test-applications/DepProducerApp.war/src,\
-	test-applications/globalPriorityLib.jar/src,\
-	test-applications/globalPriorityWebApp.war/src,\
-	test-applications/utilLib.jar/src,\
-	test-applications/withAnnotationsApp.war/src
+	fat/src
 	
 tested.features:\
 	cdi-2.0,\
-        servlet-4.0,\
-        servlet-5.0,\
-        cdi-3.0
+	connectors-2.0,\
+	servlet-4.0,\
+	servlet-5.0,\
+	cdi-3.0
 	
 	
 test.project: true
@@ -35,4 +30,6 @@ test.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+        io.openliberty.org.apache.commons.codec;version=latest

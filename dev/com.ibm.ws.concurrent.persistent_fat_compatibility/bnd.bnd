@@ -23,4 +23,4 @@ fat.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.concurrent.persistent;version=latest,\
-	org.apache.commons.codec;version=1.6
+	io.openliberty.org.apache.commons.codec;version=latest

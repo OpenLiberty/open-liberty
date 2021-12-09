@@ -35,14 +35,10 @@ public class FATSuite {
     //switching between local and remote docker hosts.
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        // Filter out any external docker servers in the 'libhpike' cluster
-        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
-            return !svc.getAddress().contains("libhpike-dockerengine");
-        };
     }
 
-    static final DockerImageName db2Image = DockerImageName.parse("aguibert/db2-ssl:1.0")
+    // Updated docker image to use TLS1.2 for secure communication
+    static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:2.0")
                     .asCompatibleSubstituteFor("ibmcom/db2");
 
     @ClassRule

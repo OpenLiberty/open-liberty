@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,87 +10,41 @@
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.address.AddressFactory;
-import jain.protocol.ip.sip.address.NameAddress;
-import jain.protocol.ip.sip.address.SipURL;
-import jain.protocol.ip.sip.header.AcceptLanguageHeader;
-import jain.protocol.ip.sip.header.CSeqHeader;
-import jain.protocol.ip.sip.header.CallIdHeader;
-import jain.protocol.ip.sip.header.ContactHeader;
-import jain.protocol.ip.sip.header.ContentLengthHeader;
-import jain.protocol.ip.sip.header.ContentTypeHeader;
-import jain.protocol.ip.sip.header.ExpiresHeader;
-import jain.protocol.ip.sip.header.FromHeader;
-import jain.protocol.ip.sip.header.Header;
-import jain.protocol.ip.sip.header.HeaderFactory;
-import jain.protocol.ip.sip.header.HeaderIterator;
-import jain.protocol.ip.sip.header.HeaderParseException;
-import jain.protocol.ip.sip.header.NameAddressHeader;
-import jain.protocol.ip.sip.header.ParametersHeader;
-import jain.protocol.ip.sip.header.RecordRouteHeader;
-import jain.protocol.ip.sip.header.RouteHeader;
-import jain.protocol.ip.sip.header.ToHeader;
-import jain.protocol.ip.sip.header.ViaHeader;
-import jain.protocol.ip.sip.message.Message;
-import jain.protocol.ip.sip.message.MessageFactory;
-
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.sip.Address;
-import javax.servlet.sip.Parameterable;
-import javax.servlet.sip.ServletParseException;
-import javax.servlet.sip.SipApplicationSession;
-import javax.servlet.sip.SipSession;
-import javax.servlet.sip.SipURI;
+import javax.servlet.sip.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import com.ibm.sip.util.log.*;
 import com.ibm.ws.jain.protocol.ip.sip.extensions.RAckHeader;
 import com.ibm.ws.jain.protocol.ip.sip.extensions.RSeqHeader;
-import com.ibm.ws.jain.protocol.ip.sip.header.ExtendedHeader;
-import com.ibm.ws.jain.protocol.ip.sip.header.GenericNameAddressHeaderImpl;
-import com.ibm.ws.jain.protocol.ip.sip.header.GenericParametersHeaderImpl;
-import com.ibm.ws.jain.protocol.ip.sip.header.HeaderImpl;
-import com.ibm.ws.jain.protocol.ip.sip.header.NameAddressHeaderImpl;
-import com.ibm.ws.jain.protocol.ip.sip.header.ParametersHeaderImpl;
+import com.ibm.ws.jain.protocol.ip.sip.header.*;
 import com.ibm.ws.jain.protocol.ip.sip.message.MessageImpl;
 import com.ibm.ws.sip.container.SipContainer;
 import com.ibm.ws.sip.container.parser.SipServletDesc;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
+import com.ibm.ws.sip.container.proxy.SipProxyInfo;
 import com.ibm.ws.sip.container.servlets.ext.SipServletMessageExt;
 import com.ibm.ws.sip.container.transaction.SipTransaction;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
 import com.ibm.ws.sip.container.util.SipUtil;
 import com.ibm.ws.sip.container.virtualhost.VirtualHostAlias;
 import com.ibm.ws.sip.parser.HeaderCreator;
+import com.ibm.ws.sip.parser.SipConstants;
 import com.ibm.ws.sip.properties.CoreProperties;
 import com.ibm.ws.sip.stack.properties.StackProperties;
 import com.ibm.ws.sip.stack.util.SipStackUtil;
 //TODO Liberty import com.ibm.ws.management.AdminHelper;
+
+import jain.protocol.ip.sip.*;
+import jain.protocol.ip.sip.address.*;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.Message;
+import jain.protocol.ip.sip.message.MessageFactory;
 
 /**
  * @author Amir Perlman, Feb 16, 2003
@@ -2753,23 +2707,31 @@ public abstract class SipServletMessageImpl
      */
     protected void parseTransport() throws HeaderParseException {
     	// The "IBM-Client-Address" header looks like this 
-    	// IBM-Client-Address:  1.1.1.1:5555;local-address=2.2.2.2:5060. 
+		// IBM-Client-Address: 1.1.1.1:5555;local-address=2.2.2.2:5060
+		// IBM-Client-Address: 1.1.1.1:5555;local-address=2.2.2.2:5060;tcp
+		// IBM-Client-Address: 10.30.1.49:15061;local-address=2.2.2.2:5060;initial-remote=10.30.1.49:15061;tls
     	if (m_clientAddress != null && m_clientAddress.length()>0){
-    		if (c_logger.isTraceDebugEnabled())
-            {
+    		if (c_logger.isTraceDebugEnabled()) {
                 c_logger.traceDebug("parseTransport: parsing clientAddress=" + m_clientAddress);
             }
     		
     		int delimeter = m_clientAddress.indexOf(";");
     		int initialRemoteDelim = m_clientAddress.indexOf(";", delimeter+1);
-    		int transportDelim = m_clientAddress.indexOf(";", initialRemoteDelim+1);
+    		int transportDelim = -1;
+    		if (initialRemoteDelim > 0) {
+        		transportDelim = m_clientAddress.indexOf(";", initialRemoteDelim+1);
+    		}
     		String remoteAddrAndPort = m_clientAddress.substring(0, delimeter);
     		String localAddrAndPort = null;
-    		if( initialRemoteDelim < 0 ){
+    		if (initialRemoteDelim < 0 ){
     			localAddrAndPort = m_clientAddress.substring(delimeter + 1);
     		}
-    		else{
+    		else {
     			localAddrAndPort = m_clientAddress.substring(delimeter + 1, initialRemoteDelim);
+    			if (!m_clientAddress.substring(initialRemoteDelim+1).startsWith(INITIAL_REMOTE_TAG)) {
+    				transportDelim = initialRemoteDelim;
+    				initialRemoteDelim = -1;
+    			}
     		}
     		 
 			int remotePortStart = remoteAddrAndPort.lastIndexOf(":");
@@ -2793,8 +2755,11 @@ public abstract class SipServletMessageImpl
             } else {
     			m_initialRemoteAddr = m_clientAddress.substring(initialRemoteDelim + INITIAL_REMOTE_TAG.length() + 2,initialRemotePortDelim);
     			m_initialRemotePort = parsePortNumber(m_clientAddress, initialRemotePortDelim+1, transportDelim);
-    			m_initialTransport = m_clientAddress.substring(transportDelim + 1, m_clientAddress.length()); 
             }
+
+            if (transportDelim > 0) {
+    			m_initialTransport = m_clientAddress.substring(transportDelim + 1);
+    		}
             	
     		m_localPort = parsePortNumber(localAddrAndPort, localPortStart+1, localAddrAndPort.length()); 
     	}   
@@ -2828,6 +2793,8 @@ public abstract class SipServletMessageImpl
 		int port = -1;
 		String transport = null;
 		
+		boolean isSetLbOutboundIfEnabled = PropertiesStore.getInstance().getProperties().getBoolean(
+				CoreProperties.ENABLE_SET_LB_OUTBOUND_INTERFACE);
 		String initialRemoteHost = null;
 		int initialRemotePort = -1;
 		
@@ -2836,15 +2803,35 @@ public abstract class SipServletMessageImpl
     		// is sent to another application on this container
     		
     		//Use the provider's listening point as the Contact Address. 
-            ListeningPoint point = getSipProvider().getListeningPoint();
+            ListeningPoint lPoint = getSipProvider().getListeningPoint();
+			transport = lPoint.getTransport();
+	
+    		if (isSetLbOutboundIfEnabled) {
+				TransactionUserWrapper tu = getTransactionUser();
 
-            host = point.getHost();
-            port = point.getPort();
+				if (tu != null) {
+					SipProxyInfo proxyInfo = SipProxyInfo.getInstance();
+					
+					int index = tu.getPreferedOutboundIface(transport);				
+					if (index != SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED) {
+						SipURI sipURI = proxyInfo.getOutboundInterface(index, transport);
+						host = sipURI.getHost();
+						port = sipURI.getPort();
+			            initialRemoteHost = host;
+			    		initialRemotePort = port;
+					}
+				}
+			}
 
-            transport = point.getTransport();
-            initialRemoteHost = host;
-    		initialRemotePort = port;
-    	}else{
+			if (host == null) {
+                //We don't have a valid host port. Use the local listening point
+                host = lPoint.getHost();
+                port = lPoint.getPort();
+
+	            initialRemoteHost = host;
+	            initialRemotePort = port;
+			}
+		} else {
     		//in this case, the message got the m_clientAddress from an original incoming request
     		// this will happen if the application is a proxy.
     		host = getLocalAddrInt();
@@ -2852,8 +2839,8 @@ public abstract class SipServletMessageImpl
     		transport = getInitialTransportInt();
     		initialRemoteHost = getInitialRemoteAddrInt();
     		initialRemotePort = getInitialRemotePortInt();
-    	}
-    		
+		}
+    	
     	
     	StringBuilder sb = new StringBuilder(100);
     	
@@ -2879,9 +2866,9 @@ public abstract class SipServletMessageImpl
     }
 
     /**
-     * Gets the underlaying Jain Sip Message wrapped by this Sip Servlet 
+     * Gets the underlying J Sip Message wrapped by this Sip Servlet 
      * Message.
-     * @return The underlaying Sip Message if available, otherwise null
+     * @return The underlying Sip Message if available, otherwise null
      */
     Message getJainSipMessage()
     {
@@ -2889,8 +2876,8 @@ public abstract class SipServletMessageImpl
     }
 
     /**
-     * Gets the Via Headers associated with this message.
-     * @pre m_message != null 
+     * Gets the Via Headers associated with this message. 
+     * {@code m_message != null}
      */
     List getViaHeaders()
     {
@@ -3758,6 +3745,20 @@ public abstract class SipServletMessageImpl
 			}
 	    }
         return m_remoteAddr;
+    }
+	
+	protected String getLocalTransportInt()
+	{
+		// Assumption is that nobody can change the "IBM-Client-Address" header
+    	if (m_initialTransport == null)
+    	{
+	        try {
+	        	parseTransport();
+			} catch (HeaderParseException e) {
+				log("getLocalPort", "Unable to get local transport", e);
+			}
+	    }
+        return m_initialTransport;
     }
 
     /**

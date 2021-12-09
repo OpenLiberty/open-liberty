@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
     static final String[] EE8_FEATURES_ARRAY = { "appClientSupport-1.0",
                                                  "javaee-8.0",
+                                                 "jakartaee-8.0",
                                                  "webProfile-8.0",
                                                  "javaeeClient-8.0",
                                                  "servlet-4.0",
@@ -31,7 +32,6 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jpa-2.2",
                                                  "jpaContainer-2.2",
                                                  "batch-1.0",
-                                                 "batchManagement-1.0",
                                                  "beanValidation-2.0",
                                                  "jaxrs-2.1",
                                                  "jaxrsClient-2.1",
@@ -62,14 +62,19 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "wasJmsClient-2.0",
                                                  "wasJmsServer-1.0",
                                                  "wasJmsSecurity-1.0",
-                                                 "jaxws-2.2" };
+                                                 "jaxws-2.2",
+                                                 "j2eeManagement-1.1",
+                                                 "jaspic-1.1",
+                                                 "jacc-1.5" };
 
     public static final Set<String> EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
 
     public EE8FeatureReplacementAction() {
         super(EE8_FEATURE_SET);
+        removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

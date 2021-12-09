@@ -99,6 +99,7 @@ public class ConsumerUtilTest {
     private static final String MSG_JWT_IAT_AFTER_CURRENT_TIME = "CWWKS6044E";
     private static final String MSG_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
     private static final String MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS = "CWWKS6063E";
+    private static final String MSG_JWE_REQUIRED_BUT_TOKEN_NOT_JWE = "CWWKS6064E";
 
     private static final String JOSE_EXCEPTION = "org.jose4j.lang.JoseException";
     private static final String PARSE_EXCEPTION = "org.jose4j.json.internal.json_simple.parser.ParseException";
@@ -158,6 +159,7 @@ public class ConsumerUtilTest {
     public void beforeTest() {
         System.out.println("Entering test: " + testName.getMethodName());
         consumerUtil = new ConsumerUtil(kssRef);
+        ConsumerUtil.jwtCache = null;
         JwtUtils.setSSLSupportService(sslSupportRef);
     }
 
@@ -671,6 +673,143 @@ public class ConsumerUtilTest {
     }
 
     // TODO - parseJwtWithoutValidation
+
+    /************************************* checkJwtFormatAgainstConfigRequirements *************************************/
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jwsRequired_jweString() {
+        try {
+            final String tokenString = "test.test.test.test.test";
+            try {
+                mockery.checking(new Expectations() {
+                    {
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
+                        allowing(jwtConfig).getId();
+                        will(returnValue(consumerConfigId));
+                    }
+                });
+                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+                fail("Should have thrown Exception but did not.");
+            } catch (Exception e) {
+                validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jwsRequired_jwsString() {
+        try {
+            final String tokenString = "test.test.test";
+            mockery.checking(new Expectations() {
+                {
+                    allowing(jwtConfig).getKeyManagementKeyAlias();
+                    will(returnValue(null));
+                }
+            });
+            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jwsString() {
+        try {
+            final String tokenString = "test.test.test";
+            try {
+                mockery.checking(new Expectations() {
+                    {
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue("myAlias"));
+                        allowing(jwtConfig).getId();
+                        will(returnValue(consumerConfigId));
+                    }
+                });
+                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+                fail("Should have thrown Exception but did not.");
+            } catch (Exception e) {
+                validateException(e, MSG_JWE_REQUIRED_BUT_TOKEN_NOT_JWE);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jweString() {
+        try {
+            final String tokenString = "test.test.test.test.test";
+            mockery.checking(new Expectations() {
+                {
+                    allowing(jwtConfig).getKeyManagementKeyAlias();
+                    will(returnValue("myAlias"));
+                }
+            });
+            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************* getJwtContextFromCache *************************************/
+
+    @Test
+    public void test_getJwtContextFromCache_nothingCached() {
+        try {
+            final String tokenString = testName.getMethodName();
+            JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
+            assertNull("Should not have found anything in the cache, but got: " + result, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_getJwtContextFromCache_validCachedJwt() {
+        try {
+            final String tokenString = testName.getMethodName();
+            mockery.checking(new Expectations() {
+                {
+                    allowing(jwtContext).getJwtClaims();
+                    will(returnValue(jwtClaims));
+                    allowing(jwtClaims).getExpirationTime();
+                    will(returnValue(createDate(1000 * 60 * 60 * 2)));
+                    allowing(jwtConfig).getClockSkew();
+                    will(returnValue(3600L));
+                }
+            });
+            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig);
+            JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
+            assertEquals("Result did not match the expected cache object.", jwtContext, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_getJwtContextFromCache_expiredCachedJwt() {
+        try {
+            final String tokenString = testName.getMethodName();
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtContext).getJwtClaims();
+                    will(returnValue(jwtClaims));
+                    one(jwtClaims).getExpirationTime();
+                    will(returnValue(createDate(-1 * 1000 * 60 * 60 * 2)));
+                    one(jwtConfig).getClockSkew();
+                    will(returnValue(0L));
+                }
+            });
+            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig);
+            JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
+            assertNull("Should not have found anything in the cache, but got: " + result, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     /********************************************* validateIssuer *********************************************/
 

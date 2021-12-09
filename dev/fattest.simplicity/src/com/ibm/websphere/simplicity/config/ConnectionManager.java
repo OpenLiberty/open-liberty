@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ public class ConnectionManager extends ConfigElement {
     private String autoCloseConnections;
     private String connectionTimeout;
     private String enableSharingForDirectLookups;
+    private String enableContainerAuthForDirectLookups;
     private String maxIdleTime;
     private String maxPoolSize;
     private String minPoolSize;
@@ -150,6 +151,15 @@ public class ConnectionManager extends ConfigElement {
     }
 
     @XmlAttribute
+    public void setEnableContainerAuthForDirectLookups(String enableContainerAuthForDirectLookups) {
+        this.enableContainerAuthForDirectLookups = enableContainerAuthForDirectLookups;
+    }
+
+    public String getEnableContainerAuthForDirectLookups() {
+        return enableContainerAuthForDirectLookups;
+    }
+
+    @XmlAttribute
     public void setMaxIdleTime(String maxIdleTime) {
         this.maxIdleTime = maxIdleTime;
     }
@@ -224,6 +234,8 @@ public class ConnectionManager extends ConfigElement {
             buf.append("connectionTimeout=\"" + connectionTimeout + "\" ");
         if (enableSharingForDirectLookups != null)
             buf.append("enableSharingForDirectLookups=\"" + enableSharingForDirectLookups + "\" ");
+        if (enableContainerAuthForDirectLookups != null)
+            buf.append("enableContainerAuthForDirectLookups=\"" + enableContainerAuthForDirectLookups + "\" ");
         if (maxIdleTime != null)
             buf.append("maxIdleTime=\"" + maxIdleTime + "\" ");
         if (maxPoolSize != null)

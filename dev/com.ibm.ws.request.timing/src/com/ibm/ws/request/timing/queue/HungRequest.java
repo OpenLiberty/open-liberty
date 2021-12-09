@@ -73,6 +73,7 @@ public class HungRequest extends QueueableRequest {
 		hungReq.append("Initial Delay (ms) : " + getInitialDelay() + String.format("%n"));
 		hungReq.append("Hung request threshold mean (ms) : " + hungRequestThreshold + String.format("%n"));
 		hungReq.append("Include Context Info : " + includeContextInfo + String.format("%n"));
+		hungReq.append("Enable Thread Dumps : " + enableThreadDumps + String.format("%n"));
 		hungReq.append("-----------------------------------------------------------------------");
 		return hungReq.toString();
 	}

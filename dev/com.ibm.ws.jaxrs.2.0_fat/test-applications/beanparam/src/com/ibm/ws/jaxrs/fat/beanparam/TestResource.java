@@ -31,4 +31,13 @@ public class TestResource {
         System.out.println("bean.inner.innerForm=" + bean.inner.innerForm);
         return content + "&" + bean.form + "&" + bean.inner.innerForm;
     }
+
+    @POST
+    @Path("cookieparam")
+    public String cookieParam(String content, @BeanParam BeanParamEntity bean) {
+        System.out.println("content=" + content);
+        System.out.println("bean.cookie=" + bean.cookie);
+        System.out.println("bean.inner.innerCookie=" + bean.inner.innerCookie);
+        return content + "&" + bean.cookie + "&" + bean.inner.innerCookie;
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.extension;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +26,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
@@ -30,16 +36,15 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.microprofile.config.internal.common.ConfigIntrospectionProvider;
 import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
-@Component(service = { ConfigProviderResolver.class,
-                       ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
-public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener {
+@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, ConfigIntrospectionProvider.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener, ConfigIntrospectionProvider {
 
-    //We try to keep track of which application is using which Config. There are cases where the Config is used by a global component
-    //or we just can't work out which app it is. Then we fall back to this global name.
-    public static final String GLOBAL_CONFIG_APPLICATION_NAME = "!GLOBAL_CONFIG_APPLICATION_NAME!";
+    private static final TraceComponent tc = Tr.register(OLSmallRyeConfigProviderResolver.class);
 
     //NOTE: a lock must be held on the configCache whenever reading or writing to the configCache or any of the contained ConfigWrappers.
     //map from config to wrapper
@@ -70,39 +75,54 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
 
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
-        super.registerConfig(config, classLoader);
-        registerConfig(config, classLoader, getApplicationName());
+        synchronized (this.configCache) {
+            super.registerConfig(config, classLoader);
+            registerConfig(config, classLoader, getApplicationName());
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public Config getConfig(ClassLoader classLoader) {
-        Config config = super.getConfig(classLoader);
-        registerConfig(config, classLoader, getApplicationName());
-
+        Config config = null;
+        synchronized (this.configCache) {
+            config = super.getConfig(classLoader);
+            registerConfig(config, classLoader, getApplicationName());
+        }
         return config;
     }
 
     /**
      * Register this config as associated with this classloader and in use by this app
+     * Must be synchronized on configCache before calling
      *
      * @param config
      * @param classLoader
      * @param applicationName
      */
     private void registerConfig(Config config, ClassLoader classLoader, String applicationName) {
-        synchronized (this.configCache) {
-            ConfigWrapper wrapper = this.configCache.computeIfAbsent(config, (cfg) -> new ConfigWrapper(cfg));
-            wrapper.addApplication(applicationName);
+        ConfigWrapper wrapper = this.configCache.computeIfAbsent(config, (cfg) -> new ConfigWrapper(cfg));
+        wrapper.addApplication(applicationName);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            traceCache();
         }
     }
 
     @Override
     public void releaseConfig(Config config) {
-        super.releaseConfig(config);
         synchronized (this.configCache) {
-            this.configCache.remove(config);
+            deregisterAndReleaseConfig(config);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                traceCache();
+            }
         }
+    }
+
+    //Must be synchronized on configCache before calling
+    private void deregisterAndReleaseConfig(Config config) {
+        super.releaseConfig(config);
+        this.configCache.remove(config);
     }
 
     /** {@inheritDoc} */
@@ -127,13 +147,18 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
         synchronized (this.configCache) {
             Set<Config> configsToRelease = new HashSet<>();
             for (ConfigWrapper wrapper : this.configCache.values()) {
-                boolean release = wrapper.removeApplication(applicationName);
-                if (release) {
+                boolean empty = wrapper.removeApplication(applicationName);
+                if (empty) {
+                    //If the wrapper is now empty, add the config to the set to be released
                     configsToRelease.add(wrapper.getConfig());
                 }
             }
             for (Config config : configsToRelease) {
-                releaseConfig(config);
+                deregisterAndReleaseConfig(config);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                traceCache();
             }
         }
     }
@@ -156,9 +181,61 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
         if (applicationName == null) {
             //There are cases where the Config is used by a global component or we just can't work out which app it is. Then we fall back to this global name.
             //Configs used "globally" will be shutdown when the server is shutdown
-            applicationName = GLOBAL_CONFIG_APPLICATION_NAME;
+            applicationName = ConfigWrapper.GLOBAL_CONFIG_APPLICATION_NAME;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unable to determine application name for Config. Using \"" + applicationName + "\".");
+                traceStack();
+            }
+
         }
         return applicationName;
     }
 
+    @Override
+    public Map<String, Set<Config>> getConfigsByApplication() {
+        Map<String, Set<Config>> appInfos = new HashMap<>();
+        synchronized (configCache) {
+            for (ConfigWrapper wrapper : configCache.values()) {
+                for (String appName : wrapper.listApplications()) {
+                    appInfos.computeIfAbsent(appName, x -> new HashSet<>())
+                            .add(wrapper.getConfig());
+                }
+            }
+        }
+        return appInfos;
+    }
+
+    @Trivial
+    private static void traceStack() {
+        Exception e = new Exception();
+        OutputStream os = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(os);
+        try {
+            e.printStackTrace(pw);
+        } finally {
+            pw.close();
+        }
+        Tr.debug(tc, "OLSmallRyeConfigProviderResolver call stack: " + os.toString());
+    }
+
+    @Trivial
+    private void traceCache() {
+        StringBuilder builder = new StringBuilder("\n# OLSmallRyeConfigProviderResolver config cache #\n");
+        synchronized (configCache) {
+            for (ConfigWrapper wrapper : configCache.values()) {
+                builder.append("########################\n");
+                builder.append("Config : ");
+                builder.append(wrapper.getConfig());
+                builder.append("\n");
+                for (String appName : wrapper.listApplications()) {
+                    builder.append("--> Application: ");
+                    builder.append(appName);
+                    builder.append("\n");
+                }
+            }
+            builder.append("########################\n");
+        }
+        Tr.debug(tc, builder.toString());
+    }
 }

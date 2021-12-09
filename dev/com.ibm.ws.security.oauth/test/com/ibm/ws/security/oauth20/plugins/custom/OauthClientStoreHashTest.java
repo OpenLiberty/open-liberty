@@ -12,6 +12,7 @@ package com.ibm.ws.security.oauth20.plugins.custom;
 
 import org.junit.Before;
 
+import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 
 /**
@@ -19,11 +20,13 @@ import com.ibm.ws.security.oauth20.util.HashSecretUtils;
  */
 public class OauthClientStoreHashTest extends OauthClientStoreCommon {
 
+    public OauthClientStoreHashTest() {
+        clientRegistrationHelper = new ClientRegistrationHelper(true);
+    }
+
     @Override
     @Before
     public void setUp() throws Exception {
-        setHash(true);
-
         super.setUp();
 
         oauthClientStore = new OauthClientStore(componentId, oauthStore, HashSecretUtils.PBKDF2WithHmacSHA512);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class ProgrammaticExtendCDIServerCDI12EP extends Endpoint implements
 
     @Override
     public void onMessage(String msg) {
-
+        Logger.getLogger(ProgrammaticExtendCDIServerCDI12EP.class.getName()).log(Level.INFO, "recieved msg", msg);
         String responseMessage = "Nothing yet";
         try {
             int depCount = depScopedCounter.getNext();
@@ -58,6 +58,7 @@ public class ProgrammaticExtendCDIServerCDI12EP extends Endpoint implements
             responseMessage = ex.toString();
         }
         try {
+            Logger.getLogger(ProgrammaticExtendCDIServerCDI12EP.class.getName()).log(Level.INFO, "Sending responseMessage", responseMessage);
             this.session.getBasicRemote().sendText(responseMessage);
         } catch (Exception ex) {
             Logger.getLogger(ProgrammaticExtendCDIServerCDI12EP.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,6 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.jwt.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,7 +79,7 @@ public class MpConfigProperties extends HashMap<String, String> {
             return defaultAlg;
         }
         if (!isSupportedSignatureAlgorithm(publicKeyAlgMpConfigProp)) {
-            Tr.warning(tc, "MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED", new Object[] { publicKeyAlgMpConfigProp, defaultAlg });
+            Tr.warning(tc, "MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED", new Object[] { publicKeyAlgMpConfigProp, defaultAlg, getSupportedSignatureAlgorithms() });
             return defaultAlg;
         }
         return publicKeyAlgMpConfigProp;
@@ -78,7 +89,11 @@ public class MpConfigProperties extends HashMap<String, String> {
         if (sigAlg == null) {
             return false;
         }
-        return sigAlg.matches("[RHE]S(256|384|512)");
+        return getSupportedSignatureAlgorithms().contains(sigAlg);
+    }
+
+    private List<String> getSupportedSignatureAlgorithms() {
+        return Arrays.asList("RS256", "RS384", "RS512", "HS256", "HS384", "HS512", "ES256", "ES384", "ES512");
     }
 
     public List<String> getConfiguredAudiences(JwtConsumerConfig config) {

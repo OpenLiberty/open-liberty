@@ -16,14 +16,22 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.transaction.test.tests.DupXidTest;
+import com.ibm.ws.transaction.test.tests.Simple2PCCloudTest;
 
 import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DupXidTest.class,
+                Simple2PCCloudTest.class,
 })
 public class FATSuite {
     public static DatabaseContainerType type = DatabaseContainerType.Derby; // Default container type
     public static JdbcDatabaseContainer<?> testContainer;
+
+    public static void beforeSuite() throws Exception {
+    }
+
+    public static void afterSuite() throws Exception {
+    }
 }

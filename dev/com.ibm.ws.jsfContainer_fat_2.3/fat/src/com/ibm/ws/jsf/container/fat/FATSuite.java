@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,10 +54,10 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.3.jar";
-    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.7.jar";
-    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.7.jar";
+    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
+    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.9.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test
-    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.0-RC1.jar";
+    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.1.jar";
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         if (JakartaEE9Action.isActive()) {

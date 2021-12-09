@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=\u00dcberpr\u00fcfen Sie die Deskriptordatei 
 system.java.compiler.not.found=JSPG0304W: Das JSP-Attribut useJDKCompiler ist auf true gesetzt, aber der Java-SDK-Compiler wurde nicht gefunden. Der JSP-Container verwendet den im Produkt integrierten Compiler, um die JSP-Dateien im Webmodul {0} zu kompilieren.
 system.java.compiler.not.found.explanation=Der JSP-Container hat den Systemcompiler nicht gefunden. Dies weist gew\u00f6hnlich darauf hin, dass die JAR-Datei des Java-SDK, tools.jar, nicht im Klassenpfad gefunden wurde.
 system.java.compiler.not.found.useraction=Stellen Sie sicher, dass die JAR-Datei des Java-SDK, tools.jar, im Klassenpfad enthalten ist und dass das Java-SDK die Java-Compiler-API unterst\u00fctzt. Weitere Informationen finden Sie in Java Specification Request 199.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: Das Feature JSP [Pages] wurde nicht mit einer zul\u00e4ssigen Version geladen.
+jsp.feature.not.loaded.correctly.explanation=Das Feature JSP [Pages] wurde mit einer Version geladen, die der Java [Jakarta] EE-Spezifikation dieses JSP-[Pages]-Features entspricht. Das Feature wurde ohne definierte Version geladen.
+jsp.feature.not.loaded.correctly.useraction=Pr\u00fcfen Sie, ob in der Datei server.xml ein Feature JSP [Pages] enthalten ist. Es darf nur ein einziges angegeben werden.

@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -51,8 +52,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+
         //Only run this test on DB2ZOS
-        if (!isDB2ForZOS(dbProductName)) {
+        if (!isDB2ZOS) {
             return;
         }
 
@@ -111,8 +114,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isDB2I = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2I);
+
         //Only run this test on DB2-i series
-        if (!isDB2ForISeries(dbProductName)) {
+        if (!isDB2I) {
             return;
         }
 
@@ -171,8 +176,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
+
         //Only run this test on MySQL
-        if (!isMySQL(dbProductName)) {
+        if (!isMySQL) {
             return;
         }
 
@@ -231,8 +238,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+
         //Only run this test on Derby
-        if (!isDerby(dbProductName)) {
+        if (!isDerby) {
             return;
         }
 
@@ -293,8 +302,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         final String dbMajorVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbMajorVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbMajorVersion"));
 //        final String dbMinorVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbMinorVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbMinorVersion"));
 
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+
         //Only run this test on Oracle
-        if (!isOracle(dbProductName)) {
+        if (!isOracle) {
             return;
         }
 
@@ -355,8 +366,10 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isHana = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.HANA);
+
         //Only run this test on Hana
-        if (!isHana(dbProductName)) {
+        if (!isHana) {
             return;
         }
 

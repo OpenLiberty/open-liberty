@@ -1,3 +1,13 @@
+#*******************************************************************************
+# Copyright (c) 2019,2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -10,7 +20,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 WS-TraceGroup: WSAT
 
 Import-Package: \
-  javax.xml.ws.*;version=!,\
+  javax.xml.ws.*;version="[2.2,3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
   *
 
 Export-Package: \
@@ -53,6 +64,7 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.wsat.cxf.utils.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\

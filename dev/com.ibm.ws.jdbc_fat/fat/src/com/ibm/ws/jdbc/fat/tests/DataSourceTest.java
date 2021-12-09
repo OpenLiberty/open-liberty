@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -168,6 +168,21 @@ public class DataSourceTest extends FATServletClient {
     @ExpectedFFDC({ "javax.resource.ResourceException", "java.lang.IllegalStateException", "java.sql.SQLException" })
     public void testEnableSharingForDirectLookupsFalse() throws Exception {
         runTest();
+    }
+
+    @Test
+    public void testEnableContainerAuthForDirectLookupsFalse() throws Exception {
+        runTest();
+    }
+
+    @Test
+    public void testEnableContainerAuthForDirectLookupsTrue() throws Exception {
+        runTest();
+    }
+
+    @Test
+    public void testEnableContainerAuthForDirectLookupsTrueOnAppDefinedDataSource() throws Exception {
+        runTest(server, dsdfat, testName);
     }
 
     @Test

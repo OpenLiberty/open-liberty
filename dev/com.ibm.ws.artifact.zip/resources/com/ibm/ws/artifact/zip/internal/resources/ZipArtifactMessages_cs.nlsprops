@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Restartujte server. P\u0159i ak
 reaper.reopen.active=CWWKM0127W: Znovu otev\u0159\u00edt {0}
 reaper.reopen.active.explanation=Neo\u010dek\u00e1van\u00e1 zm\u011bna zp\u016fsobila, \u017ee se m\u00e1 znovu otev\u0159\u00edt otev\u0159en\u00fd archivn\u00ed soubor aplikace. Server se pokusil z\u00edskat aktualizovan\u00fd obsah archivn\u00edho souboru, ale nemus\u00ed m\u00edt pln\u011b aktualizovan\u00fd intern\u00ed v\u00fdpis obsahu archivu.
 reaper.reopen.active.useraction=Restartujte server. P\u0159i aktualizaci soubor\u016f aplikace po\u010dkejte na uveden\u00ed serveru do klidov\u00e9ho stavu a vy\u010dkejte alespo\u0148 p\u016fl sekundy, aby bylo mo\u017en\u00e9 soubory aplikace zav\u0159\u00edt.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: Chyb\u00ed soubor {0} zip.
+missing.zip.file.explanation=B\u011bhem zpracov\u00e1n\u00ed archivu do\u0161lo k v\u00fdjimce, proto\u017ee zadan\u00fd soubor nebyl nalezen. 
+missing.zip.file.useraction=Zkontrolujte, zda se zadan\u00fd soubor ukon\u010d\u00ed a m\u00e1 opr\u00e1vn\u011bn\u00ed, kter\u00e1 jsou \u010diteln\u00e1 pro server.

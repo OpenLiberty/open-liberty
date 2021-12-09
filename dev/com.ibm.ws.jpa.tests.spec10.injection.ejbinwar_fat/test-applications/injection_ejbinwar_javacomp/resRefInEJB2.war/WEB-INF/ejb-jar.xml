@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+        <!--  Stateless Session Bean, Package Protection, No Inheritance -->
+        <session>
+            <ejb-name>JPAEjbInWarJavaCompEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+  			<resource-ref>
+				<res-ref-name>jdbc/JC_JPA_JTA_DS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+				<mapped-name>jdbc/JC_JPA_JTA_DS</mapped-name>
+			</resource-ref>
+			<resource-ref>
+				<res-ref-name>jdbc/JC_JPA_NJTA_DS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+				<mapped-name>jdbc/JC_JPA_NJTA_DS</mapped-name>
+			</resource-ref>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

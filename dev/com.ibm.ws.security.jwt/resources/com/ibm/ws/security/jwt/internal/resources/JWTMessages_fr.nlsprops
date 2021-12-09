@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -314,10 +314,10 @@ SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Un sch\u00e9ma HTTP est utilis\
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Le noeud final sp\u00e9cifi\u00e9 requiert le protocole HTTPS, mais le protocole HTTP a \u00e9t\u00e9 utilis\u00e9 dans l'URL de demande.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=V\u00e9rifiez l'URL de demande et assurez-vous qu'elle utilise le protocole HTTPS ou changez la configuration de sorte que le protocole HTTPS ne soit pas requis.
 
-# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: L''algorithme de signature [{0}] qui est sp\u00e9cifi\u00e9 par les propri\u00e9t\u00e9s MicroProfile Config n''est pas pris en charge. L''algorithme de signature [{1}] va \u00eatre utilis\u00e9.
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used, 2=List of supported algorithms
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: L''algorithme de signature [{0}] qui est sp\u00e9cifi\u00e9 par les propri\u00e9t\u00e9s MicroProfile Config n''est pas pris en charge. L''algorithme de signature [{1}] va \u00eatre utilis\u00e9. Voici les algorithmes pris en charge : {2}
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Seuls certains algorithmes de signature RSA, Elliptical Curve et HMAC sont pris en charge. L'algorithme de signature qui est sp\u00e9cifi\u00e9 par les propri\u00e9t\u00e9s MicroProfile Config ne fait pas partie des algorithmes de signature pris en charge.
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Sp\u00e9cifiez un algorithme de signature pris en charge dans les propri\u00e9t\u00e9s MicroProfile Config. Les algorithmes de signature pris en charge sont ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 et HS512.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Sp\u00e9cifiez un algorithme de signature pris en charge dans les propri\u00e9t\u00e9s MicroProfile Config. Les algorithmes pris en charge sont indiqu\u00e9s dans le message.
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
@@ -332,7 +332,7 @@ BETA_SIGNATURE_ALGORITHM_USED.useraction=Configurez un algorithme de signature q
 
 # 0=JWT configuration ID, 1=Exception message
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Le consommateur de jeton Web JSON (JWT) [{0}] a rencontr\u00e9 une erreur lors de l''extraction du contenu de la signature Web JSON (JWS) depuis le jeton JWE (JSON Web Encryption). {1}
-ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Le jeton JWE est peut-\u00eatre incorrectement form\u00e9 ou des informations peuvent manquer. La cl\u00e9 de gestion des cl\u00e9s qui est utilis\u00e9e pour d\u00e9chiffrer le jeton JWE peut manquer ou ne pas parvenir \u00e0 d\u00e9chiffrer le jeton.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Le jeton JWE est peut-\u00eatre incorrectement form\u00e9 ou des informations peuvent manquer. La cl\u00e9 de gestion des cl\u00e9s qui est utilis\u00e9e pour d\u00e9chiffrer le jeton JWE peut manquer ou ne pas parvenir \u00e0 d\u00e9chiffrer le jeton. Reportez-vous \u00e0 l'erreur incluse dans le message pour plus d'informations.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le jeton JWE est correctement form\u00e9. V\u00e9rifiez que la configuration du consommateur de jeton Web JSON (JWT) r\u00e9f\u00e9rence la cl\u00e9 de gestion des cl\u00e9s qui correspond \u00e0 la cl\u00e9 utilis\u00e9e pour chiffrer le jeton JWE.
 
 # 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
@@ -373,10 +373,16 @@ DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utilisez un chemin d'acc\u00e8s relat
 JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Le jeton figurant dans la demande n''est pas au format JWS (JSON Web Signature) alors que le consommateur de jeton JWT [{0}] accepte uniquement les jetons au format JWS.
 JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Il se peut que le jeton qui figure dans la demande soit incorrectement form\u00e9 ou qu'il soit au format JWE (JSON Web Encryption). Les jetons doivent \u00eatre au format JWS si l'emplacement de la cl\u00e9 de d\u00e9chiffrement JWE n'est pas configur\u00e9. Si vous utilisez la fonction MicroProfile JWT, la version 1.2 ou une version ult\u00e9rieure de la fonction doit \u00eatre configur\u00e9e pour accepter les jetons au format JWE.
 JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pour accepter les jetons JWE, configurez la propri\u00e9t\u00e9 MicroProfile Config mp.jwt.decrypt.key.location ou l'attribut keyManagementKeyAlias dans la configuration de consommateur JWT. Si vous utilisez la fonction MicroProfile JWT, assurez-vous que la version 1.2 ou une version ult\u00e9rieure est configur\u00e9e. Sinon, assurez-vous que seuls des jetons JWS sont envoy\u00e9s \u00e0 cette ressource.
+
 # 0=JWT consumer config ID
 JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Le jeton figurant dans la demande n''est pas au format JWE (JSON Web Encryption) alors que le consommateur de jeton JWT [{0}] accepte uniquement les jetons au format JWE.
 JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il se peut que le jeton qui figure dans la demande soit incorrectement form\u00e9 ou qu'il soit au format JWS (JSON Web Signature). Les jetons doivent \u00eatre au format JWE si l'emplacement de la cl\u00e9 de d\u00e9chiffrement JWE est configur\u00e9.
 JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pour accepter des jetons JWS \u00e0 la place des jetons JWE, configurez la propri\u00e9t\u00e9 MicroProfile Config mp.jwt.decrypt.key.location et l'attribut keyManagementKeyAlias dans la configuration de consommateur JWT. Sinon, assurez-vous que seuls des jetons JWE sont envoy\u00e9s \u00e0 cette ressource.
+
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Le contenu du jeton JWE (JSON Web Encryption) qui est inclus dans la demande n'est pas un jeton JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=La charge d'un jeton JWE doit \u00eatre un jeton Web JSON (JWT) valide au format JWS.
-NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assurez-vous que le contenu du jeton JWE est un jeton Web JSON (JWT) au format JWS. 
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assurez-vous que le contenu du jeton JWE est un jeton Web JSON (JWT) au format JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Le jeton JWE (JSON Web Encryption) ne peut pas \u00eatre d\u00e9chiffr\u00e9 car une cl\u00e9 de d\u00e9chiffrement est introuvable. L''attribut de configuration du serveur {0} est d\u00e9fini sur [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Une cl\u00e9 de d\u00e9chiffrement est requise pour d\u00e9chiffrer le jeton JWE. La cl\u00e9 de d\u00e9chiffrement doit \u00eatre pr\u00e9sente dans le fichier de cl\u00e9s de consommateur JWT ou elle doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.
+JWE_DECRYPTION_KEY_MISSING.useraction=V\u00e9rifiez que l'alias de cl\u00e9 sp\u00e9cifi\u00e9 dans le message existe dans le fichier de cl\u00e9s de consommateur JWT. Si l'alias n'est pas configur\u00e9, la cl\u00e9 de d\u00e9chiffrement doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.

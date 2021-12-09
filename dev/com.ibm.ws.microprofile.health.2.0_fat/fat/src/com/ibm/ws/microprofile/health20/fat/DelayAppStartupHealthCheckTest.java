@@ -40,6 +40,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -72,6 +73,11 @@ public class DelayAppStartupHealthCheckTest {
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
                                     .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME))
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.1")
+                                    .addFeature("mpHealth-3.1")
+                                    .removeFeature("mpHealth-3.0")
                                     .forServers(SERVER_NAME));
 
     @Server(SERVER_NAME)
@@ -189,11 +195,21 @@ public class DelayAppStartupHealthCheckTest {
                         }
                     } else {
                         if (responseCode == 200) {
+                            log("testReadinessEndpointOnServerStart", "The /health/ready endpoint response code was 200.");
                             app_ready = true;
                             repeat = false;
                             startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
-                            throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                            List<String> lines = server1.findStringsInFileInLibertyServerRoot("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", MESSAGE_LOG);
+                            if (lines.size() == 0) {
+                                log("testReadinessEndpointOnServerStart", "Waiting for Application to start.");
+                                String line = server1.waitForStringInLog("(CWWKZ0001I: Application DelayedHealthCheckApp started)+");
+                                log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
+                                assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
+                            } else {
+                                log("testReadinessEndpointOnServerStart", "Application started but timeout still reached.");
+                                throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                            }
                         }
                     }
 
@@ -278,6 +294,7 @@ public class DelayAppStartupHealthCheckTest {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("mpHealth-3.1") // Due to the addition of the new Startup endpoint, the /health endpoint will be DOWN as well, so this test will be skipped for mpHealth-3.1
     public void testDelayedAppStartUpHealthCheck() throws Exception {
         log("testDelayedAppStartUpHealthCheck", "Testing the /health endpoint, before application has started.");
         HttpURLConnection conHealth = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);

@@ -9,8 +9,9 @@
    
    <quickStartSecurity userName="admin" userPassword="password" />
   
-      <!-- use the default SSL configuration -->
-    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
+    <!-- use the default SSL configuration -->
+    <!-- moved the location under ${server.config.dir} instead of current directory -->
+	<keyStore id="defaultKeyStore" password="passw0rd" location="${server.config.dir}/resources/security/serverKey.jks"/>
 	
 	
    <include location="../fatTestPorts.xml"/>

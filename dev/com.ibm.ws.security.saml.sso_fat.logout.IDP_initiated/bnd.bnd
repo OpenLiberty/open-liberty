@@ -16,7 +16,8 @@ src: \
 
 fat.project: true
 
-tested.features: jsp-2.3, jdbc-4.1, el-3.0, servlet-4.0, samlweb-2.0, jdbc-4.0
+tested.features: jsp-2.3, jdbc-4.1, el-3.0, servlet-4.0, samlweb-2.0, jdbc-4.0, \
+    servlet-5.0, expressionlanguage-4.0, pages-3.0, appsecurity-4.0, cdi-3.0
 
 -buildpath: \
 	fattest.simplicity;version=latest,\
@@ -25,8 +26,8 @@ tested.features: jsp-2.3, jdbc-4.1, el-3.0, servlet-4.0, samlweb-2.0, jdbc-4.0
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.saml.sso_fat.common;version=latest,\
 	com.ibm.ws.security.saml.sso_fat.logout;version=latest,\
-	commons-codec:commons-codec;version='1.4',\
-	commons-logging:commons-logging;version='1.1.1',\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\

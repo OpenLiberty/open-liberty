@@ -22,7 +22,6 @@ package org.apache.cxf.transport.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -31,15 +30,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger; // Liberty code change
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.attachment.AttachmentDataSource;
+import org.apache.cxf.common.logging.LogUtils; // Liberty code change
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -78,6 +80,7 @@ import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
@@ -109,7 +112,7 @@ public abstract class AbstractHTTPDestination
     private static final String SSL_PEER_CERT_CHAIN_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
     private static final String DECODE_BASIC_AUTH_WITH_ISO8859 = "decode.basicauth.with.iso8859";
-    //private static final Logger LOG = LogUtils.getL7dLogger(AbstractHTTPDestination.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(AbstractHTTPDestination.class); // Liberty code change
     private static final TraceComponent tc = Tr.register(AbstractHTTPDestination.class);
 
     protected final Bus bus;
@@ -235,8 +238,7 @@ public abstract class AbstractHTTPDestination
      * @return true iff the message has been marked as oneway
      */
     protected final boolean isOneWay(Message message) {
-        Exchange ex = message.getExchange();
-        return ex == null ? false : ex.isOneWay();
+        return MessageUtils.isOneWay(message);
     }
 
     @FFDCIgnore({ SuspendedInvocationException.class, Fault.class, RuntimeException.class })
@@ -549,10 +551,15 @@ public abstract class AbstractHTTPDestination
      * @return the inbuilt backchannel
      */
     @Override
+    // Liberty code change
+    @Trivial
     protected Conduit getInbuiltBackChannel(Message inMessage) {
+        LOG.entering("AbstractHTTPDestination", "getInbuiltBackChannel");
         HttpServletResponse response = (HttpServletResponse) inMessage.get(HTTP_RESPONSE);
+        LOG.exiting("AbstractHTTPDestination", "getInbuiltBackChannel");
         return new BackChannelConduit(response);
     }
+    // Liberty code change end
 
     private void initConfig() {
 
@@ -576,13 +583,18 @@ public abstract class AbstractHTTPDestination
         return sp;
     }
 
+    // Liberty code change start
+    @Trivial
     private HTTPServerPolicy calcServerPolicy(Message m) {
+        LOG.entering("AbstractHTTPDestination", "calcServerPolicy");
         HTTPServerPolicy sp = serverPolicy;
         if (!serverPolicyCalced) {
             sp = calcServerPolicyInternal(m);
         }
+        LOG.exiting("AbstractHTTPDestination", "calcServerPolicy");
         return sp;
     }
+    // Liberty code change end
 
     /**
      * On first write, we need to make sure any attachments and such that are still on the incoming stream
@@ -653,7 +665,7 @@ public abstract class AbstractHTTPDestination
 
         HttpServletResponse response = getHttpResponseFromMessage(outMessage);
 
-        int responseCode = getReponseCodeFromMessage(outMessage);
+        int responseCode = MessageUtils.getReponseCodeFromMessage(outMessage);
         if (responseCode >= 300) {
             String ec = (String) outMessage.get(Message.ERROR_MESSAGE);
             if (!StringUtils.isEmpty(ec)) {
@@ -673,7 +685,7 @@ public abstract class AbstractHTTPDestination
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
 
-        if (hasNoResponseContent(outMessage)) {
+        if (MessageUtils.hasNoResponseContent(outMessage)) {
             response.setContentLength(0);
             response.flushBuffer();
             closeResponseOutputStream(response);
@@ -698,38 +710,6 @@ public abstract class AbstractHTTPDestination
         }
     }
 
-    private int getReponseCodeFromMessage(Message message) {
-        Integer i = (Integer) message.get(Message.RESPONSE_CODE);
-        if (i != null) {
-            return i.intValue();
-        }
-        int code = hasNoResponseContent(message) ? HttpURLConnection.HTTP_ACCEPTED : HttpURLConnection.HTTP_OK;
-        // put the code in the message so that others can get it
-        message.put(Message.RESPONSE_CODE, code);
-        return code;
-    }
-
-    /**
-     * Determines if the current message has no response content.
-     * The message has no response content if either:
-     *  - the request is oneway and the current message is no partial
-     *    response or an empty partial response.
-     *  - the request is not oneway but the current message is an empty partial
-     *    response.
-     * @param message
-     * @return
-     */
-    private boolean hasNoResponseContent(Message message) {
-        final boolean ow = isOneWay(message);
-        final boolean pr = MessageUtils.isPartialResponse(message);
-        final boolean epr = MessageUtils.isEmptyPartialResponse(message);
-
-        //REVISIT may need to provide an option to choose other behavior?
-        // old behavior not suppressing any responses  => ow && !pr
-        // suppress empty responses for oneway calls   => ow && (!pr || epr)
-        // suppress additionally empty responses for decoupled twoway calls =>
-        return (ow && !pr) || epr;
-    }
 
     private HttpServletResponse getHttpResponseFromMessage(Message message) throws IOException {
         Object responseObj = message.get(HTTP_RESPONSE);
@@ -925,7 +905,7 @@ public abstract class AbstractHTTPDestination
         if (isMultiplexWithAddress()) {
             String address = (String) context.get(Message.PATH_INFO);
             if (null != address) {
-                int afterLastSlashIndex = address.lastIndexOf("/") + 1;
+                int afterLastSlashIndex = address.lastIndexOf('/') + 1;
                 if (afterLastSlashIndex > 0
                     && afterLastSlashIndex < address.length()) {
                     id = address.substring(afterLastSlashIndex);
@@ -976,10 +956,15 @@ public abstract class AbstractHTTPDestination
     }
 
     @Override
+    // Liberty code change start
+    @Trivial
     public void assertMessage(Message message) {
+        LOG.entering("AbstractHTTPDestination", "assertMessage");
         PolicyDataEngine pde = bus.getExtension(PolicyDataEngine.class);
         pde.assertMessage(message, calcServerPolicy(message), new ServerPolicyCalculator());
+        LOG.entering("AbstractHTTPDestination", "assertMessage");
     }
+    // Liberty code change end
 
     @Override
     public boolean canAssert(QName type) {

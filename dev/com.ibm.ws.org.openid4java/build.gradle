@@ -23,20 +23,4 @@ task extractJarSelective(type: Copy) {
     into(compileJava.destinationDir)
 }
 
-task instrumentClass {
-  dependsOn extractJarSelective
-  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
-    inputs.files { rasInstrumentationInputFiles() }
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
-    doLast {
-      if (instrument.isEmpty())
-        return
-      rasInstrumentationTaskdef(ant)
-      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
-          fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
-      }
-    }
-  }
-}
-
-jar.dependsOn instrumentClass
+compileJava.dependsOn extractJarSelective

@@ -44,7 +44,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
     public ServerTransactionInterceptor(Codec codec) {
         this.codec = codec;
         tranManager = EmbeddableTransactionManagerFactory.getTransactionManager();
-        txMap = new ConcurrentHashMap<Integer, Transaction>();
+        txMap = new ConcurrentHashMap<>();
     }
 
     @Override

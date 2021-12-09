@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <web-app version="5.0"
 	xmlns="https://jakarta.ee/xml/ns/jakartaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,7 +19,7 @@
 	<servlet>
 		<display-name>Snoop Servlet</display-name>
 		<servlet-name>Snoop Servlet</servlet-name>
-		<servlet-class>servlet5snoop.war.servlets.Snoop5Servlet</servlet-class>
+		<servlet-class>servlet5snoop.servlets.Snoop5Servlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -18,4 +28,27 @@
 		<url-pattern>/snoop5</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<display-name>Query Servlet</display-name>
+		<servlet-name>Query Servlet</servlet-name>
+		<servlet-class>servlet5snoop.servlets.QueryServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Query Servlet</servlet-name>
+		<url-pattern>/query</url-pattern>
+	</servlet-mapping>
+
+	<error-page>
+		<location>/jsp/errorPage.jsp</location>
+	</error-page>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/jsp/Login.jsp</form-login-page>
+			<form-error-page>/jsp/ReLogin.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
 </web-app>

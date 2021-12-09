@@ -1788,7 +1788,7 @@ public class ConfigurableOptionsTest {
             String response = EntityUtils.toString(entity);
             Log.info(thisClass, methodName, "Servlet response: " + response);
             EntityUtils.consume(entity);
-            Log.info(thisClass, methodName, "Expecting getStatusCode 200. Recieved: " + getResponse.getStatusLine().getStatusCode());
+            Log.info(thisClass, methodName, "Expecting getStatusCode 200. Received: " + getResponse.getStatusLine().getStatusCode());
             Log.info(thisClass, methodName, "Expecting form login page. HttpGet response: " + response);
             // Verify we get the form login JSP
             assertTrue("Did not find expected form login page: " + FORMLOGINJSP, response.contains(FORMLOGINJSP));
@@ -1815,7 +1815,7 @@ public class ConfigurableOptionsTest {
             entity = redirectResponse.getEntity();
             String getResponseRedirect = EntityUtils.toString(entity);
             EntityUtils.consume(entity);
-            Log.info(thisClass, methodName, "Redirected location expecting getStatusCode 200. Recieved: " + redirectResponse.getStatusLine().getStatusCode());
+            Log.info(thisClass, methodName, "Redirected location expecting getStatusCode 200. Received: " + redirectResponse.getStatusLine().getStatusCode());
             Log.info(thisClass, methodName, "Response for redirected location: " + getResponseRedirect);
             // Verify redirect to servlet
             assertTrue("Did not hit expected servlet: " + SERVLETNAME, getResponseRedirect.contains(SERVLETNAME));

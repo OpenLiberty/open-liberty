@@ -46,6 +46,7 @@ tested.features:\
 #   componenttest-1.0
 
 -buildpath:\
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   com.ibm.ws.security.registry_test.servlet;version=latest,\

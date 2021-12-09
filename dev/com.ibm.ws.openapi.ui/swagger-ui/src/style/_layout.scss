@@ -13,6 +13,16 @@
     flex-direction: column;
 }
 
+.try-out.btn-group {
+    padding: 0;
+    display: flex;
+    flex: 0.1 2 auto;
+}
+
+.try-out__btn {
+    margin-left: 1.25rem;
+}
+
 .opblock-tag
 {
     display: flex;
@@ -123,7 +133,10 @@
 
 .examples-select {
     margin-bottom: .75em;
-
+    display: inline-block;
+    .examples-select-element {
+      width: 100%;
+    }
     &__section-label {
         font-weight: bold;
         font-size: .9rem;
@@ -268,7 +281,7 @@
         font-weight: bold;
 
         min-width: 80px;
-        padding: 6px 15px;
+        padding: 6px 0;
 
         text-align: center;
 
@@ -290,36 +303,20 @@
 
 
         display: flex;
-        flex: 0 3 auto;
         align-items: center;
 
-        word-break: break-all;
+        word-break: break-word;
 
         padding: 0 10px;
 
         @include text_code();
 
-        .view-line-link
-        {
-            position: relative;
-            top: 2px;
+    }
 
-            width: 0;
-            margin: 0;
-
-            cursor: pointer;
-            transition: all .5s;
-        }
-
-        &:hover
-        {
-            .view-line-link
-            {
-                width: 18px;
-                margin: 0 5px;
-            }
-        }
-
+    .opblock-summary-path
+    {
+        flex-shrink: 0;
+        max-width: calc(100% - 110px - 15rem);
     }
 
     .opblock-summary-path__deprecated
@@ -336,7 +333,7 @@
     {
         font-size: 13px;
 
-        flex: 1;
+        flex: 1 1 auto;
 
         word-break: break-word;
 
@@ -441,6 +438,19 @@
     }
 }
 
+.filter, .download-url-wrapper
+{
+    .failed
+    {
+        color: red;
+    }
+
+    .loading
+    {
+        color: #aaa;
+    }
+}
+
 .model-example {
     margin-top: 1em;
 }
@@ -449,7 +459,6 @@
 {
     display: flex;
 
-    margin: 20px 0 10px 0;
     padding: 0;
 
     list-style: none;
@@ -458,8 +467,7 @@
     {
         font-size: 12px;
 
-        min-width: 100px;
-        min-width: 90px;
+        min-width: 60px;
         padding: 0;
 
         cursor: pointer;
@@ -471,7 +479,7 @@
             position: relative;
 
             padding-left: 0;
-            // padding-right: 12px;
+            padding-right: 12px;
 
             &:after
             {
@@ -491,6 +499,17 @@
         &.active
         {
             font-weight: bold;
+        }
+
+        button.tablinks
+        {
+            background: none;
+            border: 0;
+            padding: 0;
+
+            color: inherit;
+            font-family: inherit;
+            font-weight: inherit;
         }
     }
 }
@@ -577,6 +596,11 @@
 
         @include text_body();
     }
+
+    .curl
+    {
+        white-space: normal;
+    }
 }
 
 .response-col_status
@@ -607,9 +631,17 @@
 
         @include text_code($response-col-links-font-color);
     }
+
+    .operation-link
+    {
+        margin-bottom: 1.5em;
+
+        .description
+        {
+            margin-bottom: 0.5em;
+        }
+    }
 }
-
-
 
 .opblock-body
 {
@@ -640,10 +672,12 @@
 
     overflow-wrap: break-word;
     @include text_code($opblock-body-font-color);
-    span
-    {
-        color: $opblock-body-font-color !important;
-    }
+
+    // disabled to have syntax highliting with react-syntax-highlight
+    // span
+    // {
+    //     color: $opblock-body-font-color !important;
+    // }
 
     .headerline
     {
@@ -658,7 +692,15 @@
     overflow-y: auto;
     max-height: 400px;
     min-height: 6em;
+
+    code {
+        white-space: pre-wrap !important;
+        word-break: break-all;
+    }
   }
+}
+.curl-command {
+  position: relative;
 }
 
 .download-contents {
@@ -670,12 +712,14 @@
   text-align: center;
   padding: 5px;
   border-radius: 4px;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: sans-serif;
   font-weight: 600;
   color: white;
   font-size: 14px;
   height: 30px;
-  width: 75px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .scheme-container
@@ -689,7 +733,7 @@
     .schemes
     {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
 
          > label
         {
@@ -819,6 +863,30 @@
     }
 }
 
+.hidden
+{
+    display: none;
+}
+
+.no-margin
+{
+    height: auto;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.float-right
+{
+    float: right;
+}
+
+.svg-assets
+{
+    position: absolute;
+    width: 0;
+    height: 0;
+}
 
 section
 {
@@ -839,6 +907,12 @@ a.nostyle {
     color: inherit;
     cursor: pointer;
   }
+}
+
+.fallback
+{
+    padding: 1em;
+    color: #aaa;
 }
 
 .version-pragma {
@@ -866,4 +940,28 @@ a.nostyle {
       white-space: pre;
     }
   }
+}
+
+.opblock-link
+{
+    font-weight: normal;
+
+    &.shown
+    {
+        font-weight: bold;
+    }
+}
+
+span
+{
+    &.token-string
+    {
+        color: #555;
+    }
+
+    &.token-not-formatted
+    {
+        color: #555;
+        font-weight: bold;
+    }
 }

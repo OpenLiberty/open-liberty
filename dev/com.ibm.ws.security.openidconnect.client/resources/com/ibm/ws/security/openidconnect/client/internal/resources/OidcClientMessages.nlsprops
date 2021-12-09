@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verify the OpenID Connect provider c
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: A request to [{0}] is not valid. A required cookie with a name that begins with WASReqURLOidc is missing. The host name that is used to access the client might not match the name that is registered at the provider. A response code of 500 is returned.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=A request was received that did not include a required cookie.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The missing cookie can be caused by accessing the client with a host name that differs from the host name of the redirect that is registered with the provider.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The missing cookie can be caused by accessing the client with a host name that differs from the host name of the redirect that is registered with the provider. If the sameSiteCookie attribute in the webAppSecurity element in the server configuration is set to Strict, try setting the value to Lax or None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: The OpenId Connect client (Relying Party or RP) [{2}] configuration specifies both the discovery endpoint URL [{0}] and the other endpoints. RP will use the information from the discovery request and ignore the other configured endpoints [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=The OpenId Connect client uses the discovery endpoint to contact the provider and uses the information from the discovery request to contact the other endpoints such as authorization and token and userinfo.
@@ -287,5 +287,7 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=Review the server.xml file and correct th
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: A request to [{0}] is not valid. A required cookie with a name that begins with WASReqURLOidc has an incorrect value. The host name [{1}] that is used in the cookie does not match the name that is registered at the provider. A response code of 500 is returned.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A request was received that includes a malformed cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The malformed cookie can be caused by cookie modification at the user agent with a host name that differs from the host name of the redirect that is registered with the provider. If the host name is expected, then add it to the wasReqURLRedirectDomainNames attribute of the webAppSecurity element in server.xml.
+
+# 1533-1540 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -1,0 +1,42 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <executor stealPolicy="NEVER"/>
+    
+    <wsSecurityProvider id="default">
+        <callerToken name="UsernameToken" />
+    </wsSecurityProvider>
+    
+    
+    <basicRegistry id="basic" realm="SampleRealm">
+            <user name="user2" password="user2pwd" />
+            <user name="user3" password="user3pwd" />
+            <user name="user4" password="user4pwd" />        
+            <user name="user1" password="user1pwd" description="user1" />
+    </basicRegistry>
+      
+    <application type="war" id="POJOServiceSecurity" name="POJOServiceSecurity" location="POJOServiceSecurity.war">
+            <application-bnd>
+                <security-role name="role1">
+                        <user name="user1" />
+                </security-role>
+                <security-role name="role2">
+                        <user name="user2" />
+                </security-role>    
+                <security-role name="role3">
+                        <user name="user3" />
+                </security-role>
+                <security-role name="role4">
+                        <user name="user4" />
+                </security-role>                    
+            </application-bnd>
+    </application>    
+
+
+  	<javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+    <include location="../fatTestPorts.xml"/>
+</server>

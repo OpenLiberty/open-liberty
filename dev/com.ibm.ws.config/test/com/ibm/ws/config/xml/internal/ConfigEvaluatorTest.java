@@ -32,12 +32,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
@@ -155,7 +158,15 @@ public class ConfigEvaluatorTest {
     }
 
     private TestConfigEvaluator createConfigEvaluator(MetaTypeRegistry registry, ConfigVariableRegistry variableRegistry, ServerConfiguration serverConfiguration) {
-        ServerXMLConfiguration serverXMLConfiguration = new ServerXMLConfiguration(null, wsLocation, null);
+        Mockery mock = new Mockery();
+        BundleContext ctx = mock.mock(BundleContext.class);
+        mock.checking(new Expectations() {
+            {
+                allowing(ctx).getDataFile("configStamp");
+                will(returnValue(null));
+            }
+        });
+        ServerXMLConfiguration serverXMLConfiguration = new ServerXMLConfiguration(ctx, wsLocation, null);
         serverXMLConfiguration.setNewConfiguration(serverConfiguration);
         TestConfigEvaluator evaluator = new TestConfigEvaluator(null, registry, variableRegistry, serverXMLConfiguration);
         return evaluator;

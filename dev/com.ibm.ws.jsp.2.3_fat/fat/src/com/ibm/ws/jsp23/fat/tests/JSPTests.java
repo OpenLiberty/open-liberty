@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,16 @@
 package com.ibm.ws.jsp23.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -34,10 +42,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.rules.repeater.JakartaEE9Action;
-
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests to execute on the jspServer that use HttpUnit/HttpClient
@@ -51,17 +57,21 @@ public class JSPTests {
     private static final String TestServlet_APP_NAME = "TestServlet";
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
+    private static final String TestEDR_APP_NAME = "TestEDR";
+    private static final String TestJDT_APP_NAME = "TestJDT";
 
     @Server("jspServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
+        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
+
         ShrinkHelper.defaultDropinApp(server,
                                       TestEL_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testel.beans",
                                       "com.ibm.ws.jsp23.fat.testel.servlets");
-        
+
         ShrinkHelper.defaultDropinApp(server,
                                       TestServlet_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testjsp23.beans",
@@ -70,6 +80,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PI44611_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
 
         server.startServer(JSPTests.class.getSimpleName() + ".log");
     }
@@ -726,11 +738,11 @@ public class JSPTests {
                                         "Testing StreamELResolver with distinct method (Expected: [1, 4, 3, 2, 5]): [1, 4, 3, 2, 5]",
                                         "Testing StreamELResolver with filter method (Expected: [4, 3, 5, 3]): [4, 3, 5, 3]" };
 
-        if(JakartaEE9Action.isActive()){
-           for(int i = 0; i < expectedInResponse.length; i++) {
-            expectedInResponse[i] = expectedInResponse[i].replace("javax.el", "jakarta.el");
-           }
-        } 
+        if (JakartaEE9Action.isActive()) {
+            for (int i = 0; i < expectedInResponse.length; i++) {
+                expectedInResponse[i] = expectedInResponse[i].replace("javax.el", "jakarta.el");
+            }
+        }
         this.verifyStringsInResponse(TestEL_APP_NAME, "ResolutionVariablesPropertiesServlet", expectedInResponse);
 
     }
@@ -757,6 +769,148 @@ public class JSPTests {
     @Test
     public void testPI59436() throws Exception {
         this.verifyStringInResponse(PI59436_APP_NAME, "PI59436.jsp", "Test passed.");
+    }
+
+    /**
+     * Verify TLD file check per issue 18411.
+     * Run with applicationManager autoExpand="false" (default)
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTLD() throws Exception {
+        // Use TestEDR app but just call index.jsp twice.
+        // 2nd call should not have SRVE0253I message if issue 18411 is fixed
+        // and no other files included in the JSP are updated.
+        String orgEdrFile = "headerEDR1.jsp";
+        String relEdrPath = "../../shared/config/ExtendedDocumentRoot/";
+        server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
+        String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+        WebConversation wc1 = new WebConversation();
+        WebRequest request1 = new GetMethodWebRequest(url);
+        wc1.getResponse(request1);
+
+        server.setMarkToEndOfLog(); // mark after 1st call to index.jsp since it might have compiled and caused a SRVE0253I
+        Thread.sleep(5000L); // sleep necessary to insure sufficient time delta for epoch timestamp comparisons
+        WebConversation wc2 = new WebConversation();
+        WebRequest request2 = new GetMethodWebRequest(url);
+        wc2.getResponse(request2);
+        assertNull("Log should not contain SRVE0253I: Destroy successful.",
+                   server.verifyStringNotInLogUsingMark("SRVE0253I", 1200));
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        Thread.sleep(500L); // ensure file is deleted
+    }
+
+    /**
+     * This test verifies that a included JSP in the extended document root when
+     * updated will cause the parent JSP to recompile.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testEDR() throws Exception {
+        // Tests on index page
+        String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+
+        runEDR(url, false);
+    }
+
+    /**
+     * This test verifies compile works without ClassCastException,
+     * per issue 19197.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void TestJDT() throws Exception {
+        this.verifyStringInResponse(TestJDT_APP_NAME, "index.jsp", "Test passed.");
+    }
+
+    /**
+     * Same test as above, but this test verifies that the dependentsList
+     * is populated when proccessing multiple requests concurrently.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testConcurrentRequestsForTrackDependencies() throws Exception {
+        // Tests on trackDependencies page
+        String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "trackDependencies.jsp");
+        LOG.info("url: " + url);
+
+        runEDR(url, true);
+    }
+
+    private void runEDR(String url, boolean makeConcurrentRequests) throws Exception {
+        String expect1 = "initial EDR header";
+        String expect2 = "updated EDR header";
+        String orgEdrFile = "headerEDR1.jsp";
+        String updEdrFile = "headerEDR2.jsp";
+        String relEdrPath = "../../shared/config/ExtendedDocumentRoot/";
+        String fullEdrPath = server.getServerRoot() + "/" + relEdrPath;
+        LOG.info("fullEdrPath: " + fullEdrPath);
+
+        server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
+        WebConversation wc1 = new WebConversation();
+        WebRequest request1 = new GetMethodWebRequest(url);
+
+        if (makeConcurrentRequests) {
+            // Make 2 requests.
+            makeConcurrentRequests(wc1, request1, 2);
+        }
+
+        WebResponse response1 = wc1.getResponse(request1);
+        LOG.info("Servlet response : " + response1.getText());
+        assertTrue("The response did not contain: " + expect1, response1.getText().contains(expect1));
+
+        Thread.sleep(5000L); // delay a bit to be ensure noticeable time diff on updated EDR file
+        server.copyFileToLibertyServerRoot(relEdrPath, updEdrFile);
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile);
+        server.renameLibertyServerRootFile(relEdrPath + updEdrFile, relEdrPath + orgEdrFile);
+        File updFile = new File(fullEdrPath + orgEdrFile);
+        updFile.setReadable(true);
+        updFile.setLastModified(System.currentTimeMillis());
+
+        WebConversation wc2 = new WebConversation();
+        WebRequest request2 = new GetMethodWebRequest(url);
+        WebResponse response2 = wc2.getResponse(request2);
+        LOG.info("Servlet response : " + response2.getText());
+        assertTrue("The response did not contain: " + expect2, response2.getText().contains(expect2));
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        Thread.sleep(500L); // ensure file is deleted
+    }
+
+    public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
+        final ExecutorService executor = Executors.newFixedThreadPool(numberOfCalls);
+        final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
+
+        // run the test multiple times concurrently
+        for (int i = 0; i < numberOfCalls; i++) {
+            tasks.add(executor.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    LOG.info("Thread Started: Making Request!");
+                    wc1.getResponse(request1);
+                    return true;
+                }
+            }));
+        }
+
+        // check runs completed successfully
+        for (Future<Boolean> task : tasks) {
+            try {
+                if (!task.get())
+                    throw new Exception("0");
+            } catch (Exception e) {
+                throw new Exception("1", e);
+            }
+        }
     }
 
     private void verifyStringsInResponse(String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
@@ -794,7 +948,7 @@ public class JSPTests {
     }
 
     private void verifyExceptionInResponse(String expectedException, String responseText) throws Exception {
-        if(JakartaEE9Action.isActive()){
+        if (JakartaEE9Action.isActive()) {
             expectedException = "jakarta." + expectedException;
         } else {
             expectedException = "javax." + expectedException;

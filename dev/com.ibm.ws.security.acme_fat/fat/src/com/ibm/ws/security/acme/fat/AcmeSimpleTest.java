@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,7 +41,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
-import com.ibm.ws.security.acme.internal.AcmeHistory;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
@@ -73,8 +73,6 @@ public class AcmeSimpleTest {
 	private static final String[] DOMAINS_3 = { "domain1.com", "domain2.com" };
 	private static final String[] DOMAINS_4 = { "domain2.com" };
 	
-	private AcmeHistory acmeHelper = new AcmeHistory();
-
 	public static CAContainer caContainer;
 
 	@Rule
@@ -166,11 +164,6 @@ public class AcmeSimpleTest {
 			File file = new File(server.getServerRoot() + "/workarea/acmeca/" + AcmeConstants.ACME_HISTORY_FILE);
 			if (!file.exists()) {
 				fail("The ACME file should exist at: " + file.getAbsolutePath());
-			}
-			String firstDirURI = null;
-			ArrayList<String> dirURIs = acmeHelper.getDirectoryURIHistory(file);
-			if (dirURIs != null && !dirURIs.isEmpty()) {
-				firstDirURI = dirURIs.get(dirURIs.size()-1);
 			}
 		} finally {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 1: Shutdown.");
@@ -619,6 +612,10 @@ public class AcmeSimpleTest {
 	}
 	
 	protected void stopServer(String ...msgs) throws Exception {
-		AcmeFatUtils.stopServer(server, msgs);
+		String alwaysAdd = "CWWKG0027W"; // update timeouts are okay, sometimes the acme certificate fetch takes longer
+ 		
+ 		List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+		tempList.add(alwaysAdd);
+		AcmeFatUtils.stopServer(server, tempList.toArray(new String[tempList.size()]));
 	}
 }

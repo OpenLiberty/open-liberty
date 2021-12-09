@@ -12,6 +12,7 @@ Bundle-Activator: com.ibm.ws.jaxrs21.rt.frontend.jaxrs.NoOpActivator
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+  !java.*, \
   !com.ibm.xml.xlxp2.api.stax, \
   !com.ibm.xml.xlxp2.api.wssec, \
   !org.apache.aries.*,\
@@ -33,7 +34,7 @@ Import-Package: \
   javax.ws.rs.sse,\
   *
 
-exportVer=3.4.1
+exportVer=3.4.3
 
 Export-Package: com.ibm.ws.jaxrs20.cache,\
   org.apache.cxf.jaxrs;version=${exportVer},\
@@ -57,8 +58,8 @@ Export-Package: com.ibm.ws.jaxrs20.cache,\
   com.ibm.ws.jaxrs20.injection,\
   com.ibm.ws.jaxrs20.injection.metadata,\
   com.ibm.ws.jaxrs20.metadata,\
+  com.ibm.ws.jaxrs20.multipart.impl,\
   com.ibm.ws.jaxrs20.providers.multipart,\
   com.ibm.ws.jaxrs20.utils,\
   com.ibm.ws.jaxrs21.component,\
   com.ibm.ws.jaxrs21.threading
-  

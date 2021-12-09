@@ -1,0 +1,67 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>openidConnectServer-1.0</feature>
+	</featureManager>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<include location="${server.config.dir}/imports/fatTestPorts.xml" />
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true" />
+
+	<httpSession cookieHttpOnly="false" />
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		oauthProviderRef="OAuthConfigSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		responseTypesSupported="override1, override2"
+		subjectTypesSupported="override1, override2"
+		idTokenSigningAlgValuesSupported="RS256"
+		scopesSupported="override1, override2"
+		claimsSupported="override1, override2"
+		responseModesSupported="override1, override2"
+		grantTypesSupported="override1, override2"
+		tokenEndpointAuthMethodsSupported="override1, override2"
+		displayValuesSupported="override1, override2"
+		claimTypesSupported="override1, override2"
+		claimsParameterSupported="true"
+		requestParameterSupported="true"
+		requestUriParameterSupported="true"
+		requireRequestUriRegistration="true"
+		backingIdpUriPrefix="override1"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<localStore>
+			<client
+				name="user1"
+				secret="{xor}LDo8Ki02KyY="
+				displayname="user1"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+</server>

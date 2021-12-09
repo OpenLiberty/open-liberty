@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * WCContextRootPrecedence class tests the precedences of the context root. It
@@ -42,70 +44,75 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * drop-ins directory of Liberty
  */
 @RunWith(FATRunner.class)
-public class WCContextRootPrecedence extends LoggingTest {
+public class WCContextRootPrecedence {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_ContextRootPrecedenceServer");
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet40_ContextRootPrecedenceServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Apps defined in server.xml are not present during the first server start and this results in unwanted
-        // CWKZ0014W warning messages.
-        ArrayList<String> expectedErrors = new ArrayList<String>();
-        expectedErrors.add("CWWWC0400E:.*");
-        expectedErrors.add("CWWKC2257E:.*");
-        expectedErrors.add("CWWKZ0014W:.*");
-        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-
         LOG.info("Setup : add applications as needed.");
 
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestContextRootAppNamePrecedence.war",
-                                               true);
+        ShrinkHelper.exportAppToServer(server, ShrinkHelper.buildDefaultApp("TestContextRootAppNamePrecedence.war"));
+        ShrinkHelper.exportAppToServer(server, ShrinkHelper.buildDefaultApp("TestContextRootDirOrFileNamePrecedence.war"));
 
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(),
-                                               "TestContextRootDirOrFileNamePrecedence.war", true);
+        WebArchive testContextRootEARAppPrecedenceWar = ShrinkWrap.create(WebArchive.class, "TestContextRootEARAppPrecedence.war");
+        ShrinkHelper.addDirectory(testContextRootEARAppPrecedenceWar, "test-applications/" + "TestContextRootEARAppPrecedence.war" + "/resources");
+        EnterpriseArchive testContextRootEARAppPrecedenceEar = ShrinkWrap.create(EnterpriseArchive.class, "TestContextRootEARAppPrecedence.ear");
+        testContextRootEARAppPrecedenceEar.addAsModule(testContextRootEARAppPrecedenceWar);
+        ShrinkHelper.addDirectory(testContextRootEARAppPrecedenceEar, "test-applications/" + "TestContextRootEARAppPrecedence.ear" + "/resources");
+        ShrinkHelper.exportDropinAppToServer(server, testContextRootEARAppPrecedenceEar);
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestContextRootEARAppPrecedence.ear", true, "TestContextRootEARAppPrecedence.war", true, null, false);
+        ShrinkHelper.exportAppToServer(server, ShrinkHelper.buildDefaultApp("TestContextRootServerXmlPrecedence.war"));
+        ShrinkHelper.exportAppToServer(server, ShrinkHelper.buildDefaultApp("TestContextRootWebExtPrecedence.war"));
+        ShrinkHelper.exportAppToServer(server, ShrinkHelper.buildDefaultApp("TestDefaultContextPathPrecedence.war"));
+        ShrinkHelper.defaultDropinApp(server, "TestDefaultContextPathWithEndSlashInvalidCase.war");
+        ShrinkHelper.defaultDropinApp(server, "TestDefaultContextPathWithoutStartSlashInvalidCase.war");
 
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(),
-                                               "TestContextRootServerXmlPrecedence.war", true);
+        // We can't start the server like normal as there are application startup errors.
+        // Instead we'll set the log name, start the server and won't validate the application.
+        // Then we'll validate the applications on our own.
 
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestContextRootWebExtPrecedence.war",
-                                               true);
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestDefaultContextPathPrecedence.war",
-                                               true);
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestDefaultContextPathWithEndSlashInvalidCase.war", true);
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestDefaultContextPathWithoutStartSlashInvalidCase.war", true);
+        // Failures occurred while waiting for apps to start: Application TestDefaultContextPathWithoutStartSlashInvalidCase failure:
+        // CWWKZ0002E: An exception occurred while starting the application TestDefaultContextPathWithoutStartSlashInvalidCase.
+        // The exception message was: java.lang.IllegalStateException: com.ibm.wsspi.adaptable.module.UnableToAdaptException:
+        // com.ibm.ws.javaee.ddmodel.DDParser$ParseException: CWWKC2257E: Unexpected content encountered in element default-context
+        // -path in the /WEB-INF/web.xml deployment descriptor on line 18. Application TestDefaultContextPathWithEndSlashInvalidCase failure:
+        // CWWKZ0002E: An exception occurred while starting the application TestDefaultContextPathWithEndSlashInvalidCase.
+        // The exception message was: java.lang.IllegalStateException: com.ibm.wsspi.adaptable.module.UnableToAdaptException:
+        // com.ibm.ws.javaee.ddmodel.DDParser$ParseException: CWWKC2257E: Unexpected content encountered in element default-context-path
+        // in the /WEB-INF/web.xml deployment descriptor on line 18.
+        server.setConsoleLogName(WCContextRootPrecedence.class.getSimpleName() + ".log");
+        server.startServerAndValidate(true, true, false);
 
-        WCApplicationHelper.waitForAppStart("TestContextRootDirOrFileNamePrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("AppNameContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("TestServerXmlContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("TestWebExtContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("TestDefaultContextPathPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("TestContextRootEARAppPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        // Validate the necessary applications have started.
+        server.validateAppLoaded("AppNameContextRoot"); // TestContextRootAppNamePrecedence.war defined name in server.xml
+        server.validateAppLoaded("TestContextRootDirOrFileNamePrecedence");
+        server.validateAppLoaded("TestContextRootEARAppPrecedence");
+        server.validateAppLoaded("TestServerXmlContextRoot"); // TestContextRootServerXmlPrecedence.war defined name in server.xml
+        server.validateAppLoaded("TestWebExtContextRoot"); // TestContextRootWebExtPrecedence.war defined name in server.xml
+        server.validateAppLoaded("TestDefaultContextPathPrecedence");
+
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().deleteAllDropinConfigurations();
+        server.deleteAllDropinConfigurations();
 
-        SHARED_SERVER.getLibertyServer().stopServer();
+        // Stop the server
+        // E CWWKZ0002E: An exception occurred while starting the application TestDefaultContextPathWithEndSlashInvalidCase.
+        // The exception message was: java.lang.IllegalStateException: com.ibm.wsspi.adaptable.module.UnableToAdaptException:
+        // com.ibm.ws.javaee.ddmodel.DDParser$ParseException: CWWKC2257E: Unexpected content encountered in element default-context-path
+        // in the /WEB-INF/web.xml deployment descriptor on line 18. <br>[8/8/21, 21:38:31:657 EDT] 0000006d com.ibm.ws.app.manager.AppMessageHelper
+        // E CWWKZ0002E: An exception occurred while starting the application TestDefaultContextPathWithoutStartSlashInvalidCase. The exception message
+        // was: java.lang.IllegalStateException: com.ibm.wsspi.adaptable.module.UnableToAdaptException: com.ibm.ws.javaee.ddmodel.DDParser$ParseException:
+        // CWWKC2257E: Unexpected content encountered in element default-context-path in the /WEB-INF/web.xml deployment descriptor on line 18.
+        if (server != null && server.isStarted()) {
+            server.stopServer("CWWKZ0002E:.*");
+        }
     }
 
     /**
@@ -118,7 +125,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootServerXmlPrecedence() throws Exception {
-        this.verifyResponse("/ServerContextRoot/", "Simple HTML page - TestContextRootServerXmlPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/ServerContextRoot/", "Simple HTML page - TestContextRootServerXmlPrecedence");
     }
 
     /**
@@ -131,7 +138,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootEARAppPrecedence() throws Exception {
-        this.verifyResponse("/ApplicationContextRoot/", "Simple HTML page - TestContextRootEARAppPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/ApplicationContextRoot/", "Simple HTML page - TestContextRootEARAppPrecedence");
     }
 
     /**
@@ -144,7 +151,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootWebExtPrecedence() throws Exception {
-        this.verifyResponse("/WebExtContextRoot/", "Simple HTML page - TestContextRootWebExtPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/WebExtContextRoot/", "Simple HTML page - TestContextRootWebExtPrecedence");
     }
 
     /**
@@ -157,7 +164,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootAppNamePrecedence() throws Exception {
-        this.verifyResponse("/AppNameContextRoot/", "Simple HTML page - TestContextRootAppNamePrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/AppNameContextRoot/", "Simple HTML page - TestContextRootAppNamePrecedence");
     }
 
     /**
@@ -169,7 +176,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testDefaultContextPathElementPrecedence() throws Exception {
-        this.verifyResponse("/WebDefaultContextPath/", "Simple HTML page - TestDefaultContextPathPrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/WebDefaultContextPath/", "Simple HTML page - TestDefaultContextPathPrecedence");
     }
 
     /**
@@ -182,8 +189,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootDirOrFileNamePrecedence() throws Exception {
-        this.verifyResponse("/TestContextRootDirOrFileNamePrecedence/",
-                            "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
+        HttpUtils.findStringInReadyUrl(server, "/TestContextRootDirOrFileNamePrecedence/", "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
     }
 
     /**
@@ -197,8 +203,8 @@ public class WCContextRootPrecedence extends LoggingTest {
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     @Mode(TestMode.FULL)
     public void testDefaultContextPathWithoutStartSlashInvalidCase() throws Exception {
-        SHARED_SERVER.getLibertyServer().findStringsInLogs(
-                                                           "CWWKZ0002E:.*TestDefaultContextPathWithoutStartSlashInvalidCase.*CWWKC2257E:.*default-context-path");
+        server.findStringsInLogs(
+                                 "CWWKZ0002E:.*TestDefaultContextPathWithoutStartSlashInvalidCase.*CWWKC2257E:.*default-context-path");
     }
 
     /**
@@ -212,8 +218,7 @@ public class WCContextRootPrecedence extends LoggingTest {
     @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     @Mode(TestMode.FULL)
     public void testDefaultContextPathWithEndSlashInvalidCase() throws Exception {
-        SHARED_SERVER.getLibertyServer().findStringsInLogs(
-                                                           "CWWKZ0002E:.*TestDefaultContextPathWithEndSlashInvalidCase.*CWWKC2257E:.*default-context-path");
+        server.findStringsInLogs(
+                                 "CWWKZ0002E:.*TestDefaultContextPathWithEndSlashInvalidCase.*CWWKC2257E:.*default-context-path");
     }
-
 }

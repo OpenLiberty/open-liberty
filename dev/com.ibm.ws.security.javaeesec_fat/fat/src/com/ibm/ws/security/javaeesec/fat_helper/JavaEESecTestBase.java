@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -881,5 +882,72 @@ public class JavaEESecTestBase {
         assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
         assertEquals("The Secure parameter must" + (secure == true ? "" : " not" + " be set."), secure, cookieHeaderString.contains("Secure"));
         assertEquals("The HttpOnly parameter must" + (httpOnly == true ? "" : " not" + " be set."), httpOnly, cookieHeaderString.contains("HttpOnly"));
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsUsingMark(String regexp) throws Exception {
+        assertStringsInLogsUsingMark(regexp, true);
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsUsingMark(String regexp, boolean isPresent) throws Exception {
+        List<String> results = server.findStringsInLogsUsingMark(regexp, server.getDefaultLogFile());
+        if (isPresent) {
+            assertFalse("Did not find '" + regexp + "' in trace.", results.isEmpty());
+        } else {
+            assertTrue("Found '" + regexp + "' in trace: " + results, results.isEmpty());
+        }
+    }
+
+    /**
+     * Assert that the regular expression string is present in the server's logs or trace
+     * 
+     * @param regexp The regular expression string to search for.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsAndTraceUsingMark(String regexp) throws Exception {
+        assertStringsInLogsAndTraceUsingMark(regexp, true);
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs or trace.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsAndTraceUsingMark(String regexp, boolean isPresent) throws Exception {
+        List<String> results = server.findStringsInLogsAndTraceUsingMark(regexp);
+        if (isPresent) {
+            assertFalse("Did not find '" + regexp + "' in trace.", results.isEmpty());
+        } else {
+            assertTrue("Found '" + regexp + "' in trace: " + results, results.isEmpty());
+        }
+    }
+
+    /**
+     * Assume we are not on Windows and running the EE9 repeat action. There is an issue with
+     * the Jakarta transformer where the application fails to be transformed b/c the application
+     * directory cannot be deleted due to a "The process cannot access the file because it is
+     * being used by another process" error. I assume that either the transformer or the server
+     * is not releasing the handle to the directory, but I have not yet been able to figure it
+     * out.
+     */
+    public static void assumeNotWindowsEe9() {
+        if (JakartaEE9Action.isActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
+            assumeTrue(false);
+        }
     }
 }

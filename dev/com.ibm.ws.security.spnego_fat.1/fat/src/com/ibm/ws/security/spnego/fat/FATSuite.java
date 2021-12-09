@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DynamicSpnegoConfigTest.class,
+                //DynamicSpnegoConfigTest.class,
                 S4U2SelfTest.class,
                 S4U2ProxyTest.class
 })
@@ -48,8 +48,11 @@ public class FATSuite extends InitClass {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
 
+    /**
+     * Rule to setup users, SPNs etc on the KDC.
+     */
     @ClassRule
-    public static ExternalResource testRule = new ExternalResource() {
+    public static ExternalResource beforeRule = new ExternalResource() {
         /**
          * Creates the SPN and keytab file to be used in any ensuing tests. Test classes can elect to create their own
          * SPN and keytab file if needed. A common SPNEGO token is also created which can be used by all test classes.
@@ -128,7 +131,14 @@ public class FATSuite extends InitClass {
             Log.info(c, thisMethod, "Hybrid JDK: " + hybridJdk);
             return hybridJdk;
         }
+    };
 
+    /**
+     * Rule to cleanup users, SPNs etc from the KDC. This rule is separate from the setup
+     * rule b/c the after method is not called when the before method fails.
+     */
+    //@ClassRule
+    public static ExternalResource afterRule = new ExternalResource() {
         @Override
         protected void after() {
             try {
@@ -137,9 +147,15 @@ public class FATSuite extends InitClass {
                     CommonTest.getKdcHelper()
                                     .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
                                                                        SPNEGOConstants.KRB5_KEYTAB_FILE);
-                    CommonTest.getKdcHelper()
-                                    .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
-                                                                       InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX);
+
+                    /*
+                     * Don't delete the localhost_HTTP_krb5.keytab from the remote machine.
+                     */
+                    if (!"localhost".equalsIgnoreCase(InitClass.serverShortHostName)) {
+                        CommonTest.getKdcHelper()
+                                        .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
+                                                                           InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX);
+                    }
                 }
             } catch (Exception e) {
                 Log.info(c, "after", "Exception thrown while deleting SPN: " + CommonTest.maskHostnameAndPassword(e.getMessage()));
@@ -152,7 +168,7 @@ public class FATSuite extends InitClass {
      * JakartaEE9 transform a list of applications. The applications are the simple app names and they must exist at '<server>/apps/<appname>'.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps     The simple names of the applications to transform.
+     * @param apps The simple names of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
         if (JakartaEE9Action.isActive()) {

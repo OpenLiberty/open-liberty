@@ -19,18 +19,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,7 +40,7 @@ import componenttest.topology.utils.HttpUtils;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class LPSTest {
-	private static LibertyServer server;
+	private static LibertyServer server1;
 	private static String BASE_URL;
 	private static LibertyServer server2;
 	private static String BASE_URL2;
@@ -52,59 +50,29 @@ public class LPSTest {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		server = LibertyServerFactory.getLibertyServer("WSATRecovery1");
-		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server1 = LibertyServerFactory.getLibertyServer("WSATRecovery1");
+		BASE_URL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort();
 		server2 = LibertyServerFactory.getLibertyServer("WSATRecovery2");
 		server2.setHttpDefaultPort(9992);
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
-		if (server != null && server.isStarted()){
-			server.stopServer(true, true);
-		}
-
-		if (server2 != null && server2.isStarted()){
-			server2.stopServer(true, true);
-		}
-
-		ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
-		ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+		ShrinkHelper.defaultDropinApp(server1, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+		ShrinkHelper.defaultDropinApp(server1, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 		ShrinkHelper.defaultDropinApp(server2, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
 		ShrinkHelper.defaultDropinApp(server2, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 
-		server.setServerStartTimeout(START_TIMEOUT);
+		server1.setServerStartTimeout(START_TIMEOUT);
 		server2.setServerStartTimeout(START_TIMEOUT);
-	}
-	
-	@AfterClass
-	public static void tearDownAll() throws Exception {
-		if (server != null && server.isStarted()) {
-			server.stopServer(true, true, ".*"); // ensure server has stopped
-		}
-		if (server2 != null && server2.isStarted()) {
-			server2.stopServer(true, true, ".*"); // ensure server has stopped
-		}
 	}
 
 	@Before
 	public void beforeTest() throws Exception {
-        if (server != null && !server.isStarted()){
-            server.startServerAndValidate(false,false,true);
-		}
-		
-		if (server2 != null && !server2.isStarted()){
-			server2.startServerAndValidate(false,false,true);
-		}
+		FATUtils.startServers(server1, server2);
 	}
 	
 	@After
     public void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer(true, true, "WTRN0046E", "WTRN0048W", "WTRN0049W", "WTRN0094W"); //ensure server has stopped
-        }
-        
-        if (server2 != null && server2.isStarted()) {
-            server2.stopServer(true, true, "WTRN0046E", "WTRN0048W", "WTRN0049W", "WTRN0094W"); //ensure server has stopped
-        }
+		FATUtils.stopServers(new String[] {"WTRN0046E", "WTRN0048W", "WTRN0049W", "WTRN0094W"}, server1, server2);
     }
 	
 	/**
@@ -121,12 +89,12 @@ public class LPSTest {
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS301BFVT() throws Exception {
 		recoveryTest("3012","server2");
-		if (server != null && server.isStarted()) {
-			server.stopServer("WTRN0049W"); //ensure server has stopped
+		if (server1 != null && server1.isStarted()) {
+			server1.stopServer("WTRN0049W"); //ensure server has stopped
 		}
 	}
 	
-  @Mode(TestMode.LITE)
+	@Mode(TestMode.LITE)
 	@Test
 	public void WSTXLPS301CFVT() throws Exception {
 		recoveryTest("3013","both");
@@ -141,8 +109,8 @@ public class LPSTest {
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.SystemException"})
 	public void WSTXLPS302BFVT() throws Exception {
 		recoveryTest("3022","server2");
-		if (server != null && server.isStarted()) {
-			server.stopServer("WTRN0049W"); //ensure server has stopped
+		if (server1 != null && server1.isStarted()) {
+			server1.stopServer("WTRN0049W"); //ensure server has stopped
 		}
 	}
 	
@@ -176,19 +144,18 @@ public class LPSTest {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + result);
         
-        final String str = "Setting state from RECOVERING to ACTIVE";
         //restart server in three modes
         if(startServer.equals("server1")){
-        		restartServer(server);
-                server.waitForStringInTrace(str);
+        		restartServer(server1);
+                server1.waitForStringInTrace("Performed recovery for "+server1.getServerName());
         } else if(startServer.equals("server2")){
         		restartServer(server2);
-                server2.waitForStringInTrace(str);
+                server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
         } else if(startServer.equals("both")){
-        		restartServer(server);
+        		restartServer(server1);
             	restartServer(server2);
-                server.waitForStringInTrace(str);
-                server2.waitForStringInTrace(str);
+                server1.waitForStringInTrace("Performed recovery for "+server1.getServerName());
+                server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
         }
         System.out.println(logKeyword + "restarted server: " + startServer);
 
@@ -211,29 +178,30 @@ public class LPSTest {
 	
 	
 	private String callSetupServlet(String testNumber) throws IOException{
-			int expectedConnectionCode = HttpURLConnection.HTTP_OK;
-			String servletName = "MultiRecoverySetupServlet";
-			int test_number = Integer.parseInt(testNumber);
-			if (test_number == 1)
-				expectedConnectionCode = HttpURLConnection.HTTP_NOT_FOUND;
-			String urlStr = BASE_URL + "/recoveryClient/" + servletName
-						+ "?number=" + testNumber + "&baseurl=" + BASE_URL
-						+ "&baseurl2=" + BASE_URL2;
+		String method = "callSetupServlet";
+		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
+		String servletName = "MultiRecoverySetupServlet";
+		int test_number = Integer.parseInt(testNumber);
+		if (test_number == 1)
+			expectedConnectionCode = HttpURLConnection.HTTP_NOT_FOUND;
+		String urlStr = BASE_URL + "/recoveryClient/" + servletName
+				+ "?number=" + testNumber + "&baseurl=" + BASE_URL
+				+ "&baseurl2=" + BASE_URL2;
 
-			System.out.println("callSetupServlet URL: " + urlStr);
-			String result = "";
-			HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
-					expectedConnectionCode, REQUEST_TIMEOUT);
-			try{
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            result = br.readLine();
-			}finally{
-				con.disconnect();
-			}
-            assertNotNull(result);
-			System.out.println("Recover test " + testNumber + " Result : " + result);
-			assertTrue("Cannot get expected reply from server",
-					!result.contains("failed"));
+		Log.info(getClass(), method, "callSetupServlet URL: " + urlStr);
+		String result = "";
+		HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
+				expectedConnectionCode, REQUEST_TIMEOUT);
+		try{
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			result = br.readLine();
+		}finally{
+			con.disconnect();
+		}
+		assertNotNull(result);
+		Log.info(getClass(), method, "Recover test " + testNumber + " Result : " + result);
+		assertTrue("Cannot get expected reply from server",
+				!result.contains("failed"));
 		return "";
 	}
 
@@ -311,36 +279,10 @@ public class LPSTest {
 				"\n Result2 : " + result2;
 	}
 	
-	private boolean restartServer(LibertyServer server) throws Exception{
-		final String method = "restartServer";
-		server.waitForStringInLog("Dump State:");
-		System.out.println("Restart Server " + server.getServerName());
-		server.stopServer(false, false);
-		ProgramOutput po = server.startServerAndValidate(false, false, true);
-        if (po.getReturnCode() != 0) {
-        	server.stopServer(true, true);
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-
-            // It may be that we attempted to restart the server too soon.
-            Log.info(this.getClass(), method, "start server " +
-            		server.getServerName() + " failed, sleep then retry");
-            Thread.sleep(30000); // sleep for 30 seconds
-            po = server.startServerAndValidate(false, true, true);
-
-            // If it fails again then we'll report the failure
-            if (po.getReturnCode() != 0)
-            {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not restart the server '"  + server.getServerName() + "'");
-                Log.error(this.getClass(), "recoveryTest", ex);
-                throw ex;
-            }
-        }
-		return true;
+	private static void restartServer(LibertyServer s) throws Exception{
+        // wait for 1st server to have gone away
+        assertNotNull(s.getServerName() + " did not crash", s.waitForStringInTrace("Dump State:"));
+        s.resetStarted();
+		FATUtils.startServers(s);
 	}
-	
 }

@@ -10,7 +10,7 @@
 # This wraps the external JAR.
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+bVersion=1.1
 
 
 Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0; singleton:=true
@@ -20,12 +20,15 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.reactivestreams; version=1.0.3
+  org.reactivestreams; version=1.1.0
 
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}
+  @${repo;org.reactivestreams:reactive-streams;1.0.3;EXACT}!/!org/reactivestreams/FlowAdapters*.class, \
+  META-INF/versions/9=@${repo;org.reactivestreams:reactive-streams;1.0.3;EXACT}!/org/reactivestreams/FlowAdapters*.class
 
 WS-TraceGroup: REACTIVESTREAMS
+
+Multi-Release: true
 
 instrument.disabled: true
 

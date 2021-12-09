@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2531,6 +2531,9 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
          */
         if (isStale()) {
             buf.append("[STALE]  ");
+        }
+        if (do_not_reuse_mcw) {
+            buf.append("[REMOVING]  ");
         }
 
         buf.append("MCWrapper id ");

@@ -122,6 +122,17 @@ public class KeyStoreServiceImpl implements KeyStoreService {
 
     /** {@inheritDoc} */
     @Override
+    public String getKeyStoreType(String keyStoreName) throws KeyStoreException {
+        WSKeyStore ks = ksMgr.getKeyStore(keyStoreName);
+        if (ks != null) {
+            return ks.getType();
+        } else {
+            throw new KeyStoreException("The keystore [" + keyStoreName + "] is not present in the configuration");
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Collection<String> getTrustedCertEntriesInKeyStore(String keyStoreName) throws KeyStoreException {
         try {
             KeyStore ks = ksMgr.getJavaKeyStore(keyStoreName);

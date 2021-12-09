@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,16 +94,20 @@ public class ClientTestServlet extends HttpServlet {
         ret.append(res);
     }
 
-    public void testClientBasicSSLDefault_ClientBuilder(Map<String, String> param, StringBuilder ret) {
+    public void testClientBasicSSLDefault(Map<String, String> param, StringBuilder ret) {
         String serverIP = param.get("hostname");
         String serverPort = param.get("secport");
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
-        String res = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName
+        try {
+            String res = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName
                               + "/Test/BasicResource").path("echo").path(param.get("param")).request().get(String.class);
-        c.close();
-        ret.append(res);
+            c.close();
+            ret.append(res);
+        } finally {
+            c.close();
+        }
     }
 
     public void testClientBasicSSL_Client(Map<String, String> param, StringBuilder ret) {
@@ -120,19 +124,6 @@ public class ClientTestServlet extends HttpServlet {
         ret.append(res);
     }
 
-    public void testClientBasicSSLDefault_Client(Map<String, String> param, StringBuilder ret) {
-        String serverIP = param.get("hostname");
-        String serverPort = param.get("secport");
-
-        ClientBuilder cb = ClientBuilder.newBuilder();
-
-        Client c = cb.build();
-        String res = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName
-                              + "/Test/BasicResource").path("echo").path(param.get("param")).request().get(String.class);
-        c.close();
-        ret.append(res);
-    }
-
     public void testClientBasicSSL_WebTarget(Map<String, String> param, StringBuilder ret) {
         String serverIP = param.get("hostname");
         String serverPort = param.get("secport");
@@ -143,21 +134,6 @@ public class ClientTestServlet extends HttpServlet {
 
         WebTarget wt = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/BasicResource");
         wt.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
-
-        String res = wt.path("echo").path(param.get("param")).request().get(String.class);
-        c.close();
-        ret.append(res);
-    }
-
-    public void testClientBasicSSLDefault_WebTarget(Map<String, String> param, StringBuilder ret) {
-        String serverIP = param.get("hostname");
-        String serverPort = param.get("secport");
-
-        ClientBuilder cb = ClientBuilder.newBuilder();
-
-        Client c = cb.build();
-
-        WebTarget wt = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/BasicResource");
 
         String res = wt.path("echo").path(param.get("param")).request().get(String.class);
         c.close();

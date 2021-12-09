@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Calendar;
@@ -174,7 +175,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     protected boolean doNotify = false;
     protected Object diskCacheMonitor = new Object() {
-                    };
+    };
 
     private String definedLocation = "";
     private String alternateLocation = "";
@@ -224,15 +225,15 @@ public class CacheOnDisk implements DynacacheOnDisk {
         this.diskCacheSizeInfo = new DiskCacheSizeInfo(this.cacheName);
 
         if (this.diskCachePerformanceLevel < CacheConfig.MIN_DISKCACHE_PERFORMANCE_LEVEL
-                || this.diskCachePerformanceLevel > CacheConfig.MAX_DISKCACHE_PERFORMANCE_LEVEL) {
+            || this.diskCachePerformanceLevel > CacheConfig.MAX_DISKCACHE_PERFORMANCE_LEVEL) {
             Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(this.diskCachePerformanceLevel), "diskCachePerformanceLevel", this.cacheName,
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_PERFORMANCE_LEVEL), new Integer(CacheConfig.MAX_DISKCACHE_PERFORMANCE_LEVEL),
-                                                      new Integer(CacheConfig.DEFAULT_DISKCACHE_PERFORMANCE_LEVEL) });
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_PERFORMANCE_LEVEL), new Integer(CacheConfig.MAX_DISKCACHE_PERFORMANCE_LEVEL),
+                                                       new Integer(CacheConfig.DEFAULT_DISKCACHE_PERFORMANCE_LEVEL) });
             this.diskCachePerformanceLevel = CacheConfig.DEFAULT_DISKCACHE_PERFORMANCE_LEVEL;
         }
 
         if (this.diskCachePerformanceLevel == CacheConfig.HIGH || this.diskCachePerformanceLevel == CacheConfig.CUSTOM
-                || diskCachePerformanceLevel == CacheConfig.BALANCED) {
+            || diskCachePerformanceLevel == CacheConfig.BALANCED) {
             delayOffload = true;
             if (this.diskCachePerformanceLevel == CacheConfig.BALANCED) {
                 this.delayOffloadEntriesLimit = CacheConfig.DEFAULT_MAX_BUFFERED_CACHE_IDS_PER_METADATA;
@@ -245,23 +246,23 @@ public class CacheOnDisk implements DynacacheOnDisk {
             } else {
                 if (this.delayOffloadEntriesLimit < CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA) {
                     Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(delayOffloadEntriesLimit), "htodDelayOffloadEntriesLimit", this.cacheName,
-                                                              new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA),
-                                                              new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA),
-                                                              new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA) });
+                                                               new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA),
+                                                               new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA),
+                                                               new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA) });
                     this.delayOffloadEntriesLimit = CacheConfig.MIN_DISKCACHE_BUFFERED_CACHE_IDS_PER_METADATA;
                 }
                 if (this.delayOffloadDepIdBuckets < CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS) {
                     Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(delayOffloadDepIdBuckets), "htodDelayOffloadDepIdBuckets", this.cacheName,
-                                                              new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS),
-                                                              new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_DEPENDENCY_IDS),
-                                                              new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS) });
+                                                               new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS),
+                                                               new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_DEPENDENCY_IDS),
+                                                               new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS) });
                     this.delayOffloadDepIdBuckets = CacheConfig.MIN_DISKCACHE_BUFFERED_DEPENDENCY_IDS;
                 }
                 if (this.delayOffloadTemplateBuckets < CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES) {
                     Tr.warning(tc, "DYNA0069W",
                                new Object[] { new Integer(delayOffloadTemplateBuckets), "htodDelayOffloadTemplateBuckets",
-                                             this.cacheName, new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES),
-                                             new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_TEMPLATES), new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES) });
+                                              this.cacheName, new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES),
+                                              new Integer(CacheConfig.MAX_DISKCACHE_BUFFERED_TEMPLATES), new Integer(CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES) });
                     this.delayOffloadTemplateBuckets = CacheConfig.MIN_DISKCACHE_BUFFERED_TEMPLATES;
                 }
             }
@@ -271,47 +272,47 @@ public class CacheOnDisk implements DynacacheOnDisk {
         if (this.diskCachePerformanceLevel != CacheConfig.HIGH) {
             if (this.cleanupFrequency < CacheConfig.MIN_CLEANUP_FREQUENCY) {
                 Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(this.cleanupFrequency), "htodCleanupFrequency", this.cacheName,
-                                                          new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY), new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY),
-                                                          new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY) });
+                                                           new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY), new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY),
+                                                           new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY) });
                 this.cleanupFrequency = CacheConfig.MIN_CLEANUP_FREQUENCY;
             }
             if (this.cleanupFrequency > CacheConfig.MAX_CLEANUP_FREQUENCY) {
                 Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(this.cleanupFrequency), "htodCleanupFrequency", this.cacheName,
-                                                          new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY), new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY),
-                                                          new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY) });
+                                                           new Integer(CacheConfig.MIN_CLEANUP_FREQUENCY), new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY),
+                                                           new Integer(CacheConfig.MAX_CLEANUP_FREQUENCY) });
                 this.cleanupFrequency = CacheConfig.MAX_CLEANUP_FREQUENCY;
             }
         }
 
         if (this.evictionPolicy < CacheConfig.MIN_DISKCACHE_EVICTION_POLICY || this.evictionPolicy > CacheConfig.MAX_DISKCACHE_EVICTION_POLICY) {
             Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(this.evictionPolicy), "diskCacheEvictionPolicy", this.cacheName,
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_EVICTION_POLICY), new Integer(CacheConfig.MAX_DISKCACHE_EVICTION_POLICY),
-                                                      new Integer(CacheConfig.DEFAULT_DISKCACHE_EVICTION_POLICY) });
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_EVICTION_POLICY), new Integer(CacheConfig.MAX_DISKCACHE_EVICTION_POLICY),
+                                                       new Integer(CacheConfig.DEFAULT_DISKCACHE_EVICTION_POLICY) });
             this.evictionPolicy = CacheConfig.DEFAULT_DISKCACHE_EVICTION_POLICY;
         }
 
         if (diskCacheSizeLimit < 0 || (diskCacheSizeLimit > 0 && diskCacheSizeLimit < CacheConfig.MIN_DISKCACHE_SIZE)) {
             Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(diskCacheSizeLimit), "diskCacheSize", this.cacheName,
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_SIZE), new Integer(CacheConfig.MAX_DISKCACHE_SIZE),
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_SIZE) });
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_SIZE), new Integer(CacheConfig.MAX_DISKCACHE_SIZE),
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_SIZE) });
             diskCacheSizeLimit = CacheConfig.MIN_DISKCACHE_SIZE;
         }
         if (diskCacheSizeInGBLimit < 0 || (diskCacheSizeInGBLimit > 0 && diskCacheSizeInGBLimit < CacheConfig.MIN_DISKCACHE_SIZE_GB)) {
             Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(diskCacheSizeInGBLimit), "diskCacheSizeInGB", this.cacheName,
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_SIZE_GB), new Integer(CacheConfig.MAX_DISKCACHE_SIZE_GB),
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_SIZE_GB) });
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_SIZE_GB), new Integer(CacheConfig.MAX_DISKCACHE_SIZE_GB),
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_SIZE_GB) });
             diskCacheSizeInGBLimit = CacheConfig.MIN_DISKCACHE_SIZE_GB;
         }
         if (diskCacheEntrySizeInMBLimit < 0) {
             Tr.warning(tc, "DYNA0069W", new Object[] { new Integer(diskCacheEntrySizeInMBLimit), "diskCacheEntrySizeInMB", this.cacheName,
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_ENTRY_SIZE_MB), new Integer(CacheConfig.MAX_DISKCACHE_ENTRY_SIZE_MB),
-                                                      new Integer(CacheConfig.MIN_DISKCACHE_ENTRY_SIZE_MB) });
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_ENTRY_SIZE_MB), new Integer(CacheConfig.MAX_DISKCACHE_ENTRY_SIZE_MB),
+                                                       new Integer(CacheConfig.MIN_DISKCACHE_ENTRY_SIZE_MB) });
             diskCacheEntrySizeInMBLimit = CacheConfig.MIN_DISKCACHE_ENTRY_SIZE_MB;
         }
 
         if (this.evictionPolicy != CacheConfig.EVICTION_NONE) {
             if (highThreshold < CacheConfig.MIN_HIGH_THRESHOLD || highThreshold > CacheConfig.MAX_HIGH_THRESHOLD
-                    || lowThreshold < CacheConfig.MIN_LOW_THRESHOLD || lowThreshold > CacheConfig.MAX_LOW_THRESHOLD || highThreshold <= lowThreshold) {
+                || lowThreshold < CacheConfig.MIN_LOW_THRESHOLD || lowThreshold > CacheConfig.MAX_LOW_THRESHOLD || highThreshold <= lowThreshold) {
                 Tr.info(tc, "DYNA0068W", new Object[] { this.cacheName });
                 highThreshold = CacheConfig.DEFAULT_HIGH_THRESHOLD;
                 lowThreshold = CacheConfig.DEFAULT_LOW_THRESHOLD;
@@ -357,7 +358,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         loadAndCheckPropertyFile();
         if (this.propertyFileStatus != 0) {
             if ((this.propertyFileStatus & PROPERTY_ERROR_FILE_CORRUPT) > 0 || (this.propertyFileStatus & PROPERTY_ERROR_CACHE_SIZE) > 0
-                    || (this.propertyFileStatus & PROPERTY_ERROR_FIELD_CHECK) > 0 || (this.propertyFileStatus & PROPERTY_ERROR_GB) > 0) {
+                || (this.propertyFileStatus & PROPERTY_ERROR_FIELD_CHECK) > 0 || (this.propertyFileStatus & PROPERTY_ERROR_GB) > 0) {
                 if (this.currentCacheSizeInBytes > 0) {
                     this.dataGB = this.dataFiles;
                     this.dependencyIdGB = this.dependencyIdFiles;
@@ -723,6 +724,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 cod.propertyFileStatus = PROPERTY_FILE_OK;
                 String[] files = swapDirPathFile.list();
@@ -768,10 +770,10 @@ public class CacheOnDisk implements DynacacheOnDisk {
                             cod.propertyFileStatus = (byte) (cod.propertyFileStatus | PROPERTY_ERROR_CACHE_SIZE);
                             return null;
                         }
-                        byte[] b = sTemp.getBytes("UTF-8");
+                        byte[] b = sTemp.getBytes(StandardCharsets.UTF_8);
                         int fieldCheck = 0;
                         for (int i = 0; i < b.length; i++) {
-                            fieldCheck += (int) b[i];
+                            fieldCheck += b[i];
                         }
                         fieldCheck = fieldCheck * 3;
                         sTemp = (String) htodProp.get(FIELD_CHECK);
@@ -854,6 +856,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 FileOutputStream fos = null;
                 Properties htodProp = new Properties();
@@ -872,10 +875,10 @@ public class CacheOnDisk implements DynacacheOnDisk {
                         cacheSizeInBytes = cod.currentCacheSizeInBytes;
                         htodProp.put(CACHE_SIZE_IN_BYTES, Long.toString(cacheSizeInBytes));
                         String s = String.valueOf(cacheSizeInBytes);
-                        byte[] b = s.getBytes("UTF-8");
+                        byte[] b = s.getBytes(StandardCharsets.UTF_8);
                         fieldCheck = 0;
                         for (int i = 0; i < b.length; i++) {
-                            fieldCheck += (int) b[i];
+                            fieldCheck += b[i];
                         }
                         fieldCheck = fieldCheck * 3;
                         htodProp.put(FIELD_CHECK, String.valueOf(fieldCheck));
@@ -919,6 +922,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 try {
                     f.delete();
@@ -934,12 +938,14 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * Call this method to delete all disk cache files per cache instance.
      */
+    @Override
     public void deleteDiskCacheFiles() {
         final String methodName = "deleteDiskCacheFiles()";
         final File f = new File(swapDirPath);
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 // delete files
                 File fl[] = f.listFiles();
@@ -965,6 +971,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 // delete files
                 File fd[] = f.listFiles();
@@ -995,6 +1002,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName + " file=" + this.inProgressFileName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 try {
                     f.createNewFile();
@@ -1016,6 +1024,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName);
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 try {
                     f.delete();
@@ -1030,10 +1039,11 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to stop the LPBT.
-     * 
+     *
      * @param completeClear
      *            - boolean to select clear all invalidation buffers completely or not.
      */
+    @Override
     public void stop(boolean completeClear) {
         stopping = true;
         this.htod.invalidationBuffer.setStopping(true);
@@ -1058,10 +1068,11 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to stop the LPBT.
-     * 
+     *
      * @param completeClear
      *            - boolean to select clear all invalidation buffers completely or not.
      */
+    @Override
     public void stopOnError(Exception ex) {
         this.cache.setSwapToDisk(false);
         stop(HTODDynacache.COMPLETE_CLEAR);
@@ -1080,6 +1091,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         this.valueSet = new ValueSet(1);
         if (f.exists()) {
             AccessController.doPrivileged(new PrivilegedAction() {
+                @Override
                 public Object run() {
                     FileInputStream fis = null;
                     ObjectInputStream ois = null;
@@ -1104,8 +1116,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
                             }
                             f.delete();
                         } catch (Throwable t2) {
-                            com.ibm.ws.ffdc.FFDCFilter
-                                            .processException(t2, "com.ibm.ws.cache.CacheOnDisk.readAndDeleteInvalidationFile", "1068", cod);
+                            com.ibm.ws.ffdc.FFDCFilter.processException(t2, "com.ibm.ws.cache.CacheOnDisk.readAndDeleteInvalidationFile", "1068", cod);
                             traceDebug(methodName, "cacheName=" + cod.cacheName + "\nException: " + ExceptionUtility.getStackTrace(t2));
                         }
                     }
@@ -1127,6 +1138,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         final CacheOnDisk cod = this;
         traceDebug(methodName, "cacheName=" + this.cacheName + " valueSet=" + cod.valueSet.size());
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 FileOutputStream fos = null;
                 ObjectOutputStream oos = null;
@@ -1185,6 +1197,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         }
     }
 
+    @Override
     @Trivial
     public void invokeDiskCleanup(boolean scan) {
         if (scan || htod.invalidationBuffer.size() > 0 || htod.invalidationBuffer.size(HTODInvalidationBuffer.GC_BUFFER) > 0) {
@@ -1201,6 +1214,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
         }
     }
 
+    @Override
     public boolean invokeDiskCacheGarbageCollector(int GCType) {
         boolean notified = false;
         if (this.garbageCollectionThread != null) {
@@ -1219,6 +1233,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * Call this method to clear the disk cache per cache instance.
      */
+    @Override
     public void clearDiskCache() {
         if (htod.clearDiskCache() == HTODDynacache.DISK_EXCEPTION) {
             stopOnError(this.htod.diskCacheException);
@@ -1232,6 +1247,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * Call this method to write a cache entry to the disk.
      */
+    @Override
     public int writeCacheEntry(CacheEntry ce) { // @A5C
         int returnCode = htod.writeCacheEntry(ce);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1242,10 +1258,11 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to read a cache entry from the disk.
-     * 
+     *
      * @param id
      *            - cache id.
      */
+    @Override
     public CacheEntry readCacheEntry(Object id) { // SKS-O
         Result result = htod.readCacheEntry(id);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1260,12 +1277,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to read a cache entry from the disk.
-     * 
+     *
      * @param id
      *            - cache id.
      * @param checkDependency
      *            - true to check whether cache id is also depid id.
      */
+    @Override
     public CacheEntry readCacheEntry(Object id, boolean calledFromRemove) {
         Result result = htod.readCacheEntry(id, calledFromRemove);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1280,33 +1298,36 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to a cache entry from the disk.
-     * 
+     *
      * @param ce
      *            - cache entry.
      */
+    @Override
     public void delCacheEntry(CacheEntry ce, int cause, int source, boolean fromDepIdTemplateInvalidation) {
         htod.delCacheEntry(ce, cause, source, fromDepIdTemplateInvalidation);
     }
 
     /**
      * Call this method to remove multiple of cache ids from the disk.
-     * 
+     *
      * @param removeList
      *            - a collection of cache ids.
      */
+    @Override
     public void delCacheEntry(ValueSet removeList, int cause, int source, boolean fromDepIdTemplateInvalidation, boolean fireEvent) {
         htod.delCacheEntry(removeList, cause, source, fromDepIdTemplateInvalidation, fireEvent);
     }
 
     /**
      * Call this method to read a specified dependency id which contains the cache ids from the disk.
-     * 
+     *
      * @param id
      *            - dependency id.
      * @param delete
      *            - boolean to delete the dependency id after reading
      * @return valueSet - the collection of cache ids.
      */
+    @Override
     public ValueSet readDependency(Object id, boolean delete) { // SKS-O
         Result result = htod.readDependency(id, delete);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1324,13 +1345,14 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to read a specified template which contains the cache ids from the disk.
-     * 
+     *
      * @param template
      *            - template id.
      * @param delete
      *            - boolean to delete the template after reading
      * @return valueSet - the collection of cache ids.
      */
+    @Override
     public ValueSet readTemplate(String template, boolean delete) {
         Result result = htod.readTemplate(template, delete);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1348,7 +1370,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to get the cache ids based on the index and the length from the disk.
-     * 
+     *
      * @param index
      *            If index = 0, it starts the beginning. If index = 1, it means "next". If Index = -1, it means
      *            "previous".
@@ -1356,6 +1378,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
      *            The max number of templates to be read. If length = -1, it reads all templates until the end.
      * @return valueSet - the collection of cache ids.
      */
+    @Override
     public ValueSet readCacheIdsByRange(int index, int length) {
         Result result = htod.readCacheIdsByRange(index, length);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1373,7 +1396,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to get the dependency ids based on the index and the length from the disk.
-     * 
+     *
      * @param index
      *            If index = 0, it starts the beginning. If index = 1, it means "next". If Index = -1, it means
      *            "previous".
@@ -1381,6 +1404,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
      *            The max number of templates to be read. If length = -1, it reads all templates until the end.
      * @return valueSet - the collection of dependency ids.
      */
+    @Override
     public ValueSet readDependencyByRange(int index, int length) {
         Result result = htod.readDependencyByRange(index, length);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1398,7 +1422,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to get the template ids based on the index and the length from the disk.
-     * 
+     *
      * @param index
      *            If index = 0, it starts the beginning. If index = 1, it means "next". If Index = -1, it means
      *            "previous".
@@ -1406,6 +1430,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
      *            The max number of templates to be read. If length = -1, it reads all templates until the end.
      * @return valueSet - the collection of templates.
      */
+    @Override
     public ValueSet readTemplatesByRange(int index, int length) {
         Result result = htod.readTemplatesByRange(index, length);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1423,12 +1448,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to get the number of the cache ids in the disk.
-     * 
+     *
      * @param filter
      *            if true, filter the size from the invalidation buffer. Else, no filter - real size of entries in the
      *            disk
      * @return int - the size
      */
+    @Override
     public int getCacheIdsSize(boolean filter) {
         if (filter == CacheOnDisk.FILTER) {
             return htod.getCacheIdsSize(filter) - htod.invalidationBuffer.size();
@@ -1440,35 +1466,40 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to get the number of the dependency ids in the disk.
-     * 
+     *
      * @return int - the size
      */
+    @Override
     public int getDepIdsSize() {
         return htod.getDepIdsSize();
     }
 
     /**
      * Call this method to get the number of the templates in the disk.
-     * 
+     *
      * @return int - the size
      */
+    @Override
     public int getTemplatesSize() {
         return htod.getTemplatesSize();
     }
 
     /**
      * Call this method to get the total number of cache entries size in the disk.
-     * 
+     *
      * @return long - the size
      */
+    @Override
     public long getCacheSizeInBytes() {
         return this.currentCacheSizeInBytes;
     }
 
+    @Override
     public int getDiskCacheSizeLimit() { // 3821 NK begin
         return this.diskCacheSizeInfo.diskCacheSizeLimit;
     }
 
+    @Override
     public int getDiskCacheSizeHighLimit() { // 3821 NK begin
         return this.diskCacheSizeInfo.diskCacheSizeHighLimit;
     }
@@ -1477,18 +1508,22 @@ public class CacheOnDisk implements DynacacheOnDisk {
         return this.diskCacheSizeInfo.diskCacheSizeLowLimit;
     }
 
+    @Override
     public int getDiskCacheSizeInGBLimit() {
         return this.diskCacheSizeInfo.diskCacheSizeInGBLimit;
     }
 
+    @Override
     public long getDiskCacheEntrySizeInBytesLimit() {
         return this.diskCacheSizeInfo.diskCacheEntrySizeInBytesLimit;
     }
 
+    @Override
     public long getDiskCacheSizeInBytesLimit() {
         return this.diskCacheSizeInfo.getDiskCacheSizeInBytesLimit();
     }
 
+    @Override
     public long getDiskCacheSizeInBytesHighLimit() {
         return this.diskCacheSizeInfo.getDiskCacheSizeInBytesHighLimit();
     }
@@ -1497,18 +1532,20 @@ public class CacheOnDisk implements DynacacheOnDisk {
         return this.diskCacheSizeInfo.getDiskCacheSizeInBytesLowLimit();
     }
 
+    @Override
     public int getEvictionPolicy() {
         return this.evictionPolicy;
     } // 3821 NK end
 
     /**
      * Call this method to delete a cache id from a specified dependency in the disk.
-     * 
+     *
      * @param id
      *            - dependency id.
      * @param entry
      *            - cache id.
      */
+    @Override
     public void delDependencyEntry(Object id, Object entry) { // SKS-O
         if (htod.delDependencyEntry(id, entry) == HTODDynacache.DISK_EXCEPTION) {
             stopOnError(this.htod.diskCacheException);
@@ -1517,12 +1554,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to delete a cache id from a specified template in the disk.
-     * 
+     *
      * @param template
      *            - template id.
      * @param entry
      *            - cache id.
      */
+    @Override
     public void delTemplateEntry(String template, Object entry) {
         if (htod.delTemplateEntry(template, entry) == HTODDynacache.DISK_EXCEPTION) {
             stopOnError(this.htod.diskCacheException);
@@ -1531,10 +1569,11 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to delete speciifed dependency id from the disk.
-     * 
+     *
      * @param id
      *            - dependency id.
      */
+    @Override
     public void delDependency(Object id) { // SKS-O
         if (htod.delDependency(id) == HTODDynacache.DISK_EXCEPTION) {
             stopOnError(this.htod.diskCacheException);
@@ -1543,10 +1582,11 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to delete speciifed template from the disk.
-     * 
+     *
      * @param id
      *            - template id.
      */
+    @Override
     public void delTemplate(String template) {
         if (htod.delTemplate(template) == HTODDynacache.DISK_EXCEPTION) {
             stopOnError(this.htod.diskCacheException);
@@ -1555,12 +1595,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to write a dependency id with a collection of cache ids to the disk.
-     * 
+     *
      * @param id
      *            - dependency id.
      * @param vs
      *            - a collection of cache ids.
      */
+    @Override
     public int writeDependency(Object id, ValueSet vs) { // SKS-O
         int returnCode = htod.writeDependency(id, vs);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1571,12 +1612,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to write a template with a collection of cache ids to the disk.
-     * 
+     *
      * @param template
      *            - template id.
      * @param vs
      *            - a collection of cache ids.
      */
+    @Override
     public int writeTemplate(String template, ValueSet vs) {
         int returnCode = htod.writeTemplate(template, vs);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1587,12 +1629,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to add a cache id for a specified dependency id to the disk.
-     * 
+     *
      * @param id
      *            - dependency id.
      * @param entry
      *            - cache id.
      */
+    @Override
     public int writeDependencyEntry(Object id, Object entry) { // SKS-O
         int returnCode = htod.writeDependencyEntry(id, entry);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1603,12 +1646,13 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Call this method to add a cache id for a specified template to the disk.
-     * 
+     *
      * @param template
      *            - template id.
      * @param entry
      *            - cache id.
      */
+    @Override
     public int writeTemplateEntry(String template, Object entry) {
         int returnCode = htod.writeTemplateEntry(template, entry);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1619,20 +1663,22 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * This method returns true if disk cache contains a mapping for the specified key.
-     * 
+     *
      * @param key
      *            - key is to be tested.
      * @return true if disk cache contains a mapping for the specified key.
      */
+    @Override
     public boolean containsKey(Object key) {
         return htod.containsKey(key);
     }
 
     /**
      * This method gets the start state of HTOD which is used in the Cache.start() method
-     * 
+     *
      * @return startState START_NONE, START_LPBT_SCAN, START_LPBT_REMOVE
      */
+    @Override
     public int getStartState() {
         return this.startState;
     }
@@ -1640,6 +1686,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method returns true if EvictionTable needs to be populated on server restart
      **/
+    @Override
     public boolean shouldPopulateEvictionTable() {
         return this.populateEvictionTable;
     }
@@ -1647,6 +1694,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method gets the current pending removal size in the disk invalidation buffers.
      */
+    @Override
     public int getPendingRemovalSize() {
         return htod.getPendingRemovalSize();
     }
@@ -1654,6 +1702,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method gets the current size of dependency id buckets in the memory table for the disk.
      */
+    @Override
     public int getDepIdsBufferedSize() {
         return htod.getDepIdsBufferedSize();
     }
@@ -1661,6 +1710,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method gets the current size of template buckets in the memory table for the disk.
      */
+    @Override
     public int getTemplatesBufferedSize() {
         return htod.getTemplatesBufferedSize();
     }
@@ -1685,6 +1735,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method checks whether the disk cleanup is running or not
      */
+    @Override
     public boolean isCleanupRunning() {
         return this.htod.invalidationBuffer.isBackgroundInvalidationInProgress();
     }
@@ -1692,6 +1743,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method clears invalidaiton buffers in HTODDynacache
      */
+    @Override
     public void clearInvalidationBuffers() {
         this.htod.invalidationBuffer.clear(HTODInvalidationBuffer.EXPLICIT_BUFFER); // 3821 NK begin
         this.htod.invalidationBuffer.clear(HTODInvalidationBuffer.SCAN_BUFFER);
@@ -1703,6 +1755,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method checks whether invalidaiton buffers in HTODDynacache is full or not
      */
+    @Override
     @Trivial
     public boolean isInvalidationBuffersFull() {
         return this.htod.invalidationBuffer.isFull();
@@ -1711,13 +1764,14 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method releases unused pools which is over its life time.
      */
+    @Override
     public void releaseUnusedPools() {
         this.htod.releaseUnusedPools();
     }
 
     /**
      * This method find the hashcode based on index and length.
-     * 
+     *
      * @param index
      *            If index = 0, it starts the beginning. If index = 1, it means "next". If Index = -1, it means
      *            "previous".
@@ -1728,6 +1782,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
      * @param useValue
      *            true to calculate hashcode including value
      */
+    @Override
     public Result readHashcodeByRange(int index, int length, boolean debug, boolean useValue) { // LI4337-17
         Result result = this.htod.readHashcodeByRange(index, length, debug, useValue);
         if (result.returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1739,6 +1794,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * This method is used to update expiration times in GC and disk emtry header
      */
+    @Override
     public int updateExpirationTime(Object id, long oldExpirationTime, int size, long newExpirationTime, long newValidatorExpirationTime) {
         int returnCode = this.htod.updateExpirationTime(id, oldExpirationTime, size, newExpirationTime, newValidatorExpirationTime);
         if (returnCode == HTODDynacache.DISK_EXCEPTION) {
@@ -1747,10 +1803,12 @@ public class CacheOnDisk implements DynacacheOnDisk {
         return returnCode;
     }
 
+    @Override
     public Exception getDiskCacheException() {
         return htod.diskCacheException;
     }
 
+    @Override
     public void waitForCleanupComplete() {
         final String methodName = "waitForCleanupComplete()";
         if (this.diskCleanupThread != null) {
@@ -1833,7 +1891,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
 
     /**
      * Check the location whether it is writable or not
-     * 
+     *
      * @param location
      * @return int 0 = OK 1 = LOCATION_NOT_DEFINED 2 = INVALID_LOCATION 3 = LOCATION_NOT_DIRECTORY 4 =
      *         LOCATION_NOT_WRITABLE 5 = LOCATION_CANNOT_MAKE_DIR
@@ -1871,6 +1929,7 @@ public class CacheOnDisk implements DynacacheOnDisk {
     /**
      * Return a boolean to indicate whether the specified cache id exists in the aux dependency table
      */
+    @Override
     public boolean isCacheIdInAuxDepIdTable(Object id) {
         return this.htod.isCacheIdInAuxDepIdTable(id);
     }

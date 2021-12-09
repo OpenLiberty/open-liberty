@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,11 +285,19 @@ public final class PubSubMessageItemStream extends BaseMessageItemStream
                 }
                 transaction.commit();
             }
+
         } catch (InterruptedException e) {
             // No FFDC code needed
             // code flow may never enter here as nobody would interrupt this thread
             // (may be in case if ME stopped in FORCE mode)
             SibTr.exception(tc, e);
+            
+        } catch (NotInMessageStore e) {
+            // No FFDC code needed
+            SibTr.exception(tc, e);
+            // It is possible that the itemStream has just been removed, 
+            // for example after it has been removed from the configuration, log and continue
+
         } catch (MessageStoreException e) {
             // MessageStoreException shouldn't occur so FFDC.
             FFDCFilter.processException(

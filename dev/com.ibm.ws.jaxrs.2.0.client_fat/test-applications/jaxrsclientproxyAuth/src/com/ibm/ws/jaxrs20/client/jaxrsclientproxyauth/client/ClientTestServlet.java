@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,18 +28,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configurable;
 
 @WebServlet("/ClientTestServlet")
 public class ClientTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 7188707949976646596L;
-    public static enum ConfigurableToTest {
-        CLIENT_BUILDER,
-        CLIENT,
-        WEB_TARGET,
-        BUILDER
-    }
     private static final String moduleName = "jaxrsclientproxyAuth";
 
     private static void log(String method, String msg) {
@@ -97,54 +90,54 @@ public class ClientTestServlet extends HttpServlet {
     }
 
     public void testProxyToHTTP_ClientBuilder(Map<String, String> param, StringBuilder ret) {
-        testProxy("http", param, ret, ConfigurableToTest.CLIENT_BUILDER);
+        testProxy("http", param, ret);
     }
 
     public void testProxyToHTTPS_ClientBuilder(Map<String, String> param, StringBuilder ret) {
-        testProxy("https", param, ret, ConfigurableToTest.CLIENT_BUILDER);
+        testProxy("https", param, ret);
     }
 
     public void testProxyToHTTPTimeout_ClientBuilder(Map<String, String> param, StringBuilder ret) {
-        testProxyTimeout("http", param, ret, ConfigurableToTest.CLIENT_BUILDER);
+        testProxyTimeout("http", param, ret);
     }
 
     public void testProxyToHTTP_Client(Map<String, String> param, StringBuilder ret) {
-        testProxy("http", param, ret, ConfigurableToTest.CLIENT);
+        testProxy("http", param, ret);
     }
 
     public void testProxyToHTTPS_Client(Map<String, String> param, StringBuilder ret) {
-        testProxy("https", param, ret, ConfigurableToTest.CLIENT);
+        testProxy("https", param, ret);
     }
 
     public void testProxyToHTTPTimeout_Client(Map<String, String> param, StringBuilder ret) {
-        testProxyTimeout("http", param, ret, ConfigurableToTest.CLIENT);
+        testProxyTimeout("http", param, ret);
     }
 
     public void testProxyToHTTP_WebTarget(Map<String, String> param, StringBuilder ret) {
-        testProxy("http", param, ret, ConfigurableToTest.WEB_TARGET);
+        testProxy("http", param, ret);
     }
 
     public void testProxyToHTTPS_WebTarget(Map<String, String> param, StringBuilder ret) {
-        testProxy("https", param, ret, ConfigurableToTest.WEB_TARGET);
+        testProxy("https", param, ret);
     }
 
     public void testProxyToHTTPTimeout_WebTarget(Map<String, String> param, StringBuilder ret) {
-        testProxyTimeout("http", param, ret, ConfigurableToTest.WEB_TARGET);
+        testProxyTimeout("http", param, ret);
     }
 
     public void testProxyToHTTP_Builder(Map<String, String> param, StringBuilder ret) {
-        testProxy("http", param, ret, ConfigurableToTest.BUILDER);
+        testProxy("http", param, ret);
     }
 
     public void testProxyToHTTPS_Builder(Map<String, String> param, StringBuilder ret) {
-        testProxy("https", param, ret, ConfigurableToTest.BUILDER);
+        testProxy("https", param, ret);
     }
 
     public void testProxyToHTTPTimeout_Builder(Map<String, String> param, StringBuilder ret) {
-        testProxyTimeout("http", param, ret, ConfigurableToTest.BUILDER);
+        testProxyTimeout("http", param, ret);
     }
 
-    private void testProxy(String protocol, Map<String, String> param, StringBuilder ret, ConfigurableToTest configurable) {
+    private void testProxy(String protocol, Map<String, String> param, StringBuilder ret) {
         log("testProxy", "<entry>");
         String serverIP = param.get("serverIP");
 
@@ -157,9 +150,8 @@ public class ClientTestServlet extends HttpServlet {
         String type = param.get("proxytype");
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-        if (ConfigurableToTest.CLIENT_BUILDER.equals(configurable)) {
-            configProperties(cb, null, host, port, type, username, password);
-        }
+        cb.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+        configProperties(cb, "600000", host, port, type, username, password);
 
         cb.hostnameVerifier(new HostnameVerifier() {
 
@@ -170,29 +162,16 @@ public class ClientTestServlet extends HttpServlet {
         });
 
         Client c = cb.build();
-        if (ConfigurableToTest.CLIENT.equals(configurable)) {
-            configProperties(c, null, host, port, type, username, password);
-        }
         String res = null;
         try {
             String targetURL = protocol + "://" + serverIP + ":" + serverPort + "/" + moduleName
                                + "/ProxyAuthClientTest/BasicResource";
             log("testProxy", "Attempting to target: " + targetURL);
             WebTarget target = c.target(targetURL);
-            if (ConfigurableToTest.WEB_TARGET.equals(configurable)) {
-                configProperties(target, null, host, port, type, username, password);
-            }
             Builder builder = target.path("echo").path(param.get("param")).request();
-            // yuck - Invocation.Builder has a property method, but doesn't implement Configurable...
-            if (ConfigurableToTest.BUILDER.equals(configurable)) {
-                builder.property("com.ibm.ws.jaxrs.client.proxy.host", host);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.port", port);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.type", type);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.username", username);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.password", password);
-            }
             res = builder.get(String.class);
         } catch (Exception e) {
+            e.printStackTrace();
             res = "[Proxy Error]:" + e.toString();
         } finally {
             c.close();
@@ -201,7 +180,7 @@ public class ClientTestServlet extends HttpServlet {
         log("testProxy", "<exit> " + res);
     }
 
-    private void testProxyTimeout(String protocol, Map<String, String> param, StringBuilder ret, ConfigurableToTest configurable) {
+    private void testProxyTimeout(String protocol, Map<String, String> param, StringBuilder ret) {
         log("testProxyTimeout", "<entry>");
         String serverIP = param.get("serverIP");
 
@@ -222,35 +201,17 @@ public class ClientTestServlet extends HttpServlet {
                 return true;
             }
         });
-
-        if (ConfigurableToTest.CLIENT_BUILDER.equals(configurable)) {
-            configProperties(cb, timeout, host, port, type, username, password);
-        }
+        
+        configProperties(cb, timeout, host, port, type, username, password);
 
         Client c = cb.build();
-        if (ConfigurableToTest.CLIENT.equals(configurable)) {
-            configProperties(c, timeout, host, port, type, username, password);
-        }
-
         String res = null;
         try {
             String targetURL = protocol + "://" + serverIP + ":" + serverPort + "/" + moduleName
                                + "/ProxyAuthClientTest/BasicResource";
             log("testProxyTimeout", "Attempting to target: " + targetURL);
             WebTarget target = c.target(targetURL);
-            if (ConfigurableToTest.WEB_TARGET.equals(configurable)) {
-                configProperties(target, timeout, host, port, type, username, password);
-            }
             Builder builder = target.path("echo").path(param.get("param")).request();
-            if (ConfigurableToTest.BUILDER.equals(configurable)) {
-                builder.property("com.ibm.ws.jaxrs.client.connection.timeout", timeout);
-                builder.property("com.ibm.ws.jaxrs.client.receive.timeout", timeout);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.host", host);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.port", port);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.type", type);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.username", username);
-                builder.property("com.ibm.ws.jaxrs.client.proxy.password", password);
-            }
             res = builder.get(String.class);
         } catch (Exception e) {
             res = "[Proxy Error]:" + e.toString();
@@ -261,25 +222,25 @@ public class ClientTestServlet extends HttpServlet {
         log("testProxyTimeout", "<exit> " + res);
     }
 
-    private void configProperties(Configurable<?> configurable, String timeout, String host, String port, String type, String username, String password) {
+    private void configProperties(ClientBuilder cb, String timeout, String host, String port, String type, String username, String password) {
         if (timeout != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.connection.timeout", timeout);
-            configurable.property("com.ibm.ws.jaxrs.client.receive.timeout", timeout);
+            cb.property("com.ibm.ws.jaxrs.client.connection.timeout", timeout);
+            cb.property("com.ibm.ws.jaxrs.client.receive.timeout", timeout);
         }
         if (host != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.proxy.host", host);
+            cb.property("com.ibm.ws.jaxrs.client.proxy.host", host);
         }
         if (port != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.proxy.port", port);
+            cb.property("com.ibm.ws.jaxrs.client.proxy.port", port);
         }
         if (type != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.proxy.type", type);
+            cb.property("com.ibm.ws.jaxrs.client.proxy.type", type);
         }
         if (username != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.proxy.username", username);
+            cb.property("com.ibm.ws.jaxrs.client.proxy.username", username);
         }
         if (password != null) {
-            configurable.property("com.ibm.ws.jaxrs.client.proxy.password", password);
+            cb.property("com.ibm.ws.jaxrs.client.proxy.password", password);
         }
     }
 }

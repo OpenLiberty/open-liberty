@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 import javax.servlet.annotation.WebServlet;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     public void testDefaultSecurityContext() throws Exception {
         String uri = defaultEndpoint + "Get";
         String token = "adam:password1";
-        String basicAuthentication = "Basic " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+        String basicAuthentication = "Basic " + Base64.getEncoder().encodeToString(token.getBytes("UTF-8"));
 
         System.out.println("uri=" + uri);
         Response response = null;
@@ -49,7 +49,7 @@ public class CustomSecurityContextTestServlet extends FATServlet {
         assertEquals(403, response.getStatus());
 
         token = "bob:password1";
-        basicAuthentication = "Basic " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+        basicAuthentication = "Basic " + Base64.getEncoder().encodeToString(token.getBytes("UTF-8"));
 
         response = t.request().header("Authorization", basicAuthentication).get();
         assertEquals(200, response.getStatus());
@@ -61,7 +61,7 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     public void testCustomSecurityContextSetInFilter() throws Exception {
         String uri = customEndpoint + "Get";
         String token = "adam:password1";
-        final String basicAuthentication = "Basic " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+        final String basicAuthentication = "Basic " + Base64.getEncoder().encodeToString(token.getBytes("UTF-8"));
 
         System.out.println("uri=" + uri);
         Response response = null;

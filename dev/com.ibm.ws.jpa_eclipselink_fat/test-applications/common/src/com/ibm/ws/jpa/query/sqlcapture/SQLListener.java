@@ -19,11 +19,19 @@ import java.util.List;
  */
 public class SQLListener {
     private final static ArrayList<String> sqlList = new ArrayList<String>();
+    private final static ArrayList<String> sqlCallList = new ArrayList<String>();
 
     public final static void recordSQL(String sql) {
         synchronized (sqlList) {
             sqlList.add(sql);
             System.out.println("SQLListener: Recorded SQL \"" + sql + "\".");
+        }
+    }
+
+    public final static void recordSQLCall(String sql) {
+        synchronized (sqlCallList) {
+            sqlCallList.add(sql);
+            System.out.println("SQLListener: Recorded SQL Call \"" + sql + "\".");
         }
     }
 
@@ -33,7 +41,13 @@ public class SQLListener {
         }
     }
 
-    public final static List<String> getAndClear() {
+    public final static void clearCalls() {
+        synchronized (sqlCallList) {
+            sqlCallList.clear();
+        }
+    }
+
+    public final static List<String> getAndClearSQLList() {
         synchronized (sqlList) {
             final ArrayList<String> retList = new ArrayList<String>(sqlList);
             sqlList.clear();
@@ -41,9 +55,24 @@ public class SQLListener {
         }
     }
 
-    public final static List<String> peek() {
+    public final static List<String> getAndClearCallList() {
+        synchronized (sqlCallList) {
+            final ArrayList<String> retList = new ArrayList<String>(sqlCallList);
+            sqlCallList.clear();
+            return retList;
+        }
+    }
+
+    public final static List<String> peekSQL() {
         synchronized (sqlList) {
             final ArrayList<String> retList = new ArrayList<String>(sqlList);
+            return retList;
+        }
+    }
+
+    public final static List<String> peekCall() {
+        synchronized (sqlCallList) {
+            final ArrayList<String> retList = new ArrayList<String>(sqlCallList);
             return retList;
         }
     }

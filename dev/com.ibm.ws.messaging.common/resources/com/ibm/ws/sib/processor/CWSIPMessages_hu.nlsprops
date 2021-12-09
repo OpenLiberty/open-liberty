@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: A(z) {0} \u00fczenetkezel\u00e9si alrendszer v\u00e1laszolt az el\u0151fizet\u00e9si k\u00e9r\u00e9sre, a k\u00f6zz\u00e9t\u00e9tel-el\u0151fizet\u00e9si topol\u00f3gia konzisztens.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Sikeres kommunik\u00e1ci\u00f3 t\u00f6rt\u00e9nt az \u00fczenetkezel\u00e9si alrendszerek k\u00f6z\u00f6tt \u00e9s az el\u0151fizet\u00e9s-k\u00f6zz\u00e9t\u00e9teli topol\u00f3gia konzisztens.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Nincs.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: A(z) {0} \u00fczenetkezel\u00e9si alrendszer v\u00e1laszolt az el\u0151fizet\u00e9si k\u00e9r\u00e9sre, a k\u00f6zz\u00e9t\u00e9tel-el\u0151fizet\u00e9si topol\u00f3gia konzisztens.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Sikeres kommunik\u00e1ci\u00f3 t\u00f6rt\u00e9nt az \u00fczenetkezel\u00e9si alrendszerek k\u00f6z\u00f6tt \u00e9s az el\u0151fizet\u00e9s-k\u00f6zz\u00e9t\u00e9teli topol\u00f3gia konzisztens.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=Nincs.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Blokkolt fogad\u00f3, a fogad\u00f3 nem k\u00e9pes k\u00e9zbes\u00edteni a jelenleg be\u00e9rkez\u0151 \u00fczenetet. Ok: {0} C\u00edmzett: {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=A fogad\u00f3 nem k\u00e9pes egy \u00fczenetet c\u00e9lk\u00e9nt megadott c\u00edmzetthez tov\u00e1bb\u00edtani a fenti okok miatt. Am\u00edg ez a probl\u00e9ma meg nem old\u00f3dik, addig a tov\u00e1bbi \u00fczenetek blokkol\u00e1sra ker\u00fclnek.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=A megadott okok k\u00f6vetkezt\u00e9ben a fogad\u00f3 nem k\u00e9pes egy \u00fczenetet a c\u00e9lk\u00e9nt megadott c\u00edmzetthez tov\u00e1bb\u00edtani. A probl\u00e9ma megold\u00e1s\u00e1ig a soron k\u00f6vetkez\u0151 \u00fczenetek k\u00e9zbes\u00edt\u00e9se blokkolt.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Ha az \u00e1llapot tart\u00f3san fennmarad, akkor tegye meg a sz\u00fcks\u00e9ges l\u00e9p\u00e9seket az \u00fczenettel kapcsolatos probl\u00e9ma megold\u00e1s\u00e1hoz.
 
 # -------------------------------------------------------------------------------------------------

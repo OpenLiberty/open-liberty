@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
 
+import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,6 +38,8 @@ public abstract class FeatureUtilityToolTest {
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
+    static String relativeMinifiedRoot;
+
     protected static List<String> cleanFiles;
     protected static List<String> cleanDirectories;
     private static Logger logger = Logger.getLogger("com.ibm.ws.install.featureUtility_fat");
@@ -51,7 +54,8 @@ public abstract class FeatureUtilityToolTest {
     private static String originalWlpInstallType;
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
-
+    public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
+    
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
@@ -68,7 +72,8 @@ public abstract class FeatureUtilityToolTest {
         unzipDestination = installRoot + "/../featureUtility_fat_wlp/";
 
         // zip up installRoot
-        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp/");
+        relativeMinifiedRoot = "/../featureUtility_fat_wlp";
+        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + relativeMinifiedRoot);
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
         if(!new File(minifiedRoot).exists()){
@@ -164,7 +169,7 @@ public abstract class FeatureUtilityToolTest {
         featureUtilityProps = new Properties();
         try {
             RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
-            os = rf.openForWriting(false);
+            os = rf.openForWriting(true);
             featureUtilityProps.setProperty(property, value);
             Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
             featureUtilityProps.store(os, null);
@@ -398,6 +403,48 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "DELETED files/folders: /etc ? VALUE: " + etc);
 
         return etc;
+
+    }
+    
+    protected static boolean deleteUsrExtFolder(String methodName){
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/extension"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/extension ? VALUE: " + usr);
+
+        return usr;
+    }
+
+    protected static boolean deleteUsrToExtFolder(String methodName){
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/cik"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/cik ? VALUE: " + usr);
+
+        return usr;
+    }
+
+    protected static void assertFilesExist(String[] filePaths)  throws Exception {
+    	for (String filePath : filePaths) {
+    		assertTrue(filePath + " does not exist.", new File(minifiedRoot, filePath).exists());
+    	}
+    }
+
+    protected void createExtensionDirs(String extensionName) throws Exception {
+        //create extensionName.properties file in wlp/etc/extensions
+        String methodName = "createExtensionDirs";
+        String propsName = extensionName + ".properties";
+
+        //create /etc/extensions
+        File extensionsDir = new File(minifiedRoot + "/etc/extensions");
+        boolean success = extensionsDir.mkdir();
+        Log.info(c, methodName, "Extension dir " + extensionsDir.getAbsolutePath() + " created= " + success);
+
+        //create extension folder
+        File extensionsInstallDir = new File(minifiedRoot + "/usr/cik/extensions", extensionName);
+        success = extensionsInstallDir.mkdir();
+        Log.info(c, methodName, "Extension install dir created= " + success);
+
+        File propsFile = new File(extensionsDir, propsName);
+
+        writeToProps(propsFile.toString(),"com.ibm.websphere.productId", extensionName );
+        writeToProps(propsFile.toString(),"com.ibm.websphere.productInstall", extensionsInstallDir.getAbsolutePath() );
 
     }
 }

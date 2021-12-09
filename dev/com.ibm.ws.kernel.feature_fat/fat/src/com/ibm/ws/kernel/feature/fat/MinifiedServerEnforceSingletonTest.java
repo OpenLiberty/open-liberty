@@ -53,6 +53,7 @@ public class MinifiedServerEnforceSingletonTest {
     private static final String PRODUCT_EXTENSION_NAME = "minifyEnforceSingleton";
     private static final String PRODUCT_FEATURE_PATH = PRODUCT_EXTENSION_NAME + "/lib/features/";
     private static final String PRODUCT_EXTENSIONS_PATH = "etc/extensions/";
+    private static final String LIB_EXTRACT = "lib/extract/";
 
     private static final String PRODUCT_FEATURE_A1 = "minifyEnforceSingletonA-1.0";
     private static final String PRODUCT_FEATURE_B1 = "minifyEnforceSingletonB-1.0";
@@ -90,6 +91,9 @@ public class MinifiedServerEnforceSingletonTest {
         server.uninstallProductExtension(PRODUCT_EXTENSION_NAME);
         server.deleteDirectoryFromLibertyInstallRoot(PRODUCT_EXTENSION_NAME);
         server.deleteFileFromLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH + PRODUCT_FEATURE_PROPERTIES_FILE);
+        if (minifyUtils.isManifestOrLibExtractCreatedForTest())
+            server.deleteDirectoryFromLibertyInstallRoot(LIB_EXTRACT);
+
     }
 
     @After

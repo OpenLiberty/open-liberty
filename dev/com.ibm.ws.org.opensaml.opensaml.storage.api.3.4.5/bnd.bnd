@@ -12,5 +12,5 @@
 
 -buildpath: \
     org.opensaml:opensaml-storage-api;version=3.4.5,\
-    com.google.guava:guava;version=27.0.1,\
+    com.google.guava:guava;version=30.1,\
     joda-time:joda-time;version=2.9.9

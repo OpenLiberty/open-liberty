@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=An IOException was caught in the SIP com.i
 error.exception.ioeinbody.useraction=No action is required.
 
 warn.unsupported.realm=CWSCT0358W: Unknown authentication realm {0}
-warn.unsupported.realm.explanation=A SIP request for an unknown authentication realm was recieved 
+warn.unsupported.realm.explanation=A SIP request for an unknown authentication realm was received
 warn.unsupported.realm.useraction=No action is required
 
 info.unhashed.creds=CWSCT0359I: Hashed Credential attributes not found.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
-import com.ibm.ws.rsadapter.DSConfig; 
+import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -131,8 +131,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
      */
-    final Class<?> type;
+    public final Class<?> type;
 
+    /**
+     * Helps cope with differences between databases/JDBC drivers.
+     */
     transient DatabaseHelper helper;
 
     /**
@@ -212,6 +215,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     protected boolean loggedImmplicitTransactionFound = false; 
 
     /**
+     * Default to be used for transaction isolation level on new connections if neither the
+     * resource reference nor the server (or app-defined resource) configuration specifies one.
+     * Some of the database helpers and legacy data store helpers override this.
+     */
+    public int defaultIsolationLevel = Connection.TRANSACTION_READ_COMMITTED;
+
+    /**
      * Indicates if the application server should free java.sql.Array instances
      * on behalf of applications that forgot to clean them up.
      * 
@@ -240,10 +250,20 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public boolean doXMLCleanup = true;
 
     /**
+     * Indicates if statements retain their isolation level once created,
+     * versus using whatever is currently on the connection when they run.
+     */
+    public boolean doesStatementCacheIsoLevel;
+
+    /**
      * This reference should always be used when accessing configuration data,
      * in order to allow for our future implementation of dynamic updates.
      */
     public final AtomicReference<DSConfig> dsConfig;
+    /**
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
+     */
+    public boolean supportsGetCatalog = true;
 
     /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout()</code>.
@@ -320,12 +340,20 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         vendorImplClass = vendorImpl.getClass();
         type = ifc;
         jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
-        supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String implClassName = vendorImplClass.getName();
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
+
+        if (connectorSvc.isHeritageEnabled()) {
+            helper.createDataStoreHelper();
+        } else {
+            supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
+        }
+
+        if (helper.shouldTraceBeEnabled(this))
+            helper.enableJdbcLogging(this);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -415,9 +443,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (helper == null)
             if (dsClassName.startsWith("com.ibm.db2.jcc.")) helper = new DB2JCCHelper(this); // unable to distinguish between DB2/Informix
             else helper = new DatabaseHelper(this);
-
-        if (helper.shouldTraceBeEnabled(this))
-            helper.enableJdbcLogging(this);
     }
 
     /**
@@ -1305,6 +1330,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // This accounts for the scenario where the first connection attempt is bad.
             // The information needs to be read again on the second attempt.
             helper.gatherAndDisplayMetaDataInfo(conn, this);
+
+            // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
+            if (helper.dataStoreHelper != null)
+                helper.initUOWDetection();
+
             wasUsedToGetAConnection = true;
         }
     }
@@ -1449,7 +1479,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * 
      * @return the instance of the helper class.
      */
-    public DatabaseHelper getHelper() {
+    public final DatabaseHelper getHelper() {
         return helper;
     }
 

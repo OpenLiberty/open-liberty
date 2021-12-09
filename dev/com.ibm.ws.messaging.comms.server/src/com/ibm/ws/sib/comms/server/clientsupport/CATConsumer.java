@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.comms.server.clientsupport;
+
+import java.io.IOException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
@@ -20,10 +24,12 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.comms.CommsConstants;
 import com.ibm.ws.sib.comms.server.CommsServerByteBufferPool;
 import com.ibm.ws.sib.comms.server.ConversationState;
+import com.ibm.ws.sib.comms.server.clientsupport.CATConsumer.State;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.SendListener;
 import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.ConsumerSession;
 import com.ibm.wsspi.sib.core.OrderingContext;
@@ -70,9 +76,200 @@ public abstract class CATConsumer
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Source info: @(#)SIB/ws/code/sib.comms.server.impl/src/com/ibm/ws/sib/comms/server/clientsupport/CATConsumer.java, SIB.comms, WASX.SIB, aa1225.01 1.67.1.1");
    }
 
-   /** A flag to indicate whether this consumer is started or not */
-   protected boolean started = false;
+   // PH20984
+   // Could we tidy this code up by incorporating more of the state flags into this enum?
+   // The _stopped flag would be an obvious candidate to be incorporated here,
+   // but I'm just going to focus on fixing APAR PH20984 for the moment.
+   public enum State { NEW, STOPPED, STARTING, STARTED, STOPPING, PAUSED, CLOSED, UNDEFINED; // Put UNDEFINED in here for any class that doesn't implement getState() properly.
+	   
+	   // A couple of methods that should make the code using this enum a bit more readable.
+	   public boolean isStarted() {
+		   return this.equals(STARTED);
+	   }
+	   
+	   public boolean isStopped() {
+		   return this.equals(STOPPED);
+	   }
+	   
+	   public boolean isStarting() {
+		   return this.equals(STARTING);
+	   }
+	   
+	   public boolean isStopping() {
+		   return this.equals(STOPPING);
+	   }
+	   
+	   public boolean isTransitioning() {
+		   return this.equals(NEW) || this.equals(STARTING) || this.equals(STOPPING) || this.equals(PAUSED);
+	   }
+	   
+   } 
 
+   private State state = State.STOPPED;
+   Thread transitioningThread = null;
+   ReentrantLock stateLock = new ReentrantLock();
+   private Condition stateTransition = stateLock.newCondition();
+   
+
+   public State getState() {
+	   stateLock.lock();
+	   try {
+		   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+			   SibTr.debug( tc , "State = " + state );
+			   return state;
+	   }
+	   
+	   finally {
+		   stateLock.unlock();
+	   }
+   }
+
+   /**
+    * Sets a new state, but only traces a warning on potentially problematic state changes instead of creating an FFDC.
+    * This is primarily intended for setting the state during consumer initialization when we know what we're doing
+    * 
+    * @param newState
+    * @return the previous state
+    */
+   protected State setStateWithoutFDC(State newState) {
+	   return setState(newState, false);
+   }
+   
+   
+   /**
+    * Sets a new state
+    * @param newState
+    * @return the previous state
+    */
+   public State setState(State newState) {
+	   return setState(newState, true);
+   }
+
+	   /**
+	    * Sets a new state
+	    * @param newState
+	    * @return the previous state
+	    */
+   private State setState(State newState, boolean allowFFDC) {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setState", allowFFDC);
+
+	   State oldState = State.UNDEFINED;
+	   stateLock.lock();
+	   try {
+		   oldState = state;
+
+		   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			   SibTr.debug( tc , this.getClass().getName() + ":" + getDestinationName() + ", Setting state. Old state =  " + state + ", new state = " + newState);
+		   }
+			   
+			   // Is there a potential issue with the state change? Check for the expected changes. Other might be "valid" as responses to an earlier error if we're tidying up.
+			   boolean warn = false;
+			   boolean ffdc = false;
+			   
+			   switch (state) {
+			   	case NEW:
+			   		// This is set for CATProxyConsumer when it is initialized, so the only state we should be able to transition to is STARTING as the consumer is started
+			   		ffdc = !(newState == State.STARTING); // Can we get directly to started if we get into consumeMessages()? Should that method step through starting and started just to be safe?
+			   		break;
+				case STOPPED:
+					// If we're stopped, then all we can do is get started or paused during an unlock
+					// However, if a client makes a stop request, this will get driven anyway, so we'll shift back to stopping state in order to process that request, even though there shouldn't be anything to do
+					warn = (newState == State.STOPPING);
+					ffdc = (!(warn || newState == State.STARTING || newState  == State.PAUSED));
+					break;
+				case STARTING:
+					warn = (newState == State.STOPPING); // Can happen if deliverImmediately is true
+					ffdc = !warn && (newState != State.STARTED);
+					break;
+				case STARTED:
+					// If we're started, then all we can do is begin stopping or be paused during an unlock
+					// However, if a client makes a start request, this will get driven anyway, so we'll shift back to starting state in order to process that request, even though there shouldn't be anything to do
+					warn = (newState == State.STARTING);
+					ffdc = (!(warn || newState == State.STOPPING || newState == State.PAUSED));
+					break;
+				case STOPPING:
+					ffdc = (newState != State.STOPPED);
+					break;
+				case PAUSED:
+					ffdc = (!(newState == State.STARTED || newState == State.STOPPED));
+					break;
+				case CLOSED:
+				case UNDEFINED:
+					// Never mind, we don't use these at the moment.
+
+				   }
+			   
+			   if (warn || ffdc) {
+				   
+				   // Something looks suspicious, so trace it in all cases.
+				   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			              SibTr.debug(tc, " WARNING: possible error in state transition", (Thread.currentThread().getStackTrace()) );
+				   }
+				   
+				   if (ffdc && allowFFDC) {
+					   Exception e = new Exception("Possible error in state transition");
+					      FFDCFilter.processException(e, CLASS_NAME + ".setState",
+                                  CommsConstants.CATCONSUMER_SETSTATE_01,
+                                  this);
+				   }
+				   
+			       
+			   }
+		   
+		   state = newState;
+		   
+		   
+		   // If anyone is waiting for us to complete something, we should give them a signal
+		   // signalAll if we've moved to a non-transitional state.
+		   if (state.isTransitioning())
+		   {
+				   transitioningThread = Thread.currentThread();
+
+		   }
+		   else {
+			   transitioningThread = null;
+			   stateTransition.signalAll();
+		   }
+
+		   return oldState;
+	   }
+	   finally {
+		   stateLock.unlock();
+		      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setState");
+		   
+	   }
+   }
+   
+   public void awaitStableState() throws InterruptedException {
+
+	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "awaitStableState");
+	   
+		stateLock.lock();
+		try {
+
+			if (Thread.currentThread().equals(transitioningThread)) {
+				
+				   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					   SibTr.debug( tc , "consumer on " + getDestinationName() + " state is transitioning, but it was this thread that set the transition state" );
+				   }
+
+				
+				return;
+			}
+			
+			while (state.isTransitioning()) {
+					stateTransition.await();
+			}
+
+		} finally {
+			stateLock.unlock();
+		}
+
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "awaitStableState");
+
+		return;
+   }
+   
    /** Counter of the number of messages sent to the client */
    protected long messagesSent = 0;
 
@@ -318,14 +515,40 @@ public abstract class CATConsumer
                                                         ""+sendReply,
                                                         sendListener});
 
+	  State fallbackState = State.UNDEFINED;
       try
       {
          // Set the started flag before starting the session in case deliverImmediately is true in which case message processor
          // may immediately deliver a message to the async consumer (consumeMessages) which will stop the session and set
          // started=false. We don't want this method setting started=true after consumeMessages has set it false hence the
          // need to set started=true before starting the session.
-         started = true;
+    	  // Transition through states cleanly
+    	  stateLock.lock();
+    	  
+    	  try {
+    		  awaitStableState();
+    		  fallbackState = setState(State.STARTING);
+    	  }
+    	  finally {
+    		  stateLock.unlock();
+    	  }
          getConsumerSession().start(deliverImmediately);
+         stateLock.lock();
+         try {
+             awaitStableState();
+             State currentState = getState();
+             
+             if (State.STARTING == currentState)
+            	 fallbackState = State.STARTED;
+             else {
+            	 // Hmm, what changed while we were in start()?
+            	 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "State changed while session was starting. State is now " + currentState);
+            	 fallbackState = State.UNDEFINED;
+             }
+         }
+         finally {
+        	 stateLock.unlock();
+         }
          requestsReceived++;
 
          if (sendReply)
@@ -372,12 +595,9 @@ public abstract class CATConsumer
             sendListener.dataSent(getConversation());
          }
       }
-      catch (SIException e)
+      catch (Exception e) //(SIException e)
       {
          //No FFDC code needed
-
-         // Note that we failed to start the consumer
-         started = false;
 
          //Only FFDC if we haven't received a meTerminated event.
          if(!((ConversationState)getConversation().getAttachment()).hasMETerminated())
@@ -400,6 +620,9 @@ public abstract class CATConsumer
          // do it too many times
          sendListener.errorOccurred(null, getConversation());
       }
+      finally {
+    	  if (fallbackState != State.UNDEFINED) setState(fallbackState);
+      }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "start");
    }
@@ -417,10 +640,44 @@ public abstract class CATConsumer
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop",
                                            new Object[]{requestNumber, sendListener});
 
+	  State fallback = State.UNDEFINED;
+      
       try
       {
-         getConsumerSession().stop();
-         started = false;
+
+    	  // Transition through states cleanly
+        	  stateLock.lock();
+        	  
+        	  try {
+        		  awaitStableState();
+            	  fallback = setState(State.STOPPING);
+        	  }
+        	  finally {
+        		  stateLock.unlock();
+        	  }
+        	  
+        	  getConsumerSession().stop();
+        	  
+        	  
+        	  // LDS TODO: This next bit mirrors what is in start(). However, in that case there's the chance of different behaviour based on the deliverImmediately setting. Can anything like that happen here? If not, do we really need this extra checking or can we simply assume that we can switch to STOPPED state now that the stop() method has returned?
+              stateLock.lock();
+              try {
+                  awaitStableState();
+                  State currentState = getState();
+                  
+                  if (State.STOPPING == currentState)
+                	  fallback = State.STOPPED;
+                  else {
+                 	 // Hmm, what changed while we were in stop()?
+                 	 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "State changed while session was stopping. State is now " + currentState);
+                 	fallback = State.UNDEFINED;
+                  }
+              }
+              finally {
+             	 stateLock.unlock();
+              }
+        	  
+        	  fallback = State.STOPPED;
 
          // The send listener is passed into the send() call so that we can be notified
          // when the data leaves the box
@@ -457,8 +714,9 @@ public abstract class CATConsumer
             sendListener.errorOccurred(cle, getConversation());
          }
       }
-      catch (SIException e)
+      catch (Exception e) //(SIException e)
       {
+
          //No FFDC code needed
          //Only FFDC if we haven't received a meTerminated event.
          if(!((ConversationState)getConversation().getAttachment()).hasMETerminated())
@@ -477,6 +735,9 @@ public abstract class CATConsumer
 
          // Also notify the send listener
          sendListener.errorOccurred(null, getConversation());
+      }
+      finally {
+		  if (fallback != State.UNDEFINED) setState(fallback);
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "stop");
@@ -732,13 +993,24 @@ public abstract class CATConsumer
       throw e;
    }
 
+   protected String getDestinationName() {
+	   String destinationName = "Unknown";
+	   try {
+		   destinationName = getConsumerSession().getDestinationAddress().getDestinationName();
+	   }
+	   catch (Throwable t) {
+		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.debug(tc, "failed to read destination name for consumerSession", t);
+	   }
+	   return destinationName;
+   }
+
    /**
     * @return Returns the state of the consumer
     */
    public String toString()
    {
       return getClass().getName() + "@" + Integer.toHexString(hashCode()) +
-             ": Started:" + started +
+             ": State:" + state +
              ", messagesSent: " + messagesSent +
              ", batchesSent: " + batchesSent +
              ", startRequestsReceived: " + requestsReceived;
@@ -768,5 +1040,42 @@ public abstract class CATConsumer
 
       // Re-throw this exception so that the client will informed if required
       throw e;
+   }
+   
+   
+   // PH20984
+   /**
+    * Create a formatted dump of the current state.
+    * @param writer
+    */
+   public void dump(FormattedWriter writer) {
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+       try {
+           writer.newLine();
+           writer.startTag(this.getClass().getSimpleName());
+           writer.indent();
+
+           writer.newLine();
+           writer.taggedValue("toString", toString());
+           ConsumerSession consumerSession = getConsumerSession();
+           if (consumerSession != null)
+               consumerSession.dump(writer);
+           writer.outdent();
+           writer.newLine();
+           writer.endTag(this.getClass().getSimpleName());
+
+        } catch (Throwable t) {
+            // No FFDC Code Needed
+            try {
+                writer.write("\nUnable to dump " + this + " " + t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+       }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.exit(this, tc, "dump");
    }
 }

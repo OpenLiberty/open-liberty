@@ -26,5 +26,5 @@
    	   <name>*:*</name>
    	   <actions>connect,resolve</actions>
     </permission>
- 
+	
 </permissions>

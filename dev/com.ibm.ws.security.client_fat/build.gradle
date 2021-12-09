@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,12 +9,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled false }
 
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
-               'commons-codec:commons-codec:1.4',
-               'commons-logging:commons-logging:1.1.1',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.websphere.javaee.servlet.3.0'),
                project(':com.ibm.ws.security.audit_fat.common.tooling')
 }
@@ -785,6 +789,148 @@ task ProgrammaticLoginWithoutCallbackHandler_EAR (type: Zip) {
   }
 }
 
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejb31DD.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejb31DD_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ejb31DD.jar'
+  
+  from (new File(projectDir, 'test-applications/ejb31DD.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestSingletonEjbDD.class'
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestStatefulEjbDD.class'
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestStatelessEjbDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanSingletonDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanStatefulDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanStatelessDD.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejb31NoDD.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejb31NoDD_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ejb31NoDD.jar'
+  
+  from (new File(projectDir, 'test-applications/ejb31NoDD.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestSingletonEjbNoDD.class'
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestStatefulEjbNoDD.class'
+    include 'com/ibm/ws/app/manager/war/test/InterfaceTestStatelessEjbNoDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanSingletonNoDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanStatefulNoDD.class'
+    include 'com/ibm/ws/app/manager/war/test/TestBeanStatelessNoDD.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** helloWorld.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task helloWorld_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'helloWorld.jar'
+
+  from (new File(projectDir, 'test-applications/helloWorld.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/app/manager/client/HelloWorld.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** TestBeans.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task TestBeans_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "TestBeans.war"
+  classpath = classpath.filter{ false }
+  
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from ('test-applications/TestBeans.war/resources') {
+    include '**'
+  }
+
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/app/manager/war/test/EjbDD.class'
+    include 'com/ibm/ws/app/manager/war/test/EjbNoDD.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** earDD.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task earDD_EAR (type: Zip) {
+  dependsOn ejb31DD_JAR, ejb31NoDD_JAR, helloWorld_JAR, TestBeans_WAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'earDD.ear'
+
+  from (new File(projectDir, 'test-applications/earDD.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'ejb31DD.jar'
+    include 'ejb31NoDD.jar'
+    include 'helloWorld.jar'
+    include 'TestBeans.war'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** TechnologySamples.ear
+ **
+ ** NOTE: Left out alot of ORB classes as they are not used in
+ **       this test bucket.
+ **
+ ******************************************************************
+ ******************************************************************/
+task TechnologySamples_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, BasicCalculatorEJB_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'TechnologySamples.ear'
+
+  from (new File(projectDir, 'test-applications/TechnologySamples.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'BasicCalculatorEJB.jar'
+  }
+}
 
 /******************************************************************
  ******************************************************************
@@ -812,7 +958,8 @@ assemble.dependsOn ProgrammaticLoginWithCallbackHandlerUnauthzUser_EAR
 assemble.dependsOn ProgrammaticLoginWithCallbackHandlerUserNotDefined_EAR
 assemble.dependsOn ProgrammaticLoginWithNonexistentCallbackHandler_EAR
 assemble.dependsOn ProgrammaticLoginWithoutCallbackHandler_EAR
-
+assemble.dependsOn earDD_EAR
+assemble.dependsOn TechnologySamples_EAR
 
 /******************************************************************
  ******************************************************************

@@ -141,12 +141,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     /**
      * Adds a random key to the generated view state session token.
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none", 
-            defaultValue="none", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
+            defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
-            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE;
+            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
 
     /**
      * Set the default length of the random key added to the view state session token.
@@ -199,31 +199,31 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         String randomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM, 
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
-        {
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
-                    new SecureRandomKeyFactory(facesContext));
-        }
-        else if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
+        if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
             sessionViewStorageFactory = new RandomSessionViewStorageFactory(
                     new RandomKeyFactory(facesContext));
         }
-        else
+        else if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE.equals(randomMode))
         {
             sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
+        }
+        else
+        {
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
+                    new SecureRandomKeyFactory(facesContext));
         }
         
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
         }
     }
     

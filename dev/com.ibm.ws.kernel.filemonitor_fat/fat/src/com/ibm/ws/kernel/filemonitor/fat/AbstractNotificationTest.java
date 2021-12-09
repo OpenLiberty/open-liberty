@@ -132,12 +132,12 @@ public class AbstractNotificationTest {
         {
             if (f.isDirectory()) {
                 File[] files = f.listFiles();
-                for (File file : files) {
-                    if (file.isDirectory()) { // Very minor efficiency hack, avoid last level of recursion
+                for(int i=0; files != null && i < files.length; i++) {
+                    if (files[i].isDirectory()) { // Very minor efficiency hack, avoid last level of recursion
                         // Recurse
-                        deleteFile(file);
+                        deleteFile(files[i]);
                     } else {
-                        file.delete(); // Failure here will be caught by the later f.delete. Ugly, but that's what we had.
+                        files[i].delete(); // Failure here will be caught by the later f.delete. Ugly, but that's what we had.
                     }
                 }
             }

@@ -17,6 +17,8 @@
 
 	<application id="myApp" name="ProgrammaticLogin" type="ear" location="ProgrammaticLogin.ear" />
 
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+    
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 
 </client>

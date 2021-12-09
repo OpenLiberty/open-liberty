@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: gRPC Monitor
+Bundle-Name: gRPC Server Monitor
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.monitor
-Bundle-Description: gRPC Monitor, version ${bVersion}
+Bundle-Description: gRPC Server Monitor, version ${bVersion}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
@@ -28,19 +28,17 @@ Import-Package: \
   com.ibm.websphere.pmi;version="[1.1,2)", \
   com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
   com.ibm.wsspi.pmi.stat;version="[1.1,2)", \
+  io.grpc;version="[1.38.0,11)", \
   *
 	
 Export-Package: \
-  io.openliberty.grpc.monitor,\
   io.openliberty.grpc.internal.monitor
 
-Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcServerMonitor, \
-  io.openliberty.grpc.internal.monitor.GrpcClientMonitor
+Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcServerMonitor
 
 instrument.disabled: true
 
 -dsannotations: \
-  io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptorServiceImpl,\
   io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptorServiceImpl
 
 -buildpath: \
@@ -53,11 +51,10 @@ instrument.disabled: true
     com.google.api.grpc:proto-google-common-protos;version=2.0.1, \
     com.google.code.findbugs:jsr305;version=3.0.2,\
     com.google.guava:failureaccess;version=1.0.1,\
-    com.google.guava:guava;version=27.0.1, \
+    com.google.guava:guava;version=30.1, \
     com.google.j2objc:j2objc-annotations;version=1.1, \
     com.google.protobuf:protobuf-java;version=3.13.0, \
     org.checkerframework:checker-compat-qual;version=2.5.2,\
     io.openliberty.grpc.1.0.internal.common;version=latest,\
-    io.openliberty.grpc.1.0.internal.client;version=latest,\
     io.openliberty.grpc.1.0.internal;version=latest,\
     org.osgi.service.component.annotations;version=latest

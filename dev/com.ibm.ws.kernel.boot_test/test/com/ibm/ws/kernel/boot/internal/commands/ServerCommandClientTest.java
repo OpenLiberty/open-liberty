@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +66,7 @@ public class ServerCommandClientTest {
 
     private class TestServerCommandListener extends ServerCommandListener {
 
-        private final CharsetEncoder encoder = charset.newEncoder();
+        private final CharsetEncoder encoder = StandardCharsets.ISO_8859_1.newEncoder();
         private TestType test;
         private boolean challengeWritten = false;
 

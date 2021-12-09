@@ -11,6 +11,7 @@
 package com.ibm.ws.config.xml;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,5 +25,5 @@ public interface ConfigVariables {
 
     public Collection<LibertyVariable> getAllLibertyVariables();
 
-    public String getServiceBindingRootDirectory();
+    public List<String> getFileSystemVariableRootDirectories();
 }

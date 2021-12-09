@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,12 @@ public class DataSource extends ConfigElement {
     @XmlElement(name = "containerAuthData")
     private ConfigElementList<AuthData> containerAuthDatas;
 
+    @XmlElement(name = "heritageSettings")
+    private ConfigElementList<HeritageSettings> heritageSettings;
+
+    @XmlElement(name = "identifyException")
+    private ConfigElementList<IdentifyException> identifyExceptions;
+
     @XmlElement(name = "jdbcDriver")
     private ConfigElementList<JdbcDriver> jdbcDrivers;
 
@@ -135,6 +141,14 @@ public class DataSource extends ConfigElement {
 
     public ConfigElementList<AuthData> getContainerAuthDatas() {
         return containerAuthDatas == null ? (containerAuthDatas = new ConfigElementList<AuthData>()) : containerAuthDatas;
+    }
+
+    public ConfigElementList<HeritageSettings> getHeritageSettings() {
+        return heritageSettings == null ? (heritageSettings = new ConfigElementList<HeritageSettings>()) : heritageSettings;
+    }
+
+    public ConfigElementList<IdentifyException> getIdentifyExceptions() {
+        return identifyExceptions == null ? (identifyExceptions = new ConfigElementList<IdentifyException>()) : identifyExceptions;
     }
 
     /**
@@ -617,6 +631,10 @@ public class DataSource extends ConfigElement {
             buf.append(connectionManagers).append(' ');
         if (containerAuthDatas != null)
             buf.append(containerAuthDatas).append(' ');
+        if (heritageSettings != null)
+            buf.append(heritageSettings).append(' ');
+        if (identifyExceptions != null)
+            buf.append(identifyExceptions).append(' ');
         if (jdbcDrivers != null)
             buf.append(jdbcDrivers).append(' ');
         if (onConnects != null)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ public interface SipConstants
 	public static final String ALLOW_EVENTS     ="Allow-Events";
 	public static final String SUBSCR_STATE     ="Subscription-State";
 	public static final String REFER_TO         ="Refer-To";
+	public static final String SESSION_EXPIRES  ="Session-Expires";
 	public static final String CHARSET 			="charset";
 	public static final String UTF8 			="UTF-8";
 	
@@ -85,6 +86,7 @@ public interface SipConstants
 	public static final char EVENT_SHORT = 'o';
 	public static final char ALLOW_EVENTS_SHORT = 'u';
 	public static final char REFER_TO_SHORT = 'r';
+	public static final char SESSION_EXPIRES_SHORT = 'x';
 	
 	public static final char SUPPORTED_SHORT_CAP = 'K';
 	public static final char CONTENT_TYPE_SHORT_CAP = 'C';
@@ -99,6 +101,7 @@ public interface SipConstants
 	public static final char EVENT_SHORT_CAP = 'O';
 	public static final char ALLOW_EVENTS_SHORT_CAP = 'U';
 	public static final char REFER_TO_SHORT_CAP = 'R';
+	public static final char SESSION_EXPIRES_CAP = 'X';
 	
 
 	public static final int MILLISECONDS_IN_SECOND = 1000;

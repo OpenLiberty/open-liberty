@@ -40,7 +40,7 @@ public class JNDIObjectFactory {
 
     private static final String REFERENCE_LIBRARY = "library";
 
-    private final AtomicServiceReference<Library> libraryRef = new AtomicServiceReference<Library>(REFERENCE_LIBRARY);
+    private final AtomicServiceReference<Library> libraryRef = new AtomicServiceReference<>(REFERENCE_LIBRARY);
     private String className;
     private String objectClassName;
     private ServiceRegistration<?> registration;
@@ -70,7 +70,7 @@ public class JNDIObjectFactory {
         className = (String) props.get("className");
         objectClassName = (String) props.get("objectClassName");
 
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Dictionary<String, Object> properties = new Hashtable<>();
         // Prevent ObjectFactory from being called without a Reference, which
         // can otherwise happen per the OSGi JNDI spec.
         properties.put("aries.object.factory.requires.reference", true);

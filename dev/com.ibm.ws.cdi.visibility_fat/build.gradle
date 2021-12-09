@@ -15,7 +15,7 @@ configurations {
 }
 	
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6', 'net.sf.jtidy:jtidy:9.3.8'
+  requiredLibs project(':io.openliberty.org.apache.commons.logging'), project(':io.openliberty.org.apache.commons.codec'), 'net.sf.jtidy:jtidy:9.3.8'
   jaxrsValidator 'com.sebastian-daschner:jaxrs-analyzer:0.9'
 }
 

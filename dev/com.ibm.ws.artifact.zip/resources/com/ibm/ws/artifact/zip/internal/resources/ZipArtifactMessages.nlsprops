@@ -111,3 +111,8 @@ reaper.unexpected.lastmodified.change.useraction=Restart the server.  When updat
 reaper.reopen.active=CWWKM0127W: Reopen {0}
 reaper.reopen.active.explanation=An unexpected change has caused an open application archive file to be re-opened.  The server has attempted to obtain the updated contents of the archive file, but may not have fully updated internal listings of the archive contents.
 reaper.reopen.active.useraction=Restart the server.  When updating application files, wait for the server to quiesce, plus wait at least a half second to allow application files to be closed.
+
+# # A file path.
+missing.zip.file=CWWKM0128E: The {0} zip file is missing.
+missing.zip.file.explanation=An exception occurred during archive processing because the specified file was not found. 
+missing.zip.file.useraction=Check that the specified file exits and has permissions that are readable by the server.

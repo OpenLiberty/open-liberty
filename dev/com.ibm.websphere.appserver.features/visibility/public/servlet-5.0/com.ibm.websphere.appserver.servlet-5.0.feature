@@ -33,21 +33,21 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
  com.ibm.websphere.webcontainer.async
 Subsystem-Category: JakartaEE9Application
--features=com.ibm.websphere.appserver.injection-2.0, \
- com.ibm.websphere.appserver.artifact-1.0, \
- com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.javaeedd-1.0, \
- com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.appmanager-1.0, \
- io.openliberty.jakartaeePlatform-9.0, \
- com.ibm.websphere.appserver.anno-2.0, \
- io.openliberty.jakarta.annotation-2.0, \
- com.ibm.websphere.appserver.httptransport-1.0, \
- io.openliberty.servlet.api-5.0, \
- com.ibm.websphere.appserver.requestProbes-1.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0, \
- com.ibm.websphere.appserver.servlet-servletSpi1.0, \
- com.ibm.websphere.appserver.javaeeddSchema-1.0
+-features=io.openliberty.jakartaeePlatform-9.0, \
+  io.openliberty.servlet.api-5.0, \
+  com.ibm.websphere.appserver.javaeeddSchema-1.0, \
+  com.ibm.websphere.appserver.containerServices-1.0, \
+  com.ibm.websphere.appserver.classloading-1.0, \
+  com.ibm.websphere.appserver.injection-2.0, \
+  io.openliberty.servlet-servletSpi2.0, \
+  com.ibm.websphere.appserver.httptransport-1.0, \
+  com.ibm.websphere.appserver.javaeedd-1.0, \
+  com.ibm.websphere.appserver.appmanager-1.0, \
+  com.ibm.websphere.appserver.requestProbes-1.0, \
+  io.openliberty.jakarta.annotation-2.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0, \
+  com.ibm.websphere.appserver.anno-2.0, \
+  com.ibm.websphere.appserver.artifact-1.0
 -bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
@@ -63,12 +63,12 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.ws.webserver.plugin.runtime.jakarta, \
  com.ibm.ws.webserver.plugin.runtime.interfaces
 -jars=com.ibm.ws.webserver.plugin.utility, \
- com.ibm.websphere.appserver.api.servlet; location:=dev/api/ibm/
+ io.openliberty.servlet; location:=dev/api/ibm/
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
+ dev/api/ibm/javadoc/io.openliberty.servlet_1.1-javadoc.zip
 Subsystem-Name: Jakarta Servlet 5.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

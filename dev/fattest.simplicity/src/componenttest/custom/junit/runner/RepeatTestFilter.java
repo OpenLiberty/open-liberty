@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,9 @@ import componenttest.annotation.SkipForRepeat;
 public class RepeatTestFilter {
 
     private static Logger log = Logger.getLogger(RepeatTestFilter.class.getName());
+
+    //TODO RepeatTests calls activateRepeatAction() and then deactivateRepeatAction() in such a way that I believe this queue
+    //will only ever have one item. If is the case then this class should be rewritten to use a relevent data structure
 
     /** Stack of repeat actions. The top of the stack is the most recent repeat action. */
     private static Deque<String> REPEAT_ACTION_STACK = new ArrayDeque<String>();
@@ -147,12 +150,21 @@ public class RepeatTestFilter {
     }
 
     /**
-     * Is the repeat action active?
+     * Is the repeat action currently active?
      *
      * @param  action The repeat action to check.
-     * @return        True if the repeat action is active.
+     * @return        True if the repeat action (or subclass) is active.
      */
     public static boolean isRepeatActionActive(String action) {
-        return REPEAT_ACTION_STACK.contains(action);
+        // Action subclasses are supported by adding a suffix to the ID
+        if (!REPEAT_ACTION_STACK.isEmpty()) {
+            Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
+            while (iter.hasNext()) {
+                if (iter.next().startsWith(action)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

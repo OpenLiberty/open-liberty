@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 
@@ -34,10 +34,8 @@ public abstract class ServerCommand {
     protected static final String PAUSE_COMMAND = "pause";
     protected static final String RESUME_COMMAND = "resume";
 
-    protected static final Charset charset = Charset.forName("ISO-8859-1");
-
-    private final CharsetDecoder decoder = charset.newDecoder();
-    private final CharsetEncoder encoder = charset.newEncoder();
+    private final CharsetDecoder decoder = StandardCharsets.ISO_8859_1.newDecoder();
+    private final CharsetEncoder encoder = StandardCharsets.ISO_8859_1.newEncoder();
 
     private final ByteBuffer buffer = ByteBuffer.allocate(256);
     private final CharBuffer charBuffer = CharBuffer.allocate(256);

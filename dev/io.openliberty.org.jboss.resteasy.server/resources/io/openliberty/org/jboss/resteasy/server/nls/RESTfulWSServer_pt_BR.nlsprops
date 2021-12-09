@@ -60,4 +60,6 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: V\u00e1rios mapeamentos de
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=\u00c9 permitido que um servlet REST seja configurado somente com zero ou um mapeamento de caminho. Um servlet REST \u00e9 qualquer servlet que usa um dos seguintes nomes de classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher ou org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Esta mensagem indica que mais de um mapeamento est\u00e1 associado a um servlet REST no web.xml. 
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Revise o web.xml para os mapeamentos de servlet que est\u00e3o associados ao servlet REST e remova todos ou todos menos um.
 
-
+UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: O m\u00f3dulo da web {0} cont\u00e9m uma classe de aplicativo JAX-RS, {1}, que n\u00e3o est\u00e1 mapeada. O servidor ir\u00e1 ignor\u00e1-la.
+UNMAPPED_APPLICATION_CWWKW1302W.explanation=A classe de aplicativo especificada n\u00e3o est\u00e1 referenciada no arquivo web.xml do m\u00f3dulo da web. Nem a classe est\u00e1 anotada com @ApplicationPath, portanto, o servidor n\u00e3o pode determinar seu caminho de HTTP e ignorar\u00e1 a classe.
+UNMAPPED_APPLICATION_CWWKW1302W.useraction=Inclua uma anota\u00e7\u00e3o @ApplicationPath que especifique o caminho do aplicativo ou especifique o caminho no web.xml. Como alternativa, remova a classe de aplicativo se ela n\u00e3o for usada.

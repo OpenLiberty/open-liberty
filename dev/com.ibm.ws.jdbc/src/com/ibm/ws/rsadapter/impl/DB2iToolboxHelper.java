@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,8 @@ public class DB2iToolboxHelper extends DB2Helper {
     DB2iToolboxHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+
         localZOS = false;
         isRRSTransaction = false;
         threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
@@ -78,11 +80,6 @@ public class DB2iToolboxHelper extends DB2Helper {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "isolationSwitchingSupported property not set for this datasource");
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
         // --- The Native driver will return this CLI SQLState (HY017) whenever a connection is no longer available.
         //     This covers the case when an underlying iSeries QSQSRVR prestart job on the iSeries that represents
@@ -100,12 +97,15 @@ public class DB2iToolboxHelper extends DB2Helper {
         // **** DuplicateKeyException *****
         //     SQLCode   SQLState  Toolbox  Native       DatabaseHelper         DB2Helper        DB2iToolboxHelper
         //     SQL0803   23505        X       X           SQLState              SQLCode
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                 "HY017");
     }
 
     @Override
     public boolean doConnectionCleanup(java.sql.Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup");
 
@@ -130,6 +130,11 @@ public class DB2iToolboxHelper extends DB2Helper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -884,5 +884,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: \u65e0\u6cd5\u5b89\u88c5 {0} \u6587\u4ef6\uff0c\u56e0\u4e3a\u5b83\u4e0d\u662f\u53d7\u652f\u6301\u7684\u6587\u4ef6\u7c7b\u578b\u3002\u4ec5\u652f\u6301\u4ece ESA \u6587\u4ef6\u8fdb\u884c\u5b89\u88c5\u3002
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=\u56e0\u4e3a\u63d0\u4f9b\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u6587\u4ef6\u7c7b\u578b\uff0c\u6240\u4ee5\u672a\u5b89\u88c5\u8be5\u6587\u4ef6\u3002
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=\u8bf7\u53c2\u9605 WebSphere Application Server \u652f\u6301 Web \u9875\u9762 (http://www.ibm.com/software/webservers/appserv/was/support) \u4e0a\u7684\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: {0} \u529f\u80fd\u90e8\u4ef6 BOM Maven \u5750\u6807\u7684\u683c\u5f0f\u65e0\u6548\u3002\u8bf7\u786e\u4fdd\u8be5\u5750\u6807\u91c7\u7528 groupId:artifactId:version \u683c\u5f0f\u3002
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=\u529f\u80fd\u90e8\u4ef6 BOM Maven \u5750\u6807\u683c\u5f0f\u65e0\u6548\u3002
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=\u91cd\u65b0\u8bbe\u7f6e\u529f\u80fd\u90e8\u4ef6 BOM Maven \u5750\u6807\u7684\u683c\u5f0f\uff0c\u4f7f\u5176\u7b26\u5408 groupId:artifactId:version \u683c\u5f0f\u3002
 
 MSG_STABILIZING_FEATUREMANAGER=\u6b64 featureManager \u64cd\u4f5c\u5df2\u7a33\u5b9a\u3002\u6539\u4e3a\u4f7f\u7528 installUtility {0}\u3002\u5efa\u8bae\u4f7f\u7528 installUtility \u547d\u4ee4\u6765\u6267\u884c\u5b89\u88c5\u548c\u5b58\u50a8\u5e93\u76f8\u5173\u64cd\u4f5c\u3002

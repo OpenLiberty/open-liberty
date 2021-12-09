@@ -37,6 +37,11 @@ public class MockServiceReference<S> implements ServiceReference<S> {
     }
 
     @Override
+    public <A> A adapt(Class<A> arg0) {
+        return null;
+    }
+
+    @Override
     public Object getProperty(String key) {
         if ("service.ranking".equals(key)) {
             return serviceRanking;
@@ -72,7 +77,7 @@ public class MockServiceReference<S> implements ServiceReference<S> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.framework.ServiceReference#getProperties()
      */
     @Override

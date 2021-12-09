@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing JavaServer Faces 2.3 and JPA 2.2">
     <include location="../fatTestPorts.xml"/>
-    
+
     <featureManager>
         <feature>jsf-2.3</feature>\
         <feature>jpa-2.2</feature>

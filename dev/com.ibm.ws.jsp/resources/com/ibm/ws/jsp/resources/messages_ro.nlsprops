@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=Verifica\u0163i fi\u015fierul JSP Tag Library
 system.java.compiler.not.found=JSPG0304W: Atributul JSP, useJDKCompiler, este setat la true, dar compilatorul Java SDK nu a fost g\u0103sit. Containerul JSP con\u0163ine compilatorul care este \u00eenglobat \u00een produs pentru a compila fi\u015fierele JSP din modulul web: {0}.
 system.java.compiler.not.found.explanation=Containerul JSP nu a putut g\u0103si compilatorul sistemului, care de obicei indic\u0103 faptul c\u0103 fi\u015fierul Java SDK jar, tools.jar, nu a fost g\u0103sit \u00een calea clasei.
 system.java.compiler.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul Java SDK jar, tools.jar, este \u00een calea clasei \u015fi verifica\u0163i c\u0103 Java SDK suport\u0103 Java Compiler API. Vede\u0163i Java Specification Request 199 pentru informa\u0163ii suplimentare.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: Caracteristica JSP [Pages] nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
+jsp.feature.not.loaded.correctly.explanation=Caracteristica JSP [Pages] este \u00eenc\u0103rcat\u0103 cu o versiune care corespunde specifica\u0163iei Java [Jakarta] EE a acelei caracteristici JSP [Pages]. Caracteristica a fost \u00eenc\u0103rcat\u0103 f\u0103r\u0103 nicio versiune definit\u0103.
+jsp.feature.not.loaded.correctly.useraction=Verifica\u0163i fi\u015fierul server.xml pentru existen\u0163a oric\u0103rei dintre caracteristicile JSP [Pages]. Doar una trebuie s\u0103 fie specificat\u0103.

@@ -26,6 +26,11 @@ public class MockServiceReference<T> implements ServiceReference<T> {
         this.service = serv;
     }
 
+    @Override
+    public <A> A adapt(Class<A> arg0) {
+        return null;
+    }
+
     public T getService() {
         return this.service;
     }
@@ -62,7 +67,7 @@ public class MockServiceReference<T> implements ServiceReference<T> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.framework.ServiceReference#getProperties()
      */
     @Override

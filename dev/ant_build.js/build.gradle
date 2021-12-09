@@ -1,0 +1,191 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+repositories.clear()
+repositories {
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username userProps.getProperty("artifactory.download.user")
+                password userProps.getProperty("artifactory.download.token")
+            }
+            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
+    } else {
+        maven {
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
+        mavenCentral()
+    }
+}
+
+configurations {
+    library { transitive = false }
+    node0
+    node1
+    node2
+    node3
+    node4
+    node5
+    node6
+    node7
+    node8
+    node9
+    node10
+}
+
+dependencies {
+    library "com.fasterxml.jackson.core:jackson-annotations:2.2.3"
+    library "com.fasterxml.jackson.core:jackson-core:2.2.3"
+    library "com.fasterxml.jackson.core:jackson-databind:2.2.3"
+    library "com.google.javascript:closure-compiler:v20160315"
+    library "com.jcraft:jsch:0.1.54"
+    library "com.sun.xml.bind:jaxb-core:2.3.0.1"
+    library "com.sun.xml.bind:jaxb-impl:2.3.0.1"
+    library "commons-beanutils:commons-beanutils:1.9.2"
+    library "commons-collections:commons-collections:3.2.1"
+    library "commons-digester:commons-digester:1.8.1"
+    library "commons-lang:commons-lang:2.6"
+    library "commons-logging:commons-logging:1.1.1"
+    library "infra-buildtasks-core:infra-buildtasks-core:4.0"
+    library "org.mortbay.jetty:servlet-api-2.5:6.0.0"
+    library "javax.xml.bind:activation:1.0.2"
+    library "javax.xml.bind:jaxb-api:2.3.0"
+    library "nu.validator:htmlparser:1.4.1"
+    library "org.apache.aries:org.apache.aries.util:1.2.0-ibm-s20130314-0952"
+    library "org.apache.velocity:velocity-tools:2.0"
+    library "org.apache.velocity:velocity:1.7"
+    library "org.ccil.cowan.tagsoup:tagsoup:1.2.1"
+    library "org.osgi:org.osgi.core:5.0.0"
+    library "org.ow2.asm:asm-all:5.0.3"
+    library "org.w3c.jigsaw:jigsaw:2.2.6"
+    library "xerces:xercesImpl:2.12.1"
+    library "xml-apis:xml-apis:1.4.01"
+    library "ant-jshint:ant-jshint:0.3.6-deps"
+    library "closure-compiler:compiler:1.0.0"
+    library "css-validator:css-validator:1.0.0"
+    library "org.webjars:jquery:3.5.1"
+    library "org.webjars:bootstrap:3.4.1"
+    library "org.webjars.npm:svg4everybody:2.1.9"
+    library "org.webjars.npm:d3:3.5.10"
+    library "org.eclipse.che.lib:che-orion-editor:6.19.0"
+    library "idx:idx:1.5.2.6@zip"
+    library "manekinekko:dojo-doh-junit-report:master@zip"
+    library "org.dojotoolkit:dojo:1.12.9@zip"
+    library "org.webjars:gridx:1.3.9@zip"
+    library "closure-externs:externs-jquery-3.2:1.0.0"
+    library "rave:rave:1.8.0.12@zip"
+    library "theintern:intern:2.2.2@zip"
+    node0 "node:node:v0.10.33-aix-ppc@tar.gz"
+    node1 "node:node:v0.10.33-darwin-x64@tar.gz"
+    node2 "node:node:v0.10.33-darwin-x86@tar.gz"
+    node3 "node:node:v0.10.33-linux-ppc@tar.gz"
+    node4 "node:node:v0.10.33-linux-ppcle64@tar.gz"
+    node5 "node:node:v0.10.33-linux-s390@tar.gz"
+    node6 "node:node:v0.10.33-linux-x64@tar.gz"
+    node7 "node:node:v0.10.33-linux-x86@tar.gz"
+    node8 "node:node:v0.10.33-sunos-x86@tar.gz"
+    node9 "node:node:v0.10.33-win-x64@exe"
+    node10 "node:node:v0.10.33-win-x86@exe"
+}
+
+def dependencyToPath = [
+  "infra-buildtasks-core:infra-buildtasks-core:4.0": "lib/buildtasks/infra.buildtasks-core_4.0.jar",
+  "com.fasterxml.jackson.core:jackson-annotations:2.2.3": "lib/buildtasks/jackson-annotations-2.2.3.jar",
+  "com.fasterxml.jackson.core:jackson-core:2.2.3": "lib/buildtasks/jackson-core-2.2.3.jar",
+  "com.fasterxml.jackson.core:jackson-databind:2.2.3": "lib/buildtasks/jackson-databind-2.2.3.jar",
+  "com.jcraft:jsch:0.1.54": "lib/buildtasks/jsch-0.1.54.jar",
+  "com.sun.xml.bind:jaxb-core:2.3.0.1": "lib/buildtasks/jaxb-core-2.3.0.1.jar",
+  "com.sun.xml.bind:jaxb-impl:2.3.0.1": "lib/buildtasks/jaxb-impl-2.3.0.1.jar",
+  "javax.xml.bind:activation:1.0.2": "lib/buildtasks/jaxb-activation.jar",
+  "javax.xml.bind:jaxb-api:2.3.0": "lib/buildtasks/jaxb-api-2.3.0.jar",
+  "org.osgi:org.osgi.core:5.0.0": "lib/buildtasks/osgi.core.jar",
+  "org.ow2.asm:asm-all:5.0.3": "lib/buildtasks/asm-all-5.0.3.jar",
+  "org.apache.aries:org.apache.aries.util:1.2.0-ibm-s20130314-0952": "lib/buildtasks/org.apache.aries.util-1.2.0.jar",
+  "ant-jshint:ant-jshint:0.3.6-deps": "lib/jshint/ant-jshint-0.3.6-deps.jar",
+  "closure-compiler:compiler:1.0.0": "lib/closure/compiler.jar",
+  "closure-externs:externs-jquery-3.2:1.0.0": "lib/closure/closureExterns.jar",
+  "com.google.javascript:closure-compiler:v20160315": "lib/closure/closure-compiler-v20160315.jar",
+  "commons-beanutils:commons-beanutils:1.9.2": "lib/cssValidator/lib/commons-beanutils-1.9.2.jar",
+  "commons-collections:commons-collections:3.2.1": "lib/cssValidator/lib/commons-collections-3.2.1.jar",
+  "commons-digester:commons-digester:1.8.1": "lib/cssValidator/lib/commons-digester-1.8.1.jar",
+  "commons-lang:commons-lang:2.6": "lib/cssValidator/lib/commons-lang-2.6.jar",
+  "commons-logging:commons-logging:1.1.1": "lib/cssValidator/lib/commons-logging-1.1.1.jar",
+  "org.mortbay.jetty:servlet-api-2.5:6.0.0": "lib/cssValidator/lib/servlet-api-2.5-6.0.0.jar",
+  "nu.validator:htmlparser:1.4.1": "lib/cssValidator/lib/htmlparser-1.4.1.jar",
+  "org.apache.velocity:velocity-tools:2.0": "lib/cssValidator/lib/velocity-tools-generic-2.0.jar",
+  "org.apache.velocity:velocity:1.7": "lib/cssValidator/lib/velocity-1.7.jar",
+  "org.ccil.cowan.tagsoup:tagsoup:1.2.1": "lib/cssValidator/lib/tagsoup-1.2.1.jar",
+  "org.w3c.jigsaw:jigsaw:2.2.6": "lib/cssValidator/lib/jigsaw-2.2.6.jar",
+  "xerces:xercesImpl:2.12.1": "lib/cssValidator/lib/xercesImpl-2.12.1.jar",
+  "xml-apis:xml-apis:1.4.01": "lib/cssValidator/lib/xml-apis-1.4.01.jar",
+  "css-validator:css-validator:1.0.0": "lib/cssValidator/css-validator.jar",
+  "idx:idx:1.5.2.6": "lib/dojo/idx-1.5.2.6.zip",
+  "org.dojotoolkit:dojo:1.12.9": "lib/dojo/dojo-1.12.9.zip",
+  "org.webjars:gridx:1.3.9": "lib/dojo/gridx-1.3.9.zip",
+  "rave:rave:1.8.0.12": "lib/dojo/rave-1.8.0.12.zip",
+  "manekinekko:dojo-doh-junit-report:master": "lib/dojo-doh-junit-report/dojo-doh-junit-report-master.zip",
+  "node:node:v0.10.33-aix-ppc": "lib/nodejs/node-v0.10.33-aix-ppc.tar.gz",
+  "node:node:v0.10.33-darwin-x64": "lib/nodejs/node-v0.10.33-darwin-x64.tar.gz",
+  "node:node:v0.10.33-darwin-x86": "lib/nodejs/node-v0.10.33-darwin-x86.tar.gz",
+  "node:node:v0.10.33-linux-ppc": "lib/nodejs/node-v0.10.33-linux-ppc.tar.gz",
+  "node:node:v0.10.33-linux-ppcle64": "lib/nodejs/node-v0.10.33-linux-ppcle64.tar.gz",
+  "node:node:v0.10.33-linux-s390": "lib/nodejs/node-v0.10.33-linux-s390.tar.gz",
+  "node:node:v0.10.33-linux-x64": "lib/nodejs/node-v0.10.33-linux-x64.tar.gz",
+  "node:node:v0.10.33-linux-x86": "lib/nodejs/node-v0.10.33-linux-x86.tar.gz",
+  "node:node:v0.10.33-sunos-x86": "lib/nodejs/node-v0.10.33-sunos-x86.tar.gz",
+  "node:node:v0.10.33-win-x64": "lib/nodejs/node-v0.10.33-win-x64.exe",
+  "node:node:v0.10.33-win-x86": "lib/nodejs/node-v0.10.33-win-x86.exe",
+  "theintern:intern:2.2.2": "lib/intern/intern-2.2.2.zip",
+  "org.webjars:jquery:3.5.1": "lib/jquery/jquery-3.5.1.jar",
+  "org.webjars:bootstrap:3.4.1": "lib/bootstrap/bootstrap-3.4.1.jar",
+  "org.webjars.npm:svg4everybody:2.1.9": "lib/svg4everybody/svg4everybody-2.1.9.jar",
+  "org.webjars.npm:d3:3.5.10": "lib/d3/d3-3.5.10.jar",
+  "org.eclipse.che.lib:che-orion-editor:6.19.0": "lib/orion/che-orion-editor-6.19.0.jar"
+]
+
+def copyDependency(File file, Map dependencyToPath) {
+    File hashDir = file.getParentFile()
+    File versionDir = hashDir.getParentFile()
+    File nameDir = versionDir.getParentFile()
+    File groupDir = nameDir.getParentFile()
+    try {
+        def dest = dependencyToPath["${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"]
+        String path = dest.substring(0, dest.lastIndexOf("/"))
+        String name = dest.substring(dest.lastIndexOf("/") + 1, dest.length())
+        copy {
+            from file
+            into path
+            rename '.*', name
+            fileMode = Integer.parseInt('755', 8)
+        }
+    } catch (Exception e) {
+        String gav = "${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"
+        throw Exception("Error: Could not locate $gav in dependencyToPath variable in ant_build.js/build.gradle.")
+    }
+}
+
+configurations.library.each { file ->
+    copyDependency(file, dependencyToPath)
+}
+(0..10).each {
+    configurations."node$it".each { file ->
+        copyDependency(file, dependencyToPath)
+    }
+}

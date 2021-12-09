@@ -57,6 +57,7 @@ public class JspDependent {
         
     }
     public boolean isOutdated() {
+        Entry e = null;
         if (lastModified == -1 ) {
             return true;
         }
@@ -65,26 +66,30 @@ public class JspDependent {
         if (context.getServletContext()!=null) {
             adaptableContainer = context.getServletContext().getModuleContainer();
         }
+
         if (adaptableContainer!=null) {
-            Entry e = adaptableContainer.getEntry(dependentFilePath);
-            //TODO: update outdated check
-            if (e!=null && e.getLastModified() != lastModified) {
+            e = adaptableContainer.getEntry(dependentFilePath);
+        }
+        
+        if (e!=null && e.getLastModified() != lastModified) {
                 outdated=true;
                 // begin 213703: add logging for isoutdated checks
                 if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
                         //logger.logp(Level.FINEST, CLASS_NAME, "isOutdated", "container ts [" + e.getLastModified() + "] differs from cached ts [" + this.lastModified +"]. Recompile JSP.");
-                        logger.logp(Level.FINEST, CLASS_NAME, "isOutdated", "container [" + dependentFilePath + "]");
+                        logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "container [" + dependentFilePath + "]");
                 }
                 // end 213703: add logging for isoutdated checks
-            }
+            
         } else {
             File dependentFile = new File(context.getRealPath(dependentFilePath));
-            if (dependentFile.lastModified() != lastModified){
+            long ts = dependentFile.lastModified();
+            if (ts == 0) {ts = getTimestamp();}
+            if (ts != lastModified){  
     			outdated = true;
     			// begin 213703: add logging for isoutdated checks
     			if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    				logger.logp(Level.FINEST, CLASS_NAME, "isOutdated", "dependentFile ts [" + dependentFile.lastModified() + "] differs from cached ts [" + this.lastModified +"]. Recompile JSP.");
-    				logger.logp(Level.FINEST, CLASS_NAME, "isOutdated", "dependentFile [" + dependentFile + "]");
+    				logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "dependentFile ts [" + ts + "] differs from cached ts [" + this.lastModified +"]. Recompile JSP."); 
+    				logger.logp(Level.FINER, CLASS_NAME, "isOutdated", "dependentFile [" + dependentFile + "]");
     			}
     			// end 213703: add logging for isoutdated checks
             }

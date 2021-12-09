@@ -1,0 +1,17 @@
+<server description="request timing test server">
+
+  <!-- Enable features -->
+  <featureManager>
+    <feature>mpMetrics-3.0</feature>
+    <feature>jsp-2.3</feature>
+    <feature>requestTiming-1.0</feature>
+    <feature>monitor-1.0</feature>
+  </featureManager>
+
+  <mpMetrics authentication="false"/>
+
+  <include location="../fatTestPorts.xml"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+</server>

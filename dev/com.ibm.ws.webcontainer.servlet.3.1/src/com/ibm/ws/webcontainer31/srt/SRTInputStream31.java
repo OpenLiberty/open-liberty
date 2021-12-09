@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ public class SRTInputStream31 extends SRTInputStream
     private InterChannelCallback callback;
     //The request we use to find out if Async has been started
     private SRTServletRequest31 request;
-    private final Object lockObj = new Integer(0);
-    private final Object completeLockObj = new Integer(1);  
+    private final Object lockObj = new Object() {};
+    private final Object completeLockObj = new Object() {};  
     private boolean asyncReadOutstanding = false;
     private boolean readLineCall = false;
     private boolean isClosed = false;
@@ -211,7 +211,7 @@ public class SRTInputStream31 extends SRTInputStream
             this.callback = new AsyncAlreadyReadCallback(this, tcm);
         } else {
             //Create a new HttpServletCallback so we can use it for our async read callbacks
-            this.callback = new AsyncReadCallback(this, tcm);
+            this.callback = new AsyncReadCallback(this, tcm, request.getAsyncContext());
         }    
         
         AsyncContext31Impl ac = (AsyncContext31Impl)request.getAsyncContext();

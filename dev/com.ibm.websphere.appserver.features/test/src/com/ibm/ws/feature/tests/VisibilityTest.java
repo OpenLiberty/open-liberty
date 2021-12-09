@@ -275,17 +275,24 @@ public class VisibilityTest {
             fileName = fileName.replace('\\', '/');
             String expectedPathName = "/visibility/" + visibility + "/";
             if ("public".equals(visibility)) {
-                expectedPathName += (featureInfo.getShortName() + '/');
-            }
-            expectedPathName += (featureName + ".feature");
-            if (!fileName.endsWith(expectedPathName)) {
-                errorMessage.append("Found issues with " + featureName + '\n');
-                errorMessage.append("     Feature is not in the expected directory " + expectedPathName + ".\n");
-                errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
-                if ("public".equals(visibility)) {
+                expectedPathName += (featureInfo.getShortName() + '/') + (featureName + ".feature");
+    
+                if (!fileName.endsWith(expectedPathName)) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Feature is not in the expected directory " + expectedPathName + ".\n");
+                    errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
                     errorMessage.append("     AND/OR the feature short name " + featureInfo.getShortName() + " may not match the directory.\n");
                 }
+            } else {
+            	String withoutFeatureDir = expectedPathName + (featureName + ".feature");
+            	String withFeatureShortNameDir = expectedPathName + featureInfo.getShortName() + "/" + (featureName + ".feature");
+            	if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureShortNameDir)) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Feature is not in the expected directory " + withoutFeatureDir +" or "+ withFeatureShortNameDir + ".\n");
+                    errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
+                }
             }
+            
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features that appear to be in the wrong directory based off of their settings: " + '\n' + errorMessage.toString());

@@ -9,3 +9,5 @@ com.ibm.ws.microprofile.config.1.4_fat_tck
 com.ibm.ws.microprofile.config_git_fat_tck
 io.openliberty.microprofile.config.2.0.internal_fat
 io.openliberty.microprofile.config.2.0.internal_fat_tck
+io.openliberty.microprofile.config.3.0.internal_fat
+io.openliberty.microprofile.config.3.0.internal_fat_tck

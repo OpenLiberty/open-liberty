@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2020 IBM Corporation and others.
+* Copyright (c) 2016, 2021 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.appConfig.classLoaders.test.ClassLoadersTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -42,12 +43,13 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class ClassLoadersTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "ClassLoadersServer";
     public static final String APP_NAME = "classLoaders";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("ClassLoadersServer", MicroProfileActions.MP14, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP14, MicroProfileActions.MP41);
 
-    @Server("ClassLoadersServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
@@ -65,7 +67,7 @@ public class ClassLoadersTest extends FATServletClient {
                                                                               + ".war/resources/WEB-INF/classes/META-INF/microprofile-config.properties"),
                                                                      "classes/META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportDropinAppToServer(server, classLoaders_war);
+        ShrinkHelper.exportDropinAppToServer(server, classLoaders_war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

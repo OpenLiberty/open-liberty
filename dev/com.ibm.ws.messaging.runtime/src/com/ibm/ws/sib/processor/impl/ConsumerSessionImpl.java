@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.processor.impl;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,13 +38,16 @@ import com.ibm.ws.sib.processor.utils.SIMPUtils;
 import com.ibm.ws.sib.processor.utils.UserTrace;
 import com.ibm.ws.sib.transactions.TransactionCommon;
 import com.ibm.ws.sib.utils.SIBUuid12;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
+import com.ibm.wsspi.sib.core.ConsumerSession;
 import com.ibm.wsspi.sib.core.OrderingContext;
 import com.ibm.wsspi.sib.core.SIBusMessage;
 import com.ibm.wsspi.sib.core.SICoreConnection;
 import com.ibm.wsspi.sib.core.SIMessageHandle;
 import com.ibm.wsspi.sib.core.SITransaction;
+import com.ibm.wsspi.sib.core.SelectionCriteria;
 import com.ibm.wsspi.sib.core.StoppableAsynchConsumerCallback;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
@@ -1209,4 +1213,76 @@ public final class ConsumerSessionImpl implements MPConsumerSession, MPDestinati
             SibTr.exit(CoreSPIConsumerSession.tc, "unlockAll", incrementUnlockCount);
 
     }
+
+  public void dump(FormattedWriter writer) {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+      try {
+          writer.newLine();
+          writer.startTag(this.getClass().getSimpleName());
+          writer.indent();
+
+          writer.newLine();
+          writer.taggedValue("toString", toString());
+          writer.newLine();
+          writer.taggedValue("DestinationAddress", getDestinationAddress());
+          writer.newLine();
+          writer.taggedValue("LocalConsumerPoint", getLocalConsumerPoint());
+
+          LocalConsumerPoint lcp = null;
+          ConsumerManager cm = null;
+          ConsumerDispatcher cd = null;
+          lcp = getLocalConsumerPoint();
+          if (lcp != null) {
+		  cm = lcp.getConsumerManager();
+		  if (cm != null) {
+			  if (cm instanceof ConsumerDispatcher) {
+				  cd = (ConsumerDispatcher)cm;
+
+				  MPSubscription mpSubscription = cd.getMPSubscription();
+
+				  if (mpSubscription != null) {
+		              writer.newLine();
+		              writer.taggedValue("SubscriperId", mpSubscription.getSubscriberId());
+		              writer.newLine();
+		              writer.taggedValue("WPMTopicSpaceName", mpSubscription.getWPMTopicSpaceName());
+		              for (SelectionCriteria selectionCriteria : mpSubscription.getSelectionCriteria()) {
+		                writer.newLine();
+		                writer.taggedValue("SelectionCriteria", selectionCriteria);
+		              }
+				  }
+				  else {
+					  writer.comment("MPSubscription is null");
+				  }
+			  }
+			  else {
+				  writer.comment("ConsumerManager is not instanceof ConsumerDispatcher");
+			  }
+		  }
+		  else {
+			  writer.comment("ConsumerManager is null");
+		  }
+          }
+          else {
+		  writer.comment("LocalSubscriptionPoint is null");
+          }
+
+          writer.outdent();
+          writer.newLine();
+          writer.endTag(this.getClass().getSimpleName());
+
+       } catch (Throwable t) {
+           // No FFDC Code Needed
+           try {
+               if (writer != null) writer.write("\nUnable to dump " + this + " " + t);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+      }
+
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.exit(this, tc, "dump");
+  }
+
 }

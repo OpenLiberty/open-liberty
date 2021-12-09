@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public final class URITemplate {
 
     public static final String TEMPLATE_PARAMETERS = "jaxrs.template.parameters";
+    public static final String URI_TEMPLATE = "jaxrs.template.uri";
     public static final String LIMITED_REGEX_SUFFIX = "(/.*)?";
     public static final String FINAL_MATCH_GROUP = "FINAL_MATCH_GROUP";
     private static final String DEFAULT_PATH_VARIABLE_REGEX = "([^/]+?)";
@@ -81,13 +82,12 @@ public final class URITemplate {
                 literalChars.append(substr);
                 patternBuilder.append(substr);
             } else if (chunk instanceof Variable) {
-                Variable var = (Variable) chunk;
+                Variable var = (Variable)chunk;
                 variables.add(var.getName());
-                // Liberty change begin
                 String pattern = var.getPattern();
                 if (pattern != null) {
                     customVariables.add(var.getName());
-                    // #11893 Add parenthesis to the pattern to identify a regex in the pattern, 
+                    // Add parenthesis to the pattern to identify a regex in the pattern, 
                     // however do not add them if they already exist since that will cause the Matcher
                     // to create extraneous values.  Parens identify a group so multiple parens would
                     // indicate multiple groups.
@@ -98,7 +98,6 @@ public final class URITemplate {
                         patternBuilder.append(pattern);
                         patternBuilder.append(')');
                     }
-                    //Liberty change end
                 } else {
                     patternBuilder.append(DEFAULT_PATH_VARIABLE_REGEX);
                 }
@@ -185,13 +184,13 @@ public final class URITemplate {
         return CHARACTERS_TO_ESCAPE.indexOf(ch) != -1;
     }
 
-    public boolean match(String uri, MultivaluedMap<String, String> templateVariableToValue) {     
-        
-        if (uri == null) {            
+    public boolean match(String uri, MultivaluedMap<String, String> templateVariableToValue) {
+
+        if (uri == null) {
             return (templateRegexPattern == null) ? true : false;
         }
 
-        if (templateRegexPattern == null) {            
+        if (templateRegexPattern == null) {
             return false;
         }
 
@@ -221,10 +220,10 @@ public final class URITemplate {
                     uri = SLASH;
                 }
                 m = templateRegexPattern.matcher(uri);
-                if (!m.matches()) {                    
+                if (!m.matches()) {
                     return false;
                 }
-            } else {                
+            } else {
                 return false;
             }
         }
@@ -252,7 +251,8 @@ public final class URITemplate {
             finalGroup = SLASH;
         }
 
-        templateVariableToValue.putSingle(FINAL_MATCH_GROUP, finalGroup);        
+        templateVariableToValue.putSingle(FINAL_MATCH_GROUP, finalGroup);
+
         return true;
     }
 
@@ -279,7 +279,7 @@ public final class URITemplate {
         StringBuilder sb = new StringBuilder();
         for (UriChunk chunk : uriChunks) {
             if (chunk instanceof Variable) {
-                Variable var = (Variable) chunk;
+                Variable var = (Variable)chunk;
                 if (iter.hasNext()) {
                     String value = iter.next();
                     if (!var.matches(value)) {
@@ -299,7 +299,7 @@ public final class URITemplate {
     }
 
     String substitute(Map<String, ? extends Object> valuesMap) throws IllegalArgumentException {
-        return this.substitute(valuesMap, Collections.<String> emptySet(), false);
+        return this.substitute(valuesMap, Collections.<String>emptySet(), false);
     }
 
     /**
@@ -323,7 +323,7 @@ public final class URITemplate {
         StringBuilder sb = new StringBuilder();
         for (UriChunk chunk : uriChunks) {
             if (chunk instanceof Variable) {
-                Variable var = (Variable) chunk;
+                Variable var = (Variable)chunk;
                 Object value = valuesMap.get(var.getName());
                 if (value != null) {
                     String sval = value.toString();
@@ -357,7 +357,7 @@ public final class URITemplate {
      */
     public String encodeLiteralCharacters(boolean isQuery) {
         final float encodedRatio = 1.5f;
-        StringBuilder sb = new StringBuilder((int) (encodedRatio * template.length()));
+        StringBuilder sb = new StringBuilder((int)(encodedRatio * template.length()));
         for (UriChunk chunk : uriChunks) {
             String val = chunk.getValue();
             if (chunk instanceof Literal) {
@@ -702,3 +702,5 @@ public final class URITemplate {
         }
     }
 }
+
+

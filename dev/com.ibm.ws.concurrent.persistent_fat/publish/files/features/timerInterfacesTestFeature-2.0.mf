@@ -2,8 +2,8 @@ Subsystem-ManifestVersion: 1
 IBM-ShortName: timerInterfacesTestFeature-2.0
 Subsystem-SymbolicName: test.concurrent.persistent.timerInterfacesTestFeature-2.0; visibility:=public
 Subsystem-Version: 1.0
-Subsystem-Content: com.ibm.websphere.appserver.persistentExecutor-2.0; type="osgi.subsystem.feature",
- com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2, 4.1"; type="osgi.subsystem.feature",
+Subsystem-Content: com.ibm.websphere.appserver.persistentExecutor-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3, 4.1"; type="osgi.subsystem.feature",
  com.ibm.websphere.appserver.transaction-2.0; type="osgi.subsystem.feature",
  test.feature.sim.ejb.timer.jakarta; version="[1,1.0.100)"
 Subsystem-Type: osgi.subsystem.feature

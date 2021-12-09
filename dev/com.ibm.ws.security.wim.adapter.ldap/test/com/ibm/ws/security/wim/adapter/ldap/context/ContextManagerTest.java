@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager.InitializeResult;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
@@ -714,6 +715,22 @@ public class ContextManagerTest {
         assertTrue("Did not find Return to Primary in toString: " + toString, toString.contains("iReturnToPrimary=true"));
     }
 
+    @Test
+    public void testToStringKRB5() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
+        cm.setKerberosCredentials("UnitTestLdap", null, "testPrincipal", "DummyTicketCache", null);
+        cm.initialize();
+
+        String toString = cm.toString();
+        assertTrue("Found Bind DN in toString: " + toString, toString.contains("iBindDN=null"));
+        assertTrue("Did not find Primary Server in toString: " + toString, toString.contains("iPrimaryServer=localhost:" + primaryLdapServer.getLdapServer().getPort()));
+        assertTrue("Did not find bindAuthMeach in toString: " + toString, toString.contains("bindAuthMechanism=" + ConfigConstants.CONFIG_BIND_AUTH_KRB5));
+        assertTrue("Did not find krb5Principal in toString: " + toString, toString.contains("krb5Principal=testPrincipal"));
+        assertTrue("Did not find krb5TicketCache in toString: " + toString, toString.contains("krb5TicketCache=DummyTicketCache"));
+    }
+
     /**
      * Test setting the connection timeout. For JNDI this appears to cover the entire amount of time it
      * takes to bind (open connection and read the bind response), not just connect. Notice that the
@@ -820,5 +837,84 @@ public class ContextManagerTest {
             time = System.currentTimeMillis() - time;
             assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
         }
+    }
+
+    /**
+     * Test {@link ContextManager#createDirContext()} with new BindAuthMechanism set to simple
+     */
+    @Test
+    public void createDirContextSetSimpleBindAuthentication() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_SIMPLE);
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.initialize();
+
+        TimedDirContext ctx = null;
+        try {
+            assertNotNull(cm.createDirContext(USER_DN, "password".getBytes()));
+        } finally {
+            if (ctx != null) {
+                ctx.close();
+            }
+        }
+    }
+
+    /**
+     * Test {@link ContextManager#createDirContext()} with new BindAuthMechanism set to none
+     */
+    @Test
+    public void createDirContextSetNoneBindAuthentication() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_NONE);
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.initialize();
+
+        TimedDirContext ctx = null;
+        try {
+            assertNotNull(cm.createDirContext(USER_DN, "password".getBytes()));
+        } finally {
+            if (ctx != null) {
+                ctx.close();
+            }
+        }
+    }
+
+    /**
+     * Call {@link ContextManager#initialize()} with GSSAPI set, but no principal name
+     */
+    @Test
+    public void initialize_MissingKrb5PrincipalName() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+
+        assertEquals(InitializeResult.MISSING_KRB5_PRINCIPAL_NAME, cm.initialize());
+    }
+
+    /**
+     * Call {@link ContextManager#initialize()} with GSSAPI set, but null principal name
+     */
+    @Test
+    public void initialize_NullKrb5PrincipalName() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.setKerberosCredentials("UnitTestLdap", null, null, "badFileName", null);
+
+        assertEquals(InitializeResult.MISSING_KRB5_PRINCIPAL_NAME, cm.initialize());
+    }
+
+
+    /**
+     * Call {@link ContextManager#initialize()} with GSSAPI set, but empty principal name
+     */
+    @Test
+    public void initialize_EmptyKrb5PrincipalName() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.setKerberosCredentials("UnitTestLdap", null, "", "badFileName", null);
+
+        assertEquals(InitializeResult.MISSING_KRB5_PRINCIPAL_NAME, cm.initialize());
     }
 }

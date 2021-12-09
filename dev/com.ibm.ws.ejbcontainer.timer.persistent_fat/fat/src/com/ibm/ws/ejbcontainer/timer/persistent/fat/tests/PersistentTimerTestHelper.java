@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,16 @@ public class PersistentTimerTestHelper {
         // but timer fails because server stopping, then attempt to rollback fails because transaction
         // service has already stopped.
         ignoreList.add("DSRA0230E.*TRANSACTION_FAIL");
+
+        // DSRA0230E: Attempt to perform operation XAResource.end() is not allowed because transaction state is TRANSACTION_ENDING.
+        // DSRA0302E:  XAException occurred.  Error code is: XAER_NOTA (-4).  Exception is: null
+        // DSRA0180W: Exception detected during ManagedConnection.destroy().
+        //
+        // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
+        // but timer fails because server stopping, and the transaction has already ended. Hit's at a different timing than
+        // the transaction_fail and rollback case.
+        ignoreList.add("DSRA0230E.*TRANSACTION_ENDING");
+        ignoreList.add("DSRA0180W");
 
         // J2CA0027E: An exception occurred while invoking end on an XA Resource Adapter from DataSource
         //            dataSource[DefaultDataSource], within transaction ID {XidImpl: formatId(57415344),

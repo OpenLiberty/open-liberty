@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,13 +23,12 @@ fat.project: true
 tested.features: \
     cdi-2.0,\
     servlet-4.0,\
-    connectors-2.0,\
+    servlet-5.0,\
     enterprisebeans-4.0,\
-    jaxb-3.0,\
-    mdb-4.0,\
+    xmlBinding-3.0,\
     batch-2.0,\
-    persistencecontainer-3.0,\
     enterprisebeansremote-4.0,\
+    cdi-3.0,\
     jdbc-4.2,\
     enterprisebeanshome-4.0,\
     enterprisebeanslite-4.0,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,25 +119,25 @@ public class JDTCompiler implements JspCompiler {
         else if (jdkSourceLevel == 15) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);  // 341708        
-            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform,CompilerOptions.VERSION_1_5); // 412312
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5); // 412312
         }
         //PM04610 start
         else if (jdkSourceLevel == 16) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_6);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_6);  // 341708        
-            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform,CompilerOptions.VERSION_1_6); // 412312
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_6); // 412312
         }
         //PM04610 end
         else if (jdkSourceLevel == 17) {
-            compilerOptionsMap.put(CompilerOptions.OPTION_Source, "1.7"); //can I do this?? no CompilerOptions.VERSION_1_7 yet
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, "1.7");       
-            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, "1.7");
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_7);
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_7);       
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_7);
         }
         //126902 start
         else if (jdkSourceLevel == 18) {
-            compilerOptionsMap.put(CompilerOptions.OPTION_Source, "1.8"); //Verify, no CompilerOptions.VERSION_1_8 yet.
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, "1.8");  
-            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, "1.8");
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8);
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8);  
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_8);
         }
         //126902 end
         else {
@@ -318,7 +318,8 @@ public class JDTCompiler implements JspCompiler {
             boolean retbool=false;
                         try {
                                 for (int i = 0; i < jspCompilationUnits.length; i++) {
-                            if (result.equals(jspCompilationUnits[i].getJspClassName())) {
+                            if (result.equals(jspCompilationUnits[i].getJspClassName()) || 
+                                result.startsWith(jspCompilationUnits[i].getJspClassName() + '$')) {
                                 return false;
                             }
                                 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,9 @@
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
     'org.apache.httpcomponents:httpcore:4.1.2',
-    'commons-logging:commons-logging:1.1.3',
-    'commons-codec:commons-codec:1.6',
-    'org.apache.directory.server:apacheds-service:2.0.0-M15',
+    project(':io.openliberty.org.apache.commons.logging'),
+    project(':io.openliberty.org.apache.commons.codec'),
     project(':fattest.simplicity'),
-    project(':com.ibm.ws.org.apache.directory.server'),
     project(':com.ibm.ws.webcontainer.security_test.servlets'),
     project(':com.ibm.ws.security.javaeesec.cdi'),
     project(':com.ibm.ws.security.javaeesec_fat')

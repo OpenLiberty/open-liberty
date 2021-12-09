@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.BeanManagerInjectionServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InjectMultiLocalEJBServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InterceptorIntegrationServlet;
@@ -60,7 +61,7 @@ public class EJBxCDITest extends FATServletClient {
         EJB31JCDITestApp.addAsModule(EJB31JCDIBeanjar).addAsModule(EJB31InterceptorJCDIBean).addAsModule(EJB31NonJCDIBean).addAsModule(EJB31JCDIWeb);
         ShrinkHelper.addDirectory(EJB31JCDITestApp, "test-applications/EJB31JCDITestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB31JCDITestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB31JCDITestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
 

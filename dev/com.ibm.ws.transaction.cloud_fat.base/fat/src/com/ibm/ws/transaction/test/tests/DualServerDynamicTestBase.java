@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 
 import componenttest.custom.junit.runner.Mode;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -34,143 +38,128 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
-    protected static final int Cloud2ServerPort = 9992;
 
     public static LibertyServer server1;
-
     public static LibertyServer server2;
+
     public static String servletName;
     public static String cloud1RecoveryIdentity;
 
-    /**
-     * @deprecated Use {@link #dynamicTest(LibertyServer,LibertyServer,int,int)} instead
-     */
-    @Deprecated
-    public void dynamicTest(int test, int resourceCount) throws Exception {
-        dynamicTest(server1, server2, test, resourceCount);
-    }
+    private static DatabaseContainerType databaseContainerType;
+
+    private SetupRunner runner = new SetupRunner() {
+        @Override
+        public void run(LibertyServer s) throws Exception {
+            setUp(s);
+        }
+    };
 
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
-        String testSuffix = String.format("%03d", test);
-        dynamicTest(server1, server2, testSuffix, resourceCount);
-    }
-
-    public void dynamicTest(LibertyServer server1, LibertyServer server2, String testSuffix, int resourceCount) throws Exception {
         final String method = "dynamicTest";
+        final String id = String.format("%03d", test);
 
-        StringBuilder sb = null;
-        boolean testFailed = false;
-        String testFailureString = "";
-
-        // Start Server1
-        server1.startServer();
+        // Start Servers
+        if (databaseContainerType != DatabaseContainerType.Derby) {
+            FATUtils.startServers(runner, server1, server2);
+        } else {
+            FATUtils.startServers(runner, server1);
+        }
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
+            runTestWithResponse(server1, servletName, "setupRec" + id);
         } catch (Throwable e) {
-            // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
+
+        server1.postStopServerArchive(); // must explicitly collect since crashed server
 
         // Now start server2
-        if (!testFailed) {
-            server2.setHttpDefaultPort(Cloud2ServerPort);
-            ProgramOutput po = server2.startServerAndValidate(false, true, true);
-
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not start server2");
-                Log.error(this.getClass(), "dynamicTest", ex);
-                throw ex;
-            }
-
-            // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
-                testFailed = true;
-                testFailureString = "Second server did not perform peer recovery";
-            }
+        if (databaseContainerType == DatabaseContainerType.Derby) {
+            FATUtils.startServers(runner, server2);
         }
+
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server2.getServerName() + " did not perform peer recovery",
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
 
         // flush the resource states
-        if (!testFailed) {
-
-            try {
-                sb = runTestWithResponse(server2, servletName, "dumpState");
-                Log.info(this.getClass(), method, sb.toString());
-            } catch (Exception e) {
-                Log.error(this.getClass(), method, e);
-                throw e;
-            }
-
-            //Stop server2
-            server2.stopServer((String[]) null);
-
-            // restart 1st server
-            server1.startServerAndValidate(false, true, true);
-
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on first server";
-            }
+        try {
+            runTestWithResponse(server2, servletName, "dumpState");
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            fail(e.getMessage());
         }
 
-        if (!testFailed) {
+        //Stop server2
+        FATUtils.stopServers(server2);
 
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
-            try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
+        // restart 1st server
+        FATUtils.startServers(runner, server1);
 
-            // Bounce first server to clear log
-            server1.stopServer((String[]) null);
-            server1.startServerAndValidate(false, true, true);
+        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
-            // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
-
+        // check resource states
+        Log.info(this.getClass(), method, "calling checkRec" + id);
+        try {
+            runTestWithResponse(server1, servletName, "checkRec" + id);
+        } catch (Exception e) {
+            Log.error(this.getClass(), "dynamicTest", e);
+            throw e;
         }
 
-        tidyServerAfterTest(server1);
-        tidyServerAfterTest(server2);
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
-        if (testFailed)
-            fail(testFailureString);
+        // Check log was cleared
+        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
+        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
+
+        // Finally stop server1
+        FATUtils.stopServers(server1);
     }
 
-    protected void tidyServerAfterTest(LibertyServer s) throws Exception {
-        if (s.isStarted()) {
-            s.stopServer();
-        }
-        try {
-            final RemoteFile rf = s.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
-            if (rf.exists()) {
-                rf.delete();
-            }
-        } catch (FileNotFoundException e) {
-            // Already gone
-        }
+    protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
+        for (LibertyServer server : servers) {
+            try {
+                final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
+                if (rf.exists()) {
+                    rf.delete();
+                }
+            } catch (FileNotFoundException e) {
+                // Already gone
+            }
+        }
+    }
+
+    /**
+     * @param server
+     * @throws Exception
+     */
+    protected abstract void setUp(LibertyServer server) throws Exception;
+
+    /**
+     * @param firstServer
+     * @param secondServer
+     * @param string
+     * @param string2
+     */
+    public static void setup(LibertyServer s1, LibertyServer s2, String servlet, String recoveryId) throws Exception {
+        server1 = s1;
+        server2 = s2;
+        servletName = APP_NAME + "/" + servlet;
+        cloud1RecoveryIdentity = recoveryId;
+
+        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
+
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+
+        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
+    }
+
+    public static void setDBType(DatabaseContainerType type) {
+        databaseContainerType = type;
     }
 }

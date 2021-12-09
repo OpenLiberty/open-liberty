@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,73 @@ import java.util.concurrent.TimeUnit;
  * @param <T> type of the result.
  */
 public interface PolicyTaskFuture<T> extends Future<T> {
+    /**
+     * The await operation has timed out.
+     */
+    public static final int TIMEOUT = -1;
+
+    /**
+     * Task has not been submitted yet.
+     */
+    public static final int PRESUBMIT = 0;
+
+    /**
+     * Task was submitted but is not running yet.
+     */
+    public static final int SUBMITTED = 1;
+
+    /**
+     * Task is running.
+     */
+    public static final int RUNNING = 2;
+
+    /**
+     * Task was aborted.
+     */
+    public static final int ABORTED = 3;
+
+    /**
+     * Tasks has begun a cancel request.
+     */
+    public static final int CANCELING = 4;
+
+    /**
+     * Task has been canceled.
+     */
+    public static final int CANCELED = 5;
+
+    /**
+     * Task has completed its execution with an error.
+     */
+    public static final int FAILED = 6;
+
+    /**
+     * Task has completed successfully.
+     */
+    public static final int SUCCESSFUL = 7;
+
+    /**
+     * Await completion of the future. Completion could be successful, exceptional, or by cancellation.
+     *
+     * @return <code>TIMEOUT</code> if timed out. Otherwise a constant indicating the state of the task.
+     *         <code>PRESUBMIT</code> and <code>RUNNING</code> indicate an early return from this method
+     *         to avoid a hang because the current thread is responsible for running or submitting the task.
+     * @throws InterruptedException if interrupted while waiting.
+     */
+    int await() throws InterruptedException;
+
+    /**
+     * Await completion of the future. Completion could be successful, exceptional, or by cancellation.
+     *
+     * @param time maximum amount of time to await completion.
+     * @param unit unit of time.
+     * @return <code>TIMEOUT</code> if timed out. Otherwise a constant indicating the state of the task.
+     *         <code>PRESUBMIT</code> and <code>RUNNING</code> indicate an early return from this method
+     *         to avoid a hang because the current thread is responsible for running or submitting the task.
+     * @throws InterruptedException if interrupted while waiting.
+     */
+    int await(long time, TimeUnit unit) throws InterruptedException;
+
     /**
      * Computes the estimated interval of time during which the decision is made to accept or reject the task.
      * This interval spans from the creation of the Future up until the point in time when the task is either

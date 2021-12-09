@@ -38,13 +38,13 @@ public final class UpdateTask extends Task
         private List<DataSlice> _cachedMemberData;
         private int _cachedInMemorySize;
 
-        public CachedPersistable(Persistable masterPersistable) throws PersistentDataEncodingException, SevereMessageStoreException
+        public CachedPersistable(Persistable primaryPersistable) throws PersistentDataEncodingException, SevereMessageStoreException
         {
-            super(masterPersistable);
+            super(primaryPersistable);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>$CachedPersistable");
 
-            List<DataSlice> memberData = masterPersistable.getData();
+            List<DataSlice> memberData = primaryPersistable.getData();
 
             // Use the copy constructor of ArrayList to
             // take a copy of the list.
@@ -54,7 +54,7 @@ public final class UpdateTask extends Task
             // member data. We want the value returned here to be constant, otherwise, we're at risk
             // of another class getting its sums wrong. This length is an approximation of the size
             // of the member data in memory.
-            _cachedInMemorySize = masterPersistable.getInMemoryByteSize();
+            _cachedInMemorySize = primaryPersistable.getInMemoryByteSize();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>$CachedPersistable");
         }
@@ -76,14 +76,14 @@ public final class UpdateTask extends Task
                                                       MessageStoreConstants.MSG_BUNDLE);
 
     private Persistable _cachedPersistable = null;
-    private Persistable _masterPersistable;
+    private Persistable _primaryPersistable;
 
     public UpdateTask(AbstractItemLink link) throws SevereMessageStoreException
     {
         super(link);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", link);
 
-        _masterPersistable = super.getPersistable();
+        _primaryPersistable = super.getPersistable();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>", this);
     }
@@ -127,7 +127,7 @@ public final class UpdateTask extends Task
 
         if (_cachedPersistable == null)
         {
-            _cachedPersistable = new CachedPersistable(_masterPersistable);
+            _cachedPersistable = new CachedPersistable(_primaryPersistable);
         }; // end if
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "copyDataIfVulnerable");
@@ -145,7 +145,7 @@ public final class UpdateTask extends Task
         }
         else
         {
-            return _masterPersistable;
+            return _primaryPersistable;
         }
     }
 

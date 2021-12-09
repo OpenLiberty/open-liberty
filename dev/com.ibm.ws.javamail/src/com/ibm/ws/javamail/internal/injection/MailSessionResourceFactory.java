@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,11 +29,12 @@ public class MailSessionResourceFactory extends MailSessionService implements co
     }
 
     /**
-     * 
+     *
      * @throws Exception if an error occurs.
      */
     @Override
-    public void destroy() throws Exception {}
+    public void destroy() throws Exception {
+    }
 
     @Override
     public void modify(Map<String, Object> props) throws Exception {

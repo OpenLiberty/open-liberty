@@ -17,7 +17,7 @@ addRequiredLibraries {
 
 dependencies {
   requiredLibs project(":com.ibm.ws.jbatch.fat.common"),
-	'commons-io:commons-io:2.6'
+	project(':com.ibm.ws.org.apache.commons.io')
 }
 
 task copyTestApps {

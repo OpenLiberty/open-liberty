@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedMapToUserRegistryConfigTests;
 import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedMiscConfigTests;
-import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedSSLConfigTests;
+import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedSSLConfigNoReconfigTests;
+import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedSSLConfigWithReconfigTests;
 import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -28,7 +29,8 @@ import componenttest.rules.repeater.RepeatTests;
 
         RSSamlIDPInitiatedMiscConfigTests.class,
         RSSamlIDPInitiatedMapToUserRegistryConfigTests.class,
-        RSSamlIDPInitiatedSSLConfigTests.class
+        RSSamlIDPInitiatedSSLConfigWithReconfigTests.class,
+        RSSamlIDPInitiatedSSLConfigNoReconfigTests.class
 
 })
 /**

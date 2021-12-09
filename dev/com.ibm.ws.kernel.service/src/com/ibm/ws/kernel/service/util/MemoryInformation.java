@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -24,14 +21,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * Provides information about the memory of the underlying operating system.
@@ -269,9 +269,9 @@ public class MemoryInformation {
      * Create a new instance of the API with various options.
      *
      * @param cacheTotalRam
-     *            Cache total RAM after first calculation.
+     *                                       Cache total RAM after first calculation.
      * @param useLightweightAvailableRam
-     *            Use the less accurate but more lightweight method to calculate available RAM.
+     *                                       Use the less accurate but more lightweight method to calculate available RAM.
      */
     public MemoryInformation(boolean cacheTotalRam, boolean useLightweightAvailableRam) {
         this.cacheTotalRam = cacheTotalRam;
@@ -866,7 +866,7 @@ public class MemoryInformation {
 
         long result = getFreeMemoryJDK();
 
-        // Testing has shown that IBM Java returns -1
+        // J9 returns -1: https://github.com/eclipse/omr/blob/37e866c/port/zos390/omrvmem.c#L1614
         if (result <= 0) {
             throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unavailable"));
         }
@@ -877,14 +877,38 @@ public class MemoryInformation {
     private static OperatingSystemMXBean osMxBean;
     private static MBeanServer mBeanServer;
     private static ObjectName osObjectName;
+    private static String totalPhysicalMemoryAttribute;
 
-    @FFDCIgnore({ MalformedObjectNameException.class })
+    @FFDCIgnore({ MalformedObjectNameException.class, MBeanException.class })
     private synchronized void ensureInitializedMBean() throws MemoryInformationException {
         if (osMxBean == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ensureInitializedMBean needs initialization");
+            }
+
             osMxBean = ManagementFactory.getOperatingSystemMXBean();
             mBeanServer = ManagementFactory.getPlatformMBeanServer();
             try {
                 osObjectName = new ObjectName("java.lang", "type", "OperatingSystem");
+
+                // OpenJDK uses TotalPhysicalMemorySize [1] whereas J9
+                // uses TotalPhysicalMemory, so cache which one to use.
+                // [1]: https://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/OperatingSystemMXBean.html
+
+                try {
+                    mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemory");
+                    totalPhysicalMemoryAttribute = "TotalPhysicalMemory";
+                } catch (InstanceNotFoundException | AttributeNotFoundException | ReflectionException | MBeanException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not find TotalPhysicalMemory attribute", e);
+                    }
+                    totalPhysicalMemoryAttribute = "TotalPhysicalMemorySize";
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Set totalPhysicalMemoryAttribute to " + totalPhysicalMemoryAttribute);
+                }
+
             } catch (MalformedObjectNameException e) {
                 throw new MemoryInformationException(e);
             }
@@ -896,11 +920,7 @@ public class MemoryInformation {
         try {
             ensureInitializedMBean();
 
-            if (JavaInfo.vendor() == Vendor.IBM) {
-                return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemory");
-            } else {
-                return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemorySize");
-            }
+            return (Long) mBeanServer.getAttribute(osObjectName, totalPhysicalMemoryAttribute);
         } catch (Throwable e) {
             throw new MemoryInformationException(e);
         }
@@ -917,6 +937,12 @@ public class MemoryInformation {
         }
     }
 
+    /**
+     * java -cp dev/com.ibm.ws.kernel.service/bin/:dev/com.ibm.ws.logging.core/bin/ com.ibm.ws.kernel.service.util.MemoryInformation
+     *
+     * @param args
+     * @throws Throwable
+     */
     public static void main(String... args) throws Throwable {
         out(MemoryInformation.class.getName() + " started");
         out("Operating System      : " + String.format("%15s", OperatingSystem.instance().getOperatingSystemType()));

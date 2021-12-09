@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: io.openliberty.opentracing.2.0.internal.jaxrs2x
+Bundle-SymbolicName: io.openliberty.opentracing.2.0.internal.jaxrs2x
+Bundle-Description: OpenTracing 2.0, JAX-RS 2.x service registration
+
+WS-TraceGroup: OPENTRACING
+
+-dsannotations: \
+  io.openliberty.opentracing.internal.jaxrs.OpentracingJaxRsProviderRegister
+
+Import-Package: \
+  *
+
+Private-Package: io.openliberty.opentracing.internal.jaxrs
+
+-buildpath: \
+    io.openliberty.opentracing.2.0.internal;version=latest, \
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.ws.jaxrs.2.0.common;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

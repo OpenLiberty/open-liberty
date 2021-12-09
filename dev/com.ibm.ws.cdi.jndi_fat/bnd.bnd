@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 201* IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,15 +24,13 @@ src: \
 tested.features:\
 	cdi-2.0,\
 	servlet-4.0,\
-	jdbc-4.2,\
-	jpa-2.2,\
-	beanValidation-2.0,\
-	jaxrs-2.1,\
-	jsf-2.3,\
-	jsonb-1.0,\
-	appsecurity-3.0,\
 	webprofile-8.0,\
-	jaspic-1.1
+	cdi-3.0,\
+	connectors-2.0,\
+	expressionLanguage-4.0,\
+	pages-3.0,\
+	servlet-5.0,\
+	webProfile-9.1
 	
 	
 test.project: true
@@ -45,7 +43,7 @@ test.project: true
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

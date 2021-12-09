@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,11 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.client.web.RemoteTxAttrServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE7Secure;
+import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE8Secure;
+import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE9Secure;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -38,23 +42,39 @@ public class Server2ServerTests extends AbstractTest {
 
     @Server("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient")
     @TestServlets({ @TestServlet(servlet = RemoteTxAttrServlet.class, contextRoot = "RemoteClientWeb") })
-    public static LibertyServer clientServer;
+    public static LibertyServer unsecureClientServer;
 
     @Server("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")
-    public static LibertyServer remoteServer;
+    public static LibertyServer unsecureRemoteServer;
+
+    @Server("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient")
+    public static LibertyServer secureClientServer;
+
+    @Server("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")
+    public static LibertyServer secureRemoteServer;
+
+    public static boolean isSecureActive = false;
 
     @Override
     public LibertyServer getServer() {
-        return clientServer;
+        return isSecureActive ? secureClientServer : unsecureClientServer;
     }
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
                                                                                                                     "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
+                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                                                                                                                                                                                                                                                                                                "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(new RepeatEE7Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")).andWith(new RepeatEE8Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")).andWith(new RepeatEE9Secure().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        isSecureActive = RepeatEE7Secure.isActive() || RepeatEE8Secure.isActive() || RepeatEE9Secure.isActive();
+        LibertyServer clientServer = isSecureActive ? secureClientServer : unsecureClientServer;
+        LibertyServer remoteServer = isSecureActive ? secureRemoteServer : unsecureRemoteServer;
+
         // Use ShrinkHelper to build the Ears
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
@@ -63,8 +83,8 @@ public class Server2ServerTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(clientServer, InitTxRecoveryLogApp);
-        ShrinkHelper.exportDropinAppToServer(remoteServer, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(clientServer, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(remoteServer, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### RemoteClientApp
         JavaArchive RemoteServerSharedJar = ShrinkHelper.buildJavaArchive("RemoteServerShared.jar", "com.ibm.ws.ejbcontainer.remote.server.shared.", "test.");
@@ -75,7 +95,7 @@ public class Server2ServerTests extends AbstractTest {
         RemoteClientApp.addAsModule(RemoteClientWeb);
         RemoteClientApp = (EnterpriseArchive) ShrinkHelper.addDirectory(RemoteClientApp, "test-applications/RemoteClientApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(clientServer, RemoteClientApp);
+        ShrinkHelper.exportDropinAppToServer(clientServer, RemoteClientApp, DeployOptions.SERVER_ONLY);
 
         //#################### RemoteServerApp
         JavaArchive RemoteServerEJBJar = ShrinkHelper.buildJavaArchive("RemoteServerEJB.jar", "com.ibm.ws.ejbcontainer.remote.server.ejb.");
@@ -84,7 +104,7 @@ public class Server2ServerTests extends AbstractTest {
         RemoteServerApp.addAsLibraries(RemoteServerSharedJar).addAsModule(RemoteServerEJBJar);
         RemoteServerApp = (EnterpriseArchive) ShrinkHelper.addDirectory(RemoteServerApp, "test-applications/RemoteServerApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(remoteServer, RemoteServerApp);
+        ShrinkHelper.exportDropinAppToServer(remoteServer, RemoteServerApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start servers
         remoteServer.startServer();
@@ -94,7 +114,13 @@ public class Server2ServerTests extends AbstractTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        clientServer.stopServer();
-        remoteServer.stopServer("CNTR0019E");
+        if (isSecureActive) {
+            secureClientServer.stopServer();
+            secureRemoteServer.stopServer("CNTR0019E");
+        } else {
+            unsecureClientServer.stopServer();
+            unsecureRemoteServer.stopServer("CNTR0019E");
+        }
+        isSecureActive = false;
     }
 }

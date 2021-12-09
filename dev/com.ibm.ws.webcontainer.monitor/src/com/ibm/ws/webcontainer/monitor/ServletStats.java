@@ -65,7 +65,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
     }
 
     /**
-     * Demonstrate Number of Requests, recieved for this servlet.
+     * Demonstrate Number of Requests, received for this servlet.
      * 
      **/
     @Override

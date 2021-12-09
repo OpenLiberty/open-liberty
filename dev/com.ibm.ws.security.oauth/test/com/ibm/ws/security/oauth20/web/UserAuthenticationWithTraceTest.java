@@ -20,14 +20,16 @@ import org.junit.BeforeClass;
  */
 public class UserAuthenticationWithTraceTest extends UserAuthenticationTest {
 
+    private static String traceString = "com.ibm.ws.security.oauth*";
+
     @BeforeClass
     public static void traceSetUp() {
-        outputMgr.trace("com.ibm.ws.security.oauth*=all");
+        outputMgr.trace(traceString + "=all");
     }
 
     @AfterClass
     public static void traceTearDown() {
-        outputMgr.trace("*=all=disabled");
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
 }

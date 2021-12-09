@@ -21,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 Java13Test.class,
                 Java14Test.class,
                 Java15Test.class,
+                Java16Test.class,
                 Java11CNFETest.class,
                 JavaInfoTest.class,
                 MultiReleaseJarTest.class

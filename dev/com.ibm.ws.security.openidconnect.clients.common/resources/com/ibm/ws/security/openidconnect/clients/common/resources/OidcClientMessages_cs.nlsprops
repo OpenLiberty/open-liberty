@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,24 @@ USERINFO_INVALID.explanation=Je vy\u017eadov\u00e1na shoda d\u00edl\u010d\u00edh
 USERINFO_INVALID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect generuje platn\u00e1 data s informacemi o u\u017eivateli.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu autorizace, ale nen\u00ed nastavena.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu autorizace mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du nebo po\u017eadovan\u00fdch token\u016f.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Nastavte atribut authorizationEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu autorizace poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu tokenu, ale nen\u00ed nastavena.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu tokenu mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed po\u017eadovan\u00fdch token\u016f.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=Nastavte atribut tokenEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu tokenu poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: Token nen\u00ed ve form\u00e1tu JSON Web Signature (JWS), proto\u017ee neobsahuje t\u0159i \u010d\u00e1sti, ale klient [{0}] OpenID Connect p\u0159ij\u00edm\u00e1 pouze tokeny, kter\u00e9 jsou ve form\u00e1tu JWS.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Token m\u016f\u017ee b\u00fdt chybn\u00fd nebo m\u016f\u017ee b\u00fdt ve form\u00e1tu JSON Web Encryption (JWE). Tokeny mus\u00ed b\u00fdt ve form\u00e1tu JWS, pokud nen\u00ed nakonfigurov\u00e1n atribut keyManagementKeyAlias.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Chcete-li p\u0159ijmout tokeny JWE, nakonfigurujte atribut keyManagementKeyAlias v konfiguraci klienta OpenID Connect. Jinak se ujist\u011bte, \u017ee do tohoto prost\u0159edku jsou odes\u00edl\u00e1ny pouze tokeny JWS.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Token nen\u00ed ve form\u00e1tu JSON Web Encryption (JWE), proto\u017ee neobsahuje p\u011bt \u010d\u00e1st\u00ed, ale klient [{0}] OpenID Connect p\u0159ij\u00edm\u00e1 pouze tokeny, kter\u00e9 jsou ve form\u00e1tu JWE.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Token m\u016f\u017ee b\u00fdt chybn\u00fd nebo m\u016f\u017ee b\u00fdt ve form\u00e1tu JSON Web Signature (JWS). Tokeny mus\u00ed b\u00fdt ve form\u00e1tu JWE, pokud je nakonfigurov\u00e1n atribut keyManagementKeyAlias.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Chcete-li p\u0159ijmout tokeny JWE nam\u00edsto token\u016f JWE, odeberte atribut keyManagementKeyAlias v konfiguraci klienta OpenID Connect. Jinak se ujist\u011bte, \u017ee do tohoto prost\u0159edku jsou odes\u00edl\u00e1ny pouze tokeny JWE.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

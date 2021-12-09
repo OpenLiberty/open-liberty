@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,11 +40,11 @@ import componenttest.topology.utils.FATServletClient;
 public class InterceptorTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.FULL, MicroProfileActions.LATEST, MicroProfileActions.MP22);
+    public static RepeatTests r = RepeatFaultTolerance.repeat("AsyncFaultTolerance", TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP22);
 
     private static final String APP_NAME = "ftInterceptors";
 
-    @Server("FaultToleranceMultiModule")
+    @Server("AsyncFaultTolerance")
     @TestServlet(contextRoot = APP_NAME, servlet = InterceptorTestServlet.class)
     public static LibertyServer server;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package io.openliberty.microprofile.openapi20.servlets;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.servers.Server;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,6 +43,22 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
+    
+    private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
+    
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
+        appRegistryTracker = new ServiceTracker<>(bundleContext, ApplicationRegistry.class, null);
+        appRegistryTracker.open();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        appRegistryTracker.close();
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -55,34 +76,36 @@ public class ApplicationServlet extends OpenAPIServletBase {
              * Retrieve the current provider and get the OpenAPI model for it. If there is no current provider then
              * generate a default (empty) OpenAPI model.
              */
-            final OpenAPIProvider currentProvider = ApplicationRegistry.getInstance().getCurrentOpenAPIProvider();
+            ApplicationRegistry appRegistry = appRegistryTracker.getService();
+            OpenAPIProvider currentProvider = null;
+            if (appRegistry != null) {
+                currentProvider = appRegistry.getOpenAPIProvider();
+            }
             final String document;
             if (currentProvider != null) {
-                /*
-                 * If the model that has been generated already contains server definitions, we trust that the user
-                 * knows what they are doing and we do not modify the model in any way when the OpenAPI document is
-                 * requested. If the model that has been been generated does not contain server definitions, we add them
-                 * to the model before generating the OpenAPI document.  We need to synchronize access to the model
-                 * while we are updating it.
-                 */
-                if (currentProvider.getServersDefined()) {
-                    /*
-                     * No need to modify the model. Retrieve the cached version of the OpenAPI document from the
-                     * currentProvider in the specified format.
-                     */
-                    document = currentProvider.getOpenAPIDocument(responseFormat);
+                
+                // Take a shallow copy of the model so we can change the servers and info
+                OpenAPI model = OpenAPIUtils.shallowCopy(currentProvider.getModel());
+                
+                if (OpenAPIUtils.containsServersDefinition(currentProvider.getModel())) {
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
                     }
                 } else {
                     /*
                      * The OpenAPI model that was generated does not contain any server definitions. We need to generate
-                     * the server definitions, add them to the model and then generate the OpenAPI document in the
-                     * specified format.
+                     * the server definitions, and add them to the model
                      */
                     List<Server> servers = getOpenAPIModelServers(request, currentProvider.getApplicationPath());
-                    document = currentProvider.getOpenAPIDocument(servers, responseFormat);
+                    model.setServers(servers);
                 }
+                
+                Info configuredInfo = OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig());
+                if (configuredInfo != null) {
+                    model.setInfo(configuredInfo);
+                }
+                
+                document = OpenAPIUtils.getOpenAPIDocument(model, responseFormat);
             } else {
                 /*
                  * No JAX-RS applications are currently running inside this OL instance. Create a default OpenAPI model,

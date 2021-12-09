@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=Se ha capturado una IOException en el c\u0
 error.exception.ioeinbody.useraction=No se requiere ninguna acci\u00f3n.
 
 warn.unsupported.realm=CWSCT0358W: Reino de autenticaci\u00f3n desconocido {0}
-warn.unsupported.realm.explanation=Se ha recibido una solicitud SIP de un reino de autenticaci\u00f3n desconocido 
+warn.unsupported.realm.explanation=Se ha recibido una solicitud SIP de un reino de autenticaci\u00f3n desconocido
 warn.unsupported.realm.useraction=No se requiere ninguna acci\u00f3n
 
 info.unhashed.creds=CWSCT0359I: No se han encontrado los atributos de credencial con c\u00f3digo hash.

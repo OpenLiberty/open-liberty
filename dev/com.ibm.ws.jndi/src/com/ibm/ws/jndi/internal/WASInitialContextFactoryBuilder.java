@@ -42,7 +42,9 @@ public class WASInitialContextFactoryBuilder implements InitialContextFactoryBui
                 public Constructor<InitialContextFactory> run() {
                     try {
                         Class<?> clazz = Class.forName(icfFactory, false, getClassLoader());
-                        return (Constructor<InitialContextFactory>) clazz.getConstructor();
+                        @SuppressWarnings("unchecked")
+                        final Constructor<InitialContextFactory> c = (Constructor<InitialContextFactory>)clazz.getConstructor();
+                        return c;
                     } catch (Exception e) {
                         //auto FFDC
                     }

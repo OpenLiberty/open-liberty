@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifica\u0163i configura\u0163ia de
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Nu este valid\u0103 o cerere la [{0}]. Lipse\u015fte un cookie necesar cu un nume care \u00eencepe cu WASReqURLOidc. Numele de gazd\u0103 care este utilizat pentru a accesa clientul ar putea s\u0103 nu se potriveasc\u0103 cu numele care este \u00eenregistrat la furnizor. Este returnat un cod de r\u0103spuns de 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=A fost primit\u0103 o cerere care nu a inclus un cookie necesar.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Cookie-ul lips\u0103 poate fi cauzat de accesarea clientului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 de redirectare care este \u00eenregistrat\u0103 cu furnizorul.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Cookie-ul lips\u0103 poate fi cauzat de accesarea clientului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 de redirectare care este \u00eenregistrat\u0103 cu furnizorul. Dac\u0103 atributul sameSiteCookie din elementul webAppSecurity din configura\u0163ia de server este setat la Strict, \u00eencerca\u0163i s\u0103 seta\u0163i valoarea la Lax sau None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{2}] specific\u0103 at\u00e2t URL-ul de punct final descoperire [{0}], c\u00e2t \u015fi alte puncte finale. RP va folosi informa\u0163iile de la cererea de descoperire \u015fi va ignora celelalte puncte finale configurate [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Clientul OpenId Connect utilizeaz\u0103 punctul final de descoperire pentru a contacta furnizorul \u015fi utilizeaz\u0103 informa\u0163iile de la cererea de descoperire pentru a contacta alte puncte finale, cum ar fi de autorizare, de jeton sau de informa\u0163ii utilizator.
@@ -287,5 +287,12 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=Examina\u0163i fi\u015fierul server.xml \
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Nu este valid\u0103 o cerere la [{0}]. Un cookie necesar cu un nume care \u00eencepe cu WASReqURLOidc are o valoare incorect\u0103. Numele de gazd\u0103 [{1}] care este utilizat \u00een cookie nu se potrive\u015fte cu cel \u00eenregistrat la furnizor. Este returnat un cod de r\u0103spuns de 500.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A fost primit\u0103 o cerere care include un cookie \u00een format gre\u015fit
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Cookie-ul cu formatul gre\u015fit poate fi cauzat de modificarea cookie-ului la agentul utilizatorului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 a redirect\u0103rii care este \u00eenregistrat cu furnizorul. Dac\u0103 numele de gazd\u0103 este cel a\u015fteptat, atunci ad\u0103uga\u0163i atributul wasReqURLRedirectDomainNames al elementului webAppSecurity \u00een server.xml.
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Clientul OpenID Connect {0} nu poate extrage revendic\u0103rile JWT (JSON Web Token) din r\u0103spunsul web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=R\u0103spunsul web trebuie s\u0103 fie un JWT \u00een formatul JWE (JSON Web Encryption) sau JWS (JWS Web Signature). R\u0103spunsul ar putea fi formatat gre\u015fit sau clientul OpenID Connect a \u00eent\u00e2lnit o alt\u0103 eroare la procesarea r\u0103spunsului.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 r\u0103spunsul este \u00een format JWT.
+
+#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

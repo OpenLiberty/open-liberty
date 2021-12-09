@@ -38,6 +38,15 @@ public class ReactiveTestResource {
    private static final long GET_COLLECTED_DATA_SLEEP = 7;
    private static final long TIME_LOOP = 50000;
    private final CountDownLatch countDownLatch = new CountDownLatch(5);
+   
+   private static final boolean isRestful30() {
+       try {
+           jakarta.ws.rs.core.Application app = new jakarta.ws.rs.core.Application();
+           return true;
+       } catch (NoClassDefFoundError ignore) {
+           return false;
+       }
+   }
 
    @Context
    HttpServletRequest req;
@@ -89,7 +98,13 @@ public class ReactiveTestResource {
                               .post(Entity.json(customer));
          System.out.println("newCustomer: " + response.readEntity(String.class));
 
-         Executors.newFixedThreadPool(1).submit(() -> asyncGet(customer));
+         if (isRestful30()) {
+             // RestEasy is not able to create a WebTarget while running in a Fixed Thread Pool
+             asyncGet(customer);
+         } else {
+             Executors.newFixedThreadPool(1).submit(() -> asyncGet(customer));
+         }
+         
       } finally {
          if (c != null) {
             c.close();

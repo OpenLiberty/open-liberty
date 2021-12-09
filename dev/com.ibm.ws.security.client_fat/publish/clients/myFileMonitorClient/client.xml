@@ -14,6 +14,8 @@
 		<feature>javaeeClient-7.0</feature>
         <feature>appSecurityClient-1.0</feature>
 	</featureManager>
+	
+	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 	<application id="myFileMonitor" name="FileMonitor" type="ear" location="FileMonitor.ear" />
 

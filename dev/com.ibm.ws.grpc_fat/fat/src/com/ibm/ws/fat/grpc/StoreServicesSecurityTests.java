@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +34,6 @@ import componenttest.topology.utils.FATServletClient;
 /**
  *
  */
-
 @RunWith(FATRunner.class)
 public class StoreServicesSecurityTests extends FATServletClient {
 
@@ -57,7 +63,7 @@ public class StoreServicesSecurityTests extends FATServletClient {
         StoreClientTestsUtils.addConsumerApp_RestClient(consumerServer, isArchive);
 
         storeJWTSSoServer.startServer(c.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", storeJWTSSoServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("CWWKO0219I.*ssl not received", storeJWTSSoServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
@@ -67,7 +73,7 @@ public class StoreServicesSecurityTests extends FATServletClient {
 
         consumerServer.setHttpDefaultSecurePort(securePort);
         consumerServer.startServer(c.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("CWWKO0219I.*ssl not received", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
     }
 

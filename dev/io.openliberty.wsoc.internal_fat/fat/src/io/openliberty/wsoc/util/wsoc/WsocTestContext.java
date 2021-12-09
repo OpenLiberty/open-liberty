@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class WsocTestContext {
     private boolean closedAlready = false;
 
     public WsocTestContext() {
-
+        LOG.info("WsocTestContext object created: " + this.toString());
     }
 
     /**
@@ -64,6 +64,7 @@ public class WsocTestContext {
      */
     public WsocTestContext(int numMsgsExpected) {
         this(numMsgsExpected, false);
+        LOG.info("WsocTestContext object created: " + this.toString());
     }
 
     /**
@@ -99,8 +100,8 @@ public class WsocTestContext {
     public synchronized void addMessage(Object msg) {
 
         _curMessage++;
-        // log the first five messages of each test, for better debugging
-        if (_curMessage <= 5) {
+        // log the six messages of each test, for better debugging
+        if (_curMessage <= 6) {
             LOG.info("Adding message to test results, message #: " + _curMessage + " " + msg);
         }
         if (!_messageCountOnly) {
@@ -117,7 +118,7 @@ public class WsocTestContext {
 
         if (_numMsgsExpected > 0) {
             if (_curMessage >= _numMsgsExpected) {
-
+                LOG.info(this.toString() + " --  Message Total: " + this._messages.toString());
                 _limitReached = true;
 
             }
@@ -137,9 +138,10 @@ public class WsocTestContext {
      * Normal termination.. usually as result of endpoint receiving expected number of messages.
      */
     public void terminateClient() {
-        LOG.info("Wsoc process has been terminated");
+        LOG.info("Wsoc process has been terminated for " + this.toString());
         _limitReached = true;
         if (completeLatch != null) {
+            LOG.info("completeLatch countdown Called!");
             completeLatch.countDown();
         }
     }
@@ -148,7 +150,7 @@ public class WsocTestContext {
      * For multi client tests.. MSN TODO - not sure if this is used and workign currently.
      */
     public void terminateAllClients() {
-        LOG.info("Terminate all clients has been set.");
+        LOG.info("Terminate all clients has been set for " + this.toString());
         _terminateAll = true;
         terminateClient();
     }

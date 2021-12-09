@@ -937,10 +937,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             } catch (Throwable t) {
                 // check if we're on an HTTP2 connection in the closed state
                 HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
-                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+                HttpInboundLink link = context.getLink();
                 boolean h2Closing = false;
                 if (link instanceof H2HttpInboundLinkWrap) {
-                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) context.getLink();
+                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) link;
                     if (h2link.muxLink.checkIfGoAwaySendingOrClosing()) {
                         h2Closing = true;
                     }
@@ -3843,7 +3843,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (0 == getDataLength()) {
             // found the zero chunk
-            setBodyComplete();
             boolean bTrailers = doTrailersFollow();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Slicing body up to zero chunk, trailers=" + bTrailers);
@@ -3865,6 +3864,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Post-slice: " + getReadBuffer());
             }
+            setBodyComplete();
             if (bTrailers) {
                 // parse the trailer headers now that we've saved all of the
                 // body information
@@ -4097,10 +4097,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Unparsed data remaining: " + getDataLength());
         }
-        if (isContentLength() && 0 == getDataLength()) {
-            // we've fully read the content-length body, set the complete flag
-            setBodyComplete();
-        }
         if (amountAvail == getReadBuffer().capacity()) {
             // this is a full buff we can send
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -4128,6 +4124,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (isChunkedEncoding() && 0 < excess) {
                 parseChunkCRLF((int) excess);
             }
+        }
+        if (isContentLength() && 0 == getDataLength()) {
+            // we've fully read the content-length body, set the complete flag
+            setBodyComplete();
         }
         return false;
     }
@@ -5654,8 +5654,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
         if (promisedSP == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
-                            + "the max number of concurrent streams has already been reached on link: " + link);
+                if(((H2HttpInboundLinkWrap) link).muxLink.isClosing()){
+                    Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
+                            + "server is shutting down, closing link: " + link);
+                }
+                else{
+                    Tr.exit(tc, "handleH2LinkPreload exit; cannot create new push stream - "
+                            + "the max number of concurrent streams has already been reached on link: " + link);  
+                }
+                
             }
             return;
         }

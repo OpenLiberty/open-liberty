@@ -55,6 +55,7 @@ import com.ibm.ws.webcontainer.core.Request;
 import com.ibm.ws.webcontainer.core.Response;
 import com.ibm.ws.webcontainer.exception.WebContainerUnavailableException;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.ApplicationErrorUtils;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -576,8 +577,8 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
                 // we have an SSL connection...set the attributes
                 ServletRequest implRequest = ServletUtil.unwrapRequest(httpRequest);
                 
-                String cipherSuite = ((SRTServletRequest) implRequest).getCipherSuite();
-                ((SRTServletRequest) implRequest).setSSLAttributesInRequest(httpRequest, cipherSuite);
+                String cipherSuite = ((ISRTServletRequest) implRequest).getCipherSuite();
+                ((ISRTServletRequest) implRequest).setSSLAttributesInRequest(httpRequest, cipherSuite);
             }// PM92496 End
 
             WebAppServletInvocationEvent invocationEvent = null;
@@ -1356,7 +1357,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
         } finally {
             WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
             if (reqState != null && reqState.getAttribute("webcontainer.resetAsyncStartedOnExit") != null){
-                ((SRTServletRequest) ServletUtil.unwrapRequest(req)).setAsyncStarted(false);
+                ServletUtil.unwrapRequest(req).setAsyncStarted(false);
                 reqState.removeAttribute("webcontainer.resetAsyncStartedOnExit");
             }
 

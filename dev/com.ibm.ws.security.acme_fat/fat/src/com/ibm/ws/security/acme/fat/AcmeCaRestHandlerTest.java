@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -60,6 +61,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -68,6 +70,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the {@link AcmeCaRestHandler} REST endpoint.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeCaRestHandlerTest {
 	
     //Required to ensure we calculate the correct strategy each run even when
@@ -791,6 +794,7 @@ public class AcmeCaRestHandlerTest {
 
 		ServerConfiguration clone = server.getServerConfiguration().clone();
 		clone.getAcmeCA().setDisableMinRenewWindow(false);
+		clone.getAcmeCA().setRenewCertMin(30000);
 		
 
 		/***********************************************************************
@@ -810,22 +814,24 @@ public class AcmeCaRestHandlerTest {
 			 */
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
+			long startRequest = System.currentTimeMillis();
 			String jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 200, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
 					AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.JSON_CERT_REGEN);
+			long endTime = System.currentTimeMillis();
+			long requestTime = endTime - startRequest;
+			Log.info(this.getClass(), methodName, "Total Certificate request time was: " + requestTime);
 			assertJsonResponse(jsonResponse, 200);
 			AcmeFatUtils.waitForNewCert(server, pebble, startingCertificateChain);
-			
+
 			/*
 			 * Do back to back renew requests, we should be blocked from renewing
 			 * 
-			 * Only do 2 repeats, if we do too many repeats, we can get successful requests again as we'll exceed the min
-			 * renew time.
 			 */
-			
-			for (int i=1; i< 2; i++) {
-				
-				Log.info(this.getClass(), testName.getMethodName(), "Renew round " + i);
-				
+
+			if (requestTime < clone.getAcmeCA().getRenewCertMin()) {
+
+				Log.info(this.getClass(), testName.getMethodName(), "Renew, expect failure:");
+
 				startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 				jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 429, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
@@ -833,27 +839,35 @@ public class AcmeCaRestHandlerTest {
 				assertThat("Unexpected HTTP status code returned in JSON response.", jsonResponse,
 						containsString("\"httpCode\":" + 429));
 				assertThat("Expected error message in JSON response.", jsonResponse, containsString("\"message\":"));
-				
+
 				Log.info(this.getClass(), methodName, "Response received: " + jsonResponse);
-				
+
 				endingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 				assertEquals("The certificate should not renew after REST request.",
 						((X509Certificate) startingCertificateChain[0]).getSerialNumber(),
 						((X509Certificate) endingCertificateChain[0]).getSerialNumber());
+
+
+				/*
+				 * Allow the minimum time to expire, next request should be successful
+				 */
+				Log.info(this.getClass(), methodName, "Start sleep to expire the renewCertMin time");
+				Thread.sleep(clone.getAcmeCA().getRenewCertMin() + 2000 - (System.currentTimeMillis() - endTime));
+				Log.info(this.getClass(), methodName, "End sleep to expire the renewCertMin time");
+			} else {
+				/*
+				 * Had some test failures where the revoke took a long time and ate up the minRenew window for us, making the renewCertMin longer.
+				 */
+				fail("Certificate request took longer than the renewCertMin is configured for, update test again: " +requestTime);
 			}
-			
-			/*
-			 * Allow the minimum time to expire, next request should be successful
-			 */
-			Thread.sleep(clone.getAcmeCA().getRenewCertMin() + 2000);
-			
+
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
 			jsonResponse = performPost(AcmeCaRestHandlerTest.CERTIFICATE_ENDPOINT, 200, AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.ADMIN_USER, AcmeCaRestHandlerTest.ADMIN_PASS,
 					AcmeCaRestHandlerTest.CONTENT_TYPE_JSON, AcmeCaRestHandlerTest.JSON_CERT_REGEN);
 			assertJsonResponse(jsonResponse, 200);
-			
+
 			AcmeFatUtils.waitForNewCert(server, pebble, startingCertificateChain);
 
 		} finally {

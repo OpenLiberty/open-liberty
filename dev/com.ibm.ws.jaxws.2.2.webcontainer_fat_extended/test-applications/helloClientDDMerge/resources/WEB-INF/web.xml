@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>helloClientDDMerge</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <service-ref>
+    <service-ref-name>services/serviceInjectionClassLevel</service-ref-name>
+    <service-interface>
+        com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService
+    </service-interface>
+  </service-ref>
+  
+  <service-ref>
+    <service-ref-name>services/serviceInjectionMemberLevel</service-ref-name>
+    <service-interface>
+        com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService
+    </service-interface>
+  </service-ref>
+  
+  <service-ref>
+    <service-ref-name>services/portTypeInjectionClassLevel</service-ref-name>
+    <service-interface>
+        com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService
+    </service-interface>
+  </service-ref>
+  
+  <service-ref>
+    <service-ref-name>services/portTypeInjectionMemberLevel</service-ref-name>
+    <service-interface>
+        com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService
+    </service-interface>
+  </service-ref>
+</web-app>

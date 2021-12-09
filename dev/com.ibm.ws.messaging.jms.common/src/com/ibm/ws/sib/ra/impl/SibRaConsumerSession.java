@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,13 @@
 
 package com.ibm.ws.sib.ra.impl;
 
+import java.io.IOException;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIIncorrectCallException;
 import com.ibm.websphere.sib.exception.SIResourceException;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
 import com.ibm.wsspi.sib.core.ConsumerSession;
@@ -479,4 +481,38 @@ class SibRaConsumerSession extends SibRaDestinationSession implements
         .getString("ASYNCHRONOUS_METHOD_CWSIV0250"));
     
   }
+  public void dump(FormattedWriter writer) {
+      if (TraceComponent.isAnyTracingEnabled() && TRACE.isEntryEnabled())
+          SibTr.entry(this, TRACE, "dump", new Object[] { writer });
+
+      try {
+          writer.newLine();
+          writer.startTag(this.getClass().getSimpleName());
+          writer.indent();
+
+          writer.newLine();
+          writer.taggedValue("toString", toString());
+          writer.newLine();
+          writer.taggedValue("DestinationAddress", getDestinationAddress());
+          writer.newLine();
+
+          writer.outdent();
+          writer.newLine();
+          writer.endTag(this.getClass().getSimpleName());
+
+       } catch (Throwable t) {
+           // No FFDC Code Needed
+           try {
+               if (writer != null) writer.write("\nUnable to dump " + this + " " + t);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+      }
+
+      if (TraceComponent.isAnyTracingEnabled() && TRACE.isEntryEnabled())
+          SibTr.exit(this, TRACE, "dump");
+  }
+
+
+
 }

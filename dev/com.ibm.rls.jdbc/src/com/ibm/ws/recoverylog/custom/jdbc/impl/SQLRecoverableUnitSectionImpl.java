@@ -1,7 +1,5 @@
-/* ************************************************************************** */
-/* ********************************************************************************* */
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +13,9 @@ package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import java.util.ArrayList;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogCursorImpl;
@@ -80,7 +78,7 @@ public class SQLRecoverableUnitSectionImpl implements RecoverableUnitSection {
      * WebSphere RAS TraceComponent registration.
      */
     private static final TraceComponent tc = Tr.register(SQLRecoverableUnitSectionImpl.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     /**
      * Initial size of the ArrayLists holding both written and unwritten data. The
@@ -355,6 +353,9 @@ public class SQLRecoverableUnitSectionImpl implements RecoverableUnitSection {
         if (index == currentSize)
             _writtenData.add(/* index, */ data);
         else if (index < currentSize) {
+            // This debug is a legacy to "NM". Please retain as it is useful when testing for the presence of duplicate db
+            // tranlog records. Duplicates are handled successfully, but this bit of debug is evidence for their presence
+            // and is used in the com.ibm.ws.transaction.<DBTYPE>HADB_FAT tests.
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "NMTEST: Replacing item (expect trace 'null') at index: " + index, _writtenData.get(index));
             _writtenData.set(index, data);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ import java.util.Collections;
 import java.util.Properties;
 
 import javax.resource.ResourceException;
+import javax.transaction.xa.XAResource;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -37,8 +39,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent jdbcTC = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sqlserver.logwriter", "WAS.database", null);
-
-    private transient PrintWriter jdbcTraceWriter;
 
     /**
      * Cached copy (per data store helper) of stmt.setResponseBuffering
@@ -60,6 +60,9 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     MicrosoftSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
 
@@ -74,13 +77,8 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Default responseBuffering = " + responseBuffering);
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            230,
                            6001,
                            6002,
@@ -88,8 +86,32 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
                            6006);
     }
 
+    /**
+     * Returns the XA start flag for loose or tight branch coupling
+     *
+     * @param couplingType branch coupling type
+     * @return XA start flag value for the specified coupling type
+     */
+    @Override
+    public int branchCouplingSupported(int couplingType) {
+        // TODO remove this check at GA
+        if (!mcf.dsConfig.get().enableBranchCouplingExtension)
+            return super.branchCouplingSupported(couplingType);
+
+        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT)
+            return 0x8000; // value of SQLServerXAResource.SSTRANSTIGHTLYCPLD (32768)
+
+        // Loose branch coupling is default for Microsoft SQL Server
+        return XAResource.TMNOFLAGS;
+    }
+
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doStatementCleanup", AdapterUtil.toString(stmt));
 
@@ -140,11 +162,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
             Tr.exit(this, tc, "doStatementCleanup"); 
     }
 
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * This returns a <code>PrintWriter</code> for a specific
      * backend. The order of printwriter lookup is as follows:
@@ -164,13 +181,13 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if it's not, 
         // it shouldn't matter here (tracing).
-        if (jdbcTraceWriter == null) {
-            jdbcTraceWriter = new PrintWriter(new TraceWriter(jdbcTC), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(jdbcTC), true);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPrintWriter", jdbcTraceWriter); 
-        return jdbcTraceWriter;
+            Tr.exit(this, tc, "getPrintWriter", genPw);
+        return genPw;
     }
 
     /**

@@ -1,0 +1,89 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<openidConnectProvider id="OidcConfigSampleResourceIds" oauthProviderRef="OAuthConfigSampleResourceIds"  jwkEnabled="${oidcJWKEnabled}" signatureAlgorithm="${oidcSignAlg}"/>
+
+	<oauthProvider id="OAuthConfigSampleResourceIds" filter="request-url%=snoop;request-url!=snooping" oauthOnly="true" autoAuthorize="true" jwtAccessToken="${oidcCreateJWTToken}">
+		<autoAuthorizeClient>client_oneResourceId_allGrantTypes</autoAuthorizeClient>
+		<autoAuthorizeClient>client_oneResourceId_authCode</autoAuthorizeClient>
+		<autoAuthorizeClient>client_oneResourceId_implicit</autoAuthorizeClient>
+		<autoAuthorizeClient>client_noResourceIds_allGrantTypes</autoAuthorizeClient>
+		<autoAuthorizeClient>client_noResourceIds_authCode</autoAuthorizeClient>
+		<autoAuthorizeClient>client_noResourceIds_implicit</autoAuthorizeClient>
+		<autoAuthorizeClient>client_multipleResourceIds_allGrantTypes</autoAuthorizeClient>
+		<autoAuthorizeClient>client_multipleResourceIds_authCode</autoAuthorizeClient>
+		<autoAuthorizeClient>client_multipleResourceIds_implicit</autoAuthorizeClient>
+		
+		<localStore>			
+	   		<client name="client_oneResourceId_allGrantTypes" secret="{xor}LDo8LTor"
+	    		displayname="client_oneResourceId_allGrantTypes"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+		    	resourceIds="xx"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+	   		<client name="client_oneResourceId_authCode" secret="{xor}LDo8LTor"
+	    		displayname="client_oneResourceId_authCode"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="authorization_code"
+		    	resourceIds="xx"
+				scope="ALL_SCOPES"
+				enabled="true"/>				
+			<client name="client_oneResourceId_implicit" secret="{xor}LDo8LTor"
+				displayname="client_oneResourceId_implicit"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="implicit"
+		    	resourceIds="xx"
+				responseTypes="id_token token"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+	   		<client name="client_noResourceIds_allGrantTypes" secret="{xor}LDo8LTor"
+	    		displayname="client_noResourceIds_allGrantTypes"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+	   		<client name="client_noResourceIds_authCode" secret="{xor}LDo8LTor"
+	    		displayname="client_noResourceIds_authCode"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="authorization_code"
+				scope="ALL_SCOPES"
+				enabled="true"/>				
+			<client name="client_noResourceIds_implicit" secret="{xor}LDo8LTor"
+				displayname="client_noResourceIds_implicit"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="implicit"
+				responseTypes="id_token token"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+	   		<client name="client_multipleResourceIds_allGrantTypes" secret="{xor}LDo8LTor"
+	    		displayname="client_multipleResourceIds_allGrantTypes"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+		    	resourceIds="xx, yy, zz"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+	   		<client name="client_multipleResourceIds_authCode" secret="{xor}LDo8LTor"
+	    		displayname="client_multipleResourceIds_authCode"
+		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="authorization_code"
+		    	resourceIds="xx, yy, zz"
+				scope="ALL_SCOPES"
+				enabled="true"/>				
+			<client name="client_multipleResourceIds_implicit" secret="{xor}LDo8LTor"
+				displayname="client_multipleResourceIds_implicit"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantType="implicit"
+		    	resourceIds="xx, yy, zz"
+				responseTypes="id_token token"
+				scope="ALL_SCOPES"
+				enabled="true"/>
+		</localStore>
+	</oauthProvider>
+ 			
+</server>

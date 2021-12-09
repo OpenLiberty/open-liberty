@@ -26,6 +26,7 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,7 +45,6 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
     private static SharedOutputManager outputMgr;
     private static final int NUM_OF_SAMPLE_OIDCBASECLIENTS = 5;
     private static final String PROVIDER_NAME = "OIDCProviderTestOP";
-    private static final List<OidcBaseClient> sampleOidcBaseClients = getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
     private static final String REQUEST_URL_STRING = "https://localhost:8020/oidc/endpoint/" + PROVIDER_NAME + "/registration";
 
     private final Mockery mock = new JUnit4Mockery() {
@@ -56,6 +56,8 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
     private final OAuthComponentConfiguration config = mock.mock(OAuthComponentConfiguration.class);
     private final HttpServletRequest request = mock.mock(HttpServletRequest.class);
 
+    private List<OidcBaseClient> sampleOidcBaseClients;
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
@@ -66,6 +68,11 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
     public static void setUpAfterClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.restoreStreams();
+    }
+
+    @Before
+    public void before() {
+        sampleOidcBaseClients = clientRegistrationHelper.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
     }
 
     /**
@@ -136,7 +143,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
         for (OidcBaseClient sampleClient : sampleOidcBaseClients) {
             OidcBaseClient retrievedClient = oidcBaseClientProvider.get(sampleClient.getClientId());
             assertNotNull(retrievedClient);
-            assertEqualsOidcBaseClients(retrievedClient, sampleClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(retrievedClient, sampleClient);
         }
 
         ConfigUtils.deleteClients(PROVIDER_NAME);
@@ -161,8 +168,8 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
 
             assertEquals(clients.size(), NUM_OF_SAMPLE_OIDCBASECLIENTS);
 
-            Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
-            Map<String, OidcBaseClient> sampleClientMap = getOidcBaseClientMap(sampleOidcBaseClients);
+            Map<String, OidcBaseClient> clientsMap = clientRegistrationHelper.getOidcBaseClientMap(clients);
+            Map<String, OidcBaseClient> sampleClientMap = clientRegistrationHelper.getOidcBaseClientMap(sampleOidcBaseClients);
 
             //Ensure the clients from the client provider match what was expected (the sample clients)
             //while adding the modification to check for expected registration uri based on mocked request
@@ -170,7 +177,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
                 OidcBaseClient clientProviderClient = clientsMap.remove(String.valueOf(i));
                 OidcBaseClient sampleClient = sampleClientMap.remove(String.valueOf(i));
 
-                assertEqualsOidcBaseClients(clientProviderClient, sampleClient);
+                clientRegistrationHelper.assertEqualsOidcBaseClients(clientProviderClient, sampleClient);
 
                 //Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
                 assertEquals(clientProviderClient.getRegistrationClientUri(), REQUEST_URL_STRING + "/" + clientProviderClient.getClientId());
@@ -254,7 +261,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
                 oidcBaseClientProvider.update(updatedClient);
             } catch (OidcServerException e) {
                 expectedErrorOccurred = true;
-                assertUnImplementedException(e);
+                clientRegistrationHelper.assertUnImplementedException(e);
             }
 
             assertTrue("Exception indicating unimplemented method should have been thrown, but was not.", expectedErrorOccurred);
@@ -290,7 +297,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
                 oidcBaseClientProvider.delete(clientToDelete.getClientId());
             } catch (OidcServerException e) {
                 expectedErrorOccurred = true;
-                assertUnImplementedException(e);
+                clientRegistrationHelper.assertUnImplementedException(e);
             }
 
             assertTrue("Exception indicating unimplemented method should have been thrown, but was not.", expectedErrorOccurred);
@@ -309,7 +316,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
         OidcBaseClientProvider oidcBaseClientProvider = invokeConstructAndInitializeWithSampleOidcBaseClients();
 
         try {
-            OidcBaseClient newClient = getSampleOidcBaseClient();
+            OidcBaseClient newClient = clientRegistrationHelper.getSampleOidcBaseClient();
             newClient.setClientId("newClient1234");
 
             boolean expectedErrorOccurred = false;
@@ -317,7 +324,7 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
                 oidcBaseClientProvider.put(newClient);
             } catch (OidcServerException e) {
                 expectedErrorOccurred = true;
-                assertUnImplementedException(e);
+                clientRegistrationHelper.assertUnImplementedException(e);
             }
 
             assertTrue("Exception indicating unimplemented method should have been thrown, but was not.", expectedErrorOccurred);
@@ -350,15 +357,15 @@ public class OidcBaseClientProviderTest extends AbstractOidcRegistrationBaseTest
             Collection<OidcBaseClient> clients = oidcBaseClientProvider.getAll();
             assertEquals(clients.size(), NUM_OF_SAMPLE_OIDCBASECLIENTS);
 
-            Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
-            Map<String, OidcBaseClient> sampleClientMap = getOidcBaseClientMap(sampleOidcBaseClients);
+            Map<String, OidcBaseClient> clientsMap = clientRegistrationHelper.getOidcBaseClientMap(clients);
+            Map<String, OidcBaseClient> sampleClientMap = clientRegistrationHelper.getOidcBaseClientMap(sampleOidcBaseClients);
 
             //Ensure the clients from the client provider match what was expected (the sample clients)
             for (int i = 0; i < NUM_OF_SAMPLE_OIDCBASECLIENTS; i++) {
                 OidcBaseClient clientProviderClient = clientsMap.remove(String.valueOf(i));
                 OidcBaseClient sampleClient = sampleClientMap.remove(String.valueOf(i));
 
-                assertEqualsOidcBaseClients(clientProviderClient, sampleClient);
+                clientRegistrationHelper.assertEqualsOidcBaseClients(clientProviderClient, sampleClient);
             }
 
             assertEquals(clientsMap.size(), 0);

@@ -506,13 +506,13 @@ public class Utils {
     }
 
     /**
-     * Compares Strings to one another - compare each String in the passed in list to the "master". The master
+     * Compares Strings to one another - compare each String in the passed in list to the "primaryString". The primaryString
      * will at another point be compared against what was in the original mpJwt - so, in the end, we'll be comparing
      * all list members against the original token.
      * The list members are Strings or String representations that we obtained via various forms of Claim Injection -
      * the goal is to make sure that we get the correct value each way.
      *
-     * @param master
+     * @param primaryString
      *            - the Set that we'll compare against the original mpJwt (should be instance claim)
      * @param theClaim
      *            - the claim name (mainly for logging)
@@ -521,24 +521,24 @@ public class Utils {
      * @return - returns a build up String recording the results of the comparisons
      * @throws Exception
      */
-    public static String compareStrings(String master, String theClaim, List<ValueList> valueList) throws Exception {
+    public static String compareStrings(String primaryString, String theClaim, List<ValueList> valueList) throws Exception {
 
         StringBuffer sb = new StringBuffer();
         Boolean doesMatch = true;
 
         printDivider(sb);
         writeLine(sb, "Comparing values for: " + theClaim);
-        writeLine(sb, "Comparing values against: " + master);
+        writeLine(sb, "Comparing values against: " + primaryString);
         for (ValueList vList : valueList) {
             writeLine(sb, vList.getObtainedBy() + ": " + vList.getStringValue());
-            if (master == null) {
+            if (primaryString == null) {
                 // compare null against individual strings
-                if (master != vList.getStringValue()) {
+                if (primaryString != vList.getStringValue()) {
                     writeLine(sb, "------------ Values DO NOT Match -----------");
                     doesMatch = false;
                 }
             } else {
-                if (vList.getStringValue() == null || !master.equals(vList.getStringValue())) {
+                if (vList.getStringValue() == null || !primaryString.equals(vList.getStringValue())) {
                     writeLine(sb, "------------ Values DO NOT Match -----------");
                     doesMatch = false;
                 }
@@ -553,13 +553,13 @@ public class Utils {
     }
 
     /**
-     * Compares Sets to one another - compare each Set in the passed in list to the "master". The master
+     * Compares Sets to one another - compare each Set in the passed in list to the "primarySet". The primarySet
      * will at another point be compared against what was in the original mpJwt - so, in the end, we'll be comparing
      * all list members against the original token.
      * The list members are Sets that we obtained via various forms of Claim Injection - the goal is to make sure that
      * we get the correct value each way.
      *
-     * @param master
+     * @param primarySet
      *            - the Set that we'll compare against the original mpJwt (should be instance claim)
      * @param theClaim
      *            - the claim name (mainly for logging)
@@ -568,7 +568,7 @@ public class Utils {
      * @return - returns a build up String recording the results of the comparisons
      * @throws Exception
      */
-    public static String compareSets(Set<?> master, String theClaim, List<ValueList> valueList) throws Exception {
+    public static String compareSets(Set<?> primarySet, String theClaim, List<ValueList> valueList) throws Exception {
 
         StringBuffer sb = new StringBuffer();
         Boolean doesMatch = true;
@@ -577,18 +577,18 @@ public class Utils {
         writeLine(sb, "Comparing values for: " + theClaim);
         for (ValueList vList : valueList) {
             writeLine(sb, vList.getObtainedBy() + ": " + vList.getSetValue());
-            if (master == null) {
+            if (primarySet == null) {
                 // compare null against individual sets
-                if (master != vList.getSetValue() && !vList.getSetValue().isEmpty()) {
+                if (primarySet != vList.getSetValue() && !vList.getSetValue().isEmpty()) {
                     writeLine(sb, "------------ Values DO NOT Match -----------");
                     doesMatch = false;
                 }
             } else {
-                if (vList.getSetValue() == null || !master.containsAll(vList.getSetValue())) {
+                if (vList.getSetValue() == null || !primarySet.containsAll(vList.getSetValue())) {
                     writeLine(sb, "------------ Values DO NOT Match -----------");
                     doesMatch = false;
                 } else {
-                    if (!(vList.getSetValue()).containsAll(master)) {
+                    if (!(vList.getSetValue()).containsAll(primarySet)) {
                         writeLine(sb, "------------ Values DO NOT Match -----------");
                         doesMatch = false;
                     }

@@ -13,11 +13,13 @@ package com.ibm.ws.threading;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -90,9 +92,10 @@ public interface PolicyExecutor extends ExecutorService {
     int getMaxConcurrency();
 
     /**
-     * Returns the number of tasks from this PolicyExecutor currently running on the global executor.
+     * Returns the number of tasks from this PolicyExecutor currently running or about to run on the global executor.
+     * This number might include tasks that do not actually get to start due to cancellation or shutdown within a timing window.
      *
-     * @return the number of running tasks
+     * @return the number of running or about-to-run tasks
      */
     int getRunningTaskCount();
 
@@ -273,12 +276,14 @@ public interface PolicyExecutor extends ExecutorService {
 
     /**
      * Registers a one-time callback to be invoked inline when the
-     * policy executor shuts down. This method is intended for optional use
-     * on a newly created policy executor instance.
+     * policy executor shuts down. If shutdown has already occurred,
+     * the callback does not get invoked.
      *
-     * @param callback the callback, or null to unregister.
+     * @param callback the callback to register.
+     * @throw IllegalStateException if a different shutdown callback
+     *        has already been registered with this policy executor.
      */
-    void registerShutdownCallback(Runnable callback);
+    void registerShutdownCallback(Consumer<Set<Object>> callback);
 
     /**
      * Applies when using the <code>execute</code> or <code>submit</code> methods. Indicates whether or not to run the task on the

@@ -16,8 +16,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.jpa22.EJBPassivationTest;
 import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
-import com.ibm.ws.jpa.jpa22.OLGH14192Test;
+import com.ibm.ws.jpa.jpa22.JPAAppClientTest;
+import com.ibm.ws.jpa.jpa22.JPABootstrapTest;
+import com.ibm.ws.jpa.jpa22.JPADefaultDataSourceTest;
+import com.ibm.ws.jpa.jpa22.olgh.OLGH14192Test;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;

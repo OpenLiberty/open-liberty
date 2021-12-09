@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,16 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +39,7 @@ import com.ibm.ws.kernel.boot.internal.KernelResolver;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.boot.internal.PasswordGenerator;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class BootstrapConfig {
     /** ${} */
@@ -116,7 +120,7 @@ public class BootstrapConfig {
      */
     protected KernelResolver kernelResolver;
 
-    protected File serviceBindingRootDir = null;
+    protected String variableSourceDirs;
 
     public BootstrapConfig() {
         File fbootstrapLib = null;
@@ -129,6 +133,8 @@ public class BootstrapConfig {
             });
         } catch (Exception ex) {
         }
+
+        ProductInfo.setBetaEditionJVMProperty();
 
         bootstrapLib = fbootstrapLib;
 
@@ -227,12 +233,9 @@ public class BootstrapConfig {
             this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + locations.getWorkAreaDir();
         workarea = new File(outputDir, this.workareaDirStr);
 
-        String serviceBindingRootStr = locations.getServiceBindingRoot();
-        if (serviceBindingRootStr == null) {
-            this.serviceBindingRootDir = new File(configDir, "bindings");
-        } else {
-            this.serviceBindingRootDir = new File(serviceBindingRootStr);
-        }
+        if (locations.getVariableSourceDirs() != null)
+            this.variableSourceDirs = locations.getVariableSourceDirs();
+
     }
 
     /**
@@ -347,9 +350,37 @@ public class BootstrapConfig {
                                                                                       BootstrapConstants.LOC_AREA_NAME_SHARED,
                                                                                       BootstrapConstants.LOC_AREA_NAME_RES));
 
-        initProps.put(BootstrapConstants.LOC_PROPERTY_SERVICE_BINDING_ROOT, getPathProperty(serviceBindingRootDir));
+        List<File> fileSystemVariableDirs = new ArrayList<File>();
+        String fsVarRootStr = initProps.get(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
+        if (fsVarRootStr == null) {
+            fsVarRootStr = this.variableSourceDirs;
+        }
+
+        if (fsVarRootStr == null) {
+            fileSystemVariableDirs.add(new File(configDir, "variables"));
+        } else {
+            StringTokenizer st = new StringTokenizer(fsVarRootStr, File.pathSeparator);
+            while (st.hasMoreTokens()) {
+                String dir = st.nextToken();
+                fileSystemVariableDirs.add(new File(dir));
+            }
+        }
+
+        initProps.put(BootstrapConstants.LOC_PROPERTY_VARIABLE_SOURCE_DIRS, getMultiplePathProperty(fileSystemVariableDirs));
         // Wait to look for symbols until we have location properties set
         substituteSymbols(initProps);
+    }
+
+    protected String getMultiplePathProperty(List<File> files) {
+        StringBuilder b = new StringBuilder();
+        boolean addSeparator = false;
+        for (File file : files) {
+            if (addSeparator)
+                b.append(File.pathSeparatorChar);
+            b.append(FileUtils.normalize(file.getAbsolutePath())).append('/');
+            addSeparator = true;
+        }
+        return b.toString();
     }
 
     protected String getPathProperty(File file, String... dirs) {
@@ -1177,9 +1208,9 @@ public class BootstrapConfig {
             }
 
             if (serverEnvContents == null)
-                FileUtils.createFile(serverEnv, new ByteArrayInputStream(toWrite.getBytes("UTF-8")));
+                FileUtils.createFile(serverEnv, new ByteArrayInputStream(toWrite.getBytes(StandardCharsets.UTF_8)));
             else
-                FileUtils.appendFile(serverEnv, new ByteArrayInputStream(toWrite.getBytes("UTF-8")));
+                FileUtils.appendFile(serverEnv, new ByteArrayInputStream(toWrite.getBytes(StandardCharsets.UTF_8)));
 
         } catch (IOException ex) {
             throw new LaunchException("Failed to create/update the server.env file for this server", MessageFormat.format(BootstrapConstants.messages.getString("error.create.java8serverenv"),
@@ -1195,7 +1226,4 @@ public class BootstrapConfig {
         return ReturnCode.OK;
     }
 
-    public File getServiceBindingRoot() {
-        return this.serviceBindingRootDir;
-    }
 }

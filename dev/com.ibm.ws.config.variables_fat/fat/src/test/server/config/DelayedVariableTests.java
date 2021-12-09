@@ -53,6 +53,24 @@ public class DelayedVariableTests extends ServletRunner {
     }
 
     @Test
+    public void testUpdateConfigVariables() throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("delayedVar/noVariables.xml");
+        server.waitForConfigUpdateInLogUsingMark(null);
+        try {
+            test(server);
+        } finally {
+            server.setMarkToEndOfLog();
+            server.setServerConfigurationFile("delayedVar/original.xml");
+            server.waitForConfigUpdateInLogUsingMark(null);
+        }
+
+        testName = "testUpdateConfigVariablesTwo";
+
+        test(server);
+    }
+
+    @Test
     public void testVariableCycleFailure() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("delayedVar/cycle.xml");

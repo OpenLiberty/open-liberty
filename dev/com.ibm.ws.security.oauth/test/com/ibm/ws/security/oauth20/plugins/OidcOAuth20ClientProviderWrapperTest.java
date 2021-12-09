@@ -164,7 +164,7 @@ public class OidcOAuth20ClientProviderWrapperTest extends AbstractOidcRegistrati
     @Test
     public void testGet() {
         final String methodName = "testGet";
-        final OidcBaseClient sampleOidcBaseClient = getSampleOidcBaseClient();
+        final OidcBaseClient sampleOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
         try {
             mock.checking(new Expectations() {
                 {
@@ -304,7 +304,7 @@ public class OidcOAuth20ClientProviderWrapperTest extends AbstractOidcRegistrati
     @Test
     public void testPut() {
         final String methodName = "testPut";
-        final OidcBaseClient client = getSampleOidcBaseClient();
+        final OidcBaseClient client = clientRegistrationHelper.getSampleOidcBaseClient();
         try {
             mock.checking(new Expectations() {
                 {
@@ -324,7 +324,7 @@ public class OidcOAuth20ClientProviderWrapperTest extends AbstractOidcRegistrati
     @Test
     public void testUpdate() {
         final String methodName = "testUpdate";
-        final OidcBaseClient client = getSampleOidcBaseClient();
+        final OidcBaseClient client = clientRegistrationHelper.getSampleOidcBaseClient();
         try {
             mock.checking(new Expectations() {
                 {

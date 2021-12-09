@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.embeddable.impl;
-
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.embeddable.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,16 +23,14 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.jta.util.TxBundleTools;
 import com.ibm.tx.remote.RecoveryCoordinator;
 import com.ibm.tx.remote.RecoveryCoordinatorFactory;
 import com.ibm.tx.remote.RecoveryCoordinatorNotAvailableException;
-import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
-public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Serializable
-{
+public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Serializable {
     // 601 SUID based on private final data and non-public ctor
     private static final long serialVersionUID = 5500037426315245114L; /* @274187C */
 
@@ -81,16 +78,14 @@ public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Seria
         return wsatRC;
     }
 
-    public String getGlobalId()
-    {
+    public String getGlobalId() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getGlobalId", _globalId);
         return _globalId;
     }
 
     // Only called on distributed - z/OS logging is done by WSATCRRecoveryCoordinator
-    public byte[] toLogData() throws javax.transaction.SystemException
-    {
+    public byte[] toLogData() throws javax.transaction.SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "toLogData", this);
 
@@ -119,7 +114,7 @@ public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Seria
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.RecoveryCoordinator#replayCompletion(java.lang.String)
      */
     @Override
@@ -155,15 +150,13 @@ public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Seria
         }
     }
 
-    public static RecoveryCoordinatorFactory lookupRecoveryCoordinatorFactory(String filter)
-    {
+    public static RecoveryCoordinatorFactory lookupRecoveryCoordinatorFactory(String filter) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "lookupRecoveryCoordinatorFactory", filter);
 
         final BundleContext bundleContext = EmbeddableTxBundleTools.getBundleContext();
 
-        if (bundleContext == null)
-        {
+        if (bundleContext == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "lookupRecoveryCoordinatorFactory", null);
             return null;
@@ -171,8 +164,7 @@ public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Seria
 
         ServiceReference[] results = null;
 
-        try
-        {
+        try {
             results = bundleContext.getServiceReferences(RecoveryCoordinatorFactory.class.getCanonicalName(), filter);
         } catch (InvalidSyntaxException e) {
             // Wasn't a filter

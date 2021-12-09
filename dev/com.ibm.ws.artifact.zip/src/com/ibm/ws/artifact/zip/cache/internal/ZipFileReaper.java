@@ -896,7 +896,10 @@ public class ZipFileReaper {
 
     private final ZipFileDataStore pendingQuickStorage;
     private final ZipFileDataStore pendingSlowStorage;
-    private final Object pendingStorageLock = new Integer(0);
+    private static class PendingStorageLock {
+        // EMPTY
+    }
+    private final PendingStorageLock pendingStorageLock = new PendingStorageLock();
 
     private final ZipFileDataStore completedStorage;
 

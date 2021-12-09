@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,26 +25,6 @@ public class JwtConstants extends Constants {
     public static final String X509_CERT = "x509_cert";
     public static final String JWK_CERT = "jwk_cert";
 
-    public static final String SIGALG_HS256 = "HS256";
-    public static final String SIGALG_HS384 = "HS384";
-    public static final String SIGALG_HS512 = "HS512";
-
-    public static final String SIGALG_RS256 = "RS256";
-    public static final String SIGALG_RS384 = "RS384";
-    public static final String SIGALG_RS512 = "RS512";
-
-    public static final String SIGALG_ES256 = "ES256";
-    public static final String SIGALG_ES384 = "ES384";
-    public static final String SIGALG_ES512 = "ES512";
-
-    public static final String SIGALG_PS256 = "PS256";
-    public static final String SIGALG_PS384 = "PS384";
-    public static final String SIGALG_PS512 = "PS512";
-
-    public static final String ENCRYPT_RS256 = "RS256";
-    public static final String ENCRYPT_RS384 = "RS384";
-    public static final String ENCRYPT_RS512 = "RS512";
-
     public static final String JWT_ISSUER_CLAIM = "/ibm/api/jwt/";
     public static final String BUILT_JWT_TOKEN = "Built JWT Token: ";
     public static final String JWT_DELIMITER = ".";
@@ -64,8 +44,12 @@ public class JwtConstants extends Constants {
     public static final String DEFAULT_KEY_MGMT_KEY_ALG = "RSA-OAEP";
     public static final String DEFAULT_CONTENT_ENCRYPT_ALG = "A256GCM";
     public static final String KEY_MGMT_KEY_ALG_256 = "RSA-OAEP-256";
+    public static final String KEY_MGMT_KEY_ALG_ES = "ECDH-ES";
     public static final String CONTENT_ENCRYPT_ALG_192 = "A192GCM";
 
     public static final String BOOTSTRAP_PROP_ENCRYPTION_SETTING = "fat.server.encryption.setting";
+
+    public static final String JWT_SIMPLE_BUILDER_SERVLET = "jwtbuilder";
+    public static final String JWT_SIMPLE_BUILDER_ENDPOINT = JWT_SIMPLE_BUILDER_SERVLET + "/build";
 
 }

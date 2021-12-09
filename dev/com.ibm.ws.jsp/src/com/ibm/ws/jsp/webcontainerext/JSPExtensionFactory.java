@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +53,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.javaee.dd.webext.Attribute;
 import com.ibm.ws.javaee.dd.webext.WebExt;
+import com.ibm.ws.javaee.version.PagesVersion;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JSPStrBufferFactory;
 import com.ibm.ws.jsp.JSPStrBufferImpl;
@@ -64,7 +69,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
 import com.ibm.wsspi.jsp.context.JspClassloaderContext;
 import com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -73,6 +77,7 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 @Component(configurationPid="com.ibm.ws.jsp.2.2",
    configurationPolicy=ConfigurationPolicy.REQUIRE,
@@ -98,11 +103,24 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     private ElValidatorExtFactory elValidatorExtFactory;
     @Reference
     private GeneratorUtilsExtFactory generatorUtilsExtFactory;
-    @Reference
-    private JspVersionFactory jspVersionFactory;
+
     @Reference
     private ClassLoadingService classLoadingService;
     private BundleContext bundleContext;
+
+    private ServiceReference<PagesVersion> versionRef;
+
+    public static final String SPEC_LEVEL_UNLOADED = "0.0";
+
+    private static final String DEFAULT_VERSION = "2.2";
+
+    private static String loadedSpecLevel = SPEC_LEVEL_UNLOADED;
+
+    protected static volatile CountDownLatch selfInit = new CountDownLatch(1);
+
+    // See OL #15317 
+    private boolean isPagesVersionLoaded = false;
+    ArrayList<GlobalTagLibConfig> storedGlobalTagLibConfigs = new ArrayList<GlobalTagLibConfig>();
     
     /**
      * Active JSPExtensionFactory instance. May be null between deactivate and activate
@@ -159,6 +177,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected void deactivate(ComponentContext ctx) {
         // Clear this as the active instance
         instance.compareAndSet(this, null);
+        selfInit = new CountDownLatch(1);
         expressionFactoryService.deactivate(ctx);
     }
 
@@ -176,6 +195,24 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
             if (key != null && value != null)
                 defaultProperties.put(key, value);
         }
+    }
+
+    @Reference(service = PagesVersion.class, cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected synchronized void setVersion(ServiceReference<PagesVersion> reference) {
+      this.versionRef = reference;
+      JSPExtensionFactory.loadedSpecLevel = (String) reference.getProperty("version");
+      isPagesVersionLoaded = true;
+      if(!storedGlobalTagLibConfigs.isEmpty()){
+        storedGlobalTagLibConfigs.forEach(tagConfig ->  setGlobalTagLibConfig(tagConfig));
+        storedGlobalTagLibConfigs.clear();
+      }
+    }
+
+    protected synchronized void unsetVersion(ServiceReference<PagesVersion> reference) {
+      if (reference == this.versionRef) {
+        this.versionRef = null;
+        JSPExtensionFactory.loadedSpecLevel = JSPExtensionFactory.DEFAULT_VERSION;
+      }
     }
     
     private final static HashMap<String, String> FullyQualifiedPropertiesMap = new HashMap<String, String>();
@@ -554,7 +591,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected ExtensionProcessor createProcessor(IServletContext webapp,
                                                  JspXmlExtConfig webAppConfig,
                                                  JspClassloaderContext jspClassloaderContext) throws Exception {
-        JSPExtensionProcessor processor = new JSPExtensionProcessor(webapp, webAppConfig, globalTagLibraryCache, jspClassloaderContext);
+        JSPExtensionProcessor processor = new JSPExtensionProcessor(webapp, webAppConfig, globalTagLibraryCache, jspClassloaderContext, getLoadedPagesSpecLevel() );
         processor.startPreTouch(prepareJspHelperFactory);
         return processor;
     }
@@ -571,7 +608,21 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
      */
     @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     protected void setGlobalTagLibConfig(GlobalTagLibConfig globalTagLibConfig) {
-            getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            
+            /*  
+                Cache the globalTagLibConfig argument until setVersion is called. 
+
+                setGlobalTagLibConfig creates the GlobalTagLibraryCache if it doesn't exist yet 
+                isPages30orHigher is called with in the GlobalTagLibraryCache constuctor.  
+                setGlobalTagLibConfig is called before setVersion and it created a problem 
+                since the JSP/Pages version is needed to determine which JSTL/Tags TLDs to load. 
+            */  
+            
+            if(!isPagesVersionLoaded){
+                storedGlobalTagLibConfigs.add(globalTagLibConfig);
+            } else {
+                getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            }
     }
 
     /**
@@ -588,15 +639,39 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     public static GeneratorUtilsExtFactory getGeneratorUtilsExtFactory() {
         JSPExtensionFactory inst = instance.get();
         return inst == null? null: inst.generatorUtilsExtFactory;
-    }
-    
-    public static JspVersionFactory getJspVersionFactory() {
-        JSPExtensionFactory inst = instance.get();
-        return inst == null? null: inst.jspVersionFactory;
-    }    
+    }  
 
     public String resolveString(String x) {
         return locationService.resolveString(x);
+    }
+
+    public static String getLoadedPagesSpecLevel() {
+        if(JSPExtensionFactory.loadedSpecLevel.equals(SPEC_LEVEL_UNLOADED)){
+
+            CountDownLatch currentLatch = selfInit;
+            // wait for activation
+            try {
+                currentLatch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                // auto-FFDC
+                Thread.currentThread().interrupt();
+            }
+            currentLatch.countDown(); // don't wait again
+
+            if(JSPExtensionFactory.loadedSpecLevel.equals(SPEC_LEVEL_UNLOADED)){
+              logger.logp(Level.WARNING, CLASS_NAME, "getLoadedPagesSpecLevel", "jsp.feature.not.loaded.correctly");
+              return JSPExtensionFactory.DEFAULT_VERSION;
+            }
+        }
+        return JSPExtensionFactory.loadedSpecLevel;
+    }
+    
+    public static boolean isPages30orHigher(){
+        String version = getLoadedPagesSpecLevel();
+        if(version.equals("2.2" ) || version.equals("2.3")){
+            return false;
+        }
+        return true;
     }
 }
 

@@ -24,7 +24,8 @@ public class ResourcesProducer {
         System.out.println("Initialized bean: " + this);
     }
 
-    @Resource(lookup = "concurrent/sampleExecutor")
+    @Resource(name = "java:app/env/concurrent/sampleExecutorRef",
+              lookup = "concurrent/sampleExecutor")
     @Produces
     private ManagedExecutorService exec;
 

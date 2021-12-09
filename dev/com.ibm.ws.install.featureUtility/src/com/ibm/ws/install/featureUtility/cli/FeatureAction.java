@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.cli;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import com.ibm.ws.install.InstallKernel;
@@ -23,6 +29,7 @@ import com.ibm.ws.kernel.boot.cmdline.ActionDefinition;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
+import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.internal.cmdline.FeatureToolException;
 import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
@@ -30,8 +37,8 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "name..."),
-    installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "name..."),
+	installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom", "--to", "name..."),
+	installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "--featuresBom", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
     help(new FeatureHelpAction(),"", 0);
@@ -42,10 +49,11 @@ public enum FeatureAction implements ActionDefinition {
     private String abbreviation;
 
     private FeatureAction(ActionHandler a, String abbreviationString, int count, String... args) {
-        commandOptions = Collections.unmodifiableList(Arrays.asList(args));
+        
         action = a;
         positionalOptions = count;
         abbreviation = abbreviationString;
+        commandOptions = Collections.unmodifiableList(Arrays.asList(args));
     }
 
     @Override

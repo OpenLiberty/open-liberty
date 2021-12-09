@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
@@ -32,6 +31,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
@@ -118,10 +118,8 @@ public class MetricRemovalTest {
      * undeploying while the server is running.
      */
     private void deployApp(Archive<?> archive) throws Exception {
-        ShrinkHelper.exportArtifact(archive, ".");
-        System.out.println("I'm putting the archive here: " + new File(".").getAbsolutePath());
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot(".", "dropins", archive.getName());
+        ShrinkHelper.exportDropinAppToServer(server, archive, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
         assertNotNull(archive.getName() + " started message not found", server.waitForStringInLog("CWWKZ000[13]I.*" + getAppName(archive)));
     }
 

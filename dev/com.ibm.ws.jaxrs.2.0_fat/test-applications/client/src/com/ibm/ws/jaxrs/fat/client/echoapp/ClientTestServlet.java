@@ -291,9 +291,13 @@ public class ClientTestServlet extends HttpServlet {
      * programatically
      */
     public void testOverrideReadTimeout(Map<String, String> param, StringBuilder ret) {
-        Client temp = getReadTimeoutClient();
-        assertEquals("20000", temp.getConfiguration().getProperty("http.receive.timeout"));
-        temp.close();
+        Client temp = null;
+        try {
+            temp = getReadTimeoutClient(false);
+            assertEquals("20000", temp.getConfiguration().getProperty("com.ibm.ws.jaxrs.client.receive.timeout"));
+        } finally {
+            if (temp != null) temp.close();
+        }
         ret.append("OK");
     }
 
@@ -302,9 +306,13 @@ public class ClientTestServlet extends HttpServlet {
      * programmatically
      */
     public void testOverrideConnectTimeout(Map<String, String> param, StringBuilder ret) {
-        Client temp = getConnectTimeoutClient();
-        assertEquals("40000", temp.getConfiguration().getProperty("http.connection.timeout"));
-        temp.close();
+        Client temp = null;
+        try {
+            temp = getConnectTimeoutClient(false);
+            assertEquals("40000", temp.getConfiguration().getProperty("com.ibm.ws.jaxrs.client.connection.timeout"));
+        } finally {
+            temp.close();
+        }
         ret.append("OK");
     }
 
@@ -313,39 +321,57 @@ public class ClientTestServlet extends HttpServlet {
      * value
      */
     public void testReadTimeoutNoTimeout(Map<String, String> param, StringBuilder ret) {
-        WebTarget target = client.target(getAddress("client/timeout") + "?timeout=5000");
+        WebTarget target = client.target(getAddress("echo/timeout") + "?timeout=5000");
         Response response = target.request().get();
         assertEquals(200, response.getStatus());
         assertEquals("request processed", response.readEntity(String.class));
         ret.append("OK");
     }
 
+    public void testReadTimeoutTimeout_cxfProp(Map<String, String> param, StringBuilder ret) {
+        testReadTimeoutTimeout(param, ret, true);
+    }
+
+    public void testReadTimeoutTimeout_ibmProp(Map<String, String> param, StringBuilder ret) {
+        testReadTimeoutTimeout(param, ret, false);
+    }
+
     /**
      * Test that the client times out if the request is not processed in less
      * than the readTimeout value
      */
-    public void testReadTimeoutTimeout(Map<String, String> param, StringBuilder ret) {
-        Client temp = getReadTimeoutClient(); // timeout is 20 seconds
-        WebTarget target = temp.target(getAddress("client/timeout") + "?timeout=21000");
+    public void testReadTimeoutTimeout(Map<String, String> param, StringBuilder ret, boolean useCxfProp) {
+        System.out.println("starting test testReadTimeoutTimeout");
+        long startTime = System.nanoTime();
+        Client temp = null;
+
         try {
-            target.request().get();
+            temp = getReadTimeoutClient(useCxfProp); // timeout is 20 seconds
+            WebTarget target = temp.target(getAddress("echo/timeout") + "?timeout=21000");
+            Response r = target.request().get();
+            System.out.println("testReadTimeoutTimeout response code=" + r.getStatus() + " " + r.readEntity(String.class));
             fail("The client did not timeout after waiting more than 21000 milliseconds for the request.");
         } catch (Exception e) {
             assertTrue(e.getMessage().indexOf("SocketTimeoutException") != -1);
         } finally {
-            temp.close();
+            System.out.println("testReadTimeoutTimeout Elapsed time: " + (System.nanoTime() - startTime));
+            if (temp != null) temp.close();
         }
         ret.append("OK");
     }
 
-    private Client getReadTimeoutClient() {
-        Client client = ClientBuilder.newClient().property("http.receive.timeout", "20000");
-        return client;
+    private Client getReadTimeoutClient(boolean useCxfSpecificProperty) {
+        Client client = ClientBuilder.newClient();
+        if (useCxfSpecificProperty)
+            return client.property("http.receive.timeout", "20000");
+        return client.property("com.ibm.ws.jaxrs.client.receive.timeout", "20000");
     }
 
-    private Client getConnectTimeoutClient() {
-        Client client = ClientBuilder.newClient().property("http.connection.timeout", "40000");
-        return client;
+    private Client getConnectTimeoutClient(boolean useCxfSpecificProperty) {
+        Client client = ClientBuilder.newClient();
+        if (useCxfSpecificProperty)
+            return client.property("http.connection.timeout", "40000");
+        return client.property("com.ibm.ws.jaxrs.client.connection.timeout", "40000");
     }
 
     /**
@@ -406,7 +432,6 @@ public class ClientTestServlet extends HttpServlet {
      * take care of the Accept header.
      */
     public void testAcceptHeaderForJAXB(Map<String, String> param, StringBuilder ret) {
-        client = ClientBuilder.newClient();//(config);
         Echo p = client.target(getAddress("echo/echoaccept")).request().accept(MediaType.TEXT_XML, MediaType.APPLICATION_XML).get(Echo.class);
         assertTrue(p.getValue().contains(MediaType.TEXT_XML) && p.getValue().contains(MediaType.APPLICATION_XML));
         ret.append("OK");
@@ -456,12 +481,13 @@ public class ClientTestServlet extends HttpServlet {
      */
     public void testNoAcceptHeaderForJAXB(Map<String, String> param, StringBuilder ret) throws Exception {
         String msg = "No message body reader has been found for class com.ibm.ws.jaxrs.fat.client.jaxb.Echo, ContentType: text/plain";
+        String restEasyMsg = "RESTEASY003145: Unable to find a MessageBodyReader of content-type text/plain;charset=UTF-8 and type class com.ibm.ws.jaxrs.fat.client.jaxb.Echo";
         try {
             client.target(getAddress("echo/echoaccept")).request().get(Echo.class);
             fail("The GET request returned successfully, when an exception indicating that a MessageBodyReader could not be found was expected");
 
         } catch (RuntimeException e) {
-            assertTrue("Unexpected exception message text: " + e.getMessage(), e.getMessage().startsWith(msg));
+            assertTrue("Unexpected exception message text: " + e.getMessage(), e.getMessage().startsWith(msg) || e.getMessage().contains(restEasyMsg));
         }
         ret.append("OK");
     }

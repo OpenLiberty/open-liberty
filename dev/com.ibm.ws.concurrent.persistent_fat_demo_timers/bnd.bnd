@@ -27,7 +27,6 @@ fat.test.databases: true
 #fat.test.use.remote.docker: true
 
 -buildpath: \
-    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	fattest.simplicity;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
@@ -35,8 +34,4 @@ fat.test.databases: true
 	io.openliberty.jakarta.enterpriseBeans.4.0,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.slf4j:slf4j-api;version=1.7.7
+	io.openliberty.org.testcontainers;version=latest

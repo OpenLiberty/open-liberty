@@ -322,7 +322,7 @@ public class SipProtocolLayer implements SipListener
 
 		SipProvider provider = (SipProvider) responseReceivedEvent.getSource();
 
-		//Stray responses are recieved without any transaction context. 
+		//Stray responses are received without any transaction context. 
 		if(transactionId == -1)
 		{
 			m_servletsRouter.handleStrayResponses(response, provider);

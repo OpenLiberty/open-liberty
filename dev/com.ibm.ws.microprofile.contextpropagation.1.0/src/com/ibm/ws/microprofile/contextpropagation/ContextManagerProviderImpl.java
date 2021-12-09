@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.microprofile.context.ApplicationContextProvider;
 import com.ibm.ws.microprofile.context.CDIContextProviderHolder;
 import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
@@ -65,6 +66,16 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
      * This is needed because ConcurrentHashMap does not allow null keys.
      */
     private static final String NO_CONTEXT_CLASSLOADER = "NO_CONTEXT_CLASSLOADER";
+
+    /**
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     @Reference
     protected MetaDataIdentifierService metadataIdentifierService;
@@ -165,6 +176,22 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
         applicationContextProvider.classloaderContextProviderRef.setReference(ref);
     }
 
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+        eeVersionRef = ref;
+    }
+
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
                target = "(component.name=io.openliberty.handlelist.context.provider)",
                cardinality = ReferenceCardinality.OPTIONAL,
@@ -222,6 +249,13 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
 
     protected void unsetClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         applicationContextProvider.classloaderContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
     }
 
     protected void unsetEmptyHandleListContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {

@@ -106,7 +106,7 @@ securitySchemeInvalidURL=El Objeto Security Scheme debe contener un URL v\u00e1l
 
 schemaTypeArrayNullItems=El Objeto Schema de tipo \"array\" debe tener la propiedad \"items\" definida
 schemaReadOnlyOrWriteOnly=El Objeto Schema no debe tener los campos \"readOnly\" y \"writeOnly\" establecidos en verdadero (true)
-schemaMultipleOfLessThanOne=El Objeto Schema debe tener la propiedad \"multipleOf\" establecida en un n\u00famero absolutamente mayor que cero
+schemaMultipleOfNotGreaterThanZero=El Objeto Schema debe tener la propiedad \"multipleOf\" establecida en un n\u00famero absolutamente mayor que cero
 schemaPropertyLessThanZero=La propiedad \"{0}\" del Objeto Schema debe ser mayor que o igual a cero
 schemaTypeDoesNotMatchProperty=La propiedad \"{0}\" no es apropiada para el Objeto Schema de tipo \"{1}\"
 

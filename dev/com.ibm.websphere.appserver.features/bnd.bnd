@@ -14,11 +14,13 @@
 
 testsrc: test/src
 
+# Setting this to false since this project does not have a resources directory.
+# The copyPiiFiles tasks in this project's build.gradle will do the right copy then.
+copy.pii: false
+
 instrument.disabled: true
 
 feature.project: true
-
-copy.pii: false
 
 -dependson: \
 	com.ibm.ws.repository.generator;version=latest, \
@@ -31,5 +33,5 @@ copy.pii: false
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	biz.aQute.bnd:biz.aQute.bnd;version=4.3.0;packages=**,\
+	biz.aQute.bnd:biz.aQute.bnd;version=5.3.0;packages=**,\
 	org.apache.aries:org.apache.aries.util;version=1.1.3

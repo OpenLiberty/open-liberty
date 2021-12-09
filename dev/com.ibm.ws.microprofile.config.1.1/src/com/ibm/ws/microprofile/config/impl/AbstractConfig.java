@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,30 +139,6 @@ public abstract class AbstractConfig implements WebSphereConfig {
     /** {@inheritDoc} */
     @Override
     public Object getValue(String propertyName, Type propertyType, boolean optional) {
-        Object value = getValue(propertyName, propertyType, optional, ConfigProperty.UNCONFIGURED_VALUE);
-        return value;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object getValue(String propertyName, Type propertyType, String defaultString) {
-        Object value = getValue(propertyName, propertyType, true, defaultString);
-        return value;
-    }
-
-    /**
-     * Get the converted value of the given property.
-     * If the property is not found and optional is true then use the default string to create a value to return.
-     * If the property is not found and optional is false then throw an exception.
-     *
-     * @param propertyName the property to get
-     * @param propertyType the type to convert to
-     * @param optional is the property optional
-     * @param defaultString the default string to use if the property was not found and optional is true
-     * @return the converted value
-     * @throws NoSuchElementException thrown if the property was not found and optional was false
-     */
-    protected Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString) {
         Object value = null;
         assertNotClosed();
 
@@ -170,7 +146,24 @@ public abstract class AbstractConfig implements WebSphereConfig {
         if (sourced != null) {
             value = sourced.getValue();
         } else {
-            if (optional) {
+            if (!optional) {
+                throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
+            }
+        }
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, String defaultString) {
+        Object value = null;
+        assertNotClosed();
+
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        if (sourced != null) {
+            value = sourced.getValue();
+        } else {
+            if (!defaultString.equals(ConfigProperty.UNCONFIGURED_VALUE)) {
                 value = convertValue(defaultString, propertyType);
             } else {
                 throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));

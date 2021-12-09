@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -2184,12 +2184,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Zmie\u0144 deskryptor \
 wdra\u017cania tak, aby licznik czasu jednoznacznie wskazywa\u0142 docelow\u0105 wersj\u0119 metody \
 (bez parametr\u00f3w lub z jednym parametrem).
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Stanowy komponent bean sesji {0} w module {1} aplikacji {2} nie zadeklarowa\u0142 zale\u017cno\u015bci od odwo\u0142ania trwa\u0142o\u015bci {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Je\u015bli stanowy komponent bean sesji znajduje si\u0119 w pliku WAR, musi deklarowa\u0107 zale\u017cno\u015bci od wszystkich odwo\u0142a\u0144 do kontekstu trwa\u0142o\u015bci i odwo\u0142a\u0144 do jednostki trwa\u0142o\u015bci, do kt\u00f3rych b\u0119dzie uzyskiwa\u0142 dost\u0119p.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Dodaj odpowiedni\u0105 adnotacj\u0119 \
-kodu \u017ar\u00f3d\u0142owego @PersistenceContext lub @PersistenceUnit dla stanowego komponentu \
-bean sesji \
-lub dodaj odpowiedni element persistence-context-ref lub persistence-unit-ref do odpowiedniego elementu sesji w deskryptorze wdra\u017cania XML.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Wykryto konflikt odwo\u0142a\u0144 do zasob\u00f3w.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Odwo\u0142anie do \

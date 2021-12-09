@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.ejb2x.base.spec.sfr.web.SFRemoteInterfaceContextServlet;
 import com.ibm.ejb2x.base.spec.sfr.web.SFRemoteInterfaceMethodServlet;
 import com.ibm.ejb2x.base.spec.sfr.web.SFRemoteInterfaceRemoveServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -57,7 +58,7 @@ public class SFRemoteTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -77,7 +78,7 @@ public class SFRemoteTest extends FATServletClient {
         EJB2XRemoteSpecApp.addAsModules(EJB2XSFRemoteSpecEJB, EJB2XSLRemoteSpecEJB, EJB2XRemoteSpecWeb);
         ShrinkHelper.addDirectory(EJB2XRemoteSpecApp, "test-applications/EJB2XRemoteSpecApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB2XRemoteSpecApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB2XRemoteSpecApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

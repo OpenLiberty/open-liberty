@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -134,50 +134,6 @@ public class TestUtils {
         } finally {
             con.disconnect();
         }
-    }
-
-    //
-
-    public static int occurrencesInLog(
-        LibertyServer server, String logName, String text) throws Exception {
-
-        String logFile = server.getLogsRoot() + logName;
-
-        FileReader reader;
-        try {
-            reader = new FileReader(logFile);
-        } catch ( FileNotFoundException ex ) {
-            ex.printStackTrace();
-            return 0;
-        } catch ( IOException ex ) {
-            ex.printStackTrace();
-            return 0;
-        }
-
-        int count = 0;
-
-        try {
-            BufferedReader br = new BufferedReader(reader);
-
-            String nextLine;
-            while ( (nextLine = br.readLine()) != null ) {
-                if ( nextLine.contains(text) ) {
-                    count++;
-                }
-            }
-
-        } catch ( IOException ex ) {
-            ex.printStackTrace();
-
-        } finally {
-            try {
-                reader.close();
-            } catch ( IOException ex ) {
-                ex.printStackTrace();
-            }
-        }
-
-        return count;
     }
 
     public static List<String> readLines(LibertyServer server, String relLogName) throws FileNotFoundException, IOException {

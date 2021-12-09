@@ -28,6 +28,8 @@ Private-Package: \
 Import-Package: \
   com.ibm.websphere.security.auth, \
   com.ibm.ws.ssl.protocol, \
+  com.ibm.ws.security.kerberos.auth, \
+  com.ibm.wsspi.security.wim.model; version="[1.1,11)", \
   !*.internal.*, *
 
 Include-Resource: \
@@ -47,12 +49,15 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.security.kerberos.auth;version=latest, \
+	com.ibm.ws.security;version=latest
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \

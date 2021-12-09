@@ -182,6 +182,27 @@
 			</not>
 		</condition>
 
+		<!-- boolean for Java15+.  The assumption is that at this point forward (Java 15), we will only be building using LTS 
+		     or interium versions of Java -->
+		<condition property="is.java15.orHigher" value="true">
+			<not>
+				<or>
+					<equals arg1="11" arg2="${java.specification.version}"/>
+					<equals arg1="1.7" arg2="${java.specification.version}"/>
+					<equals arg1="1.8" arg2="${java.specification.version}"/>
+				</or>
+		    </not>
+		</condition>
+		
+		<!-- In Java 16, the default enforcement of strong encapsulation (part of JPMS, which was introduced in Java 9) has changed from 
+			 <dash><dash>"illegal-access=permit" to <dash><dash>"illegal-access=deny".  This causes many of our FATs that use reflection to fail.  
+			 Setting up a gated property (illegal.access.permit) so that any builds that take place on Java 15+ use the JVM override 
+			 <dash><dash>"add-opens java.base/java.lang=ALL-UNNAMED" which is needed for many of our FATs, but older versions will be skipped -->
+		<condition property="illegal.access.permit" value="--add-opens java.base/java.lang=ALL-UNNAMED">
+			<istrue value="${is.java15.orHigher}"/>
+		</condition>
+		<property name="illegal.access.permit" value=""/>
+		
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />
 		<iff if="unix.mac.environment">
@@ -488,6 +509,7 @@
 					<jvmarg value="${framework.debug.embed.jvmarg1}" />
 					<jvmarg line="${extra.vmargs}" />
 					<jvmarg line="${zos.extra.vmargs}" />
+					<jvmarg line="${illegal.access.permit}" />
 				</junit>
 			</sequential>
 			<finally>

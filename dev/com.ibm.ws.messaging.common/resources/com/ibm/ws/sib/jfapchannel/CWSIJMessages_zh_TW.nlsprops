@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=\u5b9a\u7fa9\u9019\u500b\u61c9\
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: \u672a\u5c07\u9810\u8a2d\u5c0e\u901a\u7684\u5b89\u5168\u51fa\u57e0\u50b3\u8a0a\u901a\u9053\u93c8 {0} \u5b9a\u7fa9\u7d66\u9019\u500b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=\u672a\u5c07\u9810\u8a2d\u5c0e\u901a\u7684\u5b89\u5168\u51fa\u57e0\u50b3\u8a0a\u901a\u9053\u93c8\u5b9a\u7fa9\u7d66\u9019\u500b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u3002\u9019\u500b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u53ef\u80fd\u7121\u6cd5\u5efa\u7acb\u901a\u5f80\u9060\u7aef\u9598\u9053\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u3002
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=\u5b9a\u7fa9\u9019\u500b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u9810\u8a2d\u5c0e\u901a\u7684\u3001\u5b89\u5168\u7684\u51fa\u57e0\u50b3\u8a0a\u901a\u9053\u93c8\u3002
-
-# -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: \u627e\u4e0d\u5230\u7528\u4f86\u5224\u65b7\u7528\u6236\u7aef\u8d77\u59cb\u50b3\u8a0a\u50b3\u8f38\u5c64\u6b21\u5b89\u5168\u7684\u5167\u5bb9\u6a94 ''{0}''\u3002
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=\u627e\u4e0d\u5230\u5305\u542b\u5efa\u7acb\u5b89\u5168\u7528\u6236\u7aef\u50b3\u8a0a\u9023\u7dda\u6642\u6240\u7528\u8cc7\u8a0a\u7684\u5167\u5bb9\u6a94\u3002\u5c07\u63a1\u7528\u4e00\u7d44\u9810\u8a2d\u503c\u3002\u53ef\u80fd\u7121\u6cd5\u5efa\u7acb\u5b89\u5168\u7528\u6236\u7aef\u50b3\u8a0a\u9023\u7dda\u3002
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=\u914d\u7f6e\u7528\u6236\u7aef\u50b3\u8a0a\u50b3\u8f38\u5c64\u6b21\u5b89\u5168\u7684\u5167\u5bb9\u6a94\u3002
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
@@ -456,18 +450,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: \u627e\u4e0d\u5230\u540d\u7a31\u70ba {0} \u7684\u50b3\u8f38\u93c8\uff0c\u4ee5\u4fbf\u5f9e\u4e2d\u53d6\u5f97\u5efa\u7acb\u9023\u7dda\u4f86\u901a\u5f80\u540d\u7a31\u70ba {1} \u7684\u9060\u7aef\u4e3b\u6a5f\u6642\uff0c\u6240\u53ef\u80fd\u9700\u8981\u7684 SSL \u914d\u7f6e\u3002
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=\u73fe\u884c\u914d\u7f6e\u4e2d\u6c92\u6709\u5efa\u7acb Secure Socket Layer (SSL) \u578b\u9023\u7dda\u4f86\u901a\u5f80\u540c\u5c64\u7d1a\u6642\u6240\u9700\u8981\u7684\u8cc7\u8a0a\u3002\u9019\u9805\u8cc7\u8a0a\u901a\u5e38\u662f\u5f9e\u9069\u7528\u7684\u50b3\u8f38\u93c8\u5b9a\u7fa9\u4e2d\u53d6\u5f97\u7684\u3002\u9019\u500b\u93c8\u5b9a\u7fa9\u7684\u540d\u7a31\u7b26\u5408\u9060\u7aef\u540c\u5c64\u7d1a\u4e2d\u7684\u93c8\u3002\u627e\u4e0d\u5230\u9019\u6a23\u7684\u50b3\u8f38\u93c8\u3002\u53ef\u80fd\u7121\u6cd5\u5efa\u7acb\u9023\u7dda\u3002
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=\u5b9a\u7fa9\u5176\u4ed6\u7684\u50b3\u8f38\u93c8\u3002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: \u540d\u7a31\u70ba {0} \u7684\u50b3\u8f38\u93c8\u6c92\u6709\u5305\u542b\u5efa\u7acb\u9023\u7dda\u4f86\u901a\u5f80\u540d\u7a31\u70ba {1} \u7684\u9060\u7aef\u4e3b\u6a5f\u6642\uff0c\u6240\u53ef\u80fd\u9700\u8981\u7684\u4efb\u4f55 SSL \u914d\u7f6e\u3002
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=\u73fe\u884c\u914d\u7f6e\u4e2d\u6c92\u6709\u5efa\u7acb Secure Socket Layer (SSL) \u578b\u9023\u7dda\u4f86\u901a\u5f80\u540c\u5c64\u7d1a\u6642\u6240\u9700\u8981\u7684\u8cc7\u8a0a\u3002\u9019\u9805\u8cc7\u8a0a\u901a\u5e38\u662f\u5f9e\u9069\u7528\u7684\u50b3\u8f38\u93c8\u5b9a\u7fa9\u4e2d\u53d6\u5f97\u7684\u3002\u9019\u500b\u93c8\u5b9a\u7fa9\u7684\u540d\u7a31\u7b26\u5408\u9060\u7aef\u540c\u5c64\u7d1a\u4e2d\u7684\u93c8\u3002\u627e\u4e0d\u5230\u9019\u6a23\u7684\u50b3\u8f38\u93c8\u3002\u53ef\u80fd\u7121\u6cd5\u5efa\u7acb\u9023\u7dda\u3002
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=\u5c0d\u6307\u5b9a\u7684\u50b3\u8f38\u93c8\u914d\u7f6e\u5176\u4ed6\u7684 SSL \u50b3\u8f38\u901a\u9053\u3002
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

@@ -42,6 +42,7 @@ import com.ibm.websphere.servlet.filter.ChainedResponse;
 import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTOutputStream;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
@@ -380,9 +381,9 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
                 
                 // we have an SSL connection...set the attributes
                 ServletRequest implRequest = ServletUtil.unwrapRequest(httpRequest); //PM88028
-                String cipherSuite = ((SRTServletRequest) implRequest).getCipherSuite();
+                String cipherSuite = ((ISRTServletRequest) implRequest).getCipherSuite();
 
-                ((SRTServletRequest) implRequest).setSSLAttributesInRequest(request, cipherSuite);
+                ((ISRTServletRequest) implRequest).setSSLAttributesInRequest(request, cipherSuite);
 
             }// PM92496 End
 

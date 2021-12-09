@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+		<feature>componentTest-2.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>mdb-4.0</feature>
+        <feature>messagingServer-3.0</feature>
+        <feature>messagingClient-3.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application id="AsyncErr2BeanApp" name="AsyncErr2BeanApp" type="ear" location="AsyncErr2BeanApp.ear">
+
+	</application>
+</server>

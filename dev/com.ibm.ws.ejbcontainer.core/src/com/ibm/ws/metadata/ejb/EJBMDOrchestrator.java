@@ -5365,7 +5365,7 @@ public abstract class EJBMDOrchestrator {
      *
      * @param methodParams MethodParams representing the parameters defined in xml for the timer.
      * @param bmd BeanMetaData
-     * @param methodName The name of the Method that will recieve the timer callback.
+     * @param methodName The name of the Method that will receive the timer callback.
      * @param programaticallyCreatedFlow indicates if the programatically created or automatically created
      *            timer processing invoke the method.
      * @return -1 if the parms are undefined, 0 if explicitly set to no parm, 1 if explicitly set to 1 parm

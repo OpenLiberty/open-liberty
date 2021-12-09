@@ -12,6 +12,7 @@
 package com.ibm.ws.microprofile.openapi.impl.parser;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -137,7 +138,7 @@ public class OpenAPIV3Parser implements SwaggerParserExtension {
                     path = Paths.get(location);
                 }
                 if (Files.exists(path)) {
-                    data = FileUtils.readFileToString(path.toFile(), "UTF-8");
+                    data = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
                 } else {
                     data = ClasspathHelper.loadFileFromClasspath(location);
                 }

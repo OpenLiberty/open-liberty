@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -59,9 +61,9 @@ public class DerbyRAServlet extends FATServlet {
     private static final AtomicReference<Connection> nonDissociatableSharableHandleRef = new AtomicReference<Connection>();
 
     /**
-     * Maximum number of milliseconds a test should wait for something to happen
+     * Maximum number of nanoseconds a test should wait for something to happen
      */
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     public void initDatabaseTables() throws ServletException {
         try {
@@ -176,7 +178,7 @@ public class DerbyRAServlet extends FATServlet {
                     public Collection<String> call() throws Exception {
                         return map1.values();
                     }
-                }).get(TIMEOUT, TimeUnit.MILLISECONDS);
+                }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             } finally {
                 unmanagedExecutor.shutdown();
             }
@@ -450,6 +452,56 @@ public class DerbyRAServlet extends FATServlet {
     }
 
     /**
+     * Rely on parking a sharable connection in the absence of support for DissociatableManagedConnection
+     * to avoid exhausting the connection pool.
+     */
+    public void testParkNonDissociatableSharableHandle() throws Exception {
+        DataSource ds = (DataSource) InitialContext.doLookup("eis/ds5"); // creates sharable connections
+
+        // On another thread, use a sharable connection in a transaction, commit the transaction and wait
+        CountDownLatch transactionCommitted = new CountDownLatch(1);
+        CountDownLatch servletThreadDoneWithConnection = new CountDownLatch(1);
+        ExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+        Future<?> future = executor.submit(() -> {
+            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+            tx.begin();
+            Connection con1 = ds.getConnection();
+            con1.createStatement().executeQuery("VALUES (51)").getStatement().close();
+            tx.commit();
+            transactionCommitted.countDown();
+
+            // Connection handle remains open, but should now be associated to the parking ManagedConnection.
+            // Remain in this state until allowed to continue.
+
+            assertTrue(servletThreadDoneWithConnection.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // It would be possible to use the connection handle again here, if it weren't closed during the cleanup.
+
+            return null;
+        });
+
+        assertTrue(transactionCommitted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // At this point, the pool's single connection has been used on another thread, and hopefully freed up by
+        // parking the handle to the parking ManagedConnection. During this time, it should be possible to obtain
+        // the connection for use by the current thread:
+        UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+        tx.begin();
+        try {
+            Connection con2 = ds.getConnection();
+            con2.createStatement().executeQuery("VALUES (52)").getStatement().close();
+            con2.close();
+        } finally {
+            tx.commit();
+        }
+
+        servletThreadDoneWithConnection.countDown();
+
+        // Surface any errors that occurred on the other thread
+        future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+    }
+
+    /**
      * Test for transaction context where we do two-phase commit of two resources with the same xid but different timeout.
      */
     public void testTransactionContext() throws Throwable {
@@ -592,34 +644,71 @@ public class DerbyRAServlet extends FATServlet {
 
     public void testErrorInFreeConn() throws Exception {
         DataSource ds = (DataSource) new InitialContext().lookup("eis/ds4");
-        Object managedConn = null;
-        Connection con = null;
-        Class<?> derbyConnClass = null;
+        Object managedConn1 = null;
+        Connection con1 = null;
+        Class<?> derbyConnClass1 = null;
         try {
-            con = ds.getConnection();
-            derbyConnClass = con.getClass();
-            Field f = derbyConnClass.getDeclaredField("mc");
-            managedConn = f.get(con);
-            Statement stmt = con.createStatement();
+            con1 = ds.getConnection();
+            derbyConnClass1 = con1.getClass();
+            Field f = derbyConnClass1.getDeclaredField("mc");
+            managedConn1 = f.get(con1);
+            Statement stmt = con1.createStatement();
             stmt.close();
         } finally {
-            con.close();
+            con1.close();
         }
 
         SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
 
-        Class<?> c = managedConn.getClass();
-        Method m = c.getMethod("notify", int.class, derbyConnClass, Exception.class);
-        m.invoke(managedConn, 5, con, sqe); //5 indicates connection error
+        Class<?> c = managedConn1.getClass();
+        Method m = c.getMethod("notify", int.class, derbyConnClass1, Exception.class);
+        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
 
         String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
         int begin = contents.indexOf("size=");
         int end = contents.indexOf(System.lineSeparator(), begin);
         int poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
 
-        //After the error, there should be 0 connections in the pool.
-        if (poolSizeAfterError != 0)
-            throw new Exception("Unexpected number of connections found.  Expected 0 but found " + poolSizeAfterError);
+        //After the error, there should be 1 connections in the pool.  Delaying the remove of a free managed connection.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
+
+        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
+        begin = contents.indexOf("size=");
+        end = contents.indexOf(System.lineSeparator(), begin);
+        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+
+        //After the error, there should be 1 connections in the pool.  Its not safe to remove the managed connection if its free.
+        //The free connection is only marked to not be reused.  Next use will remove this managed connection.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+
+        Object managedConn2 = null;
+        Connection con2 = null;
+        Class<?> derbyConnClass2 = null;
+        try {
+            con2 = ds.getConnection();
+            derbyConnClass2 = con2.getClass();
+            Field f = derbyConnClass2.getDeclaredField("mc");
+            managedConn2 = f.get(con2);
+            Statement stmt = con2.createStatement();
+            stmt.close();
+        } finally {
+            con2.close();
+        }
+        if (managedConn2 == managedConn1)
+            throw new Exception("We must have a new managed connection, review trace log");
+
+        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
+        begin = contents.indexOf("size=");
+        end = contents.indexOf(System.lineSeparator(), begin);
+        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+
+        //After the failing connection is removed and a new one is created, there should be 1 connections in the pool.
+        if (poolSizeAfterError != 1)
+            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+
     }
 
     private int getMonitorData(ObjectName name, String attribute) throws Exception {

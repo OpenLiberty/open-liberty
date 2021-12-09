@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs 'commons-codec:commons-codec:1.4',
-               'commons-logging:commons-logging:1.1.1',
+  requiredLibs project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.ws.security.audit_fat.common.tooling'),
                project(':com.ibm.ws.webcontainer.security_test.servlets')
 }

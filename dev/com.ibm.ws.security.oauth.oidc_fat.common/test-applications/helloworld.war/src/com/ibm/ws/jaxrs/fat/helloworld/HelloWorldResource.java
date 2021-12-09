@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.helloworld;
 
@@ -124,6 +124,7 @@ public class HelloWorldResource<E> {
         HelloWorldResource.message = "Hello World!";
         StringBuffer sb = new StringBuffer();
 
+        System.out.println("Entering Helloworld");
         MultivaluedMap<String, String> theHeaders = headers.getRequestHeaders();
         if (theHeaders != null) {
             for (String key : theHeaders.keySet()) {
@@ -133,7 +134,7 @@ public class HelloWorldResource<E> {
 
         String atoken = null;
         List<String> tokenFromHeader = headers.getRequestHeader(global_headerName);
-        if (tokenFromHeader == null) {
+        if (tokenFromHeader == null || tokenFromHeader.isEmpty()) {
             if (param_at.equals(notSet)) {
                 System.out.println(noAT);
                 HelloWorldResource.message = noAT;

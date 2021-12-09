@@ -19,11 +19,10 @@ Bundle-Description: WAS Security OAuth 2.0, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.oauth.internal.2.0.jar
-#JakartaEE-Bundle-Name: Liberty Security OAuth 2.0
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.oauth.internal.2.0
-#JakartaEE-Bundle-Description: Liberty Security OAuth 2.0, version=${bVersion}
-#JakartaEE-Bundle-Version: 
+jakartaFinalJarName: io.openliberty.security.oauth.internal.2.0.jar
+jakartaFinalBundleName: Liberty Security OAuth 2.0
+jakartaFinalBundleId: io.openliberty.security.oauth.internal.2.0
+jakartaFinalBundleDescription: Liberty Security OAuth 2.0; Jakarta Enabled
 
 
 Web-ContextPath: /oauth2
@@ -43,11 +42,10 @@ instrument.classesExcludes: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 
-# 240526 remove from exports: com.ibm.websphere.security.openidconnect.token
-
 Export-Package: \
  com.ibm.websphere.security.oauth20, \
  com.ibm.websphere.security.oauth20.store, \
+ com.ibm.websphere.security.openidconnect.token, \
  com.ibm.wsspi.security.oauth20, \
  com.ibm.wsspi.security.openidconnect, \
  !com.ibm.ws.security.oauth20.internal.resources, \
@@ -68,7 +66,6 @@ Import-Package: \
 	 *
 
 Private-Package: \
- com.ibm.websphere.security.openidconnect.token, \
  com.ibm.ws.config.xml.internal.nester, \
  com.ibm.ws.security.oauth20.internal.resources, \
  com.ibm.ws.security.oauth20.internal.tai.resources
@@ -113,36 +110,6 @@ Include-Resource: \
     resources/template.jsp, \
     resources/template.html
 
-include.cs=true
-include.de=true
-include.es=true
-include.fr=true
-include.hu=true
-include.it=true
-include.ja=true
-include.ko=true
-include.pl=true
-include.pt_BR=true
-include.ro=true
-include.ru=true
-include.zh_TW=true
-include.zh=true
-
-Include-Resource.cs: ${if;${include.cs};com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties}
-Include-Resource.de: ${if;${include.de};com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties}
-Include-Resource.es: ${if;${include.es};com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties}
-Include-Resource.fr: ${if;${include.fr};com/ibm/ws/security/oauth20/resources/ProviderMsgs_fr.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_fr.properties}
-Include-Resource.hu: ${if;${include.hu};com/ibm/ws/security/oauth20/resources/ProviderMsgs_hu.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_hu.properties}
-Include-Resource.it: ${if;${include.it};com/ibm/ws/security/oauth20/resources/ProviderMsgs_it.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_it.properties}
-Include-Resource.ja: ${if;${include.ja};com/ibm/ws/security/oauth20/resources/ProviderMsgs_ja.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ja.properties}
-Include-Resource.ko: ${if;${include.ko};com/ibm/ws/security/oauth20/resources/ProviderMsgs_ko.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ko.properties}
-Include-Resource.pl: ${if;${include.pl};com/ibm/ws/security/oauth20/resources/ProviderMsgs_pl.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_pl.properties}
-Include-Resource.pt_BR: ${if;${include.pt_BR};com/ibm/ws/security/oauth20/resources/ProviderMsgs_pt_BR.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_pt_BR.properties}
-Include-Resource.ro: ${if;${include.ro};com/ibm/ws/security/oauth20/resources/ProviderMsgs_ro.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ro.properties}
-Include-Resource.ru: ${if;${include.ru};com/ibm/ws/security/oauth20/resources/ProviderMsgs_ru.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_ru.properties}
-Include-Resource.zh_TW: ${if;${include.zh_TW};com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh_TW.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh_TW.properties}
-Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties=resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties}
-
 -buildpath: \
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.appserver.api.json,\
@@ -167,7 +134,7 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.json.simple.1.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\

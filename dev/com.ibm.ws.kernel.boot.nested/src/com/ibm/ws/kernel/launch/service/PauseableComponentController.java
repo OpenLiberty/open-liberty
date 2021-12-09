@@ -61,4 +61,9 @@ public interface PauseableComponentController {
      */
     Collection<PauseableComponent> getPauseableComponents();
 
+    /**
+     * Check if specific endpoints exist, have started, and are not paused.
+     */
+    boolean isActive(String targets);
+
 }

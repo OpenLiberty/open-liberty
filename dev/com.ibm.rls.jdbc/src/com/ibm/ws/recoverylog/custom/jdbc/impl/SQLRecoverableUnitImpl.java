@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@ package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import java.util.Iterator;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.FailureScopeManager;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -153,11 +153,11 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      * creation of a recoverable unit or recreation during server startup.
      * </p>
      *
-     * @param recLog The parent recovery log reference.
-     * @param identity The identity of the new recoverable unit (must be unique
-     *            within the associated recovery log.)
+     * @param recLog       The parent recovery log reference.
+     * @param identity     The identity of the new recoverable unit (must be unique
+     *                         within the associated recovery log.)
      * @param failureScope The FailureScope that this recoverable unit should belong to
-     * @param recovered A flag to indicate whether this object is already persisted
+     * @param recovered    A flag to indicate whether this object is already persisted
      */
     public SQLRecoverableUnitImpl(SQLMultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, boolean recovered) {
         if (tc.isEntryEnabled())
@@ -211,19 +211,19 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
     /**
      * Creates a new recoverable unit section.
      *
-     * @param identity Identity of the new recoverable unit section (must be unique
-     *            within the recoverable unit)
+     * @param identity   Identity of the new recoverable unit section (must be unique
+     *                       within the recoverable unit)
      * @param singleData Flag indicating if the new recoverable unit section should
-     *            retain only a single item of data at any one time. If this
-     *            flag is true, only the most recent item of data added to it
-     *            is retained and preceeding items of data are thrown away.
+     *                       retain only a single item of data at any one time. If this
+     *                       flag is true, only the most recent item of data added to it
+     *                       is retained and preceeding items of data are thrown away.
      *
      * @return The new RecoverableUnitSectionImpl instance.
      *
      * @exception RecoverableUnitSectionExistsException Thrown if a recoverable unit
-     *                section already exists with
-     *                the supplied identity.
-     * @exception InternalLogException An unexpected error has occured.
+     *                                                      section already exists with
+     *                                                      the supplied identity.
+     * @exception InternalLogException                  An unexpected error has occured.
      */
     @Override
     public RecoverableUnitSection createSection(int identity, boolean singleData) throws RecoverableUnitSectionExistsException, InternalLogException {
@@ -295,8 +295,8 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
      * @param identity The identity of the target recoverable unit section.
      *
      * @exception InvalidRecoverableUnitSectionException The recoverable unit section
-     *                does not exist.
-     * @exception InternalLogException An unexpected error has occured.
+     *                                                       does not exist.
+     * @exception InternalLogException                   An unexpected error has occured.
      */
     @Override
     public void removeSection(int identity) throws InvalidRecoverableUnitSectionException, InternalLogException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverterServlet;
 import com.ibm.ws.microprofile.config12.converter.priority.web.ConverterPriorityServlet;
 import com.ibm.ws.microprofile.config12.converter.type.web.TypeConverterServlet;
@@ -45,12 +46,13 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class Config12ConverterTests extends FATServletClient {
 
+    public static final String SERVER_NAME = "ConverterServer";
     public static final String APP_NAME = "converterApp";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("ConverterServer", MicroProfileActions.LATEST, MicroProfileActions.MP13);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP13);
 
-    @Server("ConverterServer")
+    @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = ConverterPriorityServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = ImplicitConverterServlet.class, contextRoot = APP_NAME),
@@ -59,7 +61,8 @@ public class Config12ConverterTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.microprofile.config12.converter.*");
+        DeployOptions[] options = { DeployOptions.SERVER_ONLY };
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config12.converter.*");
 
         server.startServer();
     }

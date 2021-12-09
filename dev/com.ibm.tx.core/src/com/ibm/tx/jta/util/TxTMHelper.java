@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -338,11 +338,21 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 // For cloud support, retrieve recovery identity from the configuration if it is defined.
                 if (cp != null) {
                     _recoveryIdentity = cp.getRecoveryIdentity();
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "RecoveryIdentity is ", _recoveryIdentity);
+                    if (_recoveryIdentity != null) {
+                        final String sanitizedRI = _recoveryIdentity.replaceAll("\\W", "");
+
+                        if (!_recoveryIdentity.equals(sanitizedRI)) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Sanitized recoveryIdentity: ", sanitizedRI);
+                            _recoveryIdentity = sanitizedRI;
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "recoveryIdentity: ", _recoveryIdentity);
+                        }
+                    }
                     _recoveryGroup = cp.getRecoveryGroup();
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "recoveryGroup is ", _recoveryGroup);
+                        Tr.debug(tc, "recoveryGroup: ", _recoveryGroup);
                 }
 
                 //Add this guard to ensure that we have sufficient config to drive recovery.
@@ -387,17 +397,19 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                 TxRecoveryAgentImpl txAgent = createRecoveryAgent(_recoveryDirector);
 
-                // We will do peer recovery if the recovery identity and group are set
-                if (_recoveryIdentity != null && _recoveryGroup != null && !_recoveryIdentity.isEmpty() && !_recoveryGroup.isEmpty()) {
-                    _recLogService.setPeerRecoverySupported(true);
-                    txAgent.setPeerRecoverySupported(true);
-                    // Override the disable2PC property if it has been set
-                    TransactionImpl.setDisable2PCDefault(false);
-                    Tr.audit(tc, "WTRN0108I: Server with identity " + _recoveryIdentity + " is monitoring its peers for Transaction Peer Recovery");
-                }
-
                 if (_recoveryGroup != null && !_recoveryGroup.isEmpty()) {
                     txAgent.setRecoveryGroup(_recoveryGroup);
+
+                    // We will do peer recovery if the recovery identity and group are set
+                    if (_recoveryIdentity != null && !_recoveryIdentity.isEmpty()) {
+                        _recLogService.setPeerRecoverySupported(true);
+                        txAgent.setPeerRecoverySupported(true);
+                        // Override the disable2PC property if it has been set
+                        TransactionImpl.setDisable2PCDefault(false);
+                        Tr.audit(tc, "WTRN0108I: Server with identity " + _recoveryIdentity + " is monitoring its peers for Transaction Peer Recovery");
+                    } else {
+                        Tr.audit(tc, "WTRN0108I: recoveryIdentity is not set. Transaction Peer Recovery is disabled");
+                    }
                 }
 
                 setRecoveryAgent(txAgent);
@@ -662,7 +674,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void unsetUOWEventListener(UOWEventListener el) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetUOWEventListener", el);
-        ((UOWCurrent) TranManagerSet.instance()).unsetUOWEventListener(el);
+        try {
+            ((UOWCurrent) TranManagerSet.instance()).unsetUOWEventListener(el);
+        } catch (IllegalStateException e) {
+            // Server is on the way down
+        }
     }
 
     protected TxRecoveryAgentImpl createRecoveryAgent(RecoveryDirector recoveryDirector) throws Exception {
@@ -722,14 +738,16 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         } else {
             if (cp != null && cp.isSQLRecoveryLog())
                 _requireDataSourceActive = true;
-
+            boolean isDataSourceFactorySet = false;
+            if (cp != null && cp.isDataSourceFactorySet())
+                isDataSourceFactorySet = true;
             // Trace the set of flags that determine whether we can start recovery now.
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "_requireRecoveryLogFactory: " + _requireDataSourceActive +
                              ", _waitForRecovery: " + _waitForRecovery +
                              ", _tmsReady: " + _tmsReady +
                              ", _recoveryLogServiceReady: " + _recoveryLogServiceReady +
-                             //                        ", _dataSourceFactoryReady: " + _dataSourceFactoryReady +
+                             ", _dataSourceFactorySet: " + isDataSourceFactorySet +
                              ", _recoveryLogFactoryReady: " + _recoveryLogFactoryReady);
 
             if (!_requireDataSourceActive) {
@@ -740,7 +758,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     recoverNow = _tmsReady && _recoveryLogServiceReady;
             } else {
                 // If logging to a database then we need the full set of services in place before we can start recovery
-                recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
+                recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady && isDataSourceFactorySet;
             }
         }
 

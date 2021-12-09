@@ -10,24 +10,38 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
+import app.web.pure.jaxrs.JAXRSApp;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -57,18 +71,30 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final String APP_NAME_10 = "pure-jaxrs";
     private static final String APP_NAME_11 = "complete-flow";
 
-    @Server("ApplicationProcessorServer")
+    private static final String SERVER_NAME = "ApplicationProcessorServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
 
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        ShrinkHelper.defaultApp(server, APP_NAME_1, "app.web.airlines.*");
-        ShrinkHelper.defaultApp(server, APP_NAME_2);
-        ShrinkHelper.defaultApp(server, APP_NAME_3, "app.web.servlet");
-        ShrinkHelper.defaultApp(server, APP_NAME_10, "app.web.pure.jaxrs");
-        ShrinkHelper.defaultApp(server, APP_NAME_11, "app.web.complete.flow.*");
+        DeployOptions[] opts = {
+            DeployOptions.SERVER_ONLY
+        };
+        ShrinkHelper.defaultApp(server, APP_NAME_1, opts, "app.web.airlines.*");
+        ShrinkHelper.defaultApp(server, APP_NAME_2, opts);
+        ShrinkHelper.defaultApp(server, APP_NAME_3, opts, "app.web.servlet");
+        ShrinkHelper.defaultApp(server, APP_NAME_10, opts, "app.web.pure.jaxrs");
+        ShrinkHelper.defaultApp(server, APP_NAME_11, opts, "app.web.complete.flow.*");
 
         LibertyServer.setValidateApps(false);
 
@@ -327,8 +353,47 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test-service/test");
     }
 
+    /**
+     * Deploys two test applications at the same time, hoping to catch possible
+     * thread safety problems.
+     * <p>
+     * It's important that the apps have not been deployed before otherwise the
+     * generated model may have already been cached.
+     */
     @Test
-    @SkipForRepeat("mpOpenAPI-2.0")
+    public void testSimultaneousDeployment() throws Exception {
+
+        // Create and deploy two new jax-rs apps
+        WebArchive test1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+            .addPackage(JAXRSApp.class.getPackage());
+
+        WebArchive test2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+            .addPackage(JAXRSApp.class.getPackage());
+
+        ShrinkHelper.exportAppToServer(server, test1, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, test2, SERVER_ONLY);
+
+        // Deploy both in the same server.xml update and ensure they start
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+
+        ServerConfiguration config = server.getServerConfiguration();
+        config.addApplication("test1", "${server.config.dir}/apps/test1.war", "war");
+        config.addApplication("test2", "${server.config.dir}/apps/test2.war", "war");
+        server.updateServerConfiguration(config);
+
+        server.waitForStringInLogUsingMark("CWWKZ0001I.*test1");
+        server.waitForStringInLogUsingMark("CWWKZ0001I.*test2");
+
+        // Check there were no errors or warnings emitted during startup
+        List<String> errorsAndWarnings = server.findStringsInLogsUsingMark("[EW] .*\\d{4}[EW]:",
+            server.getDefaultLogFile());
+        assertThat(errorsAndWarnings, is(empty()));
+    }
+
+    @Test
+    @SkipForRepeat({
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID
+    })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();

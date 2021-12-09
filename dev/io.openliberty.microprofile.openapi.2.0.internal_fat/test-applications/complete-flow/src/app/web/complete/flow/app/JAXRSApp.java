@@ -42,9 +42,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @ApplicationPath("/test-service")
 @OpenAPIDefinition(
     tags = {
-             @Tag(name = "user", description = "Operations about user"),
-             @Tag(name = "create", description = "Operations about create"),
-             @Tag(name = "Bookings", description = "All the bookings methods")
+        @Tag(name = "user", description = "Operations about user"),
+        @Tag(name = "create", description = "Operations about create"),
+        @Tag(name = "Bookings", description = "All the bookings methods")
     },
     externalDocs = @ExternalDocumentation(
         description = "instructions for how to deploy this app",
@@ -63,59 +63,66 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
     security = @SecurityRequirement(name = "airlinesRatingApp_auth"),
     components = @Components(
         parameters = {
-                       @Parameter(
-                           name = "departureDate",
-                           in = ParameterIn.QUERY,
-                           required = true,
-                           description = "Customer departure date",
-                           schema = @Schema(implementation = String.class)),
-                       @Parameter(
-                           name = "username",
-                           in = ParameterIn.QUERY,
-                           description = "The name that needs to be deleted",
-                           schema = @Schema(type = SchemaType.STRING),
-                           required = true) },
+            @Parameter(
+                name = "departureDate",
+                in = ParameterIn.QUERY,
+                required = true,
+                description = "Customer departure date",
+                schema = @Schema(implementation = String.class)),
+            @Parameter(
+                name = "username",
+                in = ParameterIn.QUERY,
+                description = "The name that needs to be deleted",
+                schema = @Schema(type = SchemaType.STRING),
+                required = true)
+        },
         examples = {
-                     @ExampleObject(
-                         name = "review",
-                         summary = "External review example",
-                         description = "This example exemplifies the content on our site.",
-                         externalValue = "http://foo.bar/examples/review-example.json"),
-                     @ExampleObject(
-                         name = "user",
-                         summary = "External user example",
-                         externalValue = "http://foo.bar/examples/user-example.json") },
+            @ExampleObject(
+                name = "review",
+                summary = "External review example",
+                description = "This example exemplifies the content on our site.",
+                externalValue = "http://foo.bar/examples/review-example.json"),
+            @ExampleObject(
+                name = "user",
+                summary = "External user example",
+                externalValue = "http://foo.bar/examples/user-example.json")
+        },
         headers = {
-                    @Header(
-                        name = "Max-Rate",
-                        description = "Maximum rate",
-                        schema = @Schema(type = SchemaType.INTEGER),
-                        required = true,
-                        allowEmptyValue = true,
-                        deprecated = true),
-                    @Header(
-                        name = "Request-Limit",
-                        description = "The number of allowed requests in the current period",
-                        schema = @Schema(type = SchemaType.INTEGER)) },
+            @Header(
+                name = "Max-Rate",
+                description = "Maximum rate",
+                schema = @Schema(type = SchemaType.INTEGER),
+                required = true,
+                allowEmptyValue = true,
+                deprecated = true),
+            @Header(
+                name = "Request-Limit",
+                description = "The number of allowed requests in the current period",
+                schema = @Schema(type = SchemaType.INTEGER))
+        },
         securitySchemes = {
-                            @SecurityScheme(
-                                securitySchemeName = "httpTestScheme",
-                                description = "user security scheme",
-                                type = SecuritySchemeType.HTTP,
-                                scheme = "testScheme") },
+            @SecurityScheme(
+                securitySchemeName = "httpTestScheme",
+                description = "user security scheme",
+                type = SecuritySchemeType.HTTP,
+                scheme = "testScheme")
+        },
         links = {
-                  @Link(
-                      name = "UserName",
-                      description = "The username corresponding to provided user id",
-                      operationId = "getUserByName",
-                      parameters = @LinkParameter(name = "userId", expression = "$request.path.id")) },
+            @Link(
+                name = "UserName",
+                description = "The username corresponding to provided user id",
+                operationId = "getUserByName",
+                parameters = @LinkParameter(name = "userId", expression = "$request.path.id"))
+        },
         callbacks = {
-                      @Callback(
-                          name = "GetBookings",
-                          callbackUrlExpression = "http://localhost:9080/airlines/bookings",
-                          operations = @CallbackOperation(
-                              summary = "Retrieve all bookings for current user",
-                              responses = { @APIResponse(ref = "FoundBookings") }))
+            @Callback(
+                name = "GetBookings",
+                callbackUrlExpression = "http://localhost:9080/airlines/bookings",
+                operations = @CallbackOperation(
+                    summary = "Retrieve all bookings for current user",
+                    responses = {
+                        @APIResponse(ref = "FoundBookings")
+                    }))
         }))
 @SecurityScheme(
     securitySchemeName = "airlinesRatingApp_auth",

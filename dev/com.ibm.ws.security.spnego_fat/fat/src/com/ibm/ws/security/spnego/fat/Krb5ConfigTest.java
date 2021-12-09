@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class Krb5ConfigTest extends CommonTest {
 
@@ -76,7 +77,7 @@ public class Krb5ConfigTest extends CommonTest {
     public void testKrbConfigNotFound_NonExistentLocation() {
         try {
             testHelper.reconfigureServer("krbConfigNotFound_NonExistentLocation.xml", name.getMethodName(), SPNEGOConstants.DONT_RESTART_SERVER);
-            testHelper.addShutdownMessages("CWWKS4303E");
+            testHelper.addShutdownMessages("CWWKS4303E", "CWWKS4308E", "CWWKS4309E");
             commonUnsuccessfulSpnegoServletCall();
             testHelper.checkForMessages(true, MessageConstants.KRBCONFIGFILE_NOT_FOUND_CWWKS4303E);
         } catch (Exception ex) {
@@ -99,6 +100,7 @@ public class Krb5ConfigTest extends CommonTest {
     public void testKrbKeytabNotFound_NonExistentLocation() {
         try {
             testHelper.reconfigureServer("krbKeytabNotFound_NonExistentLocation.xml", name.getMethodName(), SPNEGOConstants.DONT_RESTART_SERVER);
+            testHelper.addShutdownMessages("CWWKS4305E");
             commonUnsuccessfulSpnegoServletCall();
             testHelper.checkForMessages(true, MessageConstants.KEYTAB_NOT_FOUND_CWWKS4305E);
         } catch (Exception ex) {
@@ -123,7 +125,7 @@ public class Krb5ConfigTest extends CommonTest {
     public void testInvalidKRBConfig_NonExistentFileName() {
         try {
             testHelper.reconfigureServer("invalidKrbConfigFileName_NonExistentFileName.xml", name.getMethodName(), SPNEGOConstants.DONT_RESTART_SERVER);
-            testHelper.addShutdownMessages("CWWKS4303E", "CWWKS4313E");
+            testHelper.addShutdownMessages("CWWKS4303E", "CWWKS4313E", "CWWKS4308E", "CWWKS4309E");
             commonUnsuccessfulSpnegoServletCall();
             testHelper.checkForMessages(true, MessageConstants.KRBCONFIGFILE_NOT_FOUND_CWWKS4303E);
         } catch (Exception ex) {

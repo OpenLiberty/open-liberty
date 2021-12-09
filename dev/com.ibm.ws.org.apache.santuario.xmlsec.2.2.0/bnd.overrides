@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,15 +12,14 @@
 bVersion=1.0
 
 Bundle-Name: org.apache.santuario.xmlsec
-Bundle-Description: org.apache.santuario xmlsec; version=2.2.0
+Bundle-Description: org.apache.santuario xmlsec; version=2.2.3
 Bundle-SymbolicName: com.ibm.ws.org.apache.santuario.xmlsec.2.2.0
-Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: XMLSEC
 
 Export-Package: \
- org.apache.xml.security.*;version="2.2.0",\
- org.apache.jcp.xml.dsig.internal.*;version="2.2.0"
+ org.apache.xml.security.*;version="2.2.3",\
+ org.apache.jcp.xml.dsig.internal.*;version="2.2.3"
 
 Import-Package: \
  !sun.security.ec, \
@@ -28,13 +27,10 @@ Import-Package: \
  org.apache.xml.dtm*;resolution:=optional, \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
+ org.apache.xml.security.*;version="2.2.3", \
  *
- 
-Include-Resource: \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/META-INF/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/templates/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/schemas/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/*xml
 
-DynamicImport-Package:
+DynamicImport-Package: \
+ org.glassfish.jaxb.runtime.v2.*
 
+jakartaeeMe: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs.fat.restmetrics;
 
 import java.lang.management.ManagementFactory;
 
+import javax.management.InstanceNotFoundException;
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -68,7 +69,9 @@ public class RestMetricsResource {
                                                    "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
                                                    + "RestMetricsResource/getCheckedException(java.lang.String)",
                                                    "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                   + "RestMetricsResource/getUncheckedException(java.lang.String)"};
+                                                   + "RestMetricsResource/getUncheckedException(java.lang.String)",
+                                                   "WebSphere:type=REST_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource/getAbortTest()"};
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
@@ -269,6 +272,26 @@ public class RestMetricsResource {
     }
 
     /**
+     * Test when ContainerRequestFilter aborts so the Metrics CRF is never called.
+     * This method should never actually execute
+     *
+     * @return fail message (should never happen)
+     */
+    @GET
+    @Path("/abortTest")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getAbortTest() {
+        // Note that this should never execute
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        System.out.println("Abort in ContainerRequestFilter should have prevented this method from executing.");
+        return Response.status(500).entity("Fail:  getAbortTest() method should not execute following a ContainerRequestFilter abort.").build();
+    }
+
+    /**
      * Processes a POST request and returns the incoming request message.
      *
      * @param incomingMessage containing simple string
@@ -378,15 +401,50 @@ public class RestMetricsResource {
                    + ":  index = " + index;
 
         }
-        double threshold = 100;
-        monitorResponseTime /= 1000000;
-        if (Math.abs(monitorResponseTime - responseTime) > threshold) {
 
-            return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime
-                   + ":  index = " + index;
+        if (responseTime >= 0) {
+            double threshold = 100;
+            monitorResponseTime /= 1000000;
+            if (Math.abs(monitorResponseTime - responseTime) > threshold) {
+
+                return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime
+                                + ":  index = " + index;
+            }
         }
 
         return "Passed!";
+    }
+
+    /**
+     * Resource method to verify the monitor 1.0 data is correct.
+     *
+     * @return the stored message
+     */
+    @GET
+    @Path("/ensureempty/{p1}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String ensureEmptyMonitorValues(
+                                     @PathParam("p1") int index) throws Exception {
+
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName monitorObject = new ObjectName(MONITOR_STRINGS[index]);
+
+        // Check monitor stats
+        RestStatsMXBean restStats = JMX.newMXBeanProxy(mbs, monitorObject, RestStatsMXBean.class);
+
+        // If no monitor data is available an InstanceNotFoundException will be generated
+        try {
+            String testString = restStats.getMethodName();
+            return "Failed: No monitor statistics should have been collected for " + testString;
+        } catch (Throwable e) {
+            // To pass an exception should be caught that is caused by an InstanceNotFoundException
+            Throwable e2 = e.getCause();
+            if ((e2 != null) && (e2 instanceof InstanceNotFoundException)) {
+                return "Passed!";
+            }
+            return "Failed: Expected exeption not received: " + e +", causedBy " + e2;
+        }
     }
 
 }

@@ -20,11 +20,12 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.resource.spi.ResourceAllocationException;
 import javax.sql.DataSource;
 
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
@@ -54,6 +55,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     private final CustomLogProperties _customLogProperties;
 
+    /**
+     * Flag whether the database type has ever been determined
+     */
+    boolean _determineDBType = false;
     /**
      * Are we working against Oracle, PostgreSQL or Generic (DB2 or SQL Server at least)
      */
@@ -86,6 +91,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     private static final Object _CreateTableLock = new Object();
 
+    /**
+     * Flag to indicate whether the server is stopping.
+     */
+    volatile private boolean _serverStopping;
+
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "SQLSharedServerStatusLog", new Object[] { logProperties, this });
@@ -109,17 +119,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         ResultSet lockingRS = null;
         Statement lockingStmt = null;
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {
@@ -238,6 +239,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         PreparedStatement updateStmt = null;
         ResultSet lockingRS = null;
 
+        // if the server is stopping, we should simply return
+        if (_serverStopping) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "updateServerLease", this);
+            return;
+        }
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Work with recoveryIdentity - ", recoveryIdentity);
 
@@ -246,23 +254,20 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             recoveryGroup = "";
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
-            // If we were unable to get a connection, throw an exception
+            // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (conn == null) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "updateServerLease", "Null connection InternalLogException");
-                throw new InternalLogException("Failed to get JDBC Connection", null);
+                if (!_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "Null connection InternalLogException");
+                    throw new InternalLogException("Failed to get JDBC Connection", null);
+                } else {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "null connection");
+                    return;
+                }
             }
 
             if (tc.isDebugEnabled())
@@ -291,30 +296,36 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             } // eof Exception e block
 
             if (currentEx != null) {
-                if (isServerStartup) {
-                    // Perhaps we couldn't find the table ... so attempt to create it
-                    synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
-                    {
-                        try {
-                            Tr.audit(tc, "WTRN0108I: Create Shared Lease Table");
-                            createLeaseTable(conn);
+                if (!_serverStopping) {
+                    if (isServerStartup) {
+                        // Perhaps we couldn't find the table ... so attempt to create it
+                        synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
+                        {
+                            try {
+                                Tr.audit(tc, "WTRN0108I: Create Shared Lease Table");
+                                createLeaseTable(conn);
 
-                            conn.commit();
+                                conn.commit();
 
-                            newTable = true;
-                        } catch (Exception ine) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Table Creation failed with exception: " + ine);
-                            // Set the current exception to ine
-                            throw ine;
-                        }
-                    } // eof synchronize block
-                } // eof isServerStartup
-                else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Lease select update failed with exception: " + currentEx);
-                    // Set the current exception to ine
-                    throw currentEx;
+                                newTable = true;
+                            } catch (Exception ine) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Table Creation failed with exception: " + ine);
+                                // Set the current exception to ine
+                                throw ine;
+                            }
+                        } // eof synchronize block
+                    } // eof isServerStartup
+                    else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Lease select update failed with exception: " + currentEx);
+                        // Set the current exception to ine
+                        throw currentEx;
+                    }
+                } else { // server is stopping report but exit without throwing exception
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "Lease select update failed with exception: " + currentEx);
+                    return;
                 }
             }
 
@@ -340,9 +351,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                             // Lease has not expired, are we the owner or is some other server peer recovering
                             // If the latter, then we should barf
                             if (!storedLeaseOwner.equals(recoveryIdentity)) {
+                                final String dbg = storedLeaseOwner + " is recovering our logs, we will fail our recovery";
                                 if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "A peer is recovering, we will fail our recovery and exit");
-                                RecoveryFailedException rex = new RecoveryFailedException(recoveryIdentity);
+                                    Tr.debug(tc, dbg);
+                                final RecoveryFailedException rex = new RecoveryFailedException(dbg);
                                 throw rex;
                             }
                         }
@@ -380,9 +392,16 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 
             // Either a new table or we couldn't find the row for our server. Insert it.
             if (needInsert) {
-                // Insert a new row into the lease table
-                insertNewLease(recoveryIdentity, recoveryGroup, conn);
+                if (!_serverStopping) {
+                    // Insert a new row into the lease table
+                    insertNewLease(recoveryIdentity, recoveryGroup, conn);
+                } else { // server is stopping exit without insert
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "skip insert server is stopping");
+                    return;
+                }
             }
+
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "COMMIT the change");
             conn.commit();
@@ -495,15 +514,65 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         return dataSource;
     }
 
-    private Connection getConnection(DataSource dataSource) throws Exception {
+    private Connection getConnection() throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getConnection", this);
         Connection conn = null;
 
-        // Get connection to database via first datasource
-        conn = dataSource.getConnection();
+        boolean retryOnRAExc = false;
 
-        if (conn != null) {
+        // Have we acquired the reference to the DataSource yet?
+        if (_theDS == null) {
+            _theDS = getDataSourceFromProperties();
+        }
+
+        // Get connection to database via datasource
+        try {
+            if (_theDS != null)
+                conn = _theDS.getConnection();
+        } catch (SQLException sqlex) {
+            // Handle the special case where the DataSource has been refreshed and the Connection Pool has shut down
+            Throwable cause = sqlex.getCause();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Caught SQLException with cause: " + cause);
+
+            if (cause instanceof ResourceAllocationException) {// javax.resource.spi.ResourceAllocationException
+                // Look up the DataSource definition again
+                retryOnRAExc = true;
+            } else {
+                // Not a ResourceAllocationException, rethrow exception
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "SQLException");
+                throw sqlex;
+            }
+        }
+
+        // Look up the DataSource definition again in order to get a Connection
+        if (retryOnRAExc) {
+            _theDS = getDataSourceFromProperties();
+
+            try {
+                if (_theDS != null) {
+                    conn = _theDS.getConnection();
+                    Tr.audit(tc, "WTRN0108I: " +
+                                 "Have recovered from ResourceAllocationException in connection to SQL Lease Log");
+                }
+            } catch (Throwable exc) {
+                SQLException newsqlex;
+                if (exc instanceof SQLException) {
+                    newsqlex = (SQLException) exc;
+
+                } else {
+                    // Wrap in a SQLException
+                    newsqlex = new SQLException(exc);
+                }
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getConnection", "new SQLException");
+                throw newsqlex;
+            }
+        }
+
+        if (conn != null && !_determineDBType) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Got connection: " + conn);
             DatabaseMetaData mdata = conn.getMetaData();
@@ -553,6 +622,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             String dbVersion = mdata.getDatabaseProductVersion();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
+            _determineDBType = true;
         }
 
         if (tc.isEntryEnabled())
@@ -621,7 +691,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 //TODO:recovery. How do we know if original server has re-started and needs the lease to NOT be deleted? Or does it matter? ie if the lease
 //TODO:is deleted by a peer, could the original server not simply (re)insert its own row?
     @Override
-    public void deleteServerLease(String recoveryIdentity) throws Exception {
+    public synchronized void deleteServerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", new java.lang.Object[] { recoveryIdentity, this });
 
@@ -629,17 +699,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         Statement deleteStmt = null;
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {
@@ -666,7 +727,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 Tr.debug(tc, "Have deleted row with return: " + ret + ", commit the change");
 
             conn.commit();
-            Tr.audit(tc, "WTRN0108I: Deleted Lease for server with recovery identity " + recoveryIdentity);
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
@@ -708,17 +768,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             Tr.debug(tc, "Recovering server with recoveryIdentity - ", recoveryIdentityToRecover);
 
         try {
-            // Have we acquired the reference to the DataSource yet?
-            if (_theDS == null) {
-                _theDS = getDataSourceFromProperties();
-                // We've looked up the DS, so now we can get a JDBC connection
-                if (_theDS != null) {
-                    conn = getConnection(_theDS);
-                }
-            } else {
-                // Try and get a new connection
-                conn = _theDS.getConnection();
-            }
+            // Get a connection to the DB
+            conn = getConnection();
 
             // If we were unable to get a connection, throw an exception
             if (conn == null) {
@@ -874,4 +925,17 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         _leaseTimeout = leaseTimeout;
     }
 
+    /**
+     * Signals to the Lease Log that the server is stopping.
+     */
+    @Override
+    public void serverStopping() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "serverStopping ", new Object[] { this });
+
+        _serverStopping = true;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "serverStopping", this);
+    }
 }

@@ -307,7 +307,7 @@ public class WSJdbcPreparedStatement extends WSJdbcStatement implements Prepared
                     // Reset any statement properties that have changed. 
                     if (haveStatementPropertiesChanged) {
                         if (isTraceOn && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Cleaning up Statement"); 
+                            Tr.debug(this, tc, "Cleaning up Statement");
                         mcf.getHelper().doStatementCleanup(pstmtImpl);
                         haveStatementPropertiesChanged = false;
                     }

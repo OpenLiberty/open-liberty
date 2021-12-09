@@ -23,6 +23,7 @@ import org.omg.PortableInterceptor.PolicyFactory;
  * @version $Rev: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class ServerTransactionPolicyFactory extends LocalObject implements PolicyFactory {
+    private static final long serialVersionUID = 1L;
     public final static int POLICY_TYPE = 0x41534602;
 
     public Policy create_policy(int type, Any value) throws PolicyError {

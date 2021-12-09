@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -18,7 +18,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -46,7 +45,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
     @Test
     public void TrustedIssuerSAMLTests_validIssuer_IDPMetaData_validIssuer_TrustedIssuer() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -63,7 +62,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
     @Test
     public void TrustedIssuerSAMLTests_validIssuer_IDPMetaData_invalidIssuer_TrustedIssuer() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp2", true);
@@ -82,7 +81,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
     @Test
     public void TrustedIssuerSAMLTests_invalidIssuer_IDPMetaData_validIssuer_TrustedIssuer() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -102,7 +101,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
     @Test
     public void TrustedIssuerSAMLTests_invalidIssuer_IDPMetaData_invalidIssuer_TrustedIssuer() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getIdpUserName(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), updatedTestSettings.getSamlTokenValidationData().getMessageID(), updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
@@ -125,7 +124,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_trustedIssuers_noIDPMetaData.xml"), _testName, null, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -157,7 +156,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_trustedIssuers_noIDPMetaData.xml"), _testName, null, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp2", true);
@@ -185,7 +184,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_trustedIssuers_ALL_ISSUERS.xml"), _testName, null, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -206,7 +205,7 @@ public class TrustedIssuerSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_trustedIssuers_ALL_ISSUERS.xml"), _testName, null, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getIdpUserName(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), updatedTestSettings.getSamlTokenValidationData().getMessageID(), updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);

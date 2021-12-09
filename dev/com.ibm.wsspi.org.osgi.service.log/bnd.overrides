@@ -1,4 +1,4 @@
 -include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.1
+bVersion=1.2
 
 Bundle-SymbolicName: com.ibm.wsspi.org.osgi.service.log

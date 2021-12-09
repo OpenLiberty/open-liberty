@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2021
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,13 +26,10 @@ import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionProcessor;
 
-public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<MailSessionDefinition, MailSessionDefinitions>
-{
-    static final TraceComponent tc = Tr.register
-                    (MailSessionDefinitionInjectionProcessor.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<MailSessionDefinition, MailSessionDefinitions> {
+    static final TraceComponent tc = Tr.register(MailSessionDefinitionInjectionProcessor.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    public MailSessionDefinitionInjectionProcessor()
-    {
+    public MailSessionDefinitionInjectionProcessor() {
         super(MailSessionDefinition.class, MailSessionDefinitions.class);
     }
 
@@ -47,35 +44,28 @@ public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<
 
     /**
      * Processes {@link ComponentNameSpaceConfiguration#getJNDIEnvironmnetRefs} for MailSessions.
-     * 
+     *
      * </ul>
-     * 
+     *
      * @throws InjectionException if an error is found processing the XML.
      **/
     @Override
-    public void processXML()
-                    throws InjectionException
-    {
+    public void processXML() throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processXML : " + this);
 
         List<? extends MailSession> mailSessionDefinitions = ivNameSpaceConfig.getJNDIEnvironmentRefs(MailSession.class);
 
-        if (mailSessionDefinitions != null)
-        {
-            for (MailSession mailSession : mailSessionDefinitions)
-            {
+        if (mailSessionDefinitions != null) {
+            for (MailSession mailSession : mailSessionDefinitions) {
                 String jndiName = mailSession.getName();
                 InjectionBinding<MailSessionDefinition> injectionBinding = ivAllAnnotationsCollection.get(jndiName);
                 MailSessionDefinitionInjectionBinding binding;
 
-                if (injectionBinding != null)
-                {
+                if (injectionBinding != null) {
                     binding = (MailSessionDefinitionInjectionBinding) injectionBinding;
-                }
-                else
-                {
+                } else {
                     binding = new MailSessionDefinitionInjectionBinding(jndiName, ivNameSpaceConfig);
                     addInjectionBinding(binding);
                 }
@@ -91,21 +81,21 @@ public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.injectionengine.InjectionProcessor#createInjectionBinding(java.lang.annotation.Annotation, java.lang.Class, java.lang.reflect.Member, java.lang.String)
      */
     @Sensitive
     @Override
-    public InjectionBinding<MailSessionDefinition> createInjectionBinding(@Sensitive MailSessionDefinition annotation, Class<?> instanceClass, Member member, String jndiName) throws InjectionException {
-        InjectionBinding<MailSessionDefinition> injectionBinding =
-                        new MailSessionDefinitionInjectionBinding(jndiName, ivNameSpaceConfig);
+    public InjectionBinding<MailSessionDefinition> createInjectionBinding(@Sensitive MailSessionDefinition annotation, Class<?> instanceClass, Member member,
+                                                                          String jndiName) throws InjectionException {
+        InjectionBinding<MailSessionDefinition> injectionBinding = new MailSessionDefinitionInjectionBinding(jndiName, ivNameSpaceConfig);
         injectionBinding.merge(annotation, instanceClass, null);
         return injectionBinding;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.injectionengine.InjectionProcessor#resolve(com.ibm.wsspi.injectionengine.InjectionBinding)
      */
     @Override
@@ -117,7 +107,7 @@ public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.injectionengine.InjectionProcessor#getJndiName(java.lang.annotation.Annotation)
      */
     @Override
@@ -128,7 +118,7 @@ public class MailSessionDefinitionInjectionProcessor extends InjectionProcessor<
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.injectionengine.InjectionProcessor#getAnnotations(java.lang.annotation.Annotation)
      */
     @Sensitive

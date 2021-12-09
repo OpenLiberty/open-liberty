@@ -1,0 +1,24 @@
+<server>
+    <featureManager>
+        <feature>ejblite-3.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>beanValidation-1.1</feature>
+        <feature>jpaContainer-2.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
+
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/jpa21_hibernate" includes="*.jar"/>
+    </library>
+
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/antlr-2.7.7.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/classmate-1.3.0.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/dom4j-2.1.1.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/hibernate-commons-annotations-5.0.1.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/hibernate-core-5.2.18.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/jandex-2.0.3.Final.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/javassist-3.25.0-GA.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/jpa21_hibernate/jboss-logging-3.3.1.Final.jar" className="java.security.AllPermission"/>
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -76,14 +75,12 @@ public class EnvEntryServlet extends FATServlet {
 
             if (svXmlTestDriver == null) {
                 // Lookup the Xml test driver EJB
-                Object obj = initCtx.lookup("java:app/EnvEntryEJB/EnvEntryXmlDriverBean");
-                svXmlTestDriver = (EnvEntryDriver) PortableRemoteObject.narrow(obj, EnvEntryDriver.class);
+                svXmlTestDriver = (EnvEntryDriver) initCtx.lookup("java:app/EnvEntryEJB/EnvEntryXmlDriverBean");
             }
 
             if (svAnnTestDriver == null) {
                 // Lookup the Ann test driver EJB
-                Object obj = initCtx.lookup("java:app/EnvEntryEJB/EnvEntryAnnDriverBean");
-                svAnnTestDriver = (EnvEntryDriver) PortableRemoteObject.narrow(obj, EnvEntryDriver.class);
+                svAnnTestDriver = (EnvEntryDriver) initCtx.lookup("java:app/EnvEntryEJB/EnvEntryAnnDriverBean");
             }
         } catch (NamingException ne) {
             throw new RuntimeException(ne);

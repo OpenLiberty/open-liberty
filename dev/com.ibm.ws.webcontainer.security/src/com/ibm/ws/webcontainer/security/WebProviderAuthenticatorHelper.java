@@ -139,11 +139,12 @@ public class WebProviderAuthenticatorHelper {
     private void removeSecurityNameAndUniquedIdFromHashtable(Subject subject, Hashtable<String, ?> props, boolean mapIdentityToRegistryUser) {
         if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
             Set<Object> privateCredentials = subject.getPrivateCredentials();
-            privateCredentials.remove(props);
-            props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
-            props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-            if (!props.isEmpty()) {
-                privateCredentials.add(props);
+            if (privateCredentials.remove(props)) {
+                props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+                props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
+                if (!props.isEmpty()) {
+                    privateCredentials.add(props);
+                }
             }
         }
     }

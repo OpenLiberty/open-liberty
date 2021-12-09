@@ -10,5 +10,12 @@
     <include location="../fatTestPorts.xml"/>
     <sslDefault/>
     <SSLDefault/>
-    
+
+    <variable name="keyFromVariableInServerXML" value="${nonExistingPropertyForServerXMLVariable}"/>
+    <webApplication location="brokenInjectionApp.war">
+        <appProperties>
+            <property name="keyFromAppPropertyInServerXML" value="${nonExistingPropertyForServerXMLAppProperty}"/>
+        </appProperties>
+    </webApplication>
+
 </server>

@@ -1965,10 +1965,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // The result data is thread local when read: No synchronization is necessary
     // between reads.
     //
-    // In single threaded mode, the targets data is processed using the master
+    // In single threaded mode, the targets data is processed using the main
     // intern maps.  In multi-threaded mode, each targets data has its own intern
     // maps, and a final step is added to recreate the targets data using the
-    // master intern maps.  Intern maps are placed by 'getTargetsTable'.  The
+    // main intern maps.  Intern maps are placed by 'getTargetsTable'.  The
     // recreation of the targets data, when necessary, is done by
     // 'internTargetsTable'.
 

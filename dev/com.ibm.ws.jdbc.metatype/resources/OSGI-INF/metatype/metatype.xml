@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2020 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -79,8 +79,11 @@
    <Option value="rollback"                       label="%commitRollbk.rollback.desc"/>
   </AD>
   <AD id="enableBeginEndRequest"                  name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="Boolean"/>
+  <AD id="enableBranchCouplingExtension"          name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="Boolean"/>
   <AD id="enableConnectionCasting"                name="%enblConCast"  description="%enblConCast.desc"  ibmui:group="Advanced" type="Boolean" default="false"/>
-  <AD id="identifyException"                      name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="String"  cardinality="1000" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource.identifyException" ibm:flat="true"/>
+  <AD id="heritage"                               name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource.heritage" ibm:flat="true"/>
+  <AD id="identifyException"                      ibm:beta="true"                                       ibmui:group="Advanced" required="false" type="String"  cardinality="1000" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource.identifyException" ibm:flat="true"/>
+  <!-- TODO remove enableBranchCouplingExtension. It is temporarily used internally to switch on code path for a test case -->
   <AD id="onConnect"                              name="%onConnect"    description="%onConnect.desc"    ibmui:group="Advanced" required="false" type="String"  cardinality="1000"/>
   <AD id="queryTimeout"                           name="%qryTimeout"   description="%qryTimeout.desc"   ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)"/>
   <AD id="recoveryAuthDataRef"                    name="%recoveryAuth" description="%recoveryAuth.desc" ibmui:group="Advanced" required="false" type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config"/>
@@ -92,11 +95,20 @@
   <AD id="validationTimeout"                      name="%valTimeout"   description="%valTimeout.desc"   ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)"/>  
  </OCD>
 
+ <!-- Super type for the heritage behavior extension point -->
+ <Designate factoryPid="com.ibm.ws.jdbc.dataSource.heritage">
+  <Object ocdref="com.ibm.ws.jdbc.dataSource.heritage"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jdbc.dataSource.heritage" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID" required="false" type="String"  name="internal" description="internal use only"/>
+ </OCD>
+
  <Designate factoryPid="com.ibm.ws.jdbc.dataSource.identifyException">
   <Object ocdref="com.ibm.ws.jdbc.dataSource.identifyException"/>
  </Designate>
 
- <OCD id="com.ibm.ws.jdbc.dataSource.identifyException" ibm:alias="identifyException" name="%identifyException" description="%identifyException.desc" ibmui:localization="OSGI-INF/l10n/metatype">
+ <OCD id="com.ibm.ws.jdbc.dataSource.identifyException" name="internal" description="internal use only" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="sqlState"  required="false" type="String"  name="%identifyException.sqlState"  description="%identifyException.sqlState.desc"/>
   <AD id="errorCode" required="false" type="Integer" name="%identifyException.errorCode" description="%identifyException.errorCode.desc"/>
   <AD id="as"        required="true"  type="String"  name="%identifyException.as"        description="%identifyException.as.desc"/>
@@ -1380,14 +1392,7 @@
   <AD id="sslPassword"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="password"    name="%sslPassword"         description="%sslPassword.desc"/>
   <AD id="sslRootCert"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="location"    name="%sslRootCert"         description="%sslRootCert.desc"/>
   <AD id="socketTimeout"                 ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%socketTimeout"       description="%socketTimeout.desc"/>
-  <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc">
-   <Option value="any"             label="any"/>
-   <Option value="master"          label="master"/>
-   <Option value="slave"           label="slave"/>
-   <Option value="secondary"       label="secondary"/>
-   <Option value="preferSlave"     label="preferSlave"/>
-   <Option value="preferSecondary" label="preferSecondary"/>
-  </AD>
+  <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc"/>
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="URL"                           ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>

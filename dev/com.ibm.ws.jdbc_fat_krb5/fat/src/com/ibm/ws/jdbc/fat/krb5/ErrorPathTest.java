@@ -75,6 +75,7 @@ public class ErrorPathTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+
         server.setJvmOptions(jvmOpts);
 
         server.startServer();

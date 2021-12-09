@@ -106,7 +106,7 @@ securitySchemeInvalidURL=Obiekt Security Scheme musi zawiera\u0107 poprawny adre
 
 schemaTypeArrayNullItems=Obiekt Schema o typie array musi mie\u0107 poprawnie zdefiniowan\u0105 w\u0142a\u015bciwo\u015b\u0107 items
 schemaReadOnlyOrWriteOnly=Obiekt Schema nie mo\u017ce mie\u0107 p\u00f3l readOnly i writeOnly jednocze\u015bnie ustawionych na warto\u015b\u0107 true
-schemaMultipleOfLessThanOne=Obiekt Schema musi mie\u0107 w\u0142a\u015bciwo\u015b\u0107 multipleOf ustawion\u0105 na liczb\u0119 wi\u0119ksz\u0105 ni\u017c zero
+schemaMultipleOfNotGreaterThanZero=Obiekt Schema musi mie\u0107 w\u0142a\u015bciwo\u015b\u0107 multipleOf ustawion\u0105 na liczb\u0119 wi\u0119ksz\u0105 ni\u017c zero
 schemaPropertyLessThanZero=W\u0142a\u015bciwo\u015b\u0107 {0} obiektu Schema musi by\u0107 wi\u0119ksza lub r\u00f3wna zero
 schemaTypeDoesNotMatchProperty=W\u0142a\u015bciwo\u015b\u0107 {0} nie jest odpowiednia dla obiektu Schema o typie {1}
 

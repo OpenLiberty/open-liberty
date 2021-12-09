@@ -151,7 +151,7 @@ error.creatingNewServer=CWWKE0030E: An exception occurred while creating server 
 error.creatingNewServer.explanation=The specified server could not be created.
 error.creatingNewServer.useraction=Check and resolve the exception, then try again to create the server.
 
-error.noExistingServer=CWWKE0031E: Specified server {0} does not exist; use the --create option to create a new server. serverPath: {1}
+error.noExistingServer=CWWKE0031E: Specified {0} server does not exist; use the create action to create a new server. serverPath: {1}
 error.noExistingServer.explanation=The specified server does not exist, so no action can be performed on it.
 error.noExistingServer.useraction=Check the name of the server, or create a server with the specified name, then retry the command.
 
@@ -488,7 +488,7 @@ error.creatingNewClient=CWWKE0902E: An exception occurred while creating client 
 error.creatingNewClient.explanation=The specified client could not be created.
 error.creatingNewClient.useraction=Check and resolve the exception, then try again to create the client.
 
-error.noExistingClient=CWWKE0903E: Specified client {0} does not exist; use the --create option to create a new client. clientPath: {1}
+error.noExistingClient=CWWKE0903E: Specified {0} client does not exist; use the create action to create a new client. clientPath: {1}
 error.noExistingClient.explanation=The specified client does not exist, so no action can be performed on it.
 error.noExistingClient.useraction=Check the name of the client, or create a client with the specified name, then retry the command.
 

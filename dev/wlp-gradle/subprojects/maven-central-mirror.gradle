@@ -21,7 +21,27 @@ repositories {
         username userProps.getProperty("artifactory.download.user")
         password userProps.getProperty("artifactory.download.token")
       }
+      url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+      // for fats - this repository is used *only* contains artifacts with group "biz.aQute.bnd"
+      content {
+        includeGroup "biz.aQute.bnd"
+        includeGroup "org.eclipse.transformer"
+      }
+      metadataSources {
+        mavenPom()
+        artifact()
+      }
+    }
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
       url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      metadataSources {
+        mavenPom()
+        artifact()
+      }
     }
   } else {
     mavenCentral()
@@ -31,19 +51,6 @@ repositories {
         mavenPom()
         artifact()
       }
-    }
-  }
-  
-  // Always include sonatype snapshot repo for ONLY the transformer snapshot dependency
-  maven {
-    url ("https://oss.sonatype.org/content/repositories/snapshots/")
-    metadataSources {
-      mavenPom()
-      artifact()
-    }
-    content {
-      includeGroup "org.eclipse.transformer"
-      includeGroup "org.eclipse.transformer.cli"
     }
   }
 }

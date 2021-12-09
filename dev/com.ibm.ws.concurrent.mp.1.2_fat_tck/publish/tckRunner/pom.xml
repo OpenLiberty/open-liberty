@@ -14,7 +14,7 @@
 
     <groupId>com.ibm.ws.concurrent.mp</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>1.2-RC1</version>
+    <version>1.2</version>
     <packaging>pom</packaging>
     <name>MicroProfile Context Propagation TCK Runner</name>
 

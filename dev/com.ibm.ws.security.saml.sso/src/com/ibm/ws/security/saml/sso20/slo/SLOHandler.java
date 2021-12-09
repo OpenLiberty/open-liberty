@@ -186,7 +186,14 @@ public class SLOHandler implements SsoHandler {
                                                                                                    ssoService, null, // do not check inResponse in idp_init (SP Unsolicited)
                                                                                                    ssoRequest);
 
-        IdPInitiatedSLO idpSlo = new IdPInitiatedSLO(ssoService, msgCtx);
+        
+        String externalRelayState = null;
+        externalRelayState = request.getParameter(Constants.RELAY_STATE);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "relaystate in logout request = ", externalRelayState);
+        }
+
+        IdPInitiatedSLO idpSlo = new IdPInitiatedSLO(ssoService, msgCtx, externalRelayState);
         idpSlo.sendSLOResponseToIdp(request, response);
     }
 

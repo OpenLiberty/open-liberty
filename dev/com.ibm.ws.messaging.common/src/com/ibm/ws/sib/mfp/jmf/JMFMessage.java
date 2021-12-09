@@ -105,7 +105,7 @@ public interface JMFMessage extends JMFNativePart {
    *  Return the 'lock artefact' for the JMF message:
    *    For a top-level message, the value returned is the message instance itself.
    *    For a lower-level message (i.e. one representing a Dynamic field) the value
-   *    returned is the 'master' message instance.
+   *    returned is the 'primary' message instance.
    *  The method is provided on the interface so that a caller can make state
    *  transition assumptions across calls.
    *  Added for d364050, specifically for use across  getEncodedLength() & toByteArray()

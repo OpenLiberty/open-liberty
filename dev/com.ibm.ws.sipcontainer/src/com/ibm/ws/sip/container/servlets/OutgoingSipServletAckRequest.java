@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,32 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.address.NameAddress;
-import jain.protocol.ip.sip.address.SipURL;
-import jain.protocol.ip.sip.address.URI;
-import jain.protocol.ip.sip.header.CSeqHeader;
-import jain.protocol.ip.sip.header.CallIdHeader;
-import jain.protocol.ip.sip.header.ContactHeader;
-import jain.protocol.ip.sip.header.FromHeader;
-import jain.protocol.ip.sip.header.HeaderFactory;
-import jain.protocol.ip.sip.header.MaxForwardsHeader;
-import jain.protocol.ip.sip.header.RouteHeader;
-import jain.protocol.ip.sip.header.ToHeader;
-import jain.protocol.ip.sip.header.ViaHeader;
-import jain.protocol.ip.sip.message.Request;
-import jain.protocol.ip.sip.message.Response;
-
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import javax.servlet.sip.SipURI;
+
+import com.ibm.sip.util.log.*;
 import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.jain.protocol.ip.sip.SipJainFactories;
 import com.ibm.ws.jain.protocol.ip.sip.message.MessageImpl;
@@ -43,9 +23,16 @@ import com.ibm.ws.jain.protocol.ip.sip.message.RequestImpl;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.proxy.SipProxyInfo;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
+import com.ibm.ws.sip.parser.SipConstants;
 import com.ibm.ws.sip.properties.CoreProperties;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
 import com.ibm.ws.sip.stack.util.SipStackUtil;
+
+import jain.protocol.ip.sip.*;
+import jain.protocol.ip.sip.address.*;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.Request;
+import jain.protocol.ip.sip.message.Response;
 
 /**
  * @author Amir Perlman, Apr 6, 2003
@@ -172,8 +159,19 @@ public class OutgoingSipServletAckRequest extends OutgoingSipServletRequest
             //	We have to do this here to ensure the application has had time to set the interface on the session.
     		//	Note that tu is null when an application is proxying messages.
         	TransactionUserWrapper tu = getTransactionUser();
-        	if (tu != null)
-    			SipProxyInfo.getInstance().addPreferedOutboundHeader(this, tu.getPreferedOutboundIface(getTransport()));
+        	if (tu != null) {
+        		// verify whether an IBM-PO header field should be added to an ACK request 
+        		// when it's sent out on loopback
+        		boolean isAddIBMPO = PropertiesStore.getInstance().getProperties().getBoolean(
+        				CoreProperties.ADD_IBM_PO_TO_LOOPBACK_MSG);
+        		if (checkIsLoopback() && !isAddIBMPO) {
+            		removeHeader(SipProxyInfo.PEREFERED_OUTBOUND_HDR_NAME);
+        		}
+        		else {
+        			SipProxyInfo.getInstance().addPreferedOutboundHeader(this, tu.getPreferedOutboundIface(getTransport()));
+        		}
+        		
+        	}
 		} 
         catch (SipParseException e) {
         	if (c_logger.isErrorEnabled())
@@ -420,15 +418,22 @@ public class OutgoingSipServletAckRequest extends OutgoingSipServletRequest
 
         //section 8.1.1.7 - Via
         ViaHeader viaHeader = null;
-        String transport =
-            lp.isSecure()
-                ? ListeningPointImpl.TRANSPORT_TLS
-                : lp.getTransport();
-        viaHeader =
-            headerFactory.createViaHeader(
-                lp.getSentBy(),
-                lp.getPort(),
-                transport);
+        boolean outboundEnable = PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.ENABLE_SET_OUTBOUND_INTERFACE);
+		
+		if (outboundEnable) {
+			viaHeader = createViaHeader();
+		}
+		else {
+	        String transport =
+	                lp.isSecure()
+	                    ? ListeningPointImpl.TRANSPORT_TLS
+	                    : lp.getTransport();
+	            viaHeader =
+	                headerFactory.createViaHeader(
+	                    lp.getSentBy(),
+	                    lp.getPort(),
+	                    transport);
+		}
 
         //AmirP 27/07/04 - RFC 17.1.1.3, In case a ACK is generated for none-2xx
         //response - The ACK MUST contain a single Via header field, and this 
@@ -461,5 +466,39 @@ public class OutgoingSipServletAckRequest extends OutgoingSipServletRequest
         retVal.setMaxForwardsHeader(maxForwardHeader);
         return retVal;
 
+    }
+    
+    private ViaHeader createViaHeader() throws IllegalArgumentException, SipParseException {
+        ListeningPoint lPoint = getSipProvider().getListeningPoint();
+        String transport = ((ListeningPointImpl) lPoint).isSecure() ? 
+                			 TLS : lPoint.getTransport();
+    
+        ViaHeader viaHeader;
+        TransactionUserWrapper tUser = getTransactionUser();
+        
+        int index = SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED;
+        
+		boolean outboundEnable = PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.ENABLE_SET_OUTBOUND_INTERFACE);
+		
+		if (outboundEnable) {
+			index = getPreferedOutboundIface();
+		}
+		else {
+			index = (null == tUser) ? SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED : tUser.getPreferedOutboundIface(transport);
+		}
+
+		if (index < 0) {
+			viaHeader = 
+					getHeadersFactory().createViaHeader(lPoint.getPort(), lPoint.getSentBy());
+			viaHeader.setTransport(transport);
+		}
+		else {
+			SipProxyInfo proxyInfo = SipProxyInfo.getInstance();
+			SipURI sipURI = proxyInfo.getOutboundInterface(index, transport);
+			viaHeader = 
+					getHeadersFactory().createViaHeader(sipURI.getHost(), sipURI.getPort(), transport);
+		}
+		
+    	return viaHeader;
     }
 }

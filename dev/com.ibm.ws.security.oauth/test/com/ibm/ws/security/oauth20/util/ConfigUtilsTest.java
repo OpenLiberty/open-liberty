@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.util;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -30,7 +33,7 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 /**
  *
  */
-public class ConfigUtilsTest extends TestCase {
+public class ConfigUtilsTest extends AbstractOidcRegistrationBaseTest {
 
     private static final int NUM_OF_SAMPLE_OIDCBASECLIENTS = 5;
     private static final String PROVIDER_NAME = "ConfigUtilOP";
@@ -44,7 +47,6 @@ public class ConfigUtilsTest extends TestCase {
     private OidcServerConfig testOidcServerConfig;
     private ServiceReference<OidcServerConfig> postTestReferenceToRemove;
 
-    @Override
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
@@ -66,7 +68,6 @@ public class ConfigUtilsTest extends TestCase {
         });
     }
 
-    @Override
     @After
     public void tearDown() {
         if (postTestReferenceToRemove != null) {
@@ -83,7 +84,7 @@ public class ConfigUtilsTest extends TestCase {
 
     private void insertSampleOidcBaseClientIntoConfigUtils() {
         //Hydrate ConfigUtils with some sample OidcBaseClients
-        List<OidcBaseClient> sampleOidcBaseClients = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
+        List<OidcBaseClient> sampleOidcBaseClients = clientRegistrationHelper.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
         ConfigUtils.setClients(sampleOidcBaseClients);
 
         List<OidcBaseClient> retrievedSampleOidcBaseClients = ConfigUtils.getClients();
@@ -180,7 +181,7 @@ public class ConfigUtilsTest extends TestCase {
         //Reset ConfigUtils to contain 0 clients
         deleteSampleOidcBaseClientsFromConfigUtils();
 
-        List<OidcBaseClient> sampleOidcBaseClients = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
+        List<OidcBaseClient> sampleOidcBaseClients = clientRegistrationHelper.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
         ConfigUtils.setClients(sampleOidcBaseClients);
 
         List<OidcBaseClient> retrievedSampleOidcBaseClients = ConfigUtils.getClients();
@@ -189,7 +190,7 @@ public class ConfigUtilsTest extends TestCase {
         assertEquals(sampleOidcBaseClients, retrievedSampleOidcBaseClients);
 
         //Behavior of setClients is to continually add on of existing, not replace
-        List<OidcBaseClient> sampleOidcBaseClients2 = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
+        List<OidcBaseClient> sampleOidcBaseClients2 = clientRegistrationHelper.getsampleOidcBaseClients(NUM_OF_SAMPLE_OIDCBASECLIENTS, PROVIDER_NAME);
         ConfigUtils.setClients(sampleOidcBaseClients2);
 
         List<OidcBaseClient> retrievedSampleOidcBaseClients2 = ConfigUtils.getClients();

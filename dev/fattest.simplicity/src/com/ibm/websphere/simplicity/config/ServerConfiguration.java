@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "cloudantDatabase")
     private ConfigElementList<CloudantDatabase> cloudantDatabases;
+
+    @XmlElement(name = "commonjTimerManager")
+    private ConfigElementList<CommonjTimerManager> commonjTimerManagers;
 
     @XmlElement(name = "concurrencyPolicy")
     private ConfigElementList<ConcurrencyPolicy> concurrencyPolicies;
@@ -192,6 +195,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "kerberos")
     private Kerberos kerberos;
 
+    @XmlElement(name = "spnego")
+    private Spnego spnego;
+
     @XmlElement(name = "keyStore")
     private ConfigElementList<KeyStore> keyStores;
 
@@ -269,6 +275,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "samesite")
     private ConfigElementList<SameSite> samesites;
+    
+    @XmlElement(name = "headers")
+    private ConfigElementList<Headers> headers;
 
     @XmlElement(name = "javaPermission")
     private ConfigElementList<JavaPermission> javaPermissions;
@@ -389,6 +398,12 @@ public class ServerConfiguration implements Cloneable {
         if (this.cloudantDatabases == null)
             this.cloudantDatabases = new ConfigElementList<CloudantDatabase>();
         return this.cloudantDatabases;
+    }
+
+    public ConfigElementList<CommonjTimerManager> getCommonjTimerManagers() {
+        if (this.commonjTimerManagers == null)
+            this.commonjTimerManagers = new ConfigElementList<CommonjTimerManager>();
+        return this.commonjTimerManagers;
     }
 
     public ConfigElementList<ConcurrencyPolicy> getConcurrencyPolicies() {
@@ -584,6 +599,12 @@ public class ServerConfiguration implements Cloneable {
         return kerberos;
     }
 
+    public Spnego getSpnego() {
+        if (spnego == null)
+            spnego = new Spnego();
+        return spnego;
+    }
+
     /**
      * @return the KeyStore configurations for this server
      */
@@ -608,9 +629,13 @@ public class ServerConfiguration implements Cloneable {
      * @return the sslDefault configuration for this server
      */
     public SSLDefault getSSLDefault() {
-        if (this.sslDefault == null) {
-            this.sslDefault = new SSLDefault();
-        }
+//
+// This code caused an empty SSLDefault element to be
+// added to server XML files in FeatureReplacementAction.
+//
+//        if (this.sslDefault == null) {
+//            this.sslDefault = new SSLDefault();
+//        }
         return this.sslDefault;
     }
 
@@ -1268,5 +1293,32 @@ public class ServerConfiguration implements Cloneable {
             this.javaPermissions = new ConfigElementList<JavaPermission>();
         }
         return this.javaPermissions;
+    }
+    
+    /**
+     * Add a Headers configuration to this server
+     * @param headers The headers element to be added to this server
+     */
+    public void addHeaders(Headers headers) {
+        
+        ConfigElementList<Headers> headersCfgs = getHeaders();
+        
+        for(Headers headersEntry: headersCfgs) {
+            if(headersEntry.getId().equals(headers.getId())) {
+                headersCfgs.remove(headersEntry);
+            }
+        }
+        headersCfgs.add(headers);
+    }
+    
+    /**
+     * @return the headers configuration for this server
+     */
+    public ConfigElementList<Headers> getHeaders(){
+        if(this.headers == null) {
+            this.headers = new ConfigElementList<Headers>();
+        }
+        return this.headers;
+        
     }
 }

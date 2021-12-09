@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-web;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.apache.wss4j:wss4j-ws-security-web;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
 -buildpath: org.apache.wss4j:wss4j-ws-security-web;version=2.3.0, \
             com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0;version=latest, \
             com.ibm.websphere.javaee.servlet.4.0;version=latest

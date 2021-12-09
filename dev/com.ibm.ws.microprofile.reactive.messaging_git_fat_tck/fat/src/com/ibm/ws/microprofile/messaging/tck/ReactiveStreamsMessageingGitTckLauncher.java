@@ -83,7 +83,7 @@ public class ReactiveStreamsMessageingGitTckLauncher {
     @Mode(TestMode.EXPERIMENTAL)
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void runFreshMasterBranchTck() throws Exception {
+    public void runFreshMainBranchTck() throws Exception {
 
         File repoParent = new File(GIT_REPO_PARENT_DIR);
         File repo = new File(repoParent, GIT_REPO_NAME);
@@ -118,6 +118,7 @@ public class ReactiveStreamsMessageingGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "org.eclipse.microprofile.reactive.messaging.tck", this
                         .getClass() + ":launchReactiveMessagingTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
+        MvnUtils.preparePublicationFile();
     }
 
     @Mode(TestMode.LITE)
@@ -125,14 +126,14 @@ public class ReactiveStreamsMessageingGitTckLauncher {
     public void testThatDoesNothingAndCanAlwaysRunAndPass() {
         if (TestModeFilter.FRAMEWORK_TEST_MODE != TestMode.EXPERIMENTAL) {
             System.out.println("\n\n\n");
-            System.out.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
+            System.out.println("TCK MAIN BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
                                + ", run with '-Dfat.test.mode=experimental' to run the TCK");
             System.out.println("\n\n\n");
             // In FATs System.out is captured to a file, we try to be kind to any developer and give it to them straight
             if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
                 try (PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out))) {
                     screen.println("\n\n\n");
-                    screen.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
+                    screen.println("TCK MAIN BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
                                    + ", run with '-Dfat.test.mode=experimental' to run the TCK");
                     screen.println("\n\n\n");
                 }

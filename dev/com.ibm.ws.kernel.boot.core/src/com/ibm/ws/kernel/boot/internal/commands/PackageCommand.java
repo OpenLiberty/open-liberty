@@ -375,6 +375,9 @@ public class PackageCommand {
                 startProblem = true;
             }
         } catch (TimeoutException to) {
+            // A 10 minute timeout is crazy.. dump threads to see what the server is doing.
+            Thread.dumpStack();
+
             Debug.printStackTrace(to);
             startProblem = true;
         } catch (InterruptedException e) {
@@ -385,6 +388,7 @@ public class PackageCommand {
             startProblem = true;
         }
         if (startProblem) {
+
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.minify.unable.to.start.server"),
                                                     serverName));
             throw new FailedWithReturnCodeException(ReturnCode.ERROR_SERVER_PACKAGE);

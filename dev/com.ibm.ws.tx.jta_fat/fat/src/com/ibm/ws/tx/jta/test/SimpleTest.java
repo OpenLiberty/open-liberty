@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.tx.jta.web.SimpleServlet;
 
 import componenttest.annotation.Server;
@@ -73,13 +74,13 @@ public class SimpleTest extends FATServletClient {
             server.changeFeatures(Arrays.asList("txjtafat-1.2", "servlet-3.1", "componenttest-1.0", "osgiconsole-1.0"));
         }
 
-        server.startServer();
+        FATUtils.startServers(server);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
-            server.stopServer("WTRN0017W");
+            FATUtils.stopServers(new String[] { "WTRN0017W" }, server);
         }
 
         server.uninstallSystemFeature("txjtafat-1.2");

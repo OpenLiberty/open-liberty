@@ -29,7 +29,7 @@ public class JwtTokenActions extends TestActions {
     // anyone calling this method needs to add upn to the extraClaims that it passes in (if they need it)
     public String getJwtTokenUsingBuilder(String testName, LibertyServer server, String builderId, List<NameValuePair> extraClaims) throws Exception {
 
-        String jwtBuilderUrl = SecurityFatHttpUtils.getServerUrlBase(server) + "/jwtbuilder/build";
+        String jwtBuilderUrl = SecurityFatHttpUtils.getServerUrlBase(server) + JwtConstants.JWT_SIMPLE_BUILDER_ENDPOINT;
 
         List<NameValuePair> requestParams = setRequestParms(builderId, extraClaims);
 

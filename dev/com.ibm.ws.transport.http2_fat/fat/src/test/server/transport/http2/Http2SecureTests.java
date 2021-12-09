@@ -55,7 +55,7 @@ public class Http2SecureTests extends FATServletClient {
         }
         H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", true, "http2.test.war.servlets");
         server.startServer(Http2SecureTests.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", server.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("CWWKO0219I.*ssl not received", server.waitForStringInLog("CWWKO0219I.*ssl"));
         client = new SecureHttp2Client();
     }
 

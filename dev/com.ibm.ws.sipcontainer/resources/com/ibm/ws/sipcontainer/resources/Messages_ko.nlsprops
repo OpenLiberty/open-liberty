@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=SIP com.ibm.ws.sip.container \ubcf4\uc548 
 error.exception.ioeinbody.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
 
 warn.unsupported.realm=CWSCT0358W: \uc54c \uc218 \uc5c6\ub294 \uc778\uc99d \ubc94\uc8fc {0}
-warn.unsupported.realm.explanation=\uc54c \uc218 \uc5c6\ub294 \uc778\uc99d \ubc94\uc8fc\uc758 SIP \uc694\uccad\uc774 \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+warn.unsupported.realm.explanation=\uc54c \uc218 \uc5c6\ub294 \uc778\uc99d \uc601\uc5ed\uc758 SIP \uc694\uccad\uc774 \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 warn.unsupported.realm.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 info.unhashed.creds=CWSCT0359I: \ud574\uc2dc\ub41c \uc2e0\uc784 \uc18d\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.

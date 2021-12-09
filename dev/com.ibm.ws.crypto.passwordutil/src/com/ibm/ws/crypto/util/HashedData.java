@@ -14,6 +14,7 @@ package com.ibm.ws.crypto.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -231,7 +232,7 @@ public class HashedData {
             if (length > 0) {
                 byte[] data = new byte[length];
                 input.read(data, 0, length);
-                output = new String(data, "UTF-8");
+                output = new String(data, StandardCharsets.UTF_8);
             }
         } else {
             throw new InvalidPasswordCipherException("null object");
@@ -266,7 +267,7 @@ public class HashedData {
         if (output != null && value != null) {
             byte[] b = toByte(value.length());
             output.write(b, 0, b.length);
-            b = value.getBytes("UTF-8");
+            b = value.getBytes(StandardCharsets.UTF_8);
             output.write(b, 0, b.length);
         } else {
             throw new InvalidPasswordCipherException("null object");

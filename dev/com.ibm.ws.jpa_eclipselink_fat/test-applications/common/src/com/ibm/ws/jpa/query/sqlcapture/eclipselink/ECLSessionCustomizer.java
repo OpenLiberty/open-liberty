@@ -12,7 +12,8 @@
 package com.ibm.ws.jpa.query.sqlcapture.eclipselink;
 
 import org.eclipse.persistence.config.SessionCustomizer;
-import org.eclipse.persistence.queries.DatabaseQuery;
+import org.eclipse.persistence.internal.databaseaccess.DatabaseCall;
+import org.eclipse.persistence.queries.Call;
 import org.eclipse.persistence.sessions.Session;
 import org.eclipse.persistence.sessions.SessionEvent;
 import org.eclipse.persistence.sessions.SessionEventAdapter;
@@ -24,25 +25,31 @@ public class ECLSessionCustomizer implements SessionCustomizer {
     @Override
     public void customize(Session session) throws Exception {
         session.getEventManager().addListener(new ECLListener());
-
     }
 
     public class ECLListener extends SessionEventAdapter {
 
         @Override
-        public void postExecuteQuery(SessionEvent event) {
-            super.postExecuteQuery(event);
+        public void preExecuteQuery(SessionEvent event) {
+            super.preExecuteQuery(event);
 
 //            final Session session = event.getSession();
-            final DatabaseQuery dbQuery = event.getQuery();
 //            AbstractRecord record = dbQuery.getTranslationRow();
 //            String sql = dbQuery.getTranslatedSQLString(session, record);
 //            SQLListener.recordSQL(sql);
 
 //            SQLListener.recordSQL(event.getQuery().getTranslatedSQLString(event.getSession(), event.getQuery().getTranslationRow()));
 
-            SQLListener.recordSQL(dbQuery.getSQLString());
+            SQLListener.recordSQL(event.getQuery().getSQLString());
+        }
 
+        @Override
+        public void preExecuteCall(SessionEvent event) {
+            super.preExecuteQuery(event);
+            Call call = event.getCall();
+            if (call instanceof DatabaseCall) {
+                SQLListener.recordSQLCall(((DatabaseCall) call).getSQLString());
+            }
         }
 
     }

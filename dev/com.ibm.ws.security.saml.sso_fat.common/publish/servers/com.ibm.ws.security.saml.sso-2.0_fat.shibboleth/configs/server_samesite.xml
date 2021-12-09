@@ -43,6 +43,9 @@
 			<server
 				host="${ldap.server.4.name}"
 				port="${ldap.server.4.port}" />
+			<server
+				host="${ldap.server.7.name}"
+				port="${ldap.server.7.port}" />
 		</failoverServers>
 	</ldapRegistry>
 

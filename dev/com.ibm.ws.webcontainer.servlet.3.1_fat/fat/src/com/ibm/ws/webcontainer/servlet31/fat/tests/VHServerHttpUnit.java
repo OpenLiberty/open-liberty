@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,36 +15,34 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests to execute on the wcServer that use HttpUnit.
  */
 @RunWith(FATRunner.class)
-public class VHServerHttpUnit extends LoggingTest {
+public class VHServerHttpUnit {
     private static final Logger LOG = Logger.getLogger(VHServerHttpUnit.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
-    @ClassRule
-    public static SharedServer ALTVHOST_SERVER = new SharedServer("servlet31_vhServer");
+    @Server("servlet31_vhServer")
+    public static LibertyServer altHostServer;
 
     private static final String SESSION_ID_LISTENER_JAR_NAME = "SessionIdListener";
     private static final String TEST_SERVLET_31_JAR_NAME = "TestServlet31";
@@ -72,34 +70,23 @@ public class VHServerHttpUnit extends LoggingTest {
         WebArchive TestServlet31AltvHost2App = ShrinkHelper.buildDefaultApp(TEST_SERVLET_31_ALT_HOST_V2_APP_NAME + ".war",
                                                                             "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31altvhost2.war.servlets");
         TestServlet31AltvHost2App = (WebArchive) ShrinkHelper.addDirectory(TestServlet31AltvHost2App, "test-applications/TestServlet31AltVHost2.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (ALTVHOST_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = ALTVHOST_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(ALTVHOST_SERVER.getLibertyServer(), TestServlet31App);
 
-            appInstalled = ALTVHOST_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_ALT_HOST_V1_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_ALT_HOST_V1_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(ALTVHOST_SERVER.getLibertyServer(), TestServlet31AltvHost1App);
+        // Export the applications.
+        ShrinkHelper.exportDropinAppToServer(altHostServer, TestServlet31App);
 
-            appInstalled = ALTVHOST_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_ALT_HOST_V2_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_ALT_HOST_V2_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(ALTVHOST_SERVER.getLibertyServer(), TestServlet31AltvHost2App);
-        }
-        ALTVHOST_SERVER.startIfNotStarted();
-        ALTVHOST_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
-        ALTVHOST_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_ALT_HOST_V1_APP_NAME);
-        ALTVHOST_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_ALT_HOST_V2_APP_NAME);
+        ShrinkHelper.exportDropinAppToServer(altHostServer, TestServlet31AltvHost1App);
+
+        ShrinkHelper.exportDropinAppToServer(altHostServer, TestServlet31AltvHost2App);
+
+        // Start the server and use the class name so we can find logs easily.
+        altHostServer.startServer(VHServerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (ALTVHOST_SERVER.getLibertyServer() != null && ALTVHOST_SERVER.getLibertyServer().isStarted()) {
-            ALTVHOST_SERVER.getLibertyServer().stopServer(null);
+        if (altHostServer != null && altHostServer.isStarted()) {
+            altHostServer.stopServer();
         }
     }
 
@@ -115,12 +102,12 @@ public class VHServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(ALTVHOST_SERVER.getServerUrl(true, contextRoot + "/GetVirtualServerNameServlet?serverName=" + serverVName));
+        WebRequest request = new GetMethodWebRequest("http://" + altHostServer.getHostname() + ":" + altHostServer.getHttpDefaultPort() + "/" + contextRoot
+                                                     + "/GetVirtualServerNameServlet?serverName=" + serverVName);
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
         assertTrue(response.getText().startsWith("SUCCESS"));
-
     }
 
     @Test
@@ -134,7 +121,7 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Expecting virtualServerName : " + serverVName);
         WebConversation wc = new WebConversation();
 
-        String hostName = ALTVHOST_SERVER.getLibertyServer().getHostname();
+        String hostName = altHostServer.getHostname();
         String hostPort = "18080";
         String contextRoot = "/TestServlet31AltVHost1";
 
@@ -148,7 +135,6 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
         assertTrue(response.getText().startsWith("SUCCESS"));
-
     }
 
     @Test
@@ -162,7 +148,7 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Expecting virtualServerName : " + serverVName);
         WebConversation wc = new WebConversation();
 
-        String hostName = ALTVHOST_SERVER.getLibertyServer().getHostname();
+        String hostName = altHostServer.getHostname();
         String hostPort = "18082";
         String contextRoot = "/TestServlet31AltVHost2";
 
@@ -176,7 +162,6 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
         assertTrue(response.getText().startsWith("SUCCESS"));
-
     }
 
     @Test
@@ -190,7 +175,7 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Expecting virtualServerName : " + serverVName);
         WebConversation wc = new WebConversation();
 
-        String hostName = ALTVHOST_SERVER.getLibertyServer().getHostname();
+        String hostName = altHostServer.getHostname();
         String hostPort = "18443";
         String contextRoot = "/TestServlet31AltVHost2";
 
@@ -204,17 +189,5 @@ public class VHServerHttpUnit extends LoggingTest {
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
         assertTrue(response.getText().startsWith("SUCCESS"));
-
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return ALTVHOST_SERVER;
-    }
-
 }

@@ -22,7 +22,7 @@
 		<AD name="%hungRequestThreshold.name" description="%hungRequestThreshold.desc" id="hungRequestThreshold" 
         	required="false" type="String" ibm:type="duration(ms)"/>
 		<AD id="enableThreadDumps" name="%enableThreadDumps" description="%enableThreadDumps.desc" required="false"
-		    type="Boolean" default="true" ibm:beta="true"/>
+		    type="Boolean" default="true"/>
 		<AD name="%interruptHungRequest.name" description="%interruptHungRequest.desc" id="interruptHungRequests"
 			required="false" type="Boolean" default="false"/>
     </OCD>

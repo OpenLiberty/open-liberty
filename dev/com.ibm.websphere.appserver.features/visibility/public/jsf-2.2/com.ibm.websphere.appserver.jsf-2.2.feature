@@ -32,20 +32,20 @@ IBM-API-Package: javax.faces; type="spec", \
  org.apache.myfaces.shared.renderkit.html.util; type="third-party"
 IBM-ShortName: jsf-2.2
 Subsystem-Name: JavaServer Faces 2.2
--features=com.ibm.websphere.appserver.javax.cdi-1.2, \
- com.ibm.websphere.appserver.servlet-3.1, \
- com.ibm.websphere.appserver.javax.validation-1.1, \
- com.ibm.websphere.appserver.javax.jsf-2.2, \
- com.ibm.websphere.appserver.jsp-2.3, \
- com.ibm.websphere.appserver.jsfProvider-2.2.0.MyFaces, \
- com.ibm.websphere.appserver.eeCompatible-7.0
+-features=com.ibm.websphere.appserver.jsfProvider-2.2.0.MyFaces, \
+  com.ibm.websphere.appserver.servlet-3.1, \
+  com.ibm.websphere.appserver.jsp-2.3, \
+  com.ibm.websphere.appserver.javax.cdi-1.2, \
+  com.ibm.websphere.appserver.eeCompatible-7.0, \
+  com.ibm.websphere.appserver.javax.jsf-2.2, \
+  com.ibm.websphere.appserver.javax.validation-1.1
 -bundles=com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.jsf.2.2, \
  com.ibm.ws.jsf.shared, \
  com.ibm.ws.org.apache.commons.discovery.0.2, \
- com.ibm.ws.org.apache.commons.codec.1.3, \
- com.ibm.ws.org.apache.commons.logging.1.0.3, \
+ io.openliberty.org.apache.commons.codec, \
+ io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.appserver.thirdparty.jsf-2.2; location:="dev/api/third-party/"

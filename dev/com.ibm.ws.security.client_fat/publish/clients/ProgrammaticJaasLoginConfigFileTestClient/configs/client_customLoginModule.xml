@@ -26,6 +26,7 @@
 		<fileset dir="${server.config.dir}/resources/security/jaas" includes="CustomLoginModule.jar" />
 	</library>
   
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
  
 	<javaPermission codebase="${server.config.dir}/resources/security/jaas/CustomLoginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>

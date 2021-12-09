@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -26,7 +27,6 @@ import javax.management.ObjectName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * API for getting cpu info about the system
@@ -199,7 +199,7 @@ public class CpuInfo {
 
     private static String readFile(File file) throws IOException {
         InputStream is = new FileInputStream(file);
-        BufferedReader buf = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        BufferedReader buf = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         String line = buf.readLine();
         StringBuilder sb = new StringBuilder();
         while (line != null) {
@@ -252,7 +252,7 @@ public class CpuInfo {
             return new NullCpuInfoAccessor();
         }
         try {
-            if (JavaInfo.vendor() == Vendor.IBM) {
+            if (JavaInfo.isSystemClassAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
                 return new IBMJavaCpuInfoAccessor(mbean);
             }
             return new ModernJavaCpuInfoAccessor(mbean);

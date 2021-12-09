@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,20 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.caller;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -29,24 +32,21 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfCallerX509SymTests {
 
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509symcaller";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509symcaller";
     @Server(serverName)
     public static LibertyServer server;
@@ -78,14 +78,20 @@ public class CxfCallerX509SymTests {
 
         String thisMethod = "setup";
 
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        } else if (features.contains("jaxws-2.3")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+
         server.addInstalledAppForValidation("callerclient");
         server.addInstalledAppForValidation("callertoken");
 
@@ -107,9 +113,7 @@ public class CxfCallerX509SymTests {
         // using the original port to send the parameters
         callerUNTClientUrl = "http://localhost:" + portNumber +
                              "/callerclient/CxfCallerSvcClient";
-        // using the original port to send the parameters
-        callerBadUNTClientUrl = "http://localhost:" + portNumber +
-                                "/callerclient/CxfCallerBadUNTClient";
+
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -124,9 +128,10 @@ public class CxfCallerX509SymTests {
      *
      */
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
+
         String thisMethod = "testCxfCallerSymmetricEndorsingPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingPolicy";
 
@@ -139,7 +144,7 @@ public class CxfCallerX509SymTests {
                         "", //String portNumberSecure
                         "FatBAC07Service", //String strServiceName,
                         "UrnCallerToken07", //String strServicePort
-                        "test3", // Execting User ID
+                        "test3", // Expecting User ID
                         "test3" // Password
             );
         } catch (Exception e) {
@@ -155,9 +160,10 @@ public class CxfCallerX509SymTests {
      *
      */
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicyHttps() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
+
         String thisMethod = "testCxfCallerSymmetricEndorsingPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingPolicyHttps";
 
@@ -170,7 +176,7 @@ public class CxfCallerX509SymTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAC07Service", //String strServiceName,
                         "UrnCallerToken07", //String strServicePort
-                        "test3", // Execting User ID
+                        "test3", // Expecting User ID
                         "test3" // Password
             );
         } catch (Exception e) {
@@ -189,7 +195,7 @@ public class CxfCallerX509SymTests {
     //@Test
     // This is not a valid test for now
     public void testCxfCallerSymmetricEndorsingTLSPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
+
         String thisMethod = "testCxfCallerSymmetricEndorsingTLSPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingTLSPolicy";
 
@@ -202,7 +208,7 @@ public class CxfCallerX509SymTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAC08Service", //String strServiceName,
                         "UrnCallerToken08", //String strServicePort
-                        "test3", // Execting User ID
+                        "test3", // Expecting User ID
                         "test3" // Password
             );
         } catch (Exception e) {
@@ -221,6 +227,7 @@ public class CxfCallerX509SymTests {
      * Though this test is not enforced it yet.
      *
      */
+
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -256,6 +263,7 @@ public class CxfCallerX509SymTests {
      * Though this test is not enforced it yet.
      *
      */
+
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -363,8 +371,12 @@ public class CxfCallerX509SymTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {
@@ -372,4 +384,19 @@ public class CxfCallerX509SymTests {
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

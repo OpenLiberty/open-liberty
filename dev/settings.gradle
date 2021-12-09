@@ -37,7 +37,9 @@ pluginManagement {
   }
 
   // This is to support more controlled dependency management if we are able to access particular internal systems.
-  boolean isUsingArtifactory = (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo') && props.getProperty('artifactory.download.server') != null)
+  boolean isUsingArtifactory = (usrHomeProps.exists()
+                                && !Boolean.parseBoolean(props.getProperty('artifactory.force.external.repo'))
+                                && props.getProperty('artifactory.download.server'))
   props.setProperty('is.using.artifactory', isUsingArtifactory.toString())
 
   String repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
@@ -58,11 +60,11 @@ pluginManagement {
   props.setProperty('fetch.oss.source.repository', fetchRepoSource)
 
   // Bnd configuration for where to download open source software binaries from.
+  // Note: no non-artifactory snapshotUrl because we must not rely on public snapshots
   String fetchRepoPublic = !isUsingArtifactory ?
           ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
                   +'name = RemotePublic;'
                   +'releaseUrl=https://repo.maven.apache.org/maven2/'
-                  +';snapshotUrl=https://oss.sonatype.org/content/repositories/snapshots/'
                   +';index=${build}/oss_dependencies.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'

@@ -21,6 +21,7 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
+import io.openliberty.jpa.concurrent_enhancement.TestConcurrentEnhancement;
 
 @RunWith(Suite.class)
 @SuiteClasses({

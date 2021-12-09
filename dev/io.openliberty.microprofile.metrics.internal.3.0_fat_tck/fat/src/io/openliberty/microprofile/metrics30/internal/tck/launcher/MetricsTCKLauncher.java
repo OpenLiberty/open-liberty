@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class MetricsTCKLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         // Ignore CWWKZ0131W - In windows, some jars are being locked during the test. Issue #2768
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWWKZ0131W", "CWWKW1001W", "CWWKW1002W");
+        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWWKZ0131W", "CWWKW1001W", "CWWKW1002W", "CWPMI2005W");
     }
 
     @Test
@@ -67,6 +67,7 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.metrics.internal.3.0_fat_tck", "launchTck", additionalProps);
+        MvnUtils.preparePublicationFile();
     }
 
 }

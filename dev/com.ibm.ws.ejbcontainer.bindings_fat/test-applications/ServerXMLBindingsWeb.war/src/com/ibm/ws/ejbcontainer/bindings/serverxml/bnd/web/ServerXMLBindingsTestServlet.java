@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import com.ibm.ejb3x.BindingName.ejb.BindingNameIntf;
@@ -86,8 +85,8 @@ public class ServerXMLBindingsTestServlet extends FATServlet {
         assertNotNull("@EJB bean.method() for local-home-binding was null", localHomeEJB.foo());
 
         // remote-home-binding -------------------------------
-        Object RHBlookup = ctx.lookup("com/ibm/ejb3x/HomeBindingName/ejb/ServerXMLHomeBindingNameHome3");
-        RemoteHomeBindingNameHome RHBbeanHome = (RemoteHomeBindingNameHome) PortableRemoteObject.narrow(RHBlookup, RemoteHomeBindingNameHome.class);
+        RemoteHomeBindingNameHome RHBbeanHome = (RemoteHomeBindingNameHome) ctx.lookup("com/ibm/ejb3x/HomeBindingName/ejb/ServerXMLHomeBindingNameHome3");
+
         assertNotNull("lookup for remote-home-binding was null", RHBbeanHome);
         RemoteHomeBindingName RHBbean = RHBbeanHome.create();
         assertNotNull("lookup for remote-home-binding was null", RHBbean);
@@ -118,10 +117,9 @@ public class ServerXMLBindingsTestServlet extends FATServlet {
         assertNotNull("@EJB bean.method() for binding-name for local was null", bindingNameEJB.foo());
 
         // Remote
-        Object RBNlookup = ctx.lookup("ejb/ServerXMLBindingNameIntf5");
-        RemoteBindingNameIntf RBNbeanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(RBNlookup, RemoteBindingNameIntf.class);
-        assertNotNull("lookup binding-name for remote was null", RBNbeanHome);
-        assertNotNull("bean.method() for binding-name for remote was null", RBNbeanHome.foo());
+        RemoteBindingNameIntf RBNbean = (RemoteBindingNameIntf) ctx.lookup("ejb/ServerXMLBindingNameIntf5");
+        assertNotNull("lookup binding-name for remote was null", RBNbean);
+        assertNotNull("bean.method() for binding-name for remote was null", RBNbean.foo());
 
         assertNotNull("@EJB binding-name for remote was null", remoteBindingNameEJB);
         assertNotNull("@EJB bean.method() for binding-name for remote was null", remoteBindingNameEJB.foo());
@@ -139,8 +137,8 @@ public class ServerXMLBindingsTestServlet extends FATServlet {
         assertNotNull("@EJB bean.method() for local-home-binding was null", warLocalHomeEJB.getString());
 
         // remote-home-binding
-        Object RHBWarlookup = ctx.lookup("com/ibm/ws/ejbcontainer/ServerXML/ejb/ServerXMLWarTestBeanRemote");
-        WarTestRemoteHome RHBWarbeanHome = (WarTestRemoteHome) PortableRemoteObject.narrow(RHBWarlookup, WarTestRemoteHome.class);
+        WarTestRemoteHome RHBWarbeanHome = (WarTestRemoteHome) ctx.lookup("com/ibm/ws/ejbcontainer/ServerXML/ejb/ServerXMLWarTestBeanRemote");
+
         assertNotNull("lookup for remote-home-binding IN WAR was null", RHBWarbeanHome);
         WarRemoteEJB RHBWarbean = RHBWarbeanHome.create();
         assertNotNull("home.create() for remote-home-binding IN WAR was null", RHBWarbean);

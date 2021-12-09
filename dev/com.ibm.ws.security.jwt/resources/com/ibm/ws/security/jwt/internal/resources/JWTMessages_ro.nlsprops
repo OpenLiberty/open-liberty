@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -314,10 +314,10 @@ SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Este utilizat\u0103 schema HTTP
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Punctul final specificat necesit\u0103 HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS sau modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t HTTPS s\u0103 nu fie necesar.
 
-# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algoritmul de semn\u0103tur\u0103 [{0}] care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este suportat. Va fi folosit algoritmul de semn\u0103tur\u0103 [{1}].
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used, 2=List of supported algorithms
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algoritmul de semn\u0103tur\u0103 [{0}] care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este suportat. Va fi folosit algoritmul de semn\u0103tur\u0103 [{1}]. Algoritmii suporta\u0163i sunt: {2}
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Doar un anumit set de algoritmi RSA, Elliptical Curve \u015fi HMAC sunt suporta\u0163i. Algoritmul de semn\u0103tur\u0103 care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este unul dintre algoritmii de semn\u0103tur\u0103 suporta\u0163i.
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii de semn\u0103tur\u0103 suporta\u0163i includ ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 \u015fi HS512.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii suporta\u0163i sunt afi\u015fa\u0163i \u00een mesaj.
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
@@ -332,7 +332,7 @@ BETA_SIGNATURE_ALGORITHM_USED.useraction=Configura\u0163i un algoritm de semn\u0
 
 # 0=JWT configuration ID, 1=Exception message
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Consumatorul JWT [{0}] a \u00eent\u00e2lnit o eroare \u00een timpul extragerii datelor utile JWS (JSON Web Signature) din jetonul JWE (JSON Web Encryption). {1}
-ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Jetonul JWE s-ar putea s\u0103 fie format gre\u015fit sau ar putea s\u0103 \u00eei lipseasc\u0103 informa\u0163ii. Cheia de gestionare chei care este folosit\u0103 pentru a decripta jetonul JWE ar putea s\u0103 lipseasc\u0103 sau ar putea s\u0103 nu fie capabil\u0103 s\u0103 decripteze jetonul.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Jetonul JWE s-ar putea s\u0103 fie format gre\u015fit sau ar putea s\u0103 \u00eei lipseasc\u0103 informa\u0163ii. Cheia de gestionare chei care este folosit\u0103 pentru a decripta jetonul JWE ar putea s\u0103 lipseasc\u0103 sau ar putea s\u0103 nu fie capabil\u0103 s\u0103 decripteze jetonul. Verifica\u0163i eroarea care este inclus\u0103 \u00een mesaj pentru mai multe informa\u0163ii.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 JWE are un format corect. Verifica\u0163i dac\u0103 \u00een configura\u0163ia de consumator JWT se face referire la cheia de gestionare chei care corespunde cheii care este folosit\u0103 pentru a cripta jetonul JWE.
 
 # 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pentru a accepta JWS \u00een locu de j
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Datele utile (payload) ale jetonului JWE (JSON Web Encryption) care este inclus \u00een cerere nu este un jeton JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Datele utile ale unui jeton JWE trebuie s\u0103 fie un JWT (JSON Web Token) \u00een formatul JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 datele utile ale jetonului JWE reprezint\u0103 un JWT valid \u00een formatul JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Jetonul JWE (JSON Web Encryption) nu poate fi decriptat deoarece nu a putut fi g\u0103sit\u0103 o cheie de decriptare. Atributul de configura\u0163ie server {0} este setat la [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Pentru a decripta jetonul JWE este necesar\u0103 o cheie de decriptare. Cheia de decriptare trebuie s\u0103 fie prezent\u0103 \u00een depozitul de chei al consumatorului JWT, sau cheia trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.
+JWE_DECRYPTION_KEY_MISSING.useraction=Verifica\u0163i c\u0103 aliasul de cheie care este specificat \u00een mesaj exist\u0103 \u00een depozitul de chei al consumatorului JWT. Dac\u0103 aliasul nu este configurat, cheia de decriptare trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.

@@ -61,7 +61,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @param props properties for a configuration-based OSGi service component instance. For example, an instance of concurrencyPolicy.
      * @return a new policy executor instance.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
-     * @throws NullPointerException if the specified identifier is null
+     * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(Map<String, Object> props) {
         PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors);
@@ -73,10 +73,10 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * Creates a new policy executor instance.
      *
      * @param identifier unique identifier for the new instance, to be used for monitoring and problem determination.
-     *            Note: The prefix, PolicyExecutorProvider-, is prepended to the identifier.
+     *                       Note: The prefix, PolicyExecutorProvider-, is prepended to the identifier.
      * @return a new policy executor instance.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
-     * @throws NullPointerException if the specified identifier is null
+     * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String identifier) {
         return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, null, policyExecutors);
@@ -87,10 +87,10 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * Policy executors owned by this application can be shut down via the shutdownNow method of this class.
      *
      * @param fullIdentifier unique identifier for the new instance, to be used for monitoring and problem determination.
-     * @param owner name of application that the policy executor is created for.
+     * @param owner          name of application that the policy executor is created for.
      * @return a new policy executor instance.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
-     * @throws NullPointerException if the specified identifier is null
+     * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutor create(String fullIdentifier, String owner) {
         return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, fullIdentifier, owner, policyExecutors);
@@ -125,6 +125,17 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
     public void shutdownNow(String owner) {
         for (PolicyExecutorImpl executor : policyExecutors.values())
             if (owner.equals(executor.owner))
+                executor.shutdownNow();
+    }
+
+    /**
+     * Shuts down (via shutdownNow) all policy executors with an identifier that starts with the specified prefix.
+     *
+     * @param prefix policy executor identifier prefix that must match if the executor is to be shut down.
+     */
+    public void shutdownNowByIdentifierPrefix(String prefix) {
+        for (PolicyExecutorImpl executor : policyExecutors.values())
+            if (executor.getIdentifier().startsWith(prefix))
                 executor.shutdownNow();
     }
 }

@@ -9,15 +9,13 @@ IBM-API-Package: \
 IBM-ShortName: grpc-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC 1.0
--bundles=\
-  io.openliberty.grpc.1.0.internal,\
-  com.ibm.ws.security.authorization.util
 -features=\
-  io.openliberty.internal.grpc-1.0, \
-  com.ibm.websphere.appserver.servlet-4.0
+  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="5.0,6.0", \
+  io.openliberty.grpc1.0.internal.ee-8.0; ibm.tolerates:="9.0", \
+  io.openliberty.internal.grpc-1.0
+-files=dev/api/ibm/javadoc/io.openliberty.grpc.1.0_1.0-javadoc.zip
 -jars=\
   io.openliberty.grpc.1.0; location:="dev/api/ibm/,lib/"
--files=dev/api/ibm/javadoc/io.openliberty.grpc.1.0_1.0-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

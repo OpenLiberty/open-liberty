@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jose4j.lang.JoseException;
@@ -35,7 +37,7 @@ public class TAIJwtUtils {
 
     private static TraceComponent tc = Tr.register(TAIJwtUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     public static final String TYPE_JWT_TOKEN = "Json Web Token";
-    private static BoundedHashMap loggedOutJwts = new BoundedHashMap(5000);
+    private static Map<String, Object> loggedOutJwts = Collections.synchronizedMap(new BoundedHashMap(5000));
 
     public TAIJwtUtils() {
     }
@@ -63,16 +65,19 @@ public class TAIJwtUtils {
         }
     }
 
-    public synchronized static boolean isJwtPreviouslyLoggedOut(String rawToken) {
+    public static boolean isJwtPreviouslyLoggedOut(String rawToken) {
+        if (loggedOutJwts.isEmpty()) {
+          return false;
+        }
         boolean result = loggedOutJwts.get(getSha256Digest(rawToken)) != null;
         return result;
     }
 
-    public synchronized static void addLoggedOutJwtToList(String rawToken) {
+    public static void addLoggedOutJwtToList(String rawToken) {
         // digest it to reduce size
         String digestedJwt = getSha256Digest(rawToken);
         if (digestedJwt != null) {
-            loggedOutJwts.put(digestedJwt, System.currentTimeMillis());
+            loggedOutJwts.put(digestedJwt, Boolean.TRUE);
         }
     }
 

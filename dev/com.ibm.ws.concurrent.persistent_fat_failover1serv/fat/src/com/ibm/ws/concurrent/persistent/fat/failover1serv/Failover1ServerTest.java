@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import failover1serv.web.Failover1ServerTestServlet;
 
 /**
@@ -165,25 +167,25 @@ public class Failover1ServerTest extends FATServletClient {
 
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
-            persistentExec3.setPollInterval("2s");
+            persistentExec3.setPollInterval("5s");
             persistentExec3.setPollSize("4");
-            persistentExec3.setMissedTaskThreshold("3s");
+            persistentExec3.setMissedTaskThreshold("8s");
             persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
-            persistentExec4.setPollInterval("2s");
+            persistentExec4.setPollInterval("5s");
             persistentExec4.setPollSize("4");
-            persistentExec4.setMissedTaskThreshold("3s");
+            persistentExec4.setMissedTaskThreshold("8s");
             persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
-            persistentExec5.setPollInterval("2s");
+            persistentExec5.setPollInterval("5s");
             persistentExec5.setPollSize("4");
-            persistentExec5.setMissedTaskThreshold("3s");
+            persistentExec5.setMissedTaskThreshold("8s");
             persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
@@ -268,22 +270,22 @@ public class Failover1ServerTest extends FATServletClient {
 
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
-            persistentExec3.setPollInterval("1s500ms");
-            persistentExec3.setMissedTaskThreshold("2s");
+            persistentExec3.setPollInterval("4s500ms");
+            persistentExec3.setMissedTaskThreshold("7s");
             persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
-            persistentExec4.setPollInterval("1s500ms");
-            persistentExec4.setMissedTaskThreshold("2s");
+            persistentExec4.setPollInterval("4s500ms");
+            persistentExec4.setMissedTaskThreshold("7s");
             persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
-            persistentExec5.setPollInterval("1s500ms");
-            persistentExec5.setMissedTaskThreshold("2s");
+            persistentExec5.setPollInterval("4s500ms");
+            persistentExec5.setMissedTaskThreshold("7s");
             persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
@@ -362,8 +364,8 @@ public class Failover1ServerTest extends FATServletClient {
             PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setInitialPollDelay("200ms");
-            persistentExec1.setPollInterval("1s500ms");
-            persistentExec1.setMissedTaskThreshold("2s");
+            persistentExec1.setPollInterval("4s500ms");
+            persistentExec1.setMissedTaskThreshold("7s");
             persistentExec1.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
@@ -393,6 +395,7 @@ public class Failover1ServerTest extends FATServletClient {
      * It will go ahead and schedule the task without any claim to run it, allowing another instance to take over.
      * In this test, the missedTaskThreshold is not configured on the instance that cannot run tasks.
      */
+    @Mode(TestMode.FULL)
     @Test
     public void testScheduleThenRunOnDifferentServer() throws Exception {
         ServerConfiguration config = originalConfig.clone();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,10 @@ public class AutoCreatedTimerDriverBean implements AutoCreatedTimerDriver {
         try {
             svLogger.info("Waiting for timers to expire; or 5 minutes");
             timersExpiredLatch.await(5, TimeUnit.MINUTES);
+            if (timersExpiredLatch.getCount() != 0) {
+                svLogger.info("Waiting for timers to expire 1 extra minute; likely a server pause delayed timers; still waiting on " + timersExpiredLatch.getCount());
+                timersExpiredLatch.await(1, TimeUnit.MINUTES);
+            }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
             throw new EJBException("Unexpected exception waiting.", ex);

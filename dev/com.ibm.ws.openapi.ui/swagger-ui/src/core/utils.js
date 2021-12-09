@@ -1,4 +1,4 @@
-/* 
+/*
   ATTENTION! This file (but not the functions within) is deprecated.
 
   You should probably add a new file to `./helpers/` instead of adding a new
@@ -10,7 +10,7 @@
   in `./helpers` if you have the time.
 */
 
-import Im from "immutable"
+import Im, { fromJS, Set } from "immutable"
 import { sanitizeUrl as braintreeSanitizeUrl } from "@braintree/sanitize-url"
 import camelCase from "lodash/camelCase"
 import upperFirst from "lodash/upperFirst"
@@ -18,36 +18,19 @@ import _memoize from "lodash/memoize"
 import find from "lodash/find"
 import some from "lodash/some"
 import eq from "lodash/eq"
+import isFunction from "lodash/isFunction"
 import { memoizedSampleFromSchema, memoizedCreateXMLExample } from "core/plugins/samples/fn"
 import win from "./window"
 import cssEscape from "css.escape"
 import getParameterSchema from "../helpers/get-parameter-schema"
 import randomBytes from "randombytes"
 import shaJs from "sha.js"
+import YAML from "js-yaml"
 
 
 const DEFAULT_RESPONSE_KEY = "default"
 
 export const isImmutable = (maybe) => Im.Iterable.isIterable(maybe)
-
-export function isJSONObject (str) {
-  try {
-    var o = JSON.parse(str)
-
-    // Handle non-exception-throwing cases:
-    // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
-    // but... JSON.parse(null) returns null, and typeof null === "object",
-    // so we must check for that, too. Thankfully, null is falsey, so this suffices:
-    if (o && typeof o === "object") {
-      return o
-    }
-  }
-  catch (e) {
-    // do nothing
-  }
-
-  return false
-}
 
 export function objectify (thing) {
   if(!isObject(thing))
@@ -67,17 +50,74 @@ export function arrayify (thing) {
   return normalizeArray(thing)
 }
 
-export function fromJSOrdered (js) {
-  if(isImmutable(js))
+export function fromJSOrdered(js) {
+  if (isImmutable(js)) {
     return js // Can't do much here
-
-  if (js instanceof win.File)
+  }
+  if (js instanceof win.File) {
     return js
+  }
+  if (!isObject(js)) {
+    return js
+  }
+  if (Array.isArray(js)) {
+    return Im.Seq(js).map(fromJSOrdered).toList()
+  }
+  if (isFunction(js.entries)) {
+    // handle multipart/form-data
+    const objWithHashedKeys = createObjWithHashedKeys(js)
+    return Im.OrderedMap(objWithHashedKeys).map(fromJSOrdered)
+  }
+  return Im.OrderedMap(js).map(fromJSOrdered)
+}
 
-  return !isObject(js) ? js :
-    Array.isArray(js) ?
-      Im.Seq(js).map(fromJSOrdered).toList() :
-      Im.OrderedMap(js).map(fromJSOrdered)
+/**
+ * Convert a FormData object into plain object
+ * Append a hashIdx and counter to the key name, if multiple exists
+ * if single, key name = <original>
+ * if multiple, key name = <original><hashIdx><count>
+ * @example <caption>single entry for vegetable</caption>
+ * fdObj.entries.vegtables: "carrot"
+ * // returns newObj.vegetables : "carrot"
+ * @example <caption>multiple entries for fruits[]</caption>
+ * fdObj.entries.fruits[]: "apple"
+ * // returns newObj.fruits[]_**[]1 : "apple"
+ * fdObj.entries.fruits[]: "banana"
+ * // returns newObj.fruits[]_**[]2 : "banana"
+ * fdObj.entries.fruits[]: "grape"
+ * // returns newObj.fruits[]_**[]3 : "grape"
+ * @param {FormData} fdObj - a FormData object
+ * @return {Object} - a plain object
+ */
+export function createObjWithHashedKeys (fdObj) {
+  if (!isFunction(fdObj.entries)) {
+    return fdObj // not a FormData object with iterable
+  }
+  const newObj = {}
+  const hashIdx = "_**[]" // our internal identifier
+  const trackKeys = {}
+  for (let pair of fdObj.entries()) {
+    if (!newObj[pair[0]] && !(trackKeys[pair[0]] && trackKeys[pair[0]].containsMultiple)) {
+      newObj[pair[0]] = pair[1] // first key name: no hash required
+    } else {
+      if (!trackKeys[pair[0]]) {
+        // initiate tracking key for multiple
+        trackKeys[pair[0]] = {
+          containsMultiple: true,
+          length: 1
+        }
+        // "reassign" first pair to matching hashed format for multiple
+        let hashedKeyFirst = `${pair[0]}${hashIdx}${trackKeys[pair[0]].length}`
+        newObj[hashedKeyFirst] = newObj[pair[0]]
+        // remove non-hashed key of multiple
+        delete newObj[pair[0]] // first
+      }
+      trackKeys[pair[0]].length += 1
+      let hashedKeyCurrent = `${pair[0]}${hashIdx}${trackKeys[pair[0]].length}`
+      newObj[hashedKeyCurrent] = pair[1]
+    }
+  }
+  return newObj
 }
 
 export function bindToState(obj, state) {
@@ -163,166 +203,6 @@ export function getList(iterable, keys) {
 }
 
 /**
- * Adapted from http://github.com/asvd/microlight
- * @copyright 2016 asvd <heliosframework@gmail.com>
- */
-export function highlight (el) {
-  const MAX_LENGTH = 5000
-  var
-    _document = document,
-    appendChild = "appendChild",
-    test = "test"
-
-  if (!el) return ""
-  if (el.textContent.length > MAX_LENGTH) { return el.textContent }
-
-  var reset = function(el) {
-    var text = el.textContent,
-      pos = 0, // current position
-      next1 = text[0], // next character
-      chr = 1, // current character
-      prev1, // previous character
-      prev2, // the one before the previous
-      token = // current token content
-        el.innerHTML = "", // (and cleaning the node)
-
-    // current token type:
-    //  0: anything else (whitespaces / newlines)
-    //  1: operator or brace
-    //  2: closing braces (after which '/' is division not regex)
-    //  3: (key)word
-    //  4: regex
-    //  5: string starting with "
-    //  6: string starting with '
-    //  7: xml comment  <!-- -->
-    //  8: multiline comment /* */
-    //  9: single-line comment starting with two slashes //
-    // 10: single-line comment starting with hash #
-      tokenType = 0,
-
-    // kept to determine between regex and division
-      lastTokenType,
-    // flag determining if token is multi-character
-      multichar,
-      node
-
-    // running through characters and highlighting
-    while (prev2 = prev1,
-      // escaping if needed (with except for comments)
-      // previous character will not be therefore
-      // recognized as a token finalize condition
-      prev1 = tokenType < 7 && prev1 == "\\" ? 1 : chr
-      ) {
-      chr = next1
-      next1=text[++pos]
-      multichar = token.length > 1
-
-      // checking if current token should be finalized
-      if (!chr || // end of content
-          // types 9-10 (single-line comments) end with a
-          // newline
-        (tokenType > 8 && chr == "\n") ||
-        [ // finalize conditions for other token types
-          // 0: whitespaces
-          /\S/[test](chr), // merged together
-          // 1: operators
-          1, // consist of a single character
-          // 2: braces
-          1, // consist of a single character
-          // 3: (key)word
-          !/[$\w]/[test](chr),
-          // 4: regex
-          (prev1 == "/" || prev1 == "\n") && multichar,
-          // 5: string with "
-          prev1 == "\"" && multichar,
-          // 6: string with '
-          prev1 == "'" && multichar,
-          // 7: xml comment
-          text[pos-4]+prev2+prev1 == "-->",
-          // 8: multiline comment
-          prev2+prev1 == "*/"
-        ][tokenType]
-      ) {
-        // appending the token to the result
-        if (token) {
-          // remapping token type into style
-          // (some types are highlighted similarly)
-          el[appendChild](
-            node = _document.createElement("span")
-          ).setAttribute("style", [
-            // 0: not formatted
-            "color: #555; font-weight: bold;",
-            // 1: keywords
-            "",
-            // 2: punctuation
-            "",
-            // 3: strings and regexps
-            "color: #555;",
-            // 4: comments
-            ""
-          ][
-            // not formatted
-            !tokenType ? 0 :
-              // punctuation
-              tokenType < 3 ? 2 :
-                // comments
-                tokenType > 6 ? 4 :
-                  // regex and strings
-                  tokenType > 3 ? 3 :
-                    // otherwise tokenType == 3, (key)word
-                    // (1 if regexp matches, 0 otherwise)
-                    + /^(a(bstract|lias|nd|rguments|rray|s(m|sert)?|uto)|b(ase|egin|ool(ean)?|reak|yte)|c(ase|atch|har|hecked|lass|lone|ompl|onst|ontinue)|de(bugger|cimal|clare|f(ault|er)?|init|l(egate|ete)?)|do|double|e(cho|ls?if|lse(if)?|nd|nsure|num|vent|x(cept|ec|p(licit|ort)|te(nds|nsion|rn)))|f(allthrough|alse|inal(ly)?|ixed|loat|or(each)?|riend|rom|unc(tion)?)|global|goto|guard|i(f|mp(lements|licit|ort)|n(it|clude(_once)?|line|out|stanceof|t(erface|ernal)?)?|s)|l(ambda|et|ock|ong)|m(icrolight|odule|utable)|NaN|n(amespace|ative|ext|ew|il|ot|ull)|o(bject|perator|r|ut|verride)|p(ackage|arams|rivate|rotected|rotocol|ublic)|r(aise|e(adonly|do|f|gister|peat|quire(_once)?|scue|strict|try|turn))|s(byte|ealed|elf|hort|igned|izeof|tatic|tring|truct|ubscript|uper|ynchronized|witch)|t(emplate|hen|his|hrows?|ransient|rue|ry|ype(alias|def|id|name|of))|u(n(checked|def(ined)?|ion|less|signed|til)|se|sing)|v(ar|irtual|oid|olatile)|w(char_t|hen|here|hile|ith)|xor|yield)$/[test](token)
-            ])
-
-          node[appendChild](_document.createTextNode(token))
-        }
-
-        // saving the previous token type
-        // (skipping whitespaces and comments)
-        lastTokenType =
-          (tokenType && tokenType < 7) ?
-            tokenType : lastTokenType
-
-        // initializing a new token
-        token = ""
-
-        // determining the new token type (going up the
-        // list until matching a token type start
-        // condition)
-        tokenType = 11
-        while (![
-          1, //  0: whitespace
-                               //  1: operator or braces
-          /[\/{}[(\-+*=<>:;|\\.,?!&@~]/[test](chr), // eslint-disable-line no-useless-escape
-          /[\])]/[test](chr), //  2: closing brace
-          /[$\w]/[test](chr), //  3: (key)word
-          chr == "/" && //  4: regex
-            // previous token was an
-            // opening brace or an
-            // operator (otherwise
-            // division, not a regex)
-          (lastTokenType < 2) &&
-            // workaround for xml
-            // closing tags
-          prev1 != "<",
-          chr == "\"", //  5: string with "
-          chr == "'", //  6: string with '
-                               //  7: xml comment
-          chr+next1+text[pos+1]+text[pos+2] == "<!--",
-          chr+next1 == "/*", //  8: multiline comment
-          chr+next1 == "//", //  9: single-line comment
-          chr == "#" // 10: hash-style comment
-        ][--tokenType]);
-      }
-
-      token += chr
-    }
-  }
-
-  return reset(el)
-}
-
-/**
  * Take an immutable map, and convert to a list.
  * Where the keys are merged with the value objects
  * @param {Immutable.Map} map, the map to convert
@@ -365,13 +245,13 @@ export function extractFileNameFromContentDispositionHeader(value){
     /filename="([^;]*);?"/i,
     /filename=([^;]*);?/i
   ]
-  
+
   let responseFilename
   patterns.some(regex => {
     responseFilename = regex.exec(value)
     return responseFilename !== null
   })
-    
+
   if (responseFilename !== null && responseFilename.length > 1) {
     try {
       return decodeURIComponent(responseFilename[1])
@@ -427,13 +307,13 @@ export const propChecker = (props, nextProps, objectList=[], ignoreList=[]) => {
 
 export const validateMaximum = ( val, max ) => {
   if (val > max) {
-    return "Value must be less than Maximum"
+    return `Value must be less than ${max}`
   }
 }
 
 export const validateMinimum = ( val, min ) => {
   if (val < min) {
-    return "Value must be greater than Minimum"
+    return `Value must be greater than ${min}`
   }
 }
 
@@ -482,13 +362,47 @@ export const validateGuid = (val) => {
 
 export const validateMaxLength = (val, max) => {
   if (val.length > max) {
-      return "Value must be less than MaxLength"
+      return `Value must be no longer than ${max} character${max !== 1 ? "s" : ""}`
+  }
+}
+
+export const validateUniqueItems = (val, uniqueItems) => {
+  if (!val) {
+    return
+  }
+  if (uniqueItems === "true" || uniqueItems === true) {
+    const list = fromJS(val)
+    const set = list.toSet()
+    const hasDuplicates = val.length > set.size
+    if(hasDuplicates) {
+      let errorsPerIndex = Set()
+      list.forEach((item, i) => {
+        if(list.filter(v => isFunc(v.equals) ? v.equals(item) : v === item).size > 1) {
+          errorsPerIndex = errorsPerIndex.add(i)
+        }
+      })
+      if(errorsPerIndex.size !== 0) {
+        return errorsPerIndex.map(i => ({index: i, error: "No duplicates allowed."})).toArray()
+      }
+    }
+  }
+}
+
+export const validateMinItems = (val, min) => {
+  if (!val && min >= 1 || val && val.length < min) {
+      return `Array must contain at least ${min} item${min === 1 ? "" : "s"}`
+  }
+}
+
+export const validateMaxItems = (val, max) => {
+  if (val && val.length > max) {
+    return `Array must not contain more then ${max} item${max === 1 ? "" : "s"}`
   }
 }
 
 export const validateMinLength = (val, min) => {
   if (val.length < min) {
-      return "Value must be greater than MinLength"
+      return `Value must be at least ${min} character${min !== 1 ? "s" : ""}`
   }
 }
 
@@ -499,170 +413,269 @@ export const validatePattern = (val, rxPattern) => {
   }
 }
 
-// validation of parameters before execute
-export const validateParam = (param, value, { isOAS3 = false, bypassRequiredCheck = false } = {}) => {
-  
+function validateValueBySchema(value, schema, requiredByParam, bypassRequiredCheck, parameterContentMediaType) {
+  if(!schema) return []
   let errors = []
+  let nullable = schema.get("nullable")
+  let requiredBySchema = schema.get("required")
+  let maximum = schema.get("maximum")
+  let minimum = schema.get("minimum")
+  let type = schema.get("type")
+  let format = schema.get("format")
+  let maxLength = schema.get("maxLength")
+  let minLength = schema.get("minLength")
+  let uniqueItems = schema.get("uniqueItems")
+  let maxItems = schema.get("maxItems")
+  let minItems = schema.get("minItems")
+  let pattern = schema.get("pattern")
 
-  let paramRequired = param.get("required")
+  const schemaRequiresValue = requiredByParam || requiredBySchema === true
+  const hasValue = value !== undefined && value !== null
+  const isValidEmpty = !schemaRequiresValue && !hasValue
 
-  let { schema: paramDetails, parameterContentMediaType } = getParameterSchema(param, { isOAS3 })
+  const needsExplicitConstraintValidation = hasValue && type === "array"
 
-  if(!paramDetails) return errors
+  const requiresFurtherValidation =
+    schemaRequiresValue
+    || needsExplicitConstraintValidation
+    || !isValidEmpty
 
-  let required = paramDetails.get("required")
-  let maximum = paramDetails.get("maximum")
-  let minimum = paramDetails.get("minimum")
-  let type = paramDetails.get("type")
-  let format = paramDetails.get("format")
-  let maxLength = paramDetails.get("maxLength")
-  let minLength = paramDetails.get("minLength")
-  let pattern = paramDetails.get("pattern")
+  const isValidNullable = nullable && value === null
 
-  /*
-    If the parameter is required OR the parameter has a value (meaning optional, but filled in)
-    then we should do our validation routine.
-    Only bother validating the parameter if the type was specified.
-  */
-  if ( type && (paramRequired || required || value) ) {
-    // These checks should evaluate to true if there is a parameter
-    let stringCheck = type === "string" && value
-    let arrayCheck = type === "array" && Array.isArray(value) && value.length
-    let arrayListCheck = type === "array" && Im.List.isList(value) && value.count()
-    let arrayStringCheck = type === "array" && typeof value === "string" && value
-    let fileCheck = type === "file" && value instanceof win.File
-    let booleanCheck = type === "boolean" && (value || value === false)
-    let numberCheck = type === "number" && (value || value === 0)
-    let integerCheck = type === "integer" && (value || value === 0)
-    let objectCheck = type === "object" && typeof value === "object" && value !== null
-    let objectStringCheck = type === "object" && typeof value === "string" && value
+  // will not be included in the request or [schema / value] does not [allow / require] further analysis.
+  const noFurtherValidationNeeded =
+    isValidNullable
+    || !type
+    || !requiresFurtherValidation
 
-    const allChecks = [
-      stringCheck, arrayCheck, arrayListCheck, arrayStringCheck, fileCheck, 
-      booleanCheck, numberCheck, integerCheck, objectCheck, objectStringCheck,
-    ]
+  if(noFurtherValidationNeeded) {
+    return []
+  }
 
-    const passedAnyCheck = allChecks.some(v => !!v)
+  // Further this point the parameter is considered worth to validate
+  let stringCheck = type === "string" && value
+  let arrayCheck = type === "array" && Array.isArray(value) && value.length
+  let arrayListCheck = type === "array" && Im.List.isList(value) && value.count()
+  let arrayStringCheck = type === "array" && typeof value === "string" && value
+  let fileCheck = type === "file" && value instanceof win.File
+  let booleanCheck = type === "boolean" && (value || value === false)
+  let numberCheck = type === "number" && (value || value === 0)
+  let integerCheck = type === "integer" && (value || value === 0)
+  let objectCheck = type === "object" && typeof value === "object" && value !== null
+  let objectStringCheck = type === "object" && typeof value === "string" && value
 
-    if ((paramRequired || required) && !passedAnyCheck && !bypassRequiredCheck ) {
-      errors.push("Required field is not provided")
-      return errors
-    }
+  const allChecks = [
+    stringCheck, arrayCheck, arrayListCheck, arrayStringCheck, fileCheck,
+    booleanCheck, numberCheck, integerCheck, objectCheck, objectStringCheck,
+  ]
 
-    if (
-      type === "object" &&
-      typeof value === "string" &&
-      (parameterContentMediaType === null ||
-        parameterContentMediaType === "application/json")
-    ) {
+  const passedAnyCheck = allChecks.some(v => !!v)
+
+  if (schemaRequiresValue && !passedAnyCheck && !bypassRequiredCheck) {
+    errors.push("Required field is not provided")
+    return errors
+  }
+  if (
+    type === "object" &&
+    (parameterContentMediaType === null ||
+      parameterContentMediaType === "application/json")
+  ) {
+    let objectVal = value
+    if(typeof value === "string") {
       try {
-        JSON.parse(value)
+        objectVal = JSON.parse(value)
       } catch (e) {
         errors.push("Parameter string value must be valid JSON")
         return errors
       }
     }
-
-    if (pattern) {
-      let err = validatePattern(value, pattern)
-      if (err) errors.push(err)
-    }
-
-    if (maxLength || maxLength === 0) {
-      let err = validateMaxLength(value, maxLength)
-      if (err) errors.push(err)
-    }
-
-    if (minLength) {
-      let err = validateMinLength(value, minLength)
-      if (err) errors.push(err)
-    }
-
-    if (maximum || maximum === 0) {
-      let err = validateMaximum(value, maximum)
-      if (err) errors.push(err)
-    }
-
-    if (minimum || minimum === 0) {
-      let err = validateMinimum(value, minimum)
-      if (err) errors.push(err)
-    }
-
-    if ( type === "string" ) {
-      let err
-      if (format === "date-time") {
-          err = validateDateTime(value)
-      } else if (format === "uuid") {
-          err = validateGuid(value)
-      } else {
-          err = validateString(value)
-      }
-      if (!err) return errors
-      errors.push(err)
-    } else if ( type === "boolean" ) {
-      let err = validateBoolean(value)
-      if (!err) return errors
-      errors.push(err)
-    } else if ( type === "number" ) {
-      let err = validateNumber(value)
-      if (!err) return errors
-      errors.push(err)
-    } else if ( type === "integer" ) {
-      let err = validateInteger(value)
-      if (!err) return errors
-      errors.push(err)
-    } else if ( type === "array" ) {
-      let itemType
-
-      if ( !arrayListCheck || !value.count() ) { return errors }
-
-      itemType = paramDetails.getIn(["items", "type"])
-
-      value.forEach((item, index) => {
-        let err
-
-        if (itemType === "number") {
-          err = validateNumber(item)
-        } else if (itemType === "integer") {
-          err = validateInteger(item)
-        } else if (itemType === "string") {
-          err = validateString(item)
-        }
-
-        if ( err ) {
-          errors.push({ index: index, error: err})
+    if(schema && schema.has("required") && isFunc(requiredBySchema.isList) && requiredBySchema.isList()) {
+      requiredBySchema.forEach(key => {
+        if(objectVal[key] === undefined) {
+          errors.push({ propKey: key, error: "Required property not found" })
         }
       })
-    } else if ( type === "file" ) {
-      let err = validateFile(value)
-      if (!err) return errors
-      errors.push(err)
     }
+    if(schema && schema.has("properties")) {
+      schema.get("properties").forEach((val, key) => {
+        const errs = validateValueBySchema(objectVal[key], val, false, bypassRequiredCheck, parameterContentMediaType)
+        errors.push(...errs
+          .map((error) => ({ propKey: key, error })))
+      })
+    }
+  }
+
+  if (pattern) {
+    let err = validatePattern(value, pattern)
+    if (err) errors.push(err)
+  }
+
+  if (minItems) {
+    if (type === "array") {
+      let err = validateMinItems(value, minItems)
+      if (err) errors.push(err)
+    }
+  }
+
+  if (maxItems) {
+    if (type === "array") {
+      let err = validateMaxItems(value, maxItems)
+      if (err) errors.push({ needRemove: true, error: err })
+    }
+  }
+
+  if (uniqueItems) {
+    if (type === "array") {
+      let errorPerItem = validateUniqueItems(value, uniqueItems)
+      if (errorPerItem) errors.push(...errorPerItem)
+    }
+  }
+
+  if (maxLength || maxLength === 0) {
+    let err = validateMaxLength(value, maxLength)
+    if (err) errors.push(err)
+  }
+
+  if (minLength) {
+    let err = validateMinLength(value, minLength)
+    if (err) errors.push(err)
+  }
+
+  if (maximum || maximum === 0) {
+    let err = validateMaximum(value, maximum)
+    if (err) errors.push(err)
+  }
+
+  if (minimum || minimum === 0) {
+    let err = validateMinimum(value, minimum)
+    if (err) errors.push(err)
+  }
+
+  if (type === "string") {
+    let err
+    if (format === "date-time") {
+      err = validateDateTime(value)
+    } else if (format === "uuid") {
+      err = validateGuid(value)
+    } else {
+      err = validateString(value)
+    }
+    if (!err) return errors
+    errors.push(err)
+  } else if (type === "boolean") {
+    let err = validateBoolean(value)
+    if (!err) return errors
+    errors.push(err)
+  } else if (type === "number") {
+    let err = validateNumber(value)
+    if (!err) return errors
+    errors.push(err)
+  } else if (type === "integer") {
+    let err = validateInteger(value)
+    if (!err) return errors
+    errors.push(err)
+  } else if (type === "array") {
+    if (!(arrayCheck || arrayListCheck)) {
+      return errors
+    }
+    if(value) {
+      value.forEach((item, i) => {
+        const errs = validateValueBySchema(item, schema.get("items"), false, bypassRequiredCheck, parameterContentMediaType)
+        errors.push(...errs
+          .map((err) => ({ index: i, error: err })))
+      })
+    }
+  } else if (type === "file") {
+    let err = validateFile(value)
+    if (!err) return errors
+    errors.push(err)
   }
 
   return errors
 }
 
-export const getSampleSchema = (schema, contentType="", config={}) => {
-  if (/xml/.test(contentType)) {
-    if (!schema.xml || !schema.xml.name) {
-      schema.xml = schema.xml || {}
+// validation of parameters before execute
+export const validateParam = (param, value, { isOAS3 = false, bypassRequiredCheck = false } = {}) => {
 
-      if (schema.$$ref) {
-        let match = schema.$$ref.match(/\S*\/(\S+)$/)
-        schema.xml.name = match[1]
-      } else if (schema.type || schema.items || schema.properties || schema.additionalProperties) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- XML example cannot be generated; root element name is undefined -->"
-      } else {
-        return null
-      }
+  let paramRequired = param.get("required")
+
+  let { schema: paramDetails, parameterContentMediaType } = getParameterSchema(param, { isOAS3 })
+
+  return validateValueBySchema(value, paramDetails, paramRequired, bypassRequiredCheck, parameterContentMediaType)
+}
+
+const getXmlSampleSchema = (schema, config, exampleOverride) => {
+  if (schema && (!schema.xml || !schema.xml.name)) {
+    schema.xml = schema.xml || {}
+
+    if (schema.$$ref) {
+      let match = schema.$$ref.match(/\S*\/(\S+)$/)
+      schema.xml.name = match[1]
+    } else if (schema.type || schema.items || schema.properties || schema.additionalProperties) {
+      return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- XML example cannot be generated; root element name is undefined -->"
+    } else {
+      return null
     }
-    return memoizedCreateXMLExample(schema, config)
   }
+  return memoizedCreateXMLExample(schema, config, exampleOverride)
+}
 
-  const res = memoizedSampleFromSchema(schema, config)
+const shouldStringifyTypesConfig = [
+  {
+    when: /json/,
+    shouldStringifyTypes: ["string"]
+  }
+]
 
-  return typeof res === "object" ? JSON.stringify(res, null, 2) : res
+const defaultStringifyTypes = ["object"]
+
+const getStringifiedSampleForSchema = (schema, config, contentType, exampleOverride) => {
+  const res = memoizedSampleFromSchema(schema, config, exampleOverride)
+  const resType = typeof res
+
+  const typesToStringify = shouldStringifyTypesConfig.reduce(
+    (types, nextConfig) => nextConfig.when.test(contentType)
+      ? [...types, ...nextConfig.shouldStringifyTypes]
+      : types,
+    defaultStringifyTypes)
+
+  return some(typesToStringify, x => x === resType)
+    ? JSON.stringify(res, null, 2)
+    : res
+}
+
+const getYamlSampleSchema = (schema, config, contentType, exampleOverride) => {
+  const jsonExample = getStringifiedSampleForSchema(schema, config, contentType, exampleOverride)
+  let yamlString
+  try {
+    yamlString = YAML.dump(YAML.load(jsonExample), {
+
+      lineWidth: -1 // don't generate line folds
+    })
+    if(yamlString[yamlString.length - 1] === "\n") {
+      yamlString = yamlString.slice(0, yamlString.length - 1)
+    }
+  } catch (e) {
+    console.error(e)
+    return "error: could not generate yaml example"
+  }
+  return yamlString
+    .replace(/\t/g, "  ")
+}
+
+export const getSampleSchema = (schema, contentType="", config={}, exampleOverride = undefined) => {
+  if(schema && isFunc(schema.toJS))
+    schema = schema.toJS()
+  if(exampleOverride && isFunc(exampleOverride.toJS))
+    exampleOverride = exampleOverride.toJS()
+
+  if (/xml/.test(contentType)) {
+    return getXmlSampleSchema(schema, config, exampleOverride)
+  }
+  if (/(yaml|yml)/.test(contentType)) {
+    return getYamlSampleSchema(schema, config, contentType, exampleOverride)
+  }
+  return getStringifiedSampleForSchema(schema, config, contentType, exampleOverride)
 }
 
 export const parseSearch = () => {
@@ -676,15 +689,13 @@ export const parseSearch = () => {
     let params = search.substr(1).split("&")
 
     for (let i in params) {
-      if (!params.hasOwnProperty(i)) {
+      if (!Object.prototype.hasOwnProperty.call(params, i)) {
         continue
       }
       i = params[i].split("=")
       map[decodeURIComponent(i[0])] = (i[1] && decodeURIComponent(i[1])) || ""
     }
   }
-
-  delete map.url
 
   return map
 }
@@ -701,7 +712,7 @@ export const btoa = (str) => {
   if (str instanceof Buffer) {
     buffer = str
   } else {
-    buffer = new Buffer(str.toString(), "utf-8")
+    buffer = Buffer.from(str.toString(), "utf-8")
   }
 
   return buffer.toString("base64")
@@ -743,6 +754,14 @@ export function sanitizeUrl(url) {
 
   return braintreeSanitizeUrl(url)
 }
+
+export function requiresValidationURL(uri) {
+  if (!uri || uri.indexOf("localhost") >= 0 || uri.indexOf("127.0.0.1") >= 0 || uri === "none") {
+    return false
+  }
+  return true
+}
+
 
 export function getAcceptControllingResponse(responses) {
   if(!Im.OrderedMap.isOrderedMap(responses)) {
@@ -836,7 +855,7 @@ export function paramToIdentifier(param, { returnAll = false, allowHashes = true
   }
   const paramName = param.get("name")
   const paramIn = param.get("in")
-  
+
   let generatedIdentifiers = []
 
   // Generate identifiers in order of most to least specificity
@@ -844,7 +863,7 @@ export function paramToIdentifier(param, { returnAll = false, allowHashes = true
   if (param && param.hashCode && paramIn && paramName && allowHashes) {
     generatedIdentifiers.push(`${paramIn}.${paramName}.hash-${param.hashCode()}`)
   }
-  
+
   if(paramIn && paramName) {
     generatedIdentifiers.push(`${paramIn}.${paramName}`)
   }
@@ -890,4 +909,16 @@ function b64toB64UrlEncoded(str) {
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=/g, "")
+}
+
+export const isEmptyValue = (value) => {
+  if (!value) {
+    return true
+  }
+
+  if (isImmutable(value) && value.isEmpty()) {
+    return true
+  }
+
+  return false
 }

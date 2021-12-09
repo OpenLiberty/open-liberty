@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 1997, 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,8 @@ import javax.transaction.xa.Xid;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.AbortableXAResource;
 import com.ibm.tx.jta.OnePhaseXAResource;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.JTAResourceBase;
@@ -43,6 +42,7 @@ import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
 import com.ibm.ws.Transaction.test.XAFlowCallback;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
@@ -56,22 +56,20 @@ import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
  * 2) JTAXAResourceImpl - recoverable XA resource
  * 3) CorbaResourceWrapper - wrapped OMG CosTransactions subordinate coordinator Resource
  * 4) WSCoordinatorWrapper - wrapped private distributed subordinate coordinator Resource
- * 
+ *
  * Even though an instance of this class may be accessed from multiple threads
  * within a process, there is no serialisation for thread-safety in the
  * implementation. The operation of the controlling TransactionImpl should
  * ensure that this object is not accessed by more than one thread at a time.
- * 
+ *
  * The information recorded in an instance of this class needs to be
  * reconstructible in the case of a system failure.
  */
 public class RegisteredResources implements Comparator<JTAResource> {
-    static final TraceComponent tc = Tr.register(RegisteredResources.class
-                                                 , TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+    static final TraceComponent tc = Tr.register(RegisteredResources.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     // d159569: flag to indicate XA Flow callbacks for test enabled
-    protected static final boolean xaFlowCallbackEnabled =
-                    XAFlowCallbackControl.isEnabled();
+    protected static final boolean xaFlowCallbackEnabled = XAFlowCallbackControl.isEnabled();
 
     /**
      * The maximum size that the pi-data generated from this unit
@@ -99,7 +97,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * The Xid assigned to this transaction branch by the underlying
      * transaction service.
-     * 
+     *
      * The Xid serves only as a base for future transaction identifiers.
      */
     protected Xid _txServiceXid;
@@ -188,7 +186,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * If we are performing the isSameRM check, this is the JTAXAResourceImpl against which
      * the checking is performed.
      */
-    protected JTAXAResourceImpl _sameRMMasterResource;
+    protected JTAXAResourceImpl _sameRMPrimaryResource;
 
     /**
      * The second XA resource which has the same RM instance as the first JTAXAResource.
@@ -217,7 +215,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Initialises the list of RegisteredResources to be empty.
      * <p>
-     * 
+     *
      * @param tran
      */
     public RegisteredResources(TransactionImpl tran, boolean disableTwoPhase) {
@@ -236,13 +234,13 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Attempts to add a one-Phase XA Resource to this unit of work.
-     * 
+     *
      * @param xaRes The XAResource to add to this unit of work
-     * 
+     *
      * @return true if the resource was added, false if not.
-     * 
+     *
      * @throws RollbackException if enlistment fails
-     * @throws SystemException if unexpected error occurs
+     * @throws SystemException   if unexpected error occurs
      */
     public boolean enlistResource(XAResource xaRes) throws RollbackException, SystemException, IllegalStateException {
         if (tc.isEntryEnabled())
@@ -255,7 +253,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                                "as the recovery log was not available at transaction start";
             final IllegalStateException ise = new IllegalStateException(msg);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
@@ -276,7 +274,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                 final IllegalStateException ise = new IllegalStateException(msg);
                 // FFDC in TransactionImpl
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] {"(SPI)", ise});
+                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
                 throw ise;
             }
         }
@@ -325,22 +323,22 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * One of two things will happen. Either the resource will
      * successfully be added to an existing XA Group, or a new XA Group
      * will be created along with a new XID branch.
-     * 
-     * @param xaRes The XAResource to add to this unit of work
+     *
+     * @param xaRes      The XAResource to add to this unit of work
      * @param recoveryId The recovery ID for the xaresource represented by
-     *            xaRes.
-     * 
+     *                       xaRes.
+     *
      * @return true if the resource was added, false if not.
-     * 
+     *
      * @throws RollbackException if enlistment fails
-     * @throws SystemException if unexpected error occurs
+     * @throws SystemException   if unexpected error occurs
      */
     public boolean enlistResource(XAResource xaRes, XARecoveryData recData, int branchCoupling) throws RollbackException, SystemException, IllegalStateException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "enlistResource", new Object[] {
-                                                         xaRes,
-                                                         recData,
-                                                         branchCoupling });
+                                                          xaRes,
+                                                          recData,
+                                                          branchCoupling });
 
         // Determine if we are attempting to enlist a second resource within a transaction
         // that can't support 2PC anyway.
@@ -366,10 +364,10 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
             try {
                 // This code will only be driven in the ESB scenario. There will only ever
-                // be two resources enlisted that will qualify for the isSameRM optimization 
+                // be two resources enlisted that will qualify for the isSameRM optimization
                 // so we perform our check to see if this is the first resource we are enlisting
                 // in the tran. If it is, it could qualify for the optimization, So we check.
-                // If we have enlisted a resource before, then we check to see if the the first 
+                // If we have enlisted a resource before, then we check to see if the the first
                 // resource that was enlisted can perform the isSameRM check.
 
                 if (_resourceObjects.isEmpty()) {
@@ -394,15 +392,15 @@ public class RegisteredResources implements Comparator<JTAResource> {
                         Tr.event(tc, "Second resource or later, so we should check for isSameRM");
 
                     if (_isCheckingSameRM) {
-                        if (xaRes.isSameRM(_sameRMMasterResource.XAResource()) &&
-                            // Make sure _sameRMMasterResource also compatible with branchCoupling start flag
-                            (_sameRMMasterResource.getBranchCoupling() == branchCoupling)) {
+                        if (xaRes.isSameRM(_sameRMPrimaryResource.XAResource()) &&
+                        // Make sure _sameRMPrimaryResource also compatible with branchCoupling start flag
+                            (_sameRMPrimaryResource.getBranchCoupling() == branchCoupling)) {
                             if (tc.isEventEnabled())
                                 Tr.event(tc, "isSameRM match successful");
                             matchedSameRM = true;
                             _isCheckingSameRM = false;
 
-                            xid = _sameRMMasterResource.getXID();
+                            xid = _sameRMPrimaryResource.getXID();
                         } else {
                             if (tc.isEventEnabled())
                                 Tr.event(tc, "isSameRM match was not successful, so we create a new branch xid");
@@ -434,11 +432,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
             }
 
             // If we are enlisting the first resource to the tran and it is capable to
-            // perform isSameRM, we set it as the master resource that we make our
+            // perform isSameRM, we set it as the primary resource that we make our
             // isSameRM processing against.
 
-            if (_isCheckingSameRM && (_sameRMMasterResource == null)) {
-                _sameRMMasterResource = jtaRes;
+            if (_isCheckingSameRM && (_sameRMPrimaryResource == null)) {
+                _sameRMPrimaryResource = jtaRes;
             }
 
             jtaRes.setBranchCoupling(branchCoupling);
@@ -451,20 +449,20 @@ public class RegisteredResources implements Comparator<JTAResource> {
         // Always log at enlist time.  We could delay to prepare/c1p but some versions of db/2 go semi-in-doubt
         // as soon as xa_end is called. Note that the call to logRecoveryEntry will establish the identity
         // of the associated RU. This means that recData.getRecoveryId() below will return the correct RU value
-        // rather than 0.       
+        // rather than 0.
         try {
             recData.logRecoveryEntry();
         } catch (IllegalStateException ise) // d172471
         {
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.RegisteredResources.enlistResource", "483", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
             throw ise;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RegisteredResources.enlistResource", "489", this);
             final Throwable toThrow = new SystemException(e.getLocalizedMessage()).initCause(e);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] {"(SPI)", toThrow});
+                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", toThrow });
             throw (SystemException) toThrow;
         }
 
@@ -515,7 +513,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * the given expiration time and send it to the XAResource via setTransactionTimeout().
      * If this fails for any reason, we assume the RM does not support setTransactionTimeout()
      * and we disable any further attempts (unless we've explicitly configured to continue)
-     * 
+     *
      * @param jtaRes
      * @param recData
      */
@@ -546,13 +544,13 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Delist the specified resource from the transaction.
-     * 
+     *
      * @param xaRes the XAResource to delist.
-     * @param flag the XA flags to pass to the resource.
-     *            TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
-     * 
+     * @param flag  the XA flags to pass to the resource.
+     *                  TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
+     *
      * @throws SystemException if the resource is not successfully
-     *             disassociated from the transaction branch.
+     *                             disassociated from the transaction branch.
      */
     protected boolean delistResource(XAResource xaRes, int flag) throws SystemException {
         if (tc.isEntryEnabled())
@@ -624,7 +622,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Generates a new XidImpl to represent a new branch of this
      * transaction.
-     * 
+     *
      * @return A new XidImpl representing a new branch of this transaction.
      */
     protected Xid generateNewBranch() {
@@ -735,7 +733,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Directs the RegisteredResources to recover its state after a failure.
      * <p>
      * This is based on the given RecoverableUnit object. The participant list is reconstructed.
-     * 
+     *
      * @param log The RecoverableUnit holding the RegisteredResources state.
      */
     public void reconstruct(RecoveryManager recoveryManager, RecoverableUnit log) throws SystemException {
@@ -795,11 +793,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Adds a reference to a Resource object to the list in the registered state.
-     * 
+     *
      * This is intended to be used for registering Remote objects which do not need any start association.
-     * 
+     *
      * @param resource
-     * 
+     *
      * @return
      */
     protected void addRes(JTAResource resource) {
@@ -820,11 +818,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Starts association of the resource with the current transaction and if required
      * adds a reference to a Resource object to the list in the registered state.
-     * 
+     *
      * This method is intended to be used for registering local resources.
-     * 
+     *
      * @param resource
-     * 
+     *
      * @return
      */
     protected void startRes(JTAResource resource) throws RollbackException, SystemException {
@@ -890,7 +888,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Returns the number of Resources currently in the list.
-     * 
+     *
      * @return The number of registered Resources.
      */
     public int numRegistered() {
@@ -903,9 +901,9 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Send end to all registered resources
-     * 
+     *
      * @param flags
-     * 
+     *
      * @return whether we managed to successfully end all the resources
      */
     public boolean distributeEnd(int flags) {
@@ -976,8 +974,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         return false;
     }
 
-    protected int prepareResource(JTAResource currResource) throws RollbackException, SystemException,
-                    HeuristicMixedException, HeuristicHazardException {
+    protected int prepareResource(JTAResource currResource) throws RollbackException, SystemException, HeuristicMixedException, HeuristicHazardException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "prepareResource", new Object[] { this, currResource });
 
@@ -1124,7 +1121,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * If all but one Resources return VoteReadOnly then the
      * remaining Resource is completed via CommitOnePhase and
      * TMONEPHASE is returned.
-     * 
+     *
      * @return The vote for the transaction.
      *         <UL>
      *         <LI>XA_OK - Transaction is ok to Commit</LI>
@@ -1136,17 +1133,16 @@ public class RegisteredResources implements Comparator<JTAResource> {
      *         <LI>ONE_PHASE_OPT_FAILED - need to consult lpsHeuristicCompletion flag</LI>
      *         </UL>
      * @param subordinate true indicates this is a subordinate branch
-     * @param optimise indicate whether optimisations are allowed
+     * @param optimise    indicate whether optimisations are allowed
      * @exception RollbackException
-     *                Thrown if a participant has voted to Rollback the transaction
+     *                                        Thrown if a participant has voted to Rollback the transaction
      * @exception HeuristicMixedException
-     *                Thrown if one phase optimisation results in heuristic
+     *                                        Thrown if one phase optimisation results in heuristic
      * @exception SystemException
-     *                Thrown if an unknown error occurs
+     *                                        Thrown if an unknown error occurs
      */
-    public int distributePrepare(boolean subordinate, boolean optimise)
-                    throws RollbackException, SystemException, HeuristicMixedException,
-                    HeuristicHazardException, HeuristicRollbackException {
+    public int distributePrepare(boolean subordinate,
+                                 boolean optimise) throws RollbackException, SystemException, HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "distributePrepare", new Object[] { this, subordinate, optimise });
 
@@ -1229,8 +1225,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                         // Heuristic cases are thrown to caller
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "distributePrepare",
-                                    (_prepareResult == ONE_PHASE_OPT ? "ONE_PHASE_OPT" :
-                                                    (_prepareResult == ONE_PHASE_OPT_ROLLBACK ? "ONE_PHASE_OPT_ROLLBACK" : "HEURISTIC")));
+                                    (_prepareResult == ONE_PHASE_OPT ? "ONE_PHASE_OPT" : (_prepareResult == ONE_PHASE_OPT_ROLLBACK ? "ONE_PHASE_OPT_ROLLBACK" : "HEURISTIC")));
                     }
 
                     return _prepareResult;
@@ -1357,7 +1352,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * resources, this will perform the request and process the
      * response. For async based resources, the request has already
      * been performed, and only the response is processed here.
-     * 
+     *
      * @return boolean value to indicate whether retries are necessary.
      */
     protected boolean deliverOutcome(JTAResource currResource) {
@@ -1658,7 +1653,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * <p>
      * All Resources that throw a heuristic exception are marked and
      * completed during distributeForget.
-     * 
+     *
      * @return boolean value to indicate whether retries are necessary.
      */
     protected boolean distributeOutcome() {
@@ -1762,7 +1757,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Possibly update the heuristic state of the transaction.
      * This is only required if this is a subordinate.
      * If we are a subordinate we need to update the state and log it for recovery.
-     * 
+     *
      * @param commit - true if requested to commit, else false
      */
     private void updateHeuristicState(boolean commit) throws SystemException {
@@ -1793,7 +1788,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Distributes forget messages to all Resources in
      * the appropriate state. Called during retry and mainline.
-     * 
+     *
      * @return boolean value to indicate whether retries are necessary.
      */
     public boolean distributeForget() throws SystemException {
@@ -1841,9 +1836,9 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Distribute forget flow to given resource.
      * Used internally when resource indicates a heuristic condition.
      * May result in retries if resource cannot be contacted.
-     * 
+     *
      * @param resource - the resource to issue forget to
-     * @param index - the index of this resource in the arrays
+     * @param index    - the index of this resource in the arrays
      * @return boolean to indicate whether retries are necessary
      */
 
@@ -1950,10 +1945,9 @@ public class RegisteredResources implements Comparator<JTAResource> {
 
     /**
      * Distributes commit messages to all Resources in the registered state.
-     * 
+     *
      */
-    public void distributeCommit()
-                    throws SystemException, HeuristicHazardException, HeuristicMixedException, HeuristicRollbackException {
+    public void distributeCommit() throws SystemException, HeuristicHazardException, HeuristicMixedException, HeuristicRollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "distributeCommit");
 
@@ -2006,26 +2000,24 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Internal helper method to flow commitOnePhase to the resource in the registered list.
      * It is called from distributePrepare when all bar one of the resources votes read only.
-     * 
+     *
      * flowCommitOnePhase flows commit_one_phase to the given resource and, if necessary,
      * performs the required XAException handling.
-     * 
+     *
      * This method is never called for a subordinate.
-     * 
+     *
      * @param lastParticipant
-     *            Is the resource being committed the Last Participant in an LPS enabled 2PC
-     *            transaction. If so then we will not be waiting for a retry or setting the
-     *            transaction state to completed after completion of the 1PC.
-     * 
+     *                            Is the resource being committed the Last Participant in an LPS enabled 2PC
+     *                            transaction. If so then we will not be waiting for a retry or setting the
+     *                            transaction state to completed after completion of the 1PC.
+     *
      * @exception RollbackException
      * @exception SystemException
      * @exception HeuristicMixedException
      * @exception HeuristicHazardException
      * @exception HeuristicRollbackException
      */
-    protected void flowCommitOnePhase(boolean lastParticipant)
-                    throws RollbackException, SystemException, HeuristicMixedException,
-                    HeuristicHazardException, HeuristicRollbackException {
+    protected void flowCommitOnePhase(boolean lastParticipant) throws RollbackException, SystemException, HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "flowCommitOnePhase", lastParticipant);
 
@@ -2268,12 +2260,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Distributes rollback messages to all Resources in the registered state.
      * <p>
-     * 
+     *
      * @exception HeuristicMixedException
      * @exception SystemException
      */
-    public void distributeRollback()
-                    throws HeuristicMixedException, HeuristicHazardException, HeuristicCommitException, SystemException {
+    public void distributeRollback() throws HeuristicMixedException, HeuristicHazardException, HeuristicCommitException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "distributeRollback");
 
@@ -2334,7 +2325,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * Records information in the transaction log about a JTAResource object in the appropriate
      * log section. This indicates that the object has prepared to commit.
-     * 
+     *
      * @param resource The resource object to log.
      */
     protected void recordLog(JTAResource resource) throws SystemException {
@@ -2409,7 +2400,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      */
     public boolean isOnlyAgent() {
         final boolean result = (_resourceObjects.size() == 1 &&
-                        _resourceObjects.get(0) instanceof ResourceSupportsOnePhaseCommit);
+                                _resourceObjects.get(0) instanceof ResourceSupportsOnePhaseCommit);
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isOnlyAgent", result);
@@ -2420,7 +2411,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Add an XAResource to te list of resources that must have the
      * transaction outcome or forget processing redriven after RM
      * failure. Only relevant for z/OS split processing.
-     * 
+     *
      * @param jtaRes the XAResource to add to the list
      */
     protected void addToFailedResources(JTAResource jtaRes) {
@@ -2491,7 +2482,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         }
 
         if (_sameRMResource != null) {
-            _sameRMResource.copyDiagnostics(_sameRMMasterResource);
+            _sameRMResource.copyDiagnostics(_sameRMPrimaryResource);
             diagnoseResource(_sameRMResource, diagType);
         }
 
@@ -2576,12 +2567,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "updateHeuristicOutcome",
                      "combining " +
-                                     ResourceWrapper.printResourceStatus(_heuristicOutcome) +
-                                     " with " +
-                                     ResourceWrapper.printResourceStatus(status) +
-                                     " to get " +
-                                     ResourceWrapper.printResourceStatus(ho)
-                            );
+                                                   ResourceWrapper.printResourceStatus(_heuristicOutcome) +
+                                                   " with " +
+                                                   ResourceWrapper.printResourceStatus(status) +
+                                                   " to get " +
+                                                   ResourceWrapper.printResourceStatus(ho));
 
         _heuristicOutcome = ho;
     }
@@ -2611,14 +2601,14 @@ public class RegisteredResources implements Comparator<JTAResource> {
         return _retryRequired;
     }
 
-    // There are two comparators included in this class, one for prepare ordering 
+    // There are two comparators included in this class, one for prepare ordering
     // and one for commit ordering of resources.  The distributePrepare method
     // loops through the list of resources in reverse order, so the sort needs to
     // be in ascending order of priority, wherease distributeOutcome loops through
     // the list in ascending order, so the sort list needs to be in descending order
     // to ensure highest priority resources are processed first.  Resources with
     // the same priority value will be prepared in reverse order to that for
-    // commit.  This ensures compatability in ordering with previous releases 
+    // commit.  This ensures compatability in ordering with previous releases
     // where enlisted resources are prepared in reverse order to enslist but
     // committed in the same order.  So if we have 2 pairs of resources of the
     // same priority, ie 1a, 1b, 2a, 2b, where a is enslisted before b, then
@@ -2667,13 +2657,11 @@ public class RegisteredResources implements Comparator<JTAResource> {
         return false;
     }
 
-    private final static Comparator<JTAResource> prepareComparator = new Comparator<JTAResource>()
-    {
+    private final static Comparator<JTAResource> prepareComparator = new Comparator<JTAResource>() {
         // Sort priority in ascending order
         // Comparator returning 0 should leave elements in list alone, preserving original order.
         @Override
-        public int compare(JTAResource o1, JTAResource o2)
-        {
+        public int compare(JTAResource o1, JTAResource o2) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "compare", new Object[] { o1, o2, this });
             int result = 0;
@@ -2713,9 +2701,8 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * commitLastAgent.
      * only called in root
      */
-    public int commitLastAgent(boolean isLPS, boolean xaOKVote)
-                    throws RollbackException, SystemException, HeuristicMixedException,
-                    HeuristicHazardException, HeuristicRollbackException {
+    public int commitLastAgent(boolean isLPS,
+                               boolean xaOKVote) throws RollbackException, SystemException, HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "commitLastAgent", new Object[] { this, isLPS, xaOKVote });
 
@@ -2746,8 +2733,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                 // Heuristic cases are thrown to caller
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "commitLastAgent",
-                            (result == ONE_PHASE_OPT ? "ONE_PHASE_OPT" :
-                                            (result == ONE_PHASE_OPT_ROLLBACK ? "ONE_PHASE_OPT_ROLLBACK" : "HEURISTIC")));
+                            (result == ONE_PHASE_OPT ? "ONE_PHASE_OPT" : (result == ONE_PHASE_OPT_ROLLBACK ? "ONE_PHASE_OPT_ROLLBACK" : "HEURISTIC")));
             }
             return result;
         }
@@ -2831,7 +2817,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
     }
 
     /**
-     * 
+     *
      * abort resources that can be aborted.
      */
     protected void abort() {
@@ -2842,12 +2828,10 @@ public class RegisteredResources implements Comparator<JTAResource> {
             final JTAResource resource = _resourceObjects.get(i);
 
             // Is resource an instance of abortableXAResource?
-            if (resource != null)
-            {
+            if (resource != null) {
                 XAResource xares = resource.XAResource();
 
-                if (xares instanceof AbortableXAResource)
-                {
+                if (xares instanceof AbortableXAResource) {
                     // Class xaresClass = xares.getClass();
                     // String xaresClassStr = xaresClass.getName();
                     // System.out.println("Attempt to abort class: " + xaresClassStr);
@@ -2855,9 +2839,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
                         Tr.event(tc, "The resource is abortable, so drive abort on XAResource " + resource.XAResource() + ", for transaction " + _transaction.getTranName());
                     AbortableXAResource abortablexares = (AbortableXAResource) xares;
                     abortablexares.abort(_txServiceXid);
-                }
-                else
-                {
+                } else {
                     if (tc.isEventEnabled())
                         Tr.info(tc, "The resource is NOT abortable: " + resource.XAResource() + ", for transaction " + _transaction.getTranName());
                 }

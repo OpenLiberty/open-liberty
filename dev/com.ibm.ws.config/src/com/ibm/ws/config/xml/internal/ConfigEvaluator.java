@@ -125,7 +125,7 @@ class ConfigEvaluator {
             XMLConfigConstants.VAR_PATTERN.matcher(config.getId()).matches() &&
             !ignoreWarnings) {
             String nodeName = getNodeNameForMessage(registryEntry, config);
-            Tr.warning(tc, "variables.in.id.not.supported", nodeName, config.getId());
+            issueWarning("variables.in.id.not.supported", nodeName, config.getId());
         }
 
         // process attributes based on metatype info
@@ -146,9 +146,9 @@ class ConfigEvaluator {
                         String nodeName = getNodeNameForMessage(registryEntry, config);
 
                         if (config.getId() == null) {
-                            Tr.error(tc, "error.missing.required.attribute.singleton", nodeName, attributeName);
+                            issueError("error.missing.required.attribute.singleton", nodeName, attributeName);
                         } else {
-                            Tr.error(tc, "error.missing.required.attribute", nodeName, attributeName, config.getId());
+                            issueError("error.missing.required.attribute", nodeName, attributeName, config.getId());
                         }
                         context.setValid(false);
                     }
@@ -166,7 +166,7 @@ class ConfigEvaluator {
                         if (defaultValue != null && !defaultValue.equals(rawValue)) {
                             // User has overridden a ibm:final value in server.xml
                             if (rawValue != null) {
-                                Tr.warning(tc, "warning.supplied.config.not.valid", attributeName, rawValue);
+                                issueWarning("warning.supplied.config.not.valid", attributeName, rawValue);
                                 context.setValid(false);
                             }
                         }
@@ -222,6 +222,19 @@ class ConfigEvaluator {
 
         // Return the EvaluationResult
         return context.getEvaluationResult();
+    }
+
+    void issueError(String label, Object... args) {
+        Tr.error(tc, label, args);
+        // Invalidate the config cache
+        serverXMLConfig.setConfigReadTime(-1);
+
+    }
+
+    void issueWarning(String label, Object... args) {
+        Tr.warning(tc, label, args);
+        // Invalidate the config cache
+        serverXMLConfig.setConfigReadTime(-1);
     }
 
     /**
@@ -407,6 +420,7 @@ class ConfigEvaluator {
                 rawValue = config.getAttribute(attributeName);
             }
         } else if (isWildcardReference(attributeDef)) {
+
             String factoryPid = attributeDef.getReferencePid();
             WildcardReference ref = new WildcardReference(factoryPid, attributeDef, context.getConfigElement().getConfigID());
             context.addUnresolvedReference(ref);
@@ -484,8 +498,8 @@ class ConfigEvaluator {
                 String validOptions[] = attributeDef.getOptionValues();
                 if (validOptions == null) {
                     if (rawValue != null && !ignoreWarnings) {
-                        Tr.warning(tc, "warn.config.validate.failed", iae.getMessage());
-                        Tr.warning(tc, "warn.config.invalid.using.default.value", attributeDef.getID(), badValue, rawValue);
+                        issueWarning("warn.config.validate.failed", iae.getMessage());
+                        issueWarning("warn.config.invalid.using.default.value", attributeDef.getID(), badValue, rawValue);
                         actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
                     } else {
                         // Either (1) There is no default so we have to throw an exception or (2) We are trying to get
@@ -511,7 +525,7 @@ class ConfigEvaluator {
                             }
                             defaultString = Tr.formatMessage(tc, "default.value.in.use", rawValue);
                         }
-                        Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), defaultString);
+                        issueWarning("warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), defaultString);
 
                     }
                     if (rawValue != null) {
@@ -523,10 +537,12 @@ class ConfigEvaluator {
             if (actualValue != null) {
                 context.setProperty(prefixedAttributeName, actualValue);
             }
+
             evaluateFinish(context);
         }
 
         return actualValue;
+
     }
 
     boolean isWildcardReference(ExtendedAttributeDefinition attributeDef) {
@@ -1436,7 +1452,7 @@ class ConfigEvaluator {
         ConfigID referenceId = new ConfigID(factoryPid, reference.getId());
         String pid = lookupPid(referenceId);
         if (pid == null) {
-            Tr.warning(tc, "warning.pid.not.found", context.getAttributeName(), reference.getId());
+            issueWarning("warning.pid.not.found", context.getAttributeName(), reference.getId());
         }
         context.getEvaluationResult().addReference(referenceId);
         return pid;
@@ -1884,7 +1900,7 @@ class ConfigEvaluator {
         public void reportError() {
             // Only report an error when the metatype for the target PID has been loaded
             if (pidExistsInRegistry())
-                Tr.warning(tc, "warning.pid.not.found", getAttributeDefinition().getID(), value);
+                issueWarning("warning.pid.not.found", getAttributeDefinition().getID(), value);
         }
 
         /**
@@ -1965,9 +1981,9 @@ class ConfigEvaluator {
         public void reportError() {
             // Only report an error when the metatype for the target PID has been loaded
             if (count == 0 && serviceExistsInRegistry())
-                Tr.warning(tc, "warning.pid.not.found", getAttributeDefinition().getID(), value);
+                issueWarning("warning.pid.not.found", getAttributeDefinition().getID(), value);
             else if (count > 1)
-                Tr.warning(tc, "warning.multiple.matches", getAttributeDefinition().getID(), value);
+                issueWarning("warning.multiple.matches", getAttributeDefinition().getID(), value);
         }
 
         /**

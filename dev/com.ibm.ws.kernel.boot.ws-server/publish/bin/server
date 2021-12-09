@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2020
+# Copyright IBM Corp. 2011, 2021
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -67,6 +67,13 @@
 #
 # WLP_ZOS_JOBNAME - The job name to use when starting the server in
 #              a z/OS environment.
+#
+# SERVER_WORKING_DIR - The directory containing output files from the JVM.  For 
+#              example the javadump files.  The default value is the location
+#              ${WLP_OUTPUT_DIR}/serverName. If set with an absolute path 
+#              (ex, /logs), that location will be utilized, else if a relative 
+#              path (ex, logs) is set it will be relative to the default 
+#              location.
 #
 ###############################################################################
 
@@ -575,7 +582,7 @@ serverEnvDefaults()
     fi
   fi
 
-# Prefer OPENJ9_JAVA_OPTIONS to deprecated IBM_JAVA_OPTIONS
+  # Prefer OPENJ9_JAVA_OPTIONS to deprecated IBM_JAVA_OPTIONS
   if [ -z "${OPENJ9_JAVA_OPTIONS}" ]
   then
     SPECIFIED_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
@@ -592,11 +599,19 @@ serverEnvDefaults()
     if ( echo "${SPECIFIED_JAVA_OPTIONS}" | grep -q "Xshareclasses"); then
       SERVER_IBM_JAVA_OPTIONS=${SPECIFIED_JAVA_OPTIONS}
     else
+      # Set -Xscmx
+      if [ "${ACTION}" = "debug" ]
+      then
+        XSCMX_VAL="130m"
+      else
+        XSCMX_VAL="80m"
+      fi
+  
       if $shareclassesCacheDirPerm
       then
-        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx${XSCMX_VAL} ${SPECIFIED_JAVA_OPTIONS}"
       else
-        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx${XSCMX_VAL} ${SPECIFIED_JAVA_OPTIONS}"
       fi
     fi
   esac
@@ -654,6 +669,11 @@ serverEnvAndJVMOptions()
   # the script will try to read the jvm.options in etc
 
   TEMP_SAVED_OPTIONS=$SERVER_JVM_OPTIONS_QUOTED
+  mergeJVMOptions "${WLP_USER_DIR}/shared/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi  
+  # This location is intentionally not documented  but removing might break existing installations
   mergeJVMOptions "${WLP_INSTALL_DIR}/usr/shared/jvm.options"
   if [ $rc -ne 0 ]; then
     return $rc
@@ -680,7 +700,7 @@ serverEnvAndJVMOptions()
 
   JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   if [ -z "${JAVA_HOME}" ]; then
-    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(which java)))/lib/modules
+    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(command -v java)))/lib/modules
   fi
 
   # If we are running on Java 9, apply Liberty's built-in java 9 options  
@@ -721,23 +741,51 @@ mergeJVMOptions()
 ## readServerEnv: Read server.env file and export environment variables.
 readServerEnv()
 {
+  # By default, we do not attempt to resolve variables in server.env
+  variableExpansionEnabled=0
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
     for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
       case $line in
-      \#*);;
+
+      \#*)
+           # line is a comment.
+           # A comment line enables variable expansion if it contains the keyword,
+           # "enable_variable_expansion", and nothing else (ignoring case and white space).
+           # If found, we use the source command ( . ) which performs all of the server.env
+           # variable assignments while resolving any variable references.
+           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
+           then
+              processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+              if [ "#enable_variable_expansion" = $processedLine ]
+              then
+                 eval ". $1"
+                 variableExpansionEnabled=1
+              fi
+           fi ;;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
         if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
            case $var in
-	   *=*)
+           *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
            *)
-              extractValueAndEscapeForEval "${line}"
-              eval "${var}=${escapeForEvalResult}; export ${var}" ;;
-	   esac
-        fi
+              # if variable expansion is enabled, then we have already "sourced" the entire file.  As a result
+              # all of the variables in server.env have already been defined as shell variables.  To make them
+              # accessible to child processes, they need to be exported.
+              if [ $variableExpansionEnabled = 1 ]
+              then
+                 eval "export ${var}"
+              else
+                 # Variable expansion is not enabled.  Just set the variable to whatever is on the right side 
+                 # of the assignment and export it.  If a later line enables variable expansion, the source
+                 # command will reassign the variable (which is already exported) to the resolved value.
+                 extractValueAndEscapeForEval "${line}"
+                 eval "${var}=${escapeForEvalResult}; export ${var}"
+              fi
+           esac
+        fi ;;
       esac
     done
     IFS=$saveIFS
@@ -767,12 +815,23 @@ readNativeFile() {
 }
 
 ##
-## serverWorkingDirectory: Change the working directory to ${SERVER_OUTPUT_DIR}
+## serverWorkingDirectory: Change the JVM working directory to ${SERVER_WORKING_DIR}
 serverWorkingDirectory()
 {
-  # Change the working directory to ${SERVER_OUTPUT_DIR}.
-  mkdirs "${SERVER_OUTPUT_DIR}"
-  cd "${SERVER_OUTPUT_DIR}"
+  if [ -z "${SERVER_WORKING_DIR}" ]; then
+    SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR
+  else
+    case "${SERVER_WORKING_DIR}" in
+      /*) len=${#SERVER_WORKING_DIR}
+          if [ $len -eq 1 ]; then
+            SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR 
+          fi ;;
+      *) SERVER_WORKING_DIR="${SERVER_OUTPUT_DIR}/${SERVER_WORKING_DIR}" ;;
+    esac
+  fi
+
+  mkdirs "${SERVER_WORKING_DIR}"
+  cd "${SERVER_WORKING_DIR}"
 }
 
 ## set the umask value to remove all permissions for the Other category

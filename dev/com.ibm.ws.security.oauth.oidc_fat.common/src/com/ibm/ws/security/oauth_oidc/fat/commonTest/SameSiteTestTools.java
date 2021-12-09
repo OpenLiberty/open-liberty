@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,6 +90,12 @@ public class SameSiteTestTools {
     public void updateServerSettings(TestServer server, Map<String, String> valuesToSet) throws Exception {
 
         String thisMethod = "updateServerSettings";
+
+        // update the mark so that we look for the config update message only in the latest log entries
+        // we had cases where we were finding the config update complete message from the previous config
+        // we made requests using the old config (the new one wasn't ready) and were getting bad results.
+        server.setMarkToEndOfLogs();
+
         ServerConfiguration config = server.getServer().getServerConfiguration();
         ConfigElementList<Variable> configVars = config.getVariables();
 

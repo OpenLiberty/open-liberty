@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Sprawd\u017a, czy zosta\u0142 ur
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} odpowiedzia\u0142 na \u017c\u0105danie subskrypcji. Topologia publikowania/subskrypcji jest ju\u017c sp\u00f3jna.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Komunikacja mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w powiod\u0142a si\u0119. Topologia publikowania/subskrypcji jest sp\u00f3jna.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Brak.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Mechanizm przesy\u0142ania komunikat\u00f3w {0} odpowiedzia\u0142 na \u017c\u0105danie subskrypcji. Topologia publikowania/subskrypcji jest ju\u017c sp\u00f3jna.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Komunikacja mi\u0119dzy mechanizmami przesy\u0142ania komunikat\u00f3w powiod\u0142a si\u0119, a topologia publikowania/subskrypcji jest sp\u00f3jna.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=brak
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name

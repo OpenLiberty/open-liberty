@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,18 @@ package concurrent.mp.fat.config.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
@@ -32,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.security.auth.Subject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +46,9 @@ import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
+
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 
 import componenttest.app.FATServlet;
 
@@ -381,5 +389,69 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
         } finally {
             executor.shutdownNow();
         }
+    }
+
+    /**
+     * Security context propagation should include subjects that are created by the application.
+     */
+    @Test
+    public void testSecurityContextPropagatesSubjectCreatedByApp() throws Exception {
+        Subject subject = new Subject();
+        subject.setReadOnly();
+        CompletableFuture<Subject> cf = Subject.doAs(subject, (PrivilegedExceptionAction<CompletableFuture<Subject>>) () -> {
+            // verify that it works before we try propagating it
+            Subject s = Subject.getSubject(AccessController.getContext());
+            assertTrue(s.isReadOnly());
+            assertSame(subject, s);
+
+            return securityContextExecutor.supplyAsync(() -> {
+                Subject sub = Subject.getSubject(AccessController.getContext());
+                // assertTrue(sub.isReadOnly()); // TODO fails - Subject from AccessControlContext is null
+                return sub;
+            });
+        });
+
+        Subject subjectFromAsyncThread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        // TODO assertSame(subject, subjectFromAsyncThread);
+    }
+
+    /**
+     * Security context propagation should include subjects that are created by the application.
+     * Try with WSSubject.doAs rather than Subject.doAs
+     */
+    @Test
+    public void testSecurityContextPropagatesWSSubjectCreatedByApp() throws Exception {
+        Subject subject = new Subject();
+        subject.setReadOnly();
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Subject> cf = (CompletableFuture<Subject>) WSSubject.doAs//
+        (
+         subject,
+         (PrivilegedExceptionAction<CompletableFuture<Subject>>) () -> {
+             // verify that it works before we try propagating it
+             assertSame(subject, WSSubject.getRunAsSubject());
+             assertSame(subject, WSSubject.getCallerSubject());
+             Subject s = Subject.getSubject(AccessController.getContext());
+             assertTrue(s.isReadOnly());
+             assertSame(subject, s);
+
+             return securityContextExecutor.supplyAsync(() -> {
+                 try {
+                     assertSame(subject, WSSubject.getRunAsSubject());
+                     assertSame(subject, WSSubject.getCallerSubject());
+                 } catch (WSSecurityException x) {
+                     throw new CompletionException(x);
+                 }
+
+                 Subject sub = Subject.getSubject(AccessController.getContext());
+                 // assertTrue(sub.isReadOnly()); // TODO fails - Subject from AccessControlContext is null
+                 return sub;
+             });
+         },
+         true // also set caller subject
+        );
+
+        Subject subjectFromAsyncThread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        // TODO assertSame(subject, subjectFromAsyncThread);
     }
 }

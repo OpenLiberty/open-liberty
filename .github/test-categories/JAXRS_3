@@ -1,4 +1,6 @@
+com.ibm.ws.jaxrs.defaultexceptionmapper_fat
 com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
 com.ibm.ws.jaxrs.2.0.client_fat
 com.ibm.ws.jaxrs.2.0_fat
 com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
+io.openliberty.restfulWS.3.0.cdi.3.0_fat

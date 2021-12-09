@@ -8,13 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../com.ibm.ws.security.saml.sso_fat.common/ShibbolethCommon.gradle'
 
 dependencies {
   requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
                project(':com.ibm.ws.security.saml.sso_fat.common'),
                project(':com.ibm.ws.org.apache.commons.io'),
-               'commons-logging:commons-logging:1.1.3',
-               'commons-codec:commons-codec:1.6',
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',
@@ -22,6 +23,7 @@ dependencies {
                'httpunit:httpunit:1.6.2',                           
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5',
+               'xml-apis:xml-apis:1.4.01',
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
                'org.brotli:dec:0.1.2',
                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
@@ -29,15 +31,19 @@ dependencies {
                'org.apache.httpcomponents:httpcomponents-client:4.5.3',
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0'   
+               project(':io.openliberty.org.apache.xercesImpl'),
+               'xml-apis:xml-apis:1.4.01'
+               
                         
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 'xml-apis:xml-apis:1.4.01'*
 /*
  * This is where all application WARs will be built.
  */
 def appBuildDir = "${buildDir}/test-application"
-
 
 /******************************************************************
  ******************************************************************
@@ -89,79 +95,6 @@ task samltoken_WAR(type: War, dependsOn: classes) {
   }
 }
 
-/******************************************************************
- ******************************************************************
- **
- ** samlwsstemplates.war
- **
- ******************************************************************
- ******************************************************************/
-task samlwsstemplates_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "samlwsstemplates.war"
-  
-  manifest {
-    attributes("Class-Path": "")
-  }
-  
-  from ('test-applications/samlwsstemplates/resources') {
-    include '**'
-  }
-  from ('build/classes/java/main') {
-    include 'com/ibm/ws/wssecurity/fat/wsstemplates/**' 
-    into 'WEB-INF/classes'
-  }
-}
-
-/******************************************************************
- ******************************************************************
- **
- ** samlcallertoken.war
- **
- ******************************************************************
- ******************************************************************/
-task samlcallertoken_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "samlcallertoken.war"
-  
-  manifest {
-    attributes("Class-Path": "")
-  }
-  
-  from ('test-applications/samlcallertoken/resources') {
-    include '**'
-  }
-  from ('build/classes/java/main') {
-    include 'test/libertyfat/samlcaller/**' 
-    into 'WEB-INF/classes'
-  }
-}
-
-/******************************************************************
- ******************************************************************
- **
- ** samlwsstemplatesclient.war
- **
- ******************************************************************
- ******************************************************************/
-task samlwsstemplatesclient_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "samlwsstemplatesclient.war"
-  
-  manifest {
-    attributes("Class-Path": "")
-  }
-  
-  from ('test-applications/samlwsstemplatesclient/resources') {
-    include '**'
-  }
-  
-  from ('build/classes/java/main') {
-    include 'com/ibm/ws/wssecurity/fat/wsstemplatesclient/**' 
-    include 'test/wssecfvt/wsstemplates/**'
-    into 'WEB-INF/classes'
-  }
-}
 
 /******************************************************************
  ******************************************************************
@@ -219,14 +152,11 @@ task samlwsstemplateswithep_WAR(type: War, dependsOn: classes) {
 assemble { 
   dependsOn samlcxfclient_WAR
   dependsOn samltoken_WAR
-  dependsOn samlwsstemplates_WAR
-  dependsOn samlcallertoken_WAR
-  dependsOn samlwsstemplatesclient_WAR
   dependsOn samlwsstemplatesclientwithep_WAR
   dependsOn samlwsstemplateswithep_WAR
 }
 
-
+addRequiredLibraries.dependsOn copyShibbolethIdpConfig, copyShibbolethServer
 
 autoFVT.doLast {
 
@@ -278,6 +208,18 @@ autoFVT.doLast {
     include 'com.ibm.ws.wssecurity.example.cbh_1.0.0.jar'
     into new File(autoFvtDir, 'publish/bundles')
     }
+    
+    copy {
+    from project.file('publish/files/features')
+    include 'wsseccbh-2.0.mf'
+    into new File(autoFvtDir, 'publish/features')
+    }
+    
+    copy {
+    from project.file('publish/files/bundles')
+    include 'com.ibm.ws.wssecurity.example.cbhwss4j.jar'
+    into new File(autoFvtDir, 'publish/bundles')
+    }
       
     copy {
     from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
@@ -295,7 +237,6 @@ autoFVT.doLast {
   def servers = [
         'com.ibm.ws.wssecurity_fat.saml',
         'com.ibm.ws.wssecurity_fat.saml.2servers',
-        'com.ibm.ws.wssecurity_fat.saml.wssTemplates',
         'com.ibm.ws.wssecurity_fat.saml.2serverswithep',
         'com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep'
   ]
@@ -360,43 +301,20 @@ autoFVT.doLast {
     
   }
   
+/* Copy files for specific server */
+  
   servers = [
         'com.ibm.ws.wssecurity_fat.saml.2servers'
   ]
   
-  servers.each { server ->    
+  servers.each { server ->
     copy {
     from new File(appBuildDir, 'samltoken.war')
     into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
     
-    copy {
-    from new File(appBuildDir, 'samlwsstemplates.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-    
-    copy {
-    from new File(appBuildDir, 'samlcallertoken.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
   }
-  
-  servers = [
-        'com.ibm.ws.wssecurity_fat.saml.wssTemplates'
-  ]
-  
-  servers.each { server ->
-    copy {
-    from new File(appBuildDir, 'samlwsstemplatesclient.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-    
-    copy {
-    from new File(appBuildDir, 'samlwsstemplates.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-  }
-  
+   
   servers = [
         'com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep'
   ]
@@ -419,41 +337,4 @@ autoFVT.doLast {
     }
   }
   
-  servers = [
-    'com.ibm.ws.security.saml.sso-2.0_fat.shibboleth'
-  ]
-
-  servers.each { server ->
-
-    copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/configs')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/configs')
-    }
-  
-    copy {
-    //Need to update the version of perperties to add java2sec exempt on this server
-    //from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
-    from project.file('publish/files/bootstrap.properties')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-    
-    copy { 
-      from project.file('securitykeys')
-      include '**'
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-
-    copy {
-    from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
-    }
-    
-    copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-
-    
-  }
-
 }

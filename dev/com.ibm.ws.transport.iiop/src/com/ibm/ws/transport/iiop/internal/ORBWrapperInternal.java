@@ -65,11 +65,11 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     private ORB orb;
     private POA rootPOA;
 
-    private final List<IIOPEndpoint> endpoints = new ArrayList<IIOPEndpoint>();
+    private final List<IIOPEndpoint> endpoints = new ArrayList<>();
 
-    private final Map<String, Object> extraConfig = new HashMap<String, Object>();
+    private final Map<String, Object> extraConfig = new HashMap<>();
 
-    private final transient ConcurrentServiceReferenceMap<String, AdapterActivatorOp> map = new ConcurrentServiceReferenceMap<String, AdapterActivatorOp>(KEY);
+    private final transient ConcurrentServiceReferenceMap<String, AdapterActivatorOp> map = new ConcurrentServiceReferenceMap<>(KEY);
 
     @Activate
     protected void activate(Map<String, Object> properties, ComponentContext cc) throws Exception {
@@ -89,7 +89,7 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "activate() using ORB: " + orb);
             PolicyManager policyManager = (PolicyManager) orb.resolve_initial_references("ORBPolicyManager");
-            List<Policy> policies = new ArrayList<Policy>();
+            List<Policy> policies = new ArrayList<>();
             for (SubsystemFactory sf : subsystemFactories) {
                 Policy policy = sf.getClientPolicy(orb, properties);
                 if (policy != null) {

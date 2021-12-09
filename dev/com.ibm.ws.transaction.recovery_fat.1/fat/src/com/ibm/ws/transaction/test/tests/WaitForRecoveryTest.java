@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.WaitForRecoveryServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -64,12 +65,12 @@ public class WaitForRecoveryTest extends FATServletClient {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
 
         server1.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
-        server1.startServer();
+        FATUtils.startServers(server1);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        FATUtils.stopServers(server1);
     }
 
     @Mode(TestMode.LITE)
@@ -103,7 +104,7 @@ public class WaitForRecoveryTest extends FATServletClient {
         server1.waitForStringInTrace("Performed recovery for server");
 
         // Lastly stop server1
-        server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W" }, server1); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
 
         // Lastly, clean up XA resource file
         server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");

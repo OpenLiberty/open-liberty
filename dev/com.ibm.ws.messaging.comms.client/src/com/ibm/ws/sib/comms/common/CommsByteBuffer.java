@@ -12,6 +12,7 @@ package com.ibm.ws.sib.comms.common;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -109,9 +110,6 @@ public class CommsByteBuffer extends JFapByteBuffer
                                                            CommsConstants.MSG_GROUP,
                                                            CommsConstants.MSG_BUNDLE);
 
-   /** The encoding to use for Strings */
-   private static final String stringEncoding = "UTF-8";
-
    /** The poolManager the byte buffer was allocated from */
    private CommsByteBufferPool poolManager = null;
 
@@ -172,27 +170,10 @@ public class CommsByteBuffer extends JFapByteBuffer
       }
       else
       {
-         try
-         {
-            byte[] stringAsBytes = item.getBytes(stringEncoding);
-            WsByteBuffer currentBuffer = getCurrentByteBuffer(2 + stringAsBytes.length);
-            currentBuffer.putShort((short) stringAsBytes.length);
-            currentBuffer.put(stringAsBytes);
-         }
-         catch (UnsupportedEncodingException e)
-         {
-            FFDCFilter.processException(e, CLASS_NAME + ".putString",
-                                        CommsConstants.COMMSBYTEBUFFER_PUTSTRING_01,
-                                        this);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Unable to encode String: ", e);
-
-            SibTr.error(tc, "UNSUPPORTED_STRING_ENCODING_SICO8005", new Object[] {stringEncoding, e});
-
-            throw new SIErrorException(
-               TraceNLS.getFormattedMessage(CommsConstants.MSG_BUNDLE, "UNSUPPORTED_STRING_ENCODING_SICO8005", new Object[] {stringEncoding, e}, null)
-            );
-         }
+         byte[] stringAsBytes = item.getBytes(StandardCharsets.UTF_8);
+         WsByteBuffer currentBuffer = getCurrentByteBuffer(2 + stringAsBytes.length);
+         currentBuffer.putShort((short) stringAsBytes.length);
+         currentBuffer.put(stringAsBytes);
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "putString");
@@ -741,28 +722,7 @@ public class CommsByteBuffer extends JFapByteBuffer
       }
       else
       {
-         try
-         {
-            returningString = new String(stringBytes, stringEncoding);
-         }
-         catch (UnsupportedEncodingException e)
-         {
-            FFDCFilter.processException(e, CLASS_NAME + ".getString",
-                                        CommsConstants.COMMSBYTEBUFFER_GETSTRING_01,
-                                        this);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
-               SibTr.debug(tc, "Unable to encode String: ", e);
-               SibTr.exception(tc, e);
-            }
-
-            SibTr.error(tc, "UNSUPPORTED_STRING_ENCODING_SICO8005", new Object[] {stringEncoding, e});
-
-            throw new SIErrorException(
-               TraceNLS.getFormattedMessage(CommsConstants.MSG_BUNDLE, "UNSUPPORTED_STRING_ENCODING_SICO8005", new Object[] {stringEncoding, e}, null)
-            );
-         }
+         returningString = new String(stringBytes, StandardCharsets.UTF_8);
       }
 
       return returningString;
@@ -2128,23 +2088,8 @@ public class CommsByteBuffer extends JFapByteBuffer
       }
       else
       {
-         try
-         {
-            final byte[] stringAsBytes = s.getBytes(stringEncoding);
-            length = stringAsBytes.length + 2;
-         }
-         catch (UnsupportedEncodingException e)
-         {
-            FFDCFilter.processException(e, CLASS_NAME + ".calculateEncodedStringLength", CommsConstants.COMMSBYTEBUFFER_CALC_ENC_STRLEN_01);
-
-            if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Unable to encode String: ", e);
-
-            SibTr.error(tc, "UNSUPPORTED_STRING_ENCODING_SICO8023", new Object[] {stringEncoding, e});
-
-            throw new SIErrorException(
-               TraceNLS.getFormattedMessage(CommsConstants.MSG_BUNDLE, "UNSUPPORTED_STRING_ENCODING_SICO8023", new Object[] {stringEncoding, e}, null)
-            );
-         }
+         final byte[] stringAsBytes = s.getBytes(StandardCharsets.UTF_8);
+         length = stringAsBytes.length + 2;
       }
 
       if(TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "calculateEncodedStringLength", Integer.valueOf(length));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -48,6 +49,7 @@ import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.URLEscapingUtils;
 import com.ibm.wsspi.http.WorkClassifier;
+import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -117,6 +119,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
 
+    private final AtomicBoolean decrementNeeded = new AtomicBoolean(false);
+
+    private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
+
     /**
      * Constructor.
      *
@@ -157,6 +163,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection must be already closed since vc is null");
             }
+
+            // closeCompleted check is for the close, destroy, close order scenario. 
+            // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error. 
+            if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
+                //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrementNeeded is true: decrement active connection");
+                }
+                this.myChannel.decrementActiveConns();
+            }
+
             return;
         }
 
@@ -247,6 +264,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
                 this.myChannel.decrementActiveConns();
             }
+            closeCompleted.compareAndSet(false, true);
         }
     }
 
@@ -261,31 +279,39 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         linkIsReady = false;
 
+        String upgraded = null;
         // if this was an http upgrade connection, then tell it to close also.
         VirtualConnection vc = getVC();
         if (vc != null) {
-            String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
-            if (upgraded != null) {
-                if (upgraded.compareToIgnoreCase("true") == 0) {
-                    Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
-                    if (webConnectionObject != null) {
-                        if (webConnectionObject instanceof TransportConnectionAccess) {
-                            TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
-                            try {
-                                tWebConn.close();
-                            } catch (Exception webConnectionCloseException) {
-                                //continue closing other resources
-                                //I don't believe the close operation should fail - but record trace if it does
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
-                                }
-                            }
-                        } else {
+            upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+            if ("true".equalsIgnoreCase(upgraded)) {
+                Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+                if (webConnectionObject != null) {
+                    if (webConnectionObject instanceof TransportConnectionAccess) {
+                        TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
+                        try {
+                            tWebConn.close();
+                        } catch (Exception webConnectionCloseException) {
+                            //continue closing other resources
+                            //I don't believe the close operation should fail - but record trace if it does
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "call application destroy if not done yet");
+                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
                             }
                         }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "call application destroy if not done yet");
+                        }
                     }
+                }
+            }
+        }
+
+        // set decrementNeeded to true only for wsoc upgrade requests
+        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+            if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrementNeeded set to true");
                 }
             }
         }
@@ -611,8 +637,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        HttpResponseMessage rMsg = finalSc.getResponse();
-        setResponseProperties(rMsg, code);
+        HttpRequestMessage rqMsg = finalSc.getRequest();
+        HttpResponseMessage rsMsg = finalSc.getResponse();
+
+        setResponseProperties(rqMsg, rsMsg, code);
 
         HttpOutputStream body = finalResponse.getBody();
 
@@ -684,7 +712,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @param rMsg The HttpResponseMessage to set.
      * @param code The StatusCode to return.
      */
-    void setResponseProperties(HttpResponseMessage rMsg, StatusCodes code) {
+    void setResponseProperties(HttpRequestMessage rqMsg, HttpResponseMessage rMsg, StatusCodes code) {
+
+        if (rMsg.getHeader(HttpHeaderKeys.HDR_HSTS).asString() == null) {
+
+            String scheme = rqMsg.getScheme();
+            String htsHeader = ("https".equalsIgnoreCase(scheme)) ? HttpDispatcher.getHSTS() : null;
+            if (htsHeader != null) {
+                rMsg.setHeader(HttpHeaderKeys.HDR_HSTS, htsHeader);
+            }
+        }
+
         rMsg.setStatusCode(code);
         rMsg.setConnection(ConnectionValues.CLOSE);
         rMsg.setCharset(Charset.forName("UTF-8"));

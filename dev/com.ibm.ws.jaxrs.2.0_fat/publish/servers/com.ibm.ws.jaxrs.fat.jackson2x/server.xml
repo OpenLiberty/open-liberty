@@ -2,6 +2,7 @@
     <featureManager>
         <feature>componenttest-1.0</feature>
         <feature>jaxrs-2.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <application type="war" id="jackson2x" name="jackson2x" location="jackson2x.war">        
@@ -13,4 +14,6 @@
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+	<javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
 </server>

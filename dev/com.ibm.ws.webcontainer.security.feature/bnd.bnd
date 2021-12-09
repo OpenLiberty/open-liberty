@@ -16,6 +16,12 @@ Bundle-Description: Webcontainer System WAB Security Collaborator, version=${bVe
 Bundle-SymbolicName: com.ibm.ws.webcontainer.security.feature
 Bundle-ActivationPolicy: lazy
 
+Import-Package: \
+  com.ibm.wsspi.security.tai;version="[1.1,11)", \
+  com.ibm.wsspi.webcontainer.collaborator;version="[1.2,11)", \
+  com.ibm.wsspi.webcontainer.webapp; version="[2.0,11)", \
+  *
+
 Private-Package: \
   com.ibm.ws.webcontainer.security.feature.internal, \
   com.ibm.ws.webcontainer.security.feature.resources

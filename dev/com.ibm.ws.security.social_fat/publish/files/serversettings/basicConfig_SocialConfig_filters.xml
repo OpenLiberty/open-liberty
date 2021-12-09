@@ -1,0 +1,790 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+ 
+	<authFilter id="authFilter1">
+		<requestUrl
+			id="myRequestUrla"
+			urlPattern="helloworld"
+			matchType="contains" />
+		<requestUrl
+			id="myRequestUrlb"
+			urlPattern="helloworld_"
+			matchType="notContain" />
+	</authFilter>
+
+	<authFilter id="authFilter_badClientId">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badClientId"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankClientId">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankClientId"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyClientId">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyClientId"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badClientSecret">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badClientSecret"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankClientSecret">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankClientSecret"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyClientSecret">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyClientSecret"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_xorSecret">
+		<requestUrl
+			id="myRequestUrld"
+			urlPattern="helloworld_xorSecret"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_bad_xorSecret">
+		<requestUrl
+			id="myRequestUrld"
+			urlPattern="helloworld_bad_xorSecret"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_enabledTrue">
+		<requestUrl
+			id="myRequestUrld"
+			urlPattern="helloworld_enabledTrue"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_enabledFalse">
+		<requestUrl
+			id="myRequestUrld"
+			urlPattern="helloworld_enabledFalse"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_goodTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_badTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_blankTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_emptyTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badAuthEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badAuthEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_reallyBadAuthEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_reallyBadAuthEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankAuthEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankAuthEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyAuthEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyAuthEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_httpAuthEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_httpAuthEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badTokenEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badTokenEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankTokenEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankTokenEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyTokenEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyTokenEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_tEAM_clientSecretBasic">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_tEAM_clientSecretBasic"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_tEAM_clientSecretPost">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_tEAM_clientSecretPost"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_tEAM_clientSecretBad">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_tEAM_clientSecretBad"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodUserApi">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodUserApi"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badUserApi">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badUserApi"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankUserApi">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankUserApi"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyUserApi">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyUserApi"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_basicUserApiType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_basicUserApiType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_introspectUserApiType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_introspectUserApiType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_kubeUserApiType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_kubeUserApiType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_good_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_good_userApiToken"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_bad_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_bad_userApiToken"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_missingPermissions_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_missingPermissions_userApiToken"
+			matchType="contains" />
+	</authFilter>	
+
+	<authFilter id="authFilter_blank_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blank_userApiToken"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_empty_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_empty_userApiToken"
+			matchType="contains" />
+	</authFilter>
+
+
+	<authFilter id="authFilter_realmName">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_realmName"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankRealmName">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blank_RealmName"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyRealmName">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_empty_RealmName"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_mapToUserRegistryFalse">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_mapToUserRegistryFalse"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_mapToUserRegistryTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_mapToUserRegistryTrue"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_good_jwt_builder">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_good_jwt_builder"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blank_jwt_builder">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blank_jwt_builder"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_empty_jwt_builder">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_empty_jwt_builder"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_jwt_builder_HS256">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwt_builder_HS256"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodJwksUri">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodJwksUri"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badJwksUri">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badJwksUri"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankJwksUri">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankJwksUri"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyJwksUri">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyJwksUri"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_jwksUri_jwkDisabledInOP">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwksUri_jwkDisabledInOP"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badIssuer">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badIssuer"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankIssuer">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankIssuer"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyIssuer">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyIssuer"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_isClientSideRedirectSupported_true">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_isClientSideRedirectSupported_true"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_isClientSideRedirectSupported_false">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_isClientSideRedirectSupported_false"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badScope">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badScope"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankScope">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankScope"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyScope">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyScope"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badScope_limitedOPScope">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_limitedOPScope_badScope"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodUserNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodUserNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badUserNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badUserNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankUserNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankUserNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyUserNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyUserNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodGroupNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodGroupNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badGroupNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badGroupNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankGroupNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankGroupNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyGroupNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyGroupNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodRealmNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodRealmNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badRealmNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badRealmNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankRealmNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankRealmNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyRealmNameAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyRealmNameAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_goodUserUniqueIdAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodUserUniqueIDAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badUserUniqueIdAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badUserUniqueIDAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankUserUniqueIdAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankUserUniqueIDAttribute"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyUserUniqueIdAttribute">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyUserUniqueIDAttribute"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_goodRedirectToRPHostAndPort">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_goodRedirectToRPHostAndPort"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badRedirectToRPHostAndPort">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_badRedirectToRPHostAndPort"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_blankRedirectToRPHostAndPort">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blankRedirectToRPHostAndPort"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_emptyRedirectToRPHostAndPort">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_emptyRedirectToRPHostAndPort"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_hostNameVerificationEnabledTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_hostNameVerificationEnabledTrue"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_addParms">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_addParms"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_addBadParms">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_addBadParms"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_overrideEndpts">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_overrideEndpts"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_autoAdjust">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_autoAdjust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_codeResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_codeResponseType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_idTokenTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_idTokenTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_idTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_idTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_tokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_tokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_responseModeFormPost_codeResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_responseModeFormPost_codeResponseType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_responseModeFormPost_idTokenTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_responseModeFormPost_idTokenTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_responseModeFormPost_idTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_responseModeFormPost_idTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_responseModeFormPost_tokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_responseModeFormPost_tokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_opMissingAuthCodeGrantType_codeResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_opMissingAuthCodeGrantType_codeResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_opMissingImplicitGrantType_idTokenTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_opMissingImplicitGrantType_idTokenTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_opMissingImplicitGrantType_idTokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_opMissingImplicitGrantType_idTokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_opMissingImplicitGrantType_tokenResponseType">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_opMissingImplicitGrantType_tokenResponseType"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_forwardLoginParameter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_forwardLoginParameter"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_accessTokenRequiredTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenRequiredTrue"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_introstpect_accessTokenRequiredTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_usingIntrospect_accessTokenRequiredTrue"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_accessTokenRequiredFalse">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenRequiredFalse"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_accessTokenSupportedTrue_optionalParmsOmitted">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenSupportedTrue_optionalParmsOmitted"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_accessTokenSupportedTrue_introstpect_optionalParmsOmitted">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenSupportedTrue_introspect_optionalParmsOmitted"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_accessTokenSupportedTrue_optionalParmsIncluded">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenSupportedTrue_optionalParmsIncluded"
+			matchType="contains" />
+	</authFilter>	
+	
+	<authFilter id="authFilter_accessTokenSupportedFalse">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenSupportedFalse"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_accessTokenRequiredTrue_accessTokenSupportedTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_both_accessTokenRequiredTrue_accessTokenSupportedTrue"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="authFilter_accessTokenHeaderNameBearer">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenHeaderNameBearer"
+			matchType="contains" />
+	</authFilter>	
+
+	<authFilter id="authFilter_accessTokenHeaderNameXForwardedAccessToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenHeaderNameXForwardedAccessToken"
+			matchType="contains" />
+	</authFilter>	
+
+	<authFilter id="authFilter_accessTokenHeaderNameUserDefined">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenHeaderNameUserDefined"
+			matchType="contains" />
+	</authFilter>	
+
+</server>

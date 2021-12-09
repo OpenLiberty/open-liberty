@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class HealthCheckServlet extends HttpServlet {
     private static final TraceComponent tc = Tr.register(HealthCheckServlet.class);
     private transient HealthCheck30Service healthService = null;
 
-    private final static Logger logger = Logger.getLogger(HealthCheckServlet.class.getName(), "io.openliberty.microprofile.health30.resources.Health30");
+    private final static Logger logger = Logger.getLogger(HealthCheckServlet.class.getName(), "io.openliberty.microprofile.health.resources.Health");
 
     /** {@inheritDoc} */
     @Override

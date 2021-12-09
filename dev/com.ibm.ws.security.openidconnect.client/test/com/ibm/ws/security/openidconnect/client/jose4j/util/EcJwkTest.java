@@ -187,9 +187,8 @@ public class EcJwkTest {
     public void testCreateMicproProfileFormatJWT() {
         String methodName = "testCreateMicproProfileFormatJWT";
         try {
-            Jose4jUtil jose4jUtil = new Jose4jUtil(null);
             String jwtStr = jwtCreaterEC(true);
-            JwtContext jwtContext = jose4jUtil.parseJwtWithoutValidation(jwtStr);
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(jwtStr);
             assertNotNull("The jwtContext is expect to have an instance but it returns null", jwtContext);
             JwtClaims jwtClaims = jwtContext.getJwtClaims();
             assertNotNull("The jwtClaims is expected to an instance but it return null", jwtClaims);
@@ -264,7 +263,7 @@ public class EcJwkTest {
         }
         Jose4jUtil jose4jUtil = new Jose4jUtil(null);
         try {
-            JwtContext jwtContext = jose4jUtil.parseJwtWithoutValidation(jwtString);
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(jwtString);
             assertNotNull("The jwtContext is expect to have an instance but it returns null", jwtContext);
             jose4jUtil = createJwkRetrieverConstructorExpectations();
             JwtClaims jwtClaims = jose4jUtil.parseJwtWithValidation(oidcClientConfig, jwtString, jwtContext, oidcClientRequest);
@@ -359,7 +358,7 @@ public class EcJwkTest {
         }
         Jose4jUtil jose4jUtil = new Jose4jUtil(null);
         try {
-            JwtContext jwtContext = jose4jUtil.parseJwtWithoutValidation(badJwtString);
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(badJwtString);
             assertNotNull("The jwtContext is expect to have an instance but it returns null", jwtContext);
             jose4jUtil = createJwkRetrieverConstructorExpectations();
             JwtClaims jwtClaims = jose4jUtil.parseJwtWithValidation(oidcClientConfig, badJwtString, jwtContext, oidcClientRequest);
@@ -563,7 +562,7 @@ public class EcJwkTest {
         }
         Jose4jUtil jose4jUtil = new Jose4jUtil(null);
         try {
-            JwtContext jwtContext = jose4jUtil.parseJwtWithoutValidation(rsJwtString);
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(rsJwtString);
             assertNotNull("The jwtContext is expect to have an instance but it returns null", jwtContext);
             jose4jUtil = createJwkRetrieverConstructorExpectations();
             JwtClaims jwtClaims = jose4jUtil.parseJwtWithValidation(oidcClientConfig, rsJwtString, jwtContext, oidcClientRequest);

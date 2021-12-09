@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,13 @@ installFeature.option-desc.--to=\tGibt an, wo das Feature installiert werden sol
 \tOption nicht angegeben wird, wird das Feature als Benutzerfeature\n\
 \tinstalliert.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven-Koordinate
+installFeature.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate f\u00fcr die Feature-BOM-Datei an. \n\
+\tDiese Option erm\u00f6glicht die Installation von Benutzerfeatures aus dem \n\
+\tkonfigurierten Maven-Repository. Stellen Sie sicher, dass das \n\
+\tRepository auch die zugeh\u00f6rige Feature-JSON-Datei enth\u00e4lt, die\n\
+\tdieselbe Gruppen-ID wie die BOM-Datei hat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=Dateipfad
 installFeature.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\
 \tals Quelle anzugeben, in der featureUtility Assets installieren soll.
@@ -66,6 +73,13 @@ installServerFeatures.desc=\tInstalliert die erforderlichen Features f\u00fcr ei
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ Name ...
 installServerFeatures.option-desc.name...=\tDer Name eines vorhandenen Servers in derselben Liberty-Umgebung.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven-Koordinate
+installServerFeatures.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate f\u00fcr die Feature-BOM-Datei an. \n\
+\tDiese Option erm\u00f6glicht die Installation von Benutzerfeatures aus dem \n\
+\tkonfigurierten Maven-Repository. Stellen Sie sicher, dass das \n\
+\tRepository auch die zugeh\u00f6rige Feature-JSON-Datei enth\u00e4lt, die\n\
+\tdieselbe Gruppen-ID wie die BOM-Datei hat.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=Dateipfad
 installServerFeatures.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\

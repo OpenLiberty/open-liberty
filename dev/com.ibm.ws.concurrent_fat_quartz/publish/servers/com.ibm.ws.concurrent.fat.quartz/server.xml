@@ -1,0 +1,61 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>concurrent-2.0</feature>
+        <feature>jdbc-4.2</feature> <!-- to be able to test java:comp/UserTransaction -->
+        <feature>jndi-1.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="quartzapp.war">
+      <classloader commonLibraryRef="quartz"/>
+    </application>
+
+    <library id="quartz">
+      <file name="${server.config.dir}/quartz/quartz-2.3.2.jar"/>
+      <file name="${server.config.dir}/quartz/quartz-extensions.jar"/>
+      <file name="${server.config.dir}/quartz/slf4j-api-1.7.30.jar"/>
+      <file name="${server.config.dir}/quartz/slf4j-simple-1.7.30.jar"/>
+    </library>
+
+    <managedExecutorService jndiName="concurrent/quartzExecutor">
+      <concurrencyPolicy max="3"/>
+      <longRunningPolicy max="1"/>
+    </managedExecutorService>
+
+    <!-- permissions for Quartz and slf4j -->
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.io.FilePermission" name="quartz.properties" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.net.URLPermission" name="http://www.terracotta.org/kit/reflector" actions="GET:"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.util.PropertyPermission" name="org.quartz.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.util.PropertyPermission" name="quartz.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.net.SocketPermission" name="*" actions="resolve"/>
+
+    <javaPermission codebase="${server.config.dir}/quartz/slf4j-api-1.7.30.jar" className="java.util.PropertyPermission" name="slf4j.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/slf4j-api-1.7.30.jar" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>
+
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.io.FilePermission" name="quartz.properties" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.net.URLPermission" name="http://www.terracotta.org/kit/reflector" actions="GET:"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="slf4j.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="org.quartz.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="quartz.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.net.SocketPermission" name="*" actions="resolve"/>
+
+</server>

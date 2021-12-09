@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,6 +40,12 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Kerberos\uc758 \uc81c\ud55c\ub41c \uc704
 # CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
 # CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
+
+# CWWKS4347E is used by the com.ibm.ws.security.kerberos.auth bundle
+
+# CWWKS4348E is used by the com.ibm.ws.security.kerberos.auth bundle
+
+# CWWKS4349E is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

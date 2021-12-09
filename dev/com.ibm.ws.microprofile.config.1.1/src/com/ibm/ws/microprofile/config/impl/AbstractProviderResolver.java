@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,9 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.openliberty.microprofile.config.internal.common.ConfigException;
+import io.openliberty.microprofile.config.internal.common.ConfigIntrospectionProvider;
 
-public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener {
+public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener, ConfigIntrospectionProvider {
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
 
@@ -410,5 +411,19 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     protected abstract AbstractConfigBuilder newBuilder(ClassLoader classLoader);
+
+    @Override
+    public Map<String, Set<Config>> getConfigsByApplication() {
+        Map<String, Set<Config>> appInfos = new HashMap<>();
+        synchronized (this.configCache) {
+            for (ConfigWrapper wrapper : this.configCache.values()) {
+                for (String appName : wrapper.listApplications()) {
+                    appInfos.computeIfAbsent(appName, x -> new HashSet<>())
+                            .add(wrapper.getConfig());
+                }
+            }
+        }
+        return appInfos;
+    }
 
 }

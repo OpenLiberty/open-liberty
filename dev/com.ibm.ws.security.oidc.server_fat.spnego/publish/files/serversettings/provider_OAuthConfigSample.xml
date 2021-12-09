@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<openidConnectProvider
+		id="OidcConfigSample"
+		oauthProviderRef="OAuthConfigSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		passwordGrantRequiresAppPassword="true"
+	>
+		<autoAuthorizeClient>genAppTok01</autoAuthorizeClient>
+		<autoAuthorizeClient>genAppTok02</autoAuthorizeClient>
+		<autoAuthorizeClient>genAppPwAndAppToken</autoAuthorizeClient>
+		<autoAuthorizeClient>NoAppTok01</autoAuthorizeClient>
+		<autoAuthorizeClient>NoAppTok02</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="genAppTok01"
+				secret="{xor}LDo8LTor"
+				displayname="genAppTok01"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true"
+				appTokenAllowed="true" />
+			<client
+				name="genAppTok02"
+				secret="{xor}LDo8LTor"
+				displayname="genAppTok02"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true"
+				appTokenAllowed="true" />
+			<client
+				name="genAppPwAndAppToken"
+				secret="{xor}LDo8LTor"
+				displayname="genAppPwAndAppToken"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				appPasswordAllowed="true"
+				appTokenAllowed="true"
+				introspectTokens="true" />
+				<!--  NOTE:  NoAppTok01 amd NoAppTok02 do NOT have appTokenAllowed - they're just used to consume the access_tokens -->
+			<client
+				name="NoAppTok01"
+				secret="{xor}LDo8LTor"
+				displayname="NoAppTok01"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" />
+			<client
+				name="NoAppTok02"
+				secret="{xor}LDo8LTor"
+				displayname="NoAppTok02"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_copy"
+		oauthProviderRef="OAuthConfigSample_copy"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample_copy"
+		oauthOnly="true"
+		httpsRequired="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		passwordGrantRequiresAppPassword="true"
+	>
+		<autoAuthorizeClient>genAppTok01</autoAuthorizeClient>
+		<autoAuthorizeClient>genAppTok02</autoAuthorizeClient>
+		<autoAuthorizeClient>genAppPwAndAppToken</autoAuthorizeClient>
+		<autoAuthorizeClient>NoAppTok01</autoAuthorizeClient>
+		<autoAuthorizeClient>NoAppTok02</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="genAppTok01"
+				secret="{xor}LDo8LTor"
+				displayname="genAppTok01"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true"
+				appTokenAllowed="true" />
+			<client
+				name="genAppTok02"
+				secret="{xor}LDo8LTor"
+				displayname="genAppTok02"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true"
+				appTokenAllowed="true" />
+			<client
+				name="genAppPwAndAppToken"
+				secret="{xor}LDo8LTor"
+				displayname="genAppPwAndAppToken"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" />
+				<!--  NOTE:  NoAppTok01 amd NoAppTok02 do NOT have appTokenAllowed - they're just used to consume the access_tokens -->
+			<client
+				name="NoAppTok01"
+				secret="{xor}LDo8LTor"
+				displayname="NoAppTok01"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" />
+			<client
+				name="NoAppTok02"
+				secret="{xor}LDo8LTor"
+				displayname="NoAppTok02"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+	
+	<openidConnectProvider
+		id="OidcConfigSample_shortLivedAccessToken"
+		oauthProviderRef="OAuthConfigSample_shortLivedAccessToken"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+
+<!-- Provider that generates short lived access_tokens -->
+	<oauthProvider
+		id="OAuthConfigSample_shortLivedAccessToken"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		accessTokenLifetime="15"
+	>
+		<autoAuthorizeClient>genShortLivedAccessToken</autoAuthorizeClient>
+
+		<localStore>
+
+			<client
+				name="genShortLivedAccessToken"
+				secret="{xor}LDo8LTor"
+				displayname="genShortLivedAccessToken"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" 
+				appTokenAllowed="true"/>
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_userClientTokenLimit"
+		oauthProviderRef="OAuthConfigSample_userClientTokenLimit"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+	
+	<!--  creation of an access_token results in the internal count increasing by 2 (not 1)
+	 		it counts the access_token, refresh_token (and I don't believe the id_token) -->
+	<oauthProvider
+		id="OAuthConfigSample_userClientTokenLimit"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		userClientTokenLimit="4"
+	>
+		<autoAuthorizeClient>userClientTokenLimit1</autoAuthorizeClient>
+		<autoAuthorizeClient>userClientTokenLimit2</autoAuthorizeClient>
+
+		<localStore>
+
+			<client
+				name="userClientTokenLimit1"
+				secret="{xor}LDo8LTor"
+				displayname="userClientTokenLimit1"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" 
+				appTokenAllowed="true"/>
+				
+			<client
+				name="userClientTokenLimit2"
+				secret="{xor}LDo8LTor"
+				displayname="userClientTokenLimit2"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" 
+				appTokenAllowed="true"/>
+		</localStore>
+	</oauthProvider>
+	
+	
+	<openidConnectProvider
+		id="OidcConfigSample_shortLivedAppTok"
+		oauthProviderRef="OAuthConfigSample_shortLivedAppTok"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+
+	<oauthProvider
+		id="OAuthConfigSample_shortLivedAppTok"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		appTokenLifetime="10s"
+	>
+		
+		<autoAuthorizeClient>genShortLivedAppTok</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="genShortLivedAppTok"
+				secret="{xor}LDo8LTor"
+				displayname="genShortLivedAppTok"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" 
+				appTokenAllowed="true"/>
+		</localStore>
+	</oauthProvider>
+
+<!--  allow both app-password and app-token -->
+	<openidConnectProvider
+		id="OidcConfigSample_maxAppTokAllowed"
+		oauthProviderRef="OAuthConfigSample_maxAppTokAllowed"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+
+	<oauthProvider
+		id="OAuthConfigSample_maxAppTokAllowed"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+		appTokenOrPasswordLimit="3"
+		appTokenLifetime="15s"
+	>
+		
+		<autoAuthorizeClient>genAppTokLimitedNumAllowed</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="genAppTokLimitedNumAllowed"
+				secret="{xor}LDo8LTor"
+				displayname="genAppTokLimitedNumAllowed"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true"
+				introspectTokens="true" 
+				appPasswordAllowed="true"	
+				appTokenAllowed="true"/>	
+		</localStore>
+	</oauthProvider>
+
+
+	<openidConnectProvider
+		id="OidcConfigSample_missingPasswordGrantType"
+		oauthProviderRef="OAuthConfigSample_missingPasswordGrantType"
+		jwkEnabled="${oidcJWKEnabled}"
+		jtiClaimEnabled="true"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+
+	<oauthProvider
+		id="OAuthConfigSample_missingPasswordGrantType"
+		oauthOnly="true"
+		httpsRequired="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		tokenFormat="${oidcTokenFormat}"
+	>
+		
+		<autoAuthorizeClient>missingPasswordGrantType</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="missingPasswordGrantType"
+				secret="{xor}LDo8LTor"
+				displayname="missingPasswordGrantType"
+				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				preAuthorizedScope="openid scope1 scope2"
+				grantTypes="authorization_code, implicit, refresh_token, client_credentials, urn:ietf:params:oauth:grant-type:jwt-bearer"
+				enabled="true"
+				introspectTokens="true" 
+				appTokenAllowed="true"/>	
+		</localStore>
+	</oauthProvider>
+	
+	<!--  When adding new providers, don't forget to update the provider_OAuthConfigSample_derby.xml file and the 
+	initDerby method in com.ibm.ws.security.oauth.oidc_fat.common/src/com/ibm/ws/security/oauth_oidc/fat/commonTest/AppPasswordAndTokenCommonTest.java 
+	provider_OAuthConfigSample.xml contains the providers and localStore client entries that need to be equivalent to 
+	the providers that provider_OauthConfigSamle_derby.xml providers and the database client entries provided by the initDerby method -->
+</server>

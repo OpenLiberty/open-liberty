@@ -59,8 +59,7 @@
         <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
       </ldapCache>
       <failoverServers name="failoverLdapServers">
-      	<server host="${ldap.server.1.name}" port="${ldap.server.1.port}"/>
-		<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+      	<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
        </failoverServers>
 	</ldapRegistry> 
 

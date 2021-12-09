@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.saml.sso20.metatype" name="%saml.sso20.conf" description="%saml.sso20.conf.desc"  ibm:alias="samlWebSso20">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="defaultSP"/>
+        <AD id="inboundPropagation" name ="%inboundPropagation" description="%inboundPropagation.desc"
+            required="false" type="String" default="none">
+                <!-- Option label="%inboundPropagation.supported" value="supported" / --> 
+            	<Option label="%inboundPropagation.required" value="required" />
+            	<Option label="%inboundPropagation.none" value="none" />
+        </AD>    	
+        <AD id="wantAssertionsSigned" name ="%wantAssertionsSigned" description="%wantAssertionsSigned.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="signatureMethodAlgorithm" name ="%signatureMethodAlgorithm" description="%signatureMethodAlgorithm.desc"
+            required="false" type="String" default="SHA256">
+                <!-- defect 168307 Option label="%signatureMethodAlgorithm.NONE"   value="none" / -->
+            	<Option label="%signatureMethodAlgorithm.SHA256" value="SHA256" />
+            	<Option label="%signatureMethodAlgorithm.SHA128" value="SHA128" />
+            	<Option label="%signatureMethodAlgorithm.SHA1"   value="SHA1" />
+        </AD>        
+        <AD id="createSession" name ="%createSession" description="%createSession.desc"
+            required="false" type="Boolean" default="true"/>        
+        <AD id="authnRequestsSigned" name ="%authnRequestsSigned" description="%authnRequestsSigned.desc"
+            required="false" type="Boolean" default="true"/>
+            <AD id="includeX509InSPMetadata" name ="%includeX509InSPMetadata" description="%includeX509InSPMetadata.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="forceAuthn" name ="%forceAuthn" description="%forceAuthn.desc"
+            required="false" type="Boolean" default="false"/> 
+        <AD id="isPassive" name ="%isPassive" description="%isPassive.desc"
+            required="false" type="Boolean" default="false"/>
+        <AD id="allowCreate" name ="%allowCreate" description="%allowCreate.desc"
+            required="false" type="Boolean"/>     
+        <AD id="authnContextClassRef" name ="%authnContextClassRef" description="%authnContextClassRef.desc"
+            required="false" type="String" cardinality="200"/>
+        <AD id="authnContextComparisonType" name ="%authnContextComparisonType" description="%authnContextComparisonType.desc"
+            required="false" type="String" default="exact">
+                <Option label="%authnContextComparisonType.exact" value="exact" />
+                <Option label="%authnContextComparisonType.minimum" value="minimum" />
+                <Option label="%authnContextComparisonType.maximum" value="maximum" />
+                <Option label="%authnContextComparisonType.better" value="better" />                
+        </AD>    
+        <AD id="nameIDFormat" name="%nameIDFormat" description="%nameIDFormat.desc" 
+     	     type="String" required="false" default="email" >
+     	        <Option label="%nameIDFormat.UNSPECIFIED" value="unspecified" />             
+                <Option label="%nameIDFormat.EMAIL" value="email" />
+                <Option label="%nameIDFormat.X509SUBJECTNAME" value="x509SubjectName" />
+                <Option label="%nameIDFormat.WINDOWSDOMAIN" value="windowsDomainQualifiedName" />               
+                <Option label="%nameIDFormat.KERBEROS" value="kerberos" />
+                <Option label="%nameIDFormat.ENTITY" value="entity" />
+                <Option label="%nameIDFormat.PERSISTENT" value="persistent" />
+                <Option label="%nameIDFormat.TRANSIENT" value="transient" />
+                <Option label="%nameIDFormat.ENCRYPTED" value="encrypted" /> 
+                <Option label="%nameIDFormat.CUSTOMIZE" value="customize" /> 
+        </AD>
+        <AD id="customizeNameIDFormat" name="%customizeNameIDFormat" description="%customizeNameIDFormat.desc"
+            required="false" type="String" />    
+        <AD id="idpMetadata" name ="%idpMetadata" description="%idpMetadata.desc"
+            required="false" type="String" default="${server.config.dir}/resources/security/idpMetadata.xml"/>
+        <AD id="keyStoreRef" name ="%keyStoreRef" description="%keyStoreRef.desc"
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore"/> <!-- Server default-->
+	    <AD id="keyAlias" name="%keyAlias" description="%keyAlias.desc" 
+	        required="false" type="String" />
+	    <AD id="keyPassword" name="internal" description="internal use only"
+	        required="false" type="String" ibm:type="password"/>             
+        <AD id="loginPageURL" name="%loginPageURL" description="%loginPageURL.desc"
+            required="false" type="String" /> 
+        <AD id="errorPageURL" name="%errorPageURL" description="%errorPageURL.desc"
+            required="false" type="String" />                                
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" 
+            required="false" type="String" default="5m" ibm:type="duration" />
+        <AD id="tokenReplayTimeout" name="%tokenReplayTimeout" description="%tokenReplayTimeout.desc" 
+            required="false" type="String" default="30m" ibm:type="duration" />
+        <AD id="sessionNotOnOrAfter" name="%sessionNotOnOrAfter" description="%sessionNotOnOrAfter.desc" 
+            required="false" type="String" default="120m" ibm:type="duration" />
+        <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc"
+            required="false" type="String"/>
+        <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc"
+            required="false" type="String" />     
+        <AD id="userUniqueIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc"
+            required="false" type="String" />
+        <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc"
+            required="false" type="String" />
+        <AD id="includeTokenInSubject" name ="%includeTokenInSubject" description="%includeTokenInSubject.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="mapToUserRegistry" name ="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="String" default="No">
+                <Option label="%mapToUserRegistry.NO"     value="No" />
+            	<Option label="%mapToUserRegistry.USER"   value="User" />
+            	<Option label="%mapToUserRegistry.GROUP"  value="Group" />
+        </AD>
+        <AD id="pkixTrustEngine" ibm:type="pid" cardinality="1" 
+            ibm:reference="com.ibm.ws.security.saml.sso20.pkixtrustengine" 
+            required="false" type="String" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
+             ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter"
+             required="false" type="String"  />
+        <AD id="disableLtpaCookie" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="spCookieName" name="internal" description="internal use only"
+            required="false" type="String" />
+        <AD id="realmName" name="%realmName" description="%realmName.desc"
+            required="false" type="String" />            
+        <AD id="authnRequestTime" name="%authnRequestTime" description="%authnRequestTime.desc" 
+            required="false" type="String" default="10m" ibm:type="duration" />
+        <AD id="enabled" name="%enabled" description="%enabled.desc" required="false" type="Boolean" default="true" />
+    	<AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc" required="true" type="Boolean" default="true"/>
+    	<AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
+    	<AD id="spHostAndPort" name="%spHostAndPort" description="%spHostAndPort.desc"
+            required="false" type="String" />
+        <AD id="reAuthnOnAssertionExpire" name ="%reAuthnOnAssertionExpire" description="%reAuthnOnAssertionExpire.desc"
+            required="false" type="Boolean" default="false"/> 
+        <AD id="reAuthnCushion" name="%reAuthnCushion" description="%reAuthnCushion.desc" 
+            required="false" type="String" default="0m" ibm:type="duration" />
+        <AD id="targetPageUrl" name="%targetPageUrl" description="%targetPageUrl.desc"
+            required="false" type="String" />    
+        <AD id="useRelayStateForTarget" name ="%useRelayStateForTarget" description="%useRelayStateForTarget.desc"
+            required="false" type="Boolean" default="true"/> 
+        <!-- rsSaml(inboundPropagation) specific attributes -->           
+        <AD id="headerName" name="%headerName" description="%headerName.desc"
+            required="false" type="String" cardinality="200" default="Saml,saml,SAML"/>
+        <AD id="audiences" name ="%audiences" description="%audiences.desc"
+            required="false" type="String" cardinality="200" default="ANY"/>              
+        <AD id="postLogoutRedirectUrl" name="%postLogoutRedirectUrl" description="%postLogoutRedirectUrl.desc"
+            required="false" type="String" ibm:type="token" />
+        
+        <AD id="spLogout" name="%spLogout" 
+            description="%spLogout.desc" required="false" type="Boolean" default="false" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.saml.sso20">
+        <Object ocdref="com.ibm.ws.security.saml.sso20.metatype" />
+    </Designate>
+ 
+    <OCD id="com.ibm.ws.security.saml.sso20.pkixtrustengine.metatype" name="%pkixtrustengine" description="%pkixtrustengine.desc" ibmui:localization="OSGI-INF/l10n/metatype">	
+		<AD id="trustAnchor" name="%trustStoreRef" description="%trustStoreRef.desc" 
+	        required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore"/>
+	    <AD id="trustedIssuers" name="%trustedIssuers" description="%trustedIssuers.desc"
+			required="false" type="String" cardinality="2147483647" />					
+		<AD id="x509Certificate" ibm:type="pid" ibm:reference="com.ibm.ws.security.saml.sso20.trustengine.cert" 
+             required="false" type="String" cardinality="2147483647"/>	
+        <AD id="crl" ibm:type="pid" ibm:reference="com.ibm.ws.security.saml.sso20.trustengine.crl" 
+             required="false" type="String" cardinality="2147483647"/>				     
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.saml.sso20.pkixtrustengine">
+        <Object ocdref="com.ibm.ws.security.saml.sso20.pkixtrustengine.metatype" />
+    </Designate>    
+    
+    <OCD id="com.ibm.ws.security.saml.sso20.trustengine.cert.metatype" name="%trustcert" description="%trustcert.desc">
+        <AD id="path" type="String" required="true" name="%certpath" description="%certpath.desc"/>      
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.saml.sso20.trustengine.cert">
+        <Object ocdref="com.ibm.ws.security.saml.sso20.trustengine.cert.metatype" />
+    </Designate> 
+    
+    <OCD id="com.ibm.ws.security.saml.sso20.trustengine.crl.metatype" name="%trustcrl" description="%trustcrl.desc">
+        <AD id="path" type="String" required="true" name="%crlpath" description="%crlpath.desc"/>      
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.saml.sso20.trustengine.crl">
+        <Object ocdref="com.ibm.ws.security.saml.sso20.trustengine.crl.metatype" />
+    </Designate>    
+    
+</metatype:MetaData>

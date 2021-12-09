@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tEspecifique onde instalar o recurso. O recurso
 \testa op\u00e7\u00e3o n\u00e3o for especificada, o recurso ser\u00e1 instalado como um recurso      \n\
 \tdo usu\u00e1rio.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installFeature.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\
+\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\
+\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\
+\tJSON de recursos associados no mesmo groupId que o BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
 \tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tInstale os recursos necess\u00e1rios para um servid
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tO nome de um servidor existente no mesmo ambiente Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installServerFeatures.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\
+\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\
+\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\
+\tJSON de recursos associados no mesmo groupId que o BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tVisualize os reposit\u00f3rios e as configura\u00e7\u00f5es 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tUse esta op\u00e7\u00e3o para exibir as mensagens detalhadas da            \n\
-\tvalida\u00e7\u00e3o do arquivo featureUtility.properties configurado.           \n\
+\tvalida\u00e7\u00e3o do arquivo featureUtility.properties configurado.         \n\
 \tCada mensagem cont\u00e9m um c\u00f3digo de erro, o n\u00famero da linha em que o erro \n\
 \tfoi localizado e a causa do erro.

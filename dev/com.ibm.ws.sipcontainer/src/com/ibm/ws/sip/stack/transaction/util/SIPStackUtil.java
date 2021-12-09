@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003,2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transaction.util;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.address.SipURL;
-import jain.protocol.ip.sip.header.HeaderIterator;
-import jain.protocol.ip.sip.header.HeaderParseException;
-import jain.protocol.ip.sip.header.RecordRouteHeader;
-import jain.protocol.ip.sip.header.RouteHeader;
-import jain.protocol.ip.sip.message.Message;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Vector;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
@@ -39,6 +27,12 @@ import com.ibm.ws.sip.parser.util.InetAddressCache;
 import com.ibm.ws.sip.properties.StackProperties;
 import com.ibm.ws.sip.stack.transaction.SIPTransactionConstants;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
+
+import jain.protocol.ip.sip.ListeningPoint;
+import jain.protocol.ip.sip.SipParseException;
+import jain.protocol.ip.sip.address.SipURL;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.Message;
 
 /**
  * @author amirk
@@ -63,24 +57,20 @@ public class SIPStackUtil
 	 * throwing the eldest entry.
 	 */
 	public static  int s_ipCacheMaxSize = StackProperties.IP_CACHE_MAX_SIZE_DEFAULT;
-	
-	private static float IP_CACHE_LOAD_FACTOR = 0.75f; 
-	
-	/**
-	 * a LRU cache of SIPURLImpl classes...
-	 * The reason: minimize String allocation made by InetAddress.getHostName(...)
-	 * Moti: I'm not sure about the synchronized here but
-	 * I put it anyway , to be safe. We shall see how this affects
-	 * performance. 
-	 */
-	private static Map m_host2IP = null;
-
+		
 	/** work buffer for assembling the IBM-Client-Address value */
 	private static ThreadLocal<CharsBuffer> m_ibmClientAddressBuffers = new ThreadLocal<CharsBuffer>();
 
 	/** the IBM-Client-Address header name */
 	private static final String IBM_CLIENT_ADDRESS = "IBM-Client-Address";
 
+	private static final String IPV4_REGEX =
+		            "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$";
+	private static final String IPV6_REGEX = "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$";
+	private static final String COMPRESSED_IPV6_REGEX = "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$";
+	private static final Pattern ipv4Validator = Pattern.compile(IPV4_REGEX);
+	private static final Pattern ipv6Validator = Pattern.compile(IPV6_REGEX);
+	private static final Pattern compressedIPv6Validator = Pattern.compile(COMPRESSED_IPV6_REGEX);
 	
 	private SIPStackUtil(){};
 	
@@ -272,8 +262,7 @@ public class SIPStackUtil
 	public static boolean isSameHost(String host, String otherhost) {
 
 		if (c_logger.isTraceEntryExitEnabled()) {
-			c_logger.traceEntry(SIPStackUtil.class, "isSameHost", new String[]{
-				String.valueOf(host), String.valueOf(otherhost)});
+			c_logger.traceEntry(SIPStackUtil.class, "isSameHost", host, otherhost);
 		}
 		
 		boolean rc = false;
@@ -282,13 +271,7 @@ public class SIPStackUtil
 		String normalizedOtherHost = normalizedHostName(otherhost);
 
 		if(normalizedHost != null && normalizedOtherHost != null) {
-
 			rc = normalizedHost.equals(normalizedOtherHost);
-			
-			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug(SIPStackUtil.class, "isSameHost", 
-						"is " + normalizedHost + " == " + normalizedOtherHost + " ?");
-			}
 		}
 		
 		if (c_logger.isTraceEntryExitEnabled()) {
@@ -587,6 +570,7 @@ public class SIPStackUtil
 		}
 		String localHost = lpoint.getHost();
 		int localPort = lpoint.getPort();
+		String transport = lpoint.getTransport();
 		
 		String remoteHost;
 		int remotePort;
@@ -601,6 +585,8 @@ public class SIPStackUtil
 		ibmClientAddressBuffer.append(remoteHost).append(':').append(remotePort);
 		ibmClientAddressBuffer.append(";local-address=");
 		ibmClientAddressBuffer.append(localHost).append(':').append(localPort);
+		ibmClientAddressBuffer.append(";").append(transport);
+		
 		char[] buffer = ibmClientAddressBuffer.getCharArray();
 		int length = ibmClientAddressBuffer.getCharCount();
 		CharArray array = CharArray.getFromPool(buffer, 0, length);
@@ -615,5 +601,62 @@ public class SIPStackUtil
 					"IBM-Client-Address: " + ibmClientAddressHeader);
 		}
 	}
+	
+	/**
+     * Validates if the given address is an IPv4 address. 
+     * @param inetAddress the address to validate
+     * 
+     * @return <code>true</code> if the address is IPv4 address
+     */
+    public static boolean isInet4Address(String inetAddress) {
+        // verify that address conforms to generic IPv4 format
+    	return ipv4Validator.matcher(inetAddress).matches();
+    }
 
-}
+	/**
+     * Validates if the given address is an IPv6 address. 
+     * @param inetAddress the address to validate
+     * 
+     * @return <code>true</code> if the address is IPv6 address
+     */
+    public static boolean isInet6Address(String inetAddress) {
+        // verify that address conforms to generic IPv6 format
+    	return ipv6Validator.matcher(inetAddress).matches() || compressedIPv6Validator.matcher(inetAddress).matches() ;
+    }
+    
+	/**
+     * Validates if the given address is an IP address. 
+     * @param address the address to validate
+     * 
+     * @return <code>true</code> if the address is an IP address
+	 */
+	public static boolean isIpAddress(String address) {
+		return isInet4Address(address) || isInet6Address(address);
+	}
+	
+	/**
+     * Validates if the given addresses have the same IP type. 
+     * @param inetAddress1 the address to validate
+     * @param inetAddress2 the address to validate
+     * 
+     * @return <code>true</code> if the given addresses are the same type
+     */
+    public static boolean isSameInetAddressType(String inetAddress1, String inetAddress2) {
+    	boolean retValue = false;
+
+    	if (inetAddress1 != null && inetAddress2 != null) {
+    		if (isInet4Address(inetAddress1) && isInet4Address(inetAddress2)) {
+    			retValue = true;
+    		}
+    		else if (isInet6Address(inetAddress1) && isInet6Address(inetAddress2)) {
+    			retValue =  true;
+    		}
+    	}
+		if( c_logger.isTraceDebugEnabled())
+		{
+			c_logger.traceDebug(SIPStackUtil.class, "isSameInetAddressType",
+					"address1: " + inetAddress1 + ", address2: " + inetAddress2 + ", " + retValue);
+		}
+    	return retValue;
+    }
+ }

@@ -3512,16 +3512,14 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testInvokeAnyNullSuccessfulResult");
 
         CountDownLatch blocker = new CountDownLatch(1);
-        CountDownTask task1 = new CountDownTask(new CountDownLatch(0), blocker, TIMEOUT_NS * 3);
+        CountDownLatch task1started = new CountDownLatch(1);
+        CountDownTask task1 = new CountDownTask(task1started, blocker, TIMEOUT_NS * 3);
 
-        SharedIncrementTask task2 = new SharedIncrementTask();
+        Callable<Boolean> task2 = () -> task1started.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS) ? null : false;
 
-        List<Callable<Boolean>> tasks = Arrays.asList(task1, Executors.callable(task2, (Boolean) null));
+        List<Callable<Boolean>> tasks = Arrays.asList(task1, task2);
 
         assertNull(executor.invokeAny(tasks));
-
-        // Another way to verify that task2 completed
-        assertEquals(1, task2.count());
 
         // Verify that task1 ends prior to when it would have otherwise completed. This is due to cancel/interruption upon return from invokeAny.
         for (long start = System.nanoTime(); task1.executionThreads.peek() != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
@@ -5342,16 +5340,49 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     // Register a callback for shutdown. Verify that it gets invoked for both shutdown and shutdownNow methods.
+    // Also, the callback should be invoked when shutdownNow is indirectly invoked via the shutdownNowByIdentifierPrefix
+    // method of the policy executor provider.
     @Test
     public void testShutdownCallback() throws Exception {
         PolicyExecutor executor1 = provider.create("testShutdownCallback-1");
         PolicyExecutor executor2 = provider.create("testShutdownCallback-2");
+        PolicyExecutor executor3 = provider.create("testShutdownCallback-3");
+        PolicyExecutor executor4 = provider.create("testShutdownCallback-4-and-other-text");
         AtomicInteger count = new AtomicInteger();
-        executor1.registerShutdownCallback(() -> count.addAndGet(1));
-        executor2.registerShutdownCallback(() -> count.addAndGet(2));
+        executor1.registerShutdownCallback(runningTasks -> {
+            count.addAndGet(runningTasks.size());
+            runningTasks.forEach(task -> {
+                if (task instanceof CountDownTask)
+                    ((CountDownTask) task).continueLatch.countDown();
+            });
+        });
+        executor2.registerShutdownCallback(runningTasks -> count.addAndGet(2));
+        executor3.registerShutdownCallback(runningTasks -> count.addAndGet(33));
+        executor4.registerShutdownCallback(runningTasks -> count.addAndGet(runningTasks.size() + 4));
+
+        CountDownLatch task1started = new CountDownLatch(1);
+        CountDownLatch task1released = new CountDownLatch(1);
+        CountDownTask task1 = new CountDownTask(task1started, task1released, TIMEOUT_NS * 2);
+        executor1.submit(task1);
+
+        assertTrue(task1started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        provider.shutdownNowByIdentifierPrefix("PolicyExecutorProvider-testShutdownCallback-4");
+        assertEquals(4, count.get());
+
+        count.set(0);
         executor1.shutdown();
         executor2.shutdownNow();
         assertEquals(3, count.get());
+
+        // Wait for the running task to be released due to the shutdown notification
+        for (long start = System.nanoTime(); task1.executionThreads.peek() != null && System.nanoTime() - start < TIMEOUT_NS;)
+            TimeUnit.MILLISECONDS.sleep(200);
+        assertNull(task1.executionThreads.peek());
+
+        count.set(0);
+        provider.shutdownNowByIdentifierPrefix("PolicyExecutorProvider-testShutdownCallback-");
+        assertEquals(33, count.get());
     }
 
     // Submit a task that gets queued but times out (due to startTimeout) before it can run.

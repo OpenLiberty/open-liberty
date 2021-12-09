@@ -85,6 +85,6 @@ public class BeanLifecycleServlet extends HttpServlet {
         }
 
         PrintWriter pw = response.getWriter();
-        pw.write("recieved :" + key + " " + value);
+        pw.write("received :" + key + " " + value);
     }
 }

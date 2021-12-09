@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -186,7 +187,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             @Override
             public void evaluate() throws Throwable {
                 if (!RepeatTestFilter.shouldRun(method)) {
-                    return;
+                    throw new AssumptionViolatedException("Test skipped for current RepeatAction");
                 }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
                 try {
@@ -471,6 +472,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Map<String, FFDCInfo> retrieveFFDCCounts() {
         HashMap<String, FFDCInfo> ffdcPrimaryInfo = new LinkedHashMap<String, FFDCInfo>();
 
+        Log.info(c, "retrieveFFDCCounts", "Entering");
+
         try {
             for (LibertyServer server : getRunningLibertyServers()) {
 
@@ -533,6 +536,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             //Exception obtaining Liberty servers
             Log.error(c, "retrieveFFDCCounts", e);
         }
+        Log.info(c, "retrieveFFDCCounts", "Exiting: " + ffdcPrimaryInfo.toString());
         return ffdcPrimaryInfo;
     }
 
@@ -626,31 +630,35 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     public List<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         ArrayList<String> annotationListPerClass = new ArrayList<String>();
+        ExpectedFFDC[] ffdcs = m.getMethod().getAnnotationsByType(ExpectedFFDC.class);
 
-        ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
-        if (ffdc != null) {
-            if (JakartaEE9Action.isActive()) {
+        for (ExpectedFFDC ffdc : ffdcs) {
+            if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                for (String exceptionClass : exceptionClasses) {
-                    if (ee9Helper == null) {
-                        ee9Helper = new EE9PackageReplacementHelper();
+                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+                    String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
+                    System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
+                    int index = 0;
+                    for (String exceptionClass : exceptionClasses) {
+                        if (ee9Helper == null) {
+                            ee9Helper = new EE9PackageReplacementHelper();
+                        }
+                        jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
                     }
-                    exceptionClass = ee9Helper.replacePackages(exceptionClass);
-                    annotationListPerClass.add(exceptionClass);
+                    exceptionClasses = jakarta9ReplacementExceptionClasses;
                 }
-            } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
-                for (String repeatAction : ffdc.repeatAction()) {
-                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
-                        String[] exceptionClasses = ffdc.value();
-                        for (String exceptionClass : exceptionClasses) {
-                            annotationListPerClass.add(exceptionClass);
+                if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                    for (String repeatAction : ffdc.repeatAction()) {
+                        if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
+                            for (String exceptionClass : exceptionClasses) {
+                                annotationListPerClass.add(exceptionClass);
+                            }
                         }
                     }
-                }
-            } else {
-                String[] exceptionClasses = ffdc.value();
-                for (String exceptionClass : exceptionClasses) {
-                    annotationListPerClass.add(exceptionClass);
+                } else {
+                    for (String exceptionClass : exceptionClasses) {
+                        annotationListPerClass.add(exceptionClass);
+                    }
                 }
             }
         }
@@ -662,43 +670,46 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Set<String> getAllowedFFDCAnnotationFromTest(FrameworkMethod m) {
 
         Set<String> annotationListPerClass = new HashSet<String>();
-
         // Method
-        Set<AllowedFFDC> ffdcs = new HashSet<AllowedFFDC>();
-        ffdcs.add(m.getAnnotation(AllowedFFDC.class));
+        AllowedFFDC[] allowedffdcs = m.getMethod().getAnnotationsByType(AllowedFFDC.class);
+        Set<AllowedFFDC> ffdcs = new HashSet<AllowedFFDC>(Arrays.asList(allowedffdcs));
 
         // Declaring Class
         Class<?> declaringClass = m.getMethod().getDeclaringClass();
-        ffdcs.add(declaringClass.getAnnotation(AllowedFFDC.class));
+        allowedffdcs = declaringClass.getAnnotationsByType(AllowedFFDC.class);
+        ffdcs.addAll(Arrays.asList(allowedffdcs));
 
         // Test Class
         Class<?> testClass = getTestClass().getJavaClass();
         if (!declaringClass.equals(testClass)) {
-            ffdcs.add(testClass.getAnnotation(AllowedFFDC.class));
+            allowedffdcs = testClass.getAnnotationsByType(AllowedFFDC.class);
+            ffdcs.addAll(Arrays.asList(allowedffdcs));
         }
 
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
-                if (JakartaEE9Action.isActive()) {
-                    String[] exceptionClasses = ffdc.value();
+                String[] exceptionClasses = ffdc.value();
+                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+                    String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
+                    System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
+                    int index = 0;
                     for (String exceptionClass : exceptionClasses) {
                         if (ee9Helper == null) {
                             ee9Helper = new EE9PackageReplacementHelper();
                         }
-                        exceptionClass = ee9Helper.replacePackages(exceptionClass);
-                        annotationListPerClass.add(exceptionClass);
+                        jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
                     }
-                } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                    exceptionClasses = jakarta9ReplacementExceptionClasses;
+                }
+                if (RepeatTestFilter.isAnyRepeatActionActive()) {
                     for (String repeatAction : ffdc.repeatAction()) {
                         if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
-                            String[] exceptionClasses = ffdc.value();
                             for (String exceptionClass : exceptionClasses) {
                                 annotationListPerClass.add(exceptionClass);
                             }
                         }
                     }
                 } else {
-                    String[] exceptionClasses = ffdc.value();
                     for (String exceptionClass : exceptionClasses) {
                         annotationListPerClass.add(exceptionClass);
                     }

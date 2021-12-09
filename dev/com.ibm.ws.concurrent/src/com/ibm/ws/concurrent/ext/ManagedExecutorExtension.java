@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.ext;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -29,10 +31,11 @@ import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
 import com.ibm.ws.threading.CompletionStageExecutor;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.resource.ResourceInfo;
-import com.ibm.wsspi.threadcontext.WSContextService;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  * Extend this interface to intercept and replace resource reference lookups for
@@ -54,6 +57,11 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
     @Override
     public final boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
         return ((ExecutorService) executor).awaitTermination(timeout, unit);
+    }
+
+    @Override
+    public final ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        return executor.captureThreadContext(props);
     }
 
     @Override
@@ -91,9 +99,13 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
         return ((ManagedExecutor) executor).failedStage(x);
     }
 
+    public final ContextService getContextService() {
+        return ((ManagedExecutorServiceImpl) executor).getContextService();
+    }
+
     @Override
-    public final WSContextService getContextService() {
-        return executor.getContextService();
+    public final PolicyExecutor getLongRunningPolicyExecutor() {
+        return executor.getLongRunningPolicyExecutor();
     }
 
     @Override

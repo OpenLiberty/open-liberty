@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -885,5 +885,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: {0} \ud30c\uc77c\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud30c\uc77c \uc720\ud615\uc774\ubbc0\ub85c \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ESA \ud30c\uc77c\ub85c\ubd80\ud130\uc758 \uc124\uce58\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=\uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud30c\uc77c \uc720\ud615\uc774 \uc81c\uacf5\ub418\uc5b4 \uc774 \ud30c\uc77c\uc774 \uc124\uce58\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: {0} \uae30\ub2a5 BOM Maven coordinate\uc758 \ud615\uc2dd\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud615\uc2dd\uc774 groupId:artifactId:version\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=\uae30\ub2a5 BOM Maven coordinate \ud615\uc2dd\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=\uae30\ub2a5 BOM Maven coordinate\uc758 \ud615\uc2dd\uc744 groupId:artifactId:version \ud615\uc2dd\uc5d0 \ub9de\uac8c \ub2e4\uc2dc \uc870\uc815\ud558\uc2ed\uc2dc\uc624.
 
 MSG_STABILIZING_FEATUREMANAGER=\uc774 featureManager \uc870\uce58\ub294 \uc548\uc815\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub300\uc2e0 installUtility {0}\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. \uc124\uce58 \ubc0f \uc800\uc7a5\uc18c \uad00\ub828 \uc870\uce58\uc5d0\ub294 installUtility \uba85\ub839\uc774 \uad8c\uc7a5\ub429\ub2c8\ub2e4.

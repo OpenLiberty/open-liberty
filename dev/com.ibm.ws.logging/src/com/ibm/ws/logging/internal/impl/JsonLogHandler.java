@@ -133,7 +133,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
             sourcesToAdd.removeAll(oldSources);
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesToAdd));
 
-            sourcesList = newSources; //new master sourcesList
+            sourcesList = newSources; //new primary sourcesList
         } catch (Exception e) {
             e.printStackTrace();
         }

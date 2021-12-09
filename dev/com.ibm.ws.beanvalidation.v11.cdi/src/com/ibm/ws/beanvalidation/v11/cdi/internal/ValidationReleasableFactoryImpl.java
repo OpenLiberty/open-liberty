@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,11 +86,20 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
     }
 
     private BeanManager getCurrentBeanManager() {
+        BeanManager beanMgr = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        BeanManager beanMgr = beanManagers.get(cmd.getModuleMetaData().getJ2EEName());
-        if (beanMgr == null) {
+
+        // cmd might be null during startup, we'll skip caching till it is available.
+        if (cmd == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Skipping using beanManagers cache.");
             beanMgr = cdiService.getServiceWithException().getCurrentBeanManager();
-            beanManagers.put(cmd.getModuleMetaData().getJ2EEName(), beanMgr);
+        } else {
+            beanMgr = beanManagers.get(cmd.getModuleMetaData().getJ2EEName());
+            if (beanMgr == null) {
+                beanMgr = cdiService.getServiceWithException().getCurrentBeanManager();
+                beanManagers.put(cmd.getModuleMetaData().getJ2EEName(), beanMgr);
+            }
         }
         return beanMgr;
     }

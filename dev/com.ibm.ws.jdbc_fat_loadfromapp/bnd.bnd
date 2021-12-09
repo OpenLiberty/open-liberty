@@ -22,7 +22,8 @@ src: \
 
 fat.project: true
 
-tested.features: connectors-2.0, enterprisebeanslite-4.0, servlet-5.0, xmlbinding-3.0
+tested.features: connectors-2.0, enterprisebeanslite-4.0, servlet-5.0, xmlbinding-3.0,\
+	appsecurity-4.0, expressionlanguage-4.0, cdi-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

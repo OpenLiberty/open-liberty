@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -39,6 +40,14 @@ public class TypeConverterBean {
     @Inject
     @ConfigProperty(name = "list1")
     List<MyStringObject> list1;
+
+    @Inject
+    @ConfigProperty(name = "list1")
+    Optional<List<MyStringObject>> list2;
+
+    @Inject
+    @ConfigProperty(name = "list1")
+    Provider<Optional<List<MyStringObject>>> list3;
 
     @Inject
     @ConfigProperty(name = "list1")
@@ -101,12 +110,41 @@ public class TypeConverterBean {
      * @throws Exception
      */
     public void listConverterTest() throws Exception {
-        assertEquals(5, list1.size());
-        assertEquals("value1", list1.get(0).getValue());
-        assertEquals("value2", list1.get(1).getValue());
-        assertEquals("value3", list1.get(2).getValue());
-        assertEquals("value4", list1.get(3).getValue());
-        assertEquals("value5", list1.get(4).getValue());
+        listConverterTest(list1);
+    }
+
+    /**
+     * Tests that a List can be converted
+     *
+     * @throws Exception
+     */
+    public void optionalListConverterTest() throws Exception {
+        List<MyStringObject> list = list2.get();
+        listConverterTest(list);
+    }
+
+    /**
+     * Tests that a List can be converted
+     *
+     * @throws Exception
+     */
+    public void providerOptionalListConverterTest() throws Exception {
+        List<MyStringObject> list = list3.get().get();
+        listConverterTest(list);
+    }
+
+    /**
+     * Tests that a List can be converted
+     *
+     * @throws Exception
+     */
+    private void listConverterTest(List<MyStringObject> list) throws Exception {
+        assertEquals(5, list.size());
+        assertEquals("value1", list.get(0).getValue());
+        assertEquals("value2", list.get(1).getValue());
+        assertEquals("value3", list.get(2).getValue());
+        assertEquals("value4", list.get(3).getValue());
+        assertEquals("value5", list.get(4).getValue());
     }
 
     /**

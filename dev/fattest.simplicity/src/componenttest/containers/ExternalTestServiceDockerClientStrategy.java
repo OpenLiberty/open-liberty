@@ -47,6 +47,13 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
 
+    @Deprecated
+    /**
+     * Use of a service filter should be used with extreme caution.
+     * There is a possibility of filtering out all available docker engines available to a build machine.
+     * Resulting in an unavoidable failed FAT bucket.
+     * If certain docker engines are performing poorly please raise an issue.
+     */
     public static Predicate<ExternalTestService> serviceFilter = null;
 
     /**
@@ -68,13 +75,13 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     /**
      * <pre>
-     * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
+     * By default, Testcontainers will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      *
-     * Calling this method in the FATSuite class is REQUIRED for any fat project that uses testconatiners.
+     * Calling this method in the FATSuite class is REQUIRED for any fat project that uses Testcontainers.
      * This is a safety measure to ensure that we run with the correct docker.client.stategy property
      * for each FATSuite run.
      *
-     * Example Useage:
+     * Example Usage:
      *
      * &#64;RunWith(Suite.class)
      * &#64;SuiteClasses({ FailoverTest.class })
@@ -86,11 +93,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * </pre>
      */
     public static void setupTestcontainers() {
+        String m = "setupTestcontainers";
+        Log.entering(c, m, setupComplete);
         if (setupComplete)
             return;
         generateTestcontainersConfig();
-        generateDockerConfig();
+        generateArtifactorySubstitutorConfig();
         setupComplete = true;
+        Log.exiting(c, m, setupComplete);
     }
 
     private static void generateTestcontainersConfig() {
@@ -119,17 +129,15 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * Or if a config.json already exists, make sure that the private registry is listed. If not, add
      * the private registry to the existing config
      */
-    private static void generateDockerConfig() {
+    private static void generateDockerConfig(String registry, String authToken) {
         final String m = "generateDockerConfig";
-        if (!USE_REMOTE_DOCKER_HOST)
-            return;
 
         File configDir = new File(System.getProperty("user.home"), ".docker");
         File configFile = new File(configDir, "config.json");
         String contents = "";
 
-        String privateAuth = "\t\t\"" + ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "\": {\n" +
-                             "\t\t\t\"auth\": \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken() + "\",\n"
+        String privateAuth = "\t\t\"" + registry + "\": {\n" +
+                             "\t\t\t\"auth\": \"" + authToken + "\",\n"
                              + "\t\t\t\"email\": null\n" + "\t\t}";
         if (configFile.exists()) {
             Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
@@ -140,7 +148,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                 throw new RuntimeException(e);
             }
             Log.info(c, m, "Original contents:\n" + contents);
-            if (contents.contains(ArtifactoryImageNameSubstitutor.getPrivateRegistry())) {
+            if (contents.contains(registry)) {
                 Log.info(c, m, "Config already contains private registry");
                 return;
             }
@@ -168,6 +176,15 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         Log.info(c, m, "New config.json contents are:\n" + contents);
         configFile.delete();
         writeFile(configFile, contents);
+
+    }
+
+    private static void generateArtifactorySubstitutorConfig() {
+        // If we are using local docker host then we won't substitute names so skip this step.
+        if (!USE_REMOTE_DOCKER_HOST)
+            return;
+
+        generateDockerConfig(ArtifactoryImageNameSubstitutor.getPrivateRegistry(), ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken());
     }
 
     @Override
@@ -204,12 +221,24 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                 return false;
             }
 
-            System.setProperty("DOCKER_HOST", dockerHostURL);
+            String ca = dockerService.getProperties().get("ca.pem");
+            String cert = dockerService.getProperties().get("cert.pem");
+            String key = dockerService.getProperties().get("key.pem");
+
+            if (ca == null || cert == null || key == null) {
+                Log.info(c, m, "Will not select " + dockerHostURL
+                               + " because dockerService did not contain one or more of the authentication properties:"
+                               + " [ca.pem, cert.pem, key.pem].");
+                return false;
+            }
+
             File certDir = new File("docker-certificates");
             certDir.mkdirs();
-            writeFile(new File(certDir, "ca.pem"), dockerService.getProperties().get("ca.pem"));
-            writeFile(new File(certDir, "cert.pem"), dockerService.getProperties().get("cert.pem"));
-            writeFile(new File(certDir, "key.pem"), dockerService.getProperties().get("key.pem"));
+            writeFile(new File(certDir, "ca.pem"), ca);
+            writeFile(new File(certDir, "cert.pem"), cert);
+            writeFile(new File(certDir, "key.pem"), key);
+
+            System.setProperty("DOCKER_HOST", dockerHostURL);
             System.setProperty("DOCKER_TLS_VERIFY", "1");
             System.setProperty("DOCKER_CERT_PATH", certDir.getAbsolutePath());
 

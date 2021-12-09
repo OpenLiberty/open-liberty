@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.servlet.Servlet;
@@ -107,7 +109,13 @@ public class UserRegistryServlet extends HttpServlet {
             return null;
         }
 
-        BundleContext bundleContext = bundle.getBundleContext();
+        BundleContext bundleContext = AccessController.doPrivileged(new PrivilegedAction<BundleContext>() {
+
+            @Override
+            public BundleContext run() {
+                return bundle.getBundleContext();
+            }
+        });
         if (bundleContext == null) {
             writer.println("Unable to determine bundle context");
             return null;
@@ -147,7 +155,7 @@ public class UserRegistryServlet extends HttpServlet {
      *
      * @param req
      * @param pw
-     * @param ur UserRegistry instance
+     * @param ur  UserRegistry instance
      * @throws CustomRegistryException
      * @throws NotImplementedException
      * @throws RemoteException

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.jdbc;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method; 
 import java.lang.reflect.Proxy;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.sql.Array; 
 import java.sql.Blob; 
 import java.sql.CallableStatement;
@@ -496,7 +493,11 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     protected SQLException closeWrapper(boolean closeWrapperOnly) 
     {
         // Looking for the public close method?  Try WSJdbcObject.
-        SQLException sqlX = null; 
+        SQLException sqlX = null;
+
+        if (mcf.getHelper().isCustomHelper && managedConn != null && managedConn.getHandleCount() == 1
+         && null == (sqlX = mcf.getHelper().doConnectionCleanupPerCloseConnection(connImpl)))
+            managedConn.perCloseCleanupNeeded = false;
 
         // Send a Connection Closed Event to notify the Managed Connection of the close -- if
         // we are associated with a ManagedConnection to notify.
@@ -1928,7 +1929,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
                     type,
                     concurrency,
                     managedConn.getCurrentHoldability(),
-                    mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                    mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                     managedConn.getCurrentSchema()); 
                 beginTransactionIfNecessary();
                 // get a prepared statement from the cache
@@ -2048,7 +2049,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
             {
                 StatementCacheKey key = new DB2SQLJCSCacheKey(
                     sql, type, concurrency, holdability, section,
-                    mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                    mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                     managedConn.getCurrentSchema(),
                     cacheKeySuffix); 
 
@@ -2151,7 +2152,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
             {
                 StatementCacheKey key = new DB2SQLJPSCacheKey(
                     sql, type, concurrency, holdability, section,
-                    mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                    mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                     managedConn.getCurrentSchema(),
                     cacheKeySuffix); 
 
@@ -2224,7 +2225,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
                                 concurrency,
                                 managedConn.getCurrentHoldability(),
                                 0,
-                                mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                                mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                                 managedConn.getCurrentSchema()); 
                 beginTransactionIfNecessary();
                 // get a prepared statement from the cache
@@ -2539,9 +2540,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
-        {
             mcf.getHelper().doStatementCleanup(cstmt);
-        }
         return cstmt;
     }
 
@@ -2560,9 +2559,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
-        {
             mcf.getHelper().doStatementCleanup(pstmt);
-        }
 
         return pstmt;
     }
@@ -3457,7 +3454,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
             if (managedConn.isStatementCachingEnabled()) {
                 PSCacheKey key = new PSCacheKey( 
                                 sql, type, concurrency, holdability, 0, 
-                                mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                                mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                                 managedConn.getCurrentSchema()); 
 
                 beginTransactionIfNecessary();
@@ -3557,7 +3554,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
             if (managedConn.isStatementCachingEnabled()) {
                 CSCacheKey key = new CSCacheKey( 
                     sql, type, concurrency, holdability, 
-                    mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                    mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                     managedConn.getCurrentSchema());
 
                 beginTransactionIfNecessary();
@@ -3661,7 +3658,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
                                 ResultSet.CONCUR_READ_ONLY,
                                 managedConn.getCurrentHoldability(),
                                 autoGeneratedKeys,
-                                mcf.getHelper().doesStatementCacheIsoLevel() ? currentTransactionIsolation : 0,
+                                mcf.doesStatementCacheIsoLevel ? currentTransactionIsolation : 0,
                                 managedConn.getCurrentSchema());
                 beginTransactionIfNecessary();
                 // get a prepared statement from the cache

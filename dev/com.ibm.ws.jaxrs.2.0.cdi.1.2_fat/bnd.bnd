@@ -15,9 +15,11 @@ src: \
     fat/src,\
     test-applications/basic/src,\
     test-applications/beanvalidation/src,\
+    test-applications/cdiinjectintoapp/src,\
     test-applications/complex/src,\
     test-applications/contextandclient/src,\
     test-applications/contextandCDI/src,\
+    test-applications/dependentIntoJax/src,\
     test-applications/disable/src,\
     test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
@@ -31,7 +33,13 @@ fat.project: true
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
-  beanvalidation-2.0
+  beanvalidation-2.0, \
+  restfulwsclient-3.0, \
+  restfulws-3.0, \
+  beanvalidation-3.0, \
+  jsonp-2.0, \
+  concurrent-2.0, \
+  enterprisebeanslite-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

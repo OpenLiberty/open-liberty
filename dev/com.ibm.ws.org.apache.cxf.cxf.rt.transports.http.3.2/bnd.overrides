@@ -5,7 +5,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2
 Bundle-Activator: com.ibm.ws.cxf.transports.http.NoOpActivator
 
-exportVer=3.4.1
+exportVer=3.4.3
 
 Export-Package: \
   com.ibm.ws.cxf.transports.http,\
@@ -19,6 +19,7 @@ Export-Package: \
   com.ibm.ws.cxf.exceptions;version=${exportVer}
   
 Import-Package: \
+  !java.*,\
   !org.apache.aries.*,\
   !org.springframework.*,\
   javax.wsdl.*;resolution:=optional, \

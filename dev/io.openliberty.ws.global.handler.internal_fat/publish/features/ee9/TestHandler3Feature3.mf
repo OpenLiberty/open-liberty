@@ -3,8 +3,7 @@ Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 Subsystem-Version: 1.0.0.201311011654
 Subsystem-Content: TestHandler3.jakarta;version="1.0.0",
- io.openliberty.xmlWS-3.0; type="osgi.subsystem.feature",
- io.openliberty.globalhandler-2.0; type="osgi.subsystem.feature"
+ io.openliberty.xmlWS-3.0; type="osgi.subsystem.feature"
 Subsystem-SymbolicName: TestHandler3Feature3;visibility:=public
 Subsystem-ManifestVersion: 1.0
 IBM-ShortName: TestHandler3Feature3

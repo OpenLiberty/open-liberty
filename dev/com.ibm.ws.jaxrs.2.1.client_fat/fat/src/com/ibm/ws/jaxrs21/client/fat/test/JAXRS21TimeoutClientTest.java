@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -72,16 +71,14 @@ public class JAXRS21TimeoutClientTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testTimeoutWork() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "timeoutWork");
         p.put("timeout", "1000"); // Return time specified on server side is 2000
-        this.runTestOnServer(target, "testTimeout", p, "[Timeout Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: SocketTimeoutException");
+        this.runTestOnServer(target, "testTimeout", p, "[Timeout Error]:SocketTimeoutException");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testTimeoutNotWork() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "timeoutNotWork");

@@ -10,27 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 @RunWith(FATRunner.class)
 public class LiteBucketSet2Test {
-    private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("JMSContextEngine");
+    private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("JMSContextEngine");
 
-    private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("JMSContextClient");
+    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("JMSContextClient");
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 
@@ -53,33 +54,42 @@ public class LiteBucketSet2Test {
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("JMSContextEngine.xml");
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSContextClient.xml");
-        TestUtils.addDropinsWebApp(clientServer, appName_118067, appPackages_118067);
-        TestUtils.addDropinsWebApp(clientServer, appName_118070, appPackages_118070);
-        TestUtils.addDropinsWebApp(clientServer, appName_118075, appPackages_118075);
+        WebArchive wa = null;
+        wa = TestUtils.addDropinsWebApp(clientServer, appName_118067, appPackages_118067);
+        assertNotNull("The app " + appName_118067 + " was not added to dropins properly", wa);
+        wa = null;
+        wa = TestUtils.addDropinsWebApp(clientServer, appName_118070, appPackages_118070);
+        assertNotNull("The app " + appName_118070 + " was not added to dropins properly", wa);
+        wa = null;
+        wa = TestUtils.addDropinsWebApp(clientServer, appName_118075, appPackages_118075);
+        assertNotNull("The app " + appName_118075 + " was not added to dropins properly", wa);
 
         engineServer.startServer("LiteBucketSet2_Engine.log");
         clientServer.startServer("LiteBucketSet2_Client.log");
+
+        assertNotNull("The application JMSContext did not appear to have started.",
+                      clientServer.waitForStringInLog("CWWKZ0001I.* JMSContext", 10000));
     }
 
     @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

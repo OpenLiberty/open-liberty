@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,6 +128,8 @@ import com.ibm.wsspi.logprovider.TrService;
  * Phew.
  */
 public class BaseTraceService implements TrService {
+
+    protected boolean isCaptureSystemStreamsExecuted = false;
 
     static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
@@ -424,17 +426,34 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If consoleFormat has been configured to 'dev' or the deprecated format name 'basic' or the default message format 'simple' OR if consoleFormat is not a valid format
-         * (default to dev)
+         * If messageFormat has been configured to 'tbasic'
+         * - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'tbasic' and 'json' formatted message events
+         */
+        if (messageFormat.toLowerCase().equals(LoggingConstants.TBASIC_MESSAGE_FORMAT)) {
+            if (messageLogHandler != null) {
+                messageLogHandler.setFormat(LoggingConstants.TBASIC_MESSAGE_FORMAT);
+                messageLogHandler.modified(new ArrayList<String>());
+                ArrayList<String> filteredList = new ArrayList<String>();
+                filteredList.add(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
+                updateConduitSyncHandlerConnection(filteredList, messageLogHandler);
+            }
+        }
+
+        /*
+         * If consoleFormat has been configured to 'dev' or the deprecated format name 'basic' or the format name 'tbasic' or the default message format 'simple'
+         * OR if consoleFormat is not a valid format (default to dev)
          * - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'dev'/'simple' and 'json' formatted message events
          */
         if ((consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || consoleFormat.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)
-             || consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+             || consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || consoleFormat.toLowerCase().equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
             || !(LoggingConfigUtils.isConsoleFormatValueValid(consoleFormat))) {
             if (consoleLogHandler != null) {
                 if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
                     consoleLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
+                else if (consoleFormat.toLowerCase().equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
+                    consoleLogHandler.setFormat(LoggingConstants.TBASIC_CONSOLE_FORMAT);
                 else
                     consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
 
@@ -904,7 +923,7 @@ public class BaseTraceService implements TrService {
                     retMe &= externalMsgRouter.route(routedMessage.getFormattedMsg(), routedMessage.getLogRecord());
                 }
                 if (internalMsgRouter != null) {
-                    retMe &= internalMsgRouter.route(routedMessage);
+                    retMe &= internalMsgRouter.route(routedMessage, isMessageHidden(routedMessage.getFormattedMsg()));
                 } else {
                     String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
                     RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
@@ -1230,7 +1249,7 @@ public class BaseTraceService implements TrService {
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
-        if (LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
+        if (!trace && LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
             isJSON = true;
             String jsonHeader = constructJSONHeader(messageFormat, config);
             return new FileLogHeader(jsonHeader, trace, javaLangInstrument, isJSON);
@@ -1632,6 +1651,8 @@ public class BaseTraceService implements TrService {
      * when the special trace components are created.
      */
     protected void captureSystemStreams() {
+        isCaptureSystemStreamsExecuted = true;
+
         teeOut = new TeePrintStream(new TrOutputStream(systemOut, this), true);
         System.setOut(teeOut);
 
@@ -1644,10 +1665,15 @@ public class BaseTraceService implements TrService {
      * when the special trace components are created.
      */
     protected void restoreSystemStreams() {
-        if (System.out == teeOut)
-            System.setOut(systemOut.getOriginalStream());
-        if (System.err == teeErr)
-            System.setErr(systemErr.getOriginalStream());
+        /*
+         * OL17768 - No obvious cause of OL17768.
+         * Disable this check and "restore"
+         * it regardless to evaluate effects.
+         */
+        //if (System.out == teeOut)
+        System.setOut(systemOut.getOriginalStream());
+        //if (System.err == teeErr)
+        System.setErr(systemErr.getOriginalStream());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -156,6 +156,7 @@ public class FeatureHelpAction implements ActionHandler {
 
     @Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
+    	ReturnCode retCode = ReturnCode.OK;
         String actionName = args.getAction();
         if (actionName == null) {
             stdout.println(getScriptUsage());
@@ -169,10 +170,11 @@ public class FeatureHelpAction implements ActionHandler {
                 stderr.println();
                 stderr.println(getHelpPart("task.unknown", args.getPositionalArguments().get(0)));
                 stdout.println(getScriptUsage());
+                retCode = ReturnCode.BAD_ARGUMENT;
             }
 
         }
-        return ReturnCode.OK;
+        return retCode;
     }
 
 

@@ -12,6 +12,7 @@
 package com.ibm.ws.sib.mfp.util;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Static class providing methods for encoding and decoding Unicode Strings and chars to
@@ -20,15 +21,6 @@ import java.nio.charset.Charset;
 public enum Utf8Codec {
     ;
 
-    private static final Charset UTF_8;
-
-    static {
-        try {
-            UTF_8 = Charset.forName("UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException("UTF-8 unexpectedly unsupported", e);
-        }
-    }
 
     /**
      * Calculate the number of bytes needed to UTF8 encode a String
@@ -86,14 +78,14 @@ public enum Utf8Codec {
      * @return byte[] The UTF8 encoding of the given String
      */
     public static byte[] encode(String s) {
-        return s.getBytes(UTF_8);
+        return s.getBytes(StandardCharsets.UTF_8);
     }
 
     /**
      * Decodes UTF8 to a String
      */
     public static String decode(byte[] ba, int offset, int length) {
-        return new String(ba, offset, length, UTF_8);
+        return new String(ba, offset, length, StandardCharsets.UTF_8);
     }
 
     /**

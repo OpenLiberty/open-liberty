@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -49,6 +49,12 @@ installFeature.option-desc.--to=\tMegadja a szolg\u00e1ltat\u00e1s telep\u00edt\
 \tez a param\u00e9ter nincs megadva, akkor a szolg\u00e1ltat\u00e1s felhaszn\u00e1l\u00f3i      \n\
 \tszolg\u00e1ltat\u00e1sk\u00e9nt lesz telep\u00edtve.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven koordin\u00e1ta
+installFeature.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\
+\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\
+\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\
+\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
 \ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
@@ -67,6 +73,12 @@ installServerFeatures.desc=\tA sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok tele
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ n\u00e9v ...
 installServerFeatures.option-desc.name...=\tEgy megl\u00e9v\u0151 kiszolg\u00e1l\u00f3 neve ugyanabban a Liberty k\u00f6rnyezetben.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven koordin\u00e1ta
+installServerFeatures.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\
+\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\
+\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\
+\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
@@ -91,6 +103,6 @@ viewSettings.desc=\tLerakatok \u00e9s proxybe\u00e1ll\u00edt\u00e1sok megtekint\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tEzzel a param\u00e9terrel megjelen\u00edtheti a \n\
-\tbe\u00e1ll\u00edtott featureUtility.properties f\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 r\u00e9szletes \u00fczeneteket.           \n\
+\tbe\u00e1ll\u00edtott featureUtility.properties f\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 r\u00e9szletes \u00fczeneteket.         \n\
 \tMinden \u00fczenet tartalmazza a hibak\u00f3dot, annak a sornak a sz\u00e1m\u00e1t, ahol \n\
-\ta hiba tal\u00e1lhat\u00f3, valamint a hiba ok\u00e1t.							
+\ta hiba tal\u00e1lhat\u00f3, valamint a hiba ok\u00e1t.

@@ -1,14 +1,9 @@
 name: OpenLiberty CI
 
 on:
-  schedule:
-  # Runs at the begining of every week day.
-  # The daily build will be a good way to check to make sure build breaks don't get introduced to the GH actions build.
-  - cron: '0 0 * * 1-5'
   pull_request:
     branches: 
     - integration
-    - gh-actions
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - '.gitignore'
@@ -21,26 +16,32 @@ on:
       - 'cla/**'
       - 'images/**'
       - 'logos/**'
+
 env:
   LANG: en_US.UTF-8
+
 jobs:
+
   validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
     name: Validation
     runs-on: ubuntu-18.04
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
-    # - name: Validate rebase onto integration
-    #   if: "github.event_name == 'pull_request'"
-    #   run: .github/workflow-scripts/validate-rebase-integration.sh
     - name: Validate copyright headers
-      if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-copyright-headers.sh
     - name: Validate tests
-      # Probably should only do this for PRs.  But for now always run so we can catch tests suites that get merged incorrectly
-      # if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-tests.sh
+
+
   build: #Main build always done on linix run in parallel to setup and unit-test
     name: Build Open Liberty
     needs: validate
@@ -49,11 +50,14 @@ jobs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
-    # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+      modified-categories: ${{ steps.gen-params.outputs.modified-categories }}
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
@@ -90,29 +94,42 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Build with Gradle
-      run: |
-        cd dev
-        chmod +x gradlew
-        echo "::group::Building Liberty.  This will take approx. 30 minutes"
-        ./gradlew cnf:initialize assemble
-        echo "::endgroup::"
-        cd .. && zip -rq openliberty-image.zip dev/build.image/wlp/
+      run: .github/workflow-scripts/build.sh
     - name: Upload liberty image
       uses: actions/upload-artifact@v2
       with:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
+    - name: Upload modified categories
+      uses: actions/upload-artifact@v2
+      if: steps.gen-params.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        if-no-files-found: ignore
+        path: |
+          .github/test-categories/MODIFIED_LITE_MODE
+          .github/test-categories/MODIFIED_FULL_MODE*
+    - name: Upload gradle failure output
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-failure-gradle.log
+        if-no-files-found: error
+        path: dev/tmp/gradle.log
+
   unit_tests: #Unit tests always run linux and java 11
     name: Unit Tests
     needs: validate
     runs-on: ubuntu-18.04
     timeout-minutes: 60
-    # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
@@ -143,7 +160,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Run unit tests
+    - name: Run unit tests with gradle
       id: run-unit-tests
       run: .github/workflow-scripts/run-unit-tests.sh
     - name: Upload unit test artifact
@@ -152,6 +169,13 @@ jobs:
       with:
         name: Unit Test Logs
         path: dev/cnf/generated/testReports/allUnitTests
+    - name: Upload gradle failure output
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: unit-test-failure-gradle.log
+        if-no-files-found: error
+        path: dev/tmp/gradle.log
     - name: Analyze junit output
       if: steps.run-unit-tests.outputs.status == 'failure'
       uses: KyleAure/junit-report-annotations-action@1.6
@@ -160,15 +184,18 @@ jobs:
         path: "dev/unit-results/TEST-*.xml"
         includeSummary: true
         numFailures: 100 # Truncate number of failures so we don't run out of annoations.
+
   fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
     needs: [validate, build]
     runs-on: ${{ needs.build.outputs.test-os }}
-    # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     strategy:
       fail-fast: false
       max-parallel: 19
@@ -209,6 +236,13 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: openliberty-image
+    - name: Download modified categories
+      uses: actions/download-artifact@v2
+      id: modified-categories
+      if: needs.build.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        path: .github/test-categories
     - name: Run FAT buckets
       timeout-minutes: 150
       shell: bash
@@ -221,7 +255,7 @@ jobs:
       shell: bash
       env:
         CATEGORY: ${{matrix.category}}
-      run: .github/workflow-scripts/check-fat-failures.sh
+      run: .github/workflow-scripts/validate-fat-failures.sh
     - name: Upload failing FAT artifacts
       if: steps.check-fat-failure.outputs.status == 'failure'
       uses: aguibert/upload-artifact@v1.0

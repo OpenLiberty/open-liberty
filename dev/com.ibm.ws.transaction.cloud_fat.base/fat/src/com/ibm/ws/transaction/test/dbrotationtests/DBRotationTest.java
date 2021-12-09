@@ -13,17 +13,20 @@ package com.ibm.ws.transaction.test.dbrotationtests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
@@ -54,19 +57,33 @@ public class DBRotationTest extends FATServletClient {
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
-    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longlease")
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer longLeaseLengthServer1;
+    public static LibertyServer longLeaseCompeteServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer longLeaseLogFailServer1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer noShutdownServer1;
 
+    public static SetupRunner runner = new SetupRunner() {
+        @Override
+        public void run(LibertyServer s) throws Exception {
+            setUp(s);
+        }
+    };
+
     @BeforeClass
     public static void init() throws Exception {
+        Log.info(c, "init", "BeforeClass");
+    	FATSuite.beforeSuite();
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(longLeaseLogFailServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(noShutdownServer1, APP_NAME, "com.ibm.ws.transaction.*");
     }
 
@@ -84,13 +101,18 @@ public class DBRotationTest extends FATServletClient {
     @After
     public void cleanup() throws Exception {
 
-        server1.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1);
 
         // Clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
 
         // Remove tranlog DB
         server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+    }
+
+    @AfterClass
+    public static void teardown() throws Exception {
+    	FATSuite.afterSuite();
     }
 
     /**
@@ -105,13 +127,13 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testLeaseTableAccess";
         StringBuilder sb = null;
         String id = "001";
-        startServers(server1);
+        FATUtils.startServers(runner, server1);
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
 
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "testLeaseTableAccess" + id + " returned: " + sb);
+        Log.info(c, method, "testLeaseTableAccess" + id + " returned: " + sb);
     }
 
     /**
@@ -124,35 +146,35 @@ public class DBRotationTest extends FATServletClient {
      */
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
-    public void testDBBaseRecovery() {
+    public void testDBBaseRecovery() throws Exception {
         final String method = "testDBBaseRecovery";
         StringBuilder sb = null;
         String id = "001";
-        Log.info(this.getClass(), method, "Starting testDBBaseRecovery in DBRotationTest");
-        startServers(server1);
+        Log.info(c, method, "Starting testDBBaseRecovery in DBRotationTest");
+        FATUtils.startServers(runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "back from runTestWithResponse in testDBBaseRecovery, sb is " + sb);
+        Log.info(c, method, "back from runTestWithResponse in testDBBaseRecovery, sb is " + sb);
         assertNull("setupRec" + id + " returned: " + sb, sb);
 
         // wait for 1st server to have gone away
-        Log.info(this.getClass(), method, "wait for first server to go away in testDBBaseRecovery");
+        Log.info(c, method, "wait for first server to go away in testDBBaseRecovery");
         assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog("Dump State:"));
 
         // The server has been halted but its status variable won't have been reset because we crashed it. In order to
         // setup the server for a restart, set the server state manually.
         server1.setStarted(false);
 
-        Log.info(getClass(), method, "restart server1");
+        Log.info(c, method, "restart server1");
 
         // Now re-start cloud1
-        startServers(server1);
+        FATUtils.startServers(runner, server1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
     }
 
     /**
@@ -170,7 +192,7 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBRecoveryTakeover";
         StringBuilder sb = null;
         String id = "001";
-        startServers(server1);
+        FATUtils.startServers(runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
@@ -181,11 +203,22 @@ public class DBRotationTest extends FATServletClient {
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
-        startServers(server2);
+        FATUtils.startServers(runner, server2);
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-        server2.stopServer();
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+
+        // Check ABSENCE of WAS_TRAN_LOGCLOUD0011 database table
+        try {
+            sb = runTestWithResponse(server2, SERVLET_NAME, "testTranlogTableAccess");
+
+        } catch (Throwable e) {
+            Log.info(c, method, "testTranlogTableAccess" + id + " caught exception: " + e);
+        }
+        Log.info(c, method, "testTranlogTableAccess" + id + " returned: " + sb);
+        FATUtils.stopServers(server2);
+        if (sb != null && sb.toString().contains("Unexpectedly"))
+            fail(sb.toString());
     }
 
     /**
@@ -210,17 +243,18 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBRecoveryCompeteForLog";
         StringBuilder sb = null;
         String id = "001";
-        startServers(longLeaseLengthServer1);
+
+        FATUtils.startServers(runner, longLeaseCompeteServer1);
         try {
-            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
+            runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
 
-        assertNotNull(longLeaseLengthServer1.getServerName() + " didn't crash properly", longLeaseLengthServer1.waitForStringInLog("Dump State:"));
-        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since crashed server
+        assertNotNull(longLeaseCompeteServer1.getServerName() + " didn't crash properly", longLeaseCompeteServer1.waitForStringInLog("Dump State:"));
+        longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
@@ -228,30 +262,30 @@ public class DBRotationTest extends FATServletClient {
         try {
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
-            longLeaseLengthServer1.setStarted(false);
-            setUp(longLeaseLengthServer1);
-            longLeaseLengthServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
+            longLeaseCompeteServer1.setStarted(false);
+            setUp(longLeaseCompeteServer1);
+            longLeaseCompeteServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
             // Tolerate an exception here, as recovery is asynch and the "successful start" message
             // may have been produced by the main thread before the recovery thread had completed
-            Log.info(getClass(), method, "startServerExpectFailure threw exc: " + ex);
+            Log.info(c, method, "startServerExpectFailure threw exc: " + ex);
         }
 
         // Server appears to have failed as expected. Check for log failure string
-        if (longLeaseLengthServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
+        if (longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
             Exception ex = new Exception("Recovery logs should have failed");
-            Log.error(getClass(), "recoveryTestCompeteForLock", ex);
+            Log.error(c, "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since server start failed
+        longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since server start failed
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
-        startServers(server2);
+        FATUtils.startServers(runner, server2);
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-        server2.stopServer();
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+        FATUtils.stopServers(server2);
     }
 
     @Test
@@ -259,38 +293,41 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testLogFailure";
         if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
             // First server will get loads of FFDCs
-            longLeaseLengthServer1.setFFDCChecking(false);
+            longLeaseLogFailServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
-            startServers(longLeaseLengthServer1, server2);
+            FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
 
             // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-            server2.stopServer();
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+            FATUtils.stopServers(server2);
 
             // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
             try {
                 // We expect this to fail since it is gonna crash the server
-                runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRecLostLog");
+                runTestWithResponse(longLeaseLogFailServer1, SERVLET_NAME, "setupRecLostLog");
             } catch (Throwable e) {
             }
 
-            int serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
-            Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
+            int serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
+            Log.info(c, method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
 
             int retries = 0;
             while (serverStatus == 0 && retries++ < 50) {
                 Thread.sleep(5000);
-                serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
-                Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
+                serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
+                Log.info(c, method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
             }
 
             // server1 should be stopped
-            assertFalse(longLeaseLengthServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+            assertFalse(longLeaseLogFailServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            longLeaseLogFailServer1.setStarted(false);
         }
-        Log.info(this.getClass(), method, "test complete");
+        Log.info(c, method, "test complete");
     }
 
     @Test
@@ -300,49 +337,26 @@ public class DBRotationTest extends FATServletClient {
             // First server will get loads of FFDCs
             noShutdownServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
-            startServers(noShutdownServer1, server2);
+            FATUtils.startServers(runner, noShutdownServer1, server2);
 
             // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-            server2.stopServer();
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+            FATUtils.stopServers(server2);
 
             // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
             runTestWithResponse(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
 
             int serverStatus = noShutdownServer1.executeServerScript("status", null).getReturnCode();
-            Log.info(getClass(), method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);
+            Log.info(c, method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);
 
             assertFalse(noShutdownServer1.getServerName() + " is not stopped", 1 == serverStatus);
 
             // If this fails the test failed
-            noShutdownServer1.stopServer("WTRN0029E", "WTRN0000E");
+            FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0000E" }, noShutdownServer1);
         }
-        Log.info(this.getClass(), method, "test complete");
-    }
-
-    private void startServers(LibertyServer... servers) {
-        final String method = "startServers";
-
-        for (LibertyServer server : servers) {
-            assertNotNull("Attempted to start a null server", server);
-            ProgramOutput po = null;
-            try {
-                setUp(server);
-                po = server.startServerAndValidate(false, false, false);
-                if (po.getReturnCode() != 0) {
-                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
-                }
-                server.validateAppLoaded(APP_NAME);
-            } catch (Throwable t) {
-                Log.error(getClass(), method, t);
-                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
-            }
-        }
+        Log.info(c, method, "test complete");
     }
 }

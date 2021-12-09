@@ -26,6 +26,8 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     private static final Class<?> c = ArtifactoryImageNameSubstitutor.class;
 
+    private static final String artifactoryRegistryKey = "fat.test.artifactory.download.server";
+
     @Override
     public DockerImageName apply(DockerImageName original) {
         // If we are using local docker, or a programmatically built image, or a registry was explicitly set,
@@ -65,9 +67,9 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     }
 
     static String getPrivateRegistry() {
-        String artifactoryServer = System.getProperty("fat.test.artifactory.download.server");
+        String artifactoryServer = System.getProperty(artifactoryRegistryKey);
         if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${"))
-            throw new IllegalStateException("No private registry configured. System property 'fat.test.artifactory.download.server' was: " + artifactoryServer);
+            throw new IllegalStateException("No private registry configured. System property '" + artifactoryRegistryKey + "' was: " + artifactoryServer);
         if (artifactoryServer.startsWith("na.") || artifactoryServer.startsWith("eu."))
             artifactoryServer = artifactoryServer.substring(3);
         return "wasliberty-docker-remote." + artifactoryServer;

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,4 +24,16 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Certifique-se de que a configura\u00e7
 
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: O componente Kerberos est\u00e1 configurado para usar um arquivo {0} localizado em {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=O arquivo configurado foi localizado com sucesso.
-KRB5_FILE_FOUND_CWWKS4346I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+KRB5_FILE_FOUND_CWWKS4346I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Houve uma falha no login do Kerberos com o Kerberos principal {0} e o cache de credenciais do Kerberos {1} (ccache). Um ticket Kerberos n\u00e3o foi localizado.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=O Kerberos principal especificado \u00e9 inv\u00e1lido ou o cache de credenciais (ccache) do Kerberos \u00e9 inv\u00e1lido ou expirou.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Assegure-se de que um Kerberos principal v\u00e1lido seja especificado e que o cache de credenciais do Kerberos (ccache) seja v\u00e1lido e n\u00e3o tenha expirado.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Houve uma falha no login do Kerberos com o Kerberos principal {0} e o arquivo keytab {1} do Kerberos. Um ticket Kerberos n\u00e3o foi localizado.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=O Kerberos principal especificado ou o arquivo keytab do Kerberos \u00e9 inv\u00e1lido.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Assegure-se de que um arquivo keytab do Kerberos v\u00e1lido seja especificado e contenha um Kerberos principal v\u00e1lido.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Houve uma falha no login do Kerberos com o Kerberos principal {0} e o arquivo keytab do Kerberos padr\u00e3o. Um ticket Kerberos n\u00e3o foi localizado.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=O Kerberos principal especificado ou o arquivo keytab do Kerberos padr\u00e3o \u00e9 inv\u00e1lido.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Assegure-se de que um arquivo keytab do Kerberos v\u00e1lido seja especificado e contenha um Kerberos principal v\u00e1lido.

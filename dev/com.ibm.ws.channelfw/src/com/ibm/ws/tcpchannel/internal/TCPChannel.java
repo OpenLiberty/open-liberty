@@ -147,7 +147,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
         this.vcFactory = ChannelFrameworkFactory.getChannelFramework().getInboundVCFactory();
 
-        this.alists = AccessLists.getInstance(this.config);
+        this.alists = AccessLists.getInstance(this.config.accessListKeys());
 
         if (this.config.isInbound() && acceptReqProcessor == null) {
             acceptReqProcessor = new NBAccept(this.config);
@@ -484,7 +484,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
         synchronized (this) {
             // can't do two updates at the same time
             if (this.config.checkAndSetValues(cc)) {
-                this.alists = AccessLists.getInstance(this.config);
+                this.alists = AccessLists.getInstance(this.config.accessListKeys());
             }
         }
     }

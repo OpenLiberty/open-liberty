@@ -36,7 +36,7 @@ public class GenericTransportAcceptListener implements AcceptListener {
                                                       CommsConstants.MSG_BUNDLE);
 
     /** Singleton instance */
-    private static GenericTransportReceiveListener genericTransportRecieveListnerInstance = GenericTransportReceiveListener.getInstance();
+    private static GenericTransportReceiveListener genericTransportReceiveListenerInstance = GenericTransportReceiveListener.getInstance();
 
     /** Log class info on load */
     static {
@@ -75,6 +75,6 @@ public class GenericTransportAcceptListener implements AcceptListener {
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "acceptConnection");
 
-        return genericTransportRecieveListnerInstance; // F193735.3
+        return genericTransportReceiveListenerInstance; // F193735.3
     }
 }

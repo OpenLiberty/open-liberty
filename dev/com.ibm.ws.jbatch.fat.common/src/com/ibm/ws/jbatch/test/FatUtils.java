@@ -82,7 +82,7 @@ public class FatUtils {
         // Previously it looked like we were trying to match CWWKS4105A
         // in addition to a CWWKS4104A.  As it turns out, there is only CWWKS4105I
         // so we will remove that.
-        assertNotNull("Waited for the LTPA keys to be generated, but did not recieve the CWWKS4104A message ",
+        assertNotNull("Waited for the LTPA keys to be generated, but did not receive the CWWKS4104A message ",
                        server.waitForStringInLog("CWWKS4104A"));
 
     }

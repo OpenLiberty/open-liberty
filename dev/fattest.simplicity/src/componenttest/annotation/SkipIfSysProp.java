@@ -68,6 +68,9 @@ public @interface SkipIfSysProp {
     public static final String DB_SQLServer = "fat.bucket.db.type=SQLServer";
     public static final String DB_Sybase = "fat.bucket.db.type=Sybase";
 
+    // OS system properties
+    public static final String OS_ZOS = "os.name=z/OS";
+
     String[] value();
 
 }

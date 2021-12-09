@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,11 @@ package com.ibm.ws.jdbc;
 
 import java.io.Serializable;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,13 +33,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import javax.resource.ResourceException;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
-import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import javax.resource.ResourceException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -62,7 +59,7 @@ import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.impl.DatabaseHelper;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -76,10 +73,6 @@ import com.ibm.wsspi.resource.ResourceFactory;
  * Declarative services component for the <dataSource> element.
  */
 public class DataSourceService extends AbstractConnectionFactoryService implements AppDefinedResource, ResourceFactory, ApplicationRecycleComponent {
-    /**  */
-    private static final String BASE_PREFIX = "properties";
-    private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
-    private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + ".0.".length();
     private static final TraceComponent tc = Tr.register(DataSourceService.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
@@ -666,8 +659,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             isUCP = vendorImplClassName.startsWith("oracle.ucp");
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
-                    Set<String> connMgrPropsAllowed = Collections.singleton("enableSharingForDirectLookups");
-                    Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", connMgrPropsAllowed);
+                    Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", Arrays.asList("enableSharingForDirectLookups", ConnectionManagerService.ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS));
                     sentUCPConnMgrPropsIgnoredInfoMessage = true;
                 }
                 updateConfigForUCP(wProps);
@@ -754,9 +746,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 wProps.remove(JNDI_NAME);
                 DSConfig config = dsConfigRef.get();
                 if (!match(newProperties.get(DSConfig.CONNECTION_MANAGER_REF), properties.get(DSConfig.CONNECTION_MANAGER_REF))
+                    || !match(newProperties.get(DSConfig.HELPER_CLASS), properties.get(DSConfig.HELPER_CLASS))
                     || !match(newProperties.get(DSConfig.JDBC_DRIVER_REF), properties.get(DSConfig.JDBC_DRIVER_REF))
                     || !match(newProperties.get(DSConfig.ON_CONNECT), properties.get(DSConfig.ON_CONNECT))
-                    || !match(newProperties.get(DataSourceDef.transactional.name()), properties.get(DataSourceDef.transactional.name()))) {
+                    || !match(newProperties.get(DataSourceDef.transactional.name()), properties.get(DataSourceDef.transactional.name()))
+                    || connectorSvc.isHeritageEnabled() && !config.identifyExceptions.equals(wProps.get(DSConfig.IDENTIFY_EXCEPTION))) {
                     // Destroy everything, and allow lazy initialization to recreate
                     destroyConnectionFactories(true);
                 } else if (!AdapterUtil.match(vProps, config.vendorProps)
@@ -810,9 +804,20 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         for (Map.Entry<String, Object> entry : configProps.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            // look for vendor properties, which will be of the form properties.0.name
-            if (key.length () > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(BASE_PREFIX)) {
-                key = key.substring(TOTAL_PREFIX_LENGTH);
+
+            // Filter out flattened config. For example:
+            //  properties.0.databaseName
+            //  heritage.0.replaceExceptions
+            //  identifyException.2.sqlState
+            int dot1 = key.indexOf('.'), length = key.length();
+            int dot2 = dot1 > 0 && length > dot1 + 2 ? key.indexOf('.', dot1 + 2) : -1;
+            String flatPrefix = dot2 > dot1 + 1 ? key.substring(0, dot1) : null;
+
+            if (flatPrefix == null) {
+                if (dot1 == -1 && !WPROPS_TO_SKIP.contains(key))
+                    wProps.put(key, value);
+            } else if (flatPrefix.equals(PropertyService.PROPERTIES)) {
+                key = key.substring(dot2 + 1);
                 if (key.equals("config.referenceType")) {
                     if (vPropsPID == null)
                         vProps.setFactoryPID(vPropsPID = (String) value);
@@ -844,20 +849,42 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
                     vProps.put(key, value);
                 }
-            } else if (key.length() > DSConfig.IDENTIFY_EXCEPTION.length() + 3 && key.startsWith(DSConfig.IDENTIFY_EXCEPTION + '.')) {
-                @SuppressWarnings("unchecked")
-                Map<Integer,DSConfig.IdentifyException> errorMappings = (Map<Integer, IdentifyException>) wProps.computeIfAbsent(DSConfig.IDENTIFY_EXCEPTION, k -> new HashMap<>(3));
-                
-                String unProcessedKey = key.substring(DSConfig.IDENTIFY_EXCEPTION.length() + 1);
-                int id = Integer.valueOf(unProcessedKey.substring(0, unProcessedKey.indexOf('.'))); // get the '0' in identifyException.0.foo
-                IdentifyException errorMapping = errorMappings.computeIfAbsent(id, k -> new IdentifyException());
-                String propertyName = unProcessedKey.substring(unProcessedKey.indexOf('.') + 1); // get the 'foo' in identifyException.0.foo
-                errorMapping.setProperty(propertyName, value);
-            } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key)) {
-                wProps.put(key, value);
+            } else if (flatPrefix.equals(DSConfig.HERITAGE)) {
+                if (DSConfig.HELPER_CLASS.equals(key) || DSConfig.REPLACE_EXCEPTIONS.equals(key))
+                    wProps.put(key, value);
             }
         }
-        
+
+        // identifyException, which is a group of
+        // (identifyException.#.sqlState, identifyException.#.errorCode, identifyException.#.as)
+        // is parsed separately to have a predictable order of precedence when collisions occur
+        Map<Object, String> identifications = null;
+        String keyFormat = "identifyException.%d.%s";
+        String key;
+        for (int i = 0; i < 1000; i++) { // cardinality is capped at 1000 in metatype
+            key = String.format(keyFormat, i, "as");
+            String as = (String) configProps.get(key);
+            if (as == null)
+                break; // no more nested identifyException elements
+            key = String.format(keyFormat, i, "sqlState");
+            String sqlState = (String) configProps.get(key);
+            key = String.format(keyFormat, i, "errorCode");
+            Integer errorCode = (Integer) configProps.get(key);
+            if (i == 0)
+                identifications = new HashMap<Object, String>();
+            if (sqlState == null && errorCode == null) {
+                Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
+                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
+            } else if (sqlState == null) {
+                identifications.put(errorCode, as);
+            } else if (errorCode == null ) {
+                identifications.put(sqlState, as);
+            } else { // both sqlState and errorCode are supplied
+                identifications.put(new SQLStateAndCode(sqlState, errorCode), as);
+            }
+        }
+        wProps.put(DSConfig.IDENTIFY_EXCEPTION, identifications == null ? Collections.EMPTY_MAP : identifications);
+
         //Don't send out auth alias recommendation message with UCP since it may be required to set the 
         //user and password as ds props
         if(recommendAuthAlias && !"com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vPropsPID))

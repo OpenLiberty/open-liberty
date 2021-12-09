@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +15,8 @@ import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -24,8 +27,18 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestThree {
 
-    @Server("validationServerThree")
+    private static final String SERVER_NAME = "validationServerThree";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
     @BeforeClass
@@ -37,12 +50,12 @@ public class OpenAPIValidationTestThree {
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
-        //wait for endpoint to become available
+        // wait for endpoint to become available
         assertNotNull("Web application is not available at /Validation/",
-                      server.waitForStringInLog("CWWKT0016I.*/Validation/"));
+            server.waitForStringInLog("CWWKT0016I.*/Validation/"));
         // wait for server is ready to run a smarter planet message
-        assertNotNull("CWWKF0011I.* not recieved on relationServer",
-                      server.waitForStringInLog("CWWKF0011I.*"));
+        assertNotNull("CWWKF0011I.* not received on relationServer",
+            server.waitForStringInLog("CWWKF0011I.*"));
     }
 
     @AfterClass
@@ -53,11 +66,14 @@ public class OpenAPIValidationTestThree {
     @Test
     public void testPaths() throws Exception {
         assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
-                      server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
+            server.waitForStringInLog(
+                "Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
     }
 
     @Test
-    @SkipForRepeat("mpOpenAPI-2.0")
+    @SkipForRepeat({
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID
+    })
     public void testBlankInfo() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
@@ -67,7 +83,9 @@ public class OpenAPIValidationTestThree {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "mpOpenAPI-1.1" })
+    @SkipForRepeat({
+        MicroProfileActions.MP22_ID, MicroProfileActions.MP33_ID
+    })
     public void testBlankInfo20() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);

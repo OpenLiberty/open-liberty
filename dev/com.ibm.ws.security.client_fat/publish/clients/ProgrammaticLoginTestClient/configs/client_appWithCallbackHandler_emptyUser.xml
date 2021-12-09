@@ -18,6 +18,8 @@
 	<application id="myApp" name="ProgrammaticLoginWithCallbackHandlerEmptyUser" type="ear"
 		location="ProgrammaticLoginWithCallbackHandlerEmptyUser.ear" />
 
+	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
+	
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 
 	<!-- This is a client configuration file selected to use a non-default SSL config for the sake of variety

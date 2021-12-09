@@ -782,7 +782,7 @@ public class InternalOutputStream extends ControllableStream
     }
 
     /**
-     * This method is called when an Ack message is recieved from a downstream
+     * This method is called when an Ack message is received from a downstream
      * ME. It updates the ackPrefix of the stream and then passes the message
      * up to the PubSubInputHandler which will aggregate the Acks from all
      * InternalOutputStreams.

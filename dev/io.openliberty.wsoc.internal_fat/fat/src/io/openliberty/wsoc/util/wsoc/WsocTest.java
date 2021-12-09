@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,12 @@ import java.util.logging.Logger;
 
 import javax.websocket.ClientEndpointConfig;
 
-import com.ibm.ws.fat.util.SharedServer;
-
 import org.junit.Assert;
 
-import io.openliberty.wsoc.common.Constants;
-import io.openliberty.wsoc.util.WebServerControl;
-import io.openliberty.wsoc.endpoints.client.context.Session5ClientEP;
-
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.common.Constants;
+import io.openliberty.wsoc.endpoints.client.context.Session5ClientEP;
+import io.openliberty.wsoc.util.WebServerControl;
 
 /**
  *
@@ -41,11 +38,10 @@ public class WsocTest {
         this.secure = secure;
     }
 
-    public WsocTest(SharedServer ss, boolean secure) {
-        if(ss == null)
-            throw new RuntimeException("Invalid Shared Server passed");
+    public WsocTest(LibertyServer server, boolean secure) {
+        if (server == null)
+            throw new RuntimeException("Invalid Liberty Server passed");
         this.secure = secure;
-        LibertyServer server = ss.getLibertyServer();
         Boolean webserverInFront = WebServerControl.isWebserverInFront();
         if (webserverInFront) {
             try {
@@ -54,8 +50,7 @@ public class WsocTest {
             } catch (Exception e) {
                 throw new RuntimeException("Failed to get host or port from webserver", e);
             }
-        }
-        else {
+        } else {
             host = server.getHostname();
             port = server.getHttpDefaultPort();
         }
@@ -76,7 +71,7 @@ public class WsocTest {
     /**
      * Run a test up until DEFAULT_MAX_MESSAGES (1) have been received or DEFAULT_TIMEOUT has occurred
      * Runs with default config. Endpoint should terminate client when numMsgsExpected is reached.
-     * 
+     *
      * @param edp - Endpoint, either annotated or programmatic
      * @param uri - URI to connect to - int the form of ws:// or ws:///
      * @return WsocTextContext - test context
@@ -90,10 +85,10 @@ public class WsocTest {
 
     /**
      * Run a test up until timeout has occurred or all clients are finished. Endpoint should terminate client when numMsgsExpected is reached.
-     * 
-     * @param edp - Endpoint, either annotated or programmatic
-     * @param resource - URI to connect to - in the form of ws:// or ws:///
-     * @param cfg - Endpoint config to use
+     *
+     * @param edp             - Endpoint, either annotated or programmatic
+     * @param resource        - URI to connect to - in the form of ws:// or ws:///
+     * @param cfg             - Endpoint config to use
      * @param numMsgsExpected - run the test until maxMessages is reached
      * @param timeout
      * @return WsocTextContext - test context
@@ -111,11 +106,11 @@ public class WsocTest {
 
     /**
      * Run a multiple client test.
-     * 
+     *
      * @param receiveEndpoints - Array of annotated or programmatic endpoints that may or may not do publishing...
-     * @param publishEndpoint - single publisher endpoint that will likely be published. This endpoint waits for all other endpoints to be connected before connecting.
-     * @param resource - URI to connect to - in the form of ws:// or ws:///
-     * @param numMsgsExpected - Number of messages clients are expected to receive. Endpoint should terminate client when numMsgsExpected is reached.
+     * @param publishEndpoint  - single publisher endpoint that will likely be published. This endpoint waits for all other endpoints to be connected before connecting.
+     * @param resource         - URI to connect to - in the form of ws:// or ws:///
+     * @param numMsgsExpected  - Number of messages clients are expected to receive. Endpoint should terminate client when numMsgsExpected is reached.
      * @return MultiClienttestResult - test result with all receiver and publisher contexts and additional multi client test results.
      * @throws Exception
      */
@@ -126,13 +121,13 @@ public class WsocTest {
     }
 
     /**
-     * 
+     *
      * @param receiveEndpoints - Array of annotated or programmatic endpoints that may or may not do publishing...
-     * @param publishEndpoint - single publisher endpoint that will likely be published. This endpoint waits for all other endpoints to be connected before connecting.
-     * @param ptask - A publisher task that will run after all all receivers and the publisher is connected.
+     * @param publishEndpoint  - single publisher endpoint that will likely be published. This endpoint waits for all other endpoints to be connected before connecting.
+     * @param ptask            - A publisher task that will run after all all receivers and the publisher is connected.
      * @param resource
-     * @param cfg - Endpoint config to use
-     * @param numMsgsExpected - - run the test until maxMessages are received.
+     * @param cfg              - Endpoint config to use
+     * @param numMsgsExpected  - - run the test until maxMessages are received.
      * @param runtime
      * @param connectTimeout
      * @param msgCountOnly
@@ -182,8 +177,7 @@ public class WsocTest {
         StringBuilder url = new StringBuilder();
         if (secure) {
             url.append("wss://");
-        }
-        else {
+        } else {
             url.append("ws://");
         }
         url.append(host); // trust Simplicity to provide host

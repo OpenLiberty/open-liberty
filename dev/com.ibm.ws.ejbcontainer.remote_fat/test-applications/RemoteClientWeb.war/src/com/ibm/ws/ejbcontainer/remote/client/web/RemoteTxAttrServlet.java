@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,11 @@ import com.ibm.ws.ejbcontainer.remote.server.shared.TxAttrEJBHome;
 import com.ibm.ws.ejbcontainer.remote.server.shared.TxAttrRemote;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import test.TestRemoteInterface;
 
 /**
@@ -81,6 +85,10 @@ public class RemoteTxAttrServlet extends FATServlet {
     private static final String TestRemoteSingletonJndi = "ejb/global/" + App + "/" + Module + "/" + TestRemoteSingleton;
     private static final String TestRemoteStatefulJndi = "ejb/global/" + App + "/" + Module + "/" + TestRemoteStateful;
     private static final String TestRemoteStatelessJndi = "ejb/global/" + App + "/" + Module + "/" + TestRemoteStateless;
+
+    private static final String TxAttrRemote_Escape_5c = "com%5c.ibm%5c.ws%5c.ejbcontainer%5c.remote%5c.server%5c.shared%5c.TxAttrRemote";
+    private static final String TxAttrRemote_Escape_5C = "com%5C.ibm%5C.ws%5C.ejbcontainer%5C.remote%5C.server%5C.shared%5C.TxAttrRemote";
+    private static final String TxAttrRemote_Escape_Slash = "com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.server\\.shared\\.TxAttrRemote";
 
     private TxAttrRemote txAttrBean;
 
@@ -175,6 +183,24 @@ public class RemoteTxAttrServlet extends FATServlet {
         // verify the bean works
         boolean global = bean.txRequired();
         assertTrue("Container did not begin global transaction for TX REQUIRED", global);
+
+        // lookup the bean using default context with corbaname using %5c escape
+        jndiName = CorbaName + "#" + TxAttrBeanJndi + "!" + TxAttrRemote_Escape_5c;
+        bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
+        assertNotNull("Remote bean is null", bean);
+        assertTrue("Container did not begin global transaction for TX REQUIRED", bean.txRequired());
+
+        // lookup the bean using default context with corbaname using %5C escape
+        jndiName = CorbaName + "#" + TxAttrBeanJndi + "!" + TxAttrRemote_Escape_5C;
+        bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
+        assertNotNull("Remote bean is null", bean);
+        assertTrue("Container did not begin global transaction for TX REQUIRED", bean.txRequired());
+
+        // lookup the bean using default context with corbaname using \\ escape
+        jndiName = CorbaName + "#" + TxAttrBeanJndi + "!" + TxAttrRemote_Escape_Slash;
+        bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
+        assertNotNull("Remote bean is null", bean);
+        assertTrue("Container did not begin global transaction for TX REQUIRED", bean.txRequired());
     }
 
     /**
@@ -286,13 +312,26 @@ public class RemoteTxAttrServlet extends FATServlet {
      * default InitialContext with the full corbaname (not including NameService)
      * using he secure IIOP port.
      *
+     * Note: Use of the secure port (iiops) is not currently supported, and will
+     * fail if it is the only JNDI lookup attempted. However, the lookup will
+     * succeed if a previous lookup is performed using the iiop port, though this
+     * is not supported and will likely fail in the future.
+     *
      * corbaname::localhost:<IIOPSecurePort>#ejb/global/<App>/<Module>/<Bean>!<interface>
      */
-    // @Test - requires additional security configuration
+    @Test //- requires additional security configuration
+    @SkipForRepeat({ EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     public void testDefaultContextLookupWithSecurePort() throws Exception {
-        // lookup the bean using default context with corbaname on secure IIOP port
-        String jndiName = CorbaNameSecure + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
+        // first, lookup the bean using default context with corbaname with iiop port.
+        // this is required or use of the secure port below will fail.
+        String jndiName = CorbaName + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
         TxAttrRemote bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
+        assertNotNull("Remote bean is null", bean);
+
+        // lookup the bean using default context with corbaname on secure IIOP port
+        // Note: not a supported scenario; likely to fail in the future.
+        jndiName = CorbaNameSecure + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
+        bean = lookupRemoteBean(getDefaultContext(), jndiName, TxAttrRemote.class);
         assertNotNull("Remote bean is null", bean);
 
         // verify the bean works

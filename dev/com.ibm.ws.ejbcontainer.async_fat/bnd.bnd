@@ -30,7 +30,9 @@ src: \
 	test-applications/InitTxRecoveryLogEJB.jar/src, \
 	test-applications/MetaDataAsyncBean.jar/src, \
 	test-applications/NestedAsyncEJB.jar/src, \
-	test-applications/NestedAsyncTest.war/src
+	test-applications/NestedAsyncTest.war/src, \
+	test-applications/SingletonLifecycleDeadlockEJB.jar/src, \
+	test-applications/SingletonLifecycleDeadlockWeb.war/src
 
 fat.project: true
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package com.ibm.ws.sib.comms.server.clientsupport;
 
 import com.ibm.websphere.ras.TraceComponent;
+
+import java.io.IOException;
+
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.exception.SIErrorException;
@@ -21,6 +24,7 @@ import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.SendListener;
 import com.ibm.ws.sib.utils.Semaphore;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.BifurcatedConsumerSession;
 import com.ibm.wsspi.sib.core.BrowserSession;
@@ -1179,5 +1183,35 @@ public class CATMainConsumer extends CATConsumer
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");
+   }
+
+   public void dump(FormattedWriter writer) {
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+       try {
+           writer.newLine();
+           writer.startTag(this.getClass().getSimpleName());
+           writer.indent();
+
+           super.dump(writer);
+           if (subConsumer!= null)
+               subConsumer.dump(writer);
+
+           writer.outdent();
+           writer.newLine();
+           writer.endTag(this.getClass().getSimpleName());
+
+        } catch (Throwable t) {
+            // No FFDC Code Needed
+            try {
+                writer.write("\nUnable to dump " + this + " " + t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+       }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.exit(this, tc, "dump");
    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,6 +285,8 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 	 */
 	public void addDnsARecord(String host, String address) throws IOException {
 		final String METHOD_NAME = "addDnsARecord";
+		
+		Log.info(CAContainer.class, METHOD_NAME, "Adding DNS record for " + host + ":" + address);
 
 		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 
@@ -312,6 +314,8 @@ public abstract class CAContainer extends GenericContainer<CAContainer> {
 					throw new IOException(
 							METHOD_NAME + ": Expected response 200, but received response: " + statusLine);
 				}
+				
+				Log.info(CAContainer.class, METHOD_NAME, "DNS record update request was a success.");
 			}
 		}
 	}

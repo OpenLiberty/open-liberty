@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Ov\u011b\u0159te konfiguraci poskyto
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Chyb\u00ed po\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 hodnotou WASReqURLOidc. N\u00e1zev hostitele pou\u017eit\u00fd pro p\u0159\u00edstup ke klientovi se nemus\u00ed shodovat s n\u00e1zvem, kter\u00fd je registrov\u00e1n u poskytovatele. Je vr\u00e1cen k\u00f3d odezvy 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd neobsahoval po\u017eadovan\u00fd soubor cookie.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bj\u00edc\u00ed soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben p\u0159\u00edstupem ke klientovi s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bj\u00edc\u00ed soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben p\u0159\u00edstupem ke klientovi s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Jestli\u017ee je atribut sameSiteCookie v prvku webAppSecurity v konfiguraci serveru nastaven na Strict, zkuste nastavit hodnotu na Lax nebo None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Konfigurace klienta OpenId Connect (z\u00e1visl\u00e9 strany (RP)) [{2}] ur\u010duje jak adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed [{0}], tak i dal\u0161\u00ed koncov\u00e9 body. RP pou\u017eije informace z po\u017eadavku na zji\u0161t\u011bn\u00ed a ignoruje ostatn\u00ed nakonfigurovan\u00e9 koncov\u00e9 body [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Klient OpenId Connect pou\u017e\u00edv\u00e1 koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed ke kontaktov\u00e1n\u00ed poskytovatele a pou\u017e\u00edv\u00e1 informace z po\u017eadavku na zji\u0161t\u011bn\u00ed ke kontaktov\u00e1n\u00ed ostatn\u00edch koncov\u00fdch bod\u016f, jako je autorizace, token a informace o u\u017eivateli.
@@ -287,5 +287,12 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=Zkontrolujte soubor server.xml a opravte 
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Vy\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 \u0159et\u011bzcem WASReqURLOidc, m\u00e1 nespr\u00e1vnou hodnotu. N\u00e1zev hostitele [{1}] pou\u017eit\u00fd v souboru cookie se neshoduje s n\u00e1zvem, kter\u00fd je registrov\u00e1n u poskytovatele. Je vr\u00e1cen k\u00f3d odezvy 500.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0} OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky JWT (JSON Web Token) z webov\u00e9 odezvy. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
+
+#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

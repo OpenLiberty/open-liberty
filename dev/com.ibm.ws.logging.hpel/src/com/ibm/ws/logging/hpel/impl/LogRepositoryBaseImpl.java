@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,8 @@ import com.ibm.ws.logging.hpel.LogRepositoryBase;
 public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     /** Formatters used for logs in the repository. First in the list is the latest */
     public final static LogRecordSerializer[] KNOWN_FORMATTERS = new LogRecordSerializer[] {
-                                                                                            new BinaryLogRecordSerializerVersion2Impl(),
-                                                                                            new BinaryLogRecordSerializerImpl()
+                                                                                             new BinaryLogRecordSerializerVersion2Impl(),
+                                                                                             new BinaryLogRecordSerializerImpl()
     };
     /** Default repository location when its 'type' is not specified */
     public final static String DEFAULT_LOCATION = "logdata";
@@ -64,7 +64,6 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     private static String thisClass = LogRepositoryBaseImpl.class.getName();
     // Unique logger as it does usepParentHandlers=false to avoid getting back into logging (and thus
     // risking recursion and stack overflow). No RBundle as only used for trace and write to sep file
-    // To get this trace output, must include com.ibm.ws.logging.hpel.impl.*=fine in traceSpec
     private static final int ONE_MEG = 1024 * 1024;
     private static Logger debugLogger = Logger.getLogger("com.ibm.hpel.debug"); // 682032 for debugAllowed
     private static final boolean debugAllowed = "true".equalsIgnoreCase(getSystemProperty("com.ibm.ws.logging.hpel.debug"));
@@ -100,7 +99,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * creates LogRepositoryBase instance. This one is generally for reading, as writing will also pass in process-specific info
-     * 
+     *
      * @param repositoryLocation the location of repository log files.
      */
     protected LogRepositoryBaseImpl(File repositoryLocation) {
@@ -135,8 +134,8 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     /**
      * Creates lock file to be used as a pattern for instance repository.
      * Should be called only by parent's manager on start up.
-     * 
-     * @param pid process ID of the parent.
+     *
+     * @param pid   process ID of the parent.
      * @param label label of the parent.
      * @throws IOException if there's a problem to create lock file.
      */
@@ -172,9 +171,9 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     /**
      * creates instance directory to use for log files. Both parent and children
      * need to use it when figuring out the log repository location.
-     * 
+     *
      * @param timestamp time on the first record to be stored.
-     * @param pid process ID of the parent
+     * @param pid       process ID of the parent
      * @return parent's directory (kids need to create directories under it) or
      *         <code>null</code> if directory can't be created or found due to race
      *         condition. In the later case user need to wait and try again.
@@ -201,10 +200,8 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
             return instanceDir;
         }
         // PM99024 , Code fix when .lock file removed
-        if (flag == true)
-        {
-            if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
-            {
+        if (flag == true) {
+            if (isDebugEnabled()) {
                 debugLogger.logp(Level.FINE, thisClass, "makingLogDirectory", "no lock files found , creating folder with XXXXXX label");
             }
             instanceDir = new File(repositoryLocation, getLogDirectoryName(timestamp, pid, "XXXXXXX"));
@@ -223,17 +220,17 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
         if (lockFiles.length != 1 || !pid.equals(parseProcessID(lockFiles[0].getName()))) {
             // Use System.err to report that condition since logger is not ready yet.
             if (lockFiles.length < 1) {
-                if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+                if (isDebugEnabled())
                     debugLogger.logp(Level.FINE, thisClass, "makingLogDirectory", "no lock files found.");
             } else if (lockFiles.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 for (File lock : lockFiles) {
                     sb.append(lock.getName()).append(" ");
                 }
-                if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+                if (isDebugEnabled())
                     debugLogger.logp(Level.FINE, thisClass, "makeLogDirectory", "too many lock files found: " + sb.toString());
             } else {
-                if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+                if (isDebugEnabled())
                     debugLogger.logp(Level.FINE, thisClass, "makeLogDirectory", "found stale lock file " + lockFiles[0].getName() + " but was expecting one generated by process "
                                                                                 + pid);
             }
@@ -244,7 +241,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
         // If somebody else deleted lock file right under our nose, need to wait until that somebody
         //    creates the right directory.
         if (!AccessHelper.deleteFile(lockFiles[0])) {
-            if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+            if (isDebugEnabled())
                 debugLogger.logp(Level.FINE, thisClass, "makeLogDirectory", "failed to delete found lock file " + lockFiles[0].getName() + ". Assume it was deleted already");
             return null;
         }
@@ -259,15 +256,14 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     }
 
     //Method for forcefully creating Instance Directory , pass flag as true
-    protected File makeLogDirectory(long timestamp, final String pid)
-    {
+    protected File makeLogDirectory(long timestamp, final String pid) {
 
         return makeLogDirectory(timestamp, pid, false);
     }
 
     /**
      * calculates repository file name.
-     * 
+     *
      * @param timestamp the time in 'millis' of the first record in the file.
      * @return the file according to repository pattern
      */
@@ -282,7 +278,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Retrieves the timestamp from the name of the file.
-     * 
+     *
      * @param file to retrieve timestamp from.
      * @return timestamp in millis or -1 if name's pattern does not correspond
      *         to the one used for files in the repository.
@@ -308,10 +304,10 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * returns sub-directory name to be used for instances and sub-processes
-     * 
+     *
      * @param timestamp time of the instance start. It should be negative for sub-processes
-     * @param pid process Id of the instance or sub-process. It cannot be null or empty.
-     * @param label additional identification to use on the sub-directory.
+     * @param pid       process Id of the instance or sub-process. It cannot be null or empty.
+     * @param label     additional identification to use on the sub-directory.
      * @return string representing requested sub-directory.
      */
     public String getLogDirectoryName(long timestamp, String pid, String label) {
@@ -335,7 +331,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Returns the list of files in the repository.
-     * 
+     *
      * @return array of File instances representing files in the repository.
      */
     protected File[] listRepositoryFiles() {
@@ -427,9 +423,9 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Retrieves the timestamp out of the directory name.
-     * 
+     *
      * example: directory file name for a serverinstance would be <repos_timestamp>_<pid>-<label>
-     * 
+     *
      * returned would be <repos_timestamp>
      */
     public static long parseTimeStamp(String fileName) {
@@ -490,7 +486,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Retrieves the PID out of the directory name. (Qualifier 2)
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -521,7 +517,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Retrieves the label out of the directory name (Qualifier 3)
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -535,7 +531,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Retrieves the PID and label combined out of the directory name.
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -556,7 +552,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
 
     /**
      * Returns the list of server instance directories in the repository.
-     * 
+     *
      * @return array of File instances representing files in the repository.
      */
     protected File[] listRepositoryDirs() {
@@ -572,13 +568,13 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     }
 
     public void setLogEventNotifier(LogEventNotifier logEventNotifier) {
-        if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+        if (isDebugEnabled())
             debugLogger.logp(Level.FINE, thisClass, "setLogEventNotifier", "LEN: " + logEventNotifier);
         this.logEventNotifier = logEventNotifier;
     }
 
     public LogEventNotifier getLogEventNotifier() {
-        if (debugLogger.isLoggable(Level.FINE) && isDebugEnabled())
+        if (isDebugEnabled())
             debugLogger.logp(Level.FINE, thisClass, "getLogEventNotifier", "getLEN: " + logEventNotifier);
         return logEventNotifier;
     }
@@ -587,7 +583,7 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
      * determine if the logger is ready. This logger does not get set up since it has a separate
      * file handler (avoiding logging thru the normal channels as that would cause recursion). So
      * this check is done regularly as it can start dynamically
-     * 
+     *
      * @return determination as to whether or not file was created and file handler is in place
      */
     public static boolean isDebugEnabled() {
@@ -639,13 +635,14 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
         fHandler.setFormatter(new SimpleFormatter());
         LogRepositoryBaseImpl.debugLogger.addHandler(fHandler);
         LogRepositoryBaseImpl.debugLogger.setUseParentHandlers(false);
+        LogRepositoryBaseImpl.debugLogger.setLevel(Level.FINE); // Ensure the Log level is FINE, so the debug messages are logged accordingly.
         debugEnabled = true;
         return true;
     }
 
     /**
      * for classes in logging (which cannot log into the normal space, retrieve the special logger
-     * 
+     *
      * @return the specific logger that classes logging but not in normal flow will use
      */
     public static Logger getLogger() {
@@ -655,10 +652,11 @@ public abstract class LogRepositoryBaseImpl implements LogRepositoryBase {
     /**
      * take action on notification of trace or log file deletion or rolling. This is the dummy version as nonRuntime
      * managers need not implement this method, and subManagers who are unaware of file management cannot implement it
-     * 
+     *
      * @param eventType Type of event (delete or roll). It is assumed that the manager already knows what type of
-     *            logging it is working with (log vs trace).
+     *                      logging it is working with (log vs trace).
      */
-    public void notifyOfFileAction(String eventType) {}
+    public void notifyOfFileAction(String eventType) {
+    }
 
 }

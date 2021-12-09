@@ -22,6 +22,8 @@ WS-TraceGroup: FAULTTOLERANCE
 -dsannotations: \
         io.openliberty.microprofile.faulttolerance30.internal.cdi.CDIComponent
 
+jakartaeeMe: true
+
 -buildpath: \
         com.ibm.ws.logging;version=latest, \
         com.ibm.ws.logging.core;version=latest, \

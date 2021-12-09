@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * @version $Revision: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class TransactionInitializer extends LocalObject implements ORBInitializer {
+    private static final long serialVersionUID = 1L;
     private static final Encoding CDR_1_2_ENCODING = new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2);
     private static final TraceComponent tc = Tr.register(TransactionInitializer.class);
 

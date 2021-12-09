@@ -423,7 +423,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             _callbackState.set(CallbackState.CALLING);
         }
 
-        InternalState resolvedState() {
+        synchronized InternalState resolvedState() {
             if (_callbackState.compareAndSet(CallbackState.CALLING, CallbackState.WAITING)) {
                 ApplicationDependency installCalledFuture;
                 while ((installCalledFuture = _notifyAppInstallCalled.poll()) != null) {
@@ -437,7 +437,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         @Override
-        public void changed() {
+        public synchronized void changed() {
             if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
                 ApplicationDependency installCalledFuture;
                 while ((installCalledFuture = _notifyAppInstallCalled.poll()) != null) {

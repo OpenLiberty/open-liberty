@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.comms.CommsConstants;
 import com.ibm.ws.sib.comms.common.CommsUtils;
 import com.ibm.ws.sib.comms.server.ConversationState;
+import com.ibm.ws.sib.comms.server.clientsupport.CATConsumer.State;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
@@ -86,15 +87,55 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
     public void consumeMessages(LockedMessageEnumeration vEnum) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "consumeMessages", vEnum);
+      
+      
+      // Make sure that the consumer is in started state
+      consumerSession.stateLock.lock();
+      try {
+          try {
+              consumerSession.awaitStableState();
+          } catch (InterruptedException ignored) {
+        	// Is it the right thing to do to catch Exceptions here? Presumably if we're still in NEW state then we should still be safe to update
+          }
+    	  if (State.NEW == consumerSession.getState()) {
+    		  // Let's step through the states just to be completely safe
+    		  consumerSession.setState(State.STARTING);
+    		  consumerSession.setState(State.STARTED);
+    	  }
+      }
+      finally {
+    	  consumerSession.stateLock.unlock();
+      }
 
         if (mainConsumer.getConversation().getConnectionReference().isClosed()) {
             // stop consumer to avoid infinite loop     
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "The connection is closed so we shouldn't consume anymore messages. Consumer Session should be closed soon");
-            stopConsumer();
+
+          boolean stopSession = false;
+          consumerSession.stateLock.lock();
+          try {
+              while (true) {
+                  try {
+                      consumerSession.awaitStableState();
+                      
+                      break;
+                  } catch (InterruptedException ignored) {
+                  }
+              }
+              State currentState = consumerSession.getState();
+              stopSession = ((State.STARTING == currentState) || (State.STARTED == currentState));
+              if (stopSession) consumerSession.setState(State.STOPPING);
+          } finally {
+              consumerSession.stateLock.unlock();
+          }
+          if (stopSession) stopConsumer();
+          
         } else {
             String xctErrStr = null;
 
+    	State fallback = State.UNDEFINED;
+    	
             try {
                 // Get the next message in the vEnum
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -121,12 +162,21 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                 // Start D221806
                 // Ensure we take a lock on the consumer session so that the request for more messages
                 // doesn't corrupt the counters.
-                synchronized (consumerSession) {
-                    int oldSentBytes = consumerSession.getSentBytes();
-                    int newSentBytes = oldSentBytes + msgLen;
-                    consumerSession.setSentBytes(newSentBytes);
-
-                    if (msgLen == 0 || newSentBytes >= consumerSession.getRequestedBytes()) {
+           boolean stopConsumer = false;
+           consumerSession.stateLock.lock();
+           try {
+               try {
+                   consumerSession.awaitStableState();
+               } catch (InterruptedException ignored) {}
+               stopConsumer = (msgLen == 0) || consumerSession.updateConsumedBytes(msgLen);
+               if (stopConsumer) fallback = consumerSession.setState(State.STOPPING);
+           }
+           finally {
+        	   consumerSession.stateLock.unlock();
+           }
+              
+              if (stopConsumer)
+              {
                         // in addition to the pacing control, we must avoid an infinite loop
                         // attempting to send messages that don't get through.  If msgLen
                         // is 0 then no message was sent, and we must stop the consumer
@@ -135,7 +185,7 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             SibTr.debug(this, tc, "Stopping consumer session (sent bytes >= requested bytes || msgLen = 0)");
                         stopConsumer();
-                    }
+                  fallback = State.UNDEFINED;
                 }
                 // End D221806
             }
@@ -160,6 +210,9 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
                                                            consumerSession.getClientSessionId(),
                                                            consumerSession.getConversation(), 0);
             } // end d172528
+            finally {
+        	if (State.UNDEFINED!=fallback) consumerSession.setState(fallback);
+            }
 
         }
 
@@ -175,13 +228,15 @@ public class CATAsynchReadAheadReader implements AsynchConsumerCallback {
     public void stopConsumer() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "stopConsumer");
-        try {
-            // lock the consumerSession to ensure visibility of update to started.
-            synchronized (consumerSession) {
-                consumerSession.getConsumerSession().stop();
-                consumerSession.started = false;
-            }
-        } catch (Throwable t) {
+       try 
+       {
+    	   // This method is only called from consumerMessages(), which has safely set the state to STOPPING before calling us. Therefore, it should be safe to go straight into the actual stop() method
+    	   // because nothing else should be able to get in and play with the state until we move out of a transitional state.
+               consumerSession.getConsumerSession().stop();
+               consumerSession.setState(State.STOPPED);
+       } 
+       catch (Throwable t) 
+       {
             FFDCFilter.processException(t,
                                         CLASS_NAME + ".consumeMessages",
                                         CommsConstants.CATASYNCHRHREADER_CONSUME_MSGS_02,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.web;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+@SuppressWarnings("serial")
 @WebServlet("/Simple2PCCloudServlet")
 public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
@@ -41,22 +43,29 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                System.out.println("modifyLeaseOwner: sel-for-update against Lease table");
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE OF LEASE_OWNER";
+                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE OF LEASE_OWNER";
+                System.out.println("testLeaseTableAccess: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
+                String owner = null;
                 while (rs.next()) {
-                    String owner = rs.getString("LEASE_OWNER");
+                    owner = rs.getString("LEASE_OWNER");
                     System.out.println("testLeaseTableAccess: owner is - " + owner);
                 }
+
                 rs.close();
 
+                if (owner == null) {
+                    throw new Exception("No rows were returned for " + selForUpdateString);
+                }
+
                 String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud002'" +
-                                      " WHERE SERVER_IDENTITY='cloud001'";
+                                      " SET LEASE_OWNER = 'cloud0021'" +
+                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                System.out.println("testLeaseTableAccess: " + updateString);
                 stmt.executeUpdate(updateString);
-            } catch (SQLException x) {
+            } catch (Exception x) {
                 System.out.println("testLeaseTableAccess: caught exception - " + x);
             }
 
@@ -81,23 +90,29 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                System.out.println("modifyLeaseOwner: sel-for-update against Lease table");
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE" +
+                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
                                             (isPostgreSQL ? "" : " OF LEASE_OWNER");
+                System.out.println("modifyLeaseOwner: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
+                String owner = null;
                 while (rs.next()) {
-                    String owner = rs.getString("LEASE_OWNER");
+                    owner = rs.getString("LEASE_OWNER");
                     System.out.println("modifyLeaseOwner: owner is - " + owner);
                 }
                 rs.close();
 
+                if (owner == null) {
+                    throw new Exception("No rows were returned for " + selForUpdateString);
+                }
+
                 String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud002'" +
-                                      " WHERE SERVER_IDENTITY='cloud001'";
+                                      " SET LEASE_OWNER = 'cloud0021'" +
+                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                System.out.println("modifyLeaseOwner: " + updateString);
                 stmt.executeUpdate(updateString);
-            } catch (SQLException x) {
+            } catch (Exception x) {
                 System.out.println("modifyLeaseOwner: caught exception - " + x);
             }
 
@@ -119,7 +134,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             try {
 
                 long latch = 255L;
-                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
                                       " SET RUSECTION_ID = " + latch +
                                       " WHERE RU_ID = -1";
                 stmt.executeUpdate(updateString);
@@ -143,8 +158,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
-                                      " SET SERVER_NAME = 'cloud002'" +
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
+                                      " SET SERVER_NAME = 'cloud0021'" +
                                       " WHERE RU_ID = -1";
                 stmt.executeUpdate(updateString);
             } catch (SQLException x) {
@@ -155,6 +170,76 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             con.commit();
         } catch (Exception ex) {
             System.out.println("setPeerOwnership: caught exception in testSetup: " + ex);
+        }
+    }
+
+    public void testTranlogTableAccess(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+        Connection con = dsTranLog.getConnection();
+        con.setAutoCommit(false);
+
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+
+            System.out.println("testTranlogTableAccess: get metadata tables - " + mdata);
+
+            // Need to be a bit careful here, some RDBMS store uppercase versions of the name and some lower.
+            boolean foundUpperTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
+            boolean foundUpperTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
+            boolean foundUpperPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
+            boolean foundUpperPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
+            //Retrieving the columns in the database
+            ResultSet tables = mdata.getTables(null, null, "WAS_%", null); // Just get all the "WAS" prepended tables
+            String tableString = "";
+            while (tables.next()) {
+                tableString = tables.getString("Table_NAME");
+                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
+                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
+                    foundUpperTranCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
+                    foundUpperTranCloud2 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
+                    foundUpperPartnerCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
+                    foundUpperPartnerCloud2 = true;
+            }
+
+            boolean foundLowerTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
+            boolean foundLowerTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
+            boolean foundLowerPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
+            boolean foundLowerPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
+            tables = mdata.getTables(null, null, "was%", null); // Just get all the "was" tables
+            while (tables.next()) {
+                tableString = tables.getString("Table_NAME");
+                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
+                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
+                    foundLowerTranCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
+                    foundLowerTranCloud2 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
+                    foundLowerPartnerCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
+                    foundLowerPartnerCloud2 = true;
+            }
+
+            // Report unexpected behaviour
+            final PrintWriter pw = response.getWriter();
+            if (foundUpperTranCloud1 || foundLowerTranCloud1) {
+                pw.println("Unexpectedly found tran log table for CLOUD0011");
+            }
+            if (!foundUpperTranCloud2 && !foundLowerTranCloud2) {
+                pw.println("Unexpectedly did not find tran log table for CLOUD0021");
+            }
+            if (foundUpperPartnerCloud1 || foundLowerPartnerCloud1) {
+                pw.println("Unexpectedly found partner log table for CLOUD0011");
+            }
+            if (!foundUpperPartnerCloud2 && !foundLowerPartnerCloud2) {
+                pw.println("Unexpectedly did not find partner log table for CLOUD0021");
+            }
+            tables.close();
+            con.commit();
+        } catch (Exception ex) {
+            System.out.println("testTranlogTableAccess: caught exception " + ex);
         }
     }
 }

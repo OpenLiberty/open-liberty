@@ -17,7 +17,7 @@
 	</featureManager>
 
 	<application id="myCalc" name="BasicCalculatorClient" type="ear" location="BasicCalculatorClient.ear" />
-
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 	<orb id="defaultOrb">
 		<clientPolicy.clientContainerCsiv2>
@@ -29,6 +29,8 @@
 			</layers>
 		</clientPolicy.clientContainerCsiv2>
 	</orb>
+
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 

@@ -17,19 +17,19 @@
 
     <library id="jaeger" apiTypeVisibility="+third-party">
         <file
-            name="${server.config.dir}/jaegerLib/jaeger-tracerresolver-1.2.0.jar" />
+            name="${server.config.dir}/jaegerLib/jaeger-tracerresolver-1.6.0.jar" />
         <file
-            name="${server.config.dir}/jaegerLib/jaeger-client-1.2.0.jar" />
+            name="${server.config.dir}/jaegerLib/jaeger-client-1.6.0.jar" />
         <file
-            name="${server.config.dir}/jaegerLib/jaeger-core-1.2.0.jar" />
+            name="${server.config.dir}/jaegerLib/jaeger-core-1.6.0.jar" />
         <file
-            name="${server.config.dir}/jaegerLib/jaeger-thrift-1.2.0.jar" />
+            name="${server.config.dir}/jaegerLib/jaeger-thrift-1.6.0.jar" />
         <file
             name="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar" />
         <file
             name="${server.config.dir}/jaegerLib/slf4j-simple-1.7.30.jar" />
         <file
-            name="${server.config.dir}/jaegerLib/libthrift-0.13.0.jar" />
+            name="${server.config.dir}/jaegerLib/libthrift-0.14.1.jar" />
         <file name="${server.config.dir}/jaegerLib/gson-2.8.6.jar" />
         <file
             name="${server.config.dir}/jaegerLib/opentracing-util-0.33.0.jar" />

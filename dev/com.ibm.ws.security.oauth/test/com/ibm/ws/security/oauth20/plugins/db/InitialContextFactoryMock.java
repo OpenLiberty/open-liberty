@@ -34,11 +34,11 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import com.google.gson.JsonObject;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientDBModel;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
-import com.ibm.ws.security.oidc.common.AbstractOidcRegistrationBaseTest;
 
 /**
  *
@@ -161,8 +161,9 @@ public class InitialContextFactoryMock implements InitialContextFactory {
         }
     }
 
-    public static OidcBaseClientDBModel getInitializedOidcBaseClientModel() {
-        OidcBaseClient tmpClient = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(1, CachedDBOidcClientProviderTest.PROVIDER_NAME).get(0);
+    public static OidcBaseClientDBModel getInitializedOidcBaseClientModel(boolean hashClientSecret) {
+        ClientRegistrationHelper clientRegistrationHelper = new ClientRegistrationHelper(hashClientSecret);
+        OidcBaseClient tmpClient = clientRegistrationHelper.getsampleOidcBaseClients(1, CachedDBOidcClientProviderTest.PROVIDER_NAME).get(0);
 
         JsonObject clientMetadataAsJson = OidcOAuth20Util.getJsonObj(tmpClient);
 
@@ -175,17 +176,17 @@ public class InitialContextFactoryMock implements InitialContextFactory {
                 clientMetadataAsJson);
     }
 
-    protected static void addEntryToOldOAuth20ClientConfigTable() {
+    protected static void addEntryToOldOAuth20ClientConfigTable(boolean hashClientSecret) {
         PreparedStatement stInsert = null;
 
         String QUERY_INSERT = "INSERT INTO " + SCHEMA_TABLE_NAME
                 + CLIENT_CONFIG_PARAMS
                 + " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
-        OidcBaseClientDBModel sampleClientForInitialization = getInitializedOidcBaseClientModel();
+        OidcBaseClientDBModel sampleClientForInitialization = getInitializedOidcBaseClientModel(hashClientSecret);
 
         String clientSecret = sampleClientForInitialization.getClientSecret();
-        if (AbstractOidcRegistrationBaseTest.isHash) {
+        if (hashClientSecret) {
             HashSecretUtils.hashClientMetaTypeSecret(sampleClientForInitialization.getClientMetadata(), sampleClientForInitialization.getClientId(), true);
             clientSecret = HashSecretUtils.hashSecret(clientSecret, sampleClientForInitialization.getClientId(), true, sampleClientForInitialization.getClientMetadata());
         } else {

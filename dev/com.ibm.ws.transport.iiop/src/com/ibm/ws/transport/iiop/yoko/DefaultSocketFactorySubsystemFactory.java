@@ -33,6 +33,7 @@ public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
         public Class<?> forName(String name) throws ClassNotFoundException {
             return Class.forName(name);
         }
+        @SuppressWarnings("rawtypes")
         public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
             return null;
         }

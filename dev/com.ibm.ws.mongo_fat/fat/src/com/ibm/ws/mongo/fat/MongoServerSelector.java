@@ -197,6 +197,7 @@ public class MongoServerSelector {
         File trustStore = null;
 
         MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
+        optionsBuilder.maxWaitTime(30000);
         try {
             trustStore = File.createTempFile("mongoTrustStore", "jks");
             Map<String, String> serviceProperties = mongoService.getProperties();

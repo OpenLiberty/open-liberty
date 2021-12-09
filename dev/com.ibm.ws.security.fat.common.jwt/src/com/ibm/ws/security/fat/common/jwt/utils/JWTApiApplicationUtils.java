@@ -45,7 +45,9 @@ public class JWTApiApplicationUtils {
      */
     public void logIt(PrintWriter pw, String msg) {
         System.out.println(msg);
+        System.out.flush();
         pw.print(msg + newLine);
+        pw.flush();
     }
 
     /***

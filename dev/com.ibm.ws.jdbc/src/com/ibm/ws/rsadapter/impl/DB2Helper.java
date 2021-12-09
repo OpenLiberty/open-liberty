@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,7 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
 
@@ -60,7 +58,6 @@ public class DB2Helper extends DatabaseHelper {
     static int JDBC = 1; 
     static int SQLJ = 2; 
     int connType = 0; 
-    private transient PrintWriter db2Pw; 
 
     /**
      * Construct a helper class for common DB2 behavior. Do not instantiate this class directly.
@@ -71,6 +68,8 @@ public class DB2Helper extends DatabaseHelper {
     DB2Helper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
+        mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         Properties props = mcf.dsConfig.get().vendorProps;
@@ -86,13 +85,8 @@ public class DB2Helper extends DatabaseHelper {
             threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
             threadSecurity = true;
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
-        
-        Collections.addAll(staleErrorCodes,
+
+        Collections.addAll(staleConCodes,
                            -30108,
                            -30081
                            -30080,
@@ -104,10 +98,14 @@ public class DB2Helper extends DatabaseHelper {
                            -1015,
                            -924,
                            -923,
-                           -906);
+                           -906,
+                           "58004");
 
-        staleSQLStates.add("58004");
-        staleSQLStates.remove("S1000"); // DB2 sometimes uses this SQL state for non-stale. In those cases, rely on error code to detect.
+        staleConCodes.remove("S1000"); // DB2 sometimes uses this SQL state for non-stale. In those cases, rely on error code to detect.
+
+        Collections.addAll(staleStmtCodes,
+                           -518,
+                           -514);
     }
 
     /**
@@ -122,6 +120,11 @@ public class DB2Helper extends DatabaseHelper {
      */
     @Override
     public void doConnectionSetup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
+
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) 
@@ -188,16 +191,6 @@ public class DB2Helper extends DatabaseHelper {
             Tr.exit(this, tc, "doConnectionSetup");
     }
 
-    @Override
-    public final boolean doesStatementCacheIsoLevel() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * Feature WS14621 
      * 
@@ -244,12 +237,12 @@ public class DB2Helper extends DatabaseHelper {
         // and most likely the setting will be serially, even if its not,
         // it shouldn't matter here (tracing).
 
-        if (db2Pw == null) {
-            db2Pw = new PrintWriter(new TraceWriter(db2Tc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "returning", db2Pw);
-        return db2Pw;
+            Tr.debug(this, tc, "returning", genPw);
+        return genPw;
     }
 
     /**
@@ -274,25 +267,6 @@ public class DB2Helper extends DatabaseHelper {
                || -30082 == ec // CONNECTION FAILED FOR SECURITY REASON
                // [ibm][db2][jcc][t4][2013][11249] Connection authorization failure occurred.  Reason: User ID or Password invalid.
                || x.getMessage() != null && x.getMessage().indexOf("[2013]") > 0;
-    }
-
-    /**
-     * @return true if the exception or a cause exception in the chain is known to indicate a stale statement. Otherwise false.
-     */
-    @Override
-    public boolean isStaleStatement(SQLException x) {
-        // check for cycles
-        Set<Throwable> chain = new HashSet<Throwable>();
-
-        for (Throwable t = x; t != null && chain.add(t); t = t.getCause())
-            if (t instanceof SQLException) {
-                SQLException sqlX = (SQLException) t;
-                int ec = sqlX.getErrorCode();
-                if (-514 == ec ||
-                    -518 == ec)
-                    return true;
-            }
-        return super.isStaleStatement(x);
     }
 
     @Override

@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=Sprawd\u017a plik deskryptora biblioteki znac
 system.java.compiler.not.found=JSPG0304W: Atrybut JSP useJDKCompiler jest ustawiony na warto\u015b\u0107 true, ale nie znaleziono kompilatora Java SDK. Kontener JSP u\u017cywa kompilatora wbudowanego w produkcie do kompilowania plik\u00f3w JSP w module WWW: {0}.
 system.java.compiler.not.found.explanation=Kontener JSP nie m\u00f3g\u0142 znale\u017a\u0107 kompilatora systemowego, co zwykle oznacza, \u017ce w \u015bcie\u017cce klas nie zosta\u0142 znaleziony plik JAR pakietu Java SDK tools.jar.
 system.java.compiler.not.found.useraction=Upewnij si\u0119, \u017ce plik JAR pakietu Java SDK tools.jar znajduje si\u0119 w \u015bcie\u017cce klas i sprawd\u017a, czy pakiet Java SDK obs\u0142uguje interfejs API kompilatora j\u0119zyka Java. Wi\u0119cej informacji na ten temat zawiera specyfikacja Java Specification Request 199.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: Sk\u0142adnik JSP [Pages] nie zosta\u0142 za\u0142adowany w akceptowalnej wersji.
+jsp.feature.not.loaded.correctly.explanation=Sk\u0142adnik JSP [Pages] zosta\u0142 za\u0142adowany w wersji odpowiadaj\u0105cej specyfikacji Java [Jakarta] EE sk\u0142adnika JSP [Pages]. Sk\u0142adnik zosta\u0142 za\u0142adowany bez zdefiniowanej wersji.
+jsp.feature.not.loaded.correctly.useraction=Sprawd\u017a, czy w pliku server.xml istnieje sk\u0142adnik JSP [Pages]. Nale\u017cy okre\u015bli\u0107 tylko jeden element.

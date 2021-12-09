@@ -5,6 +5,8 @@
     	<feature>appSecurityClient-1.0</feature>
     </featureManager>
     
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+    
     <!-- use the default SSL configuration -->
     <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
     
@@ -19,4 +21,5 @@
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
 </client>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ˇ * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * ˇ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.internal;
 
+import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +73,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     private String mpjwtConsumerRef;
     private String cookieName;
     private boolean disableJwtCookie;
+    private String authFilterRef;
 
     protected static final String KEY_UNIQUE_ID = "id";
     protected String uniqueId = null;
@@ -241,6 +244,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
         fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT);
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
         disableJwtCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_DISABLE_JWT_COOKIE);
+        authFilterRef = (String) props.get(JwtSsoConstants.CFG_KEY_AUTH_FILTER_REF);
         // jwtBuilderRef = JwtUtils.trimIt((String)
         // props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
         mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF)); // hmm,
@@ -436,8 +440,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
     @Override
     public String getAuthFilterRef() {
-        // TODO Auto-generated method stub
-        return null;
+        return authFilterRef;
     }
 
     @Override
@@ -470,6 +473,11 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
     @Override
     public String getKeyManagementKeyAlias() {
+        return null;
+    }
+
+    @Override
+    public Key getJweDecryptionKey() throws GeneralSecurityException {
         return null;
     }
 

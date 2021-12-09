@@ -224,6 +224,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
 
             stmt.close();
         } finally {
+            map1.clear();
             con.close();
         }
     }

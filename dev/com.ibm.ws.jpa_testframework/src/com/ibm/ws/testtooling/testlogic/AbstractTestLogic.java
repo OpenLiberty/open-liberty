@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -239,7 +238,6 @@ public abstract class AbstractTestLogic {
         return prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
     }
 
-    @SuppressWarnings("unused")
     protected void beginTx(JPAResource jpaRW) {
         System.out.println("Begin a Tx");
         jpaRW.getTj().beginTransaction();
@@ -249,13 +247,11 @@ public abstract class AbstractTestLogic {
         }
     }
 
-    @SuppressWarnings("unused")
     protected void commitTx(JPAResource jpaRW) {
         System.out.println("Commit current Tx");
         jpaRW.getTj().commitTransaction();
     }
 
-    @SuppressWarnings("unused")
     protected void rollbackTx(JPAResource jpaRW) {
         System.out.println("Rollback current Tx");
         jpaRW.getTj().rollbackTransaction();
@@ -324,6 +320,37 @@ public abstract class AbstractTestLogic {
         };
     }
 
+    /**
+     * Check if given Throwable contains instanceof exceptionClass within Throwable causedby stack
+     *
+     * @param exceptionClass
+     * @param t
+     * @return Throwable of type exceptionClass if found within causedby stack; null otherwise
+     */
+    protected static Throwable containsCauseByException(final Class<?> exceptionClass, Throwable t) {
+        if (exceptionClass == null || t == null) {
+            return null;
+        }
+
+        final ArrayList<Throwable> tList = new ArrayList<Throwable>();
+        while (t != null) {
+            if (exceptionClass.equals(t.getClass()) || exceptionClass.isAssignableFrom(t.getClass())) {
+                return t;
+            }
+
+            // Loop detected, not found
+            if (tList.contains(t)) {
+                return null;
+            }
+
+            tList.add(t);
+            t = t.getCause();
+        }
+
+        // Reached end, not found
+        return t;
+    }
+
     protected String getTestName() {
         final StackTraceElement[] steArr = Thread.currentThread().getStackTrace();
 
@@ -338,57 +365,6 @@ public abstract class AbstractTestLogic {
         }
 
         return this.getClass().getSimpleName() + "." + methodName;
-    }
-
-    // Basing determination off product version using
-    // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
-    protected boolean isDB2ForZOS(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "dsn");
-    }
-
-    protected boolean isDB2ForLUW(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "sql");
-    }
-
-    protected boolean isDB2ForISeries(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "qsq");
-    }
-
-    protected boolean isDB2ForVM_VSE(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "ari");
-    }
-
-    protected boolean isDB2(String prodVersion) {
-        return isDB2ForLUW(prodVersion) || isDB2ForZOS(prodVersion) || isDB2ForISeries(prodVersion);
-    }
-
-    protected boolean isDerby(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "derby");
-    }
-
-    protected boolean isOracle(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "oracle");
-    }
-
-    protected boolean isPostgresql(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "postgresql");
-    }
-
-    protected boolean isMySQL(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "mysql");
-    }
-
-    protected boolean isSQLServer(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "sql server") || containsIgnoreCase(lDbProductName, "sqlserver");
-    }
-
-    protected boolean isHana(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "hdb");
-    }
-
-    private boolean containsIgnoreCase(String input, String regex) {
-        return input != null
-               && Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find();
     }
 
     protected Set<String> getInstalledFeatures() {

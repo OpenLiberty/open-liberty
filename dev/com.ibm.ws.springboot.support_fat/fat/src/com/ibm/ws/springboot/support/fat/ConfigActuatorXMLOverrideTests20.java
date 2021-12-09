@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ public class ConfigActuatorXMLOverrideTests20 extends AbstractSpringTests {
     private static final int OVERRIDE_ACTUATOR_PORT = 9096;
 
     private static final String DEFAULT_MAIN_CONFIG_ACTUATOR = "useDefaultHostForMainConfigActuatorPorts";
+    private static final String DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR = "useDefaultHostWithAppPortForMainConfigActuatorPorts";
     private static final String CONFIG_MAIN_CONFIG_ACTUATOR = "useConfigForMainAndActuatorPorts";
     private static final String OVERRIDE_MAIN_OVERRIDE_ACTUATOR = "useOverrideForMainAndActuatorPorts";
 
@@ -142,6 +144,30 @@ public class ConfigActuatorXMLOverrideTests20 extends AbstractSpringTests {
             actuatorEndpoint.setHttpPort(Integer.toString(OVERRIDE_ACTUATOR_PORT));
             actuatorEndpoint.setId("actuator");
         }
+    }
+
+    @Override
+    public List<String> getExpectedWebApplicationEndpoints() {
+        String methodName = testName.getMethodName();
+        List<String> expectedEndpoints = new ArrayList<String>(super.getExpectedWebApplicationEndpoints());
+        if (methodName != null) {
+
+            if (methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR)) {
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
+            } else if (methodName.equals(DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR)) {
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
+            } else if (methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR)) {
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+
+            } else if (methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
+                expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
+            }
+        }
+        return expectedEndpoints;
     }
 
     @Override

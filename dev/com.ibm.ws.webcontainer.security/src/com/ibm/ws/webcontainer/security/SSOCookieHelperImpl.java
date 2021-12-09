@@ -15,13 +15,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.Cookie;
@@ -402,14 +403,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public String getSSODomainName(HttpServletRequest req, List<String> ssoDomainList, boolean useDomainFromURL) {
         try {
             final String host = getHostNameFromRequestURL(req);
-            String ipAddr = AccessController.doPrivileged(new PrivilegedAction<String>() {
-
-                @Override
-                public String run() {
-                    return getHostIPAddr(host);
-                }
-            });
-            if (host.equals(ipAddr) || host.indexOf(".") == -1) {
+            if (isIpV4Format(host) || host.indexOf(".") == -1) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "URL host is an IP or locahost, no SSO domain will be set.");
                 return null;
@@ -430,6 +424,16 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 Tr.debug(tc, "Unexpected exception getting request SSO domain", new Object[] { e });
         }
         return null;
+    }
+
+    /**
+     * @param ipAddr
+     * @return
+     */
+    static boolean isIpV4Format(String ipAddr) {
+        Pattern ptn = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
+        Matcher mtch = ptn.matcher(ipAddr);
+        return mtch.find();
     }
 
     /**

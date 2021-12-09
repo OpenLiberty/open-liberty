@@ -161,7 +161,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                 }
             });
             connectionFactory = getManagedConnectionFactory(null).createConnectionFactory(conMgr);
-            // TODO fix this error path once updates to ExpectedFFDC in existing test case makes it into master
+            // TODO fix this error path once updates to ExpectedFFDC in existing test case makes it into release
             //} catch (PrivilegedActionException x) {
             //    Throwable cause = x.getCause();
             //    if (trace && tc.isEntryEnabled())

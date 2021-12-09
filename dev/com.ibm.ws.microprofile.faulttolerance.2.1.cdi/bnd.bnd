@@ -28,6 +28,8 @@ WS-TraceGroup: FAULTTOLERANCE
 testsrc=test/src
 
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

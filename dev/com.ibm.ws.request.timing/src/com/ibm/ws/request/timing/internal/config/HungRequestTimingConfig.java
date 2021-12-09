@@ -158,10 +158,11 @@ public class HungRequestTimingConfig extends RequestTimingConfig {
 		hungReqTimingCfg.append("-------------------Hung Request Timing Settings-------------------" + String.format("%n"));
 		hungReqTimingCfg.append("Sample rate: " + getSampleRate() + String.format("%n"));
 		hungReqTimingCfg.append("Context info requirement: " + getContextInfoRequirement() + String.format("%n"));
+		hungReqTimingCfg.append("Enable Thread Dumps: " + isThreadDumpsEnabled() + String.format("%n"));
 		hungReqTimingCfg.append("-------------------Type Settings-------------------" + String.format("%n"));
 		for(List<Timing> typeList : getRequestTiming().values()) {
 			for (Timing t : typeList) {
-				hungReqTimingCfg.append(t.getType() + ": " + t.getContextInfoString() + ": " + "Request threshold (ms) - " +  t.getRequestThreshold() + String.format("%n"));
+				hungReqTimingCfg.append(t.getType() + ": " + t.getContextInfoString() + ": " + "Request threshold (ms) - " +  t.getRequestThreshold() + ", Enable Thread Dumps : " + t.isThreadDumpsEnabled() + String.format("%n"));
 			}
 		}
 		hungReqTimingCfg.append("-------------------------------------------------------------");

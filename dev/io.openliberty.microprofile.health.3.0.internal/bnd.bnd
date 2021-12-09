@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -39,11 +39,12 @@ Import-Package: \
   *
 
 Export-Package: \
-	!io.openliberty.microprofile.health30.resources,\
+	io.openliberty.microprofile.health.internal.common,\
 	io.openliberty.microprofile.health30.impl,\
 	io.openliberty.microprofile.health30.spi.impl;version=1.0
 
 Private-Package: \
+	io.openliberty.microprofile.health.resources,\
 	com.ibm.ws.microprofile.health.internal,\
 	com.ibm.ws.microprofile.health.services,\
 	com.ibm.ws.microprofile.health.services.impl,\
@@ -75,7 +76,6 @@ testsrc: test/src
         com.ibm.ws.container.service;version=latest,\
         com.ibm.ws.context;version=latest,\
         com.ibm.ws.javaee.metadata.context;version=latest,\
-        com.ibm.ws.javaee.version;version=latest,\
         com.ibm.ws.kernel.service;version=latest,\
         com.ibm.ws.logging;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -83,6 +83,7 @@ testsrc: test/src
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
+        io.openliberty.microprofile.health.internal.common,\
         com.ibm.ws.microprofile.health;version=latest
 
 -testpath: \
@@ -93,6 +94,6 @@ testsrc: test/src
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \
         org.glassfish:javax.json;version=1.0.4, \
-        org.slf4j:slf4j-api;version=1.7.7, \
-        org.slf4j:slf4j-jdk14;version=1.7.7, \
+        com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
+        com.ibm.ws.org.slf4j.jdk14.1.7.7;version=latest, \
         ./resources/;version=file

@@ -232,7 +232,10 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             }
             responseMediaType = checkFinalContentType(responseMediaType, writers, checkWriters);
         } catch (Throwable ex) {
-            handleWriteException(providerFactory, message, ex, firstTry);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, ex.getMessage() + ", " + ex);
+            }
+	    handleWriteException(providerFactory, message, ex, firstTry);
             return;
         }
         String finalResponseContentType = JAXRSUtils.mediaTypeToString(responseMediaType);

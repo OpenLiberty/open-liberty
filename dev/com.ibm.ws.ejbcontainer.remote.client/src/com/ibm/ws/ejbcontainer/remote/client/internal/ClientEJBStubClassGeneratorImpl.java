@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package com.ibm.ws.ejbcontainer.remote.client.internal;
 import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.ejb.EJBException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
@@ -38,6 +40,7 @@ public class ClientEJBStubClassGeneratorImpl implements ClassGenerator, Applicat
     private static final TraceComponent tc = Tr.register(ClientEJBStubClassGeneratorImpl.class);
     private static final String ORG_OMG_STUB_PREFIX = "org.omg.stub.";
     private static final int RMIC_COMPATIBLE_ALL = -1;
+    private static final boolean isJakarta = EJBException.class.getCanonicalName().startsWith("jakarta");
 
     /**
      * Client application name.
@@ -47,25 +50,33 @@ public class ClientEJBStubClassGeneratorImpl implements ClassGenerator, Applicat
     /**
      * Indication that an attempt should be made to connect to the server process through
      * the ClientSupport service to obtain the set of RMIC compatible classes.
+     *
+     * Note: not used for Jakarta name space (Enterprise Beans 4.0); always RMIC compatible.
      */
     private boolean attemptConnectionToServer = true;
 
     /**
      * Set of classes that should be generated with maximum RMIC compatibility.
      * This is used to simulate traditional WAS, which would normally run rmic.
+     *
+     * Note: not used for Jakarta name space (Enterprise Beans 4.0); always RMIC compatible.
      */
     private Set<Class<?>> rmicCompatibleClasses;
 
     /**
      * ClientSupportFactory provides a mechanism to connect to a server process
      * and obtain the set of RMIC compatible classes for the application.
+     *
+     * Note: not used for Jakarta name space (Enterprise Beans 4.0); always RMIC compatible.
      */
     private ClientSupportFactory clientSupportFactory;
 
     @Reference(service = LibertyProcess.class, target = "(wlp.process.type=client)")
-    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
 
-    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
 
     @Reference
     protected void setClientSupportFactory(ClientSupportFactory clientSupportFactory) {
@@ -122,6 +133,11 @@ public class ClientEJBStubClassGeneratorImpl implements ClassGenerator, Applicat
     @FFDCIgnore({ ClassNotFoundException.class, RemoteException.class })
     private synchronized boolean isRMICCompatibleClass(Class<?> c, ClassLoader loader) {
 
+        // Starting with Jakarta EE 9/Enterprise Beans 4.0 RMICCompatible is always used.
+        if (isJakarta) {
+            return true;
+        }
+
         if (attemptConnectionToServer && appName != null) {
 
             // Only attempt to get the set of RMIC compatible classes one time;
@@ -167,13 +183,16 @@ public class ClientEJBStubClassGeneratorImpl implements ClassGenerator, Applicat
 
     @Trivial
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {}
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+    }
 
     @Trivial
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Trivial
     @Override
-    public void applicationStopped(ApplicationInfo appInfo) {}
+    public void applicationStopped(ApplicationInfo appInfo) {
+    }
 }

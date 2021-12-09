@@ -16,8 +16,8 @@ war { enabled false } // We aren't making a war for the entire project
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
-               'commons-codec:commons-codec:1.4',
-               'commons-logging:commons-logging:1.1.1',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.websphere.javaee.servlet.3.0'),
                project(':com.ibm.ws.security.audit_fat.common.tooling')
 }

@@ -101,6 +101,7 @@ import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.MessageContextImpl;
 import org.apache.cxf.jaxrs.ext.ProtocolHeaders;
 import org.apache.cxf.jaxrs.ext.ProtocolHeadersImpl;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.jaxrs.impl.AsyncResponseImpl;
 import org.apache.cxf.jaxrs.impl.ContainerRequestContextImpl;
@@ -144,10 +145,12 @@ import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
 import org.codehaus.jackson.JsonParseException;
 
+import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsRuntimeException;
+import com.ibm.ws.jaxrs20.multipart.impl.AttachmentImpl;
 
 public final class JAXRSUtils {
 
@@ -382,6 +385,7 @@ public final class JAXRSUtils {
     }
 
     //CHECKSTYLE:OFF
+    @FFDCIgnore(IllegalArgumentException.class)
     public static OperationResourceInfo findTargetMethod(
                                                          Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources,
                                                          Message message,
@@ -399,7 +403,10 @@ public final class JAXRSUtils {
         try {
             requestType = toMediaType(requestContentType);
         } catch (IllegalArgumentException ex) {
-            throw ExceptionUtils.toNotSupportedException(ex, null);
+            //Liberty change start - throw 400 if content type is invalid rather than 415
+            //throw ExceptionUtils.toNotSupportedException(ex, null);
+            throw ExceptionUtils.toBadRequestException(ex, null);
+            //Liberty change end
         }
 
         SortedMap<OperationResourceInfo, MultivaluedMap<String, String>> candidateList =
@@ -1084,6 +1091,15 @@ public final class JAXRSUtils {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
                     MultipartBody body = AttachmentUtils.getMultipartBody(mc);
+                    // Liberty change start
+                    if (IAttachment.class.equals(pClass)) {
+                        for (Attachment att : body.getAllAttachments()) {
+                            if (key.equals(att.getContentDisposition().getParameter("name"))) {
+                                return new AttachmentImpl(att);
+                            }
+                        }
+                    }
+                    //Liberty change end
                     FormUtils.populateMapFromMultipart(params, body, m, decode);
                 } else {
                     org.apache.cxf.common.i18n.Message errorMsg =
@@ -1401,7 +1417,11 @@ public final class JAXRSUtils {
             }
         }
 
-        queries.add(HttpUtils.urlDecode(name), value);
+        if (decode) {  // CXF change:  https://github.com/apache/cxf/pull/809
+            queries.add(HttpUtils.urlDecode(name), value);
+        } else {
+            queries.add(name, value);
+        }    
     }
 
     @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class })

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar-bnd
+xmlns="http://websphere.ibm.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+version="1.0">
+    <session name="AppLevelRLDPUJNDIInjectionSLEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+    <session name="AppLevelRLDPUJNDIInjectionSFEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+
+    <session name="AppLevelRLDPUFieldInjectionSLEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+    <session name="AppLevelRLDPUMethodInjectionSLEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+    
+    <session name="AppLevelRLDPUFieldInjectionSFEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+    <session name="AppLevelRLDPUMethodInjectionSFEJB">
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
+    </session>
+</ejb-jar-bnd>

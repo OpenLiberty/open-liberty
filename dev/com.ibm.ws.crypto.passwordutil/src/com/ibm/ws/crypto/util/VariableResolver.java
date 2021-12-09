@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.util;
 
-import com.ibm.ws.crypto.util.AESKeyManager.KeyStringResolver;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
+import com.ibm.wsspi.security.crypto.KeyStringResolver;
 
 /**
  *

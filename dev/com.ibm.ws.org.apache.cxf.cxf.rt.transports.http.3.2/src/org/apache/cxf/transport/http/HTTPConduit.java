@@ -597,10 +597,8 @@ public abstract class HTTPConduit
             MessageContentsList objs = MessageContentsList.getContentsList(message);
             if (objs != null && !objs.isEmpty()) {
                 Object obj = objs.get(0);
-                if (obj.getClass() != String.class
-                    || (obj.getClass() == String.class && ((String)obj).length() > 0)) {
-                    return true;
-                }
+                return obj.getClass() != String.class
+                    || (obj.getClass() == String.class && ((String)obj).length() > 0);
             }
         }
         return false;
@@ -1431,6 +1429,10 @@ public abstract class HTTPConduit
                 if (origMessage != null && origMessage.contains(url.toString())) {
                     throw e;
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    // tracing here because this exception can get lost in async scenarios
+                    Tr.debug(tc, "Caught IOException while closing HTTPConduit", e);
+                }
                 throw mapException(e.getClass().getSimpleName()
                                    + " invoking " + url + ": "
                                    + e.getMessage(), e,
@@ -1715,6 +1717,7 @@ public abstract class HTTPConduit
                         }
                     }
                     exchange.put("IN_CHAIN_COMPLETE", Boolean.TRUE);
+                    
                     exchange.setInMessage(inMessage);
                     return;
                 }

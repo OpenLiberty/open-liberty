@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ClientEndpointConfig.Builder;
 import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
+import javax.websocket.Endpoint;
 
 import io.openliberty.wsoc.common.Constants;
 
@@ -39,6 +39,8 @@ public class WsocTestRunner {
 
     public static int DEFAULT_MAX_MESSAGES = 1;
 
+    // private int _numMsgsExpected = 0;
+
     private static int _runTimeout = Constants.getDefaultTimeout();
 
     private WsocTestContext _wtr = null;
@@ -55,14 +57,14 @@ public class WsocTestRunner {
     }
 
     /**
-     * 
-     * @param edp - Annotated or programmatic endpoint
-     * @param uri - URI to connect to - in the form of ws:// or ws:///
-     * @param cfg - endpoint config
+     *
+     * @param edp             - Annotated or programmatic endpoint
+     * @param uri             - URI to connect to - in the form of ws:// or ws:///
+     * @param cfg             - endpoint config
      * @param numMsgsExpected - Each client is expected to receive this many msgs before shutting down.. Endpoints should check the text context limit reached to determine when to
-     *            shut down endpoint
-     * @param runTimeout - how long test will run before stopping
-     * 
+     *                            shut down endpoint
+     * @param runTimeout      - how long test will run before stopping
+     *
      * @throws Exception
      */
     public WsocTestRunner(Object edp, URI uri, ClientEndpointConfig cfg, int numMsgsExpected, int runTimeout) throws Exception {
@@ -74,6 +76,8 @@ public class WsocTestRunner {
         WsocTestContext.completeLatch = new CountDownLatch(1);
         _wtr = new WsocTestContext(numMsgsExpected);
 
+        // _numMsgsExpected = numMsgsExpected;
+
         if (!(edp instanceof TestHelper)) {
             throw new WsocTestException("Test class does not implement TestHelper,   can't run this test.");
         }
@@ -84,7 +88,7 @@ public class WsocTestRunner {
 
     /**
      * Run the actual test
-     * 
+     *
      * @return test context data including any messages added , exceptions thrown, if run timed out, etc.
      * @throws Exception
      */
@@ -92,24 +96,25 @@ public class WsocTestRunner {
 
         WebSocketContainer c = TestWsocContainer.getRef();
         LOG.info("Connecting to wsoc server container: " + c + " endpoint: " +
-                 _clientEndpoint.getClass() + " config: " + _cfg  + ".");
+                 _clientEndpoint.getClass() + " config: " + _cfg + ", uri: " + _uri);
         Session sess = null;
         if (_clientEndpoint instanceof Endpoint) {
             sess = c.connectToServer((Endpoint) _clientEndpoint, _cfg, _uri);
-        }
-        else {
+        } else {
             sess = c.connectToServer(_clientEndpoint, _uri);
         }
 
         LOG.info("Waiting for wsoc test to finish");
 
         if (!WsocTestContext.completeLatch.await(_runTimeout, TimeUnit.MILLISECONDS)) {
+            LOG.info("Latch timeout reached!");
             _wtr.setTimedout(true);
         }
-        // We've had some test failures that are not found in local env and some builds.  This short wait should flesh them out locally...    
-        java.lang.Thread.sleep(50);
+
+        // We've had some test failures that are not found in local env and some builds.  This short wait should flesh them out locally...
+        java.lang.Thread.sleep(250);
         if (sess.isOpen()) {
-            //LOG.info("Reached max messages or test timeout, closing wsoc session");
+            LOG.info("Reached max messages or test timeout, closing wsoc session");
             if (!_wtr.getClosedAlready()) {
                 sess.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Normal Close"));
             }

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -30,11 +30,16 @@ src:\
   test-applications/Java2Client.jar/src,\
   test-applications/JavaColonInjectionAppClient.jar/src,\
   test-applications/JavaColonInjectionAppEJB.jar/src,\
-  test-applications/ProgrammaticJaasLogin.jar/src
+  test-applications/ProgrammaticJaasLogin.jar/src,\
+  test-applications/ejb31DD.jar/src,\
+  test-applications/ejb31NoDD.jar/src,\
+  test-applications/helloWorld.jar/src,\
+  test-applications/TestBeans.war/src
+  
 
 -buildpath: \
-  commons-codec:commons-codec;version=1.4,\
-  commons-logging:commons-logging;version=1.1.1,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\
   com.ibm.websphere.javaee.mail.1.5;version=latest,\
   com.ibm.websphere.security;version=latest,\

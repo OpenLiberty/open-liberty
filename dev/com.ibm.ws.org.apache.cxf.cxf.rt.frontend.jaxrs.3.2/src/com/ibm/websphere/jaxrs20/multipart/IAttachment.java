@@ -54,5 +54,4 @@ public interface IAttachment {
      * @return header in IAttachment.
      */
     public MultivaluedMap<String, String> getHeaders();
-
 }

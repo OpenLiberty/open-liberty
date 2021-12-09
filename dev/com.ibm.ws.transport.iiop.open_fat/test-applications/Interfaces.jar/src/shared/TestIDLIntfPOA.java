@@ -29,18 +29,18 @@ public abstract class TestIDLIntfPOA extends org.omg.PortableServer.Servant
   public String[] _all_interfaces(
      org.omg.PortableServer.POA poa,
      byte[] objectId) {
-         return (String[])__ids.clone();
+         return __ids.clone();
   }
 
   // Type-specific CORBA::Object operations
   private static String[] __ids = {
     "IDL:shared/TestIDLIntf:1.0"};
 
-  private static java.util.Hashtable _methods = new java.util.Hashtable ();
+  private static java.util.Hashtable<String,Integer> _methods = new java.util.Hashtable<>();
   static
   {
-    _methods.put ("_get_s", new java.lang.Integer (0));
-    _methods.put ("_set_s", new java.lang.Integer (1));
+    _methods.put ("_get_s", Integer.valueOf(0));
+    _methods.put ("_set_s", Integer.valueOf(1));
   }
 
   public org.omg.CORBA.portable.OutputStream _invoke (String $method,
@@ -48,7 +48,7 @@ public abstract class TestIDLIntfPOA extends org.omg.PortableServer.Servant
                                 org.omg.CORBA.portable.ResponseHandler $rh)
   {
     org.omg.CORBA.portable.OutputStream out = null;
-    java.lang.Integer __method = (java.lang.Integer)_methods.get ($method);
+    java.lang.Integer __method = _methods.get ($method);
     if (__method == null)
       throw new org.omg.CORBA.BAD_OPERATION (0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 

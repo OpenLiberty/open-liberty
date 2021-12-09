@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.DupXidServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -67,14 +68,7 @@ public class DupXidTest extends FATServletClient {
         server1.setServerStartTimeout(300000);
         server2.setServerStartTimeout(300000);
 
-//        server1.copyFileToLibertyInstallRoot("lib/features", "features/cloudtxfat-1.0.mf");
-//        assertTrue("Failed to install cloudtxfat-1.0 manifest",
-//                   server1.fileExistsInLibertyInstallRoot("lib/features/cloudtxfat-1.0.mf"));
-//        server1.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.cloudtx.fat.utils.jar");
-//        assertTrue("Failed to install cloudtxfat-1.0 bundle",
-//                   server1.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.cloudtx.fat.utils.jar"));
-
-        server1.startServer();
+        FATUtils.startServers(server1);
     }
 
     @AfterClass
@@ -83,7 +77,8 @@ public class DupXidTest extends FATServletClient {
 
             @Override
             public ProgramOutput run() throws Exception {
-                return server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+                FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W" }, server1); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+                return null;
             }
         });
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,8 @@ import com.ibm.ws.sib.msgstore.PersistenceException;
 import com.ibm.ws.sib.msgstore.TransactionException;
 import com.ibm.ws.sib.processor.Administrator;
 import com.ibm.ws.sib.processor.exceptions.SIMPRuntimeOperationFailedException;
+import com.ibm.ws.sib.processor.impl.MessageProcessor;
+import com.ibm.ws.sib.comms.server.ServerCommsDiagnosticDump;
 import com.ibm.ws.sib.utils.SIBUuid8;
 import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
@@ -1875,9 +1877,9 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
     
     public void dump(String dumpSpec)
     {
-        String thisMethodName = "dump";
+        String methodName = "dump";
         if(TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, thisMethodName, dumpSpec);
+            SibTr.entry(tc, methodName, dumpSpec);
         FormattedWriter fw = null;
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -1911,6 +1913,12 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
                 fw.startTag("sib");
                 fw.indent();
                 fw.newLine();
+                fw.nameSpace("processor");
+                if(_messageProcessor != null) {
+                    dump(dumpSpec, "com.ibm.ws.sib.processor.impl.MessageProcessor", _messageProcessor, fw);
+                }
+                fw.nameSpace("comms");
+                ServerCommsDiagnosticDump.dump(fw, dumpSpec);
                 fw.nameSpace("msgstore");
                 if(_messageStore != null)
                     dump(dumpSpec, "com.ibm.ws.sib.msgstore.impl.MessageStoreImpl", ((JsEngineComponent) (_messageStore)), fw);
@@ -1936,7 +1944,7 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
                 SibTr.exception(tc, e);
             }
         if(TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
     }
 
     private void dump(String dumpSpec, String className, JsEngineComponent comp, FormattedWriter fw)
@@ -1982,6 +1990,8 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
                 if(component.length() >= keyLength && pkg.equals(component.substring(0, keyLength)))
                     matched = true;
             }
+            if(matched && (comp instanceof MessageProcessor))
+                ((MessageProcessor)comp).dump(fw, arg);
             if(matched && (comp instanceof MessageStore))
                 ((MessageStore)comp).dump(fw, arg);
         }

@@ -31,6 +31,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
  * Wrap the default WSS4J EHCacheReplayCache in a BusLifeCycleListener, to make sure that
  * the cache is shutdown correctly.
  */
+//No Liberty Change
 public class CXFEHCacheReplayCache extends EHCacheReplayCache implements BusLifeCycleListener {
     private final Bus bus;
 

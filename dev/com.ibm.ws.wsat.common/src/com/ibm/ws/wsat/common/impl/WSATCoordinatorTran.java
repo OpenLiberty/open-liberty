@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,8 +49,8 @@ public class WSATCoordinatorTran extends WSATTransaction {
         WSATParticipant participant = new WSATParticipant(getGlobalId(), partId, epr);
         participants.put(partId, participant);
 
-        // Build the coordinator EPR required by this participant.  This must include the 
-        // participant ID, so when the participant returns a response to use we can easily 
+        // Build the coordinator EPR required by this participant.  This must include the
+        // participant ID, so when the participant returns a response to use we can easily
         // identify the sender.
         EndpointReferenceType coordEpr = getCoordinator().getEndpointReference(partId);
         participant.setCoordinator(new WSATCoordinator(getGlobalId(), coordEpr));
@@ -88,11 +88,5 @@ public class WSATCoordinatorTran extends WSATTransaction {
 
     public synchronized WSATParticipant getParticipant(String partId) {
         return participants.get(partId);
-    }
-
-    // For debug
-    @Override
-    public String toString() {
-        return super.toString() + " (" + participants.size() + ")";
     }
 }

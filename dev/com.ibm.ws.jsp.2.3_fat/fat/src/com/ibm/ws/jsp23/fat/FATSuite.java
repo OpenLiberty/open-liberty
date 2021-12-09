@@ -23,6 +23,7 @@ import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPTests;
+import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -40,7 +41,8 @@ import componenttest.rules.repeater.RepeatTests;
                 JSPCdiTest.class,
                 JSP23JSP22ServerTest.class,
                 JSPPrepareJSPThreadCountNonDefaultValueTests.class,
-                JSPPrepareJSPThreadCountDefaultValueTests.class
+                JSPPrepareJSPThreadCountDefaultValueTests.class,
+                JSTLTests.class
 })
 public class FATSuite {
 

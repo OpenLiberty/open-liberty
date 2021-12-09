@@ -56,11 +56,5 @@ instrument.disabled: true
 	com.sun.org.apache.xml.internal:resolver;strategy=exact;version=20050927, \
 	org.jvnet.staxex:stax-ex;strategy=exact;version=1.7.7, \
 	com.sun.xml.stream.buffer:streambuffer;strategy=exact;version=1.5.3, \
-	org.glassfish.jaxb:codemodel;strategy=exact;version=3.0.0,\
-    org.glassfish.jaxb:jaxb-jxc;strategy=exact;version=3.0.0,\
-	org.glassfish.jaxb:jaxb-core;strategy=exact;version=3.0.0,\
-    org.glassfish.jaxb:jaxb-runtime;strategy=exact;version=3.0.0,\
-	org.glassfish.jaxb:jaxb-xjc;strategy=exact;version=3.0.0,\
-    org.glassfish.jaxb:txw2;strategy=exact;version=3.0.0,\
-    org.glassfish.jaxb:xsom;strategy=exact;version=3.0.0,\
+	io.openliberty.xmlBinding.3.0.internal.tools;version=latest,\
 	com.ibm.ws.org.apache.ant;version=latest

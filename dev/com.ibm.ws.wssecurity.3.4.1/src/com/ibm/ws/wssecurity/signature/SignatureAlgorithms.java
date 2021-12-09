@@ -70,11 +70,11 @@ public class SignatureAlgorithms {
         if (algorithmSuite != null) {
             if (RSA_MAP.containsKey(algorithm)) {
                 algorithmSuite.getAlgorithmSuiteType().setAsymmetricSignature(RSA_MAP.get(algorithm));
-                //algorithmSuite.setAsymmetricSignature(RSA_MAP.get(algorithm)); //@AV999
+                //algorithmSuite.setAsymmetricSignature(RSA_MAP.get(algorithm)); //v3
             }
             if (HMAC_MAP.containsKey(algorithm)) {
                 algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(HMAC_MAP.get(algorithm));
-                //algorithmSuite.setSymmetricSignature(HMAC_MAP.get(algorithm)); //@AV999
+                //algorithmSuite.setSymmetricSignature(HMAC_MAP.get(algorithm)); //v3
             }
         }
     }

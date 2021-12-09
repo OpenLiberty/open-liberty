@@ -9,9 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3'
+  //if there is a existing project, reference it directly
+  requiredLibs project(':io.openliberty.org.apache.commons.logging')
+  
+  //if not, Define G:A:V coordinates of each dependency
+  //requiredLibs 'commons-logging:commons-logging:1.1.3'
+  
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

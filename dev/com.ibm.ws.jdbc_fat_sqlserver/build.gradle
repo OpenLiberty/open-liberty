@@ -15,18 +15,23 @@ configurations {
 }
 
 dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-               "org.testcontainers:jdbc:${testcontainersVersion}",
-               "org.testcontainers:mssqlserver:${testcontainersVersion}"
-  sqlserver 'com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8'
+  sqlserver 'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8'
 }
 
 task copySharedSqlServerAnon(type: Copy) {
   shouldRunAfter jar
   from configurations.sqlserver
-  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  into new File(autoFvtDir, 'publish/shared/resources/anon')
   rename 'mssql-jdbc.*.jar', 'anomyous.jar'
 }
 
+task copySharedSQLServer(type: Copy) {
+  shouldRunAfter jar
+  from configurations.sqlserver
+  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
+}
+
+addRequiredLibraries.dependsOn copySharedSQLServer
 addRequiredLibraries.dependsOn copySharedSqlServerAnon
-addRequiredLibraries.dependsOn addTestcontainers
+addRequiredLibraries.dependsOn copyTestContainers

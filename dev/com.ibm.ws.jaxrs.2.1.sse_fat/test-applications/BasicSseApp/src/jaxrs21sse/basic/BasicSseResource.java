@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -263,7 +263,7 @@ public class BasicSseResource extends Application {
                 try (SseEventSink sink = eventSink) {
 
                     OutboundSseEvent event = sse.newEventBuilder()
-//                                  .mediaType(MediaType.APPLICATION_XML_TYPE)  Cause a IllegalArgumentException
+                                  // .mediaType(MediaType.APPLICATION_XML_TYPE) Cause a IllegalArgumentException
                                     .data(JaxbObject.class, JAXB_OBJECTS[0])
                                     .build();
                     System.out.println("BasicSseResource.sendErrorEvents() sending: " + JAXB_OBJECTS[0]);
@@ -320,5 +320,13 @@ public class BasicSseResource extends Application {
             System.out.print("BasicSseResource.getNames: " + myList);
         }
         return myList;
+    }
+
+    @GET
+    @Path("/noEvents")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void noEvents(@Context SseEventSink sink, @Context Sse sse) {
+        System.out.print("BasicSseResource.noEvents - closing sink without sending any events ");
+        sink.close();
     }
 }

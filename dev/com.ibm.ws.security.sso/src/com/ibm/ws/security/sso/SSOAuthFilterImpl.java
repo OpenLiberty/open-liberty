@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
-
 
 @Component(service = { SSOAuthFilter.class },
            name = "com.ibm.ws.webcontainer.security.util.SSOAuthFilter",
@@ -50,22 +48,6 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
     protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
 
     private LTPAConfiguration ltpaConfig;
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
-
-    private static void betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is beta and is not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class WSSecurityPropagationHelper for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
-    }
 
     @Reference(name = LTPA_CONFIGURATION,
                service = LTPAConfiguration.class,
@@ -111,26 +93,44 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
         return authFilterServiceRef.getService(pid);
     }
 
-/*
- * If there no authentication filter defined, we will process all requests
- */
+    /*
+     * If there no authentication filter defined, we will process all requests
+     */
+    @Override
     public boolean processRequest(HttpServletRequest req) {
         AuthenticationFilter authFilter = getAuthFilter();
         if (authFilter != null) {
-            betaFenceCheck();
             if (!authFilter.isAccepted(req))
                 return false;
         }
         return true;
     }
 
+    /*
+     * If there no authentication filter defined, we will process all requests
+     */
+    @Override
+    public boolean processRequest(HttpServletRequest req, String pid) {
+        AuthenticationFilter authFilter = getAuthFilterService(pid);
+        if (authFilter != null) {
+            if (!authFilter.isAccepted(req))
+                return false;
+        }
+        return true;
+    }
+
+    /*
+     * Get authFilterRef from the LTPA configuration
+     */
     private AuthenticationFilter getAuthFilter() {
         AuthenticationFilter authFilter = null;
         if (ltpaConfigurationRef != null) {
             ltpaConfig = ltpaConfigurationRef.getService();
-            String pid = ltpaConfig.getAuthFilterRef();
-            if (pid != null && pid.length() > 0) {
-                authFilter = getAuthFilterService(pid);
+            if (ltpaConfig != null) {
+                String pid = ltpaConfig.getAuthFilterRef();
+                if (pid != null && pid.length() > 0) {
+                    authFilter = getAuthFilterService(pid);
+                }
             }
         }
         return authFilter;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Collections;
+import java.util.ListIterator;
+
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +23,11 @@ import org.junit.runner.RunWith;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.Fileset;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -26,6 +35,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -89,7 +100,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
@@ -99,7 +110,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         Log.info(this.getClass(), method, "testLeaseTableAccess" + id + " returned: " + sb);
 
         // "CWWKE0701E" error message is allowed
-        server1.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
     }
 
     /**
@@ -117,7 +128,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -144,7 +155,7 @@ public class Simple2PCCloudTest extends FATServletClient {
 
         // Lastly stop server1
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
-        server1.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E");
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1);
 
         // Lastly, clean up XA resource file
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -166,7 +177,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -192,7 +203,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for cloud001");
         // "CWWKE0701E" error message is allowed
-        server2.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
 
         // Lastly, clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -222,7 +233,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
@@ -270,7 +281,54 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for cloud001");
         // "CWWKE0701E" error message is allowed
-        server2.stopServer("CWWKE0701E");
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
+
+        // Lastly, clean up XA resource files
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+    }
+
+    @Test
+    @Mode(TestMode.LITE)
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    public void datasourceChangeTest() throws Exception {
+        final String method = "datasourceChangeTest";
+        // Start Server1
+        FATUtils.startServers(server1);
+        // Update the server configuration on the fly to force the invalidation of the DataSource
+        ServerConfiguration config = server1.getServerConfiguration();
+        ConfigElementList<Fileset> fsConfig = config.getFilesets();
+        Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
+        String sfDirOrig = "";
+
+        Fileset fs = null;
+        ListIterator<Fileset> lItr = fsConfig.listIterator();
+        while (lItr.hasNext()) {
+            fs = lItr.next();
+            Log.info(this.getClass(), method, "retrieved fileset " + fs);
+            sfDirOrig = fs.getDir();
+
+            Log.info(this.getClass(), method, "retrieved Dir " + sfDirOrig);
+            fs.setDir(sfDirOrig + "2");
+        }
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+        // Now reset the config back to the way it was
+        if (fs != null)
+            fs.setDir(sfDirOrig);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
+
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
 
         // Lastly, clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);

@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -29,6 +28,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 @LibertyServerWrapper
@@ -181,7 +182,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
 
         testSAMLServer.reconfigServer("server_forceAuthn_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // make a request using IDP flow and the force flag will be set to the
         // default value which is false (We're making the call directly, we're
@@ -196,7 +197,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         // to the configured value which is true
         // create a new client, so, there is no question about cookie
         // contamination
-        webClient = SAMLCommonTestHelpers.getWebClient();
+        webClient = getAndSaveWebClient();
         expectations = helpers.setDefaultGoodSAMLSolicitedSPInitiatedExpectations(updatedTestSettings);
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.IDP_PROCESS_LOG, SAMLConstants.STRING_CONTAINS, "The forceAuthn flag is NOT set to true in the request received by the IDP", null, "forceAuthn=true");
         printTestTrace("_testName", "Invoking Solicited SP Initiated request");
@@ -231,7 +232,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
 
         testSAMLServer.reconfigServer("server_isPassive_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // make a request using IDP flow and the isPassive flag will be set to
         // the default value which is false (We're making the call directly,
@@ -246,7 +247,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         // set to the configured value which is true
         // create a new client, so, there is no question about cookie
         // contamination
-        webClient = SAMLCommonTestHelpers.getWebClient();
+        webClient = getAndSaveWebClient();
         expectations = vData.addSuccessStatusCodes();
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "The Response from the IDP did NOT indicate a problem handling the request", null, SAMLConstants.SP_DEFAULT_ERROR_PAGE_TITLE);
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.IDP_PROCESS_LOG, SAMLConstants.STRING_CONTAINS, "The isPassive flag is NOT set to true in the request received by the IDP", null, "isPassive=true");
@@ -310,11 +311,23 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         List<validationData> expectations = vData.addSuccessStatusCodes();
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get a SAML Post Response instead of the IDP login page", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_POST_TOKEN, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
-
         IDP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.IDP_INITIATED_FLOW, helpers.setDefaultGoodSAMLIDPInitiatedExpectations(updatedTestSettings));
+
+        // We test with multiple versions of Java - We need to test with Shibboleth version 3.3.1 with Java < 10 and version 4.1.0 with Java > 10
+        // Shibboleth changed the order that they check the AuthenticationContext - when using 3.3.1, we have to authenticate and invoke ACS with the response before we see the failure.
+        // When using 4.1.0, we get the failure on the initial request - updating the test case to handle the different behavior.
+        String[] spFlow = null;
+        String failingStep = null;
+        if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+            spFlow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW;
+            failingStep = SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE;
+        } else {
+            spFlow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW_ONLY_SP;
+            failingStep = SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST;
+        }
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "The IDP did NOT return an error status code to the SP", SAMLMessageConstants.CWWKS5008E_STATUS_CODE_NOT_SUCCESS);
-        solicited_SP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW, expectations);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, failingStep, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "The IDP did NOT return an error status code to the SP", SAMLMessageConstants.CWWKS5008E_STATUS_CODE_NOT_SUCCESS);
+        solicited_SP_initiated_SAML(_testName, updatedTestSettings, spFlow, expectations);
 
     }
 
@@ -889,7 +902,8 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * time (not having to reconfig multiple times) we'll do all of this in one
      * test)
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {JakartaEE9Action.ID})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
@@ -958,8 +972,10 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * Config attribute: errorPageURL This test will test specifying some bad
      * value (non existant url) Test shows that we get a decent
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
-    @AllowedFFDC(value = { "com.ibm.ws.jsp.webcontainerext.JSPErrorReport" })
+    @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
+    @ExpectedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException"}, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = {"com.ibm.ws.jsp.webcontainerext.JSPErrorReport"})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL_invalid() throws Exception {

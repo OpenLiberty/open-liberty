@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,22 +11,22 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
-    'org.apache.httpcomponents:httpcore:4.1.2',
-    'commons-logging:commons-logging:1.1.3',
-    'commons-codec:commons-codec:1.6',
-    'org.apache.directory.server:apacheds-service:2.0.0-M15',
-    project(':fattest.simplicity'),
-    project(':com.ibm.ws.org.apache.directory.server'),
-    project(':com.ibm.ws.webcontainer.security_test.servlets'),
-    project(':com.ibm.ws.security.javaeesec.cdi')
+  requiredLibs project(':com.ibm.ws.com.unboundid'),
+               project(':com.ibm.ws.org.apache.directory.server'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':com.ibm.ws.security.javaeesec.cdi'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':fattest.simplicity'),
+               'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2'
 }
 
 addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 /** 
- * com.ibm.ws.security.javaeesec_fat not used for now, maybe requried once jsr375/jaspi coexisting test. 
+ * com.ibm.ws.security.javaeesec_fat not used for now, maybe required once jsr375/jaspi coexisting test. 
  **/
 task copyFeatureBundle {
   doLast {

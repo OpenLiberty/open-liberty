@@ -421,6 +421,11 @@ public class LdapConfigManager {
     private boolean isLoginPropertyDefined = false;
 
     /**
+     * The filter value pattern required to be in userFilter and groupFilter.
+     */
+    private static final String FILTER_VALUE_PATTERN = "=%v";
+
+    /**
      * Refreshes the caches using the given configuration data object.
      * This method should be called when there are changes in configuration and schema.
      *
@@ -622,6 +627,15 @@ public class LdapConfigManager {
             // We only use the userFilter if loginProperty is not defined.
             // Additionally, a warning is issued if this is the case.
             if (iUserFilter != null && !isLoginPropertyDefined) {
+
+                /*
+                 * User filter requires the %v value pattern.
+                 */
+                if (!iUserFilter.contains(FILTER_VALUE_PATTERN)) {
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.FILTER_MISSING_PERCENT_V, iUserFilter, ConfigConstants.CONFIG_USER_FILTER, "(uid=%v)");
+                    throw new WIMSystemException(WIMMessageKey.FILTER_MISSING_PERCENT_V, msg);
+                }
+
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_PERSON_ACCOUNT);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();
@@ -643,17 +657,16 @@ public class LdapConfigManager {
                 // If loginProperties are not defined and we are using the userFilter,
                 // remove the default uid login property. In this case, the first attribute
                 // in the userFilter should be the principal.
-                    if (iLoginAttrs != null)
-                        iLoginAttrs.remove(0);
-                    if (iLoginProps != null)
-                        iLoginProps.remove(0);
+                if (iLoginAttrs != null)
+                    iLoginAttrs.remove(0);
+                if (iLoginProps != null)
+                    iLoginProps.remove(0);
 
-                String pattern = "=%v";
                 int startIndex = 0;
                 boolean hasLoginProperties = true;
                 LdapEntity acct = getLdapEntity(iPersonAccountTypes.get(iPersonAccountTypes.size() - 1));
                 while (hasLoginProperties) {
-                    int index = iUserFilter.indexOf(pattern, startIndex);
+                    int index = iUserFilter.indexOf(FILTER_VALUE_PATTERN, startIndex);
                     int beginIndex = index;
                     if (index > -1) {
                         for (; beginIndex > 0; beginIndex--) {
@@ -677,10 +690,10 @@ public class LdapConfigManager {
                     try {
                         ldapEntity.addPropertyAttributeMap(SchemaConstants.PROP_PRINCIPAL_NAME, iLoginAttrs.get(0));
                     } catch (IndexOutOfBoundsException e) {
-                        throw new WIMSystemException(WIMMessageKey.MALFORMED_SEARCH_EXPRESSION, Tr.formatMessage(
-                                                                                                                 tc,
-                                                                                                                 WIMMessageKey.MALFORMED_SEARCH_EXPRESSION,
-                                                                                                                 WIMMessageHelper.generateMsgParms(e.toString())));
+                        String msg = Tr.formatMessage(tc,
+                                                      WIMMessageKey.MALFORMED_SEARCH_EXPRESSION,
+                                                      WIMMessageHelper.generateMsgParms(e.toString()));
+                        throw new WIMSystemException(WIMMessageKey.MALFORMED_SEARCH_EXPRESSION, msg);
                     }
                 }
             } else if (iUserFilter != null && isLoginPropertyDefined) {
@@ -692,6 +705,14 @@ public class LdapConfigManager {
 
             // Parse the Group filter and extract the applicable objectclass names
             if (iGroupFilter != null) {
+                /*
+                 * User filter requires the %v value pattern.
+                 */
+                if (!iGroupFilter.contains(FILTER_VALUE_PATTERN)) {
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.FILTER_MISSING_PERCENT_V, iGroupFilter, ConfigConstants.CONFIG_GROUP_FILTER, "(cn=%v)");
+                    throw new WIMSystemException(WIMMessageKey.FILTER_MISSING_PERCENT_V, msg);
+                }
+
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_GROUP);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();

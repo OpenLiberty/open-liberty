@@ -32,15 +32,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.ltpa.handler is not supported 
+ 
 @RunWith(FATRunner.class)
 public class JAXRSClientLtpaTest extends AbstractTest {
+    private static Class<?> c = JAXRSClientLtpaTest.class;
 
     @Server("jaxrs20.client.JAXRSLtpaServerTest")
     public static LibertyServer serverServer;
@@ -76,7 +76,7 @@ public class JAXRSClientLtpaTest extends AbstractTest {
                       serverServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on serverServer",
+        assertNotNull("CWWKS4105I.* not received on serverServer",
                       serverServer.waitForStringInLog("CWWKS4105I.*"));
         
         // Pause for the smarter planet message
@@ -84,7 +84,7 @@ public class JAXRSClientLtpaTest extends AbstractTest {
                       clientServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on clientServer",
+        assertNotNull("CWWKS4105I.* not received on clientServer",
                       clientServer.waitForStringInLog("CWWKS4105I.*"));        
     }
 
@@ -155,7 +155,7 @@ public class JAXRSClientLtpaTest extends AbstractTest {
         out.close();
 
         List<String> cookieVal = connection.getHeaderFields().get("Set-Cookie");
-        System.out.println("cookieVal: " + cookieVal);
+        Log.info(c, "setCookie", "cookieVal: " + cookieVal);
 
         //Only this method works
         urlStr = "http://" + serverRef.getHostname() + ":" + serverRef.getHttpDefaultPort() + "/" + clientTarget + "/ClientTestServlet?test=testClientLtpaHander_Client";
@@ -166,12 +166,12 @@ public class JAXRSClientLtpaTest extends AbstractTest {
         if (cookieVal != null) {
             String newCookie = cookieVal.toString().substring(cookieVal.toString().indexOf("HttpOnly,"), cookieVal.toString().indexOf("]"));
             newCookie = newCookie.replace("Path=/;", "");
-            System.out.println("newCookie: " + newCookie);
+            Log.info(c, "setCookie", "newCookie: " + newCookie);
 
             if (setCookie) {
                 resumeConnection.setRequestProperty("Cookie", newCookie);
             } else {
-                System.out.println("Doesn't set cookie, will report error when sso");
+                Log.info(c, "setCookie", "Doesn't set cookie, will report error when sso");
             }
         }
         resumeConnection.connect();
@@ -181,11 +181,12 @@ public class JAXRSClientLtpaTest extends AbstractTest {
         String ss = null;
         String total = "";
         while ((ss = bufferedReader.readLine()) != null) {
-            System.out.println("LTPA Cookie Test Result with cookie(" + setCookie + "): " + ss);
+            Log.info(c, "setCookie", "LTPA Cookie Test Result with cookie(" + setCookie + "): " + ss);
             total += ss;
         }
         bufferedReader.close();
 
+        Log.info(c, "setCookie", "returning " + total);
         return total;
     }
 }

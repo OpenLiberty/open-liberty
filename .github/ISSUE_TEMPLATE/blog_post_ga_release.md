@@ -3,11 +3,11 @@ name: Open Liberty GA release blog post
 about: Information to be included in the Open Liberty GA release blog post.
 title: GA BLOG - title_of_your_update
 labels: 'Blog, target:ga'
-assignees: austin0, jakub-pomykala
+assignees: ryan-storey
 
 ---
 
-The information you provide here will be included in the Open Liberty GA release blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this newly released feature/function of Open Liberty.
+The information you provide here will be included in the Open Liberty GA release blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this newly released feature/function of Open Liberty. For this post to be included in the GA issue please make sure that this is completed by the end of Friday following the GM (Wednesday). 
 
 Please provide the following information the week before the GA date (to allow for review and publishing):
 

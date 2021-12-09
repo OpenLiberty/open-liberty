@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<com.ibm.etools.webservice.wscbnd:ClientBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.etools.webservice.wscbnd="http://www.ibm.com/websphere/appserver/schemas/5.0.2/wscbnd.xmi" xmi:id="ClientBinding_1350039446436">
-  <serviceRefs serviceRefLink="service/SimpleEchoService">
-    <portQnameBindings portQnameNamespaceLink="http://server.overriddenuri.test.ws.ibm.com/" portQnameLocalNameLink="SimpleEchoPort" overriddenEndpointURI="#ENDPOINT_ADDRESS#"/>
-  </serviceRefs>
-</com.ibm.etools.webservice.wscbnd:ClientBinding>

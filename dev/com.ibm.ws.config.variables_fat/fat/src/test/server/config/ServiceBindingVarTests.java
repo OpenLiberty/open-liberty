@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -58,7 +59,7 @@ public class ServiceBindingVarTests extends ServletRunner {
         //copy the bundle into the server lib location
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.config.variables.jar");
 
-        server.copyFileToLibertyServerRoot("varfiles/bindings");
+        server.copyFileToLibertyServerRoot("varfiles/variables");
 
         WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
         ShrinkHelper.exportAppToServer(server, varmergeApp);
@@ -88,7 +89,7 @@ public class ServiceBindingVarTests extends ServletRunner {
     @Test
     public void testSimpleFileVariable() throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot("bindings", "varfiles/simple");
+        server.copyFileToLibertyServerRoot("variables", "varfiles/simple");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         try {
@@ -96,7 +97,52 @@ public class ServiceBindingVarTests extends ServletRunner {
         } finally {
 
             server.setMarkToEndOfLog();
-            server.deleteFileFromLibertyServerRoot("bindings/simple");
+            server.deleteFileFromLibertyServerRoot("variables/simple");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        }
+    }
+
+    @Test
+    public void testUpdateSimpleFileVariable() throws Exception {
+        server.setMarkToEndOfLog();
+        server.copyFileToLibertyServerRoot("variables", "varfiles/simple");
+        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+
+        try {
+            this.testName = "testSimpleFileVariable";
+            test(server);
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/simple");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            this.testName = "testUpdateSimpleFileVariable";
+            test(server);
+        } finally {
+
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/simple");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        }
+    }
+
+    @Test
+    public void testAddSimpleFileVariable() throws Exception {
+        server.setMarkToEndOfLog();
+        server.copyFileToLibertyServerRoot("variables", "varfiles/simple");
+        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+
+        try {
+            this.testName = "testSimpleFileVariable";
+            test(server);
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/simpleTwo");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            this.testName = "testAddSimpleFileVariable";
+            test(server);
+        } finally {
+
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/simple");
+            server.deleteFileFromLibertyServerRoot("variables/simpleTwo");
             server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
         }
     }
@@ -104,16 +150,16 @@ public class ServiceBindingVarTests extends ServletRunner {
     @Test
     public void testSimpleVariablesWithDirectoryPrefix() throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot("bindings", "varfiles/account_db");
-        server.copyFileToLibertyServerRoot("bindings/account_db", "varfiles/account_db/username");
-        server.copyFileToLibertyServerRoot("bindings/account_db", "varfiles/account_db/password");
+        server.copyFileToLibertyServerRoot("variables", "varfiles/account_db");
+        server.copyFileToLibertyServerRoot("variables/account_db", "varfiles/account_db/username");
+        server.copyFileToLibertyServerRoot("variables/account_db", "varfiles/account_db/password");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         try {
             test(server);
         } finally {
             server.setMarkToEndOfLog();
-            server.deleteDirectoryFromLibertyServerRoot("bindings/account_db");
+            server.deleteDirectoryFromLibertyServerRoot("variables/account_db");
             server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
         }
     }
@@ -122,7 +168,7 @@ public class ServiceBindingVarTests extends ServletRunner {
     @ExpectedFFDC("java.nio.charset.MalformedInputException")
     public void testBinaryFile() throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot("bindings", "bundles/test.config.variables.jar");
+        server.copyFileToLibertyServerRoot("variables", "bundles/test.config.variables.jar");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         try {
@@ -130,12 +176,12 @@ public class ServiceBindingVarTests extends ServletRunner {
         } finally {
             server.waitForStringInLogUsingMark("CWWKG0106E");
             server.setMarkToEndOfLog();
-            server.deleteDirectoryFromLibertyServerRoot("bindings/test.config.variables.jar");
+            server.deleteDirectoryFromLibertyServerRoot("variables/test.config.variables.jar");
             server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
         }
     }
 
-    // Restarts the server with a different server.env that modifies the bindings directory
+    // Restarts the server with a different server.env that modifies the variables directory
     @Test
     public void testAlternateBindingsDirectory() throws Exception {
         server.stopServer("CWWKG0106E");
@@ -153,21 +199,49 @@ public class ServiceBindingVarTests extends ServletRunner {
         }
     }
 
+    @Test
+    public void testMultipleDirectories() throws Exception {
+        server.stopServer("CWWKG0106E");
+
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
+            server.copyFileToLibertyServerRoot("varfiles/multiple/win/server.env");
+        else
+            server.copyFileToLibertyServerRoot("varfiles/multiple/unix/server.env");
+
+        server.copyFileToLibertyServerRoot("altbindings", "varfiles/simple");
+        server.copyFileToLibertyServerRoot("altbindings2", "varfiles/account_db");
+        server.copyFileToLibertyServerRoot("altbindings2/account_db", "varfiles/account_db/username");
+        server.copyFileToLibertyServerRoot("altbindings2/account_db", "varfiles/account_db/password");
+        server.startServer();
+
+        try {
+            test(server);
+        } finally {
+            server.stopServer();
+            server.deleteFileFromLibertyServerRoot("server.env");
+            server.deleteFileFromLibertyServerRoot("altbindings/simple");
+            server.deleteDirectoryFromLibertyServerRoot("altbindings2");
+            server.startServer(true);
+        }
+    }
+
     // Tests override behavior wrt server.xml
     @Test
     public void testServerXMLOverrides() throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot("bindings", "varfiles/conflicts");
-        server.copyFileToLibertyServerRoot("bindings/conflicts", "varfiles/conflicts/var1");
-        server.copyFileToLibertyServerRoot("bindings/conflicts", "varfiles/conflicts/var2");
+        server.copyFileToLibertyServerRoot("variables", "varfiles/conflicts");
+        server.copyFileToLibertyServerRoot("variables/conflicts", "varfiles/conflicts/var1");
+        server.copyFileToLibertyServerRoot("variables/conflicts", "varfiles/conflicts/var2");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         try {
             test(server);
         } finally {
             server.setMarkToEndOfLog();
-            server.deleteDirectoryFromLibertyServerRoot("bindings/conflicts");
-            // No need to wait -- there are no functional changes.
+            server.deleteDirectoryFromLibertyServerRoot("variables/conflicts");
+            // there are no functional changes, but we need to wait because other tests directly reference variables in the
+            // registry rather than using them through config
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         }
     }
@@ -176,14 +250,48 @@ public class ServiceBindingVarTests extends ServletRunner {
     @Test
     public void testEmptyFile() throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot("bindings", "varfiles/empty");
+        server.copyFileToLibertyServerRoot("variables", "varfiles/empty");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         try {
             test(server);
         } finally {
             server.setMarkToEndOfLog();
-            server.deleteFileFromLibertyServerRoot("bindings/empty");
+            server.deleteFileFromLibertyServerRoot("variables/empty");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        }
+    }
+
+    @Test
+    public void testPropertiesFile() throws Exception {
+        server.setMarkToEndOfLog();
+        server.copyFileToLibertyServerRoot("variables", "varfiles/vars.properties");
+        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+
+        try {
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterUpdated";
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterRemove";
+            test(server);
+
+            server.setMarkToEndOfLog();
+            server.copyFileToLibertyServerRoot("variables", "varfiles/updated/vars.properties");
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+            testName = "testPropertiesFileAfterUpdated";
+            test(server);
+
+        } finally {
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("variables/vars.properties");
             server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
         }
     }
@@ -204,14 +312,14 @@ public class ServiceBindingVarTests extends ServletRunner {
 
             test(mbeanServer);
 
-            mbeanServer.copyFileToLibertyServerRoot("bindings", "varfiles/simple");
-            mbeanServer.copyFileToLibertyServerRoot("bindings", "varfiles/account_db");
-            mbeanServer.copyFileToLibertyServerRoot("bindings/account_db", "varfiles/account_db/username");
-            mbeanServer.copyFileToLibertyServerRoot("bindings/account_db", "varfiles/account_db/password");
+            mbeanServer.copyFileToLibertyServerRoot("variables", "varfiles/simple");
+            mbeanServer.copyFileToLibertyServerRoot("variables", "varfiles/account_db");
+            mbeanServer.copyFileToLibertyServerRoot("variables/account_db", "varfiles/account_db/username");
+            mbeanServer.copyFileToLibertyServerRoot("variables/account_db", "varfiles/account_db/password");
             // Copy "added" but don't notify
-            mbeanServer.copyFileToLibertyServerRoot("bindings", "varfiles/added");
+            mbeanServer.copyFileToLibertyServerRoot("variables", "varfiles/added");
 
-            List<String> updates = Arrays.asList("bindings/simple", "bindings/account_db/username", "bindings/account_db/password");
+            List<String> updates = Arrays.asList("variables/simple", "variables/account_db/username", "variables/account_db/password");
             Object[] params = new Object[] { null, updates, null };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);
 
@@ -219,15 +327,15 @@ public class ServiceBindingVarTests extends ServletRunner {
             test(mbeanServer);
 
             // Now notify about "added"
-            params = new Object[] { Collections.singletonList("bindings/added"), null, null };
+            params = new Object[] { Collections.singletonList("variables/added"), null, null };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);
 
             testName = "testMBeanUpdateAfterAdd";
             test(mbeanServer);
 
-            mbeanServer.deleteFileFromLibertyServerRoot("bindings/simple");
-            mbeanServer.deleteFileFromLibertyServerRoot("bindings/account_db/password");
-            List<String> deletes = Arrays.asList("bindings/simple", "bindings/account_db/password");
+            mbeanServer.deleteFileFromLibertyServerRoot("variables/simple");
+            mbeanServer.deleteFileFromLibertyServerRoot("variables/account_db/password");
+            List<String> deletes = Arrays.asList("variables/simple", "variables/account_db/password");
             params = new Object[] { null, null, deletes };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);
 
@@ -244,8 +352,8 @@ public class ServiceBindingVarTests extends ServletRunner {
             mbeanServer.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
             // Copy in a file that shouldn't be noticed. MBean update should fail
-            mbeanServer.copyFileToLibertyServerRoot("bindings", "varfiles/simple");
-            params = new Object[] { Collections.singletonList("bindings/simple"), null, null };
+            mbeanServer.copyFileToLibertyServerRoot("variables", "varfiles/simple");
+            params = new Object[] { Collections.singletonList("variables/simple"), null, null };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);
 
             testName = "testMBeanUpdateAfterDisabled";
@@ -263,7 +371,7 @@ public class ServiceBindingVarTests extends ServletRunner {
             test(mbeanServer);
 
             // Enable mbean again, delete a file and update
-            mbeanServer.deleteFileFromLibertyServerRoot("bindings/simple");
+            mbeanServer.deleteFileFromLibertyServerRoot("variables/simple");
 
             mbeanServer.setMarkToEndOfLog();
             serverConfig = mbeanServer.getServerConfiguration();
@@ -271,7 +379,7 @@ public class ServiceBindingVarTests extends ServletRunner {
             mbeanServer.updateServerConfiguration(serverConfig);
             mbeanServer.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
-            params = new Object[] { null, null, Collections.singletonList("bindings/simple") };
+            params = new Object[] { null, null, Collections.singletonList("variables/simple") };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);
 
             testName = "testMBeanUpdateAfterReenabling";

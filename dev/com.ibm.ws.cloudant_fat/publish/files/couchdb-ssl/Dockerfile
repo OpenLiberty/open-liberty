@@ -6,4 +6,4 @@ COPY ssl-certs/privkey.pem /etc/couchdb/cert/
 
 RUN chmod 644 /etc/couchdb/cert/*
 
-# Currently tagged and pushed as aguibert/couchdb-ssl:1.0
+# Currently tagged and pushed as gjwatts/couchdb-tls12:1.0

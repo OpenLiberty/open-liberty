@@ -141,6 +141,7 @@ if (addAll) {
 }
 
 // Add our common build/tool projects
+projectNames.add('ant_build.js')
 projectNames.add('build.image')
 projectNames.add('com.ibm.websphere.appserver.features')
 projectNames.add('wlp-bndPlugins')
@@ -157,8 +158,9 @@ projectNames.each { projectName ->
     }
 }
 
-// A non-standared project. Just include it all the time
-include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
+if (allBndProjects.contains('com.ibm.ws.springboot.support.version20.test.war.app')) {
+    include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
+}
 
 private boolean parseBoolean(String value) {
     return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)

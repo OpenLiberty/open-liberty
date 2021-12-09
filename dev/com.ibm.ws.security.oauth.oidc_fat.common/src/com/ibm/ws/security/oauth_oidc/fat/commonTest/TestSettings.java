@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -62,6 +62,7 @@ public class TestSettings {
     protected String groupIds = null;
     protected String accessTimeout = null; // take the default
     protected String signatureAlg = null; // take the default
+    protected String decryptKey = null;
     protected String where = null;
     protected String headerName = null;
     protected String rsTokenType = null;
@@ -95,7 +96,8 @@ public class TestSettings {
 
     protected Integer httpPort = null;
 
-    protected boolean allowPrint = true;
+    // turn printing of test settings and expectations OFF by default
+    protected boolean allowPrint = false;
 
     public enum StoreType {
         DATABASE, LOCAL, CUSTOM, CUSTOMBELL
@@ -174,6 +176,7 @@ public class TestSettings {
         nonce = settings.nonce;
         accessTimeout = settings.accessTimeout;
         signatureAlg = settings.signatureAlg;
+        decryptKey = settings.decryptKey;
         where = settings.where;
         headerName = settings.headerName;
         rsTokenType = settings.rsTokenType;
@@ -281,6 +284,7 @@ public class TestSettings {
         Log.info(thisClass, thisMethod, "nonce: " + nonce);
         Log.info(thisClass, thisMethod, "accessTimeout: " + accessTimeout);
         Log.info(thisClass, thisMethod, "signatureAlg: " + signatureAlg);
+        Log.info(thisClass, thisMethod, "decryptKey: " + decryptKey);
         Log.info(thisClass, thisMethod, "where: " + where);
         Log.info(thisClass, thisMethod, "headerName: " + headerName);
         Log.info(thisClass, thisMethod, "rsTokenType: " + rsTokenType);
@@ -906,6 +910,14 @@ public class TestSettings {
 
     public String getSignatureAlg() {
         return signatureAlg;
+    }
+
+    public void setDecryptKey(String inDecryptKey) {
+    	decryptKey = inDecryptKey;
+    }
+    
+    public String getDecryptKey() {
+    	return decryptKey;
     }
 
     public void setWhere(String inWhere) {

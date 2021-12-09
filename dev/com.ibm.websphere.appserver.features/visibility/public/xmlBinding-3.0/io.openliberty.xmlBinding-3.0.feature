@@ -16,10 +16,9 @@ IBM-ShortName: xmlBinding-3.0
 IBM-Process-Types: client, \
  server
 Subsystem-Name: Jakarta XML Binding 3.0
--features=\
-  com.ibm.websphere.appserver.classloading-1.0, \
+-features=io.openliberty.jakarta.xmlBinding-3.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
-  io.openliberty.jakarta.xmlBinding-3.0
+  com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
   io.openliberty.xmlBinding.3.0.internal.tools
 -files=\
@@ -29,7 +28,7 @@ Subsystem-Name: Jakarta XML Binding 3.0
  bin/xmlBinding/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlBinding/tools/ws-xjc.jar, \
  bin/xmlBinding/schemagen.bat
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-AlsoKnownAs: jaxb-3.0

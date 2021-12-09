@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4625,7 +4625,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 		_preferedOutBoundIface = getOutboundInterface(address);
 
 		if (c_logger.isTraceEntryExitEnabled()) {
-			c_logger.traceEntry(this, "setOutboundInterface: " + _preferedOutBoundIface);
+			c_logger.traceExit(this, "setOutboundInterface: " + _preferedOutBoundIface);
 		}
 	}
 
@@ -4710,7 +4710,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 			throw new IllegalArgumentException("Invalid address = null");
 
 		if (c_logger.isTraceEntryExitEnabled()) {
-			c_logger.traceEntry(this, "setOutboundInterface");
+			c_logger.traceExit(this, "setOutboundInterface");
 		}
 	}
 
@@ -4796,4 +4796,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 		return m_remoteCseq;
 	}
 
+	public void resetRemoteCseq() {
+        m_remoteCseq = -1;
+    }
 }

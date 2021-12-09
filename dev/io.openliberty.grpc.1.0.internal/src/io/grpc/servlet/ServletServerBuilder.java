@@ -44,6 +44,7 @@ import io.grpc.internal.SharedResourceHolder;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -65,7 +66,7 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     builder = new ServerImplBuilder(
       new ClientTransportServersBuilder() {
         @Override
-        public List<? extends InternalServer> buildClientTransportServers(
+        public InternalServer buildClientTransportServers(
             List<? extends ServerStreamTracer.Factory> streamTracerFactories) {
           return buildTransportServers(streamTracerFactories);
         }
@@ -104,12 +105,11 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     return internalServer.serverListener.transportCreated(serverTransport);
   }
 
-  private List<? extends InternalServer> buildTransportServers(
+  private InternalServer buildTransportServers(
       List<? extends Factory> streamTracerFactories) {
     checkNotNull(streamTracerFactories, "streamTracerFactories");
     this.streamTracerFactories = streamTracerFactories;
-    internalServer = new InternalServerImpl();
-    return ImmutableList.of(internalServer);
+    return internalServer = new InternalServerImpl();
   }
 
   /**
@@ -171,6 +171,18 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     public InternalInstrumented<SocketStats> getListenSocketStats() {
       // sockets are managed by the servlet container, grpc is ignorant of that
       return null;
+    }
+
+
+    @Override
+    public List<? extends SocketAddress> getListenSocketAddresses() {
+        return Collections.singletonList(getListenSocketAddress());
+    }
+
+    @Override
+    public List<InternalInstrumented<SocketStats>> getListenSocketStatsList() {
+        // sockets are managed by the servlet container
+        return null;
     }
   }
 

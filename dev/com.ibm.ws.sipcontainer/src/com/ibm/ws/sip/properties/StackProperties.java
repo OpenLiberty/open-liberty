@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003,2004 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,13 @@ public class StackProperties {
 	/** hide the request URI */
 	public static final String HIDE_REQUEST_URI = "hideMessageReqUri";
 	public static final boolean HIDE_REQUEST_URI_DEFAULT = false;
+		
+	/** 
+	 * Choose the default listening point by address type and transport 
+	 * in tWas="javax.default.lp.by.address.type"
+	 */
+    public static final String DEFAULT_LP_BY_ADDR_TYPE = "defaultLPByAddressType";
+    public static final boolean DEFAULT_LP_BY_ADDR_TYPE_DEFAULT = false;
 	
 	/**
 	 * number of dispatch threads. default is 0, meaning no dispatching (all
@@ -105,7 +112,7 @@ public class StackProperties {
 	 * should only send stream requests from the specified local port 
 	 * in tWas="javax.sip.strict.outbound.local.port"
 	 */
-	public static final String STRICT_OUTBOUND_LOCAL_PORT = "strictOutLocalPort";
+	public static final String STRICT_OUTBOUND_LOCAL_PORT = "strictOutboundLocalPort";
 	public static final boolean STRICT_OUTBOUND_LOCAL_PORT_DEFAULT = false;
 
 	/** should accept non-standard byte sequences */
@@ -145,6 +152,17 @@ public class StackProperties {
 	 */
 	public static final String BIND_RETRIES = "bindRetries";
 	public static final int BIND_RETRIES_DEFAULT = 60;
+	
+	/**
+	 * Indicates whether to clone an ACK request for 2xx retransmissions.
+	 * By default the same ACK instance is sent on every retransmission
+	 * causing issues when the ACK request is modified upstream.
+	 * When set to <code>true</code>, the original ACK request is cloned and 
+	 * the copy of the original request is sent on every retransmission.
+	 * <p/>in tWas="javax.clone.ack.2xx.retransmission"
+	 */
+	public static final String CLONE_ACK_2XX_RETRANSMISSION = "cloneAckOn2xxRetransmission";                                                                                                                       
+    public static final boolean CLONE_ACK_2XX_RETRANSMISSION_DEFAULT = false;
 	
 	/** 
 	 * delay, in milliseconds, between bind retries. default is 5000 milliseconds 
@@ -613,8 +631,9 @@ public class StackProperties {
 	/**
 	  * IFix for PI51393.
 	  * Create connection from selected outbound instead of related ListeningPoint. 
+	  * <p/> in tWAS <code>use.listening.point.from.outbound</code>
 	  */
-	public static final String CREATE_CONNECTION_USE_LP_FROM_OUTBOUND = "use.listening.point.from.outbound";
+	public static final String CREATE_CONNECTION_USE_LP_FROM_OUTBOUND = "useLPFromOutbound";
 	public static final boolean CREATE_CONNECTION_USE_LP_FROM_OUTBOUND_DEFAULT = false;
 	
 	/** fix for PI56387 
@@ -749,5 +768,7 @@ public class StackProperties {
 		properties.setBoolean(CREATE_CONNECTION_USE_LP_FROM_OUTBOUND, CREATE_CONNECTION_USE_LP_FROM_OUTBOUND_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(REMOVE_EMPTY_COMMA_SEPARATED_HEADERS, REMOVE_EMPTY_COMMA_SEPARATED_HEADERS_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(ENABLE_SET_OUTBOUND_INTERFACE, ENABLE_SET_OUTBOUND_INTERFACE_DEFAULT, CustPropSource.DEFAULT);
-    }
+		properties.setBoolean(DEFAULT_LP_BY_ADDR_TYPE, DEFAULT_LP_BY_ADDR_TYPE_DEFAULT, CustPropSource.DEFAULT);
+    	properties.setBoolean(CLONE_ACK_2XX_RETRANSMISSION, CLONE_ACK_2XX_RETRANSMISSION_DEFAULT, CustPropSource.DEFAULT);
+   }
 }

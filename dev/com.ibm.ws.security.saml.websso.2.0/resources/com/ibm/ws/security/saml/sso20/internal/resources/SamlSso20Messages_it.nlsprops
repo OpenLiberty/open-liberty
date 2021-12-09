@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML Web SSO 20 Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# HTML title of the default post logout page
+POST_LOGOUT_PAGE_TITLE=Post-logout SLO (Single Logout) SAML
+
+# Text that is displayed to an end user if logout completed successfully
+POST_LOGOUT_PAGE_SUCCESS_TEXT=Logout eseguito correttamente.
+
+# Text that is displayed to an end user if logout did not complete successfully
+POST_LOGOUT_PAGE_FAILURE_TEXT=\u00c8 possibile che il logout non sia stato eseguito completamente. Chiudere il browser per terminare completamente la sessione.
+
+#Message prefix block: CWWKS5000 - CWWKS5099
+SAML20_CONFIG_PROCESSED=CWWKS5000I: La configurazione SAML Web SSO Versione 2.0 [{0}] \u00e8 stata elaborata correttamente.
+SAML20_CONFIG_PROCESSED.explanation=La configurazione SAML Web SSO Versione 2.0 \u00e8 stata elaborata correttamente.
+SAML20_CONFIG_PROCESSED.useraction=Non sono richieste azioni.
+
+SAML20_CONFIG_MODIFIED=CWWKS5001I: La configurazione SAML Web SSO Versione 2.0 [{0}] \u00e8 stata elaborata correttamente.
+SAML20_CONFIG_MODIFIED.explanation=La configurazione SAML Web SSO Versione 2.0 \u00e8 stata elaborata correttamente.
+SAML20_CONFIG_MODIFIED.useraction=Non sono richieste azioni.
+
+SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Il servizio endpoint SAML Web SSO Versione 2.0 \u00e8 attivato.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Il servizio endpoint SAML Web SSO Versione 2.0 \u00e8 attivato.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Non sono richieste azioni.
+
+# web RequestFilter
+SAML20_INVALID_ACS_URL=CWWKS5003E: L''endpoint richiesto di [{0}] non \u00e8 supportato in questo provider del servizio (o SP - service provider) SAML Web SSO (Single Sign-On). 
+SAML20_INVALID_ACS_URL.explanation=L'URL indicato non \u00e8 un endpoint provider del servizio (SP) valido. Ci\u00f2 potrebbe essere causato da una configurazione non corretta nell'SP. 
+SAML20_INVALID_ACS_URL.useraction=Assicurarsi che l'SP sia configurato in modo corretto.
+
+ 
+# web EndpointServices 
+SAML20_NO_SUCH_ACS_PROVIDER=CWWKS5004E: L''ID provider del servizio di [{0}] nella richiesta non \u00e8 configurato in questo provider del servizio (o SP - service provider) SAML Web SSO (Single Sign-On) oppure non \u00e8 abilitato.
+SAML20_NO_SUCH_ACS_PROVIDER.explanation=L'ID SP indicato non \u00e8 configurato nel file server.xml oppure non \u00e8 abilitato. 
+SAML20_NO_SUCH_ACS_PROVIDER.useraction=Controllare il file server.xml per vedere se l'ID provider sia configurato e che tutte le impostazioni siano corrette.
+
+
+# Do not translate "id"
+SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Un provider del servizio SAML Web SSO Versione 2.0 \u00e8 stato configurato con un attributo id vuoto. L'attributo id per i provider del servizio SAML Web SSO non pu\u00f2 essere vuoto.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=L'attributo id per i provider del servizio SAML Web SSO identifica in modo univoco ogni provider del servizio. L'attributo id viene utilizzato per creare le informazioni richieste per l'operazione SAML Web SSO appropriata, ad esempio la generazione di URL di provider del servizio validi.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Controllare il file server.xml per assicurarsi che tutti i provider del servizio SAML Web SSO siano stati configurati con un  valore attributo id non vuoto.
+
+SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: Si \u00e8 verificato un errore server interno durante l''elaborazione di una richiesta SAML Web SSO (Single Sign-On) [{0}]. Causa:[{1}], Traccia stack: [{2}].
+SAML20_SERVER_INTERNAL_LOG_ERROR.explanation=Durante l'elaborazione di una richiesta SAML Web SSO, si \u00e8 verificato un errore interno del server. 
+SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Verificare gli errori nei file di log del server e verificare che la configurazione sia corretta. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SAML20_SP_BAD_SAML_RESPONSE_ERROR=CWWKS5008E: La risposta SAML dal provider di identit\u00e0 (o IdP - identity provider) [{0}] ha un codice di stato diverso da Riuscito.  Codice stato: [{1}]. Messaggio di stato:[{2}].
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=L'IdP sembra presentare un problema nell'emissione di una risposta SAML. Il motivo del problema viene  visualizzato nel messaggio.
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Esaminare il codice di stato e i messaggi facoltativi e assicurarsi che il provider di identit\u00e0 e il provider del servizio siano configurati correttamente.
+
+SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: La risposta SAML dal provider di identit\u00e0 [{0}] non contiene un''asserzione.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=La risposta SAML emessa dall'IdP specificato deve contenere un'asserzione.   La risposta SAML ricevuta dall'IdP non contiene un'asserzione.  Questa condizione non \u00e8 consentita.
+SAML20_SP_NO_ASSERTION_ERROR.useraction=Assicurarsi che l'IdP sia configurato correttamente e che l'utente sia collegato correttamente all'IdP.
+
+SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: La risposta SAML contiene una versione asserzione SAML [{0}] che non \u00e8 supportata dal runtime. La versione richiesta \u00e8 2,0.
+SAML20_SP_BAD_VERSION_ERROR.explanation=La risposta SAML contiene una versione asserzione che non \u00e8 supportata dal provider del servizio. La versione supportata \u00e8 visualizzata nel messaggio.
+SAML20_SP_BAD_VERSION_ERROR.useraction=Assicurarsi che l'IdP sia configurato per le asserzioni versione 2.0.
+
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] nella risposta SAML \u00e8 fuori dall''intervallo. L''ora corrente \u00e8 [{1}]. L''impostazione della differenza di orario corrente \u00e8 {2} secondi.
+SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=La risposta SAML viene emessa oltre un periodo di tempo accettabile.  Un motivo possibile dell'errore \u00e8 che l'orologio del destinatario non \u00e8 sincronizzato con l'orologio del creatore dell'asserzione.
+SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Assicurarsi che la data e l'ora sull'IdP siano sincronizzate con il provider del servizio SAML Web SSO (Single Sign-On) o aumentare la differenza oraria.
+
+SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: La destinazione [{0}] nella risposta SAML non \u00e8 valida. La destinazione prevista \u00e8 [{1}].
+SAML20_RESPONSE_BAD_DESTINATION.explanation=La destinazione nella risposta SAML deve corrispondere all'URL del provider del servizio.
+SAML20_RESPONSE_BAD_DESTINATION.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.    
+
+RS_EMPTY_SAML_ASSERTION=CWWKS5013E: L''intestazione denominata [{0}] deve contenere un''asserzione SAML valida ma non esiste nella richiesta HTTP o l''asserzione SAML \u00e8 un a stringa vuota.
+RS_EMPTY_SAML_ASSERTION.explanation=\u00c8 necessario impostare un'asserzione SAML valida sull'intestazione indicata nella richiesta HTTP. 
+RS_EMPTY_SAML_ASSERTION.useraction=Assicurarsi che la configurazione rsSaml specifichi un headerName corretto e che un'asserzione SAML valida sia impostata sull'intestazione specificata nella richiesta HTTP.
+
+# 0=URL specified in the config, 1=Name of configuration attribute, 2=ID of the SAML configuration element
+SAML20_POST_LOGOUT_URL_NOT_VALID=CWWKS5014W: L''URL [{0}] specificato dall''attributo [{1}] nella configurazione [{2}] non \u00e8 valido. Verr\u00e0 utilizzata la pagina di post-logout predefinita.
+SAML20_POST_LOGOUT_URL_NOT_VALID.explanation=Il valore URL post-logout personalizzatonon \u00e8 valido, quindi la pagina non pu\u00f2 essere visualizzata. Il valore probabilmente contiene caratteri non validi per i percorsi URI, ad esempio spazi o caratteri frammentati.
+SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Verificare che il valore URL post-logout personalizzato contenga solo caratteri che possono essere utilizzati nei percorsi URI.
+
+SAML20_CONFIG_DEACTIVATED=CWWKS5016I: La configurazione SAML Web SSO Versione 2.0 [{0}] \u00e8 stata disattivata correttamente.
+SAML20_CONFIG_DEACTIVATED.explanation=La configurazione SAML Web SSO Versione 2.0 \u00e8 stata disattivata correttamente.
+SAML20_CONFIG_DEACTIVATED.useraction=Non sono richieste azioni.
+
+# CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
+# {0} = Error message text
+# {1} = Error class
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: La risposta SAML non pu\u00f2 essere decodificata o analizzata. [{1}:{0}].
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.explanation=Il provider del servizio (o SP-service provider) non pu\u00f2 decodificare o analizzare il messaggio di risposta SAML. Le cause di tale errore includono la codifica non corretta da parte dell'IdP, uno schema non corretto o un errore di comunicazione.
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.useraction=Contattare l'amministratore IdP SAML.
+
+SAML20_NO_IDP_METADATA_FOR_ISSUER=CWWKS5021E: Il file metadati del provider di identit\u00e0 (o IdP - identity provider) [{1}] non contiene l''emittente [{0}] per l''asserzione SAML con ID [{2}].
+SAML20_NO_IDP_METADATA_FOR_ISSUER.explanation=I metadati indicati non esistono nella configurazione. L'asserzione SAML non pu\u00f2 essere convalidata senza i metadati. 
+SAML20_NO_IDP_METADATA_FOR_ISSUER.useraction=Assicurarsi che il file di metadati per l'IdP contenga l'istanza dell'emittente indicato.
+
+SAML20_IDP_METADATA_PARSE_ERROR=CWWKS5023E: Il file metadati dell''IdP [{0}] nell''SP [{1}] non \u00e8 valido. La causa dell''errore \u00e8 [{2}]
+SAML20_IDP_METADATA_PARSE_ERROR.explanation=Il file di metadati indicato non pu\u00f2 essere elaborato. Il motivo dell'errore viene  visualizzato nel messaggio.
+SAML20_IDP_METADATA_PARSE_ERROR.useraction=Assicurarsi che il file di metadati sia nel giusto formato XML e spazio dei nomi.  Inoltre, fare riferimento all'azione utente per il motivo visualizzato nel messaggio.
+
+# {2} = Cause of the error
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Il file metadati dell''IdP [{0}] nell''SP [{1}] non esiste o non \u00e8 possibile accedervi. [{2}]  
+SAML20_NO_IDP_METADATA_ERROR.explanation=Il file di metadati IdP specificato non esiste o non \u00e8 possibile accedervi. 
+SAML20_NO_IDP_METADATA_ERROR.useraction=Assicurarsi che il file dei metadati dell'IdP esista e sia accessibile.
+
+SAML20_NO_SAML_RESPONSE=CWWKS5028E: Il provider di identit\u00e0 (o IdP - identity provider) non risponde con un messaggio SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.explanation=Il provider di identit\u00e0 (o IdP - identity provider) deve risponde con un messaggio SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.useraction=Assicurarsi che l'IdP sia configurato in modo corretto.
+
+SAML20_POTENTIAL_REPLAY_ATTACK=CWWKS5029E: Lo stato di trasmissione [{0}] nella risposta dal provider di identit\u00e0 (IdP) non \u00e8 stato riconosciuto.
+SAML20_POTENTIAL_REPLAY_ATTACK.explanation=Potrebbe essersi verificata una delle seguenti condizioni:\n 1) La risposta SAML \u00e8 stata utilizzata pi\u00f9 di una volta.\n\
+2) La risposta dall'IdP ha impiegato troppo tempo e lo stato di trasmissione \u00e8 stato eliminato dall'SP.\n\
+3) L'IdP ha modificato lo stato di trasmissione che era stato inviato ad esso. 
+SAML20_POTENTIAL_REPLAY_ATTACK.useraction=Assicurarsi che l'IdP stia inviando le  risposte solo una volta, che le risposte siano inviate in modo tempestivo e che non si modifichi lo stato di trasmissione.
+
+SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: L''asserzione SAML con chiave cache [{0}] non \u00e8 stato trovata.
+SAML20_CACHED_DATA_NOT_FOUND.explanation=La risorsa protetta non \u00e8 accessibile a causa di un errore interno. I dati memorizzati nella cache potrebbero essere gi\u00e0 stati acceduti e rimossi.  
+SAML20_CACHED_DATA_NOT_FOUND.useraction=Consultare i log del server per ulteriori informazioni.
+
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: Il file [{0}] non \u00e8 stato caricato. [{1}] 
+ACCESS_FILE_INFO_ERROR.explanation=Il file indicato non esiste o non \u00e8 accessibile.  Il motivo dell'errore \u00e8 visualizzato nel messaggio.
+ACCESS_FILE_INFO_ERROR.useraction=Verificare che il file esista e che l'applicazione disponga dell'accesso al file.  Inoltre, fare riferimento all'azione utente per il motivo dell'errore.
+
+SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Il file metadati dell''IdP [{1}] per l''SP [{0}] \u00e8 stato modificato.
+SAML20_IDP_METADATA_FILE_CHANGED.explanation=Il file metadati Idp \u00e8 stato aggiornato con nuovi dati di configurazione per l'IdP; il provider del servizio (SP) ricaricher\u00e0 il file.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Non sono richieste azioni.
+
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: L''attributo InResponseTo [{0}] non \u00e8 consentito in una risposta SAML non sollecitata.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=La risposta SAML non sollecitata contiene un attributo InResponseTo.  Questa condizione non \u00e8 consentita.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR=CWWKS5041E: Il parametro RelayState previsto non \u00e8 stato incluso nel messaggio di risposta SAML dall'IdP.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.explanation= RelayState \u00e8 un parametro del protocollo SAML che viene utilizzato per identificare la risorsa specifica cui l'agent utente/utente accederanno dopo il collegamento. Se mancano queste informazioni, l'SP non sa dove reindirizzare l'agent utente/utente.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente per includere RelayState nella risposta SAML.
+
+SAML20_NO_ISSUER_ERR=CWWKS5044E: L''elemento emittente nell''asserzione SAML ha un attributo formato [{1}] che non \u00e8 supportato, il formato deve essere omesso o impostato su [{0}].
+SAML20_NO_ISSUER_ERR.explanation=L'asserzione SAML ha un elemento emittente (Issuer) con un valore per l'attributo del formato non supportato.  L'attributo del formato deve essere omesso o impostato su un valore supportato.
+SAML20_NO_ISSUER_ERR.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_INCORRECT_ISSUER_ERR=CWWKS5045E: Il valore per l''elemento emittente [{0}] nell''asserzione SAML non \u00e8 valido.
+SAML20_INCORRECT_ISSUER_ERR.explanation=L'asserzione SAML deve contenere un elemento Emittente che corrisponde all'emittente definito nel file di metadati IdP.  L'emittente nell'asserzione SAML non corrisponde a quello nel file di metadati.
+SAML20_INCORRECT_ISSUER_ERR.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5046E: Si \u00e8 verificato un errore durante la verifica della firma del messaggio di risposta SAML.
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.explanation=Il messaggio di risposta SAML contiene una firma, ma il runtime non pu\u00f2 verificarla a causa di un errore interno. 
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.useraction=Assicurarsi che i metadati del provider di identit\u00e0 (o IdP - identity provider) siano aggiornati.
+
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5048E: Si \u00e8 verificato un errore durante la verifica della firma dell'asserzione SAML.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.explanation=L'asserzione SAML contiene una firma, ma il runtime non pu\u00f2 verificarla a causa di un errore interno.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.useraction=Assicurarsi che i metadati del provider di identit\u00e0 (o IdP - identity provider) siano aggiornati.
+
+# {0} = Message text for cause of the failure
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: La firma dell''asserzione SAML non \u00e8 affidabile o non \u00e8 valida. [{0}]
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.explanation=L'asserzione SAML contiene una firma non valida oppure \u00e8 firmata con un certificato firmatario non affidabile.  Il motivo dell'errore \u00e8 visualizzato nel messaggio.
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.useraction=Questo potrebbe essere un errore di configurazione e assicurarsi che i metadati del provider di identit\u00e0 (IdP) siano correttamente aggiornati e configurati.  Inoltre, vedere l'azione utente per il motivo dell'errore visualizzato nel messaggio.
+
+# Example: {0} = Subject
+SAML20_ELEMENT_ERR=CWWKS5050E: L''asserzione SAML non contiene un elemento [{0}].  Un elemento [{0}] \u00e8 obbligatorio.  
+SAML20_ELEMENT_ERR.explanation=Nell'asserzione SAML manca un elemento richiesto dal runtime.
+SAML20_ELEMENT_ERR.useraction=L'elemento richiesto deve essere aggiunto all'asserzione SAML.  Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: L'asserzione SAML contiene un elemento SubjectConfirmationData con un attributo NotBefore.  Questa condizione non \u00e8 consentita.
+SAML20_SUBJECT_NOTBEFORE_ERR.explanation=L'elemento SubjectConfirmationData nell'asserzione SAML non deve contenere un attributo NotBefore.
+SAML20_SUBJECT_NOTBEFORE_ERR.useraction=Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente.
+
+# Examples:
+# {0} = NotOnOrAfter
+# {1} = SubjectConfirmationData
+SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: L''attributo [{0}] nell''elemento [{1}] nell''asserzione SAML manca o \u00e8 vuoto.  Questa condizione non \u00e8 consentita.
+SAML20_ELEMENT_ATTR_ERR.explanation=L'asserzione SAML ha un elemento in cui manca un attributo richiesto dal runtime.
+SAML20_ELEMENT_ATTR_ERR.useraction=L'attributo richiesto deve essere aggiunto all'asserzione SAML.  Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: L''attributo NotOnOrAfter [{0}] nell''elemento SubjectConfirmationData \u00e8 fuori dall''intervallo.  L''ora corrente \u00e8 [{1}]. L''impostazione della differenza di orario corrente \u00e8 {2} secondi.
+SAML20_SUBJECT_NOTONAFTER_ERR.explanation=L'asserzione SAML \u00e8 stata ricevuta a un'ora coincidente con o successiva all'impostazione NotOnOrAfter in SubjectConfirmationData nell'asserzione.  Questa condizione non \u00e8 consentita. Un motivo possibile dell'errore \u00e8 che l'orologio del destinatario non \u00e8 sincronizzato con l'orologio del creatore dell'asserzione
+SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Sincronizzare gli orologi del provider di identit\u00e0 e del provider del servizio SAML o aumentare l'impostazione della differenza oraria.
+
+SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: Il destinatario [{0}] nell''asserzione SAML non corrisponde all''URL ACS (AssertionConsumerService): [{1}].
+SAML20_SUBJECT_NO_REC_MATCH_ERR.explanation=L'attributo destinatario sull'elemento SubjectConfirmationData deve essere impostato sull'URL ACS.
+SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: L''attributo NotBefore [{0}] \u00e8 fuori dall''intervallo. L''ora corrente \u00e8 [{1}]. L''impostazione della differenza di orario corrente \u00e8 {2} secondi.
+SAML20_SUBJECT_NOBEFORE_ERR.explanation=L'asserzione SAML \u00e8 stata ricevuta a un'ora che \u00e8 antecedente all'impostazione NotBefore nell'asserzione.  Questa condizione non \u00e8 consentita. Un motivo possibile dell'errore \u00e8 che l'orologio del destinatario non \u00e8 sincronizzato con l'orologio del creatore dell'asserzione.
+SAML20_SUBJECT_NOBEFORE_ERR.useraction=Sincronizzare gli orologi del provider di identit\u00e0 e del provider del servizio SAML o aumentare l'impostazione della differenza oraria.
+
+SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: La condizione NotOnOrAfter [{0}] \u00e8 fuori dall''intervallo. L''ora corrente \u00e8 [{1}]. L''impostazione della differenza di orario corrente \u00e8 {2} minuti.
+SAML20_SUBJECT_NOAFTER_ERR.explanation=L'asserzione SAML \u00e8 stata ricevuta a un'ora coincidente con o successiva all'impostazione NotOnOrAfter nell'asserzione.  Questa condizione non \u00e8 consentita. I motivi possibili dell'errore sono una mancata sincronizzazione dell'orologio del destinatario con l'orologio del creatore dell'asserzione o un ottenimento e un nuovo invio dell'asserzione da parte di un'applicazione non autorizzata.
+SAML20_SUBJECT_NOAFTER_ERR.useraction=Sincronizzare gli orologi del provider di identit\u00e0 e del provider del servizio SAML o aumentare l'impostazione della differenza oraria.
+
+SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: L''elemento Conditions nell''asserzione SAML contiene un attributo [{0}] che non \u00e8 supportato.
+SAML20_CONDITION_UNKNOWN_ERR.explanation=L'elemento Conditions nell'asserzione SAML contiene un attributo che non \u00e8 supportato dal runtime.  Questa condizione non \u00e8 consentita.
+SAML20_CONDITION_UNKNOWN_ERR.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Il valore [{0}] per l''elemento Audience nell''asserzione SAML non \u00e8 valido. Il valore previsto per l''elemento Audience \u00e8 [{1}].
+SAML20_AUDIENCE_UNKNOWN_ERR.explanation=Il valore dell'elemento Audience deve essere impostato sull'EntityID dell'SP.
+SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_SESSION_ERR=CWWKS5062E: L''attributo SessionNotOnOrAfter [{0}] \u00e8 fuori dall''intervallo. L''ora corrente \u00e8 [{1}]. L''impostazione della differenza di orario corrente \u00e8 {2} secondi.
+SAML20_SESSION_ERR.explanation=L'asserzione SAML \u00e8 stata ricevuta a un'ora coincidente con o successiva all'impostazione SessionNotOnOrAfter in AuthnStatement nell'asserzione.  Questa condizione non \u00e8 consentita. I motivi possibili dell'errore sono una mancata sincronizzazione dell'orologio del destinatario con l'orologio del creatore dell'asserzione o un ottenimento e un nuovo invio dell'asserzione da parte di un'applicazione non autorizzata.
+SAML20_SESSION_ERR.useraction=Sincronizzare gli orologi del provider di identit\u00e0 e del provider del servizio SAML o aumentare l'impostazione della differenza oraria.
+
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Eccezione SAML: il provider del servizio (SP) SAML non \u00e8 stato in grado di elaborare la richiesta di autenticazione.
+SAML20_AUTHENTICATION_FAIL.explanation=Il processo di autenticazione non \u00e8 riuscito perch\u00e9 si sono verificati altri errori prima di questo messaggio.
+SAML20_AUTHENTICATION_FAIL.useraction=Vedere l'azione utente per l'errore che viene visualizzato prima di questo messaggio. 
+
+SAML20_NO_BEARER_FOUND=CWWKSS5065E: l''attributo metodo [{0}] per l''elemento SubjectConfirmationData nell''asserzione SAML non \u00e8 supportato.  Il valore supportato \u00e8 ["urn:oasis:names:tc:SAML:2.0:cm:bearer"].
+SAML20_NO_BEARER_FOUND.explanation= L'asserzione deve contenere il metodo di conferma soggetto urn:oasis:names:tc:SAML:2.0:cm:bearer.
+SAML20_NO_BEARER_FOUND.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente.
+
+SAML20_NO_INRESPONSETO=CWWKS5067E: La risposta SAML [{0}] contiene un attributo InResponseTo [{1}] che non \u00e8 valido. Il valore previsto per InResponseTo \u00e8 [{2}].
+SAML20_NO_INRESPONSETO.explanation=La risposta SAML indicata ha un valore di attributo InResponseTo non valido.   
+SAML20_NO_INRESPONSETO.useraction=Contattare l'amministratore IdP per assicurarsi che l'IdP sia configurato correttamente, in modo che possa emettere un valore dell'attributo InResponseTo corretto.
+
+# similar to the tWas messages
+# Example: {0} = realm
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: L''asserzione SAML non contiene un elemento [{0}].  Un elemento [{0}] \u00e8 obbligatorio.  
+SAML20_ATTRIBUTE_ERR.explanation=Nell'asserzione SAML manca un attributo richiesto dal runtime.
+SAML20_ATTRIBUTE_ERR.useraction=L'attributo richiesto deve essere aggiunto all'asserzione SAML.  Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente o configurare il provider del servizio (SP) o il TAI per definire un valore per l'attributo.
+
+SAML20_USER_CANNOT_AUTHENTICATED=CWWKS5072E: L''autenticazione non \u00e8 riuscita per l''ID utente [{0}].
+SAML20_USER_CANNOT_AUTHENTICATED.explanation=L'utente specificato non \u00e8 nel registro utente o la configurazione non \u00e8 corretta.
+SAML20_USER_CANNOT_AUTHENTICATED.useraction=Verificare che l'utente sia configurato nel registro utente e inoltre configurare il provider di identit\u00e0 e il provider del servizio correttamente.
+
+SAML20_NO_PRIVATE_KEY=CWWKS5073E: Il provider del servizio [{0}] non trova la chiave privata nel keystore [{1}].
+SAML20_NO_PRIVATE_KEY.explanation=Il keystore specificato non dispone della chiave privata richiesta.
+SAML20_NO_PRIVATE_KEY.useraction=Assicurarsi che il keystore configurato disponga delle chiavi richieste o modificare la configurazione per specificare un altro keystore.
+
+SAML20_NO_CERT=CWWKS5074E: Il provider del servizio [{0}] non trova il certificato nel keystore [{1}].
+SAML20_NO_CERT.explanation=Il keystore specificato non dispone del certificato di firma richiesto.
+SAML20_NO_CERT.useraction=Assicurarsi che il keystore configurato disponga del certificato richiesto o modificare la configurazione per specificare un altro keystore.
+
+SAML20_AUTH_FILTER_NOT_EXISTING=CWWKS5075E: Il runtime del provider del servizio [{1}] non trova l''authFilter specificato dall''authFilterRef [{0}]. Correggere la configurazione.
+SAML20_AUTH_FILTER_NOT_EXISTING.explanation=L'authFilter specificato dall'authFilterRef nella configurazione SAML WebSSO non esiste.
+SAML20_AUTH_FILTER_NOT_EXISTING.useraction=Assicurarsi che la configurazione authFilter richiesta esista nel server o rimuovere l'elemento authFilterRef dalla configurazione SAML WebSSO.
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: UserCredentialResolver non riesce a risolvere l''asserzione SAML e genera una UserIdentityException con il messaggio [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Il servizio UserCredentialResolver fornito dalla funzione utente non pu\u00f2 associare l'asserzione SAML correttamente e genera una UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Assicurarsi che il servizio UserCredentialResolver sia configurato correttamente se la UserIdentityException non \u00e8 prevista.
+
+SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: Il runtime non pu\u00f2 selezionare il provider del servizio (SP) dall''elenco dei provider del servizio [{1}] per elaborare la richiesta [{0}]. 
+SAML20_MULTI_SPECIFIC_SP.explanation=La richiesta non deve rispettare i criteri di filtro di pi\u00f9 di un elemento authFilter. Deve soddisfare le condizioni di un solo authFilter, in questo modo il runtime pu\u00f2 scegliere il provider del servizio corretto da elaborare.
+SAML20_MULTI_SPECIFIC_SP.useraction=Controllare la configurazione del server e regolare gli elementi authnFilter, in modo che siano rispettate le condizioni di un solo elemento authFilter e la richiesta possa essere elaborata dal provider del servizio che fa riferimento all'elemento authFilter.
+
+OSGI_SERVICE_ERROR=CWWKS5078E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
+
+SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Il provider del servizio [{1}] non trova l''URL del provider di identit\u00e0 (IdP) tramite il file metadati [{0}].  
+SAML20_NO_IDP_URL_ERROR.explanation=Nel file metadati IdP mancano le informazioni sull'URL.
+SAML20_NO_IDP_URL_ERROR.useraction=Assicurarsi che il contenuto del file metadati IdP sia accurato.
+
+SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Il provider del servizio [{0}] non trova l''URL del provider di identit\u00e0 (IdP) perch\u00e9 idpMetadata manca nella configurazione SAML WebSSO.  
+SAML20_NO_IDP_URL_OR_METADATA.explanation=L'SP non dispone delle informazioni riguardanti i metadati IdP. Le cause possibili sono 1) L'attributo idpMetadata non \u00e8 impostato in modo appropriato 2) Il file specificato dall'attributo non esiste.
+SAML20_NO_IDP_URL_OR_METADATA.useraction=Assicurarsi che, se l'attributo idpMetadata \u00e8 impostato, esista il file cui fa riferimento l'attributo.
+
+SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Il provider del servizio (o SP-service provider) non pu\u00f2 elaborare la risposta SAML in quanto questa \u00e8 scaduta. L''SP non ha ricevuto la risposta SAML dal provider di identit\u00e0 (IdP) nell''intervallo di tempo previsto. La richiesta SAML \u00e8 stata creata alle [{0}] e poich\u00e9 l''attributo di configurazione authnRequestTime \u00e8 impostato su [{1}] minuti, la richiesta scadr\u00e0 alle [{2}] e l''ora corrente \u00e8 [{3}].
+SAML20_AUTHN_REQUEST_EXPIRED.explanation=Il provider di identit\u00e0 (IdP) potrebbe non aver elaborato la richiesta SAML in modo tempestivo. Controllare i log IdP per assicurarsi che l'IdP stia funzionando correttamente.
+SAML20_AUTHN_REQUEST_EXPIRED.useraction=Inoltrare di nuovo la richiesta ed aumentare anche il valore per l'attributo authnRequestTime per assicurarsi che IdP abbia tempo sufficiente per elaborare la richiesta SAML.
+
+SAML20_RESPONSE_REPLAY=CWWKS5082E: Il provider del servizio (o SP-service provider) non pu\u00f2 elaborare la risposta SAML in quanto \u00e8 stata gi\u00e0 elaborata l''asserzione SAML con ID [{0}].
+SAML20_RESPONSE_REPLAY.explanation=La risposta SAML dal provider di identit\u00e0 (o IdP - identity provider) contiene una asserzione SAML che \u00e8 stata gi\u00e0 inclusa in una risposta SAML precedente.
+SAML20_RESPONSE_REPLAY.useraction=Assicurarsi che il provider di identit\u00e0 (o IdP - identity provider) non generi un ID asserzione SAML duplicato oppure che non invii la stessa asserzione SAML pi\u00f9 di una volta.
+
+#do not translate httpsRequired
+SAML20_EP_PROTOCOL_NOT_HTTPS=CWWKS5083E: Il provider del servizio (o SP-service provider) richiede SSL (HTTPS) ma nell''URL richiesta [{0}] \u00e8 stato utilizzato HTTP. Aggiornare la configurazione in modo che l''attributo [httpsRequired] corrisponda allo schema URL di richiesta.
+SAML20_EP_PROTOCOL_NOT_HTTPS.explanation=Il provider del servizio (o SP-service provider) WebSSO SAML richiede la richiesta WebSSO SAML per utilizzare HTTPS, ma HTTP \u00e8 stato utilizzato nell'URL di richiesta.
+SAML20_EP_PROTOCOL_NOT_HTTPS.useraction=Eseguire una delle seguenti operazioni: 1) Assicurarsi che il provider del servizio (o SP-service provider) WebSSO SAML supporti SSL. 2) Se il provider del servizio (o SP-service provider) WebSSO SAML non supporta SSL, impostare httpsRequired nella configurazione del provider del servizio (o SP-service provider) WebSSO SAML su false.
+
+#do not translate httpsRequired
+SAML20_IDP_PROTOCOL_NOT_HTTPS=CWWKS5084E: Il provider del servizio (o SP-service provider) richiede SSL (HTTPS) ma nell''URL del provider di identit\u00e0 (o IdP - identity provider) [{0}] \u00e8 stato utilizzato HTTP. Aggiornare la configurazione in modo che l''attributo [httpsRequired] corrisponda allo schema URL IdP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.explanation=Il provider del servizio (o SP-service provider) WebSSO richiede la comunicazione SSL, ma nell'URL IdP \u00e8 stato utilizzato HTTP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.useraction=Eseguire una delle seguenti operazioni: 1) Assicurarsi che il provider di identit\u00e0 WebSSO SAML supporti SSL. 2) Se il provider di identit\u00e0 WebSSO SAML non supporta SSL, impostare httpsRequired nella configurazione del provider del servizio (o SP-service provider) WebSSO SAML su false.
+
+RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: La risposta SAML nel contenuto dell''intestazione [{0}] nella richiesta HTTP non \u00e8 supportata.
+RS_SAML_RESPONSE_NOT_SUPPORTED.explanation=Solo l'asserzione SAML \u00e8 supportata per il contenuto dell'intestazione indicata nella richiesta HTTP. 
+RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Assicurarsi che l'asserzione SAML sia nel contenuto dell'intestazione indicata.
+
+# Message prefix block: CWWKS5200 - CWWKS5209
+RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: Si \u00e8 verificato un errore server interno durante l''elaborazione di SAML Web SSO (Single Sign-On) per la propagazione in entrata [{0}]. Causa:[{1}], Traccia stack: [{2}].
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.explanation=Durante l'elaborazione di una richiesta di propagazione in entrata SAML Web SSO, si \u00e8 verificato un errore interno del server. 
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Verificare gli errori nei file di log del server e verificare che la configurazione sia corretta. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+RS_SAML_TRUSTED_ISSUERS_ERROR=CWWKS5205E: Il trustedIssuers [{0}] definito nella configurazione pkixTrustEngine non \u00e8 utilizzato dalla funzione SAML Web SSO per la propagazione in entrata [{1}] e verr\u00e0 ignorato.
+RS_SAML_TRUSTED_ISSUERS_ERROR.explanation=Il trustedIssuers in pkixTrustEngine \u00e8 utilizzato solo dalla funzione SAML Web SSO. \u00c8 ignorato in SAML Web SSO per la funzione di propagazione in entrata. 
+RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=Rimuovere trustedIssuers da the pkixTrustEngine.
+
+# 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
+SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: L''attributo inboundPropagation \u00e8 impostato su [{0}] nella configurazione di samlWebSso20 [{2}]. Gli attributi [{1}] verranno ignorati durante l''elaborazione.
+SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=La configurazione samlWebSso20 \u00e8 impostata per elaborare la propagazione in entrata del token SAML o SAML Web SSO, ma non entrambi. Gli attributi elencati sono ignorati quando si gestiscono le richieste web con la configurazione SAML specificata.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Non sono richieste azioni.
+
+SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: L''asserzione SAML in entrata non \u00e8 valida [{0}].
+SAML_BAD_INBOUND_SAML_TOKEN.explanation=L'asserzione SAML, contenuta nell'intestazione della richiesta HTTP, non \u00e8 valida e non pu\u00f2 essere analizzata appropriatamente.
+SAML_BAD_INBOUND_SAML_TOKEN.useraction=Assicurarsi che sia appropriatamente generata un'asserzione SAML valida.
+
+# Message prefix block: CWWKS5210 - CWWKS5299
+
+# 0=Exception message from the error encountered
+ERROR_HANDLING_LOGOUT_REQUEST=CWWKS5210E: Il servizio SLO (Single Logout) SAML ha rilevato un errore quando ha elaborato la richiesta di logout. {0}
+ERROR_HANDLING_LOGOUT_REQUEST.explanation=Il servizio ha rilevato un errore quando ha elaborato la richiesta come una richiesta endpoint logout, una risposta logout da un provider di identit\u00e0 (IdP) o una richiesta di logout da un IdP. Il messaggio include informazioni sul tipo di richiesta e ulteriori dettagli sull'errore.
+ERROR_HANDLING_LOGOUT_REQUEST.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE=CWWKS5211E: Il servizio SLO (Single Logout) SAML non pu\u00f2 elaborare la richiesta perch\u00e9 il servizio non pu\u00f2 trovare il provider SAML (SP) specificato nella richiesta.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=Il servizio SLO (Single Logout) SAML non pu\u00f2 trovare il servizio SSO (Single Sign-On) per il provider SAML (SP) specificato nella richiesta. L'SP potrebbe essere disabilitato o potrebbe mancare dalla configurazione del server.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.useraction=Verificare che sia configurato e abilitato un provider SAML (SP) corrispondente al nome provider specificato. Controllare i log del server per eventuali ulteriori messaggi di errore.
+
+LOGOUT_REQUEST_MISSING_SSO_REQUEST=CWWKS5212E: Il servizio SLO (Single Logout) SAML non pu\u00f2 elaborare la richiesta perch\u00e9 il servizio non pu\u00f2 trovare le informazioni sulla richiesta SSO (Single Sign-On) SAML.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.explanation=Le informazioni sull'SSO SAML devono essere incluse per poter elaborare la richiesta SLO (Single Logout) SAML. Un provider SAML (SP) potrebbe non essere configurato o potrebbe non essere configurato per gestire la richiesta.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.useraction=Assicurarsi che sia configurato almeno un provider SAML (SP) o che ci sia almeno un SP configurato per elaborare questa richiesta.
+
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT=CWWKS5213E: Il servizio SLO (Single Logout) SAML non pu\u00f2 visualizzare la pagina di post-logout perch\u00e9 le informazioni del messaggio SAML sono mancanti.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=Il servizio SSO (Single Sign-On) SAML potrebbe aver riscontrato un errore durante l'inoltro della richiesta di logout SAML o durante l'elaborazione della risposta di logout SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Controllare i log del server per eventuali ulteriori messaggi di errore. Verificare che il servizio SSO SAML non abbia riscontrato altri errori.
+
+# do not translate HTTP-POST, SingleLogoutService
+SAML20_SLOENDPOINT_NOT_IN_METADATA=CWWKS5214E: Il servizio SLO (Single Logout) SAML per il provider {0} non pu\u00f2 ottenere l''URL endpoint servizio SLO del provider di identit\u00e0 (IdP) dai metadati IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.explanation=L'URL endpoint del servizio SLO (Single Logout) del provider di identit\u00e0 (IdP) non pu\u00f2 essere ottenuto dai metadati IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Verificare che i metadati IdP contengano una voce SingleLogoutService con un bind HTTP-POST e un'ubicazione che specifica un URL valido.
+
+LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Il servizio di logout non pu\u00f2 completare l''SLO SAML poich\u00e9 non pu\u00f2 individuare un provider del servizio univoco. Tuttavia, la sessione di sicurezza utente nei provider del servizio sono eliminate. I provider del servizio disponibili sono [{0}].
+LOGOUT_CANNOT_PERFORM_SLO.explanation=Ci sono pi\u00f9 istanze di provider del servizio configurate in Liberty Server. Liberty Server non pu\u00f2 individuare un provider del servizio univoco per inizializzare l'SLO SAML. Solo la sessione di sicurezza utente nei provider di servizi viene eliminata.
+LOGOUT_CANNOT_PERFORM_SLO.useraction=Assicurarsi che l'applicazione logout sia associata ad un solo provider del servizio. Ad esempio, un provider di servizi per applicazione.
+
+LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Il servizio di logout non pu\u00f2 completare l'SLO SAML poich\u00e9 non pu\u00f2 individuare la sessione di sicurezza utente.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Il provider del servizio non pu\u00f2 individuare la sessione di sicurezza utente per creare il messaggio di richiesta SLO SAML. L'utente \u00e8 stato scollegato dal provider di servizi, ma potrebbe avere ancora una sessione di sicurezza attiva con il provider di identit\u00e0 (IdP).
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Considerare di implementare il logout avviato dal provider di identit\u00e0 (IdP) e reindirizzare l'utente al provider di identit\u00e0 (IdP) per il logout, soprattutto se il logout del provider di servizi non riesce o non \u00e8 completo. 

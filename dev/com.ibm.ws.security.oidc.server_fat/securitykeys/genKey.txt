@@ -1,0 +1,10 @@
+@REM to gen key for clientAuthentication:
+@REM export the ssl client certificate from com.ibm.ws.security.oauth-oidc_fat.commonTest\securitykeys\commonSslClientDefault.jks
+keytool -export -alias sslclient -file sslclient.cer -keystore commonSslClientDefault.jks  -storepass Liberty -storetype jks -noprompt
+@REM import the sslclient.cer into commonTrustStore.jks and make it trusted
+keytool -importcert -file sslclient.cer -keystore commonTrustStore.jks -alias sslclientcert -storepass Liberty -storetype jks -noprompt
+@REM commonLDAPUser1.jks copied from com.ibm.ws.webcontainer.security_fat\publish\files\clientcert\commonLDAPUser1.jks
+@REM DummyServerTrustStore.jks copied from com.ibm.ws.webcontainer.security_fat\publish\servers\com.ibm.ws.webcontainer.security.fat.clientcert\resources\security\commonDummyServerTrustFile.jks
+keytool -export -alias default -file BasicKeyStore.cer -keystore commonBasicKeyStore.jks  -storepass Liberty -storetype jks -noprompt
+@REM import the sslclient.cer into commonTrustStore.jks and make it trusted
+keytool -importcert -file BasicKeyStore.cer -keystore DummyServerTrustStore.jks -alias basickeystore -storepass WebAS -noprompt

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
+import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 import io.openliberty.microprofile.health30.services.HealthCheck30Executor;
 
 /**
@@ -104,7 +105,7 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
         HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
 
         // Verify if the default overall Readiness status is configured
-        String defaultReadinessProp = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.defaultOverallReadinessStatusPropertyName, String.class).orElse("");
+        String defaultReadinessProp = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.DEFAULT_OVERALL_READINESS_STATUS, String.class).orElse("");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "In performHealthCheck(): The default overall Readiness status was configured to be overriden: mp.health.default.readiness.empty.response="
                          + defaultReadinessProp);
@@ -112,7 +113,7 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
-            if(appTracker.isInstalled(appName)) {
+            if (appTracker.isInstalled(appName)) {
                 anyAppsInstalled = true;
                 if (!healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE) && !unstartedAppsSet.contains(appName)) {
                     unstartedAppsSet.add(appName);

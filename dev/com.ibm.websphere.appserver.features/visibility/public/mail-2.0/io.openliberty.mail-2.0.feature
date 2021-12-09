@@ -23,15 +23,14 @@ IBM-API-Package: \
   com.sun.mail.util; type="third-party", \
   com.sun.mail.util.logging; type="third-party", \
   com.sun.mail.handlers; type="third-party"
--features=\
-  com.ibm.websphere.appserver.classloading-1.0,\
-  com.ibm.websphere.appserver.injection-2.0,\
-  io.openliberty.jakarta.activation-2.0,\
-  io.openliberty.jakarta.mail-2.0,\
-  com.ibm.websphere.appserver.eeCompatible-9.0
+-features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+  com.ibm.websphere.appserver.classloading-1.0, \
+  io.openliberty.jakarta.mail-2.0, \
+  com.ibm.websphere.appserver.injection-2.0, \
+  io.openliberty.jakarta.activation-2.0
 -bundles=\
   io.openliberty.mail.2.0.internal, \
   com.ibm.ws.javamail.config
 -jars=io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.0"
-kind=beta
+kind=ga
 edition=core

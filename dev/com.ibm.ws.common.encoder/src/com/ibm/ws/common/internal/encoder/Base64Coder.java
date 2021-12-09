@@ -11,6 +11,7 @@
 package com.ibm.ws.common.internal.encoder;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Base64 Encoding and Decoding utility class
@@ -19,10 +20,10 @@ public final class Base64Coder {
     private static final byte Base64EncMap[];
     private static final byte Base64DecMap[];
 
-    // Tokens used in Base64-encoded data, indexed by their corresponding byte value.    
+    // Tokens used in Base64-encoded data, indexed by their corresponding byte value.
     private static final char[] TOKENS = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
-                                          'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
-                                          '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
+                                           'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
+                                           '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
     // Character used to pad encoding groups at the end of Base64-encoded content.
     private static final char PAD_TOKEN = '=';
@@ -43,8 +44,8 @@ public final class Base64Coder {
 
     static {
         byte map[] = { 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
-                      108,
-                      109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47 };
+                       108,
+                       109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47 };
         Base64EncMap = map;
         Base64DecMap = new byte[128];
         for (int idx = 0; idx < Base64EncMap.length; idx++)
@@ -53,11 +54,12 @@ public final class Base64Coder {
     }
 
     /** Prevent instantiation of this static-only class */
-    private Base64Coder() {}
+    private Base64Coder() {
+    }
 
     /**
      * Converts a String to a base64 encoded String.
-     * 
+     *
      * @param str String, may be {@code null}.
      * @return base64 encoded String {@code null} if the str was null.
      */
@@ -72,16 +74,17 @@ public final class Base64Coder {
 
     /**
      * Converts a raw byte array to a base64 encoded byte array.
-     * 
+     *
      * @param data raw byte array, may be {@code null}.
      * @return base64 encoded String or {@code null} if the data was null.
      */
     public static final String base64EncodeToString(byte data[]) {
         return toString(base64Encode(data));
     }
+
     /**
      * Converts a raw byte array to a base64 encoded byte array.
-     * 
+     *
      * @param data raw byte array, may be {@code null}.
      * @return base64 encoded byte array or {@code null} if the data was null.
      */
@@ -116,7 +119,7 @@ public final class Base64Coder {
 
     /**
      * Converts a base64 encoded byte array to a raw byte array.
-     * 
+     *
      * @param data base64 encoded byte array, may be {@code null}.
      * @return raw byte array or {@code null} if the data was null or
      *         not the expected size.
@@ -160,7 +163,7 @@ public final class Base64Coder {
     /**
      * Encode a byte array into a Base64-encoded string. The string is not
      * broken into 72 character lines.
-     * 
+     *
      * @param data Byte data to be encoded.
      * @return Base64-encoded string.
      */
@@ -171,7 +174,7 @@ public final class Base64Coder {
     /**
      * Encode a byte array into a Base64-encoded String. The String is not
      * broken into 72 character lines.
-     * 
+     *
      * @param data Byte data to be encoded
      * @param offset Starting index within the byte data to be encoded
      * @param length Number of bytes to encode
@@ -256,7 +259,7 @@ public final class Base64Coder {
 
     /**
      * Converts a String with the given encoding to a base64 encoded String.
-     * 
+     *
      * @param str
      * @param enc
      * @return
@@ -274,7 +277,7 @@ public final class Base64Coder {
 
     /**
      * Converts a base64 encoded String to a decoded String.
-     * 
+     *
      * @param str String, may be {@code null}.
      * @return base64 encoded String {@code null} if the str was null.
      */
@@ -289,17 +292,17 @@ public final class Base64Coder {
 
     /**
      * Converts a base64 encoded String to a decoded byte array.
-     * 
+     *
      * @param str String, may be {@code null}.
      * @return base64 encoded byte array {@code null} if the str was null.
      */
-    public static final byte []  base64DecodeString(String str) {
+    public static final byte[] base64DecodeString(String str) {
         return base64Decode(getBytes(str));
     }
 
     /**
      * Converts a byte array to a String. Only ASCII characters are supported.
-     * 
+     *
      * @param b byte array, may be {@code null}.
      * @return ASCII String representing the byte array or {@code null} if the array was null.
      */
@@ -319,20 +322,11 @@ public final class Base64Coder {
      * Converts a String to a byte array by using UTF-8 character sets.
      * This code is needed even converting US-ASCII characters since there are some character sets which are not compatible with US-ASCII code area.
      * For example, CP-1399, which is z/OS Japanese EBCDIC character sets, is one.
+     * 
      * @param input String, may be {@code null}.
      * @return byte array representing the String or {@code null} if the String was null or contained non ASCII character.
      */
     public static final byte[] getBytes(String input) {
-        byte output[] = null;
-        try {
-            if (input != null) {
-                output = input.getBytes("UTF-8");
-            }
-        } catch (UnsupportedEncodingException e) {
-            // This should not happen.
-            // If it happens, it would be some runtime or operating system issue, so just give up and return null.
-            // ffdc data will be logged automatically.
-        }
-        return output;
+        return input == null ? null : input.getBytes(StandardCharsets.UTF_8);
     }
 }

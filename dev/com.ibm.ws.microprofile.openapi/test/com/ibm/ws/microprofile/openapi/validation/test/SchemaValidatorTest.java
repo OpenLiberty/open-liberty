@@ -110,7 +110,7 @@ public class SchemaValidatorTest {
     }
 
     @Test
-    public void testMultipleOfLessThanOne() {
+    public void testMultipleOfLessOrEqualToZero() {
 
         SchemaValidator validator = SchemaValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
@@ -121,6 +121,31 @@ public class SchemaValidatorTest {
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero"));
+
+        vh = new TestValidationHelper();
+
+        schema = new SchemaImpl();
+        schema.setMultipleOf(new BigDecimal(-3));
+
+        validator.validate(vh, context, null, schema);
+        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero"));
+
+        vh = new TestValidationHelper();
+
+        schema = new SchemaImpl();
+        schema.setMultipleOf(new BigDecimal(0.002));
+
+        validator.validate(vh, context, null, schema);
+        Assert.assertEquals(0, vh.getEventsSize());
+
+        vh = new TestValidationHelper();
+
+        schema = new SchemaImpl();
+        schema.setMultipleOf(new BigDecimal(7));
+
+        validator.validate(vh, context, null, schema);
+        Assert.assertEquals(0, vh.getEventsSize());
     }
 
     @Test

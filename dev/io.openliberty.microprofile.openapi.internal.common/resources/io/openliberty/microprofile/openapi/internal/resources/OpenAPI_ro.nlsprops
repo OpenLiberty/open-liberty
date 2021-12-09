@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,34 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplica\u0163ia {0} a fost procesat\u01
 OPENAPI_APPLICATION_PROCESSED.explanation=S-a generat documentul OpenAPI pentru aplica\u0163ia specificat\u0103. Poate fi vizualizat la punctul final /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: A ap\u0103rut o eroare la procesarea aplica\u0163iei {0} \u015fi nu a fost produs un document OpenAPI.
-OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A ap\u0103rut o eroare runtime la procesarea aplica\u0163iei.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Str\u00e2nge\u0163i fi\u015fierele istoric \u015fi contacta\u0163i IBM Service.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: A ap\u0103rut o eroare la procesarea aplica\u0163iei {0} \u015fi un document OpenAPI nu a fost produs. Eroarea a fost: {1}.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A ap\u0103rut o eroare de runtime la procesarea aplica\u0163iei.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Examina\u0163i istoricele FFDC \u015fi textul excep\u0163iei pentru a identifica problema.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Au ap\u0103rut urm\u0103toarele probleme la combinarea documentelor OpenAPI: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Documenta\u0163ia OpenAPI de la mai multe module web nu a putut fi combinat\u0103 cu succes. Punctele finale de la modulele raportate nu sunt incluse \u00een documentul OpenAPI generat.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Examina\u0163i problemele de combinare pentru a identifica de ce documentele OpenAPI generate nu au putut fi combinate.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Calea {0} de la modulul {1} intr\u0103 \u00een conflict cu calea de la modulul {2}. {1} nu va fi combinat.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Calea este dou\u0103 module. Ambele instan\u0163e ale c\u0103ii nu pot fi incluse \u00een acela\u015fi document OpenAPI. Acest mesaj este returnat ca parte a msajului CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Fie modifica\u0163i unul din modulele \u00een conflict, fie configura\u0163i caracteristica mpOpenApi-2.0 s\u0103 exclud\u0103 unul dintre ele. Aceast\u0103 problem\u0103 poate fi cauzat\u0103 dac\u0103 sunt incluse serverele \u00een documentul OpenAPI \u015fi URL-ul de server nu se termin\u0103 cu r\u0103d\u0103cina de context a aplica\u0163iei (de exemplu, deoarece aplica\u0163ia este accesat\u0103 la un alt URL printr-un proxy invers).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: Combinarea documenta\u0163iei OpenAPI de la mai multe module este dezactivat\u0103. Doar {0} este utilizat pentru generarea documenta\u0163iei OpenAPI. Pentru a activa combinarea documenta\u0163iei OpenAPI de la toate modulele, seta\u0163i proprietatea de configura\u0163ie mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=C\u00e2nd nu este activat\u0103 combinarea documenta\u0163iei OpenAPI, documenta\u0163ia OpenAPI este generat\u0103 doar pentru primul modul OpenAPI implementat.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Dac\u0103 vre\u0163i ca toate modulele web s\u0103 fie folosite la generarea documenta\u0163iei OpenAPI, seta\u0163i proprietatea MicroProfile care este listat\u0103 \u00een mesaj. Acea proprietate poate fi setat\u0103 \u00een oricare din loca\u0163iile \u00een care caut\u0103 MicroProfile Config propriet\u0103\u0163ile de configura\u0163ie, cum ar fi o proprietatea de sistem Java sau o variabil\u0103 de mediu.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: Obiectul de informa\u0163ii configurat cu proprietatea {0} nu este valid. Trebuie setate propriet\u0103\u0163ile de titlu \u015fi de versiune. Valoarea invalid\u0103 este: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Dac\u0103 proprietatea este setat\u0103, ea trebuie setat\u0103 \u00eentr-o sec\u0163iune de informa\u0163ii complet\u0103 \u00een formatul JSON, cu propriet\u0103\u0163i valide de titlu \u015fi de versiune.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Corecta\u0163i valoarea de informa\u0163ii configurat\u0103.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Proprietatea de configura\u0163ie {0} nu poate fi parsat\u0103 ca JSON. Valoarea este: {1}\nEroarea este: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Dac\u0103 proprietatea este setat\u0103, ea trebuie setat\u0103 \u00eentr-o sec\u0163iune de informa\u0163ii complet\u0103 \u00een formatul JSON.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Examina\u0163i textul erorii pentru a identifica problema \u015fi corecta\u0163i valoarea informa\u0163iilor ca s\u0103 fie un JSON valid.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: A fost g\u0103sit un nume invalid \u00een {0}: {1}. Fiecare nume trebuie s\u0103 utilizeze formatul "applicationName" sau "applicationName/moduleName".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=Proprietatea de configura\u0163ie trebuie s\u0103 con\u0163in\u0103 o list\u0103 separat\u0103 de nume de aplica\u0163iie \u015fi de modul, sau una din valorile speciale "all", "first" sau "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Examina\u0163i textul erorii pentru a identifica problema \u015fi corecta\u0163i proprietatea de configura\u0163ie indicat\u0103.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Proprietatea de {0} configura\u0163ie include "{1}" dar nu se potrive\u015fte cu nicio o aplica\u0163ie sau modul web implementat.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Serverul este configurat s\u0103 creeze documenta\u0163ia OpenAPI pentru numele de aplica\u0163ie sau de modul web, dar nu este implementat\u0103 nicio aplica\u0163ie sau modul web cu acel nume.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Verifica\u0163i c\u0103 toate aplica\u0163iile au pornit corect \u015fi c\u0103 numele din proprietatea de configura\u0163ie sunt specificate corect.

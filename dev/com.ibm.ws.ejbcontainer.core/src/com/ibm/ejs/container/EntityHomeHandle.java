@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2006 IBM Corporation and others.
+ * Copyright (c) 1998, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * for EJBHomes living in an EJS server. <p>
  */
 
-public class EntityHomeHandle implements HomeHandle, Serializable
-{
+public class EntityHomeHandle implements HomeHandle, Serializable {
     //d121558
     private static final TraceComponent tc = Tr.register(EntityHomeHandle.class, "EJBContainer", "com.ibm.ejs.container.container"); //p115726
 
@@ -84,18 +83,18 @@ public class EntityHomeHandle implements HomeHandle, Serializable
      * Return <code>EJBHome</code> reference for this HomeHandle. <p>
      */
 
-    public EJBHome getEJBHome() throws RemoteException
-    {
+    @Override
+    public EJBHome getEJBHome() throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getEJBHome");
 
-        if (home == null)
-        {
-            try
-            {
-                Class homeClass = null;
-                try
-                {
+        if (home == null) {
+            if (homeJNDIName != null && homeJNDIName.contains(":")) {
+                throw new NoSuchObjectException("EJBHome JNDI name not allowed : " + homeJNDIName);
+            }
+            try {
+                Class<?> homeClass = null;
+                try {
                     //
                     // If we are running on the server side, then the thread
                     // context loader would have been set appropriately by
@@ -103,22 +102,16 @@ public class EntityHomeHandle implements HomeHandle, Serializable
                     // thread context class loader first
                     //
                     ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                    if (cl != null)
-                    {
+                    if (cl != null) {
                         homeClass = cl.loadClass(homeInterface);
-                    }
-                    else
-                    {
+                    } else {
                         throw new ClassNotFoundException();
                     }
-                } catch (ClassNotFoundException ex)
-                {
+                } catch (ClassNotFoundException ex) {
                     //FFDCFilter.processException(ex, CLASS_NAME + ".getEJBHome", "141", this);
-                    try
-                    {
+                    try {
                         homeClass = Class.forName(homeInterface);
-                    } catch (ClassNotFoundException e)
-                    {
+                    } catch (ClassNotFoundException e) {
                         //FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome",
                         //                       "148", this);
                         throw new ClassNotFoundException(homeInterface);
@@ -126,18 +119,13 @@ public class EntityHomeHandle implements HomeHandle, Serializable
                 }
 
                 InitialContext ctx = null;
-                try
-                {
+                try {
                     // Locate the home
                     //91851 begin
-                    if (this.initialContextProperties == null)
-                    {
+                    if (this.initialContextProperties == null) {
                         ctx = new InitialContext();
-                    }
-                    else
-                    {
-                        try
-                        {
+                    } else {
+                        try {
                             ctx = new InitialContext(this.initialContextProperties);
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) // d144064
@@ -146,28 +134,23 @@ public class EntityHomeHandle implements HomeHandle, Serializable
                                              (String) initialContextProperties.get("java.naming.provider.url") +
                                              " INITIAL_CONTEXT_FACTORY = " +
                                              (String) initialContextProperties.get(Context.INITIAL_CONTEXT_FACTORY));
-                        } catch (NamingException ne)
-                        {
+                        } catch (NamingException ne) {
                             //FFDCFilter.processException(ne, CLASS_NAME + ".getEJBHome",
                             //                          "177", this);
                             ctx = new InitialContext();
                         }
                     }
                     //91851 end
-                    home = (EJBHome) PortableRemoteObject.
-                                    narrow(ctx.lookup(homeJNDIName), homeClass);
-                } catch (NoInitialContextException e)
-                {
+                    home = (EJBHome) PortableRemoteObject.narrow(ctx.lookup(homeJNDIName), homeClass);
+                } catch (NoInitialContextException e) {
                     //FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome", "188", this);
                     java.util.Properties p = new java.util.Properties();
                     p.put(Context.INITIAL_CONTEXT_FACTORY,
                           "com.ibm.websphere.naming.WsnInitialContextFactory");
                     ctx = new InitialContext(p);
-                    home = (EJBHome) PortableRemoteObject.
-                                    narrow(ctx.lookup(homeJNDIName), homeClass);
+                    home = (EJBHome) PortableRemoteObject.narrow(ctx.lookup(homeJNDIName), homeClass);
                 }
-            } catch (NamingException e)
-            {
+            } catch (NamingException e) {
                 // Problem looking up the home
 
                 //FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome", "201", this);
@@ -177,8 +160,7 @@ public class EntityHomeHandle implements HomeHandle, Serializable
                 RemoteException re = new NoSuchObjectException("Could not find home in JNDI");
                 re.detail = e;
                 throw re;
-            } catch (ClassNotFoundException e)
-            {
+            } catch (ClassNotFoundException e) {
                 // We couldn't find the home interface's class
 
                 //FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome", "213", this);
@@ -198,17 +180,14 @@ public class EntityHomeHandle implements HomeHandle, Serializable
      * Finds the findByPrimaryKey method in the bean's home interface
      */
 
-    private Method findFindByPrimaryKey(Class c)
-    {
+    private Method findFindByPrimaryKey(Class<?> c) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "findFindByPrimaryKey", c);
 
         Method[] methods = c.getMethods();
 
-        for (int i = 0; i < methods.length; ++i)
-        {
-            if (methods[i].getName().equals("findByPrimaryKey"))
-            {
+        for (int i = 0; i < methods.length; ++i) {
+            if (methods[i].getName().equals("findByPrimaryKey")) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "findFindByPrimaryKey");
                 return methods[i];
@@ -221,4 +200,3 @@ public class EntityHomeHandle implements HomeHandle, Serializable
     }
 
 } // EntityHomeHandle
-

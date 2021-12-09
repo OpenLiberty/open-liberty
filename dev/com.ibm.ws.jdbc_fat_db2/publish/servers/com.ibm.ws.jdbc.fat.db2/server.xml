@@ -1,3 +1,13 @@
+<!--
+    Copyright (c) 2017,2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
   <featureManager>
     <feature>componenttest-1.0</feature>
@@ -10,6 +20,10 @@
 
   <application location="db2fat.war" >
     <classloader commonLibraryRef="DB2Lib"/>
+    <web-ext>
+      <resource-ref name="java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled" branch-coupling="LOOSE" isolation-level="TRANSACTION_READ_COMMITTED"/>
+      <resource-ref name="java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled" branch-coupling="TIGHT" isolation-level="TRANSACTION_READ_COMMITTED"/>
+    </web-ext>
   </application>
     
   <library id="DB2Lib">
@@ -41,7 +55,7 @@
     <properties.db2.jcc
       databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT_SECURE}"
       user="${DB2_USER}" password="${DB2_PASS}"
-      sslConnection="true"/>
+      sslConnection="true" sslVersion="TLSv1.2"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-using-driver">

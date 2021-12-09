@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 
 // configure protobuf-gradle-plugin and liberty-gradle-plugin
 buildscript {
@@ -25,16 +26,55 @@ buildscript {
             mavenCentral()
         }
     }
-  dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
-    classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
-  }
+    dependencies {
+        if (project.hasProperty('compileProtobufs')) {
+            classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
+        }
+        classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
+    }
 }
+
 plugins {	
     id 'war'
     id "eclipse-wtp"
 }
-apply plugin: 'com.google.protobuf'
+
+def grpcVersion = '1.38.1'
+def protocVersion = '3.13.0'
+
+// only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
+// this will allow us to avoid recompiling the protobuf stubs on every build, and additionally
+// it will allow this test bucket to run on platforms not supported by the protoc tooling. 
+// See https://github.com/OpenLiberty/open-liberty/issues/17913
+if (project.hasProperty('compileProtobufs')) {
+
+    apply plugin: 'com.google.protobuf'
+
+    protobuf {
+        protoc { artifact = "com.google.protobuf:protoc:" + protocVersion }
+        plugins {
+            grpc { artifact = "io.grpc:protoc-gen-grpc-java:" + grpcVersion }
+        }
+        generateProtoTasks {
+            all()*.plugins { 
+                grpc {} 
+            }
+        }
+    }
+
+    assemble.doLast {
+        // update the generated-src dir with the new stubs that have been generated
+        copy {
+        from "build/libs/generated/source/proto/main/java"
+            into "generated-src"
+        }
+        copy {
+        from "build/libs/generated/source/proto/main/grpc"
+            into "generated-src"
+        }
+    }
+}
+
 repositories.clear()
 repositories {
     if (isUsingArtifactory) {
@@ -43,52 +83,79 @@ repositories {
                 username userProps.getProperty("artifactory.download.user")
                 password userProps.getProperty("artifactory.download.token")
             }
+            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            // for fats - this repository is used *only* contains artifacts with group "biz.aQute.bnd"
+            content {
+                includeGroup "biz.aQute.bnd"
+                includeGroup "org.eclipse.transformer"
+            }
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
+        maven {
+            credentials {
+                username userProps.getProperty("artifactory.download.user")
+                password userProps.getProperty("artifactory.download.token")
+            }
             url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
         }
     } else {
+        maven {
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            content {
+                includeGroup "biz.aQute.bnd"
+                includeGroup "org.eclipse.transformer"
+            }
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
         mavenCentral()
     }
 }
 
 configurations {
-  storeAppWarLibs
+    storeAppWarLibs
 }
 
 dependencies {
- 
- 	// Adding libraries the application to run in FAT
-	storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.13.0',
-	'com.google.code.gson:gson:2.8.6',
-	'com.google.guava:guava:28.1-android', // following are dependencies of this 28.1-android
-	'com.google.errorprone:error_prone_annotations:2.4.0',
-	'com.google.guava:failureaccess:1.0.1',
-	'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
-	'org.codehaus.mojo:animal-sniffer-annotations:1.18',
-	'org.checkerframework:checker-compat-qual:2.5.5',
-	'com.google.j2objc:j2objc-annotations:1.3',
-	'com.google.code.findbugs:jsr305:3.0.2',
-	'net.sourceforge.htmlunit:htmlunit:2.20'
+
+    // Adding libraries the application to run in FAT
+    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.13.0',
+    'com.google.code.gson:gson:2.8.6',
+    'com.google.guava:guava:30.1-android',
+    'com.google.errorprone:error_prone_annotations:2.4.0',
+    'com.google.guava:failureaccess:1.0.1',
+    'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
+    'org.codehaus.mojo:animal-sniffer-annotations:1.18',
+    'org.checkerframework:checker-compat-qual:2.5.5',
+    'com.google.j2objc:j2objc-annotations:1.3',
+    'com.google.code.findbugs:jsr305:3.0.2',
+    'net.sourceforge.htmlunit:htmlunit:2.20'
  
     // test
     testImplementation 'commons-httpclient:commons-httpclient:3.1'
     testImplementation 'junit:junit:4.12'
-	
+
     //
     implementation 'com.google.protobuf:protobuf-java-util:3.13.0'
     // @jar is needed since some of the dependencies of java-util were overwritten
-    providedCompile 'io.grpc:grpc-protobuf:1.35.0@jar'
-    compileOnly 'io.grpc:grpc-stub:1.35.0'
-    providedCompile 'io.grpc:grpc-services:1.35.0@jar'
-    providedCompile 'io.grpc:grpc-netty:1.35.0@jar'
+    providedCompile 'io.grpc:grpc-protobuf:' + grpcVersion + '@jar'
+    compileOnly 'io.grpc:grpc-stub:' + grpcVersion
+    providedCompile 'io.grpc:grpc-services:' + grpcVersion + '@jar'
+    providedCompile 'io.grpc:grpc-netty:' + grpcVersion + '@jar'
     //dynamic caching map
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
-	
+
     // provided
     providedCompile 'com.google.protobuf:protobuf-java:3.13.0'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
-    
+
     // test runtime 
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
@@ -96,108 +163,71 @@ dependencies {
       'net.sourceforge.htmlunit:webdriver:2.6',
       'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
       'org.brotli:dec:0.1.2',
-      'xerces:xercesImpl:2.11.0',
+      project(':io.openliberty.org.apache.xercesImpl'),
       'xalan:xalan:2.7.2',
-      'commons-io:commons-io:2.6',
+      project(':com.ibm.ws.org.apache.commons.io'),
       'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
       'org.apache.commons:commons-lang3:3.8',
-      'commons-codec:commons-codec:1.11',
+      project(':io.openliberty.org.apache.commons.codec'),
       'org.apache.httpcomponents:httpmime:4.5.3',
       project(':com.ibm.ws.org.apache.httpcomponents'),
-      'commons-codec:commons-codec:1.6',
-      'commons-logging:commons-logging:1.1.3',
+      project(':io.openliberty.org.apache.commons.codec'),
+      project(':io.openliberty.org.apache.commons.logging'),
       'xml-apis:xml-apis:1.4.01',
-      'io.grpc:grpc-core:1.35.0',
-      'io.grpc:grpc-stub:1.35.0',
-      'io.grpc:grpc-protobuf:1.35.0',
-      'io.grpc:grpc-netty:1.35.0',
+      'io.grpc:grpc-core:' + grpcVersion,
+      'io.grpc:grpc-stub:' + grpcVersion,
+      'io.grpc:grpc-protobuf:' + grpcVersion,
+      'io.grpc:grpc-netty:' + grpcVersion,
       'com.google.protobuf:protobuf-java:3.13.0',
       'com.google.protobuf:protobuf-java-util:3.13.0'
 }
 
-protobuf {
-	
-    protoc { artifact = "com.google.protobuf:protoc:3.13.0" }
-    plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.35.0" }
-    }
-    generateProtoTasks {
-        all()*.plugins { 
-        			grpc {} 
-        		}
-    }
-}
 
 // copy into application lib at build time
 task copyToConsumerAppWarLibs(type: Copy) {
-  from configurations.storeAppWarLibs
-  	into new File(autoFvtDir, 'test-applications/StoreConsumerApp.war/resources/WEB-INF/lib')
+    from configurations.storeAppWarLibs
+     into new File(autoFvtDir, 'test-applications/StoreConsumerApp.war/resources/WEB-INF/lib')
 }
 
 // copy into application lib at build time
 task copyToStoreAppWarLibs(type: Copy) {
-  from configurations.storeAppWarLibs
-  	into new File(autoFvtDir, 'test-applications/StoreApp.war/resources/WEB-INF/lib')
+    from configurations.storeAppWarLibs
+        into new File(autoFvtDir, 'test-applications/StoreApp.war/resources/WEB-INF/lib')
 }
 
 //runs task at FAT build time
 addRequiredLibraries {
-  dependsOn copyToStoreAppWarLibs
-  dependsOn copyToConsumerAppWarLibs
+    dependsOn copyToStoreAppWarLibs
+    dependsOn copyToConsumerAppWarLibs
 }
 
-// Inform IDE Eclipse about the generated code.
 sourceSets {
-	main {
-    	proto {
-    		srcDirs 'test-applications/HelloWorldService.war/resources/proto'
-    	}
+    main {
+        if (project.hasProperty('compileProtobufs')) {
+            proto {
+                srcDirs 'test-applications/HelloWorldService.war/resources/proto'
+                srcDirs 'test-applications/FavoriteBeerService.war/resources/proto'
+                srcDirs 'test-applications/StoreProducerApp.war/resources/proto'
+                srcDirs 'test-applications/StoreConsumerApp.war/resources/proto'
+                srcDirs 'test-applications/StoreApp.war/resources/proto'
+                srcDirs 'test-applications/StreamingService.war/resources/proto'
+            }
+        } else {
+            java {
+                // if we're not regenerating protoc stubs, reuse the stubs in generated-src
+                srcDirs 'generated-src'
+            }
+        }
         java {
             srcDirs 'test-applications/HelloWorldClient.war/src/java'
             srcDirs 'test-applications/HelloWorldService.war/src/java'
-       }
-	}
-    main {
-        proto {
-            srcDirs 'test-applications/FavoriteBeerService.war/resources/proto'
-        }
-        java {
             srcDirs 'test-applications/FavoriteBeerService.war/src/java'
-        }
-    }
-    // StoreProducerApp
-    // StoreConsumerApp
-    // StoreApp
-    main {
-        proto {
-            srcDirs 'test-applications/StoreProducerApp.war/resources/proto'
-            srcDirs 'test-applications/StoreConsumerApp.war/resources/proto'
-            srcDirs 'test-applications/StoreApp.war/resources/proto'
-        }
-        java {
             srcDirs 'test-applications/StoreProducerApp.war/src/java'
             srcDirs 'test-applications/StoreConsumerApp.war/src/java'
             srcDirs 'test-applications/StoreApp.war/src/java'
-        }
-    }
-
-    main {
-        proto {
-            srcDirs 'test-applications/StreamingService.war/resources/proto'
-        }
-        java {
             srcDirs 'test-applications/StreamingService.war/src/java'
-        }
+       }
     }
 }
 
-assemble.doLast {
-    copy {
-       from "build/libs/generated/source/proto/main/java"
-          into "generated-src"
-    }
-    copy {
-       from "build/libs/generated/source/proto/main/grpc"
-          into "generated-src"
-    }
-}
+addRequiredLibraries.dependsOn addJakartaTransformer

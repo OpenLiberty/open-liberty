@@ -1,4 +1,13 @@
 #!/bin/bash
+
+##############################
+# This script checks copyright headers for all files that were modified for indicators
+# that we might be attempting to open source confidential code. 
+# Inputs: none
+# Outputs: none (just fail and report if we find any)
+##############################
+
+# Prevent script from reporting failures
 set +e
 
 # Strings indicating IBM-specific copyright notice.

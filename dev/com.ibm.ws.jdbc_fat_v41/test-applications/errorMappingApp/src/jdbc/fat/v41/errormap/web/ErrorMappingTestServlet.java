@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,27 +43,33 @@ public class ErrorMappingTestServlet extends FATServlet {
     @Resource
     UserTransaction tx;
 
-    @Resource(lookup = "jdbc/errorMap")
-    DataSource ds;
+    /**
+     * Verifies that SQL state 08888 does not indicate StaleConnection (for config update tests)
+     */
+    public void testIdentify08888NotStale() throws Exception {
+        assertNotStale("jdbc/errorMap", "08888", null);
+    }
 
-    @Resource(lookup = "jdbc/removeMapping")
-    DataSource removeMapping;
+    /**
+     * Verifies that SQL state 08888 indicates StaleConnection (for config update tests)
+     */
+    public void testIdentify08888Stale() throws Exception {
+        assertStale("jdbc/errorMap", "08888", null);
+    }
 
-    @Resource(lookup = "jdbc/noMappings")
-    DataSource noMappings;
-
-    @Resource(lookup = "jdbc/manyMappings")
-    DataSource manyMappings;
-
-    @Resource(lookup = "jdbc/stateAndCode")
-    DataSource stateAndCode;
+    /**
+     * Verifies that error code 1234 does not indicate StaleConnection (for config update tests)
+     */
+    public void testIdentify1234NotStale() throws Exception {
+        assertNotStale("jdbc/errorMap", null, 1234);
+    }
 
     /**
      * Verify that once a connection goes stale (as indicated by server.xml config)
      * it is removed from the connection pool.
      */
     @Test
-    public void testStaleConnection() throws Exception {
+    public void testIdentify1234Stale() throws Exception {
         assertStale("jdbc/errorMap", null, 1234);
     }
 
@@ -131,16 +137,13 @@ public class ErrorMappingTestServlet extends FATServlet {
     }
 
     /**
-     * Test that we cannot lookup a datasource with an invalid <identifyException as="..."/> attribute
+     * Test that we can lookup a datasource with an invalid <identifyException as="..."/> attribute,
+     * and legacy exception values do not identify as stale when legacy function is not enabled.
      */
     @Test
     public void testInvalidConfig_bogusTarget() throws Exception {
-        try {
-            InitialContext.doLookup("jdbc/invalid/bogusTarget");
-            fail("Should not be able to lookup a datasource with <identifyException> with an invalid 'as' attribute");
-        } catch (NamingException expected) {
-            System.out.println("Caught expected exception: " + expected.getMessage());
-        }
+        assertNotStale("jdbc/invalid/bogusTarget", null, 1234);
+        assertNotStale("jdbc/invalid/bogusTarget", "SCE99", null);
     }
 
     /**

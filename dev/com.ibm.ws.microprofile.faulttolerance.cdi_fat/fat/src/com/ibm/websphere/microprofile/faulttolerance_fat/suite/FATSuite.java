@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -39,15 +38,18 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.interceptors.Inte
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.jaxrs.JaxRsTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
+
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Core functionality
                 FaultToleranceMainTest.class,
                 CDICompletionStageTest.class,
-//
-//                // FULL mode tests
+
+                // FULL mode tests
                 CDIAnnotationsDisabledTest.class,
                 FallbackMethodTest.class,
                 ValidationTest.class,
@@ -66,8 +68,13 @@ import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 public class FATSuite {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    /**
+     * Export the CDIFaultTolerance app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportCDIFaultToleranceAppToServer(LibertyServer server) throws Exception {
         String APP_NAME = "CDIFaultTolerance";
 
         JavaArchive faulttolerance_jar = ShrinkWrap.create(JavaArchive.class, "faulttolerance.jar")
@@ -79,7 +86,18 @@ public class FATSuite {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
-        ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
+        ShrinkHelper.exportDropinAppToServer(server, CDIFaultTolerance_war, DeployOptions.SERVER_ONLY);
+    }
+
+    /**
+     * Export the TxFaultTolerance app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportTxFaultToleranceAppToServer(LibertyServer server) throws Exception {
+        JavaArchive faulttolerance_jar = ShrinkWrap.create(JavaArchive.class, "faulttolerance.jar")
+                        .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.util");
 
         String TX_APP_NAME = "TxFaultTolerance";
 
@@ -87,9 +105,16 @@ public class FATSuite {
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.tx")
                         .addAsLibraries(faulttolerance_jar);
 
-        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
-        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultToleranceReordered/dropins/");
+        ShrinkHelper.exportDropinAppToServer(server, txFaultTolerance_war, DeployOptions.SERVER_ONLY);
+    }
 
+    /**
+     * Export the DisableEnable app to the given server's dropins folder
+     *
+     * @param server the server to export to
+     * @throws Exception
+     */
+    public static void exportDisableEnableAppToServer(LibertyServer server) throws Exception {
         String ENABLE_DISABLE_APP_NAME = "DisableEnable";
 
         StringBuilder config = new StringBuilder();
@@ -102,8 +127,7 @@ public class FATSuite {
                         .addAsResource(new StringAsset(config.toString()), "META-INF/microprofile-config.properties")
                         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-        ShrinkHelper.exportArtifact(EnableDisable_war, "publish/servers/CDIFaultTolerance/dropins/");
-
+        ShrinkHelper.exportDropinAppToServer(server, EnableDisable_war, DeployOptions.SERVER_ONLY);
     }
 
 }

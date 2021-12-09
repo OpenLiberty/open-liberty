@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ public class DBIncrementTask implements Callable<Integer>, ManagedTask, Runnable
     private static final long serialVersionUID = 2172862926900136340L;
 
     final Map<String, String> execProps = new TreeMap<String, String>();
-    private final String key;
+    final String key;
     private int totalUpdates;
 
     public DBIncrementTask(String key) {

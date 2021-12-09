@@ -18,4 +18,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 JDBC43Test.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

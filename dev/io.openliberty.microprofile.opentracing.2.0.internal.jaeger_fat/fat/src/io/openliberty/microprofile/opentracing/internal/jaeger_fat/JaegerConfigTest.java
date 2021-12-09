@@ -17,13 +17,13 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -41,7 +41,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.LITE)
-@MinimumJavaLevel(javaLevel = 8)
 public class JaegerConfigTest {
 	
     private static final Class<?> CLASS = JaegerConfigTest.class;
@@ -86,13 +85,6 @@ public class JaegerConfigTest {
         ShrinkHelper.exportAppToServer(server1, serviceWar);
         ShrinkHelper.exportAppToServer(server2, serviceWar);
         ShrinkHelper.exportAppToServer(server3, serviceWarWithLib);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    	if (currentServer != null && currentServer.isStarted()) {
-        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
-        }
     }
     
     /**
@@ -160,5 +152,22 @@ public class JaegerConfigTest {
                             "/mpOpenTracing/rest/ws/" + method;
 
         return FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	if (currentServer != null && currentServer.isStarted()) {
+        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
+        }
+    }
+    
+    @AfterClass
+    public static void shutdown() throws Exception {
+    	LibertyServer[] serversToShutDown = {server1, server2, server3};
+    	for (LibertyServer server : serversToShutDown) {
+        	if (server != null && server.isStarted()) {
+        		server.stopServer("CWMOT0009W", "CWMOT0010W");
+            }
+    	}
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
-import org.apache.cxf.wsdl.EndpointReferenceUtils;
 
 import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
@@ -26,6 +25,7 @@ import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WebClient;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
@@ -99,7 +99,7 @@ public class ProtocolImpl {
     }
 
     private EndpointReferenceType getEndpoint(EndpointReferenceType epr, String ctxId) {
-        EndpointReferenceType eprCopy = EndpointReferenceUtils.duplicate(epr);
+        EndpointReferenceType eprCopy = WSATCXFUtils.duplicate(epr);
         ReferenceParametersType refs = new ReferenceParametersType();
 
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, ctxId));
@@ -116,26 +116,25 @@ public class ProtocolImpl {
      * return a response by making a separate call back to the coordinator.
      */
 
-    // We never get a PREPARE in recovery mode, therefore we should either know about the 
+    // We never get a PREPARE in recovery mode, therefore we should either know about the
     // WSAT transaction, or it must have already ended (this can happen if a rollback gets
-    // sent before we've finished our own prepare processing).  In all cases we must send 
-    // a response - we send ABORTED if we no longer know about the tran, or get other 
+    // sent before we've finished our own prepare processing).  In all cases we must send
+    // a response - we send ABORTED if we no longer know about the tran, or get other
     // unexpected errors.
 
     @FFDCIgnore(WSATException.class)
     public void prepare(String globalId, EndpointReferenceType fromEpr) throws WSATException {
         try {
             Vote vote = tranService.prepareTransaction(globalId);
-            WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED :
-                            (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
+            WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED : (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
             participantResponse(globalId, fromEpr, resp);
         } catch (WSATException e) {
             participantResponse(globalId, fromEpr, WSATParticipantState.ROLLBACK);
         }
     }
 
-    // COMMIT and ROLLBACK can occur during recovery when the tran manager might know about 
-    // the real transaction but our WSAT HashMaps might not be rebuilt. To handle this we 
+    // COMMIT and ROLLBACK can occur during recovery when the tran manager might know about
+    // the real transaction but our WSAT HashMaps might not be rebuilt. To handle this we
     // always go straight to the tran manager to process the request - if this fails we do
     // not try to send any response - we allow retry processing on the coordinator to eventually
     // sort things out.
@@ -172,7 +171,7 @@ public class ProtocolImpl {
 
     private void participantResponse(String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
         // Send the response to our known coordinator, if we have one.  Otherwise fall back to
-        // using the sender's EPR (see WS-AT spec section 8). 
+        // using the sender's EPR (see WS-AT spec section 8).
         WSATCoordinator coord = null;
         WSATTransaction tran = findTransaction(globalId);
         if (tran != null) {
@@ -220,11 +219,11 @@ public class ProtocolImpl {
             participant.setResponse(WSATParticipantState.PREPARED);
         } else {
             // During participant recovery we might receive an unexpected 'prepared' if the participant
-            // wants a re-send of the final commit/rollback state.  For the moment we log this, but do 
-            // nothing as regular coordinator recovery retries should take care of it.
+            // wants a re-send of the final commit/rollback state.
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}. Replaying completion", globalId, partId);
             }
+            tranService.replayCompletion(globalId);
         }
     }
 

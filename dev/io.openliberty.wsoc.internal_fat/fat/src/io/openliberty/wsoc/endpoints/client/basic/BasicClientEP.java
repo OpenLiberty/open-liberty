@@ -45,6 +45,7 @@ public class BasicClientEP implements TestHelper {
         @OnMessage
         public String echoText(String data) {
 
+            LOG.info("DEBUG: BasicClientEP$TestOnOpen.echoText Recieving data -> " + data);
             _wtr.addMessage(data);
 
             if (_wtr.limitReached()) {
@@ -60,6 +61,7 @@ public class BasicClientEP implements TestHelper {
         public void onOpen(Session sess) {
             try {
                 String s = _data[_counter++];
+                LOG.info("DEBUG: BasicClientEP$TestOnOpen.onOpen Sending data to Remote -> " + s);
                 sess.getBasicRemote().sendText(s);
             } catch (Exception e) {
                 _wtr.addExceptionAndTerminate("Error publishing initial message", e);
@@ -85,7 +87,7 @@ public class BasicClientEP implements TestHelper {
 
         @OnMessage
         public String echoText(String data) {
-
+            LOG.info("DEBUG: BasicClientEP$TestOnClose.echoText Recieving data -> " + data);
             _wtr.addMessage(data);
 
             if (_wtr.limitReached()) {
@@ -101,6 +103,7 @@ public class BasicClientEP implements TestHelper {
         public void onOpen(Session sess) {
             try {
                 String s = _data[_counter++];
+                LOG.info("DEBUG: BasicClientEP$TestOnClose.onOpen Sending data to Remote -> " + s);
                 sess.getBasicRemote().sendText(s);
             } catch (Exception e) {
                 _wtr.addExceptionAndTerminate("Error publishing initial message", e);
@@ -127,7 +130,7 @@ public class BasicClientEP implements TestHelper {
 
         @OnMessage
         public String echoText(String data) {
-            LOG.info("BasicClientEP.TestOnError.echoText() " + data);
+            LOG.info("DEBUG: BasicClientEP.TestOnError.echoText Recieving data -> " + data);
 
             _wtr.addMessage(data);
 
@@ -145,6 +148,7 @@ public class BasicClientEP implements TestHelper {
             try {
                 String s = _data[_counter++];
                 sess.getBasicRemote().sendText(s);
+                LOG.info("DEBUG: BasicClientEP.TestOnError.onOpen Sending data to Remote -> " + s);
             } catch (Exception e) {
                 _wtr.addExceptionAndTerminate("Error publishing initial message", e);
 

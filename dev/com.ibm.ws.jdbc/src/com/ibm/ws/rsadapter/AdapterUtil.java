@@ -19,6 +19,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +49,7 @@ import javax.resource.spi.SecurityException;
 import com.ibm.websphere.ce.cm.ConnectionWaitTimeoutException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection; 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
@@ -626,7 +628,16 @@ public class AdapterUtil {
                 return "TMNOFLAGS (" + flag + ')'; 
 
             case XAResource.TMRESUME:
-                return "TMRESUME (" + flag + ')'; 
+                return "TMRESUME (" + flag + ')';
+
+            case 0x8000:
+                return "SSTRANSTIGHTLYCPLD (" + flag + ')'; // Microsoft SQL Server JDBC driver
+
+            case 0x10000:
+                return "ORATRANSLOOSE (" + flag + ')'; // Oracle JDBC driver
+
+            case 0x800000:
+                return "TMLCS (" + flag + ')'; // DB2 JCC driver
         }
 
         return "UNKNOWN XA RESOURCE START FLAG (" + flag + ')'; 
@@ -650,6 +661,19 @@ public class AdapterUtil {
         }
 
         return "UNKNOWN XA RESOURCE VOTE (" + vote + ')'; 
+    }
+
+    /**
+     * Utility method that determines if a SQLException inherits from the specified legacy exception class.
+     *
+     * @param x exception that might extend the legacy exception class.
+     * @return true if an instance of the legacy exception type, otherwise false.
+     */
+    private static boolean isLegacyException(SQLException x, String className) {
+        for (Class<?> c = x.getClass(); c != null; c = c.getSuperclass())
+            if (c.getName().equals(className))
+                return true;
+        return false;
     }
 
     private static final String os = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -1099,10 +1123,7 @@ public class AdapterUtil {
 
     /**
      * The AdapterUtil.mapException method handles all exception mapping scenarios for the
-     * WebSphere Relational Resource Adapter. It is consolidated into a single location
-     * because all of the various utility methods scattered throughout the code were
-     * inconsistent with eachother due to changes not being made in all places.
-     * It should be more convenient to update a single method when changes are needed.
+     * OpenLiberty JDBC integration layer.
      * 
      * @param x - the exception to map. The exception must either be a SQLException or
      *            a DataStoreAdapterException with a chained SQLException. If the exception is
@@ -1126,8 +1147,9 @@ public class AdapterUtil {
      *            connection event listeners. If no connection handle or managed connection are
      *            supplied then this value is ignored.
      * 
-     * @return the mapped exception, according to the data store helper and error detection
-     *         model. If no mapping is found, or if not enabled, or if insufficient
+     * @return the mapped exception, according to the DatabaseHelper or DataStoreHelper,
+     *         the identifyException configuration, and the replaceExceptions heritage setting.
+     *         If no mapping is found, or if not enabled, or if insufficient
      *         parameters are provided, then the original exception is returned.
      *         The exception returned is of the same type as the exception parameter
      *         supplied. In the case of DataStoreAdapterException, this method maps the
@@ -1158,29 +1180,72 @@ public class AdapterUtil {
 
         boolean isStaleStatement = false;
         boolean mapsToStaleConnection = false;
+        SQLException mappedX;
+        boolean alreadyMapped = sqlX != null && isLegacyException(sqlX, "com.ibm.websphere.ce.cm.PortableSQLException");
 
-        if (mcf != null // must have access to helper
-            && sqlX != null // need an exception to map
-            && (dsae == null || !dsae.beenMapped())) // not already mapped 
+        if (mcf == null                          // no access to helper or replaceExceptions config
+         || sqlX == null                         // nothing to map
+         || alreadyMapped                        // already mapped
+         || dsae != null && dsae.beenMapped())   // already mapped
         {
-            mapsToStaleConnection = iHelper.isConnectionError(sqlX);
+            mappedX = sqlX;
+        }
+        else
+        {
+            if (iHelper.dataStoreHelper == null) {
+                mappedX = sqlX;
+                mapsToStaleConnection = iHelper.isConnectionError(sqlX);
+            } else {
+                mappedX = iHelper.mapException(sqlX);
+                mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, mappedX == sqlX ? "not replaced" : ("mapped to " + mappedX.getClass().getName()));
+                // Legacy code does not replace BatchUpdateException
+                if (sqlX instanceof BatchUpdateException)
+                    mappedX = sqlX;
+            }
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "stale? " + mapsToStaleConnection + "; original exception is:", getStackTraceWithState(sqlX));
 
             // Check for stale statement
 
-            if (iHelper.isStaleStatement(sqlX)) {
-                isStaleStatement = true;
+            if (iHelper.dataStoreHelper == null)
+                isStaleStatement = iHelper.isStaleStatement(sqlX);
+            else if (isLegacyException(mappedX, IdentifyExceptionAs.StaleStatement.legacyClassName))
+                try {
+                    isStaleStatement = true;
+                    SQLException m = mappedX;
+                    mappedX = AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                        @SuppressWarnings("unchecked")
+                        Class<? extends SQLException> StaleConnectionException = (Class<? extends SQLException>)
+                            m.getClass().getClassLoader().loadClass(IdentifyExceptionAs.StaleConnection.legacyClassName);
+                        return StaleConnectionException.getConstructor(SQLException.class).newInstance(m.getNextException());
+                    });
+                } catch (PrivilegedActionException privX) {
+                    FFDCFilter.processException(privX, AdapterUtil.class.getName(), "1210");
+                }
+
+            if (isStaleStatement) {
                 if (handle == null) {
                     if (mc != null)
                         mc.clearStatementCache();
                 } else
                     WSJdbcUtil.handleStaleStatement(handle);
             }
-        }
 
-        SQLException mappedX = sqlX;
+            // Check if the replaceExceptions heritage setting permits the mapped exception to be returned
+            // to the application, or only used internally by the application server.
+
+            if (mcf.dsConfig.get().heritageReplaceExceptions)
+            {
+                if (dsae != null && mappedX != sqlX)
+                    dsae.setLinkedException(mappedX);
+            }
+            else // not enabled, use the original exception
+                mappedX = sqlX;
+
+        }
 
         // For DB2, SQLTransientConnectionException with error code -4498 is actually
         // a recoverable exception. Switch it to SQLRecoverableException. 
@@ -1209,6 +1274,7 @@ public class AdapterUtil {
              || sqlX instanceof SQLNonTransientConnectionException
              || isAuthenticationError
              || mapsToStaleConnection) 
+            && !alreadyMapped
             && !isStaleStatement) // it's a statement error, not a connection error
         {
             if (tc.isDebugEnabled())
@@ -1341,24 +1407,6 @@ public class AdapterUtil {
                 Tr.debug(tc, "adapterUtil matchGSSName return with exception ", false);
             return false;
         }
-    }
-
-    /**
-     * Identifies if an exception indicates an unsupported operation.
-     * 
-     * @param sqle the exception.
-     * @return true if unsupported, otherwise false.
-     */
-    public static boolean isUnsupportedException(SQLException sqle){
-        if(sqle instanceof SQLFeatureNotSupportedException)
-            return true;
-        
-        String state = sqle.getSQLState() == null ? "" : sqle.getSQLState();
-        int code = sqle.getErrorCode();
-
-        return state.startsWith("0A") || 0x0A000 == code // standard code for unsupported operation
-            || state.startsWith("HYC00") // ODBC error code
-            || code == -79700 && "IX000".equals(state); // Informix specific
     }
     
     public static ClassLoader getClassLoaderWithPriv(final Library lib) {

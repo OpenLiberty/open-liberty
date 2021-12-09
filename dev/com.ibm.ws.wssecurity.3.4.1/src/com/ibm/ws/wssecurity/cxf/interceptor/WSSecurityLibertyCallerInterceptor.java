@@ -33,10 +33,12 @@ import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.wss4j.policy.SP12Constants;
 import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JUtils;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.WSDataRef;
 import org.apache.wss4j.dom.engine.WSSecurityEngineResult;
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.wss4j.common.ext.WSSecurityException.ErrorCode;
 import org.apache.wss4j.common.principal.WSUsernameTokenPrincipalImpl;
 import org.apache.wss4j.dom.handler.WSHandlerConstants;
 import org.apache.wss4j.dom.handler.WSHandlerResult;
@@ -61,6 +63,7 @@ import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.sso.common.SsoService;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.wssecurity.WSSecurityPolicyException;
 import com.ibm.ws.wssecurity.caller.CallerConstants;
 import com.ibm.ws.wssecurity.caller.SAMLAuthenticator;
 import com.ibm.ws.wssecurity.cxf.validator.UsernameTokenValidator;
@@ -163,6 +166,10 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                             (List<WSHandlerResult>) message.get(WSHandlerConstants.RECV_RESULTS);
             WSHandlerResult handlerResult = wsResult.get(0);
 
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, " ws result = " + handlerResult.getResults());
+                Tr.debug(tc, " ws action result = " + handlerResult.getActionResults());
+            }
             if (isUNT) {
                 handleUsernameToken(message, handlerResult);
             } else if (isX509) {
@@ -331,16 +338,29 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
     }
 
     private void handleUsernameToken(@Sensitive SoapMessage message, WSHandlerResult handlerResult) throws SoapFault {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "results = ", handlerResult);
+        }
         List<WSSecurityEngineResult> utResults = new ArrayList<WSSecurityEngineResult>();
         //WSSecurityUtil.fetchAllActionResults(handlerResult.getResults(), WSConstants.UT, utResults);
-        utResults = handlerResult.getActionResults().get(WSConstants.UT);
-
+        if (handlerResult.getActionResults().containsKey(WSConstants.UT)) {
+            utResults = handlerResult.getActionResults().get(WSConstants.UT);
+        }
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "UNT results = ", utResults);
+        }
         // Check for Caller UNT w/o password @sw1
         //WSSecurityUtil.fetchAllActionResults(handlerResult.getResults(), WSConstants.UT_NOPASSWORD, utResults);
         List<WSSecurityEngineResult> utnpResults = new ArrayList<WSSecurityEngineResult>();
         utnpResults = handlerResult.getActionResults().get(WSConstants.UT_NOPASSWORD);
-        utResults.addAll(utnpResults);
-
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "UNT_NP results = ", utnpResults);
+        }
+        if (utnpResults != null) {
+            utResults.addAll(utnpResults);
+        }
+        
         int ut_counter = 0;
         WSUsernameTokenPrincipalImpl principal = null;
 
@@ -371,18 +391,22 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
         if (ut_counter > 1) {
             //Error - more than one UNT
             Tr.error(tc, "multiple_unt_exist_err");
-            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "duplicateError"));
-            throw fault;
+            throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                             (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "duplicateError"));
+            //
+            //SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+            //                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "duplicateError"));
+            //throw fault;
 
         } else if (ut_counter == 0) {
             //Error - no unt in the message to process caller configuration
             Tr.error(tc, "no_caller_exist_err", new Object[] { WSSecurityConstants.UNT_CALLER_NAME,
                                                               WSSecurityConstants.UNT_CALLER_NAME });
-
-            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "missingUsernameToken"));
-            throw fault;
+            throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                             (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "missingUsernameToken"));
+            //SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+            //                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "missingUsernameToken"));
+            //throw fault;
         }
         //login
         SecurityService securityService = UsernameTokenValidator.getSecurityService();
@@ -416,36 +440,46 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                                             new Object[] { principal.getName() });
                 Tr.error(tc, "error_authenticate", new Object[] { e.getMessage() });
                 //authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage());
-                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
-                                                  { e.getLocalizedMessage() }));
-                throw fault;
+                
+                throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                                 (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[] {e.getLocalizedMessage()}));
+                //
+//                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
+//                                                  { e.getLocalizedMessage() }));
+//                throw fault;
             } catch (com.ibm.websphere.security.WSSecurityException wse) {
                 //e.printStackTrace();
                 FFDCFilter.processException(wse,
                                             getClass().getName(), "handleMessage",
                                             new Object[] { principal.getName() });
                 Tr.error(tc, "error_authenticate", new Object[] { wse.getMessage() });
-                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
-                                                  { wse.getLocalizedMessage() }));
-                throw fault;
+                throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                                 (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[] {wse.getLocalizedMessage()}));
+//                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
+//                                                  { wse.getLocalizedMessage() }));
+//                throw fault;
             } catch (Exception e) {
                 //e.printStackTrace();
                 FFDCFilter.processException(e,
                                             getClass().getName(), "handleMessage",
                                             new Object[] { principal.getName() });
                 Tr.error(tc, "error_authenticate", new Object[] { e.getMessage() });
-                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
-                                                  { e.getMessage() }));
-                throw fault;
+                throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                                 (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[] {e.getMessage()}));
+//                SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
+//                                                  { e.getMessage() }));
+//                throw fault;
             }
         } else {
-            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
-                                              { "Missing Liberty Security Service" }));
-            throw fault;
+            throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException
+                                             (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[] {"Missing Liberty Security Service"}));
+//            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "badUsernameToken", new Object[]
+//                                              { "Missing Liberty Security Service" }));
+//            throw fault;
         }
     }
 
@@ -462,12 +496,15 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
 
         List<WSSecurityEngineResult> signedResults = new ArrayList<WSSecurityEngineResult>();
         //WSSecurityUtil.fetchAllActionResults(handlerResult.getResults(), WSConstants.SIGN, signedResults);
-        signedResults = handlerResult.getActionResults().get(WSConstants.SIGN);
-        List<WSSecurityEngineResult> signedutResults = new ArrayList<WSSecurityEngineResult>();
+        if (handlerResult.getActionResults().containsKey(WSConstants.SIGN)) {
+            signedResults = handlerResult.getActionResults().get(WSConstants.SIGN);
+        }
+              
         //WSSecurityUtil.fetchAllActionResults(handlerResult.getResults(), WSConstants.UT_SIGN, signedResults);
-        signedutResults = handlerResult.getActionResults().get(WSConstants.UT_SIGN);
-
-        signedResults.addAll(signedutResults);
+        List<WSSecurityEngineResult> signedutResults = handlerResult.getActionResults().get(WSConstants.UT_SIGN);
+        if (signedutResults != null) {
+            signedResults.addAll(signedutResults);
+        }     
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
         Collection<AssertionInfo> ais = aim.get(SP12Constants.ASYMMETRIC_BINDING);
         if (ais != null && !ais.isEmpty()) {
@@ -510,15 +547,17 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
             //Tr.error(tc, "no_endorsing_token_no_asymmetric_token");
             Tr.error(tc, "no_caller_exist_err", new Object[] { WSSecurityConstants.X509_CALLER_NAME,
                                                               WSSecurityConstants.X509_CALLER_NAME });
-            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
-                                              { "0" }));
-            throw fault;
+            throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
+                            { "0" }));
+//            SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
+//                                              { "0" }));
+//            throw fault;
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Caller DN: " + x509Certs[0].getSubjectDN().getName());
         }
-        bstCertAuthentication(x509Certs, message.getVersion());
+        bstCertAuthentication(x509Certs, message, message.getVersion());
 
     } //else if (isX509)
 
@@ -546,10 +585,12 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                     continue;
                 } else if (!(sb.toString().equals(issuerInfo))) {
                     Tr.error(tc, "multiple_asymmetric_token_err");
-                    SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
-                                                      (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
-                                                      { "2" }));
-                    throw fault;
+                    throw WSS4JUtils.createSoapFault(message, message.getVersion(), new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
+                                    { "2" }));
+//                    SoapFault fault = createSoapFault(message.getVersion(), new WSSecurityException
+//                                                      (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidCertData", new Object[]
+//                                                      { "2" }));
+//                    throw fault;
                 }
             }
         }
@@ -565,7 +606,7 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "looking x509Token which endorse TS");
             }
-            WSSecurityEngineResult tsResult = fetchActionResult(results, WSConstants.TS);//WSSecurityUtil.fetchActionResult(results, WSConstants.TS); //@AV999
+            WSSecurityEngineResult tsResult = fetchActionResult(results, WSConstants.TS);//WSSecurityUtil.fetchActionResult(results, WSConstants.TS); //v3
             Element timestamp = null;
             if (tsResult != null) {
                 Timestamp ts = (Timestamp) tsResult.get(WSSecurityEngineResult.TAG_TIMESTAMP);
@@ -639,7 +680,7 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
         return null;
     }
 
-    private void bstCertAuthentication(X509Certificate[] x509Certs, SoapVersion version) throws Fault {
+    private void bstCertAuthentication(X509Certificate[] x509Certs, @Sensitive SoapMessage message, SoapVersion version) throws Fault {
         //login
         SecurityService securityService = UsernameTokenValidator.getSecurityService();
         if (securityService != null) {
@@ -669,26 +710,32 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                                             new Object[] { x509Certs[0].getSubjectX500Principal().getName() });
                 //authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage());
                 Tr.error(tc, "error_authenticate", new Object[] { e.getMessage() });
-                SoapFault fault = createSoapFault(version, new WSSecurityException
-                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
-                                                  { e.getLocalizedMessage() }));
-                throw fault;
+                throw WSS4JUtils.createSoapFault(message, version, new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+                                { e.getLocalizedMessage() }));
+//                SoapFault fault = createSoapFault(version, new WSSecurityException
+//                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+//                                                  { e.getLocalizedMessage() }));
+//                throw fault;
             } catch (Exception e) {
                 //e.printStackTrace();
                 FFDCFilter.processException(e,
                                             getClass().getName(), "handleMessage",
                                             new Object[] { x509Certs[0].getSubjectX500Principal().getName() });
                 Tr.error(tc, "error_authenticate", new Object[] { e.getMessage() });
-                SoapFault fault = createSoapFault(version, new WSSecurityException
-                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
-                                                  { e.getMessage() }));
-                throw fault;
+                throw WSS4JUtils.createSoapFault(message, version, new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+                                { e.getMessage() }));
+//                SoapFault fault = createSoapFault(version, new WSSecurityException
+//                                                  (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+//                                                  { e.getMessage() }));
+//                throw fault;
             }
         } else {
-            SoapFault fault = createSoapFault(version, new WSSecurityException
-                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
-                                              { "Missing Liberty Security Service" }));
-            throw fault;
+            throw WSS4JUtils.createSoapFault(message, version, new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+                            { "Missing Liberty Security Service" }));
+//            SoapFault fault = createSoapFault(version, new WSSecurityException
+//                                              (WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, "invalidData", new Object[]
+//                                              { "Missing Liberty Security Service" }));
+//            throw fault;
         }
     }
 

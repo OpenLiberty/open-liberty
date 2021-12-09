@@ -32,9 +32,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Response;
 import javax.xml.ws.Service;
+import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,6 +54,7 @@ import org.w3c.dom.NodeList;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -76,7 +79,7 @@ public class EJBWSProviderTest {
     private static final QName PORT_NAME = new QName("http://ejbbasic.jaxws.ws.ibm.com/", "UserQueryPort");
 
     public static final String GET_USER_REQUEST_MESSAGE = "<?xml version=\"1.0\"?><S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-                                                          + "<S:Body><p:getUser xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\">"
+                                                          + "<S:Body><p:getUser xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\" >"
                                                           + "<arg0>Arugal</arg0></p:getUser>"
                                                           + "</S:Body></S:Envelope>";
 
@@ -116,11 +119,41 @@ public class EJBWSProviderTest {
         }
     }
 
+    /*
+     * This test is a basic invocation of a Dynamic Service that uses the @WebServiceProvider annotation
+     * by invoking the WSP with a dynamic dispatch client.
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class.
+     */
     @Test
     public void testQueryUserProvider() throws Exception {
         Service service = Service.create(SERVICE_NAME);
         service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
-        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE);
+
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
+
+        SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
+
+        SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
+
+        assertQueryUserResponse(responseSOAPMessage);
+    }
+
+    /*
+     * This test makes sure that with the fix, a dynamic client cannot still invoke a WSP based service even when the
+     * SOAPAction header mismatches the expected value since the allowNonMatchingToDefaultSoapAction property isn't set
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class.
+     */
+    @Test
+    public void testQueryUserProviderWithSOAPActionMismatch() throws Exception {
+        Service service = Service.create(SERVICE_NAME);
+        service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
+
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasim/UserQuery#getUserMismatch");
+
+        dispatch.getRequestContext().put("allowNonMatchingToDefaultSoapAction", "false");
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
 
         SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
@@ -130,9 +163,13 @@ public class EJBWSProviderTest {
 
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat({ "EE9_FEATURES", "jaxws-2.3" })
     public void testUserNotFoundExceptionProvider() throws Exception {
         Service service = Service.create(new URL(ENDPOINT_URL + "?wsdl"), SERVICE_NAME);
-        Dispatch<Source> dispatch = service.createDispatch(PORT_NAME, Source.class, Service.Mode.PAYLOAD);
+        Dispatch<Source> dispatch = service.createDispatch(PORT_NAME, Source.class, Service.Mode.PAYLOAD, new AddressingFeature());
+
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasim/UserQuery#getUser");
+
         Source response = dispatch.invoke(createGetUserNotFoundExceptionPayloadSource());
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -161,6 +198,7 @@ public class EJBWSProviderTest {
     @Test
     public void testListUsersProvider() throws Exception {
         SOAPConnection soapConn = SOAPConnectionFactory.newInstance().createConnection();
+
         SOAPMessage responseSOAPMessage = soapConn.call(createListUsersSOAPMessage(), ENDPOINT_URL);
 
         SOAPBody responseSOAPBody = responseSOAPMessage.getSOAPBody();
@@ -176,7 +214,10 @@ public class EJBWSProviderTest {
     public void testQueryUserProviderAsyncResponse() throws Exception {
         Service service = Service.create(SERVICE_NAME);
         service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
-        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE);
+
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasim/UserQuery#getUser");
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
 
         Response<SOAPMessage> response = dispatch.invokeAsync(requestSOAPMessage);
@@ -207,7 +248,11 @@ public class EJBWSProviderTest {
     public void testQueryUserProviderAsyncHandler() throws Exception {
         Service service = Service.create(SERVICE_NAME);
         service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
-        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE);
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasim/UserQuery#getUser");
+
+        dispatch.getRequestContext().put("allowNonMatchingToDefaultSoapAction", "true");
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
 
         AsyncHandlerImpl asyncHandlerImpl = new AsyncHandlerImpl();
@@ -269,6 +314,9 @@ public class EJBWSProviderTest {
 
     private SOAPMessage createListUsersSOAPMessage() throws SOAPException {
         SOAPMessage requestSoapMessage = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL).createMessage();
+
+        requestSoapMessage.setProperty("allowNonMatchingToDefaultSoapAction", "true");
+        requestSoapMessage.setProperty(ENDPOINT_URL, requestSoapMessage);
         requestSoapMessage.getSOAPPart().setContent(new StreamSource(new StringReader(LIST_USERS_MESSAGE)));
         requestSoapMessage.saveChanges();
         return requestSoapMessage;

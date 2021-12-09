@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2009 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,12 @@ import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.ConcurrentHashSet;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
@@ -233,6 +233,15 @@ public class FailureScopeController {
 
                 if (!partnersLeft) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
+                    // Shutdown is clean, we do some housekeeping if peer recovery is enabled.
+                    if (_recoveryManager != null) {
+                        // If we are operating in a peer recovery environment this method will delete the home server's
+                        // recovery logs where it has shutdown cleanly.
+                        _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
+
+                        // Delete the home server's lease
+                        _recoveryManager.deleteServerLease(serverName());
+                    }
                 } else if (tc.isDebugEnabled()) {
                     if (partnersLeft) {
                         Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });

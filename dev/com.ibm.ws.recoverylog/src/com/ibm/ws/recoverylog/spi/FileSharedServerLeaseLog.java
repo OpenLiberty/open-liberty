@@ -23,8 +23,8 @@ import java.security.PrivilegedAction;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -840,5 +840,13 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
 
+    }
+
+    /**
+     * Signals to the Lease Log that the server is stopping.
+     */
+    @Override
+    public void serverStopping() {
+        // No-op in filesystem implementation
     }
 }

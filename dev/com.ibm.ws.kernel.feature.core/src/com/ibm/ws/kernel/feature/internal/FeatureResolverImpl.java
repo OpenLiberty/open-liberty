@@ -94,7 +94,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved, allowMultipleVersions,
+        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
+                               allowMultipleVersions ? Collections.<String> emptySet() : null,
                                EnumSet.allOf(ProcessType.class));
     }
 
@@ -108,7 +109,8 @@ public class FeatureResolverImpl implements FeatureResolver {
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
                                   Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, EnumSet.allOf(ProcessType.class));
+        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                               EnumSet.allOf(ProcessType.class));
     }
 
     /*
@@ -117,6 +119,21 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
      * java.util.Collection, java.util.Set,
      * boolean, java.util.EnumSet)
+     */
+    @Override
+    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                                  boolean allowMultipleVersions,
+                                  EnumSet<ProcessType> supportedProcessTypes) {
+        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                               supportedProcessTypes);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set,
+     * java.util.Set, java.util.EnumSet)
      * Here are the steps this uses to resolve:
      * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
      * 2) Resolve the root features
@@ -124,9 +141,9 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     @Override
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  boolean allowMultipleVersions,
+                                  Set<String> allowedMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
-        SelectionContext selectionContext = new SelectionContext(repository, allowMultipleVersions, supportedProcessTypes);
+        SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
@@ -257,7 +274,10 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Return the best solution found
         selectionContext.restoreBestSolution();
-        return selectionContext.getResult().getResolvedFeatures();
+        Set<String> resolvedFeatures = selectionContext.getResult().getResolvedFeatures();
+        // return a copy to make sure the returned results do not change in another iteration
+        // over auto features
+        return new LinkedHashSet<String>(resolvedFeatures);
     }
 
     Set<String> processCurrentPermutation(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
@@ -341,7 +361,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             return;
         }
         // sanity check to make sure this feature is selected; this is really just to check bugs in the resolver
-        if (!!!selectionContext._allowMultipleVersions && selectedFeature.isSingleton()) {
+        if (selectedFeature.isSingleton() && !!!selectionContext.allowMultipleVersions(baseFeatureName)) {
             Chain existingSelection = selectionContext.getSelected(baseFeatureName);
             String selectedFeatureName = existingSelection == null ? null : existingSelection.getCandidates().get(0);
             if (existingSelection == null || !!!featureName.equals(selectedFeatureName)) {
@@ -439,7 +459,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Check for tolerated versions; but only if the preferred version is a singleton or we did not find the preferred version
         if (tolerates != null && (candidateNames.isEmpty() || isSingleton)) {
             for (String tolerate : tolerates) {
-                if (selectionContext._allowMultipleVersions) {
+                if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
                     // if we are in minify mode (_allowMultipleVersions) then we only want to continue to look for
                     // tolerated versions until we have found one candidate
                     if (!!!candidateNames.isEmpty()) {
@@ -496,7 +516,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                                         List<String> overrideTolerates,
                                         String baseSymbolicName, String tolerate) {
         // if in minify mode always allow (_allowMultipleVersions)
-        if (selectionContext._allowMultipleVersions) {
+        if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
             return true;
         }
         // all private features tolerations are allowed
@@ -603,15 +623,15 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         private final FeatureResolver.Repository _repository;
         private final Deque<Permutation> _permutations = new ArrayDeque<Permutation>(Arrays.asList(new Permutation()));
-        private final boolean _allowMultipleVersions;
+        private final Set<String> _allowedMultipleVersions;
         private final EnumSet<ProcessType> _supportedProcessTypes;
         private final AtomicInteger _initialBlockedCount = new AtomicInteger(-1);
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
 
-        SelectionContext(FeatureResolver.Repository repository, boolean allowMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
+        SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
-            this._allowMultipleVersions = allowMultipleVersions;
+            this._allowedMultipleVersions = allowedMultipleVersions;
             this._supportedProcessTypes = supportedProcessTypes;
         }
 
@@ -685,6 +705,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._blockedFeatures.contains(baseSymbolicName);
         }
 
+        boolean allowMultipleVersions(String baseSymbolicName) {
+            return (_allowedMultipleVersions != null && (_allowedMultipleVersions.size() == 0 || _allowedMultipleVersions.contains(baseSymbolicName)));
+        }
+
         int getBlockedCount() {
             return _current._blockedFeatures.size();
         }
@@ -707,7 +731,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 _current._result.addMissing(symbolicName);
                 return;
             }
-            if (_allowMultipleVersions || !!!isSingleton) {
+            if (!!!isSingleton || allowMultipleVersions(baseSymbolicName)) {
                 // must allow all candidates
                 return;
             }
@@ -785,7 +809,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void primeSelected(Collection<String> features) {
-            if (_allowMultipleVersions) {
+            if (_allowedMultipleVersions != null && _allowedMultipleVersions.size() == 0) {
                 // no need to do any selecting when allowing multiple versions
                 return;
             }
@@ -805,6 +829,9 @@ public class FeatureResolverImpl implements FeatureResolver {
                     String[] nameAndVersion = parseNameAndVersion(featureSymbolicName);
                     String base = nameAndVersion[0];
                     String preferredVersion = nameAndVersion[1];
+                    if (allowMultipleVersions(base)) {
+                        continue;
+                    }
                     // check for an existing selection for this base feature name
                     Chain selectedChain = _current._selected.get(base);
                     if (selectedChain != null) {
@@ -1000,6 +1027,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         ResultImpl setResolvedFeatures(Collection<String> resolved) {
+            // NOTE: This should replace any existing resolved.
+            // When processing auto-features we start with
+            // an already processed permutation with a result
+            // we must replace that with this new set of resolved
+            _resolved.clear();
             _resolved.addAll(resolved);
             return this;
         }

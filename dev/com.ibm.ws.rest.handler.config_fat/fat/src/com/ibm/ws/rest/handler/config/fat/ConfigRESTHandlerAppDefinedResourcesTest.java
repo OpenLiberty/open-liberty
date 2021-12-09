@@ -49,6 +49,7 @@ import componenttest.topology.utils.HttpsRequest;
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     private static final String APP_NAME = "AppDefResourcesApp";
+    private static final String DerbyVersion = "10.11.1.1";
 
     @Server("com.ibm.ws.rest.handler.config.appdef.fat")
     public static LibertyServer server;
@@ -1227,9 +1228,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
         assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
         assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
         assertEquals(err, "DBUSER3", info.getString("schema"));
         assertEquals(err, "dbuser3", info.getString("user"));
 
@@ -1244,9 +1245,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
         assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
         assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
         assertEquals(err, "DBUSER3", info.getString("schema"));
         assertEquals(err, "dbuser3", info.getString("user"));
 
@@ -1263,9 +1264,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
         assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
         assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
         assertEquals(err, "DBUSER3", info.getString("schema"));
         assertEquals(err, "dbuser3", info.getString("user"));
 
@@ -1292,9 +1293,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
         assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("databaseProductVersion"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
         assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertEquals(err, "10.11.1.1 - (1616546)", info.getString("jdbcDriverVersion"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
         assertEquals(err, "DBUSER3", info.getString("schema"));
         assertEquals(err, "dbuser3", info.getString("user"));
     }

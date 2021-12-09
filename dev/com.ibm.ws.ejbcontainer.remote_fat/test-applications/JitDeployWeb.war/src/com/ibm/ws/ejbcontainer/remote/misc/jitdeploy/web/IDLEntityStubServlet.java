@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static org.omg.CORBA.CompletionStatus._COMPLETED_NO;
 import static org.omg.CORBA.CompletionStatus._COMPLETED_YES;
 
 import javax.naming.InitialContext;
-import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -68,7 +67,7 @@ public class IDLEntityStubServlet extends FATServlet {
      */
     @Test
     public void testIDLEntityParametersAndReturnType() throws Exception {
-        IDLEntityRemote bean = (IDLEntityRemote) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/JitDeployEJB/IDLEntityRemoteBean"), IDLEntityRemote.class);
+        IDLEntityRemote bean = (IDLEntityRemote) new InitialContext().lookup("java:app/JitDeployEJB/IDLEntityRemoteBean");
 
         CompletionStatus idlEntity = CompletionStatus.from_int(_COMPLETED_YES);
         CompletionStatus idlEntity2 = CompletionStatus.from_int(_COMPLETED_NO);
@@ -103,7 +102,7 @@ public class IDLEntityStubServlet extends FATServlet {
      */
     @Test
     public void testIDLEntityParametersAndReturnTypeWithRMIC() throws Exception {
-        IDLEntityRMIC bean = (IDLEntityRMIC) PortableRemoteObject.narrow(new InitialContext().lookup("java:app/JitDeployEJB/IDLEntityRMICBean"), IDLEntityRMIC.class);
+        IDLEntityRMIC bean = (IDLEntityRMIC) new InitialContext().lookup("java:app/JitDeployEJB/IDLEntityRMICBean");
 
         CompletionStatus idlEntity = CompletionStatus.from_int(_COMPLETED_YES);
         CompletionStatus idlEntity2 = CompletionStatus.from_int(_COMPLETED_NO);

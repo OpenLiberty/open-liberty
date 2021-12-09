@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,16 +56,22 @@ public class DynamicUpdateTest {
      * private static final String DEAULT_WIMREGISTRY_REALM = "dynamicUpdate/default_wimRegistry_realm.xml";
      */
 
-    private static final String MASTER_SERVER_XML = "dynamicUpdate/master_server.xml";
+    private static final String PRIMARY_SERVER_XML = "dynamicUpdate/primary_server.xml";
     private static final String WITHOUT_PRIMARY_REALM = "dynamicUpdate/without_primary_realm.xml";
     private static final String WITH_PRIMARY_REALM_WITH_UR_MAPPING = "dynamicUpdate/with_UR_mapping.xml";
     private static final String TWO_LDAPS_AND_ONE_UNDER_PRIMARY_REALM = "dynamicUpdate/multiple_ldaps_and_single_under_realm.xml";
     private static final String TWO_LDAPS_AND_TWO_UNDER_PRIMARY_REALM = "dynamicUpdate/multiple_ldaps_and_multiple_under_realm.xml";
     private static final String TWO_LDAPS_AND_TWO_REALMS = "dynamicUpdate/multiple_ldaps_and_multiple_realms.xml";
-    protected static String serverConfigurationFile = MASTER_SERVER_XML;
+    protected static String serverConfigurationFile = PRIMARY_SERVER_XML;
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        /*
+         * Transform any applications into EE9 when necessary.
+         */
+        FATSuite.transformApps(server, "dropins/userRegistry.war");
+
         // Add LDAP variables to bootstrap properties file
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
@@ -91,6 +97,7 @@ public class DynamicUpdateTest {
             servlet.getRealm();
         }
 
+        serverConfigurationFile = PRIMARY_SERVER_XML;
     }
 
     @AfterClass
@@ -98,7 +105,7 @@ public class DynamicUpdateTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer("CWIML1018E", "CWIML4538E");
+            server.stopServer("CWIML1018E", "CWIML4538E", "CWWKG0027W");
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
@@ -125,6 +132,8 @@ public class DynamicUpdateTest {
             server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
 
             serverConfigurationFile = serverXML;
+        } else {
+            Log.info(c, "setServerConfiguration", "serverConfig already set to " + serverXML + ", no config update.");
         }
     }
 
@@ -139,7 +148,7 @@ public class DynamicUpdateTest {
         Log.info(c, "loginAfterRemovingPrimaryRealmTest", "Entering test loginAfterRemovingPrimaryRealmTest");
 
         //Change server configuration to add UR mapping attr under primary realm
-        setServerConfiguration(MASTER_SERVER_XML);
+        setServerConfiguration(PRIMARY_SERVER_XML);
 
         assertEquals("Authentication should succeed.", UNIQUE_NAME, servlet.checkPassword(USERNAME, USER_PASSWORD));
 
@@ -161,7 +170,7 @@ public class DynamicUpdateTest {
         Log.info(c, "getRealmAfterRemovingPrimaryRealm", "Checking expected realm");
 
         //Change server configuration to add UR mapping attr under primary realm
-        setServerConfiguration(MASTER_SERVER_XML);
+        setServerConfiguration(PRIMARY_SERVER_XML);
         assertEquals("defaultWIMFileBasedRealm", servlet.getRealm());
 
         //Change server configuration to remove primary realm

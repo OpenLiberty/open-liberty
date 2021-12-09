@@ -30,4 +30,14 @@ bVersion=1.0
 # corresponding entry in file cnf/oss_depenendcies.maven.
 # Ref: https://bndtools.org/manual/packageexplorer.html
 -testpath: \
+	org.springframework:spring-core;strategy=exact;version=5.2.6.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.2.6.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.2.6.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.2.6.RELEASE, \
+	org.springframework:spring-webmvc;strategy=exact;version=5.2.6.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;version=2.3.0.RELEASE, \
+	org.springframework.boot:spring-boot;version=2.3.0.RELEASE, \
+	org.springframework.security:spring-security-web;strategy=exact;version=5.3.2.RELEASE, \
+	org.springframework.security:spring-security-config;strategy=exact;version=5.3.2.RELEASE, \
+	org.springframework.security:spring-security-core;strategy=exact;version=5.3.2.RELEASE, \
 	com.ibm.websphere.javaee.servlet.4.0

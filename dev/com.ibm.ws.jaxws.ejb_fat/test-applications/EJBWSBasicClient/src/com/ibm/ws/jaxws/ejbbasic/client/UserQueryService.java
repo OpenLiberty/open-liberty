@@ -15,8 +15,7 @@ import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
 @WebServiceClient(name = "UserQueryService", targetNamespace = "http://ejbbasic.jaxws.ws.ibm.com/", wsdlLocation = "file:/D:/1/wsimporterror/UserQueryService.wsdl")
-public class UserQueryService
-                extends Service {
+public class UserQueryService extends Service {
 
     private final static URL USERQUERYSERVICE_WSDL_LOCATION;
     private final static WebServiceException USERQUERYSERVICE_EXCEPTION;
@@ -47,7 +46,7 @@ public class UserQueryService
     }
 
     /**
-     * 
+     *
      * @return
      *         returns UserQuery
      */
@@ -57,10 +56,11 @@ public class UserQueryService
     }
 
     /**
-     * 
+     *
      * @param features
-     *            A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy. Supported features not in the <code>features</code> parameter will have their default
-     *            values.
+     *                     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy. Supported features not in the <code>features</code> parameter will have their
+     *                     default
+     *                     values.
      * @return
      *         returns UserQuery
      */

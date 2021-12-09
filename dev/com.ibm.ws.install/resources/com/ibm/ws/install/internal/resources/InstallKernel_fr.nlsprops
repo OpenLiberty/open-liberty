@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -872,7 +872,7 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Installez des fonctions
 
 ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: L'installation et la mise \u00e0 jour de fonctions ne sont pas prises en charge dans les \u00e9ditions b\u00eata.
 ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=L'installation et la mise \u00e0 jour de fonctions ne sont pas prises en charge pour le produit install\u00e9.
-ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Aucune action n'est requise.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Aucune action n'est n\u00e9cessaire.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.
@@ -885,5 +885,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=Aucune action n'est requise.
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Impossible d''installer le fichier {0} car le type de fichier n''est pas pris en charge. Seule l''installation \u00e0 partir de fichiers ESA est prise en charge.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Le fichier n'a pas \u00e9t\u00e9 install\u00e9 car un type de fichier non pris en charge a \u00e9t\u00e9 indiqu\u00e9.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: Le format de la coordonn\u00e9e Maven de la nomenclature de fonctions {0} n''est pas valide. V\u00e9rifiez que la coordonn\u00e9e est au format groupId:artifactId:version.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Le format de la coordonn\u00e9e Maven de la nomenclature de fonctions n'est pas valide.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformatez la coordonn\u00e9e Maven de la nomenclature de fonctions pour qu'elle corresponde au format groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Cette action du gestionnaire de fonctions (featureManager) est stabilis\u00e9e. Utilisez l''utilitaire d''installation {0} \u00e0 la place. La commande installUtility est recommand\u00e9e pour l''installation et les actions concernant le r\u00e9f\u00e9rentiel.

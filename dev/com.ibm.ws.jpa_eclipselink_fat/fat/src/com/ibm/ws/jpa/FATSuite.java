@@ -17,6 +17,33 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16588_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16588_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16685_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16685_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16772_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16772_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16970_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16970_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_Web;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -44,6 +71,14 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 TestOLGH14426_Web.class,
                 TestOLGH14457_EJB.class,
                 TestOLGH14457_Web.class,
+                TestOLGH16588_EJB.class,
+                TestOLGH16588_Web.class,
+                TestOLGH16685_EJB.class,
+                TestOLGH16685_Web.class,
+                TestOLGH16772_EJB.class,
+                TestOLGH16772_Web.class,
+                TestOLGH16970_EJB.class,
+                TestOLGH16970_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

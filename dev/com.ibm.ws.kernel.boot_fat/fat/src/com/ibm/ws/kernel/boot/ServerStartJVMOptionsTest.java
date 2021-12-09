@@ -305,7 +305,6 @@ public class ServerStartJVMOptionsTest {
         bw3.write("-DTest2=Good Value\n");
         bw3.write("-DTest4=Good Value\n");
         bw3.write("-DTest6=Good Value\n");
-        bw3.write("-XX:MaxPermSize=512m");
         bw3.close();
         Writer isw4 = new OutputStreamWriter(new FileOutputStream(sharedjvmoptions), "UTF-8");
         BufferedWriter bw4 = new BufferedWriter(isw4);
@@ -373,7 +372,7 @@ public class ServerStartJVMOptionsTest {
                     if (line.contains("Java System Properties")) {
                         afterSysProps = true;
                     }
-                    if (line.contains("-XX:MaxPermSize=512m")) {
+                    if (line.contains("-DTest6=Good Value")) {
                         foundTest[0] = true;
                     }
                     if (afterSysProps) {

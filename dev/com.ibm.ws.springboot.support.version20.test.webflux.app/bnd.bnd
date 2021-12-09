@@ -31,5 +31,5 @@ bVersion=1.0
 	org.springframework:spring-webflux;strategy=exact;version=5.0.8.RELEASE, \
 	org.springframework.boot:spring-boot-autoconfigure;version=2.0.4.RELEASE, \
 	org.springframework.boot:spring-boot;strategy=exact;version=2.0.4.RELEASE, \
-	org.reactivestreams:reactive-streams;version=1.0.2, \
+	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
 	io.projectreactor:reactor-core;version=3.1.8.RELEASE

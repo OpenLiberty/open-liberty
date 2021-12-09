@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,14 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -28,26 +27,21 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfUntNoPassTests {
     private static String serverName = "com.ibm.ws.wssecurity_fat";
 
-    //Added 10/2020
     @Server("com.ibm.ws.wssecurity_fat")
     public static LibertyServer server;
-
-    //orig from CL
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     static private final Class<?> thisClass = CxfUntNoPassTests.class;
 
@@ -73,7 +67,6 @@ public class CxfUntNoPassTests {
 
         String thisMethod = "setup";
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "nopassclient", "com.ibm.ws.wssecurity.fat.nopassclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types", "test.wssecfat");
         ShrinkHelper.defaultDropinApp(server, "nopassunt", "wssecfat.test");
 

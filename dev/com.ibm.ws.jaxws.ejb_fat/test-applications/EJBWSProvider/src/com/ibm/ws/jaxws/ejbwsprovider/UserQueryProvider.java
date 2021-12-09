@@ -21,9 +21,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.BindingType;
 import javax.xml.ws.Provider;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceProvider;
+import javax.xml.ws.soap.Addressing;
 
 /**
  *
@@ -31,9 +33,10 @@ import javax.xml.ws.WebServiceProvider;
 @WebServiceProvider(
                     portName = "UserQueryPort",
                     serviceName = "UserQueryService",
-                    targetNamespace = "http://ejbbasic.jaxws.ws.ibm.com/",
-                    wsdlLocation = "META-INF/wsdl/UserQueryService.wsdl")
+                    targetNamespace = "http://ejbbasic.jaxws.ws.ibm.com/")
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING)
 @Stateless(name = "UserQuery")
+@Addressing(enabled = true, required = false)
 public class UserQueryProvider implements Provider<Source> {
 
     private static final JAXBContext USER_QUERY_JAXB_CONTEXT;
@@ -49,6 +52,7 @@ public class UserQueryProvider implements Provider<Source> {
     }
 
     @Override
+    @javax.xml.ws.Action(input = "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser")
     public Source invoke(Source request) {
         try {
             JAXBElement element = (JAXBElement) USER_QUERY_JAXB_CONTEXT.createUnmarshaller().unmarshal(request);

@@ -63,31 +63,13 @@ public class AroundConstructEjbTest extends FATServletClient {
 
         JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class,
                                                 "utilLib.jar")
-                                        .addClass(com.ibm.ws.cdi.ejb.utils.Intercepted.class)
-                                        .addClass(com.ibm.ws.cdi.ejb.utils.Utils.class)
+                                        .addPackage(com.ibm.ws.cdi.ejb.utils.Intercepted.class.getPackage())
                                         .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")),
                                              "/META-INF/beans.xml");
 
         WebArchive aroundConstructApp = ShrinkWrap.create(WebArchive.class,
                                                           AROUND_CONSTRUCT_APP_NAME + ".war")
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.AroundConstructLogger.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.StatelessAroundConstructLogger.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.Ejb.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.Bean.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.SuperConstructInterceptor.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorTwoBinding.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.DirectlyIntercepted.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorOne.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.SubConstructInterceptor.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.DirectBindingConstructInterceptor.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.NonCdiInterceptor.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.ConstructInterceptor.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorOneBinding.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorTwo.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.EjbServlet.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.BeanServlet.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.AroundConstructTestServlet.class)
-                                                  .addClass(com.ibm.ws.cdi.ejb.apps.aroundconstruct.StatelessEjb.class)
+                                                  .addPackages(true, com.ibm.ws.cdi.ejb.apps.aroundconstruct.AroundConstructLogger.class.getPackage())
                                                   .add(new FileAsset(new File("test-applications/" + AROUND_CONSTRUCT_APP_NAME + ".war/resources/WEB-INF/beans.xml")),
                                                        "/WEB-INF/beans.xml")
                                                   .addAsLibrary(utilLib);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonParsingException;
@@ -41,6 +43,10 @@ import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 public class OpenShiftUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(OpenShiftUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
+
+    private static final JsonBuilderFactory builderFactory = Json.createBuilderFactory(null);
 
     SocialLoginConfig config = null;
 
@@ -114,10 +120,10 @@ public class OpenShiftUserApiUtils {
         if (accessToken == null) {
             throw new SocialLoginException("KUBERNETES_ACCESS_TOKEN_MISSING", null, null);
         }
-        JsonObjectBuilder bodyBuilder = Json.createObjectBuilder();
+        JsonObjectBuilder bodyBuilder = builderFactory.createObjectBuilder();
         bodyBuilder.add("kind", "TokenReview");
         bodyBuilder.add("apiVersion", "authentication.k8s.io/v1");
-        bodyBuilder.add("spec", Json.createObjectBuilder().add("token", accessToken));
+        bodyBuilder.add("spec", builderFactory.createObjectBuilder().add("token", accessToken));
         return bodyBuilder.build().toString();
     }
 
@@ -151,14 +157,14 @@ public class OpenShiftUserApiUtils {
             throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
         }
         try {
-            return Json.createReader(new StringReader(response)).readObject();
+            return readerFactory.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
             throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NOT_JSON", null, new Object[] { response, e });
         }
     }
 
     String createModifiedResponse(JsonObject userInnerMap) throws SocialLoginException {
-        JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
+        JsonObjectBuilder modifiedResponse = builderFactory.createObjectBuilder();
         if ("email".equals(config.getUserNameAttribute())) {
             addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
         } else {
@@ -264,7 +270,7 @@ public class OpenShiftUserApiUtils {
         }
         JsonObject jsonResponse;
         try {
-            jsonResponse = Json.createReader(new StringReader(response)).readObject();
+            jsonResponse = readerFactory.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
             throw new SocialLoginException("RESPONSE_NOT_JSON", null, new Object[] { response, e });
         }
@@ -342,7 +348,7 @@ public class OpenShiftUserApiUtils {
     }
 
     private JsonObjectBuilder copyJsonObject(JsonObject original) {
-        JsonObjectBuilder result = Json.createObjectBuilder();
+        JsonObjectBuilder result = builderFactory.createObjectBuilder();
         for (Entry<String, JsonValue> entry : original.entrySet()) {
             result.add(entry.getKey(), entry.getValue());
         }

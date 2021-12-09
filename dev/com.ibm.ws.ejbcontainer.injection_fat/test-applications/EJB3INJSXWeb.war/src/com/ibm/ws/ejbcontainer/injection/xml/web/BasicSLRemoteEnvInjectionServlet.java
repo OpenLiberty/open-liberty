@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -424,8 +424,8 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectObjFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectObjFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLLSB was not created successfully.", bean);
 
@@ -497,8 +497,8 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 updated lookup for the new binding format
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectPrimFld,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectPrimFld,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLLSB was not created successfully.", bean);
 
@@ -574,8 +574,8 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507 update lookup for new bindings
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectObjMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectObjMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLLSB was not created successfully.", bean);
 
@@ -648,8 +648,8 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
         //446507
-        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteBinding(ivJNDI_SLREnvInjectPrimMthd,
-                                                                         EnvInjectionEJBRemoteHome.class);
+        EnvInjectionEJBRemoteHome slHome = FATHelper.lookupRemoteHomeBinding(ivJNDI_SLREnvInjectPrimMthd,
+                                                                             EnvInjectionEJBRemoteHome.class);
         EnvInjectionEJBRemote bean = slHome.create();
         assertNotNull("1 ---> SLLSB was not created successfully.", bean);
 

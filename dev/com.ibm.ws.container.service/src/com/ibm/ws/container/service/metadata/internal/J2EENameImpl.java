@@ -13,7 +13,7 @@ package com.ibm.ws.container.service.metadata.internal;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.websphere.csi.J2EEName;
 
@@ -124,11 +124,7 @@ public final class J2EENameImpl implements J2EEName {
     public byte[] getBytes() {
         byte[] bytes = this.j2eeNameBytes;
         if (bytes == null) {
-            try {
-                bytes = toString().getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(e);
-            }
+            bytes = toString().getBytes(StandardCharsets.UTF_8);
 
             this.j2eeNameBytes = bytes;
         }
@@ -147,13 +143,7 @@ public final class J2EENameImpl implements J2EEName {
     }
 
     private void readObject(byte[] bytes) {
-        String string;
-        try {
-            string = new String(bytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
-        this.string = string;
+        this.string = new String(bytes, StandardCharsets.UTF_8);
 
         int modSepIndex = string.indexOf('#');
         if (modSepIndex == -1) {

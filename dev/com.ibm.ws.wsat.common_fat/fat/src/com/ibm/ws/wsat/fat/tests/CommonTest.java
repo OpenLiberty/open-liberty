@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,13 +51,7 @@ public class CommonTest {
         ShrinkHelper.defaultDropinApp(coordinator, "testCoordinator", "com.ibm.ws.wsat.coor.*");
         ShrinkHelper.defaultDropinApp(participant, "testParticipant", "com.ibm.ws.wsat.part.*");
 
-        if (coordinator != null && !coordinator.isStarted()) {
-            coordinator.startServer();
-        }
-
-        if (participant != null && !participant.isStarted()) {
-            participant.startServer();
-        }
+        FATUtils.startServers(coordinator, participant);
 
         coordRoot = "http://" + coordinator.getHostname() + ":" + coordinator.getHttpDefaultPort() + "/testCoordinator";
         partRoot = "http://" + participant.getHostname() + ":" + participant.getHttpSecondaryPort() + "/testParticipant";
@@ -66,13 +61,7 @@ public class CommonTest {
 
     @AfterClass
     public static void after() throws Exception {
-        if (coordinator != null && coordinator.isStarted()) {
-            coordinator.stopServer();
-        }
-
-        if (participant != null && participant.isStarted()) {
-            participant.stopServer("CWWKG0011W"); // expect this error as we're using non-standard ports
-        }
+    	FATUtils.stopServers(coordinator, participant);
     }
 
     @Test

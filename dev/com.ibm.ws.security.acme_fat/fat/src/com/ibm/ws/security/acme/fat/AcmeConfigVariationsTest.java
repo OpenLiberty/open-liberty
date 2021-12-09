@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,7 @@ import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -70,6 +71,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeConfigVariationsTest {
 
 	@Server("com.ibm.ws.security.acme.fat.config_var")
@@ -83,8 +85,6 @@ public class AcmeConfigVariationsTest {
 	private static final String[] DOMAINS_ALL = { "domain1.com", "domain2.com", "domain3.com" };
 	private static final String[] DOMAINS_1 = { "domain1.com" };
 	private static final String[] DOMAINS_2 = { "domain1.com", "domain2.com", "domain3.com" };
-	private static final String[] DOMAINS_3 = { "domain1.com", "domain2.com" };
-	private static final String[] DOMAINS_4 = { "domain2.com" };
 
 	protected static final String SLOW_APP = "slowapp.war";
 	protected final static String PUBLISH_FILES = "publish/files";

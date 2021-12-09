@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -383,6 +383,27 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
     	}
     }
     
+    
+	protected ContactHeader createAndSetContactHeader(Message message, SipURI sipURI, boolean first) throws SipParseException {
+    	if (c_logger.isTraceEntryExitEnabled()) {
+			c_logger.traceEntry(this,"createAndSetContactHeader");
+		}
+		ContactHeader contactHeader = null;
+		
+		boolean created = createAndSetMultihomeContactHeader();
+
+		if (created) {
+			contactHeader = getContactHeader();
+		}
+		else {
+			contactHeader = super.createAndSetContactHeader(getMessage(), null, true);
+		}
+		
+    	if (c_logger.isTraceEntryExitEnabled()) {
+			c_logger.traceExit(this,"createAndSetContactHeader", contactHeader);
+		}
+		return contactHeader;
+    }
     
     /*
 	 * This block of code ensures that the correct contact header is specified when running in a 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Ensure that the configuration points t
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: The Kerberos component is configured to use a {0} file located at {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=The configured file was successfully located.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=No action is required.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Kerberos login failed with the {0} Kerberos principal and the {1} Kerberos credential cache (ccache). A Kerberos ticket was not found.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Either the specified Kerberos principal is invalid, or the Kerberos credential cache (ccache) is invalid or expired.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Ensure that a valid Kerberos principal is specified and that the Kerberos credential cache (ccache) is valid and not expired.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Kerberos login failed with the {0} Kerberos principal and the {1} Kerberos keytab file. A Kerberos ticket was not found.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Either the specified Kerberos principal or the Kerberos keytab file is invalid.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Ensure that a valid Kerberos keytab file is specified and that it contains a valid Kerberos principal.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Kerberos login failed with the {0} Kerberos principal and the default Kerberos keytab file. A Kerberos ticket was not found.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Either the specified Kerberos principal or the default Kerberos keytab file is invalid.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Ensure that a valid Kerberos keytab file is specified and that it contains a valid Kerberos principal.

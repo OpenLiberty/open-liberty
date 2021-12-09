@@ -19,7 +19,7 @@ src: \
 
 fat.project: true
 
-#tested.features: expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, pages-3.0, xmlBinding-3.0, appAuthentication-2.0, appAuthorization-2.0
+tested.features: expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -29,8 +29,8 @@ fat.project: true
   com.ibm.ws.security.registry;version=latest,\
   com.ibm.ws.security.registry_test.custom;version=latest,\
   com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-  commons-codec:commons-codec;version=1.4,\
-  commons-logging:commons-logging;version=1.1.1,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
   fattest.simplicity;version=latest,\
   org.apache.httpcomponents:httpclient;version=4.1.2,\
   org.apache.httpcomponents:httpcore;version=4.1.2

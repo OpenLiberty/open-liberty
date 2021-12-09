@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.tx.rununderuow.web.RunUnderUOWServlet;
 
 import componenttest.annotation.Server;
@@ -42,7 +43,7 @@ public class RunUnderUOWTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -52,7 +53,7 @@ public class RunUnderUOWTest extends FATServletClient {
         EnterpriseArchive RunUnderUOWTestApp = ShrinkWrap.create(EnterpriseArchive.class, "RunUnderUOWTestApp.ear");
         RunUnderUOWTestApp.addAsModule(RunUnderUOWBean).addAsModule(RunUnderUOWWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, RunUnderUOWTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, RunUnderUOWTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

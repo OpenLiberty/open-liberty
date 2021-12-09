@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -167,13 +167,12 @@ public class OIDCClientAuthenticatorUtil {
             ConvergedClientConfig clientConfig) {
         ProviderAuthenticationResult oidcResult = null;
 
-        if (!isEndpointValid(clientConfig)) {
+        if (!isAuthorizationEndpointValid(clientConfig)) {
+            Tr.error(tc, "OIDC_CLIENT_NULL_AUTH_ENDPOINT", clientConfig.getClientId());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
-        boolean isImplicit = false;
-        if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
-            isImplicit = true;
-        }
+
+        boolean isImplicit = Constants.IMPLICIT.equals(clientConfig.getGrantType());
 
         String authzCode = null;
         String responseState = null;
@@ -303,7 +302,7 @@ public class OIDCClientAuthenticatorUtil {
             } catch (com.ibm.websphere.ssl.SSLException e) {
                 //ffdc
             }
-            new UserInfoHelper(clientConfig).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory);
+            new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
         }
 
         return oidcResult;
@@ -322,15 +321,8 @@ public class OIDCClientAuthenticatorUtil {
         return metHttpsRequirement;
     }
 
-    public static boolean isEndpointValid(ConvergedClientConfig clientConfig) {
-        String url = null;
-        if (clientConfig.getGrantType() == Constants.IMPLICIT) {
-            url = clientConfig.getTokenEndpointUrl();
-        } else {
-            url = clientConfig.getAuthorizationEndpointUrl();
-        }
-        return url != null;
-
+    public static boolean isAuthorizationEndpointValid(ConvergedClientConfig clientConfig) {
+        return clientConfig.getAuthorizationEndpointUrl() != null;
     }
 
     //todo: avoid call on each request.
@@ -629,21 +621,30 @@ public class OIDCClientAuthenticatorUtil {
 
         StringBuffer reqURL = req.getRequestURL();
         if (rewritePort) {
-            reqURL = new StringBuffer();
-            reqURL.append(req.getScheme());
-            reqURL.append("://");
-            reqURL.append(req.getServerName());
-            reqURL.append(":");
-            reqURL.append(realPort);
-            reqURL.append(req.getRequestURI());
-            //reqURL = new StringBuffer(com.ibm.ws.security.common.web.WebUtils.rewriteURL(reqURL.toString(), null, realport.toString()));
+            reqURL = rewritePortInRequestUrl(req, realPort);
         }
+        reqURL = appendQueryString(req, reqURL);
+        return reqURL.toString();
+    }
+
+    StringBuffer rewritePortInRequestUrl(HttpServletRequest req, int realPort) {
+        StringBuffer reqURL = new StringBuffer();
+        reqURL.append(req.getScheme());
+        reqURL.append("://");
+        reqURL.append(req.getServerName());
+        reqURL.append(":");
+        reqURL.append(realPort);
+        reqURL.append(req.getRequestURI());
+        return reqURL;
+    }
+
+    StringBuffer appendQueryString(HttpServletRequest req, StringBuffer reqURL) {
         String queryString = req.getQueryString();
         if (queryString != null) {
             reqURL.append("?");
-            reqURL.append(OidcUtil.encodeQuery(queryString));
+            reqURL.append(queryString);
         }
-        return reqURL.toString();
+        return reqURL;
     }
 
     /**

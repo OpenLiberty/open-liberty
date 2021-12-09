@@ -156,9 +156,16 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                 }
             });
 
-            URI uri = URI.create((String) message.get(Message.REQUEST_URI));
+            String uriString = (String) message.get(Message.REQUEST_URI);
+            URI uri = URI.create(uriString);
+            int port = uri.getPort();
 
-            Object[] parameters = { sslRef, uri.getHost(), Integer.toString(uri.getPort()) };
+            // if the port wasn't specified, use the default SSL port (443)
+            if (port == -1 && !uriString.contains(":-1")) {
+                port = 443;
+            }
+
+            Object[] parameters = { sslRef, uri.getHost(), Integer.toString(port) };
             SSLSocketFactory ssLSocketFactory = (SSLSocketFactory) m.invoke(classObject, parameters);
             return ssLSocketFactory;
         } catch (Exception e) {

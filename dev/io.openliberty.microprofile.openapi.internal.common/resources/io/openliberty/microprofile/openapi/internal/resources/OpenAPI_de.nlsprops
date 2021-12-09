@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,17 +48,47 @@ CSS_SECTION_NOT_FOUND.useraction=Stellen Sie eine g\u00fcltige CSS-Datei bereit,
 OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Fehler beim Laden der OpenAPI-Filterklasse: {0}.
 OPENAPI_FILTER_LOAD_ERROR.explanation=Die angegebene OpenAPI-Filterklasse konnte nicht gefunden oder geladen werden.
 OPENAPI_FILTER_LOAD_ERROR.useraction=Stellen Sie sicher, dass die angegebene Klasse vorhanden ist und die OASFilter-Schnittstelle implementiert.
+
 OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Fehler beim Laden der OpenAPI-Modellleserklasse: {0}.
 OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Die angegebene OpenAPI-Modellleserklasse konnte nicht gefunden oder geladen werden.
 OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Stellen Sie sicher, dass die angegebene Klasse vorhanden ist und die OASModelReader-Schnittstelle implementiert.
+
 OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Fehler beim Parsen des OpenAPI-Dokuments f\u00fcr die folgende Anwendung: {0}.
 OPENAPI_FILE_PARSE_ERROR.explanation=Fehler beim Parsen des OpenAPI-Dokuments aus dem META-INF-Ordner.
-OPENAPI_FILE_PARSE_ERROR.useraction=Stellen Sie sicher, dass die Datei das richtige YAML-oder JSON-Format hat. 
+OPENAPI_FILE_PARSE_ERROR.useraction=Stellen Sie sicher, dass die Datei das richtige YAML-oder JSON-Format hat.
 
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Die Anwendung {0} wurde verarbeitet, und es wurde ein OpenAPI-Dokument erstellt.
 OPENAPI_APPLICATION_PROCESSED.explanation=Das OpenAPI-Dokument f\u00fcr die angegebene Anwendung wurde generiert. Es kann an einem /openapi-Endpunkt angezeigt werden.
-OPENAPI_APPLICATION_PROCESSED.useraction=Es ist keine Aktion erforderlich. 
+OPENAPI_APPLICATION_PROCESSED.useraction=Es ist keine Aktion erforderlich.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Bei der Verarbeitung der Anwendung {0} ist ein Fehler aufgetreten und ein OpenAPI-Dokument wurde nicht generiert.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Bei der Verarbeitung der Anwendung {0} ist ein Fehler aufgetreten und ein OpenAPI-Dokument wurde nicht generiert. Fehler: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=W\u00e4hrend der Verarbeitung der Anwendung ist ein Laufzeitfehler aufgetreten.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Stellen Sie die Protokolle zusammen und wenden Sie sich an den IBM Service.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Beim Zusammenf\u00fchren von OpenAPI-Dokumenten sind die folgenden Probleme aufgetreten: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Die OpenAPI-Dokumentation aus mehreren Webmodulen kann nicht erfolgreich zusammengef\u00fchrt werden. Die Endpunkte aus den gemeldeten Modulen sind in dem generierten OpenAPI-Dokument nicht enthalten.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Pr\u00fcfen Sie die Zusammenf\u00fchrungsprobleme, um festzustellen, warum die generierten OpenAPI-Dokumente nicht zusammengef\u00fchrt werden k\u00f6nnen.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Der Pfad {0} aus dem Modul {1} kollidiert mit einem Pfad vom Modul {2}. {1} wird nicht zusammengef\u00fchrt.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Der Pfad besteht aus zwei Modulen. Beide Instanzen des Pfads k\u00f6nnen nicht in demselben OpenAPI-Dokument enthalten sein. Diese Nachricht wird als Teil von CWWKO1662 zur\u00fcckgegeben.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=\u00c4ndern Sie entweder eines der in Konflikt stehenden Module oder konfigurieren Sie das Feature "mpOpenApi-2.0" so, dass eines von ihnen ausgeschlossen wird. Dieses Problem kann verursacht werden, wenn Server im OpenAPI-Dokument enthalten sind und die Server-URL nicht mit dem Kontextstammverzeichnis der Anwendung endet (z. B., weil auf die Anwendung \u00fcber einen Reverse Proxy auf einer anderen URL zugegriffen wird).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: Die Kombination von OpenAPI-Dokumentation aus mehreren Modulen ist deaktiviert. Nur {0} wird verwendet, um OpenAPI-Dokumentation zu generieren. Um die Zusammenf\u00fchrung der OpenAPI-Dokumentation von allen Modulen zu erm\u00f6glichen, setzen Sie die Konfigurationseigenschaft mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=Sofern die OpenAPI-Dokumentationszusammenf\u00fchrung nicht aktiviert ist, wird die OpenAPI-Dokumentation nur f\u00fcr das erste implementierte OpenAPI-Modul generiert.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Wenn Sie m\u00f6chten, dass alle Ihre Webmodule f\u00fcr die Generierung der OpenAPI-Dokumentation verwendet werden sollen, legen Sie die in der Nachricht aufgef\u00fchrte Eigenschaft "MicroProfile Config" fest. Diese Eigenschaft kann in einer beliebigen Position festgelegt werden, in der MicroProfile Config nach Konfigurationseigenschaften sucht, z. B. in einer Java-Systemeigenschaft oder in einer Umgebungsvariablen.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: Das mit der Eigenschaft {0} konfigurierte Infoobjekt ist ung\u00fcltig. Die Titel-und Versionseigenschaften m\u00fcssen festgelegt werden. Der ung\u00fcltige Wert lautet: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Wenn die Eigenschaft gesetzt ist, muss sie auf einen vollst\u00e4ndigen Info-Abschnitt im JSON-Format gesetzt werden, wobei die Titel-und Versionseigenschaften auf g\u00fcltige Werte gesetzt sein m\u00fcssen.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Korrigieren Sie den konfigurierten Informationswert.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Die Konfigurationseigenschaft {0} kann nicht als JSON gegliedert werden. Der Wert lautet: {1} \n Der Fehler lautet: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Wenn die Eigenschaft gesetzt ist, muss sie auf einen vollst\u00e4ndigen Info-Abschnitt im JSON-Format gesetzt werden.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=\u00dcberpr\u00fcfen Sie den Fehlertext, um das Problem zu ermitteln, und korrigieren Sie den konfigurierten Informationswert so, dass er eine g\u00fcltige JSON-Datei ist.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Ung\u00fcltiger Name in {0} gefunden: {1}. Jeder Name muss das Format "applicationName" oder "applicationName/moduleName" verwenden.
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=Die Konfigurationseigenschaft muss eine durch Kommas getrennte Liste von Anwendungs- und Modulnamen enthalten oder einen der Sonderwerte "all", "first" oder "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=\u00dcberpr\u00fcfen Sie den Fehlertext, um das Problem zu ermitteln, und korrigieren Sie die angegebene Konfigurationseigenschaft.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Die Konfigurationseigenschaft {0} enth\u00e4lt "{1}", aber das stimmt nicht mit einer implementierten Anwendung oder einem Webmodul \u00fcberein.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Der Server ist so konfiguriert, dass die OpenAPI-Dokumentation f\u00fcr den Anwendungs-oder Modulnamen erstellt wird, aber es wurde keine Anwendung oder kein Webmodul mit diesem Namen implementiert.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Stellen Sie sicher, dass alle Anwendungen ordnungsgem\u00e4\u00df gestartet wurden und dass die Namen in der Konfigurationseigenschaft korrekt angegeben wurden.

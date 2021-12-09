@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,17 +94,23 @@ public class AppPropertiesTrackingComponent {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void addAppPropertiesComponent(AppPropertiesComponent apc) {
-        propertiesComponentByPid.put(apc.getPid(), apc);
-        updateAppsUsingProperties(apc.getPid());
+        synchronized (this) {
+            propertiesComponentByPid.put(apc.getPid(), apc);
+            updateAppsUsingProperties(apc.getPid());
+        }
     }
 
     protected void updatedAppPropertiesComponent(AppPropertiesComponent apc) {
-        updateAppsUsingProperties(apc.getPid());
+        synchronized (this) {
+            updateAppsUsingProperties(apc.getPid());
+        }
     }
 
     protected void removeAppPropertiesComponent(AppPropertiesComponent apc) {
-        propertiesComponentByPid.remove(apc.getPid(), apc);
-        updateAppsUsingProperties(apc.getPid());
+        synchronized (this) {
+            propertiesComponentByPid.remove(apc.getPid(), apc);
+            updateAppsUsingProperties(apc.getPid());
+        }
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, service = Application.class)

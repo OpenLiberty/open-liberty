@@ -1,0 +1,10 @@
+<server description="Server for testing excludeAllHandledTypesClasses=true">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-4.0</feature>
+  </featureManager>
+
+  <webContainer excludeAllHandledTypesClasses="true"/>
+</server>

@@ -47,5 +47,6 @@ public class OpentracingTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpentracingTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.2_fat", this.getClass() + ":launchOpentracingTck");
+        MvnUtils.preparePublicationFile();
     }
 }

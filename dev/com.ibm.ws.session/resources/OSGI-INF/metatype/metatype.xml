@@ -209,6 +209,24 @@
             ibmui:group="advanced" 
             required="false" type="Boolean" default="true"/>
             
+        <AD id="allowSerializedAccess" 
+            name="%allow.serialized.access.name" 
+            description="%allow.serialized.access.description" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="maxWaitTime" 
+            name="%max.wait.time.name" 
+            description="%max.wait.time.description" 
+            ibmui:group="advanced" 
+            required="false" type="Integer" default="0"/>
+            
+        <AD id="accessOnTimeout" 
+            name="%access.on.timeout.name" 
+            description="%access.on.timeout.description" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="true"/>       
+            
     </OCD>
   
     <Designate pid="com.ibm.ws.session">

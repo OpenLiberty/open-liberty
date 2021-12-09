@@ -1,0 +1,168 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<server>
+
+    <featureManager>
+        <feature>timedexit-1.0</feature>
+        <feature>oauth-2.0</feature>
+        <feature>openidConnectServer-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>osgiconsole-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+		<feature>jsonp-1.0</feature> <!-- needed for the TokenEndpointServlet -->
+	    <feature>jwt-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+    
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/miscNoSslSettings.xml" />
+
+	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
+
+	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
+	
+	<include location="${server.config.dir}/imports/tokenEndpointApplication.xml" />
+
+    <keyStore
+         id="trust_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgTrustStore.p12" />
+
+    <keyStore
+         id="key_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgKeyStore.p12" />
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/hs512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rs512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/es512"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+	<jwtBuilder 
+		id="HS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="HS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="HS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="RS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256" />
+		/>
+	
+	<jwtBuilder 
+		id="RS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384" />
+		/>		
+
+	<jwtBuilder 
+		id="RS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512" />
+		/>
+		
+	<jwtBuilder 
+		id="ES256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es256" />
+		/>
+		
+	<jwtBuilder 
+		id="ES384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es384" />
+		/>
+		
+	<jwtBuilder 
+		id="ES512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es512" />
+		/>										
+</server>

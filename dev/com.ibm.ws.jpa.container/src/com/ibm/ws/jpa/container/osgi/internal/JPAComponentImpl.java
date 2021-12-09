@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NA
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
@@ -48,6 +49,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -111,8 +113,19 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private static final String REFERENCE_APP_COORD = "appCoord";
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
 
+    private static final String DEFAULT_PROPS_PREFIX = "defaultProperties.0.property.";
+    private static final String DEFAULT_PROPS_NAME = ".name";
+    private static final String DEFAULT_PROPS_VALUE = ".value";
+
     private ComponentContext context;
     private Dictionary<String, Object> props;
+
+    /**
+     * Persistence properties supplied through JPAComponent configuration.
+     * These properties are applied to createContainerEntityManagerFactory.
+     */
+    private Map<String, String> defaultProps;
+
     private boolean server = false;
     private static final Set<String> stuckApps = new ConcurrentSkipListSet<String>();
 
@@ -127,6 +140,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Activate
     protected void activate(ComponentContext cc) {
         props = cc.getProperties();
+        setDefaultProperties(props);
         jpaRuntime.activate(cc);
         ivTransactionManagerSR.activate(cc);
         ivContextAccessorSR.activate(cc);
@@ -135,6 +149,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         propProviderSRs.activate(cc);
         context = cc;
         initialize();
+        dump();
     }
 
     @Deactivate
@@ -188,6 +203,27 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (recycleJPAApplications) {
             recycleJPAApplications();
         }
+    }
+
+    private void setDefaultProperties(Dictionary<String, Object> properties) {
+        // Look for default integration-level properties
+        Map<String, String> dProperties = new HashMap<String, String>();
+        int defaultPropertiesIndex = 0;
+        while (defaultPropertiesIndex >= 0) {
+            String name = (String) properties.get(DEFAULT_PROPS_PREFIX + defaultPropertiesIndex + DEFAULT_PROPS_NAME);
+            if (name != null) {
+                String value = (String) properties.get(DEFAULT_PROPS_PREFIX + defaultPropertiesIndex + DEFAULT_PROPS_VALUE);
+                if (name.length() > 0 && value != null && value.length() > 0) {
+                    dProperties.put(name, value);
+                } else {
+                    Tr.warning(tc, "EMPTY_PROP_NAME_VALUE_CWWJP0056W", name, value);
+                }
+                defaultPropertiesIndex++;
+            } else {
+                defaultPropertiesIndex = -1;
+            }
+        }
+        defaultProps = dProperties;
     }
 
     private javax.naming.Reference createReference(boolean ejbInWar, JPAJndiLookupInfo info) {
@@ -618,6 +654,17 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
                         "#" + module.getName());
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void addDefaultProperties(Map<String, Object> persistenceProperties) {
+        if (this.defaultProps != null) {
+            persistenceProperties.putAll(defaultProps);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "addDefaultProperties props: {0}", defaultProps);
+            }
+        }
+    }
+
     /**
      * Add any additional environment specific properties to the set of
      * integration-level properties used on the call to
@@ -799,9 +846,9 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Override
     public void destroyThreadContextClassLoader(final ClassLoader tcclassloader) {
         final ClassLoadingService cls = classLoadingService;
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
-            public Object run() {
+            public Void run() {
                 cls.destroyThreadContextClassLoader(tcclassloader);
                 return null;
             }
@@ -926,6 +973,26 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         appCoord.recycleApplications(appsToRestart);
     }
 
+    /**
+     * Format a representation of the JPA component state to the trace stream.
+     */
+    @Trivial
+    public void dump() {
+        if (!TraceComponent.isAnyTracingEnabled() || !(tc.isDumpEnabled() || tc.isDebugEnabled())) {
+            return;
+        }
+        try {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            printWriter.println();
+            introspect(printWriter);
+            stringWriter.flush();
+            Tr.dump(tc, "-- JPA Component Dump --", stringWriter);
+        } catch (Exception ex) {
+            Tr.debug(tc, "Exception occurred dumping JPA component state : " + ex);
+        }
+    }
+
     /*
      * com.ibm.wsspi.logging.Introspector implementation
      *
@@ -969,6 +1036,14 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
                 out.println("  " + key + " = " + o);
             }
 
+        }
+        out.println();
+
+        out.println("Default Properties:");
+        if (defaultProps != null) {
+            for (Map.Entry<String, String> entry : defaultProps.entrySet()) {
+                out.println("  " + entry.getKey() + " = " + entry.getValue());
+            }
         }
         out.println();
 

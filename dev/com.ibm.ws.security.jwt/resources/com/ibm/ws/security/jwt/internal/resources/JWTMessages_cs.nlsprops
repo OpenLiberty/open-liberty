@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -314,10 +314,10 @@ SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: V ur\u010den\u00e9m koncov\u00e
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Ur\u010den\u00fd koncov\u00fd bod vy\u017eaduje sch\u00e9ma HTTPS, ale v adrese URL po\u017eadavku bylo pou\u017eito sch\u00e9ma HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Zkontrolujte adresu URL po\u017eadavku a ujist\u011bte se, \u017ee pou\u017e\u00edv\u00e1 sch\u00e9ma HTTPS, nebo zm\u011b\u0148te konfiguraci tak, aby sch\u00e9ma HTTPS nebylo po\u017eadov\u00e1no.
 
-# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Podpisov\u00fd algoritmus [{0}], kter\u00fd je ur\u010den vlastnostmi MicroProfile Config, nen\u00ed podporov\u00e1n. Bude pou\u017eit podpisov\u00fd algoritmus [{1}].
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used, 2=List of supported algorithms
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Podpisov\u00fd algoritmus [{0}], kter\u00fd je ur\u010den vlastnostmi MicroProfile Config, nen\u00ed podporov\u00e1n. Bude pou\u017eit podpisov\u00fd algoritmus [{1}]. Podporovan\u00e9 algoritmy jsou: {2}
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Podporov\u00e1na je pouze ur\u010dit\u00e1 sada podpisov\u00fdch algoritm\u016f RSA, Elliptical Curve a HMAC. Podpisov\u00fd algoritmus, kter\u00fd je ur\u010den vlastnostmi MicroProfile Config, nen\u00ed jedn\u00edm z podporovan\u00fdch podpisov\u00fdch algoritm\u016f.
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Uve\u010fte podporovan\u00fd podpisov\u00fd algoritmus ve vlastnostech MicroProfile Config. Podporovan\u00e9 podpisov\u00e9 algoritmy zahrnuj\u00ed ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 a HS512.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Uve\u010fte podporovan\u00fd podpisov\u00fd algoritmus ve vlastnostech MicroProfile Config. Podporovan\u00e9 algoritmy jsou zobrazeny ve zpr\u00e1v\u011b.
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
@@ -332,7 +332,7 @@ BETA_SIGNATURE_ALGORITHM_USED.useraction=Nakonfigurujte podporovan\u00fd podpiso
 
 # 0=JWT configuration ID, 1=Exception message
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Spot\u0159ebitel JWT [{0}] zjistil chybu p\u0159i extrakci informa\u010dn\u00edho obsahu JSON Web Signature (JWS) z tokenu JWE (JSON Web Encryption). {1}
-ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Token JWE m\u016f\u017ee b\u00fdt chybn\u00fd nebo mohou chyb\u011bt informace. Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed tokenu JWE m\u016f\u017ee chyb\u011bt, nebo nemus\u00ed b\u00fdt schopen de\u0161ifrovat token.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Token JWE m\u016f\u017ee b\u00fdt chybn\u00fd nebo mohou chyb\u011bt informace. Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed tokenu JWE m\u016f\u017ee chyb\u011bt, nebo nemus\u00ed b\u00fdt schopen de\u0161ifrovat token. Zkontrolujte chybu ve zpr\u00e1v\u011b a z\u00edskejte dal\u0161\u00ed informace.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, zda je token JWE dob\u0159e formov\u00e1n. Ov\u011b\u0159te, \u017ee konfigurace odb\u011bratele JWT odkazuje na kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f, kter\u00fd odpov\u00edd\u00e1 kl\u00ed\u010di pou\u017eit\u00e9mu k za\u0161ifrov\u00e1n\u00ed tokenu JWE.
 
 # 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Chcete-li p\u0159ijmout tokeny JWS m\u
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Informa\u010dn\u00ed obsah tokenu JSON Web Encryption (JWE), kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku, nen\u00ed token JSON Web Signature (JWS).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Informa\u010dn\u00ed obsah tokenu JWE mus\u00ed b\u00fdt platn\u00fdm tokenem JSON Web Token (JWT) ve form\u00e1tu JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee informa\u010dn\u00ed obsah tokenu JWE je platn\u00fd JWT ve form\u00e1tu JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Token JSON Web Encryption (JWE) nem\u016f\u017ee b\u00fdt de\u0161ifrov\u00e1n, proto\u017ee de\u0161ifrovac\u00ed kl\u00ed\u010d nelze nal\u00e9zt. Atribut konfigurace serveru {0} je nastaven na [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=K de\u0161ifrov\u00e1n\u00ed tokenu JWE je vy\u017eadov\u00e1n de\u0161ifrovac\u00ed kl\u00ed\u010d. De\u0161ifrovac\u00ed kl\u00ed\u010d mus\u00ed b\u00fdt v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT, nebo mus\u00ed b\u00fdt uveden ve vlastnostech konfigurace MicroProfile.
+JWE_DECRYPTION_KEY_MISSING.useraction=Ov\u011b\u0159te, zda alias kl\u00ed\u010de, kter\u00fd je uveden ve zpr\u00e1v\u011b, existuje v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT. Jestli\u017ee alias nen\u00ed nakonfigurov\u00e1n, mus\u00ed b\u00fdt de\u0161ifrovac\u00ed kl\u00ed\u010d uveden ve vlastnostech konfigurace MicroProfile.

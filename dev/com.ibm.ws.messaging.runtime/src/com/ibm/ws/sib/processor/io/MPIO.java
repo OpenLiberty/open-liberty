@@ -55,7 +55,7 @@ public class MPIO
   private CommsErrorListener _commsErrorListener;
   private RoutingManager _routingManager;
   // The MP RMR
-  private RemoteMessageReceiver _remoteMessageReciever;
+  private RemoteMessageReceiver _remoteMessageReceiver;
 
   // Map from connections to MPConnections
   private HashMap<MEConnection,MPConnection> _mpConnectionsByMEConnection
@@ -112,10 +112,10 @@ public class MPIO
     // Create a new RemoteMessageReceiver if we don't already have one
     // or re-initialise the existing one to refresh any cached data
     // (used when an ME is re-started without the Server being re-started) 
-    if(_remoteMessageReciever == null)
-      _remoteMessageReciever = new RemoteMessageReceiver(_messageProcessor, this);
+    if(_remoteMessageReceiver == null)
+      _remoteMessageReceiver = new RemoteMessageReceiver(_messageProcessor, this);
     else
-      _remoteMessageReciever.init();
+      _remoteMessageReceiver.init();
     
     started = true;    
     mpioLockManager.unlockExclusive();
@@ -175,7 +175,7 @@ public class MPIO
       if (started)
       {
         //pass the message on to the RMR
-        _remoteMessageReciever.receiveMessage(aMessage);
+        _remoteMessageReceiver.receiveMessage(aMessage);
       }
       else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
       {

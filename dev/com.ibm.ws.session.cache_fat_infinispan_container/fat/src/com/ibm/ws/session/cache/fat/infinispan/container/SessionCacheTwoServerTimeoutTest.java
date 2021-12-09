@@ -157,10 +157,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testInvalidationServletLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
-        appA.sessionPut("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session); //Caches the session locally.
-        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
-        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", null, session);
+        if (session != null) {
+            appA.sessionPut("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, true);
+            appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session); //Caches the session locally.
+            appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
+            appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", null, session);
+        }
     }
 
     /**

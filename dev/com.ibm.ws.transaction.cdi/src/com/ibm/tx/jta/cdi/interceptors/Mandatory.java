@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public class Mandatory extends TransactionalInterceptor {
     @AroundInvoke
     public Object mandatory(final InvocationContext context) throws Exception {
 
-        if (getUOWM().getUOWType() != UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION) {
+        if (getUOWM().getUOWStatus() == UOWSynchronizationRegistry.UOW_STATUS_NONE || getUOWM().getUOWType() != UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION) {
             throw new TransactionalException("global tx required", new TransactionRequiredException());
         }
 

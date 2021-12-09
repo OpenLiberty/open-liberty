@@ -1,0 +1,38 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    
+	<featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>restConnector-2.0</feature>
+        <feature>j2eeManagement-1.1</feature>
+    </featureManager>
+		
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+    
+    <mailSession>
+    	<mailSessionID>mailSessionID1</mailSessionID>
+		<jndiName>TestingApp/IMAPMailSessionServlet/testIMAPMailSession</jndiName>
+		<description>mailSession for testing IMAP protocol</description>
+		<storeProtocol>imap</storeProtocol>
+		<host>localhost</host>
+		<user>imap@testserver.com</user>
+		<password>imapPa$$word4U2C</password>
+		<from>smtp@testserver.com</from>
+		<property name="mail.imap.host" value="localhost" />
+		<property name="mail.imap.port" value="${bvt.prop.imap_port}" />
+	</mailSession>
+	
+	<mailSession>
+		<mailSessionID>mailSessionID2</mailSessionID>
+		<jndiName>TestingApp/SMTPMailSessionServlet/testSMTPMailSession</jndiName>
+		<description>mailSession for testing SMTP protocol</description>
+		<transportProtocol>smtp</transportProtocol>
+		<host>localhost</host>
+		<user>smtp@testserver.com</user>
+		<password>smtpPa$$word4U2C</password>
+		<from>smtp@testserver.com</from>
+		<property name="mail.smtp.host" value="localhost" />
+		<property name="mail.smtp.port" value="${bvt.prop.smtp_port}" />
+	</mailSession>
+</server>

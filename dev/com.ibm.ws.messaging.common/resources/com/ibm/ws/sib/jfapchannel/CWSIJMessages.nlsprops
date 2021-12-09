@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Define a default tunneled outbo
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: The default tunneled, secure outbound messaging channel chain {0} is not defined to this application server
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=The default tunneled, secure outbound messaging channel chain is not defined to this application server.  This application server may not be able to establish connections to remote gateway messaging engines.
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Define a default tunneled, secure outbound messaging channel chain for this application server.
-
-# -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: The properties file ''{0}'' used for determining client initial messaging transport level security cannot be located.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=The properties file containing information used when establishing secure client messaging connections cannot be located.  A set of default values will be assumed.  It may not be possible to establish secure client messaging connections.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configure the properties file for client messaging transport level security.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
@@ -456,18 +450,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: An internal error occurred.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Cannot locate a transport chain named {0} from which to obtain SSL configuration that might be required to establish a connection with a remote host named {1}.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=The information that is required to establish a Secure Sockets Layer (SSL)-based connection to a peer is not present in the current configuration.  This information is normally obtained from a suitable transport chain definition. This chain definition has a name that matches a chain that is present on the remote peer.  Such a transport chain cannot be found.  It might not be possible to establish the connection.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Define additional transport chains.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: The transport chain named {0} does not contain any SSL configuration that might be required to establish a connection to the remote host named {1}.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=The information that is required to establish a Secure Sockets Layer (SSL)-based connection to a peer is not present in the current configuration.  This information is normally obtained from a suitable transport chain definition. This chain definition has a name that matches a chain that is present on the remote peer.  Such a transport chain cannot be found.  It might not be possible to establish the connection.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configure additional SSL transport channels for the specified transport chain.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

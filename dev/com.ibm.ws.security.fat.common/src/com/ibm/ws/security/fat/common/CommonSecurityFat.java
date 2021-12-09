@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.junit.After;
@@ -20,12 +22,16 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.Description;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatWatcher;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.ServerFileUtils;
 
 public class CommonSecurityFat {
@@ -156,5 +162,43 @@ public class CommonSecurityFat {
             super.succeeded(description);
         }
     };
+
+    private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
+
+        Machine machine = server.getMachine();
+
+        Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + server.getServerName());
+        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(server.getServerRoot() + File.separatorChar + appDirName, machine));
+
+        RemoteFile[] list = null;
+        try {
+            if (appDir.isDirectory()) {
+                list = appDir.list(false);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e);
+        }
+        if (list != null) {
+            for (RemoteFile app : list) {
+                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+            }
+        }
+    }
+
+    /**
+     * JakartaEE9 transform applications for a specified server.
+     *
+     * @param serverName
+     *            The server to transform the applications on.
+     */
+    public static void transformApps(LibertyServer server) {
+        if (JakartaEE9Action.isActive()) {
+
+            transformAppsInDefaultDirs(server, "dropins");
+            transformAppsInDefaultDirs(server, "apps");
+            transformAppsInDefaultDirs(server, "test-apps");
+
+        }
+    }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -847,6 +847,7 @@ public class CommsConstants
     public static final String CATCONSUMER_START_02 = "3-019-0018";
     public static final String CATCONSUMER_UNLOCKSET_02 = "3-019-0019";
     public static final String CATCONSUMER_UNLOCKALL_02 = "3-019-0020";
+   public static final String CATCONSUMER_SETSTATE_01                      = "3-019-0021";
 
     public static final String CATSESSSYNCHCONSUMER_RECEIVE_01 = "3-020-0001";
     public static final String CATSESSSYNCHCONSUMER_RECEIVE_02 = "3-020-0002";

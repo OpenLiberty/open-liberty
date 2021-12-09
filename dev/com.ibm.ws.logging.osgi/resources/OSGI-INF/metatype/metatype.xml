@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2020 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@
             ibm:variable="com.ibm.ws.logging.message.format"
             id="messageFormat" required="false" type="String" default="SIMPLE">
             <Option label="%message.format.simple" value="SIMPLE"/>
+            <Option label="%message.format.tbasic" value="TBASIC"/>
             <Option label="%message.format.json" value="JSON"/>
         </AD>
         
@@ -66,6 +67,7 @@
             id="consoleFormat" required="false" type="String" default="DEV">
             <Option label="%console.format.dev" value="DEV"/>
             <Option label="%console.format.simple" value="SIMPLE"/>
+            <Option label="%console.format.tbasic" value="TBASIC"/>
             <Option label="%console.format.json" value="JSON"/>
         </AD>
         
@@ -73,6 +75,7 @@
             ibm:variable="com.ibm.ws.logging.trace.format"
             id="traceFormat" required="false" type="String" default="ENHANCED">
             <Option label="%trace.basic" value="BASIC"/>
+            <Option label="%trace.tbasic" value="TBASIC"/>
             <Option label="%trace.enhanced" value="ENHANCED"/>
             <Option label="%trace.advanced" value="ADVANCED"/>
         </AD>

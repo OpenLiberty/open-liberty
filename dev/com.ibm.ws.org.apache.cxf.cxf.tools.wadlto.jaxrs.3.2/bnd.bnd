@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;3.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;3.3.0}!/!META-INF/*
+   @${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;3.4.3}!/!META-INF/*
 
--buildpath: org.apache.cxf:cxf-tools-wadlto-jaxrs;version=3.3.0
+-buildpath: org.apache.cxf:cxf-tools-wadlto-jaxrs;version=3.4.3

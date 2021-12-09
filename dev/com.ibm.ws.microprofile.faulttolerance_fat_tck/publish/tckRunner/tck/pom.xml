@@ -6,8 +6,7 @@
     under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
     OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
     the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ibm.ws.microprofile.faulttolerance</groupId>
@@ -41,11 +40,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-       <dependency>
+        <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>fattest.simplicity</artifactId>
             <version>1</version>
@@ -94,13 +98,13 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.5</version> 
+            <version>1.0.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-    <directory>${targetDirectory}</directory>
+        <directory>${targetDirectory}</directory>
         <defaultGoal>clean test</defaultGoal>
         <plugins>
             <plugin>

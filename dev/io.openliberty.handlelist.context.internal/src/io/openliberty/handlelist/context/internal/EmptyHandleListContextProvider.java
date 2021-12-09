@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
@@ -33,6 +34,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "alwaysCaptureThreadContext:Boolean=true")
 @SuppressWarnings("deprecation")
+@Trivial
 public class EmptyHandleListContextProvider implements ThreadContextProvider {
     /**
      * {@inheritDoc}

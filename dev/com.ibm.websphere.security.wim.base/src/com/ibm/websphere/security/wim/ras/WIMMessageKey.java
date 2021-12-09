@@ -945,12 +945,12 @@ public interface WIMMessageKey {
     String CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY = "CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY";
 
     /**
-     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_ADDED = "FILE_REGISTRY_ACCOUNT_ADDED";
 
     /**
-     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED = "FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED";
 
@@ -1053,7 +1053,7 @@ public interface WIMMessageKey {
     String CONFIG_NOT_COMPLETE = "CONFIG_NOT_COMPLETE";
 
     /**
-     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      */
     String CONFIG_SAVED_IN_WORKSPACE = "CONFIG_SAVED_IN_WORKSPACE";
 
@@ -1667,12 +1667,28 @@ public interface WIMMessageKey {
     String CANNOT_READ_KRB5_FILE = "CANNOT_READ_KRB5_FILE";
 
     /**
-     * CWIML4559E: The bind authentication mechanism on the {0} LdapRegistry is set to GSSAPI, but the required attribute, krb5Principal, is not configured.
+     * CWIML4560E: The [{0}] attribute from the {1} element is configured to a file that does not exist at: {2}
      */
-    String KRB5_PRINCIPAL_REQUIRED = "KRB5_PRINCIPAL_REQUIRED";
+    String KRB5_FILE_NOT_FOUND = "KRB5_FILE_NOT_FOUND";
+
+    /**
+     * CWIML4561I: The LdapRegistry component is configured to use a {0} file located at {1}
+     */
+    String KRB5_FILE_FOUND = "KRB5_FILE_FOUND";
 
     /**
      * CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
      */
     String IDMAP_INVALID_FORMAT = "IDMAP_INVALID_FORMAT";
+
+    /**
+     * CWIML4521E: The {0} LdapRegistry attempted to bind to the Ldap server using Kerberos credentials for {1} principal name, but the KerberosService
+     * is not available. The bind authentication mechanism is {2}.
+     */
+    String KRB5_SERVICE_NOT_AVAILABLE = "KRB5_SERVICE_NOT_AVAILABLE";
+
+    /**
+     * CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
+     */
+    String FILTER_MISSING_PERCENT_V = "FILTER_MISSING_PERCENT_V";
 }

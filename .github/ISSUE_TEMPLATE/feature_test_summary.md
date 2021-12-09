@@ -22,7 +22,7 @@ _If delivering tests outside of the standard Liberty FAT framework, do the tests
 ### Test strategy
 
 * What functionality is new or modified by this feature?
-* What are the positive and negative tests for that functionality?
+* What are the positive and negative tests for that functionality? (Tell me the specific scenarios you tested. What kind of tests do you have for when everything ends up working (positive tests)? What about tests that verify we fail gracefully when things go wrong (negative tests)? See the [Positive and negative tests](https://github.ibm.com/websphere/WS-CD-Open/wiki/Feature-Review-(Feature-Test-Summary-Process)#positive-and-negative-tests) section of the Feature Test Summary Process wiki for more detail.)
 * What manual tests are there (if any)? (Note: Automated testing is expected for all features with manual testing considered an exception to the rule.)
 
 ## Confidence Level

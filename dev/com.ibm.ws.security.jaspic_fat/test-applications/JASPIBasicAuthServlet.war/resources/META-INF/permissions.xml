@@ -6,6 +6,13 @@
     version="7">
     
    <permission>
+   		<class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+        <name>* * "*"</name>
+   		<actions>read</actions>
+   </permission>
+ 
+    
+   <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.getCallerSubject</name>
    </permission>

@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.boot.security;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -27,20 +28,20 @@ import javax.net.ssl.SSLSocketFactory;
 public class SSLSocketFactoryProxy extends javax.net.ssl.SSLSocketFactory {
     private javax.net.ssl.SSLSocketFactory factory = null;
     private static com.ibm.ws.kernel.boot.security.SSLSocketFactoryProxy thisClass = null;
+    private static volatile Class<SSLSocketFactory> theFactoryClass = null;
 
     public SSLSocketFactoryProxy() {
 
-        Class<?> target;
+        Class<?> theClazz = theFactoryClass;
+        if (theClazz == null) {
+            throw new RuntimeException("No factory set.");
+        }
         try {
-            target = Thread.currentThread().getContextClassLoader().loadClass("com.ibm.ws.ssl.protocol.LibertySSLSocketFactory");
-            factory = (SSLSocketFactory) target.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (InstantiationException e) {
+            factory = (SSLSocketFactory) theClazz.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e.getMessage());
         }
+
     }
 
     public static javax.net.SocketFactory getDefault() {

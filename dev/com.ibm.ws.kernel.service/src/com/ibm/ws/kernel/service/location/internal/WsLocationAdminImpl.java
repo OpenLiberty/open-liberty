@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * properties provided by the bundle context when running in an osgi
      * framework.
      *
-     * @param initProps
+     * @param ctx
      * @return WsLocationAdmin
      */
     public static WsLocationAdminImpl createLocations(BundleContext ctx) {
@@ -324,7 +325,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_SERVICE_BINDING_ROOT, (String) config.get(WsLocationConstants.LOC_SERVICE_BINDING_ROOT));
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS));
     }
 
     private final void throwInitializationException(RuntimeException t) {
@@ -455,7 +456,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
             UUID result = null;
             BufferedReader in = null;
             try {
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
                 String id = in.readLine();
                 if (id != null) {
                     result = UUID.fromString(id);
@@ -478,7 +479,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                 if (!FileUtils.ensureDirExists(file.getParentFile())) {
                     return;
                 }
-                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), "UTF-8"));
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8));
                 out.write(idString);
             } catch (IOException e) {
                 // failed to write the id to the file ... log FFDC

@@ -72,7 +72,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
     private static final String OPENJ9_JAVA_OPTIONS = "OPENJ9_JAVA_OPTIONS";
     private static final String IBM_JAVA_OPTIONS = "IBM_JAVA_OPTIONS";
     private static final String XSHARECLASSES_STRING = "-Xshareclasses:";
-    private static final String XSHARECLASSES_OPTION = XSHARECLASSES_STRING + "name=test,nonfatal,cacheDirPerm=999";
+    private static final String XSHARECLASSES_OPTION = XSHARECLASSES_STRING + "name=test,nonfatal,cacheDirPerm=0777";
     private static final String XDUMP_OPTION = "-Xdump:what";
 
     /**

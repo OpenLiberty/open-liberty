@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2019 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,8 +135,6 @@ public class ZipCachingServiceImpl implements ZipCachingService {
     // Note that computeIfAbsent has limitations: Only the single
     // key/value pair may be updated.  The lambda which provides
     // the value must be "quick".
-
-    private static final Integer zipFileHandlesLock = new Integer(0);
     private static final LinkedHashMap<String, ZipFileHandle> zipFileHandles;
 
     static {
@@ -186,7 +184,7 @@ public class ZipCachingServiceImpl implements ZipCachingService {
      *     zip file handle.  Not currently thrown.
      */
     private static ZipFileHandle getZipFileHandle(String path) throws IOException {
-        synchronized ( zipFileHandlesLock ) {
+        synchronized ( zipFileHandles ) {
             ZipFileHandle handle = zipFileHandles.get(path);
             if ( handle == null ) {
                 handle = new ZipFileHandleImpl(path);
@@ -321,11 +319,11 @@ public class ZipCachingServiceImpl implements ZipCachingService {
         output.println();
         output.println("Active and Cached ZipFile Handles:");
 
-        synchronized ( ZipCachingServiceImpl.zipFileHandlesLock ) {
-            if ( ZipCachingServiceImpl.zipFileHandles.isEmpty() ) {
+        synchronized ( zipFileHandles ) {
+            if ( zipFileHandles.isEmpty() ) {
                 output.println("  ** NONE **");
             } else {
-                for ( Map.Entry<String, ZipFileHandle> handleEntry : ZipCachingServiceImpl.zipFileHandles.entrySet() ) {
+                for ( Map.Entry<String, ZipFileHandle> handleEntry : zipFileHandles.entrySet() ) {
                     ZipFileHandle handle = handleEntry.getValue();
                     if ( handle instanceof ZipFileHandleImpl ) {
                         ZipFileHandleImpl handleImpl = (ZipFileHandleImpl) handle;

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018 IBM Corporation and others.
+    Copyright (c) 2018,2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@
         <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" />
         <user name="bob (contractor)" password="bobspassword" />
         <user name="henry {contractor}" password="henryspassword" />
+        <user name="dan\" password="danspassword" />
         <group name="memberlessGroup" />
         <group name="adminGroup">
             <member name="admin"/>
@@ -37,6 +38,9 @@
         </group>
         <group name="group2 {contractors}">
             <member name="henry {contractor}" />
+        </group>
+        <group name="group3\, backslash">
+            <member name="dan\" />
         </group>
     </basicRegistry>
 

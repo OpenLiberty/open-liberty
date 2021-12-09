@@ -21,10 +21,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
-import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 /**
  *
@@ -51,17 +48,7 @@ public class MpConfigUtil {
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
-        ClassLoader cl = null;
-        //HttpServletRequest req
-        if (req instanceof SRTServletRequest) {
-            SRTServletRequest servletRequest = (SRTServletRequest) req;
-            IWebAppDispatcherContext webAppDispatchContext = servletRequest.getWebAppDispatcherContext();
-            WebApp webApp = webAppDispatchContext.getWebApp();
-            if (webApp != null) {
-                cl = webApp.getClassLoader();
-            }
-        }
-        return cl;
+        return req != null ? req.getServletContext().getClassLoader() : null;
     }
 
     // no null check. make sure that the caller sets non null objects.

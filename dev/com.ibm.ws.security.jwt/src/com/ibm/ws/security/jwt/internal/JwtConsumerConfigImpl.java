@@ -11,6 +11,8 @@
 package com.ibm.ws.security.jwt.internal;
 
 import java.security.AccessController;
+import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
@@ -274,6 +276,16 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     @Override
     public String getKeyManagementKeyAlias() {
         return keyManagementKeyAlias;
+    }
+
+    @Override
+    public Key getJweDecryptionKey() throws GeneralSecurityException {
+        String keyAlias = getKeyManagementKeyAlias();
+        if (keyAlias != null) {
+            String keyStoreRef = getKeyStoreRef();
+            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        }
+        return null;
     }
 
 }

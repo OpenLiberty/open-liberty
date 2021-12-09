@@ -17,11 +17,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClientFactory;
+import componenttest.annotation.SkipForRepeat;
 
 @RunWith(FATRunner.class)
 public class BvalAppClientTest_20 extends AbstractAppClientTest {
 	
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testBeanvalidation_20_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.beanvalidation_20";
 		client = LibertyClientFactory.getLibertyClient(testClientName);

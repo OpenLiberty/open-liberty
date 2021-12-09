@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.4.1
+cxfVersion=3.4.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2
 

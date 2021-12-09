@@ -26,11 +26,11 @@ public class QueryParamResource {
     private String aQueryID = "notset";
 
     /**
-     * Constructor that will not be called.
+     * Constructor that will not be called in EE7 or 8.
      */
     public QueryParamResource() {
-        /* this code should not be called ever */
-        aQueryID = "notvalid";
+        /* this code should only be called in EE9+ */
+        aQueryID = "notvalid-exceptInEE9";
     }
 
     /**

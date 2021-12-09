@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.jboss.resteasy.plugins.providers.multipart;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,16 +20,13 @@ import javax.ws.rs.core.MediaType;
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
 
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartInputImpl;
-
 
 public class IMultipartBodyImpl implements IMultipartBody {
 
     private final MultipartInputImpl multipartInput;
     private final List<IAttachment> attachments;
 
-    public IMultipartBodyImpl(MultipartInputImpl multipartInput) {
+    public IMultipartBodyImpl(MultipartInputImpl multipartInput) throws IOException {
         this.multipartInput = multipartInput;
         attachments = new ArrayList<>();
         for (InputPart inputPart : multipartInput.getParts()) {

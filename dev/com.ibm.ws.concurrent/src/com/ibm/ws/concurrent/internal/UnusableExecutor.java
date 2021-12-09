@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -32,13 +34,19 @@ class UnusableExecutor implements Executor, WSManagedExecutorService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
+        return contextService.captureThreadContext(props);
+    }
+
+    @Override
     public void execute(Runnable command) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public WSContextService getContextService() {
-        return contextService;
+    public PolicyExecutor getLongRunningPolicyExecutor() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

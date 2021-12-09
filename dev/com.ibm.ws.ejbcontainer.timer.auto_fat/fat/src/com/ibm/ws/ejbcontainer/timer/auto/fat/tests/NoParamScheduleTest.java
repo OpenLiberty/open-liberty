@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.timer.auto.noparam.web.NoParamScheduleServlet;
 
 import componenttest.annotation.Server;
@@ -68,7 +69,7 @@ public class NoParamScheduleTest extends FATServletClient {
         EnterpriseArchive NoParamTimerApp = ShrinkWrap.create(EnterpriseArchive.class, "NoParamTimerApp.ear");
         NoParamTimerApp.addAsModule(NoParamTimerEJB).addAsModule(NoParamTimerWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, NoParamTimerApp);
+        ShrinkHelper.exportDropinAppToServer(server, NoParamTimerApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

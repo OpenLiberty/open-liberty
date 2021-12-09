@@ -13,21 +13,26 @@ package com.ibm.ws.jdbc.fat.krb5;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,6 +46,7 @@ import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MaximumJavaLevel(javaLevel = 15) // TODO The current Oracle JDBC driver (ojdbc8_g.jar v21.1.0.0) only supports Java 8-15, modify/remove this line once it supports 16+
 public class OracleKerberosTest extends FATServletClient {
 
     private static final Class<?> c = OracleKerberosTest.class;
@@ -79,6 +85,7 @@ public class OracleKerberosTest extends FATServletClient {
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dsun.security.jgss.debug=true");
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
@@ -89,7 +96,7 @@ public class OracleKerberosTest extends FATServletClient {
         Exception firstError = null;
 
         try {
-            server.stopServer();
+            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB"); // expected by testKerberosUsingPassword);
         } catch (Exception e) {
             firstError = e;
             Log.error(c, "tearDown", e);
@@ -104,6 +111,29 @@ public class OracleKerberosTest extends FATServletClient {
 
         if (firstError != null)
             throw firstError;
+    }
+
+    /**
+     * Test that the 'password' attribute of an authData element can be used to supply a Kerberos password.
+     * Normally a keytab file takes precedence over this, so perform dynamic config for the test to temporarily
+     * set the keytab location to an invalid location to confirm that the supplied password actually gets used.
+     */
+    @Test
+    @AllowedFFDC //Servlet attempts getConnection multiple times until the kerberos service is up.  Expect FFDCs
+    public void testKerberosUsingPassword() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        String originalKeytab = config.getKerberos().keytab;
+        try {
+            Log.info(c, testName.getMethodName(), "Changing the keystore to an invalid value so that password from the <authData> gets used");
+            config.getKerberos().keytab = "BOGUS_KEYTAB";
+            updateConfigAndWait(config);
+
+            FATServletClient.runTest(server, APP_NAME + "/OracleKerberosTestServlet", testName);
+        } finally {
+            Log.info(c, testName.getMethodName(), "Restoring original config");
+            config.getKerberos().keytab = originalKeytab;
+            updateConfigAndWait(config);
+        }
     }
 
     private static class IBMJava8Rule implements TestRule {
@@ -133,6 +163,12 @@ public class OracleKerberosTest extends FATServletClient {
             return true;
         }
 
+    }
+
+    private void updateConfigAndWait(ServerConfiguration config) throws Exception {
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
     }
 
 }

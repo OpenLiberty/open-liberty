@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -181,6 +181,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
      * @throws NoSuchAlgorithmException
      */
     @Trivial
+    @FFDCIgnore(CloneNotSupportedException.class)
     private static MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
         // If we've never been asked for a MessageDigest, create the parent of
         // our clones. This is not thread safe, but it does not really need to
@@ -191,10 +192,10 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
             CLONEABLE_MESSAGE_DIGEST = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
         }
 
-        // Try to clone the parent. If we can't, then we'll FFDC and create a
+        // Try to clone the parent. If we can't, then we'll ignore the FFDC and create a
         // new instance. If the clone fails, which is REALLY unlikely, as we
-        // know the SHA MessageDigest is cloneable on IBM and Sun JDKs, we'll
-        // get FFDCs.
+        // know the SHA MessageDigest is cloneable on IBM and Sun JDKs
+        //
         try {
             return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
         } catch (CloneNotSupportedException cnse) {

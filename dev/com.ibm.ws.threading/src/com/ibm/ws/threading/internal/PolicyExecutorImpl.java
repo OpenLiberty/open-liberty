@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -70,13 +72,17 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbLateStart = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
-    private Runnable cbShutdown;
+    private final AtomicReference<Consumer<Set<Object>>> cbShutdown = new AtomicReference<Consumer<Set<Object>>>();
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
      * maxConcurrency and maxConcurrencyConstraint, and to maxQueueSize and maxQueueSizeConstraint.
      */
-    private final Integer configLock = new Integer(0); // new instance required to avoid sharing
+    private static class ConfigLock {
+        // EMPTY
+    }
+
+    private final ConfigLock configLock = new ConfigLock(); // new instance required to avoid sharing
 
     private int expedite;
 
@@ -343,15 +349,19 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     public int cancel(String identifier, boolean interruptIfRunning) {
         int count = 0;
 
-        // Remove and cancel all queued tasks.
-        for (PolicyTaskFutureImpl<?> f = queue.poll(); f != null; f = queue.poll())
-            if (f.cancel(false))
+        // Cancel all queued tasks. The tasks remove themselves from the queue upon successful cancel.
+        for (Iterator<PolicyTaskFutureImpl<?>> it = queue.iterator(); it.hasNext();) {
+            PolicyTaskFutureImpl<?> f = it.next();
+            if (identifier.equals(f.getIdentifier()) && f.cancel(interruptIfRunning))
                 count++;
+        }
 
         // Cancel tasks that are running
-        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
-            if (it.next().cancel(interruptIfRunning))
+        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();) {
+            PolicyTaskFutureImpl<?> f = it.next();
+            if (identifier.equals(f.getIdentifier()) && f.cancel(interruptIfRunning))
                 count++;
+        }
 
         return count;
     }
@@ -1110,8 +1120,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public void registerShutdownCallback(Runnable callback) {
-        cbShutdown = callback;
+    public void registerShutdownCallback(Consumer<Set<Object>> callback) {
+        if (!cbShutdown.compareAndSet(null, callback)
+            && !cbShutdown.get().equals(callback))
+            throw new IllegalStateException(cbShutdown + " is already registered");
     }
 
     @Override
@@ -1202,8 +1214,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
             shutdownLatch.countDown();
 
-            if (cbShutdown != null)
-                cbShutdown.run();
+            Consumer<Set<Object>> callback = cbShutdown.get();
+            if (callback != null) {
+                Set<Object> runningTasks = new HashSet<Object>();
+                for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
+                    runningTasks.add(it.next().task);
+
+                callback.accept(runningTasks);
+            }
         } else
             while (state.get() == State.ENQUEUE_STOPPING)
                 try { // Await completion of other thread that concurrently invokes shutdown.

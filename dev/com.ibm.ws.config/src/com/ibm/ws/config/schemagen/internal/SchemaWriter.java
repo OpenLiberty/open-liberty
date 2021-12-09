@@ -18,6 +18,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -68,6 +69,7 @@ class SchemaWriter {
     private static final String INTERNAL_PROPERTIES_TYPE = "internalPropertiesType";
     private static final String VARIABLE_DEFINITION_TYPE = "variableDefinitionType";
     private static final String GENERATE_SCHEMA_ACTION = "generateSchema";
+    private static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     private static final ResourceBundle _msgs = ResourceBundle.getBundle(SchemaGenConstants.NLS_PROPS);
 
@@ -88,7 +90,7 @@ class SchemaWriter {
     private boolean isRuntime;
     private SchemaVersion schemaVersion;
     private OutputVersion outputVersion;
-    private boolean gaBuild = true;
+    private boolean beta = false;
     private static File installDir;
 
     public SchemaWriter(XMLStreamWriter writer) {
@@ -106,16 +108,16 @@ class SchemaWriter {
         this.hasType.add(Type.LOCATION);
         this.restrictedTypes = new LinkedHashSet<String>();
         this.isRuntime = false;
-        gaBuild = isGABuild();
+        beta = isEarlyAccess();
     }
 
     /**
-     * Work out whether we should generate the schema for a GA build or not.
+     * Work out whether we should generate the schema for a Beta build or not.
      *
-     * @return true if ga schema, false otherwise.
+     * @return true if beta schema, false otherwise.
      */
-    private static boolean isGABuild() {
-        boolean result = true;
+    private static boolean isEarlyAccess() {
+        boolean result = false;
 
         final Properties props = new Properties();
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -123,8 +125,13 @@ class SchemaWriter {
             @Override
             public Object run() {
                 try {
-                    final File version = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
-                    Reader r = new InputStreamReader(new FileInputStream(version), "UTF-8");
+                    Reader r;
+                    final File wasFile = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
+                    final File olFile = new File(getInstallDir(), "lib/versions/openliberty.properties");
+                    if (olFile.exists())
+                        r = new InputStreamReader(new FileInputStream(olFile), StandardCharsets.UTF_8);
+                    else
+                        r = new InputStreamReader(new FileInputStream(wasFile), StandardCharsets.UTF_8);
                     props.load(r);
                     r.close();
                 } catch (IOException e) {
@@ -133,22 +140,13 @@ class SchemaWriter {
                 return null;
             }
         });
-        String v = props.getProperty("com.ibm.websphere.productVersion");
+        String edition = props.getProperty("com.ibm.websphere.productEdition");
 
-        if (v != null) {
-            int index = v.indexOf('.');
-            if (index != -1) {
-                try {
-                    int major = Integer.parseInt(v.substring(0, index));
-                    if (major > 2012) {
-                        result = false;
-                    }
-                } catch (NumberFormatException nfe) {
-                    // ignore because we fail safe. True for this hides stuff
-                }
-            }
+        if (edition == null) {
+            result = false;
+        } else {
+            result = edition.equals(EARLY_ACCESS);
         }
-
         return result;
     }
 
@@ -277,16 +275,26 @@ class SchemaWriter {
             }
         }
 
+        Map<String, TypeBuilder.OCDTypeReference> typeReferences = builder.getPidTypeMap();
+
+        for (TypeBuilder.OCDType type : types) {
+            if (type.getParentPids() != null) {
+                for (String parentPid : type.getParentPids()) {
+                    OCDTypeReference parentTypeRef = typeReferences.get(parentPid);
+                    if (parentTypeRef != null) {
+                        OCDType parentType = parentTypeRef.getOCDType();
+                        if (parentType != null && parentType.getSupportsExtensions() && shouldAddOCD(type)) {
+                            parentType.addChild(type);
+                        }
+                    }
+                }
+            }
+        }
+
         // write types first for each OCD
         for (TypeBuilder.OCDType type : types) {
             if (shouldAddOCD(type)) {
                 writeObjectClassType(builder, type);
-                /*
-                 * Remove Child-first case. To do in V9
-                 * if (type.getParentPids() != null) {
-                 * writeObjectClassNestedType(type);
-                 * }
-                 */
             }
         }
 
@@ -310,7 +318,7 @@ class SchemaWriter {
         }
 
         // write element for each defined pid or factory pid
-        for (Map.Entry<String, TypeBuilder.OCDTypeReference> entry : builder.getPidTypeMap().entrySet()) {
+        for (Map.Entry<String, TypeBuilder.OCDTypeReference> entry : typeReferences.entrySet()) {
             String pid = entry.getKey();
             TypeBuilder.OCDTypeReference type = entry.getValue();
             OCDType ocdType = type.getOCDType();
@@ -409,7 +417,7 @@ class SchemaWriter {
      */
     private boolean shouldAddOCD(OCDType ocdType) {
         return !!!ocdType.isInternal() &&
-               !!!(gaBuild &&
+               !!!(!beta &&
                    ocdType.isBeta());
     }
 
@@ -798,7 +806,7 @@ class SchemaWriter {
      */
     private boolean shouldAddAttribute(ExtendedAttributeDefinition attributeDef) {
         return !"internal".equals(attributeDef.getName()) &&
-               !!!(gaBuild &&
+               !!!(!beta &&
                    attributeDef.isBeta());
     }
 

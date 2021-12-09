@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.jose4j.keys.HmacKey;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
@@ -61,6 +62,7 @@ public class ConsumerUtil {
 
     private static TimeUtils timeUtils = new TimeUtils(TimeUtils.YearMonthDateHourMinSecZone);
     private final JtiNonceCache jtiCache = new JtiNonceCache();
+    static JwtCache jwtCache = null;
 
     KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
@@ -346,12 +348,13 @@ public class ConsumerUtil {
             throw new InvalidTokenException(errorMsg);
         }
         checkJwtFormatAgainstConfigRequirements(jwtString, config);
-        if (JweHelper.isJwe(jwtString)) {
-            jwtString = JweHelper.extractJwsFromJweToken(jwtString, config, mpConfigProps);
+        JwtContext jwtContext = getJwtContextFromCache(jwtString, config);
+        if (jwtContext != null) {
+            return jwtContext;
         }
-        JwtConsumerBuilder builder = initializeJwtConsumerBuilderWithoutValidation(config);
-        JwtConsumer firstPassJwtConsumer = builder.build();
-        return firstPassJwtConsumer.process(jwtString);
+        jwtContext = parseNewJwtWithoutValidation(jwtString, config);
+        cacheJwtContext(jwtString, jwtContext, config);
+        return jwtContext;
     }
 
     void checkJwtFormatAgainstConfigRequirements(String jwtString, JwtConsumerConfig config) throws InvalidTokenException {
@@ -363,6 +366,32 @@ public class ConsumerUtil {
             String errorMsg = Tr.formatMessage(tc, "JWE_REQUIRED_BUT_TOKEN_NOT_JWE", new Object[] { config.getId() });
             throw new InvalidTokenException(errorMsg);
         }
+    }
+
+    JwtContext getJwtContextFromCache(@Sensitive String jwtString, JwtConsumerConfig config) {
+        initializeCache(config);
+        return (JwtContext) jwtCache.get(jwtString);
+    }
+
+    private synchronized void initializeCache(JwtConsumerConfig config) {
+        long timeoutMillis = 1000 * 60 * 5;
+        if (jwtCache == null) {
+            jwtCache = new JwtCache(timeoutMillis, config);
+        }
+    }
+
+    void cacheJwtContext(@Sensitive String jwtString, JwtContext jwtContext, JwtConsumerConfig config) {
+        initializeCache(config);
+        jwtCache.put(jwtString, jwtContext);
+    }
+
+    JwtContext parseNewJwtWithoutValidation(@Sensitive String jwtString, JwtConsumerConfig config) throws InvalidTokenException, InvalidJwtException {
+        if (JweHelper.isJwe(jwtString)) {
+            jwtString = JweHelper.extractJwsFromJweToken(jwtString, config, mpConfigProps);
+        }
+        JwtConsumerBuilder builder = initializeJwtConsumerBuilderWithoutValidation(config);
+        JwtConsumer firstPassJwtConsumer = builder.build();
+        return firstPassJwtConsumer.process(jwtString);
     }
 
     protected JwtContext parseJwtWithValidation(String jwtString, JwtContext jwtContext, JwtConsumerConfig config,

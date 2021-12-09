@@ -92,7 +92,7 @@ Service-Component: \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.org.apache.httpcomponents;version=latest, \
-  commons-logging:commons-logging;version=1.1.1, \
-  commons-codec:commons-codec;version=1.14, \
+  io.openliberty.org.apache.commons.logging;version=latest, \
+  io.openliberty.org.apache.commons.codec;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	cglib:cglib-nodep;version=3.3.0

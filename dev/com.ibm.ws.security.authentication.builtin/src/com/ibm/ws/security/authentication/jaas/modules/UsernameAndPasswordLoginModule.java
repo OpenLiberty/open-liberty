@@ -28,10 +28,11 @@ import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
-import com.ibm.ws.security.authentication.UserRevokedException;
 import com.ibm.ws.security.authentication.PasswordExpiredException;
+import com.ibm.ws.security.authentication.UserRevokedException;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
+import com.ibm.ws.security.context.SubjectRegistryManager;
 import com.ibm.ws.security.registry.UserRegistry;
 
 /**
@@ -74,8 +75,16 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
             userRegistry = getUserRegistry();
             urAuthenticatedId = userRegistry.checkPassword(user, String.valueOf(passwordChars));
             if (urAuthenticatedId != null) {
-                username = getSecurityName(user, urAuthenticatedId);
-                setUpTemporarySubject();
+                try {
+                    //We only need to start registry detection if there is a SAF registry configured
+                    //This method doesn't provide information about the user logging in, only
+                    //that there is a SAF registry.
+                    SubjectRegistryManager.startSubjectRegistryDetectionOnZOS();
+                    username = getSecurityName(user, urAuthenticatedId);
+                    setUpTemporarySubject();
+                } finally {
+                    SubjectRegistryManager.clearSubjectRegistryDetectionOnZOS();
+                }
                 updateSharedState();
                 return true;
             } else {
@@ -86,13 +95,11 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
                                                                                new Object[] { user },
                                                                                "CWWKS1100A: Authentication failed for the userid {0}. A bad userid and/or password was specified."));
             }
-        } 
-        catch (com.ibm.ws.security.registry.PasswordExpiredException e) {
+        } catch (com.ibm.ws.security.registry.PasswordExpiredException e) {
             throw new PasswordExpiredException(e.getLocalizedMessage(), e);
         } catch (com.ibm.ws.security.registry.UserRevokedException e) {
             throw new UserRevokedException(e.getLocalizedMessage(), e);
-        } 
-        catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
 
             // NO FFDC: AuthenticationExceptions are expected (bad userid/password is pretty normal)
             throw e; // no-need to wrap

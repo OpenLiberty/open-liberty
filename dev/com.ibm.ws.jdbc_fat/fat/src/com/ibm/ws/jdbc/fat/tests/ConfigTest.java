@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,6 +111,11 @@ public class ConfigTest extends FATServletClient {
     //Server configurations that will be changed during test suite, but that we will go back to later.
     private static ServerConfiguration originalServerConfig;
     private static ServerConfiguration originalServerConfigUpdatedForJDBC;
+
+    static final long FIVE_MINUTE_MS_TIMEOUT = 300000; // Five minutes in milliseconds
+
+    // Interval (in milliseconds) that tests should use for polling
+    static final long POLLING_INTERVAL_MS = 500; // 500 milliseconds
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -317,26 +322,24 @@ public class ConfigTest extends FATServletClient {
 
         // First verify the default behavior
         runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
-        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed"); // TODO update when the default switches
-
-        // TODO after the change to the default, swap the order of the next two blocks:
-
-        conMgr1.setAutoCloseConnections("true");
-        try {
-            updateServerConfig(config, EMPTY_EXPR_LIST);
-            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
-            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
-        } catch (Throwable x) {
-            System.out.println("Failure during " + method + " with the following config:");
-            System.out.println(config);
-            throw x;
-        }
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
 
         conMgr1.setAutoCloseConnections("false");
         try {
             updateServerConfig(config, EMPTY_EXPR_LIST);
             runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
             runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        conMgr1.setAutoCloseConnections("true");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
         } catch (Throwable x) {
             System.out.println("Failure during " + method + " with the following config:");
             System.out.println(config);
@@ -1003,7 +1006,6 @@ public class ConfigTest extends FATServletClient {
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
-                    "java.sql.SQLException",
                     "java.sql.SQLNonTransientConnectionException",
                     "javax.resource.spi.ResourceAllocationException" })
     public void testConfigChangePurgePolicy() throws Throwable {
@@ -1152,10 +1154,13 @@ public class ConfigTest extends FATServletClient {
     public void testConfigChangeWithActiveConnections() throws Throwable {
         String method = "testConfigChangeWithActiveConnections";
         Log.info(c, method, "Executing " + method);
+        final long start = System.currentTimeMillis();
+        Object result;
+        boolean success = false;
 
         // On a separate thread, run a servlet that keeps a connection open for a few seconds
-        // and checks the default queryTimeout value every 100 milliseconds.
-        // this will fail if the timeout does not increase or goes above a certain hardcoded value.
+        // and frequently checks the default queryTimeout value.
+        // this will fail if the timeout does not increase during the test interval.
         final BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
         new Thread() {
             @Override
@@ -1172,9 +1177,10 @@ public class ConfigTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         DataSource dsfat5 = config.getDataSources().getBy("id", "dsfat5derby");
         try {
-            // Increase the queryTimeout several times
-            for (int qt = 31; qt <= 34; qt++) {
-                dsfat5.setQueryTimeout("" + qt);
+            final long testTimeout = FIVE_MINUTE_MS_TIMEOUT - (System.currentTimeMillis() - start); // Roughly calculate a 5 minute total timeout
+            // Continually increase the queryTimeout every interval
+            for (int qt = 30; !success && System.currentTimeMillis() - start < testTimeout; Thread.sleep(POLLING_INTERVAL_MS)) {
+                dsfat5.setQueryTimeout("" + ++qt);
                 /*
                  * each time we change the file we toggle beginTranForResultSetScrollingAPIs from true to false to change the file size
                  * otherwise defect 58455 may occur as when the file is changed but remains the same size and has the same timestamp the
@@ -1186,18 +1192,21 @@ public class ConfigTest extends FATServletClient {
                     dsfat5.setBeginTranForResultSetScrollingAPIs("false");
                 }
                 updateServerConfig(config, EMPTY_EXPR_LIST);
-                Thread.sleep(100);
+                result = results.poll(POLLING_INTERVAL_MS, TimeUnit.MILLISECONDS);
+                if (result != null && "successful".equals(result)) {
+                    success = true;
+                } else if (result instanceof Throwable) {
+                    throw (Throwable) result;
+                }
+            }
+
+            if (!success) {
+                throw new Exception("Test testConfigChangeWithActiveConnections did not complete within the allotted time of " + FIVE_MINUTE_MS_TIMEOUT + " ms.");
             }
         } catch (Throwable x) {
-            System.out.println("Failure during " + method + " with the following config:");
-            System.out.println(config);
+            Log.warning(c, "Failure during " + method + " with the following config:");
+            Log.warning(c, config.toString());
             throw x;
-        } finally {
-            Object result = results.poll(10, TimeUnit.SECONDS);
-            if (result == null)
-                throw new Exception("Test did not complete within allotted time");
-            else if (result instanceof Throwable)
-                throw (Throwable) result;
         }
 
         cleanUpExprs = EMPTY_EXPR_LIST;

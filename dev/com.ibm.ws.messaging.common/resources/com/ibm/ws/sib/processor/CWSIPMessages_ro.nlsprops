@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Asigura\u0163i-v\u0103 c\u0103 m
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Motorul de mesagerie {0} a r\u0103spuns la cererea de abonament, topologia Publicare Abonare este acum consistent\u0103.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Comunica\u0163iile dintre motoarele de mesagerie au fost f\u0103cute cu succes \u015fi Topologia de publicare abonament este consistent\u0103.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=nimic
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Motorul de mesagerie {0} a r\u0103spuns la cererea de abonare, topologia Publicare / Abonare este acum consistent\u0103.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Au fost realizate cu succes comunica\u0163iile \u00eentre motoarele de mesagerie \u015fi topologia Publicare / Abonare este consistent\u0103.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=f\u0103r\u0103
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Receptor blocat, receptorul nu poate livra mesajele de intrare curente datorit\u0103 motivului {0} pe destina\u0163ia {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=Receptorul nu poate livra un mesaj c\u0103tre destina\u0163ia vizat\u0103 pentru motivul dat, p\u00e2n\u0103 c\u00e2nd se rezolv\u0103 aceast\u0103 problem\u0103, livrarea mesajelor urm\u0103toare va fi blocat\u0103.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Receptorul nu poate livra un mesaj c\u0103tre destina\u0163ia \u0163int\u0103 pentru motivul dat. P\u00e2n\u0103 c\u00e2nd se rezolv\u0103 aceast\u0103 problem\u0103, este blocat\u0103 livrarea mesajelor urm\u0103toare.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Dac\u0103 persist\u0103 aceast\u0103 stare, lua\u0163i m\u0103surile corespunz\u0103toare pentru rezolvarea problemei mesajului.
 
 # -------------------------------------------------------------------------------------------------

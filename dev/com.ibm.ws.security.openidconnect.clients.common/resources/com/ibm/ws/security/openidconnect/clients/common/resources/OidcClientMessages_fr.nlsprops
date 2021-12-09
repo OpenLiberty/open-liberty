@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# AND:  CWWKS1520 - CWWKS1599
 # BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
 # altering any of these messages.
 
@@ -208,3 +209,24 @@ USERINFO_INVALID.explanation=La revendication 'sub' (sujet) des informations uti
 USERINFO_INVALID.useraction=Assurez-vous que le fournisseur OpenID Connect g\u00e9n\u00e8re des donn\u00e9es User Info valides.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Le client OpenID Connect [{0}] requiert une URL de noeud final d''autorisation, mais celle-ci n''est pas d\u00e9finie.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Une URL de noeud final d'autorisation doit \u00eatre d\u00e9finie pour obtenir un code d'autorisation ou les jetons requis.
+OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=D\u00e9finissez l'attribut authorizationEndpointUrl dans la configuration client OpenID Connect sur l'URL de noeud final d'autorisation du fournisseur OpenID Connect. Sinon, d\u00e9finissez l'attribut discoveryEndpointUrl dans la configuration client OpenID Connect sur l'URL de noeud final de reconnaissance du fournisseur OpenID Connect.
+
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT=CWWKS1535E: Le client OpenID Connect [{0}] requiert une URL de noeud final de jeton, mais celle-ci n''est pas d\u00e9finie.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.explanation=Une URL de noeud final de jeton doit \u00eatre d\u00e9finie pour obtenir les jetons requis.
+OIDC_CLIENT_NULL_TOKEN_ENDPOINT.useraction=D\u00e9finissez l'attribut tokenEndpointUrl dans la configuration client OpenID Connect sur l'URL de noeud final de jeton du fournisseur OpenID Connect. Sinon, d\u00e9finissez l'attribut discoveryEndpointUrl dans la configuration client OpenID Connect sur l'URL de noeud final de reconnaissance du fournisseur OpenID Connect.
+
+# Do not translate "keyManagementKeyAlias"
+# 0=OIDC client config ID
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS1536E: Le jeton n''est pas au format JWS (JSON Web Signature) car il ne contient pas trois parties alors que le client OpenID Connect [{0}] accepte uniquement les jetons au format JWS.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Il se peut que le jeton soit mal form\u00e9 ou qu'il soit au format JWE (JSON Web Encryption). Les jetons doivent \u00eatre au format JWS si l'attribut keyManagementKeyAlias n'est pas configur\u00e9.
+OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pour accepter les jetons JWE, configurez l'attribut keyManagementKeyAlias dans la configuration du client OpenID Connect. Sinon, assurez-vous que seuls des jetons JWS sont envoy\u00e9s \u00e0 cette ressource.
+
+# 0=OIDC client config ID
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Le jeton n''est pas au format JWE (JSON Web Encryption) car il ne contient pas cinq parties alors que le client OpenID Connect [{0}] accepte uniquement les jetons au format JWE.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il se peut que le jeton soit mal form\u00e9 ou qu'il soit au format JWS (JSON Web Signature). Les jetons doivent \u00eatre au format JWE si l'attribut keyManagementKeyAlias est configur\u00e9.
+OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pour accepter les jetons JWS au lieu des jetons JWE, supprimez l'attribut keyManagementKeyAlias dans la configuration du client OpenID Connect. Sinon, assurez-vous que seuls des jetons JWE sont envoy\u00e9s \u00e0 cette ressource.
+
+# STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

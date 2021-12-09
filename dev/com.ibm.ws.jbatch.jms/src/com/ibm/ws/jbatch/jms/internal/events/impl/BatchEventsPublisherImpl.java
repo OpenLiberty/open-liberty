@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.jbatch.jms.internal.events.impl;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 import java.util.Set;
 
 import javax.batch.runtime.BatchStatus;
@@ -26,6 +25,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -36,8 +36,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.jbatch.container.RASConstants;
-import com.ibm.jbatch.container.impl.BatchKernelImpl;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
@@ -76,6 +74,8 @@ public class BatchEventsPublisherImpl implements BatchEventsPublisher {
 
 	private static final TraceComponent tc = Tr.register(BatchEventsPublisherImpl.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");
 
+	private static final JsonBuilderFactory builderFactory = Json.createBuilderFactory(null);
+	    
 	/**
 	 * For creating jms dispatcher connection factory
 	 */
@@ -368,7 +368,7 @@ public class BatchEventsPublisherImpl implements BatchEventsPublisher {
 	//Return a copy of the json object with a k/v pair removed.
 	@Trivial
 	private JsonObject removeJsonPair( JsonObject jObj, String k ){
-		JsonObjectBuilder builder = Json.createObjectBuilder();
+		JsonObjectBuilder builder = builderFactory.createObjectBuilder();
 		Set<Entry<String,JsonValue>> jSet = jObj.entrySet();
 
 		for (Iterator<Entry<String, JsonValue>> iter = jSet.iterator(); iter.hasNext();) {

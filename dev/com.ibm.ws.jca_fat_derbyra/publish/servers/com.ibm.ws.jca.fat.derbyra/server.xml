@@ -49,7 +49,7 @@
     </connectionFactory>
 
     <connectionFactory jndiName="eis/ds5">
-      <connectionManager maxPoolSize="1" connectionTimeout="0" autoCloseConnections="true"/>
+      <connectionManager maxPoolSize="1" connectionTimeout="0" autoCloseConnections="true" temporarilyAssociateIfDissociateUnavailable="true"/>
       <properties.DerbyRA dissociatable="false" lazyEnlistable="true" userName="DS1USER" password="{xor}GwxuDwgb"/>
     </connectionFactory>
 

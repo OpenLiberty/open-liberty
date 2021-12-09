@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -22,7 +23,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -38,7 +38,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.LITE)
-@MinimumJavaLevel(javaLevel = 8)
 
 public class JaegerTraceTest {
     private static final Class<?> CLASS = JaegerTraceTest.class;
@@ -110,11 +109,11 @@ public class JaegerTraceTest {
     
     @AfterClass
     public static void shutdown() throws Exception {
-        if (server1.isStarted()) {
-            server1.stopServer();
-        }
-        if (server2.isStarted()) {
-            server2.stopServer("CWMOT0009W", "CWMOT0010W");
-        }
+    	LibertyServer[] serversToShutDown = {server1, server2};
+    	for (LibertyServer server : serversToShutDown) {
+        	if (server != null && server.isStarted()) {
+        		server.stopServer("CWMOT0009W", "CWMOT0010W");
+            }
+    	}
     }
 }

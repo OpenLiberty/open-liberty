@@ -7,5 +7,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.messagingServer-3.0))"
 -bundles=com.ibm.ws.messaging.jms.defaultresource
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=base
+WLP-Activation-Type: parallel

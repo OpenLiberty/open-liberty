@@ -17,12 +17,15 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -52,14 +55,20 @@ public class WCEncodingTest {
     public static void before() throws Exception {
         LOG.info("Setup : add TestEncoding to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(server, APP_NAME_ENCODING + ".war", true,
-                                                  "testencoding.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME_ENCODING + ".war", "testencoding.servlets");
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(server, "TestServlet40.ear", true,
-                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
-                                                  "testservlet40.war.listeners", "testservlet40.jar.servlets");
+        JavaArchive testServlet40Jar = ShrinkWrap.create(JavaArchive.class, "TestServlet40.jar");
+        ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + "TestServlet40.jar" + "/resources");
+        testServlet40Jar.addPackage("testservlet40.jar.servlets");
+
+        WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, "TestServlet40.war");
+        testServlet40War.addAsLibrary(testServlet40Jar);
+        testServlet40War.addPackage("testservlet40.servlets");
+        testServlet40War.addPackage("testservlet40.listeners");
+
+        ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 
         ArrayList<String> expectedErrors = new ArrayList<String>();
         expectedErrors.add("CWWWC0401E:.*");
@@ -67,8 +76,6 @@ public class WCEncodingTest {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCEncodingTest.class.getSimpleName() + ".log");
-        WCApplicationHelper.waitForAppStart("TestEncoding", WCEncodingTest.class.getName(), server);
-        WCApplicationHelper.waitForAppStart("TestServlet40", WCEncodingTest.class.getName(), server);
         LOG.info("Setup : complete, ready for Tests");
     }
 

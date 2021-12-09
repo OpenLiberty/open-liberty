@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,7 +77,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * Create a new subsystem definition with the specified immutable attributes.
      * Called when rebuilding from a cache.
      *
-     * @param attr Immutable attributes
+     * @param attr    Immutable attributes
      * @param details Provisioning details (will be cleared when provisioning operation is complete)
      * @see #load(String, SubsystemFeatureDefinitionImpl)
      * @see FeatureDefinitionUtils#loadAttributes(String, ImmutableAttributes)
@@ -99,8 +99,8 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * <p>
      * Some operations, like finding resource bundles, may not work.
      *
-     * @param repoType emtpy/null for core, "usr" for user extension, or the product
-     *            extension name
+     * @param repoType    emtpy/null for core, "usr" for user extension, or the product
+     *                        extension name
      * @param inputStream The input stream to read from
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
@@ -121,8 +121,8 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * specified input stream.
      *
      * @param repoType emtpy/null for core, "usr" for user extension, or the product
-     *            extension name
-     * @param file Subsystem feature definition manifest file
+     *                     extension name
+     * @param file     Subsystem feature definition manifest file
      *
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
@@ -467,21 +467,38 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getIconFiles()
+     * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getIcons()
      */
     @Override
     public Collection<String> getIcons() {
-        Collection<String> icons = new ArrayList<String>();
+        Collection<String> result = new ArrayList<String>();
         String iconHeader = getHeader("Subsystem-Icon");
         if (iconHeader != null) {
-            String[] iconHeaders = iconHeader.split(",");
-            for (String iconDirective : iconHeaders) {
-                String[] iconDirectives = iconDirective.split(";");
-                // Assume the first part is always the file URL
-                icons.add(iconDirectives[0].trim());
+            String[] icons = iconHeader.split(",");
+            for (String icon : icons) {
+                String[] iconAttrs = icon.split(";");
+                // icon has form "<iconUrl>[; size=n]"
+                result.add(iconAttrs[0].trim());
             }
         }
-        return icons;
+        String epIconsHeader = getHeader("Subsystem-Endpoint-Icons");
+        if (epIconsHeader != null) {
+            String epNamePath = "";
+            String[] epIcons = epIconsHeader.split(",");
+            for (String epIcon : epIcons) {
+                String[] epIconAttrs = epIcon.split(";");
+                if (epIconAttrs[0].indexOf("=") >= 0) {
+                    // epIcon has form "<epName>=<epIconUrl>[; size=N]
+                    String[] epNameAndIconUrl = epIconAttrs[0].split("=");
+                    epNamePath = epNameAndIconUrl[0].trim() + "/";
+                    result.add(epNamePath + epNameAndIconUrl[1].trim());
+                } else {
+                    // epIcon has form "<epIconUrl>[; size=n]"
+                    result.add(epNamePath + epIconAttrs[0].trim());
+                }
+            }
+        }
+        return result;
     }
 
     /*

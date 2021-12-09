@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.LibertyVariable;
-import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -154,7 +153,11 @@ class ServerXMLConfiguration {
     }
 
     public void setConfigReadTime() {
-        long time = getLastResourceModifiedTime(); //serverConfiguration.getLastModified();
+        setConfigReadTime(getLastResourceModifiedTime());
+
+    }
+
+    public void setConfigReadTime(long time) {
         // Update time stamp for configReadTime on next run.
         TimestampUtils.writeTimeToFile(bundleContext.getDataFile("configStamp"), time);
         configReadTime = time;
@@ -205,11 +208,16 @@ class ServerXMLConfiguration {
         return lastModified;
     }
 
+    // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+    long reduceTimestampPrecision(long value) {
+        return (value / 1000) * 1000;
+    }
+
     /**
      * @return
      */
     public boolean isModified() {
-        return getLastResourceModifiedTime() != configReadTime;
+        return reduceTimestampPrecision(getLastResourceModifiedTime()) != reduceTimestampPrecision(configReadTime);
     }
 
     public Collection<String> getFilesToMonitor() {
@@ -264,7 +272,7 @@ class ServerXMLConfiguration {
     @FFDCIgnore({ ConfigParserException.class, ConfigParserTolerableException.class })
     private ServerConfiguration loadServerConfiguration() throws ConfigValidationException, ConfigParserException {
         ServerConfiguration configuration = null;
-        XMLConfigValidator configValidator = parser.getConfigValidator();
+
         try {
             try {
                 // Initialize the configuration object here, so that as the parser progresses
@@ -282,7 +290,6 @@ class ServerXMLConfiguration {
 
                 configuration.updateLastModified(configRoot.getLastModified());
 
-                configValidator.validateConfig(configuration);
             } catch (ConfigParserTolerableException ex) {
                 // We know what this is, so no need to retry
                 throw ex;
@@ -297,7 +304,7 @@ class ServerXMLConfiguration {
                     // Reset the server configuration so that we can start over from the beginning.
                     configuration = new ServerConfiguration();
                     parser.parseServerConfiguration(configRoot, configuration);
-                    configValidator.validateConfig(configuration);
+
                 }
             }
         } catch (ConfigParserException ex) {

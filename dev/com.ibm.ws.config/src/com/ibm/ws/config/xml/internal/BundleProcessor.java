@@ -101,6 +101,8 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
 
     private final Map<Bundle, ExtendedBundle> extendedBundles = new WeakHashMap<>();
 
+    private final Set<Bundle> unresolvedBundles = new HashSet<Bundle>();
+
     /**
      * Construct BundleProcessor and processes bundle's default configuration
      * files
@@ -253,6 +255,11 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
 
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Bundle resolved event for feature bundle {0}", b);
+                    }
+                    // If the bundle is in the list of unresolved bundles it means that we tried to process it before it was resolved
+                    if (unresolvedBundles.contains(b)) {
+                        unresolvedBundles.remove(b);
+                        addBundles(Arrays.asList(b));
                     }
 
                 } else {
@@ -426,6 +433,9 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                         if (reprocessConfig || getExtendedBundle(b).needsReprocessing()) {
                             newEntries.addAll(entries);
                         }
+                    } else {
+                        // Add this to the unresolved bundles list so that it will be processed when its RESOLVED event comes in
+                        unresolvedBundles.add(b);
                     }
                 }
 
@@ -923,8 +933,13 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
             return hasDefaultConfig.get();
         }
 
+        // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+        long reduceTimestampPrecision(long value) {
+            return (value / 1000) * 1000;
+        }
+
         public boolean needsReprocessing() {
-            return lastProcessed.get() != bundle.getLastModified();
+            return reduceTimestampPrecision(lastProcessed.get()) != reduceTimestampPrecision(bundle.getLastModified());
         }
 
         public Bundle getBundle() {

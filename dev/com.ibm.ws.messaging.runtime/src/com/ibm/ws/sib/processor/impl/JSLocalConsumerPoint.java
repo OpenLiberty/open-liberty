@@ -1408,7 +1408,7 @@ public class JSLocalConsumerPoint extends ReentrantLock
      * @param transaction The transaction to be used to get messages from the msgStore.
      *            If this is specified as null, internal LocalTransaction is created for the job.
      * @return The obtained message, if any
-     *         AsynchConsumerCallback registered when the recieve is attempted
+     *         AsynchConsumerCallback registered when the receive is attempted
      * @throws SIResourceException Thrown if a problem occurs in the msgStore.
      */
     @Override

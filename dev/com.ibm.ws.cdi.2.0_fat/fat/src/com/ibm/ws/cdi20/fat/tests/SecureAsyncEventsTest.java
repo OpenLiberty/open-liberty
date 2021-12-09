@@ -14,8 +14,6 @@ import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9_FULL;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -25,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi20.fat.apps.secureAsyncEvents.SecureAsyncEventsServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -36,7 +35,6 @@ import componenttest.rules.repeater.EERepeatTests;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import secureAsyncEventsApp.web.SecureAsyncEventsServlet;
 
 /**
  * These tests verify the use of asynchronous events in CDI2.0 as per http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#firing_events_asynchronously
@@ -61,8 +59,7 @@ public class SecureAsyncEventsTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                    .addPackages(true, "secureAsyncEventsApp.web")
-                                    .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
+                                   .addPackages(true, SecureAsyncEventsServlet.class.getPackage());
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
 

@@ -269,19 +269,22 @@ class Util {
             int exactMatch = 0;
             int assignableMatch = 0;
             int coercibleMatch = 0;
+            int varArgsMatch = 0;
             boolean noMatch = false;
             for (int i = 0; i < mParamCount; i++) {
                 // Can't be null
                 if (w.isVarArgs() && i == (mParamCount - 1)) {
                     if (i == paramCount || (paramValues != null && paramValues.length == i)) {
-                        // Nothing is passed as varargs
-                        assignableMatch++;
+                        // Var args defined but nothing is passed as varargs
+                        // Use MAX_VALUE so this matches only if nothing else does
+                        varArgsMatch = Integer.MAX_VALUE;
                         break;
                     }
                     Class<?> varType = mParamTypes[i].getComponentType();
                     for (int j = i; j < paramCount; j++) {
                         if (isAssignableFrom(paramTypes[j], varType)) {
                             assignableMatch++;
+                            varArgsMatch++;
                         } else {
                             if (paramValues == null) {
                                 noMatch = true;
@@ -289,6 +292,7 @@ class Util {
                             } else {
                                 if (isCoercibleFrom(paramValues[j], varType)) {
                                     coercibleMatch++;
+                                    varArgsMatch++;
                                 } else {
                                     noMatch = true;
                                     break;
@@ -324,18 +328,18 @@ class Util {
             }
 
             // If a method is found where every parameter matches exactly,
-            // return it
-            if (exactMatch == paramCount) {
+            // and no vars args are present, return it
+            if (exactMatch == paramCount && varArgsMatch == 0) {
                 return w;
             }
 
-            candidates.put(w, new MatchResult(
-                    exactMatch, assignableMatch, coercibleMatch, w.isBridge()));
+             candidates.put(w, new MatchResult(
+                    w.isVarArgs(), exactMatch, assignableMatch, coercibleMatch, varArgsMatch, w.isBridge()));
         }
 
         // Look for the method that has the highest number of parameters where
         // the type matches exactly
-        MatchResult bestMatch = new MatchResult(0, 0, 0, false);
+        MatchResult bestMatch = new MatchResult(true, 0, 0, 0, 0, true);
         Wrapper<T> match = null;
         boolean multiple = false;
         for (Map.Entry<Wrapper<T>, MatchResult> entry : candidates.entrySet()) {
@@ -349,7 +353,7 @@ class Util {
             }
         }
         if (multiple) {
-            if (bestMatch.getExact() == paramCount - 1) {
+            if (bestMatch.getExactCount() == paramCount - 1) {
                 // Only one parameter is not an exact match - try using the
                 // super class
                 match = resolveAmbiguousWrapper(candidates.keySet(), paramTypes);
@@ -754,28 +758,41 @@ class Util {
      */
     private static class MatchResult implements Comparable<MatchResult> {
 
-        private final int exact;
-        private final int assignable;
-        private final int coercible;
+        private final boolean varArgs;
+        private final int exactCount;
+        private final int assignableCount;
+        private final int coercibleCount;
+        private final int varArgsCount;
         private final boolean bridge;
 
-        public MatchResult(int exact, int assignable, int coercible, boolean bridge) {
-            this.exact = exact;
-            this.assignable = assignable;
-            this.coercible = coercible;
+        public MatchResult(boolean varArgs, int exactCount, int assignableCount, int coercibleCount, int varArgsCount,
+                boolean bridge) {
+            this.varArgs = varArgs;
+            this.exactCount = exactCount;
+            this.assignableCount = assignableCount;
+            this.coercibleCount = coercibleCount;
+            this.varArgsCount = varArgsCount;
             this.bridge = bridge;
         }
 
-        public int getExact() {
-            return exact;
+        public boolean isVarArgs() {
+            return varArgs;
         }
 
-        public int getAssignable() {
-            return assignable;
+        public int getExactCount() {
+            return exactCount;
         }
 
-        public int getCoercible() {
-            return coercible;
+        public int getAssignableCount() {
+            return assignableCount;
+        }
+
+        public int getCoercibleCount() {
+            return coercibleCount;
+        }
+
+        public int getVarArgsCount() {
+            return varArgsCount;
         }
 
         public boolean isBridge() {
@@ -784,17 +801,25 @@ class Util {
 
         @Override
         public int compareTo(MatchResult o) {
-            int cmp = Integer.compare(this.getExact(), o.getExact());
+            // Non-varArgs always beats varArgs
+            int cmp = Boolean.compare(o.isVarArgs(), this.isVarArgs());
             if (cmp == 0) {
-                cmp = Integer.compare(this.getAssignable(), o.getAssignable());
+                cmp = Integer.compare(this.getExactCount(), o.getExactCount());
                 if (cmp == 0) {
-                    cmp = Integer.compare(this.getCoercible(), o.getCoercible());
+                    cmp = Integer.compare(this.getAssignableCount(), o.getAssignableCount());
                     if (cmp == 0) {
-                        // The nature of bridge methods is such that it actually
-                        // doesn't matter which one we pick as long as we pick
-                        // one. That said, pick the 'right' one (the non-bridge
-                        // one) anyway.
-                        cmp = Boolean.compare(o.isBridge(), this.isBridge());
+                        cmp = Integer.compare(this.getCoercibleCount(), o.getCoercibleCount());
+                        if (cmp == 0) {
+                            // Fewer var args matches are better
+                            cmp = Integer.compare(o.getVarArgsCount(), this.getVarArgsCount());
+                            if (cmp == 0) {
+                                // The nature of bridge methods is such that it actually
+                                // doesn't matter which one we pick as long as we pick
+                                // one. That said, pick the 'right' one (the non-bridge
+                                // one) anyway.
+                                cmp = Boolean.compare(o.isBridge(), this.isBridge());
+                            }
+                        }
                     }
                 }
             }
@@ -802,24 +827,30 @@ class Util {
         }
 
         @Override
-        public boolean equals(Object o)
-        {
+        public boolean equals(Object o) {
             return o == this || (null != o &&
                     this.getClass().equals(o.getClass()) &&
-                    ((MatchResult)o).getExact() == this.getExact() &&
-                    ((MatchResult)o).getAssignable() == this.getAssignable() &&
-                    ((MatchResult)o).getCoercible() == this.getCoercible() &&
+                    ((MatchResult)o).getExactCount() == this.getExactCount() &&
+                    ((MatchResult)o).getAssignableCount() == this.getAssignableCount() &&
+                    ((MatchResult)o).getCoercibleCount() == this.getCoercibleCount() &&
+                    ((MatchResult)o).getVarArgsCount() == this.getVarArgsCount() &&
+                    ((MatchResult)o).isVarArgs() == this.isVarArgs() &&
                     ((MatchResult)o).isBridge() == this.isBridge());
         }
 
         @Override
-        public int hashCode()
-        {
-            return (this.isBridge() ? 1 << 24 : 0) ^
-                    this.getExact() << 16 ^
-                    this.getAssignable() << 8 ^
-                    this.getCoercible();
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + assignableCount;
+            result = prime * result + (bridge ? 1231 : 1237);
+            result = prime * result + coercibleCount;
+            result = prime * result + exactCount;
+            result = prime * result + (varArgs ? 1231 : 1237);
+            result = prime * result + varArgsCount;
+            return result;
         }
+
     }
 
 

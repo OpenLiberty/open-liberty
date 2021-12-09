@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright IBM Corp. 2011, 2020
+@REM Copyright IBM Corp. 2011, 2021
 @REM The source code for this program is not published or other-
 @REM wise divested of its trade secrets, irrespective of what has
 @REM been deposited with the U.S. Copyright Office.
@@ -52,6 +52,20 @@
 @REM              to y to allow remote debugging. By default, this value is not
 @REM              defined, which does not allow remote debugging on newer JDK/JREs.
 @REM
+@REM WINDOWS_SERVICE_START_TIMEOUT - Use when liberty is registered as a Windows
+@REM              service.  The value specifies the number of seconds the script 
+@REM              waits for the service to start before continuing. Default is 5.
+@REM
+@REM WINDOWS_SERVICE_STOP_TIMEOUT - Use when liberty is registered as a Windows
+@REM              service.  The value specifies the number of seconds the script 
+@REM              waits for the service to stop before continuing.  Default is 5.
+@REM
+@REM SERVER_WORKING_DIR - The directory containing output files from the JVM.  For 
+@REM              example the javadump files.  The default value is the location
+@REM              ${WLP_OUTPUT_DIR}/serverName. If set with an absolute path 
+@REM              (ex, C:\logs), that location will be utilized, else if a relative 
+@REM              path (ex, logs) is set it will be relative to the default 
+@REM              location.
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -87,6 +101,11 @@ if defined LOG_FILE set LOG_FILE=!LOG_FILE:"=!
 if defined WLP_USER_DIR set WLP_USER_DIR=!WLP_USER_DIR:"=!
 if defined WLP_OUTPUT_DIR set WLP_OUTPUT_DIR=!WLP_OUTPUT_DIR:"=!
 if defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=!WLP_DEBUG_ADDRESS:"=!
+if defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=!WINDOWS_SERVICE_START_TIMEOUT:"=!
+if defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=!WINDOWS_SERVICE_STOP_TIMEOUT:"=!
+
+if NOT defined WINDOWS_SERVICE_START_TIMEOUT set WINDOWS_SERVICE_START_TIMEOUT=5
+if NOT defined WINDOWS_SERVICE_STOP_TIMEOUT set WINDOWS_SERVICE_STOP_TIMEOUT=5
 
 @REM Consume script parameters
 
@@ -400,7 +419,9 @@ goto:eof
   ) else (
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
      set RC=!errorlevel!
-     call:serverRunning
+
+     @rem  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running" 
+     call:serverRunning !WINDOWS_SERVICE_START_TIMEOUT! 0
      call:javaCmdResult
   )   
 goto:eof
@@ -412,6 +433,20 @@ goto:eof
   if %RC% == 2 goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
   set RC=!errorlevel!
+
+  @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
+  @rem RC=0 indicates the server is running; ie the stop request failed.
+  @rem      Call stopServer directly. Stopping the server should stop the service.
+  @rem RC=1 is what we are expecting, meaning server stopped. 
+  @rem      Change RC to RC=0 to indicate success.
+  call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
+
+  if !RC! EQU 0 (
+     @rem The service failed to stop, attempt to stop the server directly.
+     call:stopServer
+  ) else ( 
+     set RC=0
+  )
 goto:eof
 
 :unregisterWinService
@@ -511,7 +546,7 @@ goto:eof
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
   )
 
-@REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
+  @REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
   if NOT defined OPENJ9_JAVA_OPTIONS (
     set SPECIFIED_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
   ) else (
@@ -520,9 +555,26 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    @REM Skip if Xshareclasses is defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
-    if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
-      set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !SPECIFIED_JAVA_OPTIONS!
+
+    @REM Check if Xshareclasses is already defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
+    @REM First check if SPECIFIED_JAVA_OPTIONS is undefined as the second test does not work with undefined variables
+    if NOT defined SPECIFIED_JAVA_OPTIONS (
+      set ADD_SHARE_CLASSES=true
+    ) else if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
+      set ADD_SHARE_CLASSES=true
+    ) else (
+      @REM Xshareclasses IS found in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS, skip adding it to SERVER_IBM_JAVA_OPTIONS below
+      set ADD_SHARE_CLASSES=false
+    )
+ 
+    if "!ADD_SHARE_CLASSES!" == "true" (
+      @REM Set -Xscmx
+      if "debug" == "%ACTION%" (
+        set XSCMX_VAL="130m"
+      ) else (
+        set XSCMX_VAL="80m"
+      )
+      set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx!XSCMX_VAL! !SPECIFIED_JAVA_OPTIONS!
     ) else (
       set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
     )
@@ -570,6 +622,10 @@ goto:eof
   @REM the script will try to read etc
 
   set RC=0
+  call:mergeJVMOptions "%WLP_USER_DIR%\shared\jvm.options"
+  if not %RC% == 0 goto:eof
+  
+  @REM This location is intentionally not documented but removing might break existing installations
   call:mergeJVMOptions "%WLP_INSTALL_DIR%\usr\shared\jvm.options"
   if not %RC% == 0 goto:eof
   
@@ -656,8 +712,29 @@ goto:eof
 @REM Set the current working directory for an existing server.
 @REM
 :serverWorkingDirectory
-  if not exist "%SERVER_OUTPUT_DIR%" mkdir "%SERVER_OUTPUT_DIR%"
-  cd /d "%SERVER_OUTPUT_DIR%"
+  @REM Use a default if SERVER_WORKING_DIR is not set.
+  if not defined SERVER_WORKING_DIR (
+    set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!
+    goto:checkDir
+  )
+  
+  @REM Default to SERVER_OUTPUT_DIR if user only specifies a drive letter, ex c:\
+  if /I "%SERVER_WORKING_DIR:~1,2%" == ":\" (
+    if "%SERVER_WORKING_DIR:~3,1%"=="" (
+      set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!
+      goto:checkDir
+    )
+  )
+  
+  @REM Check if we are relative or absolute path based on a : in the path string.
+  if x%SERVER_WORKING_DIR::=%==x%SERVER_WORKING_DIR% (
+    set SERVER_WORKING_DIR=!SERVER_OUTPUT_DIR!\!SERVER_WORKING_DIR!
+    goto:checkDir
+  )
+  
+  :checkDir
+    if not exist "%SERVER_WORKING_DIR%" mkdir "%SERVER_WORKING_DIR%"
+    cd /d "%SERVER_WORKING_DIR%"
 goto:eof
 
 @REM
@@ -684,22 +761,58 @@ goto:eof
 
 @REM
 @REM serverRunning: Return 0 if the server is running (.sLock file is in use), 
-@REM                1 if not (file is not in use),
+@REM                       1 if not (file is not in use),
+@REM Parmeters %1 - optional.  Time (in seconds) to wait for a particular status.
+@REM                 default: 0 
+@REM           %2 - optional. (0 or 1). Status to wait for.
+@REM                 0: wait for server to be running
+@REM                 1: wait for server to be stopped
+@REM                 default: 0
 @REM
 :serverRunning
+
+  @REM set defaults
+  set serverRunningCounter=0
+  set serverRunningTimeOut=0
+  set serverRunningDesiredStatus=0
   set SERVER_LOCK_FILE=!SERVER_OUTPUT_DIR!\workarea\.sLock
-  if NOT EXIST "%SERVER_LOCK_FILE%" (
-    set RC=1
-  ) else (
-    @REM If the server has locked .sLock, then the redirection will fail.  The
-    @REM type command doesn't set errorlevel by itself, so use ||.
-    (type nul > "%SERVER_LOCK_FILE%") 2> nul || rem
-    if !errorlevel! == 0 (
+
+  @REM Read parameters if any
+  if NOT "%~1" == "" set serverRunningTimeOut=%~1
+  if NOT "%~2" == "" set serverRunningDesiredStatus=%~2
+
+  @REM DO WHILE not timed out and desired status not achieved.
+  :repeatServerRunning
+
+    @REM Check server status
+    if NOT EXIST "%SERVER_LOCK_FILE%" (
       set RC=1
     ) else (
-      set RC=0
+      @REM If the server has locked .sLock, then the redirection will fail.  The
+      @REM type command doesn't set errorlevel by itself, so use ||.
+      (type nul > "%SERVER_LOCK_FILE%") 2> nul || rem
+      if !errorlevel! == 0 (
+        set RC=1
+      ) else (
+        set RC=0
+      )
     )
-  )
+
+    @REM If no timeout is set, just return. Not waiting for any particular status.
+    if !serverRunningTimeOut! EQU 0 goto:eof
+
+    @REM Got desired status?  Get out of here.
+    if !RC! EQU !serverRunningDesiredStatus! goto:eof
+
+    @REM If timed out, get out of here.
+    if !serverRunningCounter! GEQ !serverRunningTimeOut! goto:eof
+
+    @REM Delay 1 second and repeat loop
+    timeout /t 1 > nul
+    set /A serverRunningCounter = !serverRunningCounter! + 1
+    goto :repeatServerRunning
+
+  @REM END WHILE
 goto:eof
 
 @REM

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2019 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionRequestInfo;
 
 import org.ietf.jgss.GSSCredential;
@@ -252,9 +253,10 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
      * @param password the password, or null if none.
      * @param shardingKey the sharding key, or null if none.
      * @param superShardingKey the super sharding key, or null if none.
+     * @throws SQLException if unable to obtain the default isolation level from the legacy DataStoreHelper.
      */
     public WSConnectionRequestInfoImpl(WSManagedConnectionFactoryImpl mcf, WSConnectionManager cm,
-                                       String user, String password, Object shardingKey, Object superShardingKey) {
+                                       String user, String password, Object shardingKey, Object superShardingKey) throws SQLException {
         ivUserName = user;
         ivPassword = password;
         ivShardingKey = shardingKey;
@@ -269,7 +271,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         if (ivIsoLevel == Connection.TRANSACTION_NONE)
             ivIsoLevel = mcf.dsConfig.get().isolationLevel;
         if (ivIsoLevel == -1)
-            ivIsoLevel = mcf.getHelper().getDefaultIsolationLevel();
+            ivIsoLevel = mcf.defaultIsolationLevel;
 
         hashcode = ivConfigID +
                    (ivUserName == null ? 0 : ivUserName.hashCode()) +

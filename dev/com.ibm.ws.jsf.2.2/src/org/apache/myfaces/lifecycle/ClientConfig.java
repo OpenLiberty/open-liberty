@@ -203,7 +203,7 @@ public class ClientConfig implements Serializable
     /**
      * Users can overload this method to define in which scenarios a request should result
      * in an 'intercepted' page with proper windowId detection. This can e.g. contain
-     * blacklisting some userAgents.
+     * blocklisting some userAgents.
      * By default the following User-Agents will be served directly:
      * <ul>
      *     <li>.*bot.*</li>

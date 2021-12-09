@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\t\u6307\u5b9a\u7279\u6027\u7684\u5b89\u88dd\u4f
 \t\u9019\u500b\u9078\u9805\uff0c\u5247\u6703\u5c07\u8a72\u7279\u6027\u4f5c\u70ba\u4e00\u500b\u4f7f\u7528\u8005\u7279\u6027\n\
 \t\u9032\u884c\u5b89\u88dd\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installFeature.option-desc.--featuresBom=\t\u6307\u5b9a\u7279\u6027 BOM \u6a94\u7684 Maven \u5ea7\u6a19\u3002\n\
+\t\u9019\u500b\u9078\u9805\u5bb9\u8a31\u5f9e\u5df2\u914d\u7f6e\u7684 Maven \u5132\u5b58\u5eab\u5b89\u88dd\u4f7f\u7528\u8005\u7279\u6027\u3002\n\
+\t\u8acb\u78ba\u4fdd\u8a72\u5132\u5b58\u5eab\u9084\u5305\u542b\n\
+\t\u8207 BOM \u540c\u4e00 groupId \u5167\u7684\u76f8\u95dc\u806f\u7279\u6027 JSON \u6a94\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\t\u9019\u500b\u9078\u9805\u7528\u4f86\u6307\u5b9a Maven \u69cb\u4ef6\u5132\u5b58\u5eab\u7684\u6a94\u6848\u8def\u5f91\uff0c\n\
 \t\u4ee5\u4f5c\u70ba featureUtility \u5b89\u88dd\u8cc7\u7522\u6642\u7684\u4f86\u6e90\u3002
@@ -66,6 +72,12 @@ installServerFeatures.desc=\t\u5c0d\u65bc\u6307\u540d\u7684\u4f3a\u670d\u5668\uf
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\t\u76f8\u540c Liberty \u74b0\u5883\u4e2d\uff0c\u73fe\u6709\u4f3a\u670d\u5668\u7684\u540d\u7a31\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installServerFeatures.option-desc.--featuresBom=\t\u6307\u5b9a\u7279\u6027 BOM \u6a94\u7684 Maven \u5ea7\u6a19\u3002\n\
+\t\u9019\u500b\u9078\u9805\u5bb9\u8a31\u5f9e\u5df2\u914d\u7f6e\u7684 Maven \u5132\u5b58\u5eab\u5b89\u88dd\u4f7f\u7528\u8005\u7279\u6027\u3002\n\
+\t\u8acb\u78ba\u4fdd\u8a72\u5132\u5b58\u5eab\u9084\u5305\u542b\n\
+\t\u8207 BOM \u540c\u4e00 groupId \u5167\u7684\u76f8\u95dc\u806f\u7279\u6027 JSON \u6a94\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\t\u9019\u500b\u9078\u9805\u7528\u4f86\u6307\u5b9a Maven \u69cb\u4ef6\u5132\u5b58\u5eab\u7684\u6a94\u6848\u8def\u5f91\uff0c\n\

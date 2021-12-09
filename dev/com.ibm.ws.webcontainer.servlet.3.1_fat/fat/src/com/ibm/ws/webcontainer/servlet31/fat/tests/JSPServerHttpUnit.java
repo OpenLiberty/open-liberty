@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,36 +16,33 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.PostMethodWebRequest;
-//import com.meterware.httpunit.protocol.UploadFileSpec;
 import com.meterware.httpunit.UploadFileSpec;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebForm;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests to execute on the wcServer that use HttpUnit.
  */
 @RunWith(FATRunner.class)
-public class JSPServerHttpUnit extends LoggingTest {
+public class JSPServerHttpUnit {
     private static final Logger LOG = Logger.getLogger(JSPServerHttpUnit.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
@@ -53,8 +50,8 @@ public class JSPServerHttpUnit extends LoggingTest {
     private static final String TEST_SERVLET_31_JAR_NAME = "TestServlet31";
     private static final String TEST_SERVLET_31_APP_NAME = "TestServlet31";
 
-    @ClassRule
-    public static SharedServer SHARED_JSP_SERVER = new SharedServer("servlet31_jspServer");
+    @Server("servlet31_jspServer")
+    public static LibertyServer jspServer;
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -70,22 +67,19 @@ public class JSPServerHttpUnit extends LoggingTest {
                                                                    "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.listeners");
         TestServlet31App = (WebArchive) ShrinkHelper.addDirectory(TestServlet31App, "test-applications/TestServlet31.war/resources");
         TestServlet31App = TestServlet31App.addAsLibraries(SessionIdListenerJar, TestServlet31Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_JSP_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_JSP_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(SHARED_JSP_SERVER.getLibertyServer(), TestServlet31App);
-          }
-        SHARED_JSP_SERVER.startIfNotStarted();
-        SHARED_JSP_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
+
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(jspServer, TestServlet31App);
+
+        // Start the server and use the class name so we can find logs easily.
+        jspServer.startServer(JSPServerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_JSP_SERVER.getLibertyServer() != null && SHARED_JSP_SERVER.getLibertyServer().isStarted()) {
-            SHARED_JSP_SERVER.getLibertyServer().stopServer(null);
+        if (jspServer != null && jspServer.isStarted()) {
+            jspServer.stopServer();
         }
     }
 
@@ -99,7 +93,8 @@ public class JSPServerHttpUnit extends LoggingTest {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
-        WebRequest request = new PostMethodWebRequest(SHARED_JSP_SERVER.getServerUrl(true, contextRoot + "/index_getSubmittedFileName.jsp"));
+        WebRequest request = new PostMethodWebRequest("http://" + jspServer.getHostname() + ":" + jspServer.getHttpDefaultPort() + "/" + contextRoot
+                                                      + "/index_getSubmittedFileName.jsp");
 
         WebResponse response = wc.getResponse(request);
         LOG.info(response.getText());
@@ -142,15 +137,4 @@ public class JSPServerHttpUnit extends LoggingTest {
         String fail_msg = "\n FileUpload: Fail to find string: " + search_msg + "\n";
         return fail_msg;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_JSP_SERVER;
-    }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.fat.test;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,7 +20,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -36,9 +34,9 @@ public class ComplexClientTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
-                                                       "com.ibm.ws.jaxrs20.client.ComplexClientTest.client",
-                                                       "com.ibm.ws.jaxrs20.client.ComplexClientTest.service");
+        ShrinkHelper.defaultDropinApp(server, appname,
+                                      "com.ibm.ws.jaxrs20.client.ComplexClientTest.client",
+                                      "com.ibm.ws.jaxrs20.client.ComplexClientTest.service");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -77,9 +75,9 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as the EE9 ClientBuilder starts with io.openliberty.org
     public void complexTestNewClientBuilder() throws Exception {
-        this.runTestOnServer(target, "testNewClientBuilder", null, "com.ibm.ws");
+        this.runTestOnServer(target, "testNewClientBuilder", null, "com.ibm.ws"/*CXF*/,
+                             "io.openliberty.org.jboss.resteasy.common.client"/*RESTEasy*/);
     }
 
     @Test
@@ -135,9 +133,9 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as RestEasy does not allow a null for a Client Property value    
     public void complexTestNew2MixFilter() throws Exception {
-        this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}");
+        this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}", // CXF
+                             "222,{filter1=GET},223,{filter2=*/*}"); //RESTEasy - defaults to "*/*" if no Accept header set by client
     }
 
     @Test

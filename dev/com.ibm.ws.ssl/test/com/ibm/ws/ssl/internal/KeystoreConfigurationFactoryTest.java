@@ -135,7 +135,7 @@ public class KeystoreConfigurationFactoryTest {
      */
     @Test
     public void getName() {
-        assertEquals("Did not recieve expected name",
+        assertEquals("Did not receive expected name",
                      "Keystore configuration", ksConfigFactory.getName());
     }
 

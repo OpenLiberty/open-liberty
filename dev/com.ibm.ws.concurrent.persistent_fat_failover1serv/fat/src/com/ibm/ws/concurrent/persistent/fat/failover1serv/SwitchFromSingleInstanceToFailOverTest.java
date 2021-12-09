@@ -31,6 +31,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import failover1serv.web.Failover1ServerTestServlet;
 
 /**
@@ -38,6 +40,16 @@ import failover1serv.web.Failover1ServerTestServlet;
  * enable fail over. There are a variety of ways they might do this, which are described in more detail
  * in the comments for each individual test.
  */
+// Various FFDCs due to transaction timeouts from the combination of infrastructure slowness
+// and tests using a very small missedTaskThreshold:
+@AllowedFFDC({
+    "java.lang.IllegalStateException",
+    "javax.persistence.PersistenceException",
+    "javax.resource.ResourceException",
+    "javax.transaction.RollbackException",
+    "javax.transaction.xa.XAException",
+    "org.apache.derby.client.am.XaException"
+})
 @RunWith(FATRunner.class)
 public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 	private static final String APP_NAME = "failover1servApp";
@@ -75,7 +87,6 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * testEnableFailOverWhileServerIsRunning - Schedules tasks on an instance where fail over is not enabled.
      * Enables fail over while the server is still running. Then verifies that the previous, as well as new, tasks run.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testEnableFailOverWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -179,7 +190,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * testEnableFailOverWhileServerIsStopped - Schedules tasks on an instance where fail over is not enabled.
      * Stops the server and enables fail over. Starts up the server and verifies that the previous, as well as new, tasks run.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
+    @Mode(TestMode.FULL)
     @Test
     public void testEnableFailOverWhileServerIsStopped() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -289,7 +300,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
      * the same time. But it is being tested here in case anyone tries it.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
+    @Mode(TestMode.FULL)
     @Test
     public void testNewFailOverEnabledInstance() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -414,7 +425,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
      * the same time. But it is being tested here in case anyone tries it.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
+    @Mode(TestMode.FULL)
     @Test
     public void testNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -533,7 +544,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * some operations are performed to manually transfer them. Users should not do this. This test is only written
      * to experiment with what would happen and explore how to cope with it.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
+    @Mode(TestMode.FULL)
     @Test
     public void testRemoveFailOverEnablementWhileServerIsRunning() throws Exception {
         // start with fail over enabled
@@ -632,14 +643,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * some MBean operations are performed. Users should not do this. This test is only written to experiment with
      * what would happen and explore how to cope with it.
      */
-    @AllowedFFDC({
-        // due to transaction timeout:
-        "javax.transaction.RollbackException",
-        "javax.transaction.xa.XAException",
-        "javax.persistence.PersistenceException",
-        "java.lang.IllegalStateException",
-        "org.apache.derby.client.am.XaException"
-        })
+    @Mode(TestMode.FULL)
     @Test
     public void testRemoveFailOverEnablementWhileServerIsStopped() throws Exception {
         // start with fail over enabled
@@ -744,10 +748,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * While the server is running, removes the original instance, creating a new one with fail over enabled. Then verifies
      * that the previous, as well as new, tasks run.
      */
-    @AllowedFFDC({
-        "java.lang.IllegalStateException", // Attempting to execute an operation on a closed EntityManager // possible when task is still attempting to run after executor instance is removed
-        "org.apache.derby.client.am.XaException" // due to roll back & abort due to transaction timeout
-    })
+    @Mode(TestMode.FULL)
     @Test
     public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -839,7 +840,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * Stops the server and removes the original instance, creating a new one with fail over enabled. Starts up the server and verifies
      * that the previous, as well as new, tasks run.
      */
-    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
+    @Mode(TestMode.FULL)
     @Test
     public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped() throws Exception {
         ServerConfiguration config = originalConfig.clone();

@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=V\u00e9rifiez si le fichier de descripteur de
 system.java.compiler.not.found=JSPG0304W: L''attribut JSP, useJDKCompiler, est d\u00e9fini sur true, mais le compilateur DSK Java est introuvable. Le conteneur JSP utilise le compilateur qui est int\u00e9gr\u00e9 au produit pour compiler les fichiers JSP dans le module Web : {0}.
 system.java.compiler.not.found.explanation=Le conteneur JSP n'a pas pu trouver le compilateur syst\u00e8me, ce qui indique g\u00e9n\u00e9ralement que le fichier jar SDK Java, tools.jar, est introuvable dans le chemin de classe.
 system.java.compiler.not.found.useraction=Assurez-vous que le fichier jar SDK Java, tools.jar, se trouve dans le chemin de classe et v\u00e9rifiez que SDK Java prend en charge l'API Java Compiler. Pour plus de d\u00e9tails, consultez la Java Specification Request 199.
+
+jsp.feature.not.loaded.correctly=CWWJS0001 : La fonction JSP [Pages] ne s'est pas charg\u00e9e avec une version acceptable.
+jsp.feature.not.loaded.correctly.explanation=La fonction JSP [Pages] est charg\u00e9e avec une version qui correspond \u00e0 la sp\u00e9cification Java [Jakarta] EE de cette fonction JSP [Pages]. La fonction a \u00e9t\u00e9 charg\u00e9e sans version d\u00e9finie.
+jsp.feature.not.loaded.correctly.useraction=V\u00e9rifiez dans le fichier server.xml l'existence d'une fonction JSP [Pages]. Une seule fonction doit \u00eatre sp\u00e9cifi\u00e9e.

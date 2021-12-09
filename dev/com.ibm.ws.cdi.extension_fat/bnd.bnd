@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -17,33 +17,25 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/applicationExtension.jar/src,\
-	test-applications/applicationExtension.war/src,\
-	test-applications/dynamicallyAddedBeans.jar/src,\
-	test-applications/dynamicallyAddedBeans.war/src,\
-	test-applications/helloWorldExtensionTest.war/src,\
-	test-applications/multipleWar1.war/src,\
-	test-applications/multipleWarEmbeddedJar.jar/src,\
-	test-applications/multipleWarNoBeans.war/src,\
 	test-bundles/cdi.helloworld.extension/src, \
+	test-bundles/cdi.spi.misplaced/src, \
 	test-bundles/cdi.spi.extension/src, \
-	test-bundles/cdi.spi.constructor.fail.extension/src, \
-	test-applications/observeProcessProducerMethod.war/src, \
-	test-applications/SPIExtension.war/src, \
-	test-applications/SPIConstructorException.war/src
+	test-bundles/cdi.spi.constructor.fail.extension/src
 	
 tested.features:\
 	cdi-2.0,\
 	servlet-4.0,\
-	jdbc-4.2,\
-	jpa-2.2,\
 	beanValidation-2.0,\
-	jaxrs-2.1,\
 	jsf-2.3,\
-        enterprisebeanslite-4.0,\
-        cdi.internals-3.0,\
-        beanvalidation-3.0,\
-        faces-3.0
+	cdi-3.0,\
+	connectors-2.0,\
+	servlet-5.0,\
+	expressionLanguage-4.0,\
+	pages-3.0,\
+	enterprisebeanslite-4.0,\
+	cdi.internals-3.0,\
+	beanvalidation-3.0,\
+	faces-3.0
 	
 test.project: true
 
@@ -55,7 +47,7 @@ test.project: true
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

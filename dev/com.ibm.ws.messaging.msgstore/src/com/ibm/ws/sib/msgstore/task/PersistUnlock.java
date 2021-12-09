@@ -34,13 +34,13 @@ public final class PersistUnlock extends Task
     {
         private long _cachedLockId;
 
-        public CachedPersistable(Persistable masterPersistable)
+        public CachedPersistable(Persistable primaryPersistable)
         {
-            super(masterPersistable);
+            super(primaryPersistable);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<ctor>$CachedPersistable");
 
-            _cachedLockId = _masterPersistable.getLockID();
+            _cachedLockId = _primaryPersistable.getLockID();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<ctor>$CachedPersistable");
         }
@@ -60,14 +60,14 @@ public final class PersistUnlock extends Task
     private static TraceComponent tc =
     SibTr.register(PersistUnlock.class, MessageStoreConstants.MSG_GROUP, MessageStoreConstants.MSG_BUNDLE);
     private Persistable _cachedPersistable = null;
-    private Persistable _masterPersistable;
+    private Persistable _primaryPersistable;
 
     public PersistUnlock(AbstractItemLink link) throws SevereMessageStoreException
     {
         super(link);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", link);
 
-        _masterPersistable = super.getPersistable();
+        _primaryPersistable = super.getPersistable();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>", this);
     }
@@ -107,7 +107,7 @@ public final class PersistUnlock extends Task
 
         if (_cachedPersistable == null)
         {
-            _cachedPersistable = new CachedPersistable(_masterPersistable);
+            _cachedPersistable = new CachedPersistable(_primaryPersistable);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "copyDataIfVulnerable");
@@ -125,7 +125,7 @@ public final class PersistUnlock extends Task
         }
         else
         {
-            return _masterPersistable;
+            return _primaryPersistable;
         }
     }
 

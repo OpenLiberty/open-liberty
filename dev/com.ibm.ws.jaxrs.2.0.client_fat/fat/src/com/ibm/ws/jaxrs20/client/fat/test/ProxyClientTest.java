@@ -24,13 +24,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs20.client.fat.proxy.HttpProxyServer;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.proxy.* properties are not supported yet
 @RunWith(FATRunner.class)
 public class ProxyClientTest extends AbstractTest {
 
@@ -61,7 +59,7 @@ public class ProxyClientTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWWKW0702E", "CWWKW0701E");
+            server.stopServer("CWWKW0702E", "CWWKW0701E", "CWWKW1303W");
         }
         HttpProxyServer.stopHttpProxyServer(Integer.valueOf(proxyPort));//
         System.out.println("End!");
@@ -114,11 +112,13 @@ public class ProxyClientTest extends AbstractTest {
         p.put("proxyhost", serverRef.getHostname());
         p.put("proxyport", "8889");
         p.put("proxytype", "HTTP");
-        this.runTestOnServer(target, "testProxy", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException");
+        this.runTestOnServer(target, "testProxy", p, 
+                             "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException", // <= EE8
+                             "[Proxy Error]:jakarta.ws.rs.ProcessingException: RESTEASY004655: Unable to invoke request"); // EE9
     }
 
     @Test
-    @ExpectedFFDC("java.lang.NumberFormatException")
+    @AllowedFFDC("java.lang.NumberFormatException")
     public void testProxyNotWork_InvalidPort() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "testProxyNotWork_InvalidPort");
@@ -149,13 +149,14 @@ public class ProxyClientTest extends AbstractTest {
     }
 
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @AllowedFFDC("java.lang.IllegalArgumentException")
     public void testProxyWork_InvalidType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "testProxyWork_InvalidType");
         p.put("proxyhost", serverRef.getHostname());
         p.put("proxyport", proxyPort);
         p.put("proxytype", "invalidType"); //JaxRS-2.0 Client set the proxy type to default HTTP
-        this.runTestOnServer(target, "testProxy", p, "[Basic Resource]:testProxyWork_InvalidType");
+        this.runTestOnServer(target, "testProxy", p, "[Basic Resource]:testProxyWork_InvalidType", // <= EE8
+                                                     "[Proxy Error]:jakarta.ws.rs.ProcessingException: RESTEASY004655: Unable to invoke request"); //EE9
     }
 }

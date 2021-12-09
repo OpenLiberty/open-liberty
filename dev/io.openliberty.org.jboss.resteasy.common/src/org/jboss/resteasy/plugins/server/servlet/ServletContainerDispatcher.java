@@ -28,6 +28,7 @@ import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.GetRestful;
+import io.openliberty.restfulWS.utils.RestfulWSUtils;
 
 /**
  * Helper/delegate class to unify Servlet and Filter dispatcher implementations
@@ -51,6 +52,7 @@ public class ServletContainerDispatcher
    {
       this.servletConfig = servletConfig;
       ResteasyContext.pushContext(ServletConfig.class, servletConfig);
+      RestfulWSUtils.logEndpoints(servletConfig); // Liberty Change
    }
 
    public ServletContainerDispatcher()

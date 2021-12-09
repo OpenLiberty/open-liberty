@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -46,34 +50,33 @@ public class AssertionTest extends WSATTest {
 	public static void beforeTests() throws Exception {
 		DBTestBase.initWSATTest(server);
 
-    ShrinkHelper.defaultDropinApp(server, "assertion", "com.ibm.ws.wsat.assertion.*");
-		
-		if (server != null && !server.isStarted()) {
-			server.startServer();
-		}
+		ShrinkHelper.defaultDropinApp(server, "assertion", "com.ibm.ws.wsat.assertion.*");
+
+		FATUtils.startServers(server);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		ServerUtils.stopServer(server);
+		FATUtils.stopServers(server);
 
 		DBTestBase.cleanupWSATTest(server);
 	}
 
 	@Test
 	public void testNoPolicyAssertion() {
+		String method = "testNoPolicyAssertion";
 		// We have change the behavior, if enable wsat feature and exist trans, then we will use global transaction
 		// DELETE ME: Should work as normal web service and no exception is expected
 		try {
 			String urlStr = BASE_URL + contextRoot + "/AssertionClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testNoPolicyAssertion URL: " + urlStr);
+			Log.info(getClass(), method, urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testNoPolicyAssertion");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testNoPolicyAssertion Result : " + result);
+			Log.info(getClass(), method, result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Reply from server: Hello World!"));
 		} catch (Exception e) {
@@ -83,19 +86,18 @@ public class AssertionTest extends WSATTest {
 
 	@Test
 	public void testNoPolicyAssertionNoTransaction() {
+		String method = "testNoPolicyAssertionNoTransaction";
 		// Should work as normal web service and no exception is expected
 		try {
 			String urlStr = BASE_URL + contextRoot + "/AssertionClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testNoPolicyAssertionNoTransaction URL: "
-					+ urlStr);
+			Log.info(getClass(), method, urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testNoPolicyAssertionNoTransaction");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testNoPolicyAssertionNoTransaction Result : "
-					+ result);
+			Log.info(getClass(), method, result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Reply from server: Hello World!"));
 		} catch (Exception e) {
@@ -105,16 +107,17 @@ public class AssertionTest extends WSATTest {
 
 	@Test
 	public void testAssertionOptional() {
+		String method = "testAssertionOptional";
 		try {
 			String urlStr = BASE_URL + contextRoot + "/AssertionClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testAssertionOptional URL: " + urlStr);
+			Log.info(getClass(), method, urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionOptional");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testAssertionOptional Result : " + result);
+			Log.info(getClass(), method, result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Reply from server: Hello World!"));
 		} catch (Exception e) {
@@ -124,17 +127,17 @@ public class AssertionTest extends WSATTest {
 
 	@Test
 	public void testAssertionOptionalNoTransaction() {
+		String method = "testAssertionOptionalNoTransaction";
 		try {
 			String urlStr = BASE_URL + contextRoot + "/AssertionClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testAssertionOptional URL: " + urlStr);
+			Log.info(getClass(), method, urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionOptionalNoTransaction");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testAssertionOptionalNoTransaction Result : "
-					+ result);
+			Log.info(getClass(), method, result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Reply from server: Hello World!"));
 		} catch (Exception e) {
@@ -142,21 +145,26 @@ public class AssertionTest extends WSATTest {
 		}
 	}
 
+	// CXF 2.6.2 does some work during Servlet.init that causes FFDC to come out,
+	// but with CXF 3.x, that logic does not happen any longer, so the FFDCs do not come out.
+	// See AbstractHTTPDestination.initConfig to see the difference in behavior.
 	@Test
-	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" })
+	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" },
+	              repeatAction = {EmptyAction.ID, EE8FeatureReplacementAction.ID})
 	public void testAssertionIgnorable() {
+		String method = "testAssertionIgnorable";
 		// Expect an exception because Atomic Transaction policy assertion
 		// MUST NOT include a wsp:Ignorable attribute with a value of 'true'.
 		try {
 			String urlStr = BASE_URL + contextRoot + "/AssertionClientServlet"
 					+ "?baseurl=" + BASE_URL;
-			System.out.println("testAssertionIgnorable URL: " + urlStr);
+			Log.info(getClass(), method, urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr),
 							HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testAssertionIgnorable");
 			BufferedReader br = HttpUtils.getConnectionStream(con);
 			String result = br.readLine();
 			assertNotNull(result);
-			System.out.println("testAssertionIngorable Result : " + result);
+			Log.info(getClass(), method, result);
 			server.waitForStringInLog("WS-AT does not accept Ignorable attribute is TRUE");
 			List<String> errors = new ArrayList<String>();
 			errors.add("SRVE0271E");
@@ -170,18 +178,4 @@ public class AssertionTest extends WSATTest {
 			e.printStackTrace();
 		}
 	}
-
-	/*
-	 * public String callStringProvider(String endpointUrl) throws IOException,
-	 * MalformedURLException { URL url = new URL(endpointUrl); InputStream is =
-	 * url.openConnection().getInputStream(); BufferedReader br = new
-	 * BufferedReader(new InputStreamReader(is));
-	 * 
-	 * String line = null; StringBuffer sb = new StringBuffer();
-	 * 
-	 * while ((line = br.readLine()) != null) { sb.append(line); }
-	 * 
-	 * return sb.toString(); }
-	 */
-
 }

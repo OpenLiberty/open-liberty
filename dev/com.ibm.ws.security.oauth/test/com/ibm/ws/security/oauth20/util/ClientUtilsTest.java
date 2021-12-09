@@ -10,9 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.util;
 
-import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import junit.framework.TestCase;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ import com.ibm.ws.security.oidc.common.AbstractOidcRegistrationBaseTest;
 /**
  *
  */
-public class ClientUtilsTest extends TestCase {
+public class ClientUtilsTest extends AbstractOidcRegistrationBaseTest {
 
     @Test
     public void testUriRewriteOidcBaseClient() {
@@ -41,7 +42,7 @@ public class ClientUtilsTest extends TestCase {
 
         ClientUtils.uriRewrites.put(AbstractOidcRegistrationBaseTest.COMPONENT_ID, rewriteMap);
 
-        OidcBaseClient testOidcBaseClient = AbstractOidcRegistrationBaseTest.getSampleOidcBaseClient();
+        OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
         JsonArray providerRewriteOriginalArray = new JsonArray();
         providerRewriteOriginalArray.add(new JsonPrimitive(providerRewriteOriginal1));
@@ -71,7 +72,7 @@ public class ClientUtilsTest extends TestCase {
 
         ClientUtils.uriRewrites.put(AbstractOidcRegistrationBaseTest.COMPONENT_ID, rewriteMap);
 
-        BaseClient testBaseClient = AbstractOidcRegistrationBaseTest.getSampleOidcBaseClient();
+        BaseClient testBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
         JsonArray providerRewriteOriginalArray = new JsonArray();
         providerRewriteOriginalArray.add(new JsonPrimitive(providerRewriteOriginal1));
@@ -101,7 +102,7 @@ public class ClientUtilsTest extends TestCase {
 
         ClientUtils.uriRewrites.put(AbstractOidcRegistrationBaseTest.COMPONENT_ID, rewriteMap);
 
-        OidcBaseClient testOidcBaseClient = AbstractOidcRegistrationBaseTest.getSampleOidcBaseClient();
+        OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
         testOidcBaseClient.setRedirectUris(null);
 
         OidcBaseClient uriReWrittenOidcBaseClient = ClientUtils.uriRewrite(testOidcBaseClient);

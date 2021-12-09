@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  hibernateJPA30
+  jpaFatTools
+}
+
+dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  requiredLibs project(":com.ibm.ws.jpa.tests.beanvalidation_fat.common")
+
+  hibernateJPA30 'org.hibernate:hibernate-core-jakarta:5.5.7.Final'
+  hibernateJPA30 'org.jboss.logging:jboss-logging:3.4.2.Final'
+  hibernateJPA30 'org.javassist:javassist:3.27.0-GA'
+  hibernateJPA30 'antlr:antlr:2.7.7'
+  hibernateJPA30 'org.jboss:jandex:2.2.3.Final'
+  hibernateJPA30 'com.fasterxml:classmate:1.5.1'
+  hibernateJPA30 'org.hibernate.common:hibernate-commons-annotations:5.1.2.Final'
+  hibernateJPA30 'net.bytebuddy:byte-buddy:1.11.12'
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
+
+task addhibernateJPA30(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA30
+  into new File(autoFvtDir, 'publish/shared/resources/jpa30_hibernate')
+}
+
+task copyFAT {
+    dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
+      into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
+    }
+}
+
+task copyCommonFiles {
+  dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
+  doLast {
+    /*
+     * Copy test application resources.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('test-applications')
+      into new File('test-applications')
+    }
+    
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('publish')
+      into new File('publish')
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn copyJdbcDrivers
+  dependsOn addhibernateJPA30
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
+  dependsOn copyFAT
+  dependsOn copyTestContainers
+}
+
+jar {
+  dependsOn copyCommonFiles
+}
+
+autoFVT.dependsOn copyCommonFiles
+
+clean.doLast {
+  if (file('test-applications').exists()) {
+    file('test-applications').deleteDir()
+  }
+  if (file('build').exists()) {
+    file('build').deleteDir()
+  }
+  if (file('publish/servers').exists()) {
+    file('publish/servers').deleteDir()
+  }
+  if (file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests').exists()) {
+    file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests').deleteDir()
+  }
+}

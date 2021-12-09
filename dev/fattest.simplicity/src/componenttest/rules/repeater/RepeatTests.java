@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
@@ -47,6 +48,13 @@ public class RepeatTests extends ExternalResource {
     }
 
     /**
+     * Adds an iteration of test execution without making any modifications, but only run in FULL mode
+     */
+    public static RepeatTests withoutModificationInFullMode() {
+        return new RepeatTests().andWithoutModificationInFullMode();
+    }
+
+    /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
     public static RepeatTests with(RepeatTestAction action) {
@@ -70,10 +78,30 @@ public class RepeatTests extends ExternalResource {
     }
 
     /**
+     * Adds an iteration of test execution without making any modifications, but run in FULL mode
+     */
+    public RepeatTests andWithoutModificationInFullMode() {
+        actions.add(new EmptyAction().fullFATOnly());
+        return this;
+    }
+
+    /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
     public RepeatTests andWith(RepeatTestAction action) {
         actions.add(action);
+        return this;
+    }
+
+    /**
+     * Removes an iteration of test execution of the previous <code>and*</code> call if the passed-in supplier
+     * returns false. If true or if no test executions have been added, this method will have no effect.
+     */
+    public RepeatTests onlyIf(Supplier<Boolean> check) {
+        int size = actions.size();
+        if (size > 0 && !check.get()) {
+            actions.remove(size - 1);
+        }
         return this;
     }
 
@@ -133,12 +161,18 @@ public class RepeatTests extends ExternalResource {
         }
 
         private static boolean shouldRun(RepeatTestAction action) {
-            String repeatOnly = System.getProperty("fat.test.repeat.only");
-            if (repeatOnly == null) {
+            String repeatOnly = System.getProperty("fat.test.repeat.only"); // If current action matches
+            String repeatAny = System.getProperty("fat.test.repeat.any"); // If any action matches
+            if (repeatOnly == null && repeatAny == null) {
                 return action.isEnabled();
             } else {
-                // Note: If the user has requested this specific action, we ignore the isEnabled() flag
-                return action.getID().equals(repeatOnly);
+                if (repeatOnly != null) {
+                    // Note: If the user has requested this specific action, we ignore the isEnabled() flag
+                    return action.getID().equals(repeatOnly);
+                } else { // repeatAny != null
+                    // Note: If the user has requested any of the active actions, we ignore isEnabled() flag.
+                    return RepeatTestFilter.isRepeatActionActive(repeatAny);
+                }
             }
         }
     }

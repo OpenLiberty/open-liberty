@@ -41,6 +41,7 @@ import org.apache.wss4j.policy.model.SupportingTokens;
  * Translate any AlgorithmSuite policy that may be operative into a WSS4J AlgorithmSuite object
  * to enforce what algorithms are allowed in a request.
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public final class AlgorithmSuiteTranslater {
 
     public void translateAlgorithmSuites(AssertionInfoMap aim, RequestData data) throws WSSecurityException {

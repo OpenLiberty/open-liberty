@@ -7,3 +7,4 @@ com.ibm.ws.ejbcontainer.interceptor.v32_fat
 com.ibm.ws.ejbcontainer.interceptor_fat
 com.ibm.ws.ejbcontainer.legacy_fat
 com.ibm.ws.ejbcontainer.mdb.ra_fat
+com.ibm.ws.ejbcontainer.war_fat

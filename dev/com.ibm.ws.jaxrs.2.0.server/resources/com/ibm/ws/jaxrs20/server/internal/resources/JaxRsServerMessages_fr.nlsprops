@@ -21,8 +21,6 @@
 # Do NOT translate any words when they START with: @
 # Preserve all spaces after a backslash (\) even at the end of a line.
 #
-# NLS_MESSAGEFORMAT_ALL
-#
 #CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW

@@ -29,14 +29,14 @@ public class WASInitialContextFactoryBuilderTest {
 
     @Test
     public void testNoICFProperty() throws Exception {
-        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        Hashtable<Object, Object> env = new Hashtable<>();
         assertNull(sut.createInitialContextFactory(env));
 
     }
 
     @Test
     public void testNonExistentICF() throws Exception {
-        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        Hashtable<Object, Object> env = new Hashtable<>();
         env.put(InitialContext.INITIAL_CONTEXT_FACTORY, "does.not.exist");
         assertNull(sut.createInitialContextFactory(env));
     }
@@ -49,7 +49,7 @@ public class WASInitialContextFactoryBuilderTest {
 
     @Test
     public void testUserICF() throws Exception {
-        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        Hashtable<Object, Object> env = new Hashtable<>();
         env.put(InitialContext.INITIAL_CONTEXT_FACTORY, MyICF.class.getName());
         assertSame(ctx, sut.createInitialContextFactory(env).getInitialContext(env));
     }

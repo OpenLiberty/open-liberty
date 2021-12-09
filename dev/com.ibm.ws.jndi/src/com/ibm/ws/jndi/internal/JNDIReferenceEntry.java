@@ -80,7 +80,7 @@ public class JNDIReferenceEntry {
             }
         }
 
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Dictionary<String, Object> properties = new Hashtable<>();
         properties.put(JNDIConstants.JNDI_SERVICENAME, jndiName);
         this.registration = context.registerService(javax.naming.Reference.class.getName(), ref, properties);
 

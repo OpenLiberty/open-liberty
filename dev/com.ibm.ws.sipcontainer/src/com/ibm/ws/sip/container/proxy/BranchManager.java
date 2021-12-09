@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -775,7 +775,7 @@ abstract class BranchManager implements ProxyParent
             throws IllegalStateException, IOException
         {
             if (c_logger.isTraceDebugEnabled()) {
-                c_logger.traceDebug(this, "proxy", getMyInfo() +  uri);
+                c_logger.traceDebug(this, "proxy", getMyInfo() + " " + uri);
             }
             
             //Check if strict routing is applied. If so top route header is removed. 
@@ -822,8 +822,9 @@ abstract class BranchManager implements ProxyParent
                 // the message arrived on. If no we set a proprietary parameter
                 // which is used to indicate that the record-route needs to be modified
                 // when the response arrives.
-                SipURI receivedOnInterfaceURI = (SipURI) SipProxyInfo.getInstance().extractReceivedOnInterface(_originalReq).clone();
+                SipURI receivedOnInterfaceURI = SipProxyInfo.getInstance().extractReceivedOnInterface(_originalReq);
                 if (receivedOnInterfaceURI != null) {
+                	receivedOnInterfaceURI = (SipURI) receivedOnInterfaceURI.clone();
                 	int inboundIfaceIndex = SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED;
                     OutboundInterface inboundIface = getOutboundInterface(
                     		new InetSocketAddress(receivedOnInterfaceURI.getHost(), receivedOnInterfaceURI.getPort()));

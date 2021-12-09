@@ -62,12 +62,12 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.UnprotectedResourceService;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.UserCredentialResolver;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 /**
  * This class is the OSGI service that is invoked from the main line Liberty
@@ -303,7 +303,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             Tr.debug(tc, "OIDC _SSO RP PROCESS IS STARTING.");
             Tr.debug(tc, "OIDC _SSO RP inbound URL " + WebUtils.getRequestStringForTrace(req, "client_secret"));
         }
-        PostParameterHelper.savePostParams((SRTServletRequest) req);
+        PostParameterHelper.savePostParams((IExtendedRequest) req);
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcClientRequest oidcClientRequest = new OidcClientRequest(req, res, oidcClientConfig, referrerURLCookieHandler);
         req.setAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST, oidcClientRequest);
@@ -340,7 +340,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                         Tr.debug(tc, "customCacheKey is :" + customCacheKey);
                     }
                     if (oidcClientConfig.isIncludeCustomCacheKeyInSubject()) {
-                      customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+                        customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
                     }
                     customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
                     result = new ProviderAuthenticationResult(AuthResult.SUCCESS,
@@ -414,12 +414,15 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                 // This is propagation "supported"
                 // 218872 provider is the id of the oidc client
                 //CWWKS1740W: The inbound propagation token for client [{1}] is not valid due to [{0}]. The request will be authenticated using OpenID Connect.
-                boolean suppress = oidcClientRequest.getRsFailMsg() != null && oidcClientRequest.getRsFailMsg().equals("suppress_CWWKS1704W");
-                if (!suppress) {
-                    Tr.warning(tc, "OIDC_CLIENT_BAD_RS_TOKEN", oidcClientRequest.getRsFailMsg(), provider);
-                } else {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "access token was not present, warning message was suppressed");
+                String rsFailMsg = oidcClientRequest.getRsFailMsg();
+                if (rsFailMsg != null) {
+                    boolean suppress = rsFailMsg.equals("suppress_CWWKS1704W");
+                    if (!suppress) {
+                        Tr.warning(tc, "OIDC_CLIENT_BAD_RS_TOKEN", rsFailMsg, provider);
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "access token was not present, warning message was suppressed");
+                        }
                     }
                 }
             }
@@ -521,7 +524,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         if (providerHint == null || providerHint.isEmpty())
             providerHint = getHeader(req, ClientConstants.OIDC_CLIENT);
         if (providerHint == null || providerHint.isEmpty()) {
-            PostParameterHelper.savePostParams((SRTServletRequest) req);
+            PostParameterHelper.savePostParams((IExtendedRequest) req);
             // otherwise get it from parameter
             providerHint = req.getParameter(ClientConstants.OIDC_CLIENT);
             if (providerHint != null)

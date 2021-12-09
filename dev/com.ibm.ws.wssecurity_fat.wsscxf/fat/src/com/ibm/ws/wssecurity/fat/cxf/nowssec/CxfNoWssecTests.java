@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.nowssec;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -18,10 +20,8 @@ import java.io.StringReader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -30,24 +30,21 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-//Note the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
+//Note: the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
 //12/2020 Setting this test class for LITE bucket
-//@Mode(TestMode.FULL)
-//Added 10/2020
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
-    //Added 10/2020
-    @Server("com.ibm.ws.wssecurity_fat")
-    public static LibertyServer server;
+    static final private String serverName = "com.ibm.ws.wssecurity_fat";
+    @Server(serverName)
 
-    //Orig from CL
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat");
+    public static LibertyServer server;
 
     private final Class<?> thisClass = CxfNoWssecTests.class;
 
@@ -58,7 +55,6 @@ public class CxfNoWssecTests {
     //                server.getHttpDefaultPort() +
     //                "/nowssec/SOAPService1?wsdl";
 
-    //added 10/2020
     private static String wsdlLocation;
 
     private static String serviceClientUrl = "";
@@ -73,12 +69,11 @@ public class CxfNoWssecTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "cxfclient", "com.ibm.ws.wssecurity.fat.cxfclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "nowssec", "com.ibm.ws.wssecurity.fat.nowssec");
 
         server.startServer();// check CWWKS0008I: The security service is ready.
-        //Added 10/2020
+
         wsdlLocation = "http://localhost:" + server.getHttpDefaultPort() + "/nowssec/SOAPService1?wsdl";
 
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");

@@ -19,7 +19,7 @@ src: \
 fat.project: true
 
 tested.features: \
-  concurrent-2.0, enterpriseBeansPersistentTimer-4.0, persistentExecutor-2.0, servlet-5.0
+  concurrent-2.0, enterpriseBeansPersistentTimer-4.0, servlet-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

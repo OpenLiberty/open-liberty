@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class BeanValidation12Test extends AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKW1001W");
     }
 
     @Before
@@ -57,24 +57,24 @@ public class BeanValidation12Test extends AbstractTest {
 
     @Test
     public void testIsNotViolatedInPerRequestWithCDI12_BeanValidation() throws Exception {
-        runGetMethod("/rest/perrequest/book?id=123", 200, "I am a Student.", true);
+        runGetMethod("/rest/perrequest/book?id=123", 200, "I am a Student. 123", true);
     }
 
     @Test
     public void testIsViolatedInPerRequestWithCDI12_BeanValidation() throws Exception {
-        runGetMethod("/rest/perrequest/book", 400, "I am a Student.", true);
+        runGetMethod("/rest/perrequest/book", 400, "I am a Student. null", true);
         String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/perrequest/book");
     }
 
     @Test
     public void testIsNotViolatedInSingletonWithCDI12_BeanValidation() throws Exception {
-        runGetMethod("/rest/singleton/book?id=123", 200, "Hello from SimpleBean", true);
+        runGetMethod("/rest/singleton/book?id=123", 200, "Hello from SimpleBean 123", true);
 //        String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/singleton/book?id=124");
     }
 
     @Test
     public void testIsViolatedInSingletonWithCDI12_BeanValidation() throws Exception {
-        runGetMethod("/rest/singleton/book", 400, "Hello from SimpleBean", true);
+        runGetMethod("/rest/singleton/book", 400, "Hello from SimpleBean null", true);
 //        String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/singleton/book");
     }
 }

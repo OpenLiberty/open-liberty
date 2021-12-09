@@ -11,7 +11,7 @@
 
 package com.ibm.ws.crypto.util;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,12 +42,7 @@ public class PasswordHashGenerator {
             rand.setSeed(rand.generateSeed(SEED_LENGTH));
             rand.nextBytes(output);
         } else {
-            try {
-                output = saltString.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                // fall back to default encoding. since the value won't be converted to the string, this is not an issue.
-                output = saltString.getBytes();
-            }
+            output = saltString.getBytes(StandardCharsets.UTF_8);
         }
         return output;
     }

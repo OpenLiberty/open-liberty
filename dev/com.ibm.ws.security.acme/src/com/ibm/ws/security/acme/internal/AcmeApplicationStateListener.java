@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,8 +74,9 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
 		final String methodName = "applicationStarted(ApplicationInfo)";
 
-		if (AcmeAuthorizationServlet.APP_NAME.equals(appInfo.getName())) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+		if (AcmeAuthorizationServlet.APP_NAME_EE8.equals(appInfo.getName())
+				|| AcmeAuthorizationServlet.APP_NAME_EE9.equals(appInfo.getName())) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 				Tr.event(tc,
 						methodName + ": ACME authorization web application has started and is available for requests.");
 			}
@@ -96,12 +97,12 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 	 * specifications activated thereby ensuring that endpoints are activated only
 	 * after server startup.
 	 *
-	 * @param serverStarted
+	 * @param serverStartedPhase2
 	 *                          The server started instance
 	 */
 	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
 	protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 			Tr.event(tc, ": HTTP is open.");
 		}
 		httpLock.lock();
@@ -200,7 +201,7 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 				if (!signaled || !isAppStarted) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 						Tr.event(tc, methodName
-								+ ": Not signalled that acme application is ready, letting ACME flow happen anyway : signaled: "
+								+ ": Not signalled that acme application is ready, letting ACME flow happen anyway: signaled: "
 								+ signaled + " isHttpStarted: " + isAppStarted);
 					}
 					Tr.warning(tc, "CWPKI2036W", acmeConfig.getStartReadyTimeout() + "ms");
@@ -235,7 +236,7 @@ public class AcmeApplicationStateListener implements ApplicationStateListener {
 						keepWaiting = true;
 					}
 				}
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, methodName + ": Finished waiting on HTTP.");
 				}
 

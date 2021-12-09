@@ -104,7 +104,7 @@ public interface ISessionAffinityManager {
     public void setCookie(ServletRequest request, ServletResponse response, SessionAffinityContext affinityContext, Object session);
 
     /**
-     * If multiple IDs are recieved (for example, multiple JSESSIONID cookies) on
+     * If multiple IDs are received (for example, multiple JSESSIONID cookies) on
      * a single request, set the
      * next one in the SessionAffinityContext. This allows the session manager to
      * check all input ids.

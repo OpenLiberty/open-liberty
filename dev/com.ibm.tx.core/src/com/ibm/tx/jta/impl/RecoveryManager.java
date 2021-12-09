@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package com.ibm.tx.jta.impl;
  *******************************************************************************/
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,14 +28,14 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -86,6 +89,8 @@ public class RecoveryManager implements Runnable {
     protected SharedServerLeaseLog _leaseLog;
     protected String _recoveryGroup;
     protected String _localRecoveryIdentity;
+    protected boolean _peerTranLogEverOpened = false;
+    protected boolean _peerXaLogEverOpened = false;
 
     protected PartnerLogTable _recoveryPartnerLogTable;
 
@@ -150,6 +155,9 @@ public class RecoveryManager implements Runnable {
     protected final Object _recoveryMonitor = new Object();
 
     protected boolean _cleanRemoteShutdown;
+
+    private boolean _retainHomeLogs = false;
+    private boolean _retainPeerLogs = false;
 
     public RecoveryManager(FailureScopeController fsc, RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId,
                            int defaultEpoch)/*
@@ -566,7 +574,15 @@ public class RecoveryManager implements Runnable {
             // situation, server shutdown will be peppered with LogClosedException errors. Needs refinement.
             if (_tranLog != null && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
                 try {
-                    _tranLog.closeLog();
+                    // If this is a local log or an opened peer tran log then it can be closed
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc,
+                                 "Close tran log if it is local " + _failureScopeController.localFailureScope() +
+                                     " or is a peer log that was opened " + _peerTranLogEverOpened);
+                    if (_failureScopeController.localFailureScope() || _peerTranLogEverOpened) {
+                        _tranLog.closeLog();
+                        _peerTranLogEverOpened = false;
+                    }
                 } catch (PeerLostLogOwnershipException ple) {
                     // No FFDC or Error messaging in this case
                     if (tc.isEntryEnabled())
@@ -649,7 +665,15 @@ public class RecoveryManager implements Runnable {
         } finally {
             if (_xaLog != null) {
                 try {
-                    _xaLog.closeLog();
+                    // If this is a local log or an opened peer partner log then it can be closed
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc,
+                                 "Close partner log if it is local " + _failureScopeController.localFailureScope() +
+                                     " or is a peer log that was opened " + _peerXaLogEverOpened);
+                    if (_failureScopeController.localFailureScope() || _peerXaLogEverOpened) {
+                        _xaLog.closeLog();
+                        _peerXaLogEverOpened = false;
+                    }
                 } catch (PeerLostLogOwnershipException ple) {
                     // No FFDC in this case
                     if (tc.isDebugEnabled())
@@ -658,22 +682,59 @@ public class RecoveryManager implements Runnable {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
                 }
-
-                try {
-                    if (_leaseLog != null) {
-                        _leaseLog.releasePeerLease(_failureScopeController.serverName());
-                        _leaseLog.deleteServerLease(_failureScopeController.serverName());
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                    e.printStackTrace();
-                }
             }
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "postShutdown");
+    }
+
+    /**
+     * Delete server lease if peer recovery is enabled
+     *
+     * @param recoveryIdentity
+     */
+    public void deleteServerLease(String recoveryIdentity) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity);
+        try {
+            if (_leaseLog != null) {
+                _leaseLog.releasePeerLease(recoveryIdentity);
+                _leaseLog.deleteServerLease(recoveryIdentity);
+            }
+        } catch (Exception e) {
+            // FFDC exception but allow processing to continue
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "deleteServerLease caught exception ", e);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteServerLease");
+    }
+
+    /**
+     * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
+     * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
+     */
+    public void deleteRecoveryLogsIfPeerRecoveryEnv() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", this);
+
+        if (_leaseLog != null && _localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The recovery logs of home Server " + _failureScopeController.serverName() + " with identity " + _localRecoveryIdentity + " are being processed");
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+            if (!_retainHomeLogs) {
+                // Delete the home server's recovery logs.
+                _tranLog.delete();
+                _xaLog.delete();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv");
     }
 
     protected void checkPartnerServiceData(RecoverableUnit ru) throws IOException {
@@ -1506,7 +1567,7 @@ public class RecoveryManager implements Runnable {
             else if (XArecovered && (_recoveringTransactions.size() == 0)) {
                 // NOTE TO REVIEWERS - should we close the logs here or in shutdown?
                 // shutdown is always called.  We should not remove the RM from _activeRecoveryManagers
-                // until shutdown as we may recieve commit/rollback for completed transactions.
+                // until shutdown as we may receive commit/rollback for completed transactions.
 
                 // NOTE it is NOT possible that shutdown is racing us to close the logs - it will be waiting in prepareToShutdown
                 if (tc.isDebugEnabled())
@@ -1534,6 +1595,22 @@ public class RecoveryManager implements Runnable {
                     } /* @PK31789A */
 
                     postShutdown(true); // Close the partner log
+
+                    // Recovery is complete, if this was peer recovery then we may delete the peer server lease
+                    // This is a noop if peer recovery is not enabled.
+                    if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+                        deleteServerLease(_failureScopeController.serverName());
+
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+                        if (!_retainPeerLogs) {
+                            // Delete the peer recovery logs.
+                            _tranLog.delete();
+                            _xaLog.delete();
+                        }
+                    }
                 } else /* @PK31789A */
                 { /* @PK31789A */
                     // Ensure all end-tran records processed before we delete partners
@@ -1656,17 +1733,12 @@ public class RecoveryManager implements Runnable {
     }
 
     /**
-     * Close the loggs without any keypoint - to be called on a failure to leave
+     * Close the logs without any keypoint - to be called on a failure to leave
      * the logs alone and ensure distributed shutdown code does not update them.
-     *
-     * The closeLeaseLog parameter will be false in the case that we have determined that a peer is
-     * recovering the server's logs.
-     *
-     * @param closeLeaseLog is true if we should process a lease log
      */
-    protected void closeLogs(boolean closeLeaseLog) {
+    protected void closeLogs() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "closeLogs", new Object[] { this, closeLeaseLog });
+            Tr.entry(tc, "closeLogs", new Object[] { this });
 
         if ((_tranLog != null) && (_tranLog instanceof DistributedRecoveryLog)) {
             try {
@@ -1686,15 +1758,6 @@ public class RecoveryManager implements Runnable {
             _xaLog = null;
         }
 
-        try {
-            if (_leaseLog != null && closeLeaseLog) {
-                _leaseLog.deleteServerLease(_failureScopeController.serverName());
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "closeLogs");
     }
@@ -1724,7 +1787,7 @@ public class RecoveryManager implements Runnable {
                 // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
-                    if (_localRecoveryIdentity.equals(serverName))
+                    if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName))
                         _leaseLog.updateServerLease(serverName, _recoveryGroup, true);
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
@@ -1735,7 +1798,7 @@ public class RecoveryManager implements Runnable {
                     Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", exc);
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(false);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1751,6 +1814,10 @@ public class RecoveryManager implements Runnable {
             if (_tranLog != null) {
                 try {
                     _tranLog.openLog();
+
+                    // If this is a peer tran log, then flag that we have opened it.
+                    if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
+                        _peerTranLogEverOpened = true;
                 } catch (LogIncompatibleException exc) {
                     // No FFDC Code needed.
                     // The attempt to open the transaction log has failed because this recovery log is from a version
@@ -1788,7 +1855,7 @@ public class RecoveryManager implements Runnable {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1830", this);
                     Tr.error(tc, "WTRN0111_LOG_ALLOCATION", _tranLog);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1801,7 +1868,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1825,6 +1892,9 @@ public class RecoveryManager implements Runnable {
             if (_xaLog != null) {
                 try {
                     _xaLog.openLog();
+                    // If this is a peer partner log, then flag that we have opened it.
+                    if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
+                        _peerXaLogEverOpened = true;
                     if (_recoverXaLog != null)
                         _recoverXaLog.openLog();
                 } catch (LogIncompatibleException exc) {
@@ -1869,7 +1939,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1882,7 +1952,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     // Signal recovery completion to ensure that no shutdown logic will hang pending this
                     // "recovery" process.
@@ -1920,7 +1990,7 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEventEnabled())
                         Tr.event(tc, "An unexpected error occured during partner log replay: " + exc);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1960,7 +2030,7 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEventEnabled())
                         Tr.event(tc, "An unexpected error occured during transaction log replay: " + exc);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -2226,29 +2296,67 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "haltDownlevelRecovery");
     }
 
-    public void setLeaseLog(SharedServerLeaseLog leaseLog) {
+    public void configurePeerRecovery(SharedServerLeaseLog leaseLog, String recoveryGroup, String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLeaseLog", new Object[] { leaseLog });
+            Tr.entry(tc, "configurePeerRecovery", new Object[] { leaseLog, recoveryGroup, recoveryIdentity });
 
         _leaseLog = leaseLog;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "RecoveryManager", this);
-    }
-
-    public void setRecoveryGroup(String recoveryGroup) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setRecoveryGroup", new Object[] { recoveryGroup });
         _recoveryGroup = recoveryGroup;
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setRecoveryGroup");
-    }
-
-    public void setLocalRecoveryIdentity(String recoveryIdentity) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLocalRecoveryIdentity", new Object[] { recoveryIdentity });
         _localRecoveryIdentity = recoveryIdentity;
+
+        if (_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+            // If the recovery logs belong to the home server in a peer recovery environment, then check whether the system property has
+            // been set to disable the deletion of the logs on clean shutdown.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The recovery logs of home Server " + _failureScopeController.serverName() + " with identity " + _localRecoveryIdentity + " are being processed");
+
+            try {
+                _retainHomeLogs = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.disablehomelogdeletion");
+                                                                    }
+                                                                });
+            } catch (PrivilegedActionException e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2324");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception disabling peer log deletion", e);
+            }
+        } else {
+            // If the recovery logs belong to a peer server in a peer recovery environment, then check whether the system property has
+            // been set to disable the deletion of the logs on successful peer recovery.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " is processing the logs of server " + _failureScopeController.serverName());
+
+            try {
+                _retainPeerLogs = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
+                                                                    }
+                                                                });
+            } catch (PrivilegedActionException e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2343");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception disabling peer log deletion", e);
+            }
+        }
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+
+        if (_retainHomeLogs || _retainPeerLogs) {
+            if (_tranLog != null)
+                _tranLog.retainLogsInPeerRecoveryEnv(true);
+            if (_xaLog != null)
+                _xaLog.retainLogsInPeerRecoveryEnv(true);
+        }
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setLocalRecoveryIdentity");
+            Tr.exit(tc, "configurePeerRecovery", this);
     }
 }

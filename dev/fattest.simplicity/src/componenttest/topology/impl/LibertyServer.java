@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,20 @@ package componenttest.topology.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -37,6 +40,9 @@ import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,6 +95,7 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.Props;
 import com.ibm.ws.fat.util.jmx.JmxException;
 import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
@@ -97,6 +104,7 @@ import com.ibm.ws.logging.utils.FileLogHolder;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.LogPolice;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -220,7 +228,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 30) * 1000;
+    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 120) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
 
     // How long to wait for an app to start before failing out
@@ -857,9 +865,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, boolean resetMark, String... waitForMessages) throws Exception {
 
+        String thisMethod = "reconfigureServerUsingExpandedConfiguration";
         ServerFileUtils serverFileUtils = new ServerFileUtils();
         String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
-        Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
+        Log.info(c, thisMethod, "Reconfiguring server to use new config: " + newConfig);
         if (resetMark) {
             setMarkToEndOfLog();
         }
@@ -867,6 +876,29 @@ public class LibertyServer implements LogMonitorClient {
 
         Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
         waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), waitForMessages);
+
+        // wait for ssl port restart
+        waitForSSLRestart();
+
+    }
+
+    public void waitForSSLRestart() throws Exception {
+
+        String thisMethod = "waitForSSLRestart";
+        // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
+        // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
+        if (sslStopMsg != null) {
+            String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+            if (sslStartMsg == null) {
+                Log.warning(c, "SSL may not have started properly - future failures may be due to this");
+            } else {
+                Log.info(c, thisMethod, "SSL appears have restarted properly");
+            }
+        } else {
+            Log.info(c, thisMethod, "Did not detect a restart of the SSL port");
+        }
+
     }
 
     /**
@@ -975,13 +1007,96 @@ public class LibertyServer implements LogMonitorClient {
         return startServerAndValidate(preClean, cleanStart, false, true, true);
     }
 
-    protected void printProcessHoldingPort(int port) {
+    /**
+     * Given a formatted "CWWKO0221E" error string, parse out a port number and use it to invoke
+     * printProcessHoldingPort
+     *
+     * Example error (newlines added for readability):
+     *
+     * [5/11/21 17:16:41:009 GMT] 00000026 com.ibm.ws.tcpchannel.internal.TCPPort
+     * E CWWKO0221E: TCP Channel defaultHttpEndpoint-ssl initialization did not succeed.
+     * The socket bind did not succeed for host * and port 8020.
+     * The port might already be in use.
+     * Exception Message: EDC8115I Address already in use.
+     *
+     * @param errorString in the format of "CWWKO0221E"
+     */
+    protected void printProcessHoldingPort(String errorString) {
+        final String m = "printProcessHoldingPort";
+        String portIndexString = "port ";
+        int start = errorString.indexOf(portIndexString);
+        if (start > 0) {
+            start += portIndexString.length();
+            int end = errorString.indexOf(".", start);
+            if ((end - start) > 0) {
+                try {
+                    int port = Integer.parseInt(errorString.substring(start, end));
+                    if (port > 0) {
+                        printProcessHoldingPort(port);
+                        return;
+                    }
+                } catch (NumberFormatException nfe) {
+                    Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
+                }
+            }
+        }
+        Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
+    }
+
+    public void printProcesses() {
+        printProcesses(machine);
+    }
+
+    public static void printProcesses(Machine host) {
+        printProcesses(host, "");
+    }
+
+    public static void printProcesses(Machine host, String prefix) {
+        final String m = "printProcesses";
+
+        String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss")).toString();
+        String fileName = "processes-" + timeStamp + ".txt";
+        if (prefix != null && !prefix.isEmpty()) {
+            fileName = prefix + "-" + fileName;
+        }
+        Props properties = Props.getInstance();
+
+        Log.info(c, m, "Printing processes to file: " + fileName);
+
+        String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
+        try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
+            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
+            stream.print(detector.listProcesses());
+        } catch (Exception ex) {
+            Log.error(c, m, ex, "Caught exception while trying to list processes");
+        }
+    }
+
+    public void printProcessHoldingPort(int port) {
         final String m = "printProcessHoldingPort";
         try {
             PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
-            Log.info(c, m, detector.determineOwnerOfPort(port));
+            Log.info(c, m, detector.determineCommandLineForPid(getPid()));
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to detect the process holding port " + port);
+        }
+    }
+
+    public String getPid() {
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+        try {
+            return detector.determinePidForPort(httpDefaultPort);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getCommandLine() {
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(machine);
+        try {
+            return detector.determineCommandLineForPid(detector.determinePidForPort(httpDefaultPort));
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -994,7 +1109,7 @@ public class LibertyServer implements LogMonitorClient {
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(getHttpDefaultPort()));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port is currently bound");
+            Log.error(c, "checkPortsOpen", ex, "http default port (" + httpDefaultPort + ") is currently bound");
             printProcessHoldingPort(getHttpDefaultPort());
             if (retry) {
                 Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");
@@ -1114,7 +1229,9 @@ public class LibertyServer implements LogMonitorClient {
                                              boolean validateTimedExit) throws Exception {
         final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
-        Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
+        Log.info(c, method,
+                 "Starting " + this.getServerName() + "; preClean=" + preClean + ", clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure="
+                            + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
@@ -1206,7 +1323,7 @@ public class LibertyServer implements LogMonitorClient {
         // running Oracle/Sun JVMs - this results in buckets timing out as they wait for the entropy pool to be repopulated. Additionally,
         // from Java 9 onwards, IBM JDKs will also exhibit the same behaviour as it will start to use /dev/random by default.
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
-        JVM_ARGS += " -Djava.security.egd=file:///dev/urandom";
+        JVM_ARGS += " -Djava.security.egd=file:/dev/urandom";
 
         JavaInfo info = JavaInfo.forServer(this);
         // Debug for a highly intermittent problem on IBM JVMs.
@@ -2058,7 +2175,7 @@ public class LibertyServer implements LogMonitorClient {
             //since this is going to connect to the secure port, that needs to be ready
             //before an attempt to make the JMX connection
             Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-            assertNotNull("CWWKO0219I.*ssl not recieved", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+            assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
 
             assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 
@@ -2132,6 +2249,8 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 TopologyException serverStartException = new TopologyException(exMessage);
                 Log.error(c, method, serverStartException, errMessage);
+                // since a startup error was not expected, trigger a dump to help with debugging
+                serverDump();
                 postStopServerArchive();
                 throw serverStartException;
             }
@@ -2323,11 +2442,28 @@ public class LibertyServer implements LogMonitorClient {
      *                                   logs that were not in the list of ignored warnings/errors.
      */
     public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... expectedFailuresRegExps) throws Exception {
+        return stopServer(postStopServerArchive, forceStop, true, expectedFailuresRegExps);
+    }
 
+    /**
+     * Stops the server and checks for any warnings or errors that appeared in logs.
+     * If warnings/errors are found, an exception will be thrown after the server stops.
+     *
+     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                   would be redundant)
+     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives          Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                   If regIgnore is null, logs will not be checked for warnings/errors
+     * @return                       the output of the stop command
+     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
+     *                                   logs that were not in the list of ignored warnings/errors.
+     */
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... expectedFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
+        final String method = "stopServer";
         try {
-            final String method = "stopServer";
             Log.info(c, method, "<<< STOPPING SERVER: " + this.getServerName());
 
             if (!isStarted) {
@@ -2439,8 +2575,9 @@ public class LibertyServer implements LogMonitorClient {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
             }
-            if (postStopServerArchive)
-                postStopServerArchive();
+            if (postStopServerArchive) {
+                postStopServerArchive(true, skipArchives);
+            }
             // Delete marker for stopped server
             // deleteServerMarkerFile();
         }
@@ -2473,6 +2610,9 @@ public class LibertyServer implements LogMonitorClient {
                     sb.append("\n <br>");
                     sb.append(errorInLog);
                     Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
+                    if (errorInLog.contains("CWWKO0221E")) {
+                        printProcessHoldingPort(errorInLog);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -2551,6 +2691,9 @@ public class LibertyServer implements LogMonitorClient {
                 sb.append("\n <br>");
                 sb.append(errorInLog);
                 Log.info(c, method, "Error/warning found: " + errorInLog);
+                if (errorInLog.contains("CWWKO0221E")) {
+                    printProcessHoldingPort(errorInLog);
+                }
             }
             ex = new Exception(sb.toString());
         }
@@ -2628,22 +2771,92 @@ public class LibertyServer implements LogMonitorClient {
      * This is particularly required for tWAS FAT buckets as it is not known
      * when these finish, using this method will ensure logs are collected.
      * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * The operation will be retried
      */
     public void postStopServerArchive() throws Exception {
+        postStopServerArchive(true, true);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry if true and the operation fails, retry
+     */
+    public void postStopServerArchive(boolean retry) throws Exception {
+        postStopServerArchive(retry, true);
+    }
+
+    /**
+     * This method is used to archive server logs and archives after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     *
+     * @param retry        if true and the operation fails, retry
+     * @param skipArchives whether or not to skip packaging of archive files (JARs, WARs, EARs, etc.)
+     */
+    public void postStopServerArchive(boolean retry, boolean skipArchives) throws Exception {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
+
+        while (true) {
+            try {
+                _postStopServerArchive(skipArchives);
+                break;
+            } catch (FileNotFoundException ex) {
+                Log.error(c, method, ex, "Failed to archive " + getServerName() + " because of missing files. ");
+                // The file is never going to appear, so break here.
+                break;
+            } catch (Exception e) {
+                Log.error(c, method, e, "Server " + getServerName() + " may still be running.");
+                printProcesses();
+            }
+            if (retry) {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception x) {
+                    Log.error(c, method, x);
+                }
+            } else {
+                break;
+            }
+        }
+
+        Log.exiting(c, method);
+    }
+
+    /**
+     * This method is used to archive server logs after a stopServer.
+     * This is particularly required for tWAS FAT buckets as it is not known
+     * when these finish, using this method will ensure logs are collected.
+     * Also, this will stop the server log contents being lost (over written) in a restart case.
+     */
+    private void _postStopServerArchive(boolean skipArchives) throws Exception {
+        final String method = "_postStopServerArchive";
+        Log.entering(c, method, skipArchives);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        String runLevel = RepeatTestFilter.getRepeatActionsAsString();
+
+        String logDirectoryName = "";
+        if (runLevel == null || runLevel.isEmpty()) {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        } else {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
+        }
         LocalFile logFolder = new LocalFile(logDirectoryName);
         RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
 
         runJextract(serverFolder);
 
         // Copy the log files: try to move them instead if we can
-        recursivelyCopyDirectory(serverFolder, logFolder, true, true, true);
+        recursivelyCopyDirectory(serverFolder, logFolder, false, skipArchives, true);
 
         deleteServerMarkerFile();
 
@@ -2688,7 +2901,11 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+        String method = "recursivelyCopyDirectory";
         destination.mkdirs();
+
+        Log.finest(c, method, "Remote: " + remoteDirectory + "\nDestination: " + destination + "\nignoreFailures: " + ignoreFailures + "\nskipArchives: " + skipArchives
+                              + "\nmoveFile: " + moveFile);
 
         ArrayList<String> logs = new ArrayList<String>();
         logs = listDirectoryContents(remoteDirectory);
@@ -2696,20 +2913,20 @@ public class LibertyServer implements LogMonitorClient {
             if (remoteDirectory.getName().equals("workarea")) {
                 if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.finest(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
+                    Log.finest(c, method, "Skipping workarea element " + l);
                     continue;
                 }
             }
 
             if (remoteDirectory.getName().equals("messaging")) {
-                Log.finest(c, "recursivelyCopyDirectory", "Skipping message store element " + l);
+                Log.finest(c, method, "Skipping message store element " + l);
                 continue;
             }
 
             RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
             String absPath = toCopy.getAbsolutePath();
-            Log.finest(c, "recursivelyCopyDirectory", "Getting: " + absPath);
+            Log.finest(c, method, "Getting: " + absPath);
 
             if (absPath.endsWith(".log"))
                 LogPolice.measureUsedTrace(toCopy.length());
@@ -2726,7 +2943,7 @@ public class LibertyServer implements LogMonitorClient {
                             || absPath.endsWith(".rar")
                             //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
                             || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, "recursivelyCopyDirectory", "Skipping: " + absPath);
+                        Log.finest(c, method, "Skipping: " + absPath);
                         continue;
                     }
 
@@ -2746,20 +2963,29 @@ public class LibertyServer implements LogMonitorClient {
                         // If we're local, try to rename the file instead..
                         if (machine.isLocal() && toCopy.rename(toReceive)) {
                             copied = true; // well, we moved it, but it counts.
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
 
                         if (!copied && toReceive.copyFromSource(toCopy)) {
-                            // copy was successful, clean up the source log
-                            toCopy.delete();
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            boolean done = false;
+
+                            while (!done) {
+                                // copy was successful, clean up the source log
+                                done = toCopy.delete();
+                                if (!done) {
+                                    Log.info(c, method, "Sleeping 0.5s before trying again");
+                                    Thread.sleep(500);
+                                }
+                            }
+                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
                     } else {
                         toReceive.copyFromSource(toCopy);
-                        Log.finest(c, "recursivelyCopyDirectory", "COPY: " + l + " to " + toReceive.getAbsolutePath());
+                        Log.finest(c, method, "COPY: " + l + " to " + toReceive.getAbsolutePath());
                     }
                 } catch (Exception e) {
-                    Log.finest(c, "recursivelyCopyDirectory", "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
+                    Log.info(c, method, "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
+                    Log.error(c, method, e);
                     // Ignore on request and carry on copying the rest of the files
                     if (!ignoreFailures) {
                         throw e;
@@ -4181,6 +4407,8 @@ public class LibertyServer implements LogMonitorClient {
     public void restoreServerConfigurationAndWaitForApps(String... extraMsgs) throws Exception {
         restoreServerConfiguration();
         waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), extraMsgs);
+        // wait for ssl port restart
+        waitForSSLRestart();
     }
 
     public String getServerConfigurationPath() {
@@ -4931,7 +5159,9 @@ public class LibertyServer implements LogMonitorClient {
                             String regexp = it.next();
                             if (Pattern.compile(regexp).matcher(line).find()) {
                                 it.remove();
-                                break;
+                                //There used to be a break here but if a user passed in a
+                                //pattern that overlapped with one of the ones above only
+                                //one was removed. The watchFor list is usually small.
                             }
                         }
                     }
@@ -5396,6 +5626,18 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Check for multiple instances of the regex in log using mark
+     *
+     * @param  numberOfMatches number of matches required
+     * @param  regexp          a regular expression to search for
+     * @param  outputFile      file to check
+     * @return                 number of matches found
+     */
+    public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp, RemoteFile outputFile) {
+        return logMonitor.waitForMultipleStringsInLogUsingMark(numberOfMatches, regexp, LOG_SEARCH_TIMEOUT, outputFile);
+    }
+
+    /**
      * Wait for a regex in the most recent trace file
      *
      * @param  regexp
@@ -5420,16 +5662,17 @@ public class LibertyServer implements LogMonitorClient {
             e.printStackTrace();
         }
 
-        Log.info(c, "waitForStringInTrace", "Waiting for " + regexp + " to be found in " + (f == null ? "null" : f.getAbsolutePath()));
-
-        if (f != null) {
-            if (timeout > 0) {
-                return waitForStringInLog(regexp, timeout, f);
-            } else {
-                return waitForStringInLog(regexp, f);
-            }
-        } else {
+        if (f == null) {
+            Log.info(c, "waitForStringInTrace", "Failed to getMostRecentTraceFile(). Server " + getServerName() + " is probably stopping.");
             return null;
+        }
+
+        Log.info(c, "waitForStringInTrace", "Waiting for " + regexp + " to be found in " + f.getAbsolutePath());
+
+        if (timeout > 0) {
+            return waitForStringInLog(regexp, timeout, f);
+        } else {
+            return waitForStringInLog(regexp, f);
         }
     }
 
@@ -5571,7 +5814,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
-        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins").mkdir();
     }
 
     /**
@@ -5724,6 +5967,7 @@ public class LibertyServer implements LogMonitorClient {
         if (stopMsg == null) {
             return false;
         }
+        removeInstalledAppForValidation(appName);
 
         return true;
     }
@@ -6217,7 +6461,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void clearAdditionalSystemProperties() {
-        this.additionalSystemProperties.clear();
+        this.additionalSystemProperties = null;
     }
 
     /**

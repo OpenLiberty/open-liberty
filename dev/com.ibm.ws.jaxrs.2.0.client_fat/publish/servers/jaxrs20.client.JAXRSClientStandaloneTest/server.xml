@@ -9,5 +9,6 @@
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+        <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 
 </server>

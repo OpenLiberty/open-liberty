@@ -151,7 +151,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
     public void testOidcBaseClientDeepCopy() {
         String methodName = "testOidcBaseClientDeepCopy";
         try {
-            OidcBaseClient testOidcBaseClient = getSampleOidcBaseClient();
+            OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
             OidcBaseClient deepCopyTestOidcBaseClient = testOidcBaseClient.getDeepCopy();
 
@@ -213,7 +213,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
     public void testOidcBaseClientConfidential() {
         String methodName = "testOidcBaseClientConfidential";
         try {
-            OidcBaseClient testOidcBaseClient = getSampleOidcBaseClient();
+            OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
             //With sampleOidcBaseClient, clientSecret is not null or empty
             assertTrue(testOidcBaseClient.isConfidential());
@@ -232,7 +232,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
     public void testOidcBaseClientToString() {
         String methodName = "testOidcBaseClientToString";
         try {
-            OidcBaseClient testOidcBaseClient = getSampleOidcBaseClient();
+            OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
             String toStringValue = testOidcBaseClient.toString();
 
             assertTrue(toStringValue.contains("_componentId=" + COMPONENT_ID));

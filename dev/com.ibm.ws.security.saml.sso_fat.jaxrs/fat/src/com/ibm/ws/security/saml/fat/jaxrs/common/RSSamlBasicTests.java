@@ -18,7 +18,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -29,6 +28,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 @LibertyServerWrapper
@@ -59,7 +60,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     //	@AllowedFFDC("java.lang.NoClassDefFoundError")
     public void RSSamlBasicTests_mainFlow() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -71,11 +72,13 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "java.lang.NullPointerException", "org.opensaml.xml.parse.XMLParserException", "org.opensaml.ws.message.decoder.MessageDecodingException" })
+    @AllowedFFDC(value = { "java.lang.NullPointerException" })
+    @AllowedFFDC(value = { "org.opensaml.xml.parse.XMLParserException", "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = {EmptyAction.ID})
+    @AllowedFFDC(value = { "net.shibboleth.utilities.java.support.xml.XMLParserException", "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = {JakartaEE9Action.ID})
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_sendGarbage() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setSamlTokenReplaceVars("*", "Just send a string of garbage", SAMLConstants.LOCATION_ALL);
@@ -95,7 +98,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_removeSignature_serverRequiresSign() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRemoveTagInResponse("ds:Signature"); // the whole ds:Signature element
@@ -110,11 +113,13 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * Tests removes the saml token, but the config allows an unsigned token, so it's ok
      */
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException"}, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_userNameInAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
 
@@ -133,7 +138,9 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInDefaultTrust_wantAssertionsSigned_true() throws Exception {
@@ -146,7 +153,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
         // need to reconfig instead of just using a different rs_saml config because we're updating the ssl config
         testAppServer.reconfigServer(buildSPServerName("server_samlCertNotInDefaultTrust.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = msgUtils.addrsSamlUnauthorizedExpectation(SAMLConstants.INVOKE_JAXRS_GET, null);
         expectations = helpers.addMessageExpectation(testAppServer, expectations, SAMLConstants.INVOKE_JAXRS_GET, SAMLConstants.APP_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not fail with a signature not trusted error.", SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
@@ -163,7 +170,10 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInDefaultTrust_wantAssertionsSigned_false() throws Exception {
@@ -177,7 +187,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
         // need to reconfig instead of just using a different rs_saml config because we're updating the ssl config
         testAppServer.reconfigServer(buildSPServerName("server_samlCertNotInDefaultTrust_wantAssertionsSignedFalse.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
 
@@ -195,12 +205,14 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
+    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInRSSamlTrust_wantAssertionsSigned_true() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("badTrust_mangled_true");
 
@@ -218,12 +230,14 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInRSSamlTrust_wantAssertionsSigned_false() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("badTrust_mangled_false");
 
@@ -239,7 +253,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_MinConfig() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", "sp2", true);
@@ -257,7 +271,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_OmitSAMLAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(null, updatedTestSettings.getRSSettings().getHeaderFormat(), updatedTestSettings.getRSSettings().getSamlTokenFormat());
@@ -273,12 +287,14 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * Tests
      */
 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_signatureAlgorithNotSatisfied() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setSpTargetApp(testAppServer.getServerHttpsString() + "/" + SAMLConstants.PARTIAL_HELLO_WORLD_URI + "_sp2");
@@ -298,7 +314,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_useSAMLAssertionAgain() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -322,7 +338,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_removeSignature_serverDoesntRequiresSign() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         //		SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
@@ -337,7 +353,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_missingNameId() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
 
@@ -354,7 +370,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_useToken_before_NotBefore() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
 
@@ -371,7 +387,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_useToken_after_NotOnOrAfter() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
 
@@ -396,7 +412,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_useToken_after_SessionNotOnOrAfter() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = changeTestApps("mangled");
         updatedTestSettings.setRemoveTagInResponse("ds:Signature");
@@ -423,7 +439,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
 
         String unAuthenticated = "Principal: WSPrincipal:UNAUTHENTICATED";
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // access unprotected app
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -485,7 +501,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
             testSAMLServer.reconfigServer(buildSPServerName("server_1_text_only.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
         }
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -505,7 +521,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_headerFormatVariations_ASSERTION_ENCODED() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -526,7 +542,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_headerFormatVariations_ASSERTION_COMPRESSED_ENCODED() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -550,7 +566,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_defaultHeaderNames() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -574,7 +590,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
     @Test
     public void RSSamlBasicTests_otherHeaderNames() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 

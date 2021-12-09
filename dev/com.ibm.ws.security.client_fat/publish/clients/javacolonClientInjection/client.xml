@@ -16,6 +16,7 @@
         <feature>appSecurityClient-1.0</feature>
     </featureManager>
 
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 
 	<orb id="defaultOrb"  nameService="corbaloc:iiop:localhost:${bvt.prop.IIOP}/NameService">

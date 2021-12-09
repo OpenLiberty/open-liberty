@@ -59,7 +59,7 @@ def sortManifestFileInZip(String zipPath) throws IOException {
 
 task sortWlpBundleManifests {
     doLast {
-        fileTree(dir: file(workspaceDir + '/build.image/wlp/lib'), includes: ['*.jar']).each {
+        fileTree(dir: file(workspaceDir), includes: ['*.jar']).each {
             if (!it.isDirectory()) {
                 println it.toString()
                 sortManifestFileInZip(it.getPath())

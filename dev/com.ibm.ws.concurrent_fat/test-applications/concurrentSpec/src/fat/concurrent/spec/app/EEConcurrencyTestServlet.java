@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package fat.concurrent.spec.app;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.Closeable;
@@ -2955,11 +2954,11 @@ public class EEConcurrencyTestServlet extends FATServlet {
 
         ScheduledFuture<String> future = mschedxsvcClassloaderContext.schedule(getIdentityName, getIdentityName);
 
-        final long TIMEOUT_NS = TimeUnit.MILLISECONDS.toNanos(TIMEOUT);
-        for (long start = System.nanoTime(); !future.isDone() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL));
+        String result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        if ("[]".equals(result)) // can be empty if the first execution is reported
+            result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
 
-        assertTrue(future.isDone());
-        assertEquals("testIdentityNamePrecedence-Expected", future.get());
+        assertEquals("testIdentityNamePrecedence-Expected", result);
     }
 
     /**
@@ -7599,9 +7598,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             if (delay2 > 0)
                 throw new Exception("Should not be a delay for future2 given that we have already waited for the result. Instead: " + delay2);
 
-            result1 = future1.get();
-            if (result1 != 1)
-                throw new Exception("future1.get() should return same value, not " + result1);
+            assertEquals(Integer.valueOf(result1), future1.get());
 
             future3.get(TIMEOUT, TimeUnit.MILLISECONDS);
             int result3 = task3.counter.get();

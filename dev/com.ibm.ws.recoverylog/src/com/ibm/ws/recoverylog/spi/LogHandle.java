@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,6 +153,12 @@ class LogHandle {
      */
     FailureScope _failureScope;
 
+    /**
+     * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
+     * would not be deleted.
+     */
+    private boolean _retainLogsInPeerRecoveryEnv;
+
     //------------------------------------------------------------------------------
     // Method: LogHandle.LogHandle
     //------------------------------------------------------------------------------
@@ -177,8 +183,15 @@ class LogHandle {
      *
      * @param maxLogFileSize The maximum allowable log file size (in kbytes)
      */
-    LogHandle(MultiScopeRecoveryLog recoveryLog, String serviceName, int serviceVersion, String serverName, String logName, String logDirectory, int logFileSize,
-              int maxLogFileSize, FailureScope fs) {
+    LogHandle(MultiScopeRecoveryLog recoveryLog,
+              String serviceName,
+              int serviceVersion,
+              String serverName,
+              String logName,
+              String logDirectory,
+              int logFileSize,
+              int maxLogFileSize,
+              FailureScope fs) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogHandle", new java.lang.Object[] { recoveryLog,
                                                                serviceName,
@@ -743,8 +756,14 @@ class LogHandle {
             throw new InternalLogException(exc);
         }
 
-        _file1 = null;
-        _file2 = null;
+        if (Configuration.HAEnabled() && !_retainLogsInPeerRecoveryEnv) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Working in a peer recovery environment retain logFileHandles on close");
+        } else {
+            _file1 = null;
+            _file2 = null;
+        }
+
         _activeFile = null;
         _recoveredRecords = null;
         _physicalFreeBytes = 0;
@@ -1220,5 +1239,47 @@ class LogHandle {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createWarningFile");
+    }
+
+    /**
+     * Delete the underlying file system tree where the log file resides
+     */
+    public void delete() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "delete", new Object[] { this });
+
+        if (_file1 != null && _file2 != null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Delete the underlying file system log files. Working with log directory " + _logDirectory);
+
+            // Delete the required directory tree
+            File directoryToBeDeleted = new File(_logDirectory);
+            // Only proceed if the directory exists.
+            if (directoryToBeDeleted != null && directoryToBeDeleted.exists()) {
+                directoryToBeDeleted = directoryToBeDeleted.getParentFile();
+
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Working with directory " + directoryToBeDeleted.getAbsolutePath());
+                RLSUtils.archiveAndDeleteDirectoryTree(directoryToBeDeleted);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The directory does not exist");
+            }
+        }
+        _file1 = null;
+        _file2 = null;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete");
+    }
+
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+
+        _retainLogsInPeerRecoveryEnv = retainLogs;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 }

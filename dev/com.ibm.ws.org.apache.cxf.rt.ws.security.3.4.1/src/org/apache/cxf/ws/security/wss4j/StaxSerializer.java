@@ -60,6 +60,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Converts <code>String</code>s into <code>Node</code>s and visa versa using CXF's StaxUtils
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class StaxSerializer extends AbstractSerializer {
     private XMLInputFactory factory;
     private boolean validFactory;

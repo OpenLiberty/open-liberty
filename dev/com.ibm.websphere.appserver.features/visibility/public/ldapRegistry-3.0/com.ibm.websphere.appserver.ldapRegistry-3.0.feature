@@ -6,6 +6,7 @@ IBM-ShortName: ldapRegistry-3.0
 Subsystem-Name: LDAP User Registry 3.0
 -features=\
   com.ibm.websphere.appserver.federatedRegistry-1.0
--bundles=com.ibm.ws.security.wim.adapter.ldap
+-bundles=com.ibm.ws.security.wim.adapter.ldap, \
+ com.ibm.ws.security.kerberos.auth
 kind=ga
 edition=core

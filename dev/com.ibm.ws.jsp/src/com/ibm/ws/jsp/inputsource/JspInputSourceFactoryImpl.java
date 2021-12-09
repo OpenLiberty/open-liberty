@@ -61,9 +61,9 @@ public class JspInputSourceFactoryImpl implements JspInputSourceFactory {
         Container localContainer = container;
         if(container != null){ //If container is null, we won't ever have a JspInputSourceContainerImpl. No container logic
             try {
-                localContainer = ((JspInputSourceContainerImpl)base).getContainer(); //Look for the file in the given container. If not, just use the master (probably the war)
+                localContainer = ((JspInputSourceContainerImpl)base).getContainer(); //Look for the file in the given container. If not, just use the primary (probably the war)
             } catch(ClassCastException cce) {
-                //FFDCIgnore. Just use the master container
+                //FFDCIgnore. Just use the primary container
             }
         }
         if (System.getSecurityManager() != null) {

@@ -11,7 +11,7 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -61,7 +61,7 @@ public class TCPProxyResponse {
 
     /**
      * Constructor.
-     * 
+     *
      * @param _connLink
      */
     public TCPProxyResponse(TCPProxyConnLink _connLink) { // @350394C
@@ -70,19 +70,9 @@ public class TCPProxyResponse {
 
     // setup the proxy connect information
     static {
-        try {
-            PROXY_CONNECT = "CONNECT ".getBytes("ISO-8859-1");
-            PROXY_HTTPVERSION = " HTTP/1.0\r\n".getBytes("ISO-8859-1");
-            PROXY_AUTHORIZATION = "Proxy-authorization: basic ".getBytes("ISO-8859-1");
-        } catch (UnsupportedEncodingException x) {
-            // no FFDC required
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "ISO-8859-1 encoding not supported.  Exception: " + x);
-            }
-            PROXY_CONNECT = "CONNECT ".getBytes();
-            PROXY_HTTPVERSION = " HTTP/1.0\r\n".getBytes();
-            PROXY_AUTHORIZATION = "Proxy-authorization: basic ".getBytes();
-        }
+        PROXY_CONNECT = "CONNECT ".getBytes(StandardCharsets.ISO_8859_1);
+        PROXY_HTTPVERSION = " HTTP/1.0\r\n".getBytes(StandardCharsets.ISO_8859_1);
+        PROXY_AUTHORIZATION = "Proxy-authorization: basic ".getBytes(StandardCharsets.ISO_8859_1);
     }
 
     protected void setIsProxyResponseValid(boolean newValue) {
@@ -127,7 +117,7 @@ public class TCPProxyResponse {
 
     /**
      * Check for a proxy handshake response.
-     * 
+     *
      * @param rsc
      * @return int (status code)
      */
@@ -206,7 +196,7 @@ public class TCPProxyResponse {
     /**
      * Reads the entire proxy response and checks if the
      * proxyResponseBuffers contains "HTTP/1.0 200 Connection established"
-     * 
+     *
      * @param buffers
      *            the buffers on the TCPReadRequestContext
      * @return int true if the response is valid and false if otherwise
@@ -261,7 +251,7 @@ public class TCPProxyResponse {
      * or \n\n (LF-LF) in a byte array.
      * We dont care here about the order in which these 4
      * control characters appear.
-     * 
+     *
      * @param data
      *            search byte array
      * @return true if found; false if not found
@@ -331,8 +321,8 @@ public class TCPProxyResponse {
     // }
 
     /**
-     * Checks if the byte array contains "HTTP     200" in a byte array.
-     * 
+     * Checks if the byte array contains "HTTP 200" in a byte array.
+     *
      * @param data
      *            search byte array
      * @return true if found; false if not
@@ -362,12 +352,13 @@ public class TCPProxyResponse {
 
         /**
          * Called when the write of the proxy buffers has completed successfully.
-         * 
+         *
          * @param inVC
          *            virtual connection associated with this request.
          * @param wsc
          *            the TCPWriteRequestContext associated with this request.
          */
+        @Override
         public void complete(VirtualConnection inVC, TCPWriteRequestContext wsc) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "ProxyWriteCallback --> complete for " + inVC);
@@ -381,7 +372,7 @@ public class TCPProxyResponse {
 
         /**
          * Called back if an exception occurs while writing the data.
-         * 
+         *
          * @param inVC
          *            virtual connection associated with this request.
          * @param wsc
@@ -389,6 +380,7 @@ public class TCPProxyResponse {
          * @param ioe
          *            The exception.
          */
+        @Override
         public void error(VirtualConnection inVC, TCPWriteRequestContext wsc, IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "ProxyWriteCallback--> error for " + inVC);
@@ -408,12 +400,13 @@ public class TCPProxyResponse {
          * Called when the read of the response has completed successfully.
          * If the response contains "HTTP/1.0 200 Connection established" we
          * call the application callback and return the connect.
-         * 
+         *
          * @param inVC
          *            virtual connection associated with this request.
          * @param wsc
          *            the TCPReadRequestContext associated with this request.
          */
+        @Override
         public void complete(VirtualConnection inVC, TCPReadRequestContext wsc) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -438,7 +431,7 @@ public class TCPProxyResponse {
 
         /**
          * Called back if an exception occurs while reading the response.
-         * 
+         *
          * @param inVC
          *            virtual connection associated with this request.
          * @param wsc
@@ -446,6 +439,7 @@ public class TCPProxyResponse {
          * @param ioe
          *            The exception.
          */
+        @Override
         public void error(VirtualConnection inVC, TCPReadRequestContext wsc, IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "ProxyReadCallback--> error for " + inVC);
@@ -463,9 +457,9 @@ public class TCPProxyResponse {
      * "CONNECT <proxy.TargetHostname:proxy.TargetPort> HTTP/1.0CRLF"
      * "Proxy-authorization: basic <base64 encoded(username:password)>CRLF"
      * "CRLF"
-     * 
+     *
      * Note: Proxy-authorization is optional header.
-     * 
+     *
      * @return boolean true if the forward proxy buffers were set,
      *         false if otherwise
      */
@@ -510,7 +504,7 @@ public class TCPProxyResponse {
     /**
      * Start a read for the response from the target proxy, this is either the
      * first read or possibly secondary ones if necessary.
-     * 
+     *
      * @param inVC
      */
     protected void readProxyResponse(VirtualConnection inVC) {

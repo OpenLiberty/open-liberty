@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/MDB20TestEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDB20TestWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDB21TestEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDB21TestWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBAnnEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBAnnWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntAnnEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntAnnWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntMixEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntMixWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntXMLEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBIntXMLWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBMixEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBMixWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/MDBXMLEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBXMLEJB2.jar/src"/>
+	<classpathentry kind="src" path="test-applications/MDBXMLWeb.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

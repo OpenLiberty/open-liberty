@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,8 +85,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private boolean _checkingLeases = true;
 
-    protected TxRecoveryAgentImpl() {
-    }
+    /**
+     * Flag to indicate whether the server is stopping.
+     */
+    volatile private boolean _serverStopping;
+
+    protected TxRecoveryAgentImpl() {}
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -130,8 +134,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -174,6 +177,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
             // Big message if Peer recovery is supported, just debug otherwise
             if (_isPeerRecoverySupported) {
+                // If we are attempting to recover a peer and the home server is stopping, then do not continue
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "server stopping");
+                    return;
+                }
                 Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
             } else {
                 if (tc.isDebugEnabled())
@@ -366,9 +375,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
 
-                _recoveryManager.setLeaseLog(_leaseLog);
-                _recoveryManager.setRecoveryGroup(_recoveryGroup);
-                _recoveryManager.setLocalRecoveryIdentity(localRecoveryIdentity);
+                _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
             }
 
             final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
@@ -460,7 +467,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                     _recoveryGroup,
                                                     this,
                                                     _recoveryDirector,
-                                                    cp.getLeaseLength() * cp.getLeaseRenewalTime() / 100,
+                                                    cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                     cp.getLeaseCheckInterval());
                 }
             }
@@ -598,8 +605,15 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "stop", new Object[] { Boolean.valueOf(immediate) });
 
+        // Set the flag to signify that the server is stopping
+        _serverStopping = true;
+
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
+        // Additionally, if we have a lease log for peer recovery, alert it that the server is stopping (the alarm may already have popped)
+        if (_leaseLog != null) {
+            _leaseLog.serverStopping();
+        }
 
         // Drive the serverStopping() method on the SQLMultiScopeRecoveryLog if appropriate. This will manage
         // the cancelling of the HADB Log Availability alarm
@@ -609,6 +623,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
             heartbeatLog.serverStopping();
         }
+
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.
@@ -991,14 +1006,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
 
         // The optional SQL HADB Retry parameters
-        int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+        int logRetryInterval = cp.getLogRetryInterval();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
-        heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
-        int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+            Tr.debug(tc, "logRetryInterval - ", logRetryInterval);
+        heartbeatLog.setLogRetryInterval(logRetryInterval);
+        int logRetryLimit = cp.getLogRetryLimit();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
-        heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+            Tr.debug(tc, "logRetryLimit - ", logRetryLimit);
+        heartbeatLog.setLogRetryLimit(logRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBRetryParameters");
     }
@@ -1014,14 +1029,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
 
         // The optional SQL HADB Retry parameters
-        int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+        int lightweightLogRetryInterval = cp.getLightweightLogRetryInterval();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
-        heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
-        int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+            Tr.debug(tc, "lightweightLogRetryInterval - ", lightweightLogRetryInterval);
+        heartbeatLog.setLightweightLogRetryInterval(lightweightLogRetryInterval);
+        int lightweightLogRetryLimit = cp.getLightweightLogRetryLimit();
         if (tc.isEntryEnabled())
-            Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
-        heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
+            Tr.debug(tc, "lightweightLogRetryLimit - ", lightweightLogRetryLimit);
+        heartbeatLog.setLightweightLogRetryLimit(lightweightLogRetryLimit);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
     }

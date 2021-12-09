@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 public class ServicePrincipalNamesTest extends CommonTest {
 
     private static final Class<?> c = ServicePrincipalNamesTest.class;
@@ -266,7 +267,7 @@ public class ServicePrincipalNamesTest extends CommonTest {
     public void testInvalidSpnList_BadFormat() {
         try {
             testHelper.reconfigureServer("invalidSpnList_badFormat.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
-            testHelper.setShutdownMessages("CWWKE0701E");
+            testHelper.setShutdownMessages("CWWKE0701E", "CWWKS4308E", "CWWKS4309E");
             List<String> checkMsgs = new ArrayList<String>();
 
             if (FATSuite.OTHER_SUPPORT_JDKS) {
@@ -302,13 +303,12 @@ public class ServicePrincipalNamesTest extends CommonTest {
      * - Multiple FFDCs for GSSExceptions should be thrown due to multiple invalid SPNs appearing in the list.
      * - Authentication will ultimately be successful for the default SPN.
      */
-
     @AllowedFFDC({ "org.ietf.jgss.GSSException" })
     @Test
     public void testInvalidSpnList_BadFormatGoodSpn() {
         try {
             testHelper.reconfigureServer("invalidSpnList_badFormatGoodSpn.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
-            testHelper.setShutdownMessages("CWWKE0701E");
+            testHelper.setShutdownMessages("CWWKE0701E", "CWWKS4308E");
             List<String> checkMsgs = new ArrayList<String>();
             if (FATSuite.OTHER_SUPPORT_JDKS) {
                 // JDK 11 the strings /)-!@#$%, ^&amp;*(), ;[] are not supported, therefore the error message

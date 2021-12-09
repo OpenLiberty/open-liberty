@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbbnd:EJBJarBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbbnd="ejbbnd.xmi" xmlns:ejb="ejb.xmi" xmi:id="EJBJarBinding_1">
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1" activationSpecJndiName="mdb20/BMTReqQueue">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050954917281"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_3" activationSpecJndiName="mdb20/BMTNoCommitReqQueue">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050954917282"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_2" activationSpecJndiName="mdb20/CMTReqQueue">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1050955272500"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="com/ibm/ws/ejbcontainer/mdb/jms/ejb20/SFLocalHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1051542150766"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1052927711891" activationSpecJndiName="mdb20/TestTopicListenerPort">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1052927711541"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1052944140597" activationSpecJndiName="mdb20/TestDurableTopicListenerPort">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1052944140106"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1053020708243" activationSpecJndiName="mdb20/TestMessageSelectorTopicListenerPort">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1053020707733"/>
+  </ejbBindings> 
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1053464349126" jndiName="com/ibm/ws/ejbcontainer/mdb/jms/ejb20/SLLaCMTHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1053464348325"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1053491356124" jndiName="com/ibm/ws/ejbcontainer/mdb/jms/ejb20/SLRaCMTHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1053491355674"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1053531508503" activationSpecJndiName="mdb20/CMTNotSupportedReqQueue">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1053531321804"/>
+  </ejbBindings>
+  <ejbBindings xmi:type="ejbbnd:MessageDrivenBeanBinding" xmi:id="MessageDrivenBeanBinding_1053615534672" activationSpecJndiName="mdb20/CMTRequiredReqQueue">
+    <enterpriseBean xmi:type="ejb:MessageDriven" href="META-INF/ejb-jar.xml#MessageDriven_1053615533140"/>
+  </ejbBindings> 
+</ejbbnd:EJBJarBinding>

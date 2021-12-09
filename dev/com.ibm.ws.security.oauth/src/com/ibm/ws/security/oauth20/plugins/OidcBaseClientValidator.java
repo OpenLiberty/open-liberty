@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,7 @@ import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
+import com.ibm.ws.security.oauth20.web.OAuth20RequestFilter;
 import com.ibm.ws.security.oauth20.web.TraceConstants;
 
 /**
@@ -108,6 +111,8 @@ public class OidcBaseClientValidator {
      * check for disallowed characters that could allow javascript to be fed back to ui.
      */
     private void detectIllegalChars() throws OidcServerException {
+        detectNonVSCHARCharacters(client.getClientId(), OAuth20Constants.CLIENT_ID);
+        detectNonVSCHARCharacters(client.getClientSecret(), OAuth20Constants.CLIENT_SECRET);
         detectIllegalCharacters(client.getClientId());
         detectIllegalCharacters(client.getClientSecret());
         detectIllegalCharacters(client.getRedirectUris());
@@ -116,6 +121,34 @@ public class OidcBaseClientValidator {
         detectIllegalCharacters(client.getPreAuthorizedScope());
         detectIllegalCharacters(client.getFunctionalUserId());
         detectIllegalCharacters(client.getFunctionalUserGroupIds());
+    }
+
+    void detectNonVSCHARCharacters(@Sensitive String s, String parameterName) throws OidcServerException {
+        if (s == null || s.length() == 0) {
+            return;
+        }
+        String badChars = getIllegalChars(s, OAuth20RequestFilter.REGEX_RANGE_VSCHAR);
+        if (badChars != null && !badChars.isEmpty()) {
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", new Object[] { badChars });
+            Tr.error(tc, errorMsg.getServerErrorMessage());
+            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    String getIllegalChars(@Sensitive String input, String regexAllowableChars) {
+        if (input == null || input.length() == 0) {
+            return null;
+        }
+        String badChars = "";
+        for (int i = 0; i < input.length(); i++) {
+            Pattern vscharRegex = Pattern.compile(regexAllowableChars);
+            String currentChar = input.substring(i, i + 1);
+            Matcher matcher = vscharRegex.matcher(currentChar);
+            if (!matcher.matches()) {
+                badChars += currentChar;
+            }
+        }
+        return badChars;
     }
 
     // detect illegal chars
@@ -164,16 +197,16 @@ public class OidcBaseClientValidator {
     public OidcBaseClient validate() throws OidcServerException {
         return validateCommons(false);
     }
-    
+
     public OidcBaseClient validateAndSetDefaultsOnErrors() {
         try {
             return validateCommons(true);
         } catch (OidcServerException e) {
         } //This will not occur
-    
+
         return null; //This will not occur
     }
-    
+
     private OidcBaseClient validateCommons(boolean setDefaultsOnError) throws OidcServerException {
         //application_type - defaults to web if omitted
         try {
@@ -185,7 +218,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateResponseTypes();
         } catch (OidcServerException e) {
@@ -196,7 +229,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         Set<String> grantTypes = new HashSet<String>();
         try {
             grantTypes = validateGrantTypes();
@@ -208,7 +241,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //response_types and grant_types need to match
             validateResponseAndGrantMatch(grantTypes);
@@ -221,7 +254,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateRedirectUris();
         } catch (OidcServerException e) {
@@ -232,7 +265,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //scope (space separated, if omitted can register default scope)
             validateScopes();
@@ -244,7 +277,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateSujectType();
         } catch (OidcServerException e) {
@@ -255,7 +288,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             //token_endpoint_auth_method - if omitted, defaults to client_secret_basic
             validateTokenEndpointAuthMethod();
@@ -267,7 +300,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validatePostLogoutRedirectUris();
         } catch (OidcServerException e) {
@@ -278,7 +311,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validatePreAuthorizedScopes();
         } catch (OidcServerException e) {
@@ -289,7 +322,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateTrustedUriPrefixes();
         } catch (OidcServerException e) {
@@ -300,7 +333,7 @@ public class OidcBaseClientValidator {
                 throw e;
             }
         }
-    
+
         try {
             validateOutputParameters();
         } catch (OidcServerException e) {
@@ -312,12 +345,12 @@ public class OidcBaseClientValidator {
                 if (this.client.getClientIdIssuedAt() < 0) {
                     this.client.setClientIdIssuedAt(0);
                 }
-    
+
             } else {
                 throw e;
             }
         }
-    
+
         return this.client;
     }
     **/
@@ -525,10 +558,10 @@ public class OidcBaseClientValidator {
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         } else if (!OidcOAuth20Util.isNullEmpty(client.getPreAuthorizedScope()) && !OidcOAuth20Util.isNullEmpty(client.getScope())) {
             String errorMsg = "The value \"%s\" for the client registration metadata field \"%s\" should also be specified as a value in the client registration metadata field \"scope\".";
-        
+
             String[] scopeArr = client.getScope().split(" ");
             Set<String> scopeSet = getSetFromArr(scopeArr);
-        
+
             String[] preAuthorizedScopeArr = client.getPreAuthorizedScope().split(" ");
             for (String preAuthorizedScope : preAuthorizedScopeArr) {
                 if (!scopeSet.contains(preAuthorizedScope)) {
@@ -536,7 +569,7 @@ public class OidcBaseClientValidator {
                     throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
-        
+
         }
         **/
 

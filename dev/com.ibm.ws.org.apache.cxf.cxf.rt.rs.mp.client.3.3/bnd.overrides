@@ -3,7 +3,7 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3
 
-exportVer=3.4.1
+exportVer=3.4.3
 
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.component,\

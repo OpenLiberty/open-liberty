@@ -237,3 +237,7 @@ info.directory.app.useraction=No action is required.
 info.unexpanded.app=CWWKZ0136I: The {0} application is using the archive file at the {1} location.
 info.unexpanded.app.explanation=The location for the application points to a binary archive file. The archive file will not be expanded on disk because automatic expansion of applications was not configured.
 info.unexpanded.app.useraction=No action is required.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: Could not expand the {0} application at the {1} location that is specified by the expandLocation property.
+warning.could.not.expand.app.loc.explanation=The application could not be expanded to the location specified by the expandLocation property. The ${server.config.dir}/apps/expanded/ default location was used for the application.
+warning.could.not.expand.app.loc.useraction=Correct the value that is specified by the expandLocation property and either restart the server or update the application.

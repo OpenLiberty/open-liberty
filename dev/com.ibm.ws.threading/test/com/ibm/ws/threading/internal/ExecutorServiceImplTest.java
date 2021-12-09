@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -47,50 +46,6 @@ public class ExecutorServiceImplTest {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    /**
-     * Ensure that the ExecutorServiceImpl cannot get into a hang, by submitting Callables in a way to
-     * force a hang when the pool size is too low. The ExecutorServiceImpl should be able to detect
-     * the hang and compensate by adding threads to break it out of the deadlock.
-     */
-    @Test(timeout = 60000)
-    public void testExecutorHang() throws Exception {
-        ExecutorServiceImpl executorService = new ExecutorServiceImpl();
-        Map<String, Object> componentConfig = new HashMap<String, Object>(6);
-        componentConfig.put("name", "testExecutor");
-        componentConfig.put("rejectedWorkPolicy", "CALLER_RUNS");
-        componentConfig.put("stealPolicy", "STRICT");
-        componentConfig.put("keepAlive", 10);
-        componentConfig.put("coreThreads", 2);
-        componentConfig.put("maxThreads", 1000);
-        executorService.activate(componentConfig);
-
-        // submit a bunch of quick running work so that the thread pool controller sees very high
-        // throughput at a poolSize of 2 threads, making the base throughput algorithm reluctant
-        // to increase the number of threads further
-        for (int i = 0; i < 1000; i++) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {}
-            });
-        }
-
-        ArrayList<ReturnsBooleanCallable> alc = new ArrayList<ReturnsBooleanCallable>(10);
-        ArrayList<Future<Boolean>> alf = new ArrayList<Future<Boolean>>();
-        for (int i = 0; i < 20; i++) {
-            alc.add(new ReturnsBooleanCallable(executorService));
-        }
-
-        // each ReturnsBooleanCallable submits a child ReturnsTrueCallable and then waits on the result...
-        // submitting so many of these at once when the pool size is low will deadlock the pool unless
-        // the pool size is increased
-        for (ReturnsBooleanCallable rbc : alc) {
-            alf.add(executorService.submit(rbc));
-        }
-        for (Future<Boolean> f : alf) {
-            f.get();
         }
     }
 
@@ -193,7 +148,8 @@ public class ExecutorServiceImplTest {
         // executor service is using a new pool
         oldThreadPool.submit(new Runnable() {
             @Override
-            public void run() {}
+            public void run() {
+            }
         }).get();
 
         // ensure that the pool size shrinks back down to 0

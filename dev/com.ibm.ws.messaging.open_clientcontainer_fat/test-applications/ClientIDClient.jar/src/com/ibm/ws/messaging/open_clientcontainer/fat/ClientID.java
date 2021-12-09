@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,86 +62,88 @@ public class ClientID extends ClientMain {
 
   @ClientTest
   public void testSetClientID() throws JMSException {
-    JMSContext context[] = { connectionFactory_.createContext()
-                            ,queueConnectionFactory_.createContext()
-                            ,topicConnectionFactory_.createContext()
-                           };
-    String     clientID;
-    String     reason = "";
+      ConnectionFactory[] connectionFactories = {connectionFactory_ ,queueConnectionFactory_ ,topicConnectionFactory_};
+      String reason = "";
 
-    for (int i=0;3>i;++i) {
-      try {
-        context[i].setClientID("ClientID"+i);
-      } catch (IllegalStateRuntimeException e) {
-        reason += ","+i+": failed to set client ID";
-      } catch (Exception e) {
-        reason += ","+i+": set client ID with unexpected exception: "+e.getClass().getName();
-        Util.LOG(e);
-      }
-      clientID = null;
-      try {
-        clientID = context[i].getClientID();
-      } catch (JMSRuntimeException e) {
-        reason += ","+i+": failed to get client ID";
-      } catch (Exception e) {
-        reason += ","+i+": get client ID failed with unexpected exception: "+e.getClass().getName();
-        Util.LOG(e);
-      }
-      if (null==clientID||!clientID.equals("ClientID"+i)) {
-        reason += ","+clientID+" != ClientID"+i;
-      }
-      context[i].close();
-    }
+      for (ConnectionFactory connectionFactory : connectionFactories) {
+          try (JMSContext jmsContext = connectionFactory_.createContext()) {
+              String clientIdSet = "ClientID"+connectionFactory.getClass().getSimpleName();
+              String clientIdGet = null;
 
-    if (0==reason.length()) {
-      reportSuccess();
-    } else {
-      reportFailure(reason.substring(1));
-    }
+              try {
+                  jmsContext.setClientID(clientIdSet);
+              } catch (IllegalStateRuntimeException e) {
+                  reason += ", failed to set client ID:"+clientIdSet;
+                  Util.LOG(e);
+              } catch (Exception e) {
+                  reason += ", set client ID:"+clientIdSet+" unexpected exception: "+e.getClass().getName();
+                  Util.LOG(e);
+              }
+
+              try {
+                  clientIdGet = jmsContext.getClientID();
+              } catch (JMSRuntimeException e) {
+                  reason += ", failed to get client ID:"+clientIdSet;
+                  Util.LOG(e);
+              } catch (Exception e) {
+                  reason += ", get client ID:"+clientIdSet+" unexpected exception: "+e.getClass().getName();
+                  Util.LOG(e);
+              }
+              if (null==clientIdGet||!clientIdGet.equals(clientIdSet)) {
+                  reason += ","+clientIdGet+" != "+ clientIdSet;
+              }
+          }
+      }
+
+      if (0==reason.length()) {
+          reportSuccess();
+      } else {
+          reportFailure(reason.substring(1));
+      }
   }
 
   @ClientTest
   public void testSetClientIDTwice() throws JMSException {
-    JMSContext context[] = { connectionFactory_.createContext()
-                            ,queueConnectionFactory_.createContext()
-                            ,topicConnectionFactory_.createContext()
-                            ,connectionFactory_.createContext()
-                            ,queueConnectionFactory_.createContext()
-                            ,topicConnectionFactory_.createContext()
-                           };
-    String     clientID;
-    String     reason = "";
+      ConnectionFactory[] connectionFactories = {connectionFactory_ ,queueConnectionFactory_ ,topicConnectionFactory_};     
+      String     reason = "";
 
-    for (int i=0;3>i;++i) {
-      try {
-        context[i].setClientID("ClientID"+i);
-      } catch (IllegalStateRuntimeException e) {
-        reason += ","+i+": failed to set client ID";
+      for (ConnectionFactory connectionFactory : connectionFactories) {
+          try (JMSContext jmsContext0 = connectionFactory_.createContext();
+               JMSContext jmsContext1 = connectionFactory_.createContext()) {
+              String clientIdSet = "ClientID"+connectionFactory.getClass().getSimpleName();
+              String clientIdGet = null;
+
+              try {
+                  jmsContext0.setClientID(clientIdSet);
+              } catch (IllegalStateRuntimeException e) {
+                  reason += ", failed to set client ID:"+clientIdSet;
+                  Util.LOG(e);
+              }
+              try {
+                  jmsContext1.setClientID(clientIdSet);
+                  reason+=", second set client ID succeeded:"+clientIdSet;
+              } catch (InvalidClientIDRuntimeException e) {
+                  // exception expected
+                  Util.TRACE(e);
+              } catch (Exception e) {
+                  reason += ", second set client ID"+clientIdSet+" unexpected exception: "+e.getClass().getName();
+                  Util.LOG(e);
+              }
+
+              try {
+                  clientIdGet = jmsContext0.getClientID();
+              } catch (JMSRuntimeException e) {
+                  reason += ", failed to get client ID:"+clientIdSet;
+                  Util.LOG(e);
+              } catch (Exception e) {
+                  reason += ", get client ID:"+clientIdSet+" unexpected exception: "+e.getClass().getName();
+                  Util.LOG(e);
+              }
+              if (null==clientIdGet||!clientIdGet.equals(clientIdSet)) {
+                  reason += ","+clientIdGet+" != "+clientIdSet;
+              }
+          }
       }
-      try {
-        context[i+3].setClientID("ClientID"+i);
-        reason+=","+i+": second set client ID succeeded";
-      } catch (InvalidClientIDRuntimeException e) {
-        // exception expected
-      } catch (Exception e) {
-        reason += ","+i+": second set client ID failed with unexpected exception: "+e.getClass().getName();
-        Util.LOG(e);
-      }
-      clientID = null;
-      try {
-        clientID = context[i].getClientID();
-      } catch (JMSRuntimeException e) {
-        reason += ","+i+": failed to get client ID";
-      } catch (Exception e) {
-        reason += ","+i+": get client ID failed with unexpected exception: "+e.getClass().getName();
-        Util.LOG(e);
-      }
-      if (null==clientID||!clientID.equals("ClientID"+i)) {
-        reason += ","+clientID+" != ClientID"+i;
-      }
-      context[i+3].close();
-      context[i].close();
-    }
 
     if (0==reason.length()) {
       reportSuccess();
@@ -152,136 +154,140 @@ public class ClientID extends ClientMain {
 
   @ClientTest
   public void testDurableSubscriberWithoutClientID() throws JMSException {
-    Connection      connection = connectionFactory_.createConnection();
-    Session         session = connection.createSession();
-    TopicConnection topicConnection = topicConnectionFactory_.createTopicConnection();
-    TopicSession    topicSession = topicConnection.createTopicSession(true, 1);
-    MessageConsumer messageConsumer = null;
-    TopicSubscriber topicSubscriber = null;
-    String          reason = "";
+    try (Connection      connection = connectionFactory_.createConnection();
+         TopicConnection topicConnection = topicConnectionFactory_.createTopicConnection()) {
+    
+        Session         session = connection.createSession();
+        TopicSession    topicSession = topicConnection.createTopicSession(true, 1);
+        String          reason = "";
 
-    // Session ---------------------------------------------------------------------------------------------------------------------
+        // Session ---------------------------------------------------------------------------------------------------------------------
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createDurableConsumer(topic_, "consumer name");
-      reason += ",session durable consumer created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",session createDurableConsumer raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createDurableConsumer(topic_, "consumer name");
+            reason += ",session durable consumer created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.", e);
+        } catch (Exception e) {
+            reason += ",session createDurableConsumer raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createDurableConsumer(topic_, "consumer name (selective)", "message_selector", true);
-      reason += ",session durable consumer (with message selector) created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",session createDurableConsumer (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createDurableConsumer(topic_, "consumer name (selective)", "message_selector", true);
+            reason += ",session durable consumer (with message selector) created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.", e);
+        } catch (Exception e) {
+            reason += ",session createDurableConsumer (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = session.createDurableSubscriber(topic_, "subscriber_name");
-      reason += ",session durable subscriber created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",session createDurableSubscriber raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = session.createDurableSubscriber(topic_, "subscriber_name");
+            reason += ",session durable subscriber created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.", e);
+        } catch (Exception e) {
+            reason += ",session createDurableSubscriber raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = session.createDurableSubscriber(topic_, "subscriber name (selective)", "message_selector", true);
-      reason += ",session durable subscriber (with message selector) created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",session createDurableSubscriber (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = session.createDurableSubscriber(topic_, "subscriber name (selective)", "message_selector", true);
+            reason += ",session durable subscriber (with message selector) created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.",e);
+        } catch (Exception e) {
+            reason += ",session createDurableSubscriber (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createSharedConsumer(topic_, "shared consumer name");
-    } catch (Exception e) {
-      reason += ",session createSharedConsumer raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createSharedConsumer(topic_, "shared consumer name");
+        } catch (Exception e) {
+            reason += ",session createSharedConsumer raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createSharedConsumer(topic_, "shared consumer name (selective)", "message_selector");
-    } catch (Exception e) {
-      reason += ",session createSharedConsumer (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createSharedConsumer(topic_, "shared consumer name (selective)", "message_selector");
+        } catch (Exception e) {
+            reason += ",session createSharedConsumer (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createSharedDurableConsumer(topic_, "shared durable consumer name");
-    } catch (Exception e) {
-      reason += ",session createSharedDurableConsumer raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createSharedDurableConsumer(topic_, "shared durable consumer name");
+            messageConsumer.close();
+            session.unsubscribe("shared durable consumer name");
+        } catch (Exception e) {
+            reason += ",session createSharedDurableConsumer raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      messageConsumer = session.createSharedDurableConsumer(topic_, "shared durable consumer name (selective)", "message_selector");
-    } catch (Exception e) {
-      reason += ",session createSharedDurableConsumer (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            MessageConsumer messageConsumer = session.createSharedDurableConsumer(topic_, "shared durable consumer name (selective)", "message_selector");
+            messageConsumer.close();
+            session.unsubscribe("shared durable consumer name (selective)");
+        } catch (Exception e) {
+            reason += ",session createSharedDurableConsumer (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    // TopicSession ----------------------------------------------------------------------------------------------------------------
+        // TopicSession ----------------------------------------------------------------------------------------------------------------
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = topicSession.createDurableSubscriber(topic_, "subscriber name");
-      reason += ",topic durable consumer created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",topic createDurableSubscriber raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = topicSession.createDurableSubscriber(topic_, "subscriber name");
+            reason += ",topic durable consumer created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.", e);
+        } catch (Exception e) {
+            reason += ",topic createDurableSubscriber raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = topicSession.createDurableSubscriber(topic_, "subscriber name (selective)", "message_selector", true);
-      reason += ",topic durable consumer (with message selector) created";
-    } catch (IllegalStateException e) {
-      Util.TRACE("Expected IllegalStateException raised.");
-    } catch (Exception e) {
-      reason += ",topic createDurableSubscriber (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = topicSession.createDurableSubscriber(topic_, "subscriber name (selective)", "message_selector", true);
+            reason += ",topic durable consumer (with message selector) created";
+        } catch (IllegalStateException e) {
+            Util.TRACE("Expected IllegalStateException raised.", e);
+        } catch (Exception e) {
+            reason += ",topic createDurableSubscriber (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = topicSession.createSubscriber(topic_);
-    } catch (Exception e) {
-      reason += ",topic createSubscriber raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic_);
+        } catch (Exception e) {
+            reason += ",topic createSubscriber raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    Util.CODEPATH();
-    try {
-      topicSubscriber = topicSession.createSubscriber(topic_, "message_selector", true);
-    } catch (Exception e) {
-      reason += ",topic createSubscriber (with message selector) raised "+e.getClass().getName();
-      Util.LOG(e);
-    }
+        Util.CODEPATH();
+        try {
+            TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic_, "message_selector", true);
+        } catch (Exception e) {
+            reason += ",topic createSubscriber (with message selector) raised "+e.getClass().getName();
+            Util.LOG(e);
+        }
 
-    if (0==reason.length()) {
-      reportSuccess();
-    } else {
-      reportFailure(reason.substring(1));
+        if (0==reason.length()) {
+            reportSuccess();
+        } else {
+            reportFailure(reason.substring(1));
+        }
     }
   }
 }

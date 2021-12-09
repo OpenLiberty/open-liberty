@@ -6,7 +6,7 @@
         <feature>ejbLite-3.2</feature>
         <feature>appSecurity-2.0</feature>
     </featureManager>
-
+    
     <include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>

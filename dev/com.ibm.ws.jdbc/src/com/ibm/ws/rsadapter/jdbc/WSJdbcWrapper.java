@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2016 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLRecoverableException;
@@ -98,15 +100,27 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
     void activate() throws SQLException {}
 
     /**
-     * Create an SQLRecoverableException if exception mapping is enabled, or
-     * SQLRecoverableException if exception mapping is disabled.
+     * Create an ObjectClosedException if exception replacement is enabled, or
+     * SQLRecoverableException if exception replacement is disabled.
      * 
      * @param ifc the simple interface name (such as Connection) of the closed wrapper.
      * 
      * @return an exception indicating the object is closed.
      */
-    protected final SQLRecoverableException createClosedException(String ifc) {
+    protected final SQLException createClosedException(String ifc) {
         String message = AdapterUtil.getNLSMessage("OBJECT_CLOSED", ifc);
+        if (dsConfig.get().heritageReplaceExceptions)
+            try {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends SQLException> ObjectClosedException = (Class<? extends SQLException>)
+                        mcf.getHelper().dataStoreHelper.getClass().getClassLoader().loadClass("com.ibm.websphere.ce.cm.ObjectClosedException");
+                    return ObjectClosedException.getConstructor(String.class).newInstance(message);
+                });
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x.getCause(), WSJdbcWrapper.class.getName(), "122", this);
+                // use the standard exception instead if unable to load
+            }
         return new SQLRecoverableException(message, "08003", 0);
     }
 
@@ -174,7 +188,6 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
         boolean isOperationComplete = false;
 
         // Invoke on the main wrapper if it has the method.
-        DSConfig config = dsConfig.get(); 
         Set<Method> vendorMethods = mcf.vendorMethods; 
 
         if (!vendorMethods.contains(method))

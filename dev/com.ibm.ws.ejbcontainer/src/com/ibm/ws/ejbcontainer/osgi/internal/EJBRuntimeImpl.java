@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -514,7 +514,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         this.j2eeNameFactory = ref;
     }
 
-    protected void unsetJ2EENameFactory(J2EENameFactory ref) {}
+    protected void unsetJ2EENameFactory(J2EENameFactory ref) {
+    }
 
     @Reference
     protected void setMetaDataService(MetaDataService ref) {
@@ -1357,9 +1358,11 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                         "(containerToType=com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd)" +
                         "(containerToType=com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd)" +
                         ")")
-    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {}
+    protected void setAdapterFactoryDependency(AdapterFactoryService afs) {
+    }
 
-    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {}
+    protected void unsetAdapterFactoryDependency(AdapterFactoryService afs) {
+    }
 
     @Override
     public boolean isRemoteUsingPortableServer() {
@@ -1661,7 +1664,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         // then create a latch to support a pause in starting remote EJBs.
         if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
-            if (featureName != null && featureName.startsWith("ejbRemote")) {
+            if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
                 remoteFeatureLatch = new CountDownLatch(1);
             }
         }
@@ -1673,7 +1676,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         CountDownLatch remoteLatch = remoteFeatureLatch;
         if (remoteLatch != null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
-            if (featureName != null && featureName.startsWith("ejbRemote")) {
+            if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
                 remoteFeatureLatch = null;
                 remoteLatch.countDown();
             }

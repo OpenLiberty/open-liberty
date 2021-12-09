@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd" version="2.0">
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLJPAEmbeddableRelationshipEntity">
+        <table name="XMLRootEmRL"/>
+        <attributes>
+            <id name="id" />
+            <element-collection name="collectionUniO2OOwnerPropertyAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="colUniO2OOwnPAEmOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listUniO2OOwnerFieldAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="listUniO2OOwnFAEmOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listUniO2OOwnerFieldAccessEmbedAssociationOverridesOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <association-override name="uniO2ODummyEntity_FA">
+                    <join-column name="UNIO2OINVERSEASSOCOVERRIDE" />
+                </association-override>
+                <collection-table name="listUniO2OOwnFAEmAOOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="setUniO2OOwnerFieldAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="setUniO2OOwnFAEmOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="mapKeyIntegerValueUniO2OOwnerFieldAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <map-key-column name="mykey" />
+                <association-override name="value.uniO2ODummyEntity_FA">
+                    <join-column name="value" />
+                </association-override>
+                <collection-table name="mapKeyIntValUniO2OOwnFAEmOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="mapKeyUniO2OOwnerFieldAccessEmbedValueUniO2OOwnerFieldAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <association-override name="key.uniO2ODummyEntity_FA">
+                    <join-column name="mykey" />
+                </association-override>
+                <association-override name="value.uniO2ODummyEntity_FA">
+                    <join-column name="value" />
+                </association-override>
+                <collection-table name="mapKeyUniO2OEmValUniO2OEmOC">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <embedded name="uniO2OOwnerFieldAccessEmbed" />
+            <embedded name="uniO2OOwnerPropertyAccessEmbed" />
+            <embedded name="biO2OOwnerEmbed" />
+            <embedded name="biO2OInverseEmbed" />
+            <embedded name="biO2OOwnerAssociationOverridesEmbed">
+                <association-override name="biO2OInverseAssociationOverridesEntity">
+                    <join-column name="BIO2OINVERSEASSOCOVERRIDE" />
+                </association-override>
+            </embedded>
+            <embedded name="uniM2OOwnerEmbed" />
+            <embedded name="biM2OOwnerEmbed" />
+            <embedded name="biO2MInverseEmbed" />
+            <embedded name="biM2MOwnerEmbed" />
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLUniO2ODummyEntity">
+        <table name="XMLUniO2O"/>
+        <attributes>
+            <id name="id" />
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OInverseEntity">
+        <table name="XMLBiO2OInv"/>
+        <attributes>
+            <id name="id" />
+            <one-to-one name="owner" mapped-by="biO2OOwnerEmbed.biO2OInverseEntity" />
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OOwnerEntity">
+        <table name="XMLBiO2OOwn"/>
+        <attributes>
+            <id name="id" />
+            <one-to-one name="inverse" fetch="EAGER">
+                <join-column name="BIO2OOWNER" />
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OInverseAssociationOverridesEntity">
+        <table name="XMLBiO2OInvAO"/>
+        <attributes>
+            <id name="id" />
+            <one-to-one name="owner" mapped-by="biO2OOwnerAssociationOverridesEmbed.biO2OInverseAssociationOverridesEntity" />
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2MInverseEntity">
+        <table name="XMLBiO2MInv"/>
+        <attributes>
+            <id name="id" />
+            <one-to-many name="owners" mapped-by="biM2OOwnerEmbed.biO2MInverseEntity" />
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiM2OOwnerEntity">
+        <table name="XMLBiM2OOwn"/>
+        <attributes>
+            <id name="id" />
+            <many-to-one name="inverse">
+                <join-column name="BIM2OOWNER" />
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiM2MInverseEntity">
+        <table name="XMLBiM2MInv"/>
+        <attributes>
+            <id name="id" />
+            <many-to-many name="owners" mapped-by="biM2MOwnerEmbed.biM2MInverseEntities" />
+        </attributes>
+    </entity>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLUniO2OOwnerFieldAccessEmbed"
+        access="FIELD">
+        <attributes>
+            <one-to-one name="uniO2ODummyEntity_FA" fetch="EAGER">
+                <join-column name="UNIO2ODUMMYFA" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLUniO2OOwnerPropertyAccessEmbed"
+        access="PROPERTY">
+        <attributes>
+            <one-to-one name="uniO2ODummyEntity_PA" fetch="EAGER">
+                <join-column name="UNIO2ODUMMYPA" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OOwnerEmbed">
+        <attributes>
+            <one-to-one name="biO2OInverseEntity" fetch="EAGER">
+                <join-column name="BIO2OINVERSE" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OInverseEmbed">
+        <attributes>
+            <one-to-one name="biO2OOwnerEntity" fetch="EAGER" mapped-by="inverse">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2OOwnerAssociationOverridesEmbed">
+        <attributes>
+            <one-to-one name="biO2OInverseAssociationOverridesEntity" fetch="EAGER">
+                <join-column name="doesnotexist" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLUniM2OOwnerEmbed">
+        <attributes>
+            <many-to-one name="uniO2MDummyEntity" fetch="EAGER">
+                <join-column name="UNIM2OINVERSE" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiM2OOwnerEmbed">
+        <attributes>
+            <many-to-one name="biO2MInverseEntity" fetch="EAGER">
+                <join-column name="BIM2OINVERSE" />
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiO2MInverseEmbed">
+        <attributes>
+            <one-to-many name="biM2OOwnerEntities" fetch="EAGER" mapped-by="inverse">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.relationship.model.XMLBiM2MOwnerEmbed">
+        <attributes>
+            <many-to-many name="biM2MInverseEntities" fetch="EAGER">
+                <join-table name="XMLBiM2MOwnEm">
+                    <join-column name="BIM2MINVERSE" />
+                    <inverse-join-column name="BIM2MOWNER" />
+                </join-table>
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-many>
+        </attributes>
+    </embeddable>
+</entity-mappings>

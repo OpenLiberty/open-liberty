@@ -34,8 +34,8 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInMethodBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithBadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithNoConverter;
@@ -49,7 +49,7 @@ public class Config20ExceptionTests extends FATServletClient {
     public static final String SERVER_NAME = "Config20ExceptionServer";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -68,7 +68,7 @@ public class Config20ExceptionTests extends FATServletClient {
                         .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
         // The war should throw a deployment exception, hence don't validate.
-        ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer();
 
@@ -77,7 +77,7 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testBadObserver() throws Exception {
         List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property DOESNOTEXIST");
+                        .findStringsInLogs("SRCFG02000:.*DOESNOTEXIST");
         assertNotNull("error not found", errors);
         assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
@@ -90,7 +90,7 @@ public class Config20ExceptionTests extends FATServletClient {
      */
     @Test
     public void testMethodUnnamed() throws Exception {
-        String beanDir = ConfigUnnamedMethodInjectionBean.class.getName();
+        String beanDir = BadConfigPropertyInMethodBean.class.getName();
         List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
@@ -105,7 +105,7 @@ public class Config20ExceptionTests extends FATServletClient {
      */
     @Test
     public void testConstructorUnnamed() throws Exception {
-        String beanDir = ConfigUnnamedConstructorInjectionBean.class.getName();
+        String beanDir = BadConfigPropertyInConstructorBean.class.getName();
         List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + "\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
@@ -113,14 +113,14 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
+        List<String> errors = server.findStringsInLogs("SRCFG02000:.*nonExistantKey");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKeyWithCustomConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
+        List<String> errors = server.findStringsInLogs("SRCFG02000:.*nonExistingKeyWithCustomConverter");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
 
@@ -131,14 +131,14 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testConverterMissing() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
+        List<String> errors = server.findStringsInLogs("SRCFG02007:.*" + TypeWithNoConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
+        List<String> errors = server.findStringsInLogs("SRCFG00039:.*badConverterKey.*throwing intentional exception");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
@@ -146,6 +146,22 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
         List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testNonExistingPropertyExpressionForServerXMLVariable() throws Exception {
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00011:.*keyFromVariableInServerXML");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testNonExistingPropertyExpressionForServerXMLAppProperty() throws Exception {
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00011:.*keyFromAppPropertyInServerXML");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }

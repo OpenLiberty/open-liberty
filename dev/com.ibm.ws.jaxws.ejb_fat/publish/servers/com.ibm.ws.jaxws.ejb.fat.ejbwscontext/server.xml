@@ -36,6 +36,7 @@
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
   	
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
   	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
   	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
   	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package mpRestClient20.sse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.sse.InboundSseEvent;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -40,12 +43,18 @@ public class GenericSubscriber<T> implements Subscriber<T> {
     public void onError(Throwable t) {
         onErrors.add(t);
         System.out.println("GenericSubscriber onError " + t);
+        t.printStackTrace();
         latch.countDown();
     }
 
     @Override
     public void onNext(T t) {
-        System.out.println("GenericSubscriber onNext " + t);
+        if (t instanceof InboundSseEvent) {
+            InboundSseEvent ise = (InboundSseEvent) t;
+            System.out.println("GenericSubscriber onNext ResponseImpl(" + ise.readData() + ")");
+        } else {
+            System.out.println("GenericSubscriber onNext " + t);
+        }
         onNexts.add(t);
         latch.countDown();
     }

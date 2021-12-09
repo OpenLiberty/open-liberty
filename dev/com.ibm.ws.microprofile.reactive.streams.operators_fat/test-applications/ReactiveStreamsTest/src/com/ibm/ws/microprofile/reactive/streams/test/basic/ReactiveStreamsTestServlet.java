@@ -32,6 +32,7 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ToGraphable;
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -100,6 +101,22 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Test
     public void injectReactiveStreamsEngineTest() {
         assertTrue("Reactive Streams Engine has been injected as null", engine1 != null);
+    }
+
+    @Test
+    public void loadFlowAdaptersTest() {
+        Class cl = null;
+        try {
+            cl = ReactiveStreamsTestServlet.class.getClassLoader().loadClass("org.reactivestreams.FlowAdapters");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (System.getProperty("java.specification.version").startsWith("1.")) {
+            Assert.assertNull("Expected not to be able to load org.reactivestreams.FlowAdapters", cl);
+        } else {
+            Assert.assertNotNull("Expected to be able to load org.reactivestreams.FlowAdapters", cl);
+        }
     }
 
     /**

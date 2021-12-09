@@ -20,7 +20,7 @@ import org.omg.CORBA.Policy;
  * @version $Rev: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class ServerTransactionPolicy extends LocalObject implements Policy {
-
+    private static final long serialVersionUID = 1L;
     private final ServerTransactionPolicyConfig serverTransactionPolicyConfig;
 
     public ServerTransactionPolicy(ServerTransactionPolicyConfig serverTransactionPolicyConfig) {

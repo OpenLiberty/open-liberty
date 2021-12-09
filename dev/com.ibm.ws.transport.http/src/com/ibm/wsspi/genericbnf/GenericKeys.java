@@ -10,15 +10,13 @@
  *******************************************************************************/
 package com.ibm.wsspi.genericbnf;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Generic abstract class for the various enumerated classes in the
  * Channel. Each basic key has a String name and an int ordinal to
  * match. The extended classes are responsible for maintaining the
  * static list of all the keys in the enum, along with anything extra
  * they may require.
- * 
+ *
  * @ibm-private-in-use
  */
 public abstract class GenericKeys implements Comparable<GenericKeys> {
@@ -34,26 +32,20 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
 
     /**
      * Constructor is limited to the subclasses.
-     * 
+     *
      * @param inputName
      * @param inputOrdinal
      */
     protected GenericKeys(String inputName, int inputOrdinal) {
         this.name = inputName;
-        try {
-            this.byteArray = inputName.getBytes(HeaderStorage.ENGLISH_CHARSET);
-        } catch (UnsupportedEncodingException uee) {
-            // no FFDC required
-            // Invalid key name
-            throw new IllegalArgumentException("Unsupported non-English name: " + inputName);
-        }
+        this.byteArray = inputName.getBytes(HeaderStorage.ENGLISH_CHARSET);
         this.ordinal = inputOrdinal;
         this.hashcode = inputOrdinal + inputName.hashCode();
     }
 
     /**
      * Query the name of this key as a byte[].
-     * 
+     *
      * @return byte[]
      */
     final public byte[] getByteArray() {
@@ -62,7 +54,7 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
 
     /**
      * Query the ordinal number for this header.
-     * 
+     *
      * @return int
      */
     final public int getOrdinal() {
@@ -71,27 +63,22 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
 
     /**
      * Query the name for this key as a String.
-     * 
+     *
      * @return String
      */
     public String getName() {
         if (null == this.name && null != this.byteArray) {
-            try {
-                this.name = new String(this.byteArray, HeaderStorage.ENGLISH_CHARSET);
-            } catch (UnsupportedEncodingException uee) {
-                // no FFDC required
-                // Invalid key name
-                throw new IllegalArgumentException("Unsupported non-English name: " + new String(this.byteArray));
-            }
+            this.name = new String(this.byteArray, HeaderStorage.ENGLISH_CHARSET);
         }
         return this.name;
     }
 
     /**
      * For debugging purposes, convert this object to a String.
-     * 
+     *
      * @return String
      */
+    @Override
     public String toString() {
         return "Key: " + getName() + " Ordinal: " + getOrdinal();
     }
@@ -100,20 +87,22 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
      * Compare this key against the given value. Returns a negative integer,
      * zero, or a positive integer as this object is less than, equal to, or
      * greater than the specified GenericKeys object.
-     * 
+     *
      * @param inKey
      * @return int
      */
+    @Override
     public int compareTo(GenericKeys inKey) {
         return (null == inKey) ? -1 : (getOrdinal() - inKey.getOrdinal());
     }
 
     /**
      * Check whether this object equals another.
-     * 
+     *
      * @param val
      * @return boolean
      */
+    @Override
     public boolean equals(Object val) {
 
         if (this == val) {
@@ -128,7 +117,7 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
 
     /**
      * Allow an equality check against another enum object.
-     * 
+     *
      * @param val
      * @return boolean (true if ordinals match)
      */
@@ -138,9 +127,10 @@ public abstract class GenericKeys implements Comparable<GenericKeys> {
 
     /**
      * Hash code of this object.
-     * 
+     *
      * @return int
      */
+    @Override
     public int hashCode() {
         return this.hashcode;
     }

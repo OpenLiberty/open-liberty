@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: fat/src,\
+     test-bundles/test.exceptionmapper/src
+
+test.project=true
+
+tested.features: restfulwsclient-3.0, servlet-5.0, jndi-1.0, restfulws-3.0, cdi-3.0, jsonp-2.0
+
+-sub: *.bnd
+
+-buildpath: \
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+    com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

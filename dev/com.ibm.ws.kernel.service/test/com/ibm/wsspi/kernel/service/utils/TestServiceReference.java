@@ -31,6 +31,11 @@ class TestServiceReference implements ServiceReference<String> {
     }
 
     @Override
+    public <A> A adapt(Class<A> arg0) {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + name + ", id=" + id + ", ranking=" + ranking + ']';
     }

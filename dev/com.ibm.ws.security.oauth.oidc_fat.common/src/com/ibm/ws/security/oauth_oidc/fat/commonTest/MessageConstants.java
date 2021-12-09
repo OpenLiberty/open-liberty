@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -17,6 +17,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKG0011W_CONFIG_VALIDATION_FAILURE = "CWWKG0011W";
 
     public static final String CWWKG0032W_CONFIG_INVALID_VALUE = "CWWKG0032W";
+    public static final String CWWKG0033W_CONFIG_REFERENCE_NOT_FOUND = "CWWKG0033W";
     public static final String CWWKG0081W_CONFIG_VALIDATION_FAILURE = "CWWKG0081W";
     public static final String CWWKG0083W_CONFIG_VALIDATION_FAILURE = "CWWKG0083W";
     public static final String CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE = "CWWKG0058E";
@@ -82,6 +83,9 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1497E_WRONG_TOKEN_TYPE = "CWWKS1497E";
 
     public static final String CWWKS1520E_MISSING_SAMESITE_COOKIE = "CWWKS1520E";
+    public static final String CWWKS1532E_MALFORMED_URL_IN_COOKIE = "CWWKS1532E";
+    public static final String CWWKS1533E_SIGNATURE_MISMATCH = "CWWKS1533E";
+    public static final String CWWKS1534E_MISSING_AUTH_ENDPOINT = "CWWKS1534E";
     public static final String CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT = "CWWKS1524E";
     public static final String CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED = "CWWKS1525E";
 
@@ -113,6 +117,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1741W_OIDC_CLIENT_NONE_ALG = "CWWKS1741W";
     public static final String CWWKS1743E_REUSED_JTI = "CWWKS1743E";
     public static final String CWWKS1747E_JWK_RETRIEVE_FAILED = "CWWKS1747E";
+    public static final String CWWKS1749E_SUB_DID_NOT_MATCH_ID_TOKEN = "CWWKS1749E";
     public static final String CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR = "CWWKS1756E";
     public static final String CWWKS1761E_SIG_ALG_MISMATCH = "CWWKS1761E";
     public static final String CWWKS1768E_BAD_JWT_FORMAT = "CWWKS1768E";
@@ -137,7 +142,16 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS5000I_SAML_CONFIG_PROCESSED = "CWWKS5000I";
     public static final String CWWKS5002I_SAML_SERVICE_ACTIVATED = "CWWKS5002I";
+    public static final String CWWKS1536E_TOKEN_IS_NOT_A_JWS = "CWWKS1536E";
+    public static final String CWWKS1537E_JWE_IS_NOT_VALID = "CWWKS1537E";
+    public static final String CWWKS1538E_CONTENT_NOT_JSON = "CWWKS1538E";
+    public static final String CWWKS1539E_CONTENT_NOT_JWT = "CWWKS1539E";
+    public static final String CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO = "CWWKS1540E";
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
+
+    public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
+    public static final String CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG = "CWWKS5498E";
+    public static final String CWWKS6064E_TOKEN_IS_NOT_A_JWE = "CWWKS6064E";
 
     public static final String CWWKS6005E_BAD_CONFIG_ID = "CWWKS6005E";
     public static final String CWWKS6007E_BAD_KEY_ALIAS = "CWWKS6007E";
@@ -175,6 +189,10 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS6048E_JWT_MISSING_FROM_SUBJECT = "CWWKS6048E";
     public static final String CWWKS6049E_JWK_NOT_RETURNED = "CWWKS6049E";
     public static final String CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
+    public static final String CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE = "CWWKS6056E";
+    public static final String CWWKS6057E_CTY_NOT_JWT_FOR_NESTED_JWS = "CWWKS6057E";
+    public static final String CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND = "CWWKS6065E";
+    public static final String CWWKS6066E_JWE_DECRYPTION_KEY_MISSING = "CWWKS6066E";
 
     public static final String CWIML4537E_PRINCIPAL_NOT_FOUND = "CWIML4537E";
 

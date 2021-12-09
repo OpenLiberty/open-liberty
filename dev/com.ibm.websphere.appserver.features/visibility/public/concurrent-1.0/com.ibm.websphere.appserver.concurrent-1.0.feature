@@ -9,12 +9,12 @@ IBM-API-Service: javax.enterprise.concurrent.ContextService; id="DefaultContextS
  javax.enterprise.concurrent.ManagedExecutorService; id="DefaultManagedExecutorService", \
  javax.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"
 Subsystem-Name: Concurrency Utilities for Java EE 1.0
--features=com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.appLifecycle-1.0, \
- com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
- com.ibm.websphere.appserver.contextService-1.0, \
- com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.2", \
- com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="6.0,8.0"
+-features=com.ibm.websphere.appserver.appLifecycle-1.0, \
+  com.ibm.websphere.appserver.containerServices-1.0, \
+  com.ibm.websphere.appserver.contextService-1.0, \
+  com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="6.0,8.0", \
+  com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
+  com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.0; ibm.tolerates:="1.2"
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
  com.ibm.ws.resource, \

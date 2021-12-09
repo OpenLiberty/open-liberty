@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2016, 2020 IBM Corporation and others.
+    Copyright (c) 2016, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -49,11 +49,11 @@
          </AD>
          <AD id="nbfOffset" name="%nbfOffset" description="%nbfOffset.desc" required="false" type="String" default="-1" ibm:type="duration(s)"/>
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
-         <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" ibm:beta="true">
+         <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" >
              <Option label="%keyManagementKeyAlgorithm.RSA-OAEP" value="RSA-OAEP" />
          </AD>
-         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" ibm:beta="true"/>
-         <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" ibm:beta="true">
+         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
+         <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" >
              <Option label="%contentEncryptionAlgorithm.A256GCM" value="A256GCM" />
          </AD>
     </OCD>
@@ -88,7 +88,7 @@
         <AD id="amrValues" name="%amrValues" description="%amrValues.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="keyManagementKeyAlias" name="internal" description="internal use only" required="false" type="String" ibm:beta="true"/>
+        <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.consumer.desc" required="false" type="String" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.consumer">

@@ -11,7 +11,6 @@
 package com.ibm.ws.jaxws.bus;
 
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,8 +31,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -71,6 +68,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
         Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+
         try {
             return createBus(extensions, properties, moduleClassLoader);
         } finally {
@@ -90,12 +88,12 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
         Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+
         try {
             return createBus(extensions, properties, moduleClassLoader);
         } finally {
             THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
         }
-
     }
 
     @Override
@@ -107,16 +105,9 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         Bus originalBus = getThreadDefaultBus(false);
 
-        final Map<Class<?>, Object> e1 = e;
-        final Map<String, Object> properties1 = properties;
-        final ClassLoader classLoader1 = classLoader;
         try {
-            LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
-                @Override
-                public LibertyApplicationBus run() {
-                    return new LibertyApplicationBus(e1, properties1, classLoader1);
-                }
-            });
+            LibertyApplicationBus bus = new LibertyApplicationBus(e, properties, classLoader);
+
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
             //Also, it avoids polluting the thread bus.
             //possiblySetDefaultBus(bus);
@@ -134,16 +125,6 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
-
-            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
-            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
-            in.setPrettyLogging(true);
-            bus.getInInterceptors().add(in);
-
-            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
-            out.setPrettyLogging(true);
-            bus.getOutInterceptors().add(out);
-
             return bus;
 
         } finally {
@@ -184,7 +165,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
     /**
      * register LibertyApplicationBusListener to bus factory, those methods will be invoked with the bus lifecycle
-     *
+     * 
      * @param initializer
      */
     public void registerApplicationBusListener(LibertyApplicationBusListener listener) {
@@ -215,7 +196,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
      * The static method from parent class BusFactory also tries to change the thread bus, which is not required.
      * Use BusFactory.class as the synchronized lock due to the signature of the BusFactory.setDefaultBus is
      * public static void synchronized setDefaultBus(Bus bus)
-     *
+     * 
      * @param bus
      */
     public static void setDefaultBus(Bus bus) {

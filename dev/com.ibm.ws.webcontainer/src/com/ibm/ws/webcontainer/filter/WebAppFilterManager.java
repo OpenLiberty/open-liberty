@@ -52,6 +52,7 @@ import com.ibm.ws.webcontainer.servlet.FileServletWrapper;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebApp.ANNOT_TYPE;
@@ -1116,7 +1117,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             //PM92496  Start            
             if (httpServletReq.isSecure()) {
                 ServletRequest implRequest = ServletUtil.unwrapRequest(httpServletReq);
-                ((SRTServletRequest) implRequest).setSSLAttributesInRequest(httpServletReq, ((SRTServletRequest) implRequest).getCipherSuite());
+                ((ISRTServletRequest) implRequest).setSSLAttributesInRequest(httpServletReq, ((ISRTServletRequest) implRequest).getCipherSuite());
             }
             //PM92496  End
             
@@ -1173,8 +1174,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 handler");
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
                                 if (h2Handler != null) {
-                                    if (request instanceof SRTServletRequest) {
-                                        SRTServletRequest srtReq = (SRTServletRequest) request;
+                                    if (request instanceof IExtendedRequest) {
+                                        IExtendedRequest srtReq = (IExtendedRequest) request;
                                         IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                                         if (iReq != null) {
                                             httpInboundConnection = iReq.getHttpInboundConnection();

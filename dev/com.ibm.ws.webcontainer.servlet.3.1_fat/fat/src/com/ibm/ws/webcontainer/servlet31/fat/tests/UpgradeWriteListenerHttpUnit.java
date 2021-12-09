@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,59 +21,55 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.logging.Logger;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class UpgradeWriteListenerHttpUnit extends LoggingTest {
+public class UpgradeWriteListenerHttpUnit {
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_wcServer")
+    public static LibertyServer server;
 
     private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
 
-    private static final String URLString = SHARED_SERVER.getServerUrl(true, "/LibertyReadWriteListenerTest/UpgradeHandlerTestServlet");
+    private static String URLString;
     private static final Logger LOG = Logger.getLogger(UpgradeWriteListenerHttpUnit.class.getName());
     private BufferedReader input = null;
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+        URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/LibertyReadWriteListenerTest/UpgradeHandlerTestServlet";
+
+        WebArchive libertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
-        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+        libertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(libertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
 
-            if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(server, libertyReadWriteListenerApp);
+
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(UpgradeWriteListenerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*", "SRVE0918E:.*", "SRVE9009E:.*", "SRVE9005E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE8015E:.*", "SRVE0918E:.*", "SRVE9009E:.*", "SRVE9005E:.*");
         }
     }
 
@@ -315,8 +311,8 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
     @Mode(TestMode.LITE)
     public void TestWrite_DontCheckisRedy_fromUpgradeWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         String testToCall = "TestWrite_DontCheckisRedy_fromUpgradeWL";
 
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
@@ -334,7 +330,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
                 //Also check for exception in logs
 
-                String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
+                String message = server.waitForStringInLogUsingMark("SRVE0918E");
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
             } else {
@@ -348,7 +344,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         } finally {
             // close the socket.
             CloseSocketConnection(s);
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
             LOG.info("\n *****************FINISH**********UpgradeWriteListenerHttpUnit: RUNNING TEST :" + testToCall + "*************");
         }
     }
@@ -357,8 +353,8 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
     @Mode(TestMode.LITE)
     public void TestWriteFromHandler_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
-        
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromHandler_AftersetWL";
 
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
@@ -381,7 +377,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 //                assertNotNull("Could not find message", message);
 
                 //Also check for exception in logs
-                String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
+                String message = server.waitForStringInLogUsingMark("SRVE0918E");
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
             } else {
@@ -395,7 +391,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         } finally {
             // close the socket.
             CloseSocketConnection(s);
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
             LOG.info("\n *****************FINISH**********UpgradeWriteListenerHttpUnit: RUNNING TEST :" + testToCall + "*************");
         }
     }
@@ -410,8 +406,8 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "TestUpgrade_ISE_setSecondWriteListener";
         // Make sure the test framework knows that SRVE9009E is expected
-        
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
         int expectedResponseSize = 1000;
         Socket s = null;
@@ -427,11 +423,11 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
                 String expectedData1 = "java.lang.IllegalStateException";
                 String expectedData2 = "SRVE9009E";
 
-                String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData1);
+                String message = server.waitForStringInLogUsingMark(expectedData1);
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
 
-                message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData2);
+                message = server.waitForStringInLogUsingMark(expectedData2);
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
             } else {
@@ -445,7 +441,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         } finally {
             // close the socket.
             CloseSocketConnection(s);
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
             LOG.info("\n *****************FINISH**********UpgradeWriteListenerHttpUnit: RUNNING TEST :" + testToCall + "*************");
         }
     }
@@ -456,8 +452,8 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
         String testToCall = "TestUpgrade_NPE_setNullWriteListener";
         // Make sure the test framework knows that SRVE9014E is expected
-        
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         LOG.info("\n *****************START**********UpgradeWriteListenerHttpUnit: RUNNING TEST:" + testToCall + "*************");
         int expectedResponseSize = 1000;
         Socket s = null;
@@ -471,7 +467,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
 
                 String expectedData = "SRVE9005E";
 
-                String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData);
+                String message = server.waitForStringInLogUsingMark(expectedData);
                 LOG.info(testToCall + " Entries found in log : " + message);
                 assertNotNull("Could not find message", message);
 
@@ -486,7 +482,7 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         } finally {
             // close the socket.
             CloseSocketConnection(s);
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
             LOG.info("\n *****************FINISH**********UpgradeWriteListenerHttpUnit: RUNNING TEST :" + testToCall + "*************");
         }
     }
@@ -610,16 +606,6 @@ public class UpgradeWriteListenerHttpUnit extends LoggingTest {
         //return data to the tests, read from the server.
         return line1;
 
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
     }
 
     // if server needs to be restarted after each test, uncomment @After section.

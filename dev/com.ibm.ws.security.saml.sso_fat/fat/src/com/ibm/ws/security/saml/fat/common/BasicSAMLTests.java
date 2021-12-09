@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,18 +21,17 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -68,15 +67,13 @@ public class BasicSAMLTests extends SAMLCommonTest {
     //	// refer to SAMLConstants.IDP_PROVIDER_LISTS for the list (true for https url)
     //	updatedTestSettings.updateFederationInSettings(0, true) ;
 
-    @MinimumJavaLevel(javaLevel = 8)
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // jwtSso-1.0 is not EE9 compliant.
     public void basicSAMLTests_withJwtSsoFeature() throws Exception {
         List<String> extraMsgs = new ArrayList<String>();
         extraMsgs.add("CWWKS9122I:.*sp1/snoop");
         testSAMLServer.reconfigServer(buildSPServerName("server_1_withJwtSsoFeature.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -88,7 +85,8 @@ public class BasicSAMLTests extends SAMLCommonTest {
         // Ensure that the subject principals include a JWT
         String issClaim = "\"iss\":\"https?://[^/]+/jwt/defaultJWT\"";
         String jwtUserPrincipal = "getUserPrincipal: \\{.+" + issClaim;
-        expectations = vData.addExpectation(expectations, lastStep, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_MATCHES, "Did not find the expected JWT principal in the alternate app response but should have.", null, jwtUserPrincipal);
+        expectations = vData.addExpectation(expectations, lastStep, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_MATCHES,
+                                            "Did not find the expected JWT principal in the alternate app response but should have.", null, jwtUserPrincipal);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlowAltAppAgain, expectations);
     }
@@ -113,7 +111,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_idAssertNoUser_noIDPSign_noIDPEncrypt() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -124,7 +122,8 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         // Ensure that the subject principals do NOT include a JWT
         String jwtUserPrincipal = "getUserPrincipal: {";
-        expectations = vData.addExpectation(expectations, lastStep, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_DOES_NOT_CONTAIN, "Found an unexpected JWT principal in the alternate app response.", null, jwtUserPrincipal);
+        expectations = vData.addExpectation(expectations, lastStep, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_DOES_NOT_CONTAIN,
+                                            "Found an unexpected JWT principal in the alternate app response.", null, jwtUserPrincipal);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlowAltAppAgain, expectations);
     }
@@ -171,7 +170,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_4.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp2", true);
@@ -208,7 +207,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -244,7 +243,8 @@ public class BasicSAMLTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_noIdAssertNoUser_IDPSignMisMatch_IDPEncrypt() throws Exception {
 
@@ -252,16 +252,20 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_8.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp5", true);
         updatedTestSettings.setSpecificIDPChallenge(2);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML POST response", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML POST response", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
     }
@@ -422,7 +426,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_13.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -447,19 +451,25 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_badFilter.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
-        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_IDP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP form login form.", null, cttools.getLoginTitle(updatedTestSettings.getIdpRoot()));
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML POST response", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_IDP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on the IDP form login form.", null, cttools.getLoginTitle(updatedTestSettings.getIdpRoot()));
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML POST response", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
         // nothing will be logged in the SP about the filter
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not land on the normal form login form.", null, SAMLConstants.STANDARD_LOGIN_HEADER);
-        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not land on the normal form login form.", null, SAMLConstants.STANDARD_LOGIN_HEADER);
-        expectations = vData.addExpectation(expectations, SAMLConstants.PROCESS_FORM_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not get output showing that there is NO SAML token - it should not be there", null, SAMLConstants.NO_SAML_TOKEN_FOUND_MSG);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on the normal form login form.", null, SAMLConstants.STANDARD_LOGIN_HEADER);
+        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on the normal form login form.", null, SAMLConstants.STANDARD_LOGIN_HEADER);
+        expectations = vData.addExpectation(expectations, SAMLConstants.PROCESS_FORM_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not get output showing that there is NO SAML token - it should not be there", null, SAMLConstants.NO_SAML_TOKEN_FOUND_MSG);
 
         genericSAML(_testName, webClient, updatedTestSettings, formLoginFlow, expectations);
 
@@ -472,7 +482,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_noFilter.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -493,17 +503,22 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_useSAMLTokenAgain_replayAttack() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, null);
 
-        if ((!cttools.isIDPADFS(updatedTestSettings.getIdpRoot())) && (flowType.contains(SAMLConstants.IDP_INITIATED) || flowType.contains(SAMLConstants.UNSOLICITED_SP_INITIATED))) {
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.", SAMLMessageConstants.CWWKS5082E_ASSERTION_ALREADY_PROCESSED);
+        if ((!cttools.isIDPADFS(updatedTestSettings.getIdpRoot()))
+            && (flowType.contains(SAMLConstants.IDP_INITIATED) || flowType.contains(SAMLConstants.UNSOLICITED_SP_INITIATED))) {
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG,
+                                                         SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.",
+                                                         SAMLMessageConstants.CWWKS5082E_ASSERTION_ALREADY_PROCESSED);
         } else {
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.", SAMLMessageConstants.CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG,
+                                                         SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.",
+                                                         SAMLMessageConstants.CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED);
         }
 
         genericSAML(_testName, webClient, updatedTestSettings, reuseSAMLToken, expectations);
@@ -523,7 +538,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_badSAMLToken_thenGoodSAMLToken_usuallyNoReplayAttack() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -531,14 +546,18 @@ public class BasicSAMLTests extends SAMLCommonTest {
         updatedTestSettings.setRemoveTagInResponse("ds:Signature"); // the whole ds:Signature element
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive message that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive message that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
 
         List<validationData> expectations2;
         if ((flowType.contains(SAMLConstants.IDP_INITIATED) || flowType.contains(SAMLConstants.UNSOLICITED_SP_INITIATED)) && !cttools.isIDPADFS(updatedTestSettings.getIdpRoot())) {
             expectations2 = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
         } else {
             expectations2 = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-            expectations2 = helpers.addMessageExpectation(testSAMLServer, expectations2, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.", SAMLMessageConstants.CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED);
+            expectations2 = helpers.addMessageExpectation(testSAMLServer, expectations2, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_AGAIN, SAMLConstants.SAML_MESSAGES_LOG,
+                                                          SAMLConstants.STRING_CONTAINS, "Did not receive a failure due to a replay attack.",
+                                                          SAMLMessageConstants.CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED);
         }
 
         printTestTrace("basicSAMLTests_badSAMLToken_thenGoodSAMLToken_usuallyNoReplayAttack", "Before getting token");
@@ -558,7 +577,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_notSigned() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -572,11 +591,13 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
+    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_signed() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -585,43 +606,53 @@ public class BasicSAMLTests extends SAMLCommonTest {
         updatedTestSettings.setSamlTokenReplaceVars(updatedTestSettings.getIdpUserName(), updatedUserName, SAMLConstants.LOCATION_ALL);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = { EmptyAction.ID })
+    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_mangleSAMLToken_badXMLFormatInResponse() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setSamlTokenReplaceVars("saml2p:Response", "saml2b:Response", SAMLConstants.LOCATION_ALL);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", null, "XML Parsing Error");
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive exception that the SAML Token did not validate.", null, "XML Parsing Error");
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = { EmptyAction.ID })
+    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_mangleSAMLToken_sendGarbage() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setSamlTokenReplaceVars("*", "Just send a string of garbage", SAMLConstants.LOCATION_ALL);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", null, "XML Parsing Error");
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive exception that the SAML Token did not validate.", null, "XML Parsing Error");
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
@@ -637,7 +668,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_removeSignature_serverRequiresSign() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -645,7 +676,9 @@ public class BasicSAMLTests extends SAMLCommonTest {
         updatedTestSettings.setRemoveTagInResponse("ds:Signature"); // the whole ds:Signature element
         // make sure that we get the correct error msgs - to the requesting client as well as in the server logs
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive message that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive message that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5048E_ERROR_VERIFYING_SIGNATURE);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
@@ -663,7 +696,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         //        testSAMLServer.reconfigServer(buildSPServerName("server_1_notSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -687,7 +720,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         //        testSAMLServer.reconfigServer(buildSPServerName("server_1_notSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -696,7 +729,9 @@ public class BasicSAMLTests extends SAMLCommonTest {
         updatedTestSettings.setRemoveTagInResponse("saml2:NameID");
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5068E_MISSING_ATTRIBUTE);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5068E_MISSING_ATTRIBUTE);
 
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
 
@@ -710,7 +745,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invoke_ACS_withoutClearingCookies() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -727,7 +762,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_unProtectedApp_then_protectedApp_SPCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -739,14 +774,20 @@ public class BasicSAMLTests extends SAMLCommonTest {
         if (flowType.contains(SAMLConstants.IDP_INITIATED)) {
             theFlow = standardFlowExtendedKeepingCookies;
             expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                                "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS,
+                                                "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
         } else {
             // for this flow, make sure that we land on the app and that we do NOT have any SP cookies
             List<validationData> expectationsSolSP = vData.addSuccessStatusCodes();
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.COOKIES, SAMLConstants.STRING_DOES_NOT_CONTAIN, "Conversation had an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_DOES_NOT_CONTAIN, "Output contained the issuer and should not have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                                     "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.COOKIES, SAMLConstants.STRING_DOES_NOT_CONTAIN,
+                                                     "Conversation had an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL,
+                                                     SAMLConstants.STRING_DOES_NOT_CONTAIN, "Output contained the issuer and should not have", null,
+                                                     "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
             // call the unprotected app and make sure we get to it - make sure there are no SP cookies afterwards
             // Then, we'll invoke the protected app in the same conversation and make sure that we
@@ -775,7 +816,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_protectedApp_then_unProtectedApp_SPCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -786,9 +827,12 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         theFlow = standardFlowExtendedKeepingCookies;
         expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS,
+                                            "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
         genericSAML(_testName, webClient, updatedTestSettings, theFlow, expectations);
 
@@ -804,7 +848,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -817,14 +861,20 @@ public class BasicSAMLTests extends SAMLCommonTest {
         if (flowType.contains(SAMLConstants.IDP_INITIATED)) {
             theFlow = standardFlowExtendedKeepingCookies;
             expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                                "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS,
+                                                "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
         } else {
             // for this flow, make sure that we land on the app and that we do NOT have any SP cookies
             List<validationData> expectationsSolSP = vData.addSuccessStatusCodes();
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.COOKIES, SAMLConstants.STRING_DOES_NOT_CONTAIN, "Conversation had an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
-            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_DOES_NOT_CONTAIN, "Output contained the issuer and should not have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                                     "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.COOKIES, SAMLConstants.STRING_DOES_NOT_CONTAIN,
+                                                     "Conversation had an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
+            expectationsSolSP = vData.addExpectation(expectationsSolSP, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_FULL,
+                                                     SAMLConstants.STRING_DOES_NOT_CONTAIN, "Output contained the issuer and should not have", null,
+                                                     "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
             // call the unprotected app and make sure we get to it - make sure there are no SP cookies afterwards
             // Then, we'll invoke the protected app in the same conversation and make sure that we
@@ -855,7 +905,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -867,9 +917,12 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         theFlow = standardFlowExtendedKeepingCookies;
         expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS,
+                                            "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
         genericSAML(_testName, webClient, updatedTestSettings, theFlow, expectations);
 
@@ -878,13 +931,14 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Mode(TestMode.LITE)
     // all flows get the SamlException, only the IDP and Unsolicited flows get SecurityPolicyException
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_badLTPAToken_missingIDPSSODescriptor() throws Exception {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken_missingIDPSSODescriptor.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -898,11 +952,15 @@ public class BasicSAMLTests extends SAMLCommonTest {
         if (flowType.matches(SAMLConstants.SOLICITED_SP_INITIATED)) {
             theFlow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW_ONLY_SP;
             expectations = msgUtils.addForbiddenExpectation(SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, null);
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5023E_NO_IDPSSODESCRIPTOR);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.SAML_MESSAGES_LOG,
+                                                         SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                         SAMLMessageConstants.CWWKS5023E_NO_IDPSSODESCRIPTOR);
         } else {
             theFlow = standardFlow;
             expectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
-            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
+            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                         SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                         SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
             //            expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5045E_INVALID_ISSUER);
         }
 
@@ -920,7 +978,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -942,7 +1000,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useLeafInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -980,7 +1038,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useIntermediateInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -1018,7 +1076,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useRootInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -1040,14 +1098,15 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invokeACS_withNoToken_usingGet() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, SAMLConstants.GENERIC_INVOKE_PAGE);
         expectations = vData.addResponseStatusExpectation(expectations, SAMLConstants.GENERIC_INVOKE_PAGE, SAMLConstants.INTERNAL_SERVER_ERROR_STATUS);
-        expectations = vData.addExpectation(expectations, SAMLConstants.GENERIC_INVOKE_PAGE, SAMLConstants.RESPONSE_MESSAGE, SAMLConstants.STRING_CONTAINS, "GET is NOT supported, request should have returned a status code of 500", null, SAMLConstants.INTERNAL_SERVER_ERROR_MSG);
+        expectations = vData.addExpectation(expectations, SAMLConstants.GENERIC_INVOKE_PAGE, SAMLConstants.RESPONSE_MESSAGE, SAMLConstants.STRING_CONTAINS,
+                                            "GET is NOT supported, request should have returned a status code of 500", null, SAMLConstants.INTERNAL_SERVER_ERROR_MSG);
 
         String acsUrl = updatedTestSettings.getSpConsumer() + "/acs";
         helpers.genericInvokePage(_testName, webClient, acsUrl, HttpMethod.GET, updatedTestSettings, expectations);
@@ -1059,13 +1118,15 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invokeACS_withNoToken_usingPost() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
 
         List<validationData> expectations = msgUtils.addForbiddenExpectation(SAMLConstants.GENERIC_INVOKE_PAGE, null);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.GENERIC_INVOKE_PAGE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.", SAMLMessageConstants.CWWKS5041E_RELAY_STATE_PARAM_MISSING);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.GENERIC_INVOKE_PAGE, SAMLConstants.SAML_MESSAGES_LOG,
+                                                     SAMLConstants.STRING_CONTAINS, "Did not receive exception that the SAML Token did not validate.",
+                                                     SAMLMessageConstants.CWWKS5041E_RELAY_STATE_PARAM_MISSING);
         String acsUrl = updatedTestSettings.getSpConsumer() + "/acs";
         helpers.genericInvokePage(_testName, webClient, acsUrl, HttpMethod.POST, updatedTestSettings, expectations);
 

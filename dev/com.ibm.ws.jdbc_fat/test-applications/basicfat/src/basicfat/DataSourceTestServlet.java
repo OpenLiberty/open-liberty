@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package basicfat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -39,7 +40,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -124,7 +124,9 @@ import componenttest.app.FATServlet;
                                                        user = "dbuser1",
                                                        password = "{xor}Oz0vKDtu",
                                                        properties = {
+                                                                      "containerAuthDataRef=derbyAuth2",
                                                                       "createDatabase=create",
+                                                                      "enableContainerAuthForDirectLookups=false",
                                                                       "validationTimeout=10s"
                                                        })
 
@@ -212,6 +214,12 @@ public class DataSourceTestServlet extends FATServlet {
 
     @Resource
     private ExecutorService executor;
+
+    static final long TWO_MINUTE_MS_TIMEOUT = 120000; // Two minutes in milliseconds
+    static final long FIVE_MINUTE_MS_TIMEOUT = 300000; // Five minutes in milliseconds
+
+    // Atypical uneven interval (in milliseconds) for special polling
+    static final long ODD_POLLING_INTERVAL_MS = 867; // 867 milliseconds
 
     /**
      * Standard isolation level values.
@@ -643,7 +651,9 @@ public class DataSourceTestServlet extends FATServlet {
             } finally {
                 tran.setTransactionTimeout(0); // restore default
             }
-            if (queryTimeout < 85 || queryTimeout > 90) // tolerate any elapsed time for the query
+            // tolerate any elapsed time, as long as it is greater than the 30 second default from
+            // the dataSource and not greater than the 90 seconds set by tran.setTransactionTimeout(90)
+            if (queryTimeout < 31 || queryTimeout > 90)
                 throw new Exception("Expecting queryTimeout(sync to tran)=90, not " + queryTimeout);
 
         } finally {
@@ -869,26 +879,23 @@ public class DataSourceTestServlet extends FATServlet {
      * Keep a connection open for a few seconds while ConfigTest increases the queryTimeout.
      */
     public void testConfigChangeWithActiveConnections() throws Exception {
-
-        Stack<Integer> results = new Stack<Integer>();
-        Connection con = ds5.getConnection();
-        try {
-            for (int i = 0; i < 40; i++) {
-                Thread.sleep(100);
-                Statement s = con.createStatement();
-                int queryTimeout = s.getQueryTimeout();
-                int previous = results.isEmpty() ? 30 : results.peek();
-                results.push(queryTimeout);
-                if (queryTimeout < previous || queryTimeout > 34)
-                    throw new Exception("Unexpected queryTimeout in " + results);
+        boolean isFound = false;
+        try (Connection con = ds5.getConnection()) {
+            Statement s = con.createStatement();
+            int queryTimeout = s.getQueryTimeout(); // Initial value should be 30 from the "dsfat5derby" dataSource defined in server.xml
+            int initialTimeout = queryTimeout;
+            s.close();
+            for (long start = System.currentTimeMillis(); !isFound && System.currentTimeMillis() - start < FIVE_MINUTE_MS_TIMEOUT; Thread.sleep(ODD_POLLING_INTERVAL_MS)) {
+                s = con.createStatement();
+                queryTimeout = s.getQueryTimeout();
+                isFound = queryTimeout > initialTimeout ? true : false;
                 s.close();
             }
         } finally {
-            con.close();
+            if (!isFound) {
+                throw new Exception("Test testConfigChangeWithActiveConnections did not complete within the allotted time of " + FIVE_MINUTE_MS_TIMEOUT + " ms.");
+            }
         }
-
-        if (results.peek() == 30) // no updates were made
-            throw new Exception("Did not observe any updates to the queryTimeout: " + results);
     }
 
     /**
@@ -1211,6 +1218,43 @@ public class DataSourceTestServlet extends FATServlet {
         } finally {
             con2.close();
             con.close();
+        }
+    }
+
+    /**
+     * Verify that connections do not use container authentication when enableContainerAuthForDirectLookups=false
+     * is configured on an application-defined data source.
+     */
+    public void testEnableContainerAuthForDirectLookupsFalse() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/dsValTderbyAnn");
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            // dbuser2 indicates container auth
+            // dbuser1 indicates application auth
+            String user = metadata.getUserName();
+            assertNotNull(user);
+            assertEquals("dbuser1", user.toLowerCase());
+        }
+    }
+
+    /**
+     * Verify that connections are CONTAINER auth when enableContainerAuthForDirectLookups=true
+     */
+    public void testEnableContainerAuthForDirectLookupsTrue() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("jdbc/dsfat12");
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+            // user should be dbuser2
+            DatabaseMetaData metadata = con.getMetaData();
+            String user = metadata.getUserName();
+            if (!"dbuser2".equalsIgnoreCase(user))
+                throw new Exception("Expected user 'dbuser2', got '" + user
+                                    + "' Connection is using APPLICATION res-auth - enableContainerAuthForDirectLookups property is not being honored. ");
+        } finally {
+            if (con != null) {
+                con.close();
+            }
         }
     }
 
@@ -2236,7 +2280,7 @@ public class DataSourceTestServlet extends FATServlet {
                 throw new Exception("Default query timeout not honored for callable statement. Instead: " + cstmtQueryTimeout);
             cstmt.setQueryTimeout(40);
 
-            tran.setTransactionTimeout(25);
+            tran.setTransactionTimeout(28);
             try {
                 tran.begin();
                 try {
@@ -2244,7 +2288,7 @@ public class DataSourceTestServlet extends FATServlet {
                     pstmt.executeQuery();
 
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout > 25 || timeout < 20)
+                    if (timeout > 28 || timeout < 10)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout);
 
                     cstmt.executeQuery();
@@ -2259,7 +2303,7 @@ public class DataSourceTestServlet extends FATServlet {
 
                     int prevTimeout = timeout;
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout >= prevTimeout || timeout < 15)
+                    if (timeout >= prevTimeout || timeout < 5)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout + " (previous timeout was: " + prevTimeout + ")");
                 } finally {
                     tran.commit();
@@ -3084,6 +3128,7 @@ public class DataSourceTestServlet extends FATServlet {
      * The recoveryAuthData should be used for recovery.
      */
     public void testXARecovery() throws Throwable {
+        int numPrepares = 3;
         clearTable(ds4u_2);
         Connection[] cons = new Connection[3];
         tran.begin();
@@ -3095,6 +3140,12 @@ public class DataSourceTestServlet extends FATServlet {
 
             String dbProductName = cons[0].getMetaData().getDatabaseProductName().toUpperCase();
             System.out.println("Product Name is " + dbProductName);
+
+            // Work around PostgreSQL's limit of max_prepared_transactions=2,
+            // which results in the following message when exceeded:
+            // "maximum number of prepared transactions reached"
+            if ("POSTGRESQL".equalsIgnoreCase(dbProductName))
+                numPrepares = 2;
 
             // Verify isolation-level="TRANSACTION_READ_COMMITTED" from ibm-web-ext.xml
             int isolation = cons[0].getTransactionIsolation();
@@ -3116,12 +3167,14 @@ public class DataSourceTestServlet extends FATServlet {
             pstmt.executeUpdate();
             pstmt.close();
 
-            pstmt = cons[2].prepareStatement("insert into cities values (?, ?, ?)");
-            pstmt.setString(1, "Moorhead");
-            pstmt.setInt(2, 38065);
-            pstmt.setString(3, "Clay");
-            pstmt.executeUpdate();
-            pstmt.close();
+            if (numPrepares == 3) {
+                pstmt = cons[2].prepareStatement("insert into cities values (?, ?, ?)");
+                pstmt.setString(1, "Moorhead");
+                pstmt.setInt(2, 38065);
+                pstmt.setString(3, "Clay");
+                pstmt.executeUpdate();
+                pstmt.close();
+            }
 
             System.out.println("Intentionally causing in-doubt transaction");
             TestXAResource.assignSuccessLimit(1, cons);
@@ -3166,12 +3219,12 @@ public class DataSourceTestServlet extends FATServlet {
             PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
 
             /*
-             * Poll for results once a second for 5 seconds.
+             * Poll for results once a second for up to 2 minutes.
              * Most databases will have XA recovery done by this point
              *
              */
             List<String> cities = new ArrayList<>();
-            for (int count = 0; cities.size() < 3 && count < 5; Thread.sleep(1000)) {
+            for (int count = 0; cities.size() < numPrepares && count < 120; Thread.sleep(1000)) {
                 if (!cities.contains("Edina")) {
                     pstmt.setString(1, "Edina");
                     result = pstmt.executeQuery();
@@ -3186,7 +3239,7 @@ public class DataSourceTestServlet extends FATServlet {
                         cities.add(1, "St. Louis Park");
                 }
 
-                if (!cities.contains("Moorhead")) {
+                if (numPrepares == 3 && !cities.contains("Moorhead")) {
                     pstmt.setString(1, "Moorhead");
                     result = pstmt.executeQuery();
                     if (result.next())
@@ -3196,7 +3249,7 @@ public class DataSourceTestServlet extends FATServlet {
                 System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
             }
 
-            if (cities.size() < 3)
+            if (cities.size() < numPrepares)
                 throw new Exception("Missing entry in database. Results: " + cities);
             else
                 System.out.println("successfully accessed the data");

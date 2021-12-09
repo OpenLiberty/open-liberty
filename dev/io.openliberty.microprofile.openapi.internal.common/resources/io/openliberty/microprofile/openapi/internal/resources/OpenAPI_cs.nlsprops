@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,34 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplikace {0} byla zpracov\u00e1na a by
 OPENAPI_APPLICATION_PROCESSED.explanation=Vygenerovan\u00fd dokument OpenAPI pro uvedenou aplikaci. Lze jej zobrazit v koncov\u00e9m bodu /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed aplikace {0} a nebyl vytvo\u0159en dokument OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed aplikace {0} a nebyl vytvo\u0159en dokument OpenAPI. Chyba: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed aplikace do\u0161lo k b\u011bhov\u00e9 chyb\u011b.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Do\u0161lo k n\u00e1sleduj\u00edc\u00edm probl\u00e9m\u016fm p\u0159i slu\u010dov\u00e1n\u00ed dokument\u016f OpenAPI: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Dokumentace OpenAPI z v\u00edce webov\u00fdch modul\u016f nelze \u00fasp\u011b\u0161n\u011b slou\u010dit. Koncov\u00e9 body z nahl\u00e1\u0161en\u00fdch modul\u016f nejsou sou\u010d\u00e1st\u00ed generovan\u00e9ho dokumentu OpenAPI.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Zrevidujte slou\u010den\u00e9 probl\u00e9my a zjist\u011bte, pro\u010d nelze generovan\u00e9 dokumenty OpenAPI slou\u010dit.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Cesta {0} z modulu {1} koliduje s cestou z modulu {2}. {1} nebude slou\u010dena.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Cesta je tvo\u0159ena dv\u011bma moduly. Ob\u011b instance cesty nemohou b\u00fdt zahrnuty do stejn\u00e9ho dokumentu OpenAPI. Tato zpr\u00e1va je vr\u00e1cena jako \u010d\u00e1st CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Bu\u010f zm\u011b\u0148te jeden z konfliktn\u00edch modul\u016f, nebo nakonfigurujte funkci mpOpenApi-2.0 tak, aby jeden z nich vylou\u010dila. Tento probl\u00e9m m\u016f\u017ee b\u00fdt zp\u016fsoben, pokud jsou servery zahrnuty v dokumentu OpenAPI a adresa URL serveru nekon\u010d\u00ed ko\u0159enov\u00fdm adres\u00e1\u0159em kontextu aplikace (nap\u0159\u00edklad proto, \u017ee se k aplikaci p\u0159istupuje z jin\u00e9 adresy URL p\u0159es reverzn\u00ed server proxy).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: Kombinov\u00e1n\u00ed dokumentace OpenAPI z v\u00edce modul\u016f je zak\u00e1z\u00e1no. K vygenerov\u00e1n\u00ed dokumentace OpenAPI se pou\u017eije pouze {0}. Chcete-li povolit slou\u010den\u00ed dokumentace OpenAPI ze v\u0161ech modul\u016f, nastavte vlastnost konfigurace mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=Pokud nen\u00ed povoleno slou\u010den\u00ed dokumentace OpenAPI, bude dokumentace OpenAPI generov\u00e1na pouze pro prvn\u00ed naimplementovan\u00fd modul OpenAPI.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Pokud chcete, aby byly v\u0161echny va\u0161e webov\u00e9 moduly pou\u017eity k vygenerov\u00e1n\u00ed dokumentace OpenAPI, nastavte vlastnost konfigurace MicroProfile, kter\u00e1 je uvedena ve zpr\u00e1v\u011b. Tuto vlastnost lze nastavit v libovoln\u00e9m um\u00edst\u011bn\u00ed, kter\u00e9 konfigurace MicroProfile vyhled\u00e1v\u00e1 pro vlastnosti konfigurace, nap\u0159\u00edklad v syst\u00e9mov\u00e9 vlastnosti Java nebo prom\u011bnn\u00e9 prost\u0159ed\u00ed.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: Objekt informac\u00ed nakonfigurovan\u00fd s vlastnost\u00ed {0} nen\u00ed platn\u00fd. Mus\u00ed b\u00fdt nastaveny vlastnosti titulku a verze. Neplatn\u00e1 hodnota je: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Je-li nastavena vlastnost, mus\u00ed b\u00fdt nastavena na \u00faplnou sekci info ve form\u00e1tu JSON s vlastnostmi titulku a verze nastaven\u00fdmi na platn\u00e9 hodnoty.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Opravte konfigurovanou hodnotu info.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Vlastnost konfigurace {0} nelze analyzovat jako JSON. Hodnota je: {1}\nChyba je: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Je-li nastavena vlastnost, mus\u00ed b\u00fdt nastavena na \u00faplnou sekci info ve form\u00e1tu JSON.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Zkontrolujte text chyby, identifikujte probl\u00e9m a opravte nakonfigurovanou hodnotu info, aby byl platn\u00fd k\u00f3d JSON.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Byl nalezen neplatn\u00fd n\u00e1zev v {0}: {1}. Ka\u017ed\u00fd n\u00e1zev mus\u00ed pou\u017e\u00edt form\u00e1t "applicationName" nebo "applicationName/moduleName".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=Vlastnost konfigurace mus\u00ed obsahovat seznam n\u00e1zv\u016f aplikac\u00ed a modul\u016f odd\u011blen\u00fdch \u010d\u00e1rkami nebo jednu ze speci\u00e1ln\u00edch hodnot "all", "first" nebo "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Zkontrolujte text chyby, identifikujte probl\u00e9m a opravte ozna\u010denou konfigura\u010dn\u00ed vlastnost.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Konfigura\u010dn\u00ed vlastnost {0} zahrnuje "{1}", ale neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 naimplementovan\u00e9 aplikaci nebo webov\u00e9mu modulu.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Server je nakonfigurov\u00e1n tak, aby vytvo\u0159il dokumentaci OpenAPI pro n\u00e1zev aplikace nebo modulu, ale nebyla naimplementov\u00e1na \u017e\u00e1dn\u00e1 aplikace nebo webov\u00fd modul s t\u00edmto n\u00e1zvem.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Zkontrolujte, zda se v\u0161echny aplikace spustily spr\u00e1vn\u011b a zda jsou spr\u00e1vn\u011b zad\u00e1ny n\u00e1zvy v konfigura\u010dn\u00ed vlastnosti.

@@ -71,9 +71,9 @@ public class DiscriminationProcessImpl implements DiscriminationGroup {
     private static Object indexLock = new Object();
 
     /**
-     * master index to be incremented for each DiscriminationProcess.
+     * primary index to be incremented for each DiscriminationProcess.
      */
-    private static int masterIndex = 0;
+    private static int primaryIndex = 0;
 
     /**
      * the index of this entry;
@@ -126,7 +126,7 @@ public class DiscriminationProcessImpl implements DiscriminationGroup {
         this.status = STOPPED;
         this.name = channelName;
         synchronized (indexLock) {
-            this.myIndex = masterIndex++;
+            this.myIndex = primaryIndex++;
         }
     }
 

@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -40,8 +41,8 @@ public class FrameworkConfigurator {
      * allow sub-classes to further massage framework initialization properties.
      *
      * @param config
-     *                   BootstrapConfig object containing the active set of properties
-     *                   that will be used to initialize the framework.
+     *            BootstrapConfig object containing the active set of properties
+     *            that will be used to initialize the framework.
      */
     public static void configure(BootstrapConfig config) {
         extraBootDelegationPackages(config);
@@ -220,7 +221,7 @@ public class FrameworkConfigurator {
      *
      * @return non-null instance of the framework factory.
      * @throws LaunchException
-     *                             if Factory can not be found or instantiated.
+     *             if Factory can not be found or instantiated.
      * @see {@link KernelUtils#getServiceClass(BufferedReader)}
      */
     public static FrameworkFactory getFrameworkFactory(ClassLoader loader) {
@@ -237,7 +238,7 @@ public class FrameworkConfigurator {
 
         BufferedReader bufferedreader;
         try {
-            bufferedreader = new BufferedReader(new InputStreamReader(inputstream, "UTF-8"));
+            bufferedreader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8));
 
             factoryClassName = KernelUtils.getServiceClass(bufferedreader);
             bufferedreader.close();

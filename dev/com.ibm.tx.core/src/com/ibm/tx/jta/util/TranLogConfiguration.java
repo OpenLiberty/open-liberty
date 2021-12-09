@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.util;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2016 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,10 @@ package com.ibm.tx.jta.util;
 import java.util.Properties;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-public final class TranLogConfiguration
-{
+public final class TranLogConfiguration {
     private static final TraceComponent tc = Tr.register(TranLogConfiguration.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     public static final int TYPE_NONE = 0;
@@ -35,8 +34,7 @@ public final class TranLogConfiguration
     private String _customId;
     private Properties _customProps;
 
-    public TranLogConfiguration()
-    {
+    public TranLogConfiguration() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TranLogConfiguration");
 
@@ -46,8 +44,7 @@ public final class TranLogConfiguration
             Tr.exit(tc, "TranLogConfiguration", this);
     }
 
-    public TranLogConfiguration(String streamName)
-    {
+    public TranLogConfiguration(String streamName) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TranLogConfiguration", streamName);
 
@@ -58,8 +55,7 @@ public final class TranLogConfiguration
             Tr.exit(tc, "TranLogConfiguration", this);
     }
 
-    public TranLogConfiguration(String original, String expanded, int logFileSize)
-    {
+    public TranLogConfiguration(String original, String expanded, int logFileSize) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TranLogConfiguration", new Object[] { original, expanded, logFileSize });
 
@@ -74,8 +70,7 @@ public final class TranLogConfiguration
             Tr.exit(tc, "TranLogConfiguration", this);
     }
 
-    public TranLogConfiguration(String customId, Properties props)
-    {
+    public TranLogConfiguration(String customId, Properties props) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TranLogConfiguration", new Object[] { customId, props });
 
@@ -87,57 +82,49 @@ public final class TranLogConfiguration
             Tr.exit(tc, "TranLogConfiguration", this);
     }
 
-    public int type()
-    {
+    public int type() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "type", _type);
         return _type;
     }
 
-    public String streamName()
-    {
+    public String streamName() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "streamName", _streamName);
         return _streamName;
     }
 
-    public String originalLogDirectory()
-    {
+    public String originalLogDirectory() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "originalLogDirectory", _originalLogDirectory);
         return _originalLogDirectory;
     }
 
-    public String expandedLogDirectory()
-    {
+    public String expandedLogDirectory() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "expandedLogDirectory", _expandedLogDirectory);
         return _expandedLogDirectory;
     }
 
-    public int logFileSize()
-    {
+    public int logFileSize() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "logFileSize", _logFileSize);
         return _logFileSize;
     }
 
-    public boolean enabled()
-    {
+    public boolean enabled() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "enabled", _enabled);
         return _enabled;
     }
 
-    public String customId()
-    {
+    public String customId() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "customId", _customId);
         return _customId;
     }
 
-    public Properties customProperties()
-    {
+    public Properties customProperties() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "customProperties", _customProps);
         return _customProps;

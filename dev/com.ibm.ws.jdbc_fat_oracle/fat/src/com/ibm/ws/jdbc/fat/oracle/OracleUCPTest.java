@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,11 +44,10 @@ public class OracleUCPTest extends FATServletClient {
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
 
-    public static final OracleContainer oracle = FATSuite.oracle;
+    public static final OracleContainer oracle = FATSuite.getSharedOracleContainer();
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.initDatabaseTables();
 
         // Set server environment variables
         server.addEnvVar("URL", oracle.getJdbcUrl());

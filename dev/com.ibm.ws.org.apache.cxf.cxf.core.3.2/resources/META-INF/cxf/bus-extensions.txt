@@ -10,6 +10,8 @@ org.apache.cxf.bus.managers.ClientLifeCycleManagerImpl:org.apache.cxf.endpoint.C
 org.apache.cxf.bus.resource.ResourceManagerImpl:org.apache.cxf.resource.ResourceManager:true
 org.apache.cxf.catalog.OASISCatalogManager:org.apache.cxf.catalog.OASISCatalogManager:true
 org.apache.cxf.transport.http.HTTPTransportFactory::true
+org.apache.cxf.common.util.ASMHelperImpl:org.apache.cxf.common.util.ASMHelper:true
+org.apache.cxf.common.spi.ClassLoaderProxyService:org.apache.cxf.common.spi.ClassLoaderService:true
 
 org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduitFactory:org.apache.cxf.transport.http.HTTPConduitFactory:true:true
 org.apache.cxf.transport.http.asyncclient.AsyncHttpTransportFactory:org.apache.cxf.transport.ConduitInitiator:true:true

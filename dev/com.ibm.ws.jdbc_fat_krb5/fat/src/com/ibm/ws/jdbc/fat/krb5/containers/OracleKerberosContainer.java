@@ -37,7 +37,7 @@ public class OracleKerberosContainer extends OracleContainer {
     private static final Class<?> c = OracleKerberosContainer.class;
     private static final Path reuseCache = Paths.get("..", "..", "cache", "oracle.properties");
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "aguibert/krb5-oracle:1.0";
+    private static final String IMAGE = "kyleaure/krb5-oracle:2.0";
 
     private boolean reused = false;
     private String reused_hostname;

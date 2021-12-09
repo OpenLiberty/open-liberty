@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -437,12 +437,41 @@ public class HttpConfigConstants {
 
     public static final String WILDCARD_CHAR = "*";
 
+    public static final String PROPNAME_RESPONSE_HEADERS = "headersInternal";
+
+    public static final String PROPNAME_RESPONSE_HEADERS_ADD = "headersAddInternal";
+
+    public static final String PROPNAME_RESPONSE_HEADERS_SET = "headersSetInternal";
+
+    public static final String PROPNAME_RESPONSE_HEADERS_REMOVE = "headersRemoveInternal";
+
+    public static final String PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING = "headersSetIfMissingInternal";
+
     public static enum SameSite {
         LAX("Lax"),
         NONE("None"),
         STRICT("Strict");
 
         SameSite(String name) {
+            this.name = name;
+        }
+
+        private String name;
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    public static final String PROPNAME_HDR_HSTS_SHORTNAME = "addstricttransportsecurityheader";
+    public static final String PROPNAME_HDR_HSTS_FULLYQUALIFIED = "com.ibm.ws.webcontainer.addStrictTransportSecurityHeader";
+
+    public static enum Headers {
+        ADD("add"),
+        SET("set"),
+        SET_IF_MISSING("setIfMissing");
+
+        Headers(String name) {
             this.name = name;
         }
 

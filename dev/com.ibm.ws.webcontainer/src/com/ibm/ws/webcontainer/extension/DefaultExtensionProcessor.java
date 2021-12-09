@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -1125,14 +1126,7 @@ private ICollaboratorHelper collabHelper;
 		String scheme = req.getScheme();
 		int port = req.getServerPort();
 		String urlPath = null;
-		try
-		{
-			urlPath = new String(req.getRequestURI().getBytes("utf-8"), "iso-8859-1");
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			urlPath = req.getRequestURI();
-		}
+		urlPath = new String(req.getRequestURI().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 		url.append(scheme);
 		url.append("://");
 		url.append(req.getServerName());

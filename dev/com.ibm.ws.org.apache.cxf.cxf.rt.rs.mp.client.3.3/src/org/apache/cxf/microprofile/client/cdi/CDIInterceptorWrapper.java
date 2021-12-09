@@ -40,7 +40,8 @@ public interface CDIInterceptorWrapper {
 
         @Trivial //Liberty change
         @Override
-        public Object invoke(Object restClient, Method m, Object[] params, Callable callable)  throws Exception {
+        public Object invoke(Object restClient, Method m, Object[] params, Callable<Object> callable) 
+            throws Exception {
             return callable.call();
         }
     }
@@ -48,14 +49,8 @@ public interface CDIInterceptorWrapper {
     static CDIInterceptorWrapper createWrapper(Class<?> restClient) {
         try {
             return AccessController.doPrivileged((PrivilegedExceptionAction<CDIInterceptorWrapper>) () -> {
-                Class<?> cdiClass = Class.forName("javax.enterprise.inject.spi.CDI", false,
-                                                  restClient.getClassLoader());
-                Method currentMethod = cdiClass.getMethod("current");
-                Object cdiCurrent = currentMethod.invoke(null);
-
-                Method getBeanMgrMethod = cdiClass.getMethod("getBeanManager");
-                Object beanMgr = getBeanMgrMethod.invoke(cdiCurrent);
-                return new CDIInterceptorWrapperImpl(restClient, beanMgr);
+                Object beanManager = CDIFacade.getBeanManager().orElseThrow(() -> new Exception("CDI not available"));
+                return new CDIInterceptorWrapperImpl(restClient, beanManager);
             });
         //} catch (PrivilegedActionException pae) {
         } catch (Exception pae) { //Liberty change

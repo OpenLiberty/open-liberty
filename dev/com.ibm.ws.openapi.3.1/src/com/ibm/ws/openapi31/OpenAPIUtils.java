@@ -12,6 +12,7 @@ package com.ibm.ws.openapi31;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -202,7 +203,7 @@ public class OpenAPIUtils {
     @FFDCIgnore({ IOException.class })
     public static String getAPIDocFromFile(File file) {
         try {
-            return FileUtils.readFileToString(file, "UTF-8"); //YAML document's format has to be preserved
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8); //YAML document's format has to be preserved
         } catch (IOException ioe) {
             if (isEventEnabled(tc)) {
                 Tr.event(tc, "Exception when reading: " + ioe.getMessage());

@@ -19,7 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
-import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
+import com.ibm.ws.webcontainer40.srt.ISRTServletRequest40;
 import com.ibm.wsspi.webcontainer.servlet.AsyncContext;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
@@ -70,7 +70,7 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
             Tr.debug(tc, "pushServletReference ENTRY, dispatchContext -> " + this + " _mapping [" + this._mapping + "]");
         }
 
-        _currentMapping = ((SRTServletRequest40) _request).getCurrentHttpServletMapping(this);
+        _currentMapping = ((ISRTServletRequest40) _request).getCurrentHttpServletMapping(this);
 
         //Check if this is the original servlet in the chain and set _originalMapping accordingly
         if (this.getParentContext() == null || ((WebAppDispatcherContext40) this.getParentContext())._originalMapping == null) {

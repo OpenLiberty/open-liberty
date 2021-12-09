@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -247,7 +247,7 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc,
                              "XA resource got XAER_NOTA (" + XAException.XAER_NOTA + ") during recovery. This happens when the XA resource previously committed successfully.",
-                             ivManagedConnection.mcf.helper.getXAExceptionContents(xae));
+                             ivManagedConnection.helper.getXAExceptionContents(xae));
             } else {
                 FFDCFilter.processException(xae, "com.ibm.ws.rsadapter.spi.WSRdbXaResourceImpl.commit", "126", this);
                 traceXAException(xae, currClass);
@@ -1080,9 +1080,6 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
         this.ivXid = xid;
 
         try {
-            // TODO if we add dsConfig.transactionBranchesLooselyCoupled, then for Oracle, do
-            // flags |= 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
-
             ivXaRes.start(xid, flags);
             ivStateManager.setState(WSStateManager.XA_START);
         } catch (TransactionException te) {
@@ -1152,7 +1149,7 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
      */
     public final XAException traceXAException(XAException xae, Class<?> callerClass) { 
 
-        String detailedMessage = ivManagedConnection.mcf.helper.getXAExceptionContents(xae); 
+        String detailedMessage = ivManagedConnection.helper.getXAExceptionContents(xae);
         Tr.error(tc, "DISPLAY_XAEX_CONTENT", detailedMessage);
 
         Tr.error(tc, "THROW_XAEXCEPTION", new Object[]

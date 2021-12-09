@@ -9,9 +9,9 @@ IBM-API-Package: com.ibm.websphere.management.j2ee; type="ibm-api", \
 IBM-ShortName: j2eeManagement-1.1
 Subsystem-Version: 1.1
 Subsystem-Name: J2EE Management 1.1
--features=com.ibm.websphere.appserver.javax.ejb-3.2, \
- com.ibm.websphere.appserver.iiopcommon-1.0, \
- com.ibm.websphere.appserver.transaction-1.2
+-features=com.ibm.websphere.appserver.transaction-1.2, \
+  com.ibm.websphere.appserver.javax.ejb-3.2, \
+  com.ibm.websphere.appserver.iiopcommon-1.0
 -bundles=com.ibm.ws.management.j2ee, \
  com.ibm.ws.management.j2ee.mbeans; location:=lib/, \
  com.ibm.websphere.javaee.management.j2ee.1.1; location:=dev/api/spec/; mavenCoordinates="javax.management.j2ee:javax.management.j2ee-api:1.1.1"

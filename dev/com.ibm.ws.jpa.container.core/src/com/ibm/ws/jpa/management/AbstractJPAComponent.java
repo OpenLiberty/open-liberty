@@ -396,6 +396,19 @@ public abstract class AbstractJPAComponent
     }
 
     /**
+     * Add any additional persistence properties, supplied in the OSGI Component configuration, to the set of
+     * persistence properties passed to the call to PersistenceProvider.createContainerEntityManagerFactory.
+     *
+     * The default behavior is that no additional integration-level properties
+     * will be added.
+     *
+     * @param persistenceProperties the current map of persistence properties
+     */
+    public void addDefaultProperties(Map<String, Object> persistenceProperties) {
+        // No additional properties added by default.
+    }
+
+    /**
      * Convenience method for trace that obtains a sorted list of the known JPA
      * application names. This method is thread safe.
      */

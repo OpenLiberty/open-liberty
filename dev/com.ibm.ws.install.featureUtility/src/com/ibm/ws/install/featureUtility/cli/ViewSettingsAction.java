@@ -194,11 +194,10 @@ public class ViewSettingsAction implements ActionHandler {
             if (pUserPwd == null || pUserPwd.isEmpty())
                 pUserPwd = PropertiesUtils.getMessage("MSG_UNSPECIFIED");
             else {
-                pUserPwd = PropertiesUtils.CmdlineConstants.HIDDEN_PASSWORD;
                 try {
                     //Decode encrypted proxy server password
                     PasswordUtil.decode(pUserPwd);
-                    proxInfo.append(PropertiesUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
+                    proxInfo.append(PropertiesUtils.getMessage("FIELD_PASS") + " " + PropertiesUtils.CmdlineConstants.HIDDEN_PASSWORD).append(InstallUtils.NEWLINE);
                     //Check proxy server credentials for Authentication
                 } catch (InvalidPasswordDecodingException ipde) {
                     String warningMessage = PropertiesUtils.getMessage("MSG_PASSWORD_NOT_ENCODED_PROXY");
@@ -207,7 +206,7 @@ public class ViewSettingsAction implements ActionHandler {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
                 }
             }
-            proxInfo.append(PropertiesUtils.getMessage("FIELD_PASS") + " " + pUserPwd).append(InstallUtils.NEWLINE);
+            
             if (warning != null)
                 proxInfo.append(warning).append(InstallUtils.NEWLINE);
         }

@@ -2,7 +2,8 @@
 symbolicName=io.openliberty.jakarta.expressionLanguage-4.0
 singleton=true
 -features=com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=io.openliberty.jakarta.expressionLanguage.4.0; location:="dev/api/spec/,lib/"; mavenCoordinates="org.apache.tomcat:tomcat-el-api:10.0.0-M7"
-kind=beta
+-bundles=io.openliberty.el.internal.cdi.jakarta, \
+ io.openliberty.jakarta.expressionLanguage.4.0; location:="dev/api/spec/,lib/"; mavenCoordinates="org.apache.tomcat:tomcat-el-api:10.0.10"
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

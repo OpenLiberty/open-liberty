@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=DatabaseStore a \u00eenregistrat \u00een istoric acest mesaj de eroare.
 PROVIDER_ERROR_CWWKD0292E.useraction=Consulta\u0163i documenta\u0163ia DatabaseStore.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: Nivelul de izolare tranzac\u0163ie {0} nu este suportat.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=Driver-ul de baz\u0103 de date nu suport\u0103 nivelul de izolare cerut.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Modifica\u0163i nivelul de izolare \u00eenainte de a \u00eencerca din nou.
+

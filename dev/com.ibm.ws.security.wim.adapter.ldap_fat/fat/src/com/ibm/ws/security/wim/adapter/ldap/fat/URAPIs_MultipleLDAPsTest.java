@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemorySunLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -41,12 +44,39 @@ public class URAPIs_MultipleLDAPsTest {
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
 
+    private static InMemorySunLDAPServer sunLdapServer;
+
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        sunLdapServer = new InMemorySunLDAPServer();
+    }
+
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
      * If this test is failing, check this path is correct.
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        setupLdapServer();
+        /*
+         * Update LDAP configuration with In-Memory Server
+         */
+        ServerConfiguration serverConfig = server.getServerConfiguration();
+        for (LdapRegistry ldap : serverConfig.getLdapRegistries()) {
+            if (ldap.getRealm().equals("SampleLdapSUNRealm")) {
+                ldap.setHost("localhost");
+                ldap.setPort(String.valueOf(sunLdapServer.getLdapPort()));
+                ldap.setBindDN(InMemorySunLDAPServer.getBindDN());
+                ldap.setBindPassword(InMemorySunLDAPServer.getBindPassword());
+                server.updateServerConfiguration(serverConfig);
+                break;
+            }
+        }
+
         // Add LDAP variables to bootstrap properties file
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
@@ -75,8 +105,17 @@ public class URAPIs_MultipleLDAPsTest {
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         try {
-            server.stopServer("CWIML4538E");
+            if (server != null) {
+                server.stopServer("CWIML4538E");
+            }
         } finally {
+            try {
+                if (sunLdapServer != null) {
+                    sunLdapServer.shutDown(true);
+                }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+            }
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }
     }

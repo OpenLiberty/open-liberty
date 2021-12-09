@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.Arrays;
 import javax.json.JsonObject;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +41,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -63,7 +61,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
+        transformApps(builderServer);
 
         serverTracker.addServer(builderServer);
         skipRestoreServerTracker.addServer(builderServer);
@@ -196,7 +194,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     /**
      * Test Purpose:
      * <LI>Invoke the JWT Builder using a config that does define nbfOffset.
-     * <LI>What this means is that the token we create will use the "nbfOffset" to calculate the time passed since token issued and set that as the NBF claim.
+     * <LI>What this means is that the token we create will use the "nbfOffset" to calculate the time passed since token issued
+     * and set that as the NBF claim.
      *
      * </UL>
      * <P>

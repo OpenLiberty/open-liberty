@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+
+    <!-- <sequence-generator name="XMLSeqGen1" sequence-name="XMLSeqGen1_Seq" /> -->
+    <table-generator name="XMLTableType2Generator"></table-generator>
+    <table-generator name="XMLTableType3Generator" table="XMLTableIDGenTable"
+        pk-column-name="GEN_NAME" value-column-name="GEN_VAL">
+    </table-generator>
+    <table-generator name="XMLTableType4Generator" table="XMLTableIDGen4Table"
+        pk-column-name="GEN_NAME" value-column-name="GEN_VAL" initial-value="1000"
+        allocation-size="100">
+    </table-generator>
+    <mapped-superclass
+        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTable">
+        <attributes>
+            <basic name="street" />
+            <basic name="city" />
+            <basic name="state" />
+            <basic name="zip" />
+        </attributes>
+    </mapped-superclass>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.attributeconfig.xml.XMLAttrConfigFieldEntity">
+        <!-- <table catalog="jpacat" schema="jpaschema" name="XACfgFldE"> -->
+        <table schema="jpaschema" name="XACfgFldE">
+            <unique-constraint>
+                <column-name>UNIQUECONSTRAINTSTRING</column-name>
+            </unique-constraint>
+        </table>
+        <secondary-table schema="jpaschema" name="XAltColumnTable"/>
+        <attributes>
+            <id name="id" />
+            <basic name="stringValEager" fetch="EAGER"></basic>
+            <basic name="stringValLazy" fetch="LAZY"></basic>
+            <basic name="stringValOptional" optional="false"></basic>
+            <basic name="intValColumnName">
+                <column name="intValColName" />
+            </basic>
+            <basic name="notNullable">
+                <column nullable="false" />
+            </basic>
+            <basic name="uniqueString">
+                <column unique="true" nullable="false" />
+            </basic>
+            <basic name="uniqueConstraintString">
+                <column nullable="false" />
+            </basic>
+            <basic name="intValColumnTable">
+                <column table="XAltColumnTable" name="XMLIntValCol" />
+            </basic>
+            <basic name="stringValColumnLength">
+                <column length="12" />
+            </basic>
+            <basic name="floatValColumnPrecision">
+                <column precision="2" />
+            </basic>
+            <basic name="floatValColumnScale">
+                <column scale="2" />
+            </basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportTestEntity"
+        access="FIELD">
+        <table name="XMLDatatypeSupTestEntity"></table>
+        <attributes>
+            <id name="id" />
+            <basic name="booleanAttrDefault"></basic>
+            <basic name="byteAttrDefault"></basic>
+            <basic name="charAttrDefault"></basic>
+            <basic name="doubleAttrDefault"></basic>
+            <basic name="floatAttrDefault"></basic>
+            <basic name="intAttrDefault"></basic>
+            <basic name="longAttrDefault"></basic>
+            <basic name="shortAttrDefault"></basic>
+            <basic name="booleanWrapperAttrDefault"></basic>
+            <basic name="byteWrapperAttrDefault"></basic>
+            <basic name="characterWrapperAttrDefault"></basic>
+            <basic name="doubleWrapperAttrDefault"></basic>
+            <basic name="floatWrapperAttrDefault"></basic>
+            <basic name="integerWrapperAttrDefault"></basic>
+            <basic name="longWrapperAttrDefault"></basic>
+            <basic name="shortWrapperAttrDefault"></basic>
+            <basic name="bigIntegerAttrDefault"></basic>
+            <basic name="bigDecimalAttrDefault"></basic>
+            <basic name="byteArrayAttrDefault"></basic>
+            <basic name="byteWrapperArrayAttrDefault"></basic>
+            <basic name="charArrayAttrDefault"></basic>
+            <basic name="charWrapperArrayAttrDefault"></basic>
+            <basic name="stringAttrDefault"></basic>
+            <basic name="utilDateAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="utilCalendarAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="sqlDateAttrDefault"></basic>
+            <basic name="sqlTimeAttrDefault"></basic>
+            <basic name="sqlTimestampAttrDefault"></basic>
+            <basic name="enumeration"></basic>
+            <basic name="serializableClass"></basic>
+            <transient name="transientString"></transient>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.XMLDatatypeSupportPropertyTestEntity"
+        access="PROPERTY">
+        <table name="XMLDatatypeSupPropTestEntity"></table>
+        <attributes>
+            <id name="id" />
+            <basic name="booleanAttrDefault"></basic>
+            <basic name="byteAttrDefault"></basic>
+            <basic name="charAttrDefault"></basic>
+            <basic name="doubleAttrDefault"></basic>
+            <basic name="floatAttrDefault"></basic>
+            <basic name="intAttrDefault"></basic>
+            <basic name="longAttrDefault"></basic>
+            <basic name="shortAttrDefault"></basic>
+            <basic name="booleanWrapperAttrDefault"></basic>
+            <basic name="byteWrapperAttrDefault"></basic>
+            <basic name="characterWrapperAttrDefault"></basic>
+            <basic name="doubleWrapperAttrDefault"></basic>
+            <basic name="floatWrapperAttrDefault"></basic>
+            <basic name="integerWrapperAttrDefault"></basic>
+            <basic name="longWrapperAttrDefault"></basic>
+            <basic name="shortWrapperAttrDefault"></basic>
+            <basic name="bigIntegerAttrDefault"></basic>
+            <basic name="bigDecimalAttrDefault"></basic>
+            <basic name="byteArrayAttrDefault"></basic>
+            <basic name="byteWrapperArrayAttrDefault"></basic>
+            <basic name="charArrayAttrDefault"></basic>
+            <basic name="charWrapperArrayAttrDefault"></basic>
+            <basic name="stringAttrDefault"></basic>
+            <basic name="utilDateAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="utilCalendarAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="sqlDateAttrDefault"></basic>
+            <basic name="sqlTimeAttrDefault"></basic>
+            <basic name="sqlTimestampAttrDefault"></basic>
+            <basic name="enumeration"></basic>
+            <basic name="serializableClass"></basic>
+            <transient name="transientString"></transient>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportTestEntity"
+        access="FIELD">
+        <table name="XMLSerialDatatypeSupTE"></table>
+        <attributes>
+            <id name="id" />
+            <basic name="booleanAttrDefault"></basic>
+            <basic name="byteAttrDefault"></basic>
+            <basic name="charAttrDefault"></basic>
+            <basic name="doubleAttrDefault"></basic>
+            <basic name="floatAttrDefault"></basic>
+            <basic name="intAttrDefault"></basic>
+            <basic name="longAttrDefault"></basic>
+            <basic name="shortAttrDefault"></basic>
+            <basic name="booleanWrapperAttrDefault"></basic>
+            <basic name="byteWrapperAttrDefault"></basic>
+            <basic name="characterWrapperAttrDefault"></basic>
+            <basic name="doubleWrapperAttrDefault"></basic>
+            <basic name="floatWrapperAttrDefault"></basic>
+            <basic name="integerWrapperAttrDefault"></basic>
+            <basic name="longWrapperAttrDefault"></basic>
+            <basic name="shortWrapperAttrDefault"></basic>
+            <basic name="bigIntegerAttrDefault"></basic>
+            <basic name="bigDecimalAttrDefault"></basic>
+            <basic name="byteArrayAttrDefault"></basic>
+            <basic name="byteWrapperArrayAttrDefault"></basic>
+            <basic name="charArrayAttrDefault"></basic>
+            <basic name="charWrapperArrayAttrDefault"></basic>
+            <basic name="stringAttrDefault"></basic>
+            <basic name="utilDateAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="utilCalendarAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="sqlDateAttrDefault"></basic>
+            <basic name="sqlTimeAttrDefault"></basic>
+            <basic name="sqlTimestampAttrDefault"></basic>
+            <basic name="enumeration"></basic>
+            <basic name="serializableClass"></basic>
+            <transient name="transientString"></transient>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.datatype.xml.SerializableXMLDatatypeSupportPropertyTestEntity"
+        access="PROPERTY">
+        <table name="XMLSerialDatatypeSupPropTE"></table>
+        <attributes>
+            <id name="id" />
+            <basic name="booleanAttrDefault"></basic>
+            <basic name="byteAttrDefault"></basic>
+            <basic name="charAttrDefault"></basic>
+            <basic name="doubleAttrDefault"></basic>
+            <basic name="floatAttrDefault"></basic>
+            <basic name="intAttrDefault"></basic>
+            <basic name="longAttrDefault"></basic>
+            <basic name="shortAttrDefault"></basic>
+            <basic name="booleanWrapperAttrDefault"></basic>
+            <basic name="byteWrapperAttrDefault"></basic>
+            <basic name="characterWrapperAttrDefault"></basic>
+            <basic name="doubleWrapperAttrDefault"></basic>
+            <basic name="floatWrapperAttrDefault"></basic>
+            <basic name="integerWrapperAttrDefault"></basic>
+            <basic name="longWrapperAttrDefault"></basic>
+            <basic name="shortWrapperAttrDefault"></basic>
+            <basic name="bigIntegerAttrDefault"></basic>
+            <basic name="bigDecimalAttrDefault"></basic>
+            <basic name="byteArrayAttrDefault"></basic>
+            <basic name="byteWrapperArrayAttrDefault"></basic>
+            <basic name="charArrayAttrDefault"></basic>
+            <basic name="charWrapperArrayAttrDefault"></basic>
+            <basic name="stringAttrDefault"></basic>
+            <basic name="utilDateAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="utilCalendarAttrDefault">
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="sqlDateAttrDefault"></basic>
+            <basic name="sqlTimeAttrDefault"></basic>
+            <basic name="sqlTimestampAttrDefault"></basic>
+            <basic name="enumeration"></basic>
+            <basic name="serializableClass"></basic>
+            <transient name="transientString"></transient>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.embeddableid.xml.XMLEmbeddableIdEntity">
+        <attributes>
+            <embedded-id name="pkey"></embedded-id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByte">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityByteWrapper">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityChar">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityCharacterWrapper">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityInt">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityIntWrapper">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLong">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityLongWrapper">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShort">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityShortWrapper">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityString">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaSqlDate">
+        <attributes>
+            <id name="pkey"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pk.xml.XMLPKEntityJavaUtilDate">
+        <attributes>
+            <id name="pkey">
+                <temporal>DATE</temporal>
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.idclass.xml.XMLIdClassEntity">
+        <id-class class="com.ibm.ws.jpa.fvt.entity.support.PKey" />
+        <attributes>
+            <id name="id"></id>
+            <id name="country"></id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="localIntVal"></basic>
+            <basic name="localStrVal"></basic>
+            <embedded name="embeddedObj"></embedded>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.embeddable.xml.XMLEmbeddedObjectAOEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="localIntVal"></basic>
+            <basic name="localStrVal"></basic>
+            <embedded name="embeddedObj">
+                <attribute-override name="intVal">
+                    <column name="intValCol" />
+                </attribute-override>
+                <attribute-override name="longVal">
+                    <column name="longValCol" />
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenAutoEntity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="AUTO" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenIdentityEntity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+<!--
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenSequenceType1Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenSequenceType2Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="XMLSeqGen1" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+-->
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType1Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="TABLE" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType2Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="TABLE" generator="XMLTableType2Generator" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType3Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="TABLE" generator="XMLTableType3Generator" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.pkgenerator.xml.XMLPKGenTableType4Entity">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="TABLE" generator="XMLTableType4Generator" />
+            </id>
+            <basic name="intVal"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.readonly.xml.XMLReadOnlyEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="noInsertIntVal">
+                <column insertable="false" />
+            </basic>
+            <basic name="noUpdatableIntVal">
+                <column updatable="false" />
+            </basic>
+            <basic name="readOnlyIntVal">
+                <column insertable="false" updatable="false" />
+            </basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedIntWrapperEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedLongWrapperEntity">
+        <table name="XMLVersionedLongWrapperEnt"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortEntity">
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedShortWrapperEntity">
+        <table name="XMLVersionedShortWrapperEnt"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.versioning.xml.XMLVersionedSqlTimestampEntity">
+        <table name="XMLVersionedSqlTimestampEnt"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="intVal"></basic>
+            <basic name="stringVal"></basic>
+            <version name="version"></version>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLEmbedMultiTableEnt">
+        <secondary-table name="XSEC_TABLEEMB">
+            <primary-key-join-column name="id" />
+        </secondary-table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <embedded name="embeddedObj">
+                <attribute-override name="street">
+                    <column table="XSEC_TABLEEMB" />
+                </attribute-override>
+                <attribute-override name="city">
+                    <column table="XSEC_TABLEEMB" />
+                </attribute-override>
+                <attribute-override name="state">
+                    <column table="XSEC_TABLEEMB" />
+                </attribute-override>
+                <attribute-override name="zip">
+                    <column table="XSEC_TABLEEMB" />
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMSCMultiTableEnt">
+        <secondary-table name="XSEC_TABLE2AMSC">
+            <primary-key-join-column name="id" />
+        </secondary-table>
+        <attribute-override name="street">
+            <column table="XSEC_TABLE2AMSC" />
+        </attribute-override>
+        <attribute-override name="city">
+            <column table="XSEC_TABLE2AMSC" />
+        </attribute-override>
+        <attribute-override name="state">
+            <column table="XSEC_TABLE2AMSC" />
+        </attribute-override>
+        <attribute-override name="zip">
+            <column table="XSEC_TABLE2AMSC" />
+        </attribute-override>
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMultiTableEnt">
+        <secondary-table name="XSEC_TABLE1">
+            <primary-key-join-column name="id" />
+        </secondary-table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <basic name="street">
+                <column table="XSEC_TABLE1" />
+            </basic>
+            <basic name="city">
+                <column table="XSEC_TABLE1" />
+            </basic>
+            <basic name="state">
+                <column table="XSEC_TABLE1" />
+            </basic>
+            <basic name="zip">
+                <column table="XSEC_TABLE1" />
+            </basic>
+        </attributes>
+    </entity>
+    <embeddable
+        class="com.ibm.ws.jpa.fvt.entity.entities.multitable.xml.XMLMTEmbeddable">
+        <attributes>
+            <basic name="street"></basic>
+            <basic name="city"></basic>
+            <basic name="state"></basic>
+            <basic name="zip"></basic>
+        </attributes>
+    </embeddable>
+
+</entity-mappings>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package com.ibm.ws.concurrent.internal;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -22,16 +24,18 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 @Trivial
 enum MPContextPropagationVersion {
     V1_0,
-    V1_1;
+    V1_1, // release was ultimately skipped due to changes in MicroProfile process
+    V1_1_or_1_2_or_1_3; // spec API is identical across these
+
+    private static final TraceComponent tc = Tr.register(MPContextPropagationVersion.class);
 
     private static final MPContextPropagationVersion VERSION = mpContextPropagationVersion();
 
     static boolean atLeast(MPContextPropagationVersion target) {
-        return VERSION.ordinal() >= target.ordinal();
-    }
-
-    static MPContextPropagationVersion get() {
-        return VERSION;
+        boolean atLeast = VERSION.ordinal() >= target.ordinal();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, VERSION + " atLeast " + target + "? " + atLeast);
+        return atLeast;
     }
 
     /**
@@ -43,7 +47,7 @@ enum MPContextPropagationVersion {
     private static MPContextPropagationVersion mpContextPropagationVersion() {
         try {
             ManagedExecutor.class.getMethod("getThreadContext");
-            return V1_1;
+            return V1_1_or_1_2_or_1_3;
         } catch (NoSuchMethodException x) {
             return V1_0;
         }

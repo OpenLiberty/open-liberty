@@ -15,6 +15,7 @@ import javax.naming.Context;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 
 import test.common.SharedOutputManager;
@@ -24,15 +25,16 @@ import test.common.SharedOutputManager;
  */
 public class CachedDBOidcClientProviderHashTest extends CachedDBOidcClientProviderTest {
 
+    public CachedDBOidcClientProviderHashTest() {
+        clientRegistrationHelper = new ClientRegistrationHelper(true);
+    }
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        setHash(true);
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryMock.class.getName());
-
-        SAMPLE_CLIENTS = getsampleOidcBaseClients(5, PROVIDER_NAME);
     }
 
     @Override
@@ -40,12 +42,13 @@ public class CachedDBOidcClientProviderHashTest extends CachedDBOidcClientProvid
     public void setupBefore() {
         _testName = testName.getMethodName();
         System.out.println("Entering test: " + _testName);
+        SAMPLE_CLIENTS = clientRegistrationHelper.getsampleOidcBaseClients(5, PROVIDER_NAME);
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
 
         instantiateMockProvider();
         try {
             deleteAllClientsInDB(oidcBaseClientProvider);
-            insertSampleClientsToDb(oidcBaseClientProvider);
+            insertSampleClientsToDb(oidcBaseClientProvider, clientRegistrationHelper.isHash());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);

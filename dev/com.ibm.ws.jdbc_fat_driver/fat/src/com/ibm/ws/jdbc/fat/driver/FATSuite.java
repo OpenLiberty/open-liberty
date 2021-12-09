@@ -19,5 +19,4 @@ import org.junit.runners.Suite.SuiteClasses;
                 JDBCDriverManagerTest.class,
 })
 public class FATSuite {
-
 }

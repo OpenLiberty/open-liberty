@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,23 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.tests.all.WebSocketVersion11Test;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerSetup;
@@ -40,19 +38,19 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
  * @author unknown
  */
 @RunWith(FATRunner.class)
-public class WebSocket11Test extends LoggingTest {
+public class WebSocket11Test {
+    public static final String SERVER_NAME = "webSocket11Server";
+    @Server(SERVER_NAME)
 
-    @ClassRule
-    public static SharedServer SS = new SharedServer("webSocket11Server", false);
+    public static LibertyServer LS;
 
-    private static WebServerSetup bwst = new WebServerSetup(SS);
+    private static WebServerSetup bwst = null;
 
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private final WsocTest wt = new WsocTest(SS, false);
-
-    private final WebSocketVersion11Test pt = new WebSocketVersion11Test(wt);
+    private static WsocTest wt = null;
+    private static WebSocketVersion11Test pt = null;
 
     private static final String WEBSOCKET_11_WAR_NAME = "websocket11";
 
@@ -65,16 +63,15 @@ public class WebSocket11Test extends LoggingTest {
                                                                  "websocket11.war",
                                                                  "io.openliberty.wsoc.common");
         Websocket11App = (WebArchive) ShrinkHelper.addDirectory(Websocket11App, "test-applications/" + WEBSOCKET_11_WAR_NAME + ".war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SS.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(WEBSOCKET_11_WAR_NAME);
-            LOG.info("addAppToServer : " + WEBSOCKET_11_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), Websocket11App);
-        }
-        SS.startIfNotStarted();
-        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + WEBSOCKET_11_WAR_NAME);
+        ShrinkHelper.exportDropinAppToServer(LS, Websocket11App);
+
+        LS.startServer();
+        LS.waitForStringInLog("CWWKZ0001I.* " + WEBSOCKET_11_WAR_NAME);
+
+        bwst = new WebServerSetup(LS);
         bwst.setUp();
+        wt = new WsocTest(LS, false);
+        pt = new WebSocketVersion11Test(wt);
     }
 
     @AfterClass
@@ -87,8 +84,8 @@ public class WebSocket11Test extends LoggingTest {
 
         }
 
-        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
         bwst.tearDown();
     }
@@ -127,16 +124,6 @@ public class WebSocket11Test extends LoggingTest {
     @Test
     public void testProgrammaticInputStreamSuccess() throws Exception {
         pt.testProgrammaticInputStreamSuccess();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SS;
     }
 
 }

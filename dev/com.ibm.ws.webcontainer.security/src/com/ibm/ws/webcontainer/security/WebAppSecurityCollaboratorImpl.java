@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -485,7 +485,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return false;
         }
         Set<String> features = provisionerService.getInstalledFeatures();
-	return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
+        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
     }
 
     /**
@@ -577,6 +577,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
+
+        ServletRequestInfoDebug.logServerRequestInfo(req);
 
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject receivedSubject = subjectManager.getCallerSubject();
@@ -875,7 +877,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         ArrayList<String> delUsers = new ArrayList<String>();
         if (delegationSubject != null) {
-            String buff = delegationSubject.toString();
+            String buff = getSubjectToString(delegationSubject);
             if (buff != null) {
                 int a = buff.indexOf("accessId");
                 if (a != -1) {
@@ -901,7 +903,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     AuthenticationService authService = securityService.getAuthenticationService();
                     delegationSubject = authService.delegate(roleName, getApplicationName());
                     if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
+                        String buff = getSubjectToString(delegationSubject);
                         if (buff != null) {
                             int a = buff.indexOf("accessId");
                             if (a != -1) {
@@ -931,7 +933,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
                 } catch (IllegalArgumentException e) {
                     if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
+                        String buff = getSubjectToString(delegationSubject);
                         if (buff != null) {
                             int a = buff.indexOf("accessId");
                             if (a != -1) {
@@ -1737,5 +1739,23 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         int statusCode = Integer.valueOf(webReply.getStatusCode());
         Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
         Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, statusCode);
+    }
+
+    /**
+     * Get the toString for a Subject. Even though the {@link Subject#toString()} method doesn't declare that
+     * it throws a SecurityException, if there is a missing credential permission, you can get one.
+     *
+     * @param subject The Subject to get the toString for.
+     * @return The string representation of the Subject.
+     */
+    @Sensitive
+    private String getSubjectToString(Subject subject) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+            @Override
+            public String run() {
+                return subject.toString();
+            }
+        });
     }
 }

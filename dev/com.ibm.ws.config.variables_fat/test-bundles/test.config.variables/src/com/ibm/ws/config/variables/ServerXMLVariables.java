@@ -25,4 +25,5 @@ public interface ServerXMLVariables {
     public Map<String, String> getServerXMLVariableDefaultValues();
 
     public Collection<LibertyVariable> getLibertyVariables();
+
 }

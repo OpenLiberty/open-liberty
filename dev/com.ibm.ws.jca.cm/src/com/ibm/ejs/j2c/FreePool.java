@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2016 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,8 @@ public final class FreePool implements JCAPMIHelper {
 
     protected final MCWrapperList mcWrapperList;
     private final String nl = CommonFunction.nl;
-    protected final Integer freeConnectionLockObject = new Integer(0);
+    protected final Object freeConnectionLockObject = new Object() {
+    };
     private PoolManager pm = null;
     protected int numberOfConnectionsInFreePool = 0;
     protected int numberOfConnectionsAssignedToThisFreePool = 0;
@@ -379,9 +380,9 @@ public final class FreePool implements JCAPMIHelper {
      * - If removeFromFreePool is false, the mcWrapper do not exist in the free pool
      *
      * @param Managed connection wrapper
-     * @param Remove  from free pool
-     * @param Are     we already synchronized on the freeLockObject
-     * @param Skip    waiter notify
+     * @param Remove from free pool
+     * @param Are we already synchronized on the freeLockObject
+     * @param Skip waiter notify
      * @param Cleanup and Destroy MCWrapper
      * @pre mcWrapper != null
      * @throws ClassCastException

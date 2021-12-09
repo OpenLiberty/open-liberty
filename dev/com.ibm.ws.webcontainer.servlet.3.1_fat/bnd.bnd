@@ -70,4 +70,5 @@ tested.features:\
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    io.openliberty.org.apache.xercesImpl;version=latest

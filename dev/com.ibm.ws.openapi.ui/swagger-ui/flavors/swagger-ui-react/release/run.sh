@@ -10,16 +10,22 @@ mkdir -p ../dist
 
 # Copy UI's dist files to our directory
 cp ../../../dist/swagger-ui.js ../dist
+cp ../../../dist/swagger-ui-es-bundle.js ../dist
 cp ../../../dist/swagger-ui.css ../dist
 
 # Create a releasable package manifest
 node create-manifest.js > ../dist/package.json
 
 # Transpile our top-level component
-../../../node_modules/.bin/babel --config-file ../../../.babelrc ../index.js > ../dist/index.js
+../../../node_modules/.bin/cross-env BABEL_ENV=commonjs ../../../node_modules/.bin/babel --config-file ../../../babel.config.js ../index.jsx > ../dist/commonjs.js
+../../../node_modules/.bin/cross-env BABEL_ENV=es ../../../node_modules/.bin/babel --config-file ../../../babel.config.js ../index.jsx > ../dist/index.js
 
 # Copy our README into the dist folder for npm
 cp ../README.md ../dist
+
+# Copy LICENSE & NOTICE into the dist folder for npm
+cp ../../../LICENSE ../dist
+cp ../../../NOTICE ../dist
 
 # Run the release from the dist folder
 cd ../dist

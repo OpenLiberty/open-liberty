@@ -20,11 +20,10 @@ Bundle-ActivationPolicy: lazy
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.authentication.internal.builtin.jar
-#JakartaEE-Bundle-Name: Security Built-in Authentication Implementation
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authentication.internal.builtin
-#JakartaEE-Bundle-Description: Security Built-in Authentication Implementation, version=2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.authentication.internal.builtin.jar
+jakartaFinalBundleName: Security Built-in Authentication Implementation
+jakartaFinalBundleId: io.openliberty.security.authentication.internal.builtin
+jakartaFinalBundleDescription: Security Built-in Authentication Implementation; Jakarta Enabled
 
 WS-TraceGroup: \
   Authentication

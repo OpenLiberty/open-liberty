@@ -1,1 +1,2 @@
 org.apache.cxf.jaxws.context.WebServiceContextResourceResolver::true
+org.apache.cxf.jaxws.spi.WrapperClassCreatorProxyService:org.apache.cxf.jaxws.spi.WrapperClassCreator:true

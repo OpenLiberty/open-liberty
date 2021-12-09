@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Dependency scanner
+Bundle-SymbolicName: build.depScanner
+Bundle-Description: Dependency scanner; version=${bVersion}
+Main-Class: io.openliberty.depScanner.BestMatch
+
+Conditional-Package: \
+			org.apache.maven.*, \
+			org.codehaus.plexus.*
+
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+
+-buildpath: \
+  org.apache.maven:maven-artifact;version=3.6.3, \
+  org.apache.maven:maven-model;version=3.6.3, \
+  org.codehaus.plexus:plexus-utils;version=3.2.1
+  
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file

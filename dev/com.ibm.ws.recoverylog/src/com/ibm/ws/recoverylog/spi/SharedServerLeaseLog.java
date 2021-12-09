@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010,2020 IBM Corporation and others.
+ * Copyright (c) 2010,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,4 +49,9 @@ public interface SharedServerLeaseLog {
     public boolean releasePeerLease(String recoveryIdentity) throws Exception;
 
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
+
+    /**
+     * Inform the lease log that the server is stopping.
+     */
+    public void serverStopping();
 }

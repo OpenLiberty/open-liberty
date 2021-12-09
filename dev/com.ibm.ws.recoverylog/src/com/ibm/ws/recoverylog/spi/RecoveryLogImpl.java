@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2016 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,11 @@
 
 package com.ibm.ws.recoverylog.spi;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-public class RecoveryLogImpl implements DistributedRecoveryLog
-{
-    private static final TraceComponent tc = Tr.register(RecoveryLogImpl.class, TraceConstants.TRACE_GROUP, null);
+public class RecoveryLogImpl implements DistributedRecoveryLog {
+    private static final TraceComponent tc = Tr.register(RecoveryLogImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     private final MultiScopeLog _recoveryLog;
     private final FailureScope _failureScope;
@@ -28,12 +27,11 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
      * server node (ie in each FailureScope). Because of this, the caller must
      * specify the FailureScope for recovery log being created.
      * </p>
-     * 
+     *
      * @param recoveryLog MultiScopeLog delegate
      * @param failureScope FailureScope criteria used to filter the delegates
      */
-    public RecoveryLogImpl(MultiScopeLog recoveryLog, FailureScope failureScope)
-    {
+    public RecoveryLogImpl(MultiScopeLog recoveryLog, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "RecoveryLogImpl", new Object[] { recoveryLog, failureScope });
 
@@ -48,9 +46,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.openLog
     //------------------------------------------------------------------------------
     @Override
-    public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException,
-                    LogIncompatibleException
-    {
+    public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "openLog", this);
 
@@ -64,8 +60,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.closeLog
     //------------------------------------------------------------------------------
     @Override
-    public void closeLog() throws InternalLogException
-    {
+    public void closeLog() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeLog", this);
 
@@ -79,8 +74,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.closeLog
     //------------------------------------------------------------------------------
     @Override
-    public void closeLog(byte[] serviceData) throws InternalLogException
-    {
+    public void closeLog(byte[] serviceData) throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeLog", new Object[] { serviceData, this });
 
@@ -94,8 +88,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.closeLogImmediate
     //------------------------------------------------------------------------------
     @Override
-    public void closeLogImmediate() throws InternalLogException
-    {
+    public void closeLogImmediate() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeLogImmediate", this);
 
@@ -109,8 +102,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.recoveryCompelte
     //------------------------------------------------------------------------------
     @Override
-    public void recoveryComplete() throws LogClosedException, InternalLogException, LogIncompatibleException
-    {
+    public void recoveryComplete() throws LogClosedException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoveryComplete", this);
 
@@ -124,8 +116,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.recoveryComplete
     //------------------------------------------------------------------------------
     @Override
-    public void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException, LogIncompatibleException
-    {
+    public void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoveryComplete", new Object[] { serviceData, this });
 
@@ -139,8 +130,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.keypoint
     //------------------------------------------------------------------------------
     @Override
-    public void keypoint() throws LogClosedException, InternalLogException, LogIncompatibleException
-    {
+    public void keypoint() throws LogClosedException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "keypoint", this);
 
@@ -154,8 +144,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.serviceData
     //------------------------------------------------------------------------------
     @Override
-    public byte[] serviceData() throws LogClosedException, InternalLogException
-    {
+    public byte[] serviceData() throws LogClosedException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "serviceData", this);
 
@@ -170,8 +159,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.createRecoverableUnit
     //------------------------------------------------------------------------------
     @Override
-    public RecoverableUnit createRecoverableUnit() throws LogClosedException, InternalLogException, LogIncompatibleException
-    {
+    public RecoverableUnit createRecoverableUnit() throws LogClosedException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createRecoverableUnit", this);
 
@@ -186,10 +174,9 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.removeRecoverableUnit
     //------------------------------------------------------------------------------
     @Override
-    public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException, LogIncompatibleException
-    {
+    public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "removeRecoverableUnit", new Object[] { new Long(identity), this });
+            Tr.entry(tc, "removeRecoverableUnit", identity, this);
 
         _recoveryLog.removeRecoverableUnit(identity);
 
@@ -201,10 +188,9 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.lookupRecoverableUnit
     //------------------------------------------------------------------------------
     @Override
-    public RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException
-    {
+    public RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupRecoverableUnit", new Object[] { new Long(identity), this });
+            Tr.entry(tc, "lookupRecoverableUnit", identity, this);
 
         RecoverableUnit runit = _recoveryLog.lookupRecoverableUnit(identity);
 
@@ -217,8 +203,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.recoverableUnits
     //------------------------------------------------------------------------------
     @Override
-    public LogCursor recoverableUnits() throws LogClosedException
-    {
+    public LogCursor recoverableUnits() throws LogClosedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoverableUnits", this);
 
@@ -233,8 +218,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     // Method: RecoveryLog.logProperties
     //------------------------------------------------------------------------------
     @Override
-    public LogProperties logProperties()
-    {
+    public LogProperties logProperties() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "logProperties", this);
 
@@ -250,12 +234,11 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     //------------------------------------------------------------------------------
     /**
      * Returns the string representation of this object instance.
-     * 
+     *
      * @return String The string representation of this object instance.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "" + _recoveryLog + " [" + _failureScope + "]";
     }
 
@@ -264,11 +247,10 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
     //------------------------------------------------------------------------------
     /**
      * Returns the MultiScopeLog wrappered by this object.
-     * 
+     *
      * @return MultiScopeLog MultiScopeLog wrappered by this object instance.
      */
-    private MultiScopeLog getMultiScopeLog()
-    {
+    private MultiScopeLog getMultiScopeLog() {
         return _recoveryLog;
     }
 
@@ -279,8 +261,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
      * Associates another log with this one.
      */
     @Override
-    public void associateLog(DistributedRecoveryLog otherLog, boolean failAssociatedLog)
-    {
+    public void associateLog(DistributedRecoveryLog otherLog, boolean failAssociatedLog) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "associateLog", new Object[] { otherLog, failAssociatedLog, this });
 
@@ -290,5 +271,27 @@ public class RecoveryLogImpl implements DistributedRecoveryLog
             _recoveryLog.associateLog(otherLog, failAssociatedLog);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "associateLog");
+    }
+
+    @Override
+    public void delete() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "delete", this);
+
+        _recoveryLog.delete();
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete", this);
+    }
+
+    @Override
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+
+        _recoveryLog.retainLogsInPeerRecoveryEnv(retainLogs);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 }

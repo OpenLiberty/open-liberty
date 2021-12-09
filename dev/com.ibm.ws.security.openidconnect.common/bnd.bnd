@@ -29,6 +29,7 @@ Export-Package: \
 	com.ibm.ws.security.openidconnect.common.*
 		
 Import-Package: \
+    com.ibm.oauth.core.api.error.oauth20; version="[1.1,11)", \
     com.ibm.oauth.core.internal.oauth20.token, \
     com.ibm.websphere.security.openidconnect.token, \
     org.jose4j.*;version="[0.6,1)", \
@@ -48,7 +49,7 @@ Service-Component:
 	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\

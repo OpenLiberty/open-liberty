@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,14 @@ package web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.Enumeration;
 
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
@@ -37,188 +39,147 @@ import com.ibm.websphere.ras.TraceComponent;
 
 @SuppressWarnings("serial")
 public class JMSDCFSecurityServlet extends HttpServlet {
-
-    public static QueueConnectionFactory jmsQCFBindings;
-    public static QueueConnectionFactory jmsQCFTCP;
-    public static Queue jmsQueue;
-    public static Topic jmsTopic;
-    public static boolean exceptionFlag;
-
+    static final TraceComponent tc = Tr.register(JMSDCFSecurityServlet.class);
+   
+    /** @return the methodName of the caller. */
+    private static final String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(new Date() +" "+message);
+        }
+        TestException(String message, Throwable cause) {
+            super(new Date() +" "+message, cause);
+        }
+    }
+    
+    private Queue queue;
+    private Topic topic;
+   
     @Override
     public void init() throws ServletException {
-        // TODO Auto-generated method stub
-
+        Tr.entry(this, tc, "init");
+        
         super.init();
         try {
-            jmsQueue = getQueue();
-            jmsTopic = getTopic();
+            queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+            topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
 
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+             Tr.error(tc, "NamingException", e);
+             e.printStackTrace();
+             Tr.exit(this, tc, "init",e);
+             throw new ServletException("Naming Exception setting queue and topic", e);
         }
 
+        Tr.exit(this, tc, "init");
     }
 
     @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
-    ConnectionFactory cf;
+    ConnectionFactory defaultConnectionFactory;
 
     @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
+        Tr.entry(this, tc, "doGet", new Object[] {request, response});
         String test = request.getParameter("test");
+        Tr.debug(this, tc, test);
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-        final TraceComponent tc = Tr.register(JMSDCFSecurityServlet.class); // injection
-        // engine
-        // doesn't
-        // like
-        // this
-        // at
-        // the
-        // class
-        // level
-        Tr.entry(this, tc, test);
-        try {
+         try {
             System.out.println(" Start: " + test);
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class).invoke(this, request, response);
+            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                      .invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" End: " + test);
-            Tr.exit(this, tc, test);
-        } catch (Throwable x) {
+            Tr.exit(this, tc, "doGet", test);
+       
+         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
-            Tr.exit(this, tc, test, x);
             out.println("<pre>ERROR in " + test + ":");
             System.out.println(" Error: " + test);
             x.printStackTrace(out);
             out.println("</pre>");
+            Tr.exit(this, tc, "doGet", x);           
         }
     }
 
     public void testP2P_TCP_SecOn(HttpServletRequest request,
-                                  HttpServletResponse response) throws Throwable {
+                                  HttpServletResponse response) 
+        throws TestException, JMSException {
 
-        exceptionFlag = false;
-        JMSContext jmsContextQueueTCP = cf.createContext();
-        emptyQueue(jmsContextQueueTCP, jmsQueue);
-        TextMessage message = jmsContextQueueTCP.createTextMessage("testP2P_TCP_SecOn");
-        jmsContextQueueTCP.createProducer().send(jmsQueue, message);
-        JMSConsumer jmsConsumer = jmsContextQueueTCP.createConsumer(jmsQueue);
-        TextMessage message1 = (TextMessage) jmsConsumer.receive(500);
-        System.out.println("Received message: " + message1.getText());
+        // Use the default context so that the message is produced and consumed using the 
+        // servlet transaction which is committed after the servlet returns.
+        try (JMSContext jmsContext = defaultConnectionFactory.createContext()) {
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
 
-        if (!(message1 != null && message1.getText().equals("testP2P_TCP_SecOn")))
-            exceptionFlag = true;
-        jmsContextQueueTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testP2P_TCP_SecOn failed: Expected message was not received");
-
+            jmsContext.createProducer().send(queue, sentMessage);
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(500);
+            
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessage+"\n sent:"+sentMessage);
+        }       
     }
 
     public void testPubSub_TCP_SecOn(HttpServletRequest request,
-                                     HttpServletResponse response) throws Throwable {
+                                     HttpServletResponse response) 
+        throws TestException, JMSException {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTopicTCP = cf.createContext();
-        TextMessage message = jmsContextTopicTCP.createTextMessage("testPubSub_TCP_SecOn");
-        JMSConsumer jmsConsumer = jmsContextTopicTCP.createConsumer(jmsTopic);
-        jmsContextTopicTCP.createProducer().send(jmsTopic, message);
+        // It is possible that a later subscriber in may receive a publication made from this test,
+        // because the published message does not commit until after doGet() ends.
+        try (JMSContext jmsContext = defaultConnectionFactory.createContext()) { 
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            jmsContext.createProducer().send(topic, sentMessage);
 
-        TextMessage message1 = (TextMessage) jmsConsumer.receive(500);
-        System.out.println("Received message: " + message1.getText());
-
-        if (!(message1 != null && message1.getText().equals(
-                                                            "testPubSub_TCP_SecOn")))
-            exceptionFlag = true;
-        jmsContextTopicTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testPubSub_TCP_SecOn failed: Expected message was not received");
-
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(500);
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessage+"\n sent:"+sentMessage);
+        }
     }
 
     public void testPubSubDurable_TCP_SecOn(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
+                                            HttpServletResponse response)
+        throws TestException, JMSException {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTopicTCP = cf.createContext();
-        TextMessage message = jmsContextTopicTCP.createTextMessage("testPubSubDurable_TCP_SecOn");
-        JMSConsumer jmsConsumer = jmsContextTopicTCP.createDurableConsumer(
-                                                                           jmsTopic, "sub2");
-        jmsContextTopicTCP.createProducer().send(jmsTopic, message);
+        final String subscriptionName = methodName();
+        // It is possible that a later subscriber in may receive a publication made from this test,
+        // because the published message does not commit until after doGet() ends.
+        try (JMSContext jmsContext = defaultConnectionFactory.createContext()) {
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            JMSConsumer jmsConsumer = jmsContext.createDurableConsumer(topic, subscriptionName);
+            jmsContext.createProducer().send(topic, sentMessage);
 
-        TextMessage message1 = (TextMessage) jmsConsumer.receive(500);
-        System.out.println("Received message: " + message1.getText());
-
-        if (!(message1 != null && message1.getText().equals(
-                                                            "testPubSubDurable_TCP_SecOn")))
-            exceptionFlag = true;
-        jmsContextTopicTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testPubSubDurable_TCP_SecOn failed: Expected message was not received");
-
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(500);
+            
+            // Remove the durable subscription, in case the test is repeated.
+            jmsConsumer.close();
+            jmsContext.unsubscribe(subscriptionName);
+            
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessage+"\n sent:"+sentMessage);
+        }
     }
 
     public void testP2PMQ_TCP_SecOn(HttpServletRequest request,
-                                    HttpServletResponse response) throws Throwable {
+                                    HttpServletResponse response) 
+        throws TestException {
 
-        exceptionFlag = false;
         try {
-            cf.createContext();
+            defaultConnectionFactory.createContext();
 
         } catch (java.lang.RuntimeException e) {
-            Throwable causeEx = e.getCause();
-            String actualException = causeEx.getClass().getName();
-
-            System.out.println("Exception cause is " + actualException);
-            if (!(actualException.equals("com.ibm.wsspi.sib.core.exception.SIAuthenticationException")))
-                exceptionFlag = true;
-            e.printStackTrace();
+            String causeExceptionName = e.getCause().getClass().getName();           
+            if (!(causeExceptionName.equals("com.ibm.wsspi.sib.core.exception.SIAuthenticationException")))
+               throw new TestException("Wrong exception thrown, exception:"+ e.getMessage(), e);   
         }
-
-        if (exceptionFlag)
-            throw new WrongException("testP2PMQ_TCP_SecOn failed: Expected message was not received");
-
-    }
-
-    public Queue getQueue() throws NamingException {
-
-        Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-
-        return queue;
-    }
-
-    public Topic getTopic() throws NamingException {
-
-        Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
-
-        return topic;
-    }
-
-    public class WrongException extends Exception {
-        String str;
-
-        public WrongException(String str) {
-            this.str = str;
-            System.out.println(" <ERROR> " + str + " </ERROR>");
-        }
-    }
-
-    public void emptyQueue(JMSContext context, Queue q) throws Exception {
-
-        QueueBrowser qb = context.createBrowser(q);
-        Enumeration e = qb.getEnumeration();
-        JMSConsumer consumer = context.createConsumer(q);
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            Message message = (Message) e.nextElement();
-            numMsgs++;
-        }
-
-        for (int i = 0; i < numMsgs; i++) {
-            Message message = consumer.receive();
-        }
-    }
+    } 
 }

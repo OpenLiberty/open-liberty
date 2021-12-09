@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package com.ibm.ws.rsadapter.impl;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.SQLException; 
 import java.sql.SQLFeatureNotSupportedException;
@@ -31,6 +34,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
@@ -63,8 +68,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent sqlserverTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sqlserver.logwriter", "WAS.database", null);
-
-    private transient PrintWriter sqlServerPW;
 
     /**
      * SQLException error codes from the DataDirect Connect JDBC driver that indicate a stale connection.
@@ -101,6 +104,10 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
+
         // Default values for the statement properties LongDataCacheSize and QueryTimeout are
         // configurable as data source properties. These data source properties are supplied to
         // the data store helper so that we can reset the statement properties to these default
@@ -117,12 +124,7 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
             Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
-        
+
         Collections.addAll(staleDDErrorCodes,
                            2217,
                            2251,
@@ -141,8 +143,8 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         // DataDirect also informs us they do not use 40003 or S1000 to indicate a
         // dead connection. These need to be removed because they are inherited from the super class.
-        staleSQLStates.remove("40003");
-        staleSQLStates.remove("S1000");
+        staleConCodes.remove("40003");
+        staleConCodes.remove("S1000");
 
         Collections.addAll(staleMSErrorCodes,
                            230,
@@ -154,6 +156,9 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
     @Override
     public boolean doConnectionCleanup(Connection conn) throws  SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         final boolean trace = TraceComponent.isAnyTracingEnabled(); 
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup", AdapterUtil.toString(conn));
@@ -221,6 +226,11 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     @Override
     public void doStatementCleanup(java.sql.PreparedStatement stmt) throws SQLException
     {
+       if (dataStoreHelper != null) {
+           doStatementCleanupLegacy(stmt);
+           return;
+       }
+
        if (TraceComponent.isAnyTracingEnabled() &&  tc.isEntryEnabled()) 
            Tr.entry(this, tc, "doStatementCleanup", AdapterUtil.toString(stmt));  
 
@@ -280,11 +290,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
            Tr.exit(this, tc, "doStatementCleanup");  
     }
 
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * @return NULL because the DataDirect Connect JDBC driver provides sufficient trace of its own.
      */
@@ -340,11 +345,11 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (sqlServerPW == null) {
-            sqlServerPW = new PrintWriter(new TraceWriter(sqlserverTc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(sqlserverTc), true);
         }
-        Tr.debug(sqlserverTc, "returning", sqlServerPW);
-        return sqlServerPW;
+        Tr.debug(sqlserverTc, "returning", genPw);
+        return genPw;
     }
 
     /**
@@ -359,20 +364,45 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "isConnectionError", ex);
 
+        // Use the equivalent method on DataStoreHelper if possible.
+        if (dataStoreHelper != null)
+            try {
+                boolean stale = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                    return (Boolean) dataStoreHelper.getClass()
+                                    .getMethod("isConnectionError", SQLException.class)
+                                    .invoke(dataStoreHelper, ex);
+                });
+                if (isTraceOn && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "isConnectionError", stale);
+                return stale;
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x, getClass().getName(), "673", this);
+            }
+
+        DSConfig config = mcf.dsConfig.get();
+
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
 
         boolean stale = super.isConnectionError(ex);
         for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
-            SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "checking " + t,
-                         sqlX == null ? null : sqlX.getSQLState(),
-                         sqlX == null ? null : sqlX.getErrorCode());
-            if (sqlX != null)
-                stale |= isDataDirectExp(ex)
-                         ? staleDDErrorCodes.contains(sqlX.getErrorCode()) || staleDDSQLStates.contains(sqlX.getSQLState())
-                         : staleMSErrorCodes.contains(sqlX.getErrorCode());
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
+                String sqlState = sqlX.getSQLState();
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                if ((combo == null || config.identifyExceptions.get(combo) == null)
+                                && config.identifyExceptions.get(errorCode) == null
+                                && (sqlState == null || config.identifyExceptions.get(sqlState) == null))
+                    stale = isDataDirectExp(ex)
+                                    ? staleDDErrorCodes.contains(errorCode) || staleDDSQLStates.contains(sqlState)
+                                    : staleMSErrorCodes.contains(errorCode);
+                // else already checked by super.isConnectionError
+
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+            }
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -406,12 +436,12 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (ind != -1) { // if none found ===> it is a datadirect one
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-                Tr.debug(this, tc, "The exception is NOT a DataDirect exception ");
+                Tr.debug(this, tc, "The exception is NOT a DataDirect exception");
             return false;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "the exception is a DataDirect exception  ");
+            Tr.debug(this, tc, "the exception is a DataDirect exception");
         return true;
     }
 

@@ -16,6 +16,10 @@ Bundle-Description: wimregistry service, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.wim.registry
 
 Private-Package: com.ibm.ws.security.wim.registry.util.resources 
+
+Import-Package: \
+ com.ibm.wsspi.security.wim.model; version="[1.1,11)", \
+ *
    
 Export-Package: \
   !com.ibm.ws.security.wim.registry.util.resources,\
@@ -33,6 +37,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\

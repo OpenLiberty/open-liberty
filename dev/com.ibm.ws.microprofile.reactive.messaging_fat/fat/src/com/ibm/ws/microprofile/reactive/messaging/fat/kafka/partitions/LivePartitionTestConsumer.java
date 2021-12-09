@@ -38,13 +38,13 @@ public class LivePartitionTestConsumer implements Runnable {
     private final Map<String, Object> config;
     private final String topic;
 
-    private final List<String> messagesRecieved;
+    private final List<String> messagesReceived;
 
     public LivePartitionTestConsumer(Map<String, Object> config, String topic) {
         this.config = new HashMap<>(config);
         this.config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         this.topic = topic;
-        this.messagesRecieved = new ArrayList<>();
+        this.messagesReceived = new ArrayList<>();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class LivePartitionTestConsumer implements Runnable {
                         break;
                     }
                     messages++;
-                    messagesRecieved.add(record.value());
+                    messagesReceived.add(record.value());
                     lastRecord = record;
                     if (messages >= MESSAGES_TO_CONSUME) {
                         break;
@@ -80,6 +80,6 @@ public class LivePartitionTestConsumer implements Runnable {
     }
 
     public List<String> getMessages() {
-        return messagesRecieved;
+        return messagesReceived;
     }
 }

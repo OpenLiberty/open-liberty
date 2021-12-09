@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,16 +24,42 @@ src: \
 	test-applications/EJB3INJSMBean.jar/src, \
 	test-applications/EJB3INJINTMBean.jar/src, \
 	test-applications/EJB3INJSMWeb.war/src, \
+	test-applications/LookupOverrideEJB.jar/src, \
+	test-applications/LookupOverrideWeb.war/src, \
 	test-resourceadapters/AdapterForEJB.rar/src
 	
 
 fat.project: true
 
 tested.features: \
-	servlet-4.0, ejbLite-3.2, appsecurity-3.0, cdi-2.0, el-3.0
+	appSecurity-3.0,\
+	appSecurity-4.0,\
+	cdi-2.0,\
+	cdi-3.0,\
+	ejbHome-3.2,\
+	ejbLite-3.2,\
+	ejbPersistentTimer-3.2,\
+	ejbRemote-3.2,\
+	enterpriseBeansHome-4.0,\
+	enterpriseBeansLite-4.0,\
+	enterpriseBeansPersistentTimer-4.0,\
+	enterpriseBeansRemote-4.0,\
+	jca-1.7,\
+	jdbc-4.0,\
+	jdbc-4.2,\
+	mdb-3.2,\
+	mdb-4.0,\
+	wasJmsClient-2.0,\
+	wasJmsServer-1.0,\
+	messagingClient-3.0,\
+	messagingServer-3.0,\
+	servlet-3.1,\
+	servlet-4.0,\
+	servlet-5.0  
 
 -buildpath: \
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.websphere.appserver.api.ejbcontainer;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
@@ -46,4 +72,5 @@ tested.features: \
 	com.ibm.websphere.javaee.connector.1.7;version=latest, \
 	com.ibm.ws.jdbc;version=latest, \
 	com.ibm.ws.jca.cm;version=latest, \
-	com.ibm.ws.security.jaas.common;version=latest
+	com.ibm.ws.security.jaas.common;version=latest,\
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

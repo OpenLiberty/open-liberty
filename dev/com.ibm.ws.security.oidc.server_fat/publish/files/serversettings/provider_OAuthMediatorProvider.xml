@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<openidConnectProvider
+		id="OidcMediatorProvider"
+		oauthProviderRef="OAuthMediatorProvider"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthMediatorProvider"
+		filter="request-url%=snorking"
+		oauthOnly="true"
+		libraryRef="testLib"
+		mediatorClassname="com.ibm.ws.security.oauth_oidc.TestMediator"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>mediatorclient</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="mediatorclient"
+				secret="{xor}LDo8LTor"
+				displayname="mediatorclient"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<library id="testLib">
+		<fileset
+			dir="${server.config.dir}/test-apps"
+			includes="testMediator.jar" />
+	</library>
+</server>

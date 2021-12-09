@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.TrimEntityOLGH16772 (id BIGINT NOT NULL, strVal1 VARCHAR(255), PRIMARY KEY (id)) ENGINE = innodb;

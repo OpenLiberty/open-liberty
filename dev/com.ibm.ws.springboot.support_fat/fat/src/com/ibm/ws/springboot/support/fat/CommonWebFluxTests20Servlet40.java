@@ -12,8 +12,10 @@ package com.ibm.ws.springboot.support.fat;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,13 @@ public class CommonWebFluxTests20Servlet40 extends CommonWebFluxTests {
         testBasicSpringBootApplication();
     }
 
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        Map<String, String> properties = new HashMap<>();
+        // add channel trace for RTC defect 266559
+        properties.put("com.ibm.ws.logging.trace.specification", "*=info:HTTPChannel=all:TCPChannel=all:GenericBNF=all:ChannelFramework=all");
+        return properties;
+    }
     @Test
     public void testBlockingIOServlet40() throws IOException, InterruptedException {
         testBlockingIO();

@@ -13,14 +13,12 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/JMSContext/src, \
   test-applications/JMSConsumer/src, \
   test-applications/jmsmdb/src, \
-  test-applications/TemporaryQueue/src, \
   test-applications/DurableUnshared/src, \
   test-applications/JMSContextInject/src, \
-  test-applications/JMSDCFSecurity/src, \
-  test-applications/mdbapp/src
+  test-applications/mdbapp/src, \
+  test-applications/JMSDCFSecurity/src  
 
 fat.project: true
 
@@ -34,6 +32,7 @@ tested.features: \
   cdi-3.0
 
 -buildpath: \
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   com.ibm.ws.security.registry_test.servlet;version=latest,\

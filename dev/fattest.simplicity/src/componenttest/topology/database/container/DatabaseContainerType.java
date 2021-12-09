@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,32 +27,31 @@ public enum DatabaseContainerType {
     Derby("derby.jar", "componenttest.topology.database.container.DerbyNoopContainer", "Properties_derby_embedded"),
     DerbyClient("derbyclient.jar", "componenttest.topology.database.container.DerbyClientContainer", "Properties_derby_client"),
     Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.OracleContainer", "Properties_oracle"),
-    Postgres("postgresql.jar", "org.testcontainers.containers.PostgreSQLContainer", "Properties_postgresql"),
+    Postgres("postgresql.jar", "componenttest.topology.database.container.PostgreSQLContainer", "Properties_postgresql"),
     SQLServer("mssql-jdbc.jar", "org.testcontainers.containers.MSSQLServerContainer", "Properties_microsoft_sqlserver");
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
-    
 
     @SuppressWarnings("unchecked")
-	DatabaseContainerType(final String driverName, final String containerClassName, final String dataSourcePropertiesClassName) {
+    DatabaseContainerType(final String driverName, final String containerClassName, final String dataSourcePropertiesClassName) {
         this.driverName = driverName;
-        
+
         //Use reflection to get classes at runtime.
-        Class containerClass = null, dsPropsClass  = null;
-		try {
-			containerClass = (Class<? extends JdbcDatabaseContainer>) Class.forName(containerClassName);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalArgumentException("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name(), e);
-		}
-		
-		try {
-			dsPropsClass = (Class<DataSourceProperties>) Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalArgumentException("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name(), e);
-		}
-		
+        Class containerClass = null, dsPropsClass = null;
+        try {
+            containerClass = Class.forName(containerClassName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name(), e);
+        }
+
+        try {
+            dsPropsClass = Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name(), e);
+        }
+
         this.containerClass = containerClass;
         this.dsPropsClass = dsPropsClass;
     }
@@ -66,7 +65,7 @@ public enum DatabaseContainerType {
     public String getDriverName() {
         return driverName;
     }
-    
+
     /**
      * Returns an anonymized JDBC Driver name for this testcontainer type.
      * Example: 'driver2.jar'
@@ -85,27 +84,27 @@ public enum DatabaseContainerType {
     public Class getContainerClass() {
         return containerClass;
     }
-    
+
     /**
-     * Returns an instance of this testcontainer's datasource properties. 
+     * Returns an instance of this testcontainer's datasource properties.
      */
-    public DataSourceProperties getDataSourceProps() throws ReflectiveOperationException{
-    	DataSourceProperties props = null;
-    	try {
-    		Constructor ctor = this.dsPropsClass.getConstructor();
-    		props = (DataSourceProperties) ctor.newInstance();
-    	} catch (Exception e) {
-    		throw new ReflectiveOperationException("Failed to create instance of DataSourceProperites using reflection.", e);
-    	}
-    	
-    	return props;
+    public DataSourceProperties getDataSourceProps() throws ReflectiveOperationException {
+        DataSourceProperties props = null;
+        try {
+            Constructor ctor = this.dsPropsClass.getConstructor();
+            props = (DataSourceProperties) ctor.newInstance();
+        } catch (Exception e) {
+            throw new ReflectiveOperationException("Failed to create instance of DataSourceProperites using reflection.", e);
+        }
+
+        return props;
     }
 
     /**
      * Given a JDBC testcontainer return the corresponding Database Container Type.
      *
-     * @param cont - A database container.
-     * @return DatabaseContainerType - type enum
+     * @param  cont - A database container.
+     * @return      DatabaseContainerType - type enum
      */
     public static DatabaseContainerType valueOf(JdbcDatabaseContainer cont) {
         for (DatabaseContainerType elem : values())

@@ -44,7 +44,7 @@ public class WSUtilService {
     private static final String REFERENCE_REMOTE_OBJECT_REPLACERS = "remoteObjectReplacers";
 
     private final ConcurrentServiceReferenceSet<RemoteObjectReplacer> remoteObjectReplacers =
-                    new ConcurrentServiceReferenceSet<RemoteObjectReplacer>(REFERENCE_REMOTE_OBJECT_REPLACERS);
+                    new ConcurrentServiceReferenceSet<>(REFERENCE_REMOTE_OBJECT_REPLACERS);
 
     @Activate
     protected void activate(ComponentContext context) {

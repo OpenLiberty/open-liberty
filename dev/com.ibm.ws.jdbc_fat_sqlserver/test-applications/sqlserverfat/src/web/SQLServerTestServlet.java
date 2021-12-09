@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,8 +66,11 @@ public class SQLServerTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ss-using-driver-type")
     private DataSource ss_using_driver_type;
 
-    @Resource(lookup = "jdbc/sqlserver-ssl")
-    DataSource secureDs;
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
+    private DataSource unsharable_ds_xa_loosely_coupled;
+
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
+    private DataSource unsharable_ds_xa_tightly_coupled;
 
     @Resource
     private ExecutorService executor;
@@ -77,33 +80,6 @@ public class SQLServerTestServlet extends FATServlet {
 
     // Maximum amount of time the test will wait for an operation to complete
     private static final long TIMEOUT = TimeUnit.MINUTES.toNanos(2);
-
-    // One-time initialization of database before tests run
-    public void initDatabase() throws SQLException {
-        Connection con = ds.getConnection();
-        try {
-            // Enable the use of snapshot isolation level
-            String dbName = con.getCatalog();
-            Statement stmt = con.createStatement();
-            stmt.execute("ALTER DATABASE " + dbName + " SET ALLOW_SNAPSHOT_ISOLATION ON");
-
-            // Create tables
-            int version = con.getMetaData().getDatabaseMajorVersion();
-            if (version >= 13) // SQLServer 2016 or higher
-                stmt.execute("DROP TABLE IF EXISTS MYTABLE");
-            else
-                try {
-                    stmt.execute("DROP TABLE MYTABLE");
-                } catch (SQLException x) {
-                    // probably didn't exist
-                }
-            stmt.execute("CREATE TABLE MYTABLE (ID SMALLINT NOT NULL PRIMARY KEY, STRVAL NVARCHAR(40))");
-
-            stmt.close();
-        } finally {
-            con.close();
-        }
-    }
 
     // Verify that the responseBuffering attribute of cached statements is reset to the default from the data source
     @Test
@@ -240,8 +216,7 @@ public class SQLServerTestServlet extends FATServlet {
         tran.begin();
         long start = System.nanoTime();
         try {
-            Connection con = ds.getConnection();
-            try {
+            try (Connection con = ds.getConnection()) {
                 con.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=0").close(); //perform db operation
                 con.createStatement().execute("WAITFOR DELAY '00:00:16'"); // Wait for 16 seconds
 
@@ -260,8 +235,6 @@ public class SQLServerTestServlet extends FATServlet {
             } catch (SQLException x) {
                 if (x.getErrorCode() != 1206) // distributed transaction cancelled (due to timeout)
                     throw x;
-            } finally {
-                con.close();
             }
         } finally {
             try {
@@ -292,6 +265,9 @@ public class SQLServerTestServlet extends FATServlet {
             } catch (RollbackException x) {
                 System.out.println("tran.commit() threw a RollbackException as expected.");
                 x.printStackTrace(System.out);
+            } finally {
+                //Restore default transaction timeout
+                tran.setTransactionTimeout(0);
             }
         }
 
@@ -345,13 +321,6 @@ public class SQLServerTestServlet extends FATServlet {
             assertEquals("tres", result.getNString(1));
         } finally {
             con.close();
-        }
-    }
-
-    @Test
-    public void testDatasourceWithSSL() throws Exception {
-        try (Connection con = secureDs.getConnection()) {
-            System.out.println("Got connection with SSL");
         }
     }
 
@@ -417,6 +386,51 @@ public class SQLServerTestServlet extends FATServlet {
             rs.close();
         } finally {
             conn.close();
+        }
+    }
+
+    /**
+     * Confirm that locks are not shared between transaction branches that are loosely coupled.
+     */
+    @Test
+    public void testTransactionBranchesLooselyCoupled() throws Exception {
+        tran.begin();
+        try {
+            try (Connection con1 = unsharable_ds_xa_loosely_coupled.getConnection()) {
+                con1.setTransactionIsolation(ISQLServerConnection.TRANSACTION_SNAPSHOT);
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (31, 'thirty-one')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = unsharable_ds_xa_loosely_coupled.getConnection()) {
+                    con2.setTransactionIsolation(ISQLServerConnection.TRANSACTION_SNAPSHOT);
+                    ResultSet result = con2.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=31");
+                    assertFalse(result.next());
+                }
+            }
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * Confirm that locks are shared between transaction branches that are tightly coupled.
+     */
+    @AllowedFFDC("javax.transaction.xa.XAException") // TODO remove this once Microsoft bug is fixed
+    @Test
+    public void testTransactionBranchesTightlyCoupled() throws Exception {
+        tran.begin();
+        try {
+            try (Connection con1 = unsharable_ds_xa_tightly_coupled.getConnection()) {
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (32, 'thirty-two')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = unsharable_ds_xa_tightly_coupled.getConnection()) {
+                    assertEquals(1, con2.createStatement().executeUpdate("UPDATE MYTABLE SET STRVAL='XXXII' WHERE ID=32"));
+                }
+            }
+        } finally {
+            // TODO switch to commit once Microsoft bug is fixed
+            tran.rollback();
         }
     }
 }

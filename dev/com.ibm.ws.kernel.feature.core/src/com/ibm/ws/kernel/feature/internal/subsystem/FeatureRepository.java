@@ -17,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -430,7 +431,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // this is a long string
             byte[] data = new byte[in.readInt()];
             in.readFully(data);
-            return new String(data, "UTF-8");
+            return new String(data, StandardCharsets.UTF_8);
         } else {
             // normal string
             return in.readUTF();
@@ -594,12 +595,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                && f.length() == bf.length;
     }
 
+    // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+    long reduceTimestampPrecision(long value) {
+        return (value / 1000) * 1000;
+    }
+
     boolean isCachedEntryValid(File f, SubsystemFeatureDefinitionImpl def) {
         if (def != null) {
             ImmutableAttributes cachedAttr = def.getImmutableAttributes();
 
             // See if the file has changed: if it has, we need to start over
-            if (cachedAttr.lastModified == f.lastModified()) {
+            if (reduceTimestampPrecision(cachedAttr.lastModified) == reduceTimestampPrecision(f.lastModified())) {
                 if (cachedAttr.length == f.length())
                     return true;
             }

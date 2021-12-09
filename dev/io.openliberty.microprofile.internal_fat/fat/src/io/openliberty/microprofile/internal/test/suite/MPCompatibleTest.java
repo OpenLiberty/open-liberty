@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.internal.test.helloworld.HelloWorldApplication;
+import io.openliberty.microprofile.internal.test.helloworld.basic.BasicHelloWorldBean;
 import io.openliberty.microprofile.internal.test.helloworld.config.ConfiguredHelloWorldBean;
 
 @RunWith(FATRunner.class)
@@ -48,7 +49,7 @@ public class MPCompatibleTest {
 
     private static final String APP_NAME = "helloworld";
 
-    private static final String MESSAGE = "Hello World!";
+    private static final String MESSAGE = BasicHelloWorldBean.MESSAGE;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -142,8 +143,8 @@ public class MPCompatibleTest {
     }
 
     /**
-     * microProfile-4.0 plus jakartaee-9.0
-     * Should fail because microProfile-4.0 is not compatible with jakartaee-9.0
+     * microProfile-4.0 plus jakartaee-9.1
+     * Should fail because microProfile-4.0 is not compatible with jakartaee-9.1
      *
      * @throws Exception
      */

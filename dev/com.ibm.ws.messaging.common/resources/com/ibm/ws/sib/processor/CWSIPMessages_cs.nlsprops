@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=P\u0159esv\u011bd\u010dte se, zd
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Stroj syst\u00e9mu zpr\u00e1v {0} odpov\u011bd\u011bl na po\u017eadavek na odb\u011br. Topologie publikov\u00e1n\u00ed a odb\u011br\u016f je nyn\u00ed konzistentn\u00ed.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Mezi stroji syst\u00e9mu zpr\u00e1v do\u0161lo k \u00fasp\u011b\u0161n\u00e9 komunikaci a topologie publikov\u00e1n\u00ed a odb\u011br\u016f je nyn\u00ed konzistentn\u00ed.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Nen\u00ed.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: J\u00e1dro syst\u00e9mu zpr\u00e1v {0} odpov\u011bd\u011blo na po\u017eadavek na odb\u011br. Topologie publikov\u00e1n\u00ed a odb\u011br\u016f je nyn\u00ed konzistentn\u00ed.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Mezi j\u00e1dru syst\u00e9mu zpr\u00e1v do\u0161lo k \u00fasp\u011b\u0161n\u00e9 komunikaci a topologie publikov\u00e1n\u00ed a odb\u011br\u016f je nyn\u00ed konzistentn\u00ed.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=Nen\u00ed.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: P\u0159\u00edjemce je blokov\u00e1n, nem\u016f\u017ee doru\u010dit aktu\u00e1ln\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vu na m\u00edsto ur\u010den\u00ed {1} z p\u0159\u00ed\u010diny {0}.
-HEALTHSTATE_STATUS_CWSIP0919.explanation=P\u0159\u00edjemci se nepoda\u0159ilo doru\u010dit zpr\u00e1vu do c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed z uveden\u00e9 p\u0159\u00ed\u010diny. Doru\u010den\u00ed n\u00e1sleduj\u00edc\u00edch zpr\u00e1v bude blokov\u00e1no a\u017e do vy\u0159e\u0161en\u00ed probl\u00e9mu.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=P\u0159\u00edjemci se nezda\u0159ilo doru\u010dit zpr\u00e1vu do c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed z uveden\u00e9 p\u0159\u00ed\u010diny. Doru\u010den\u00ed n\u00e1sleduj\u00edc\u00edch zpr\u00e1v bude blokov\u00e1no a\u017e do vy\u0159e\u0161en\u00ed probl\u00e9mu.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=V p\u0159\u00edpad\u011b, \u017ee tento stav p\u0159etrv\u00e1, prove\u010fte p\u0159\u00edslu\u0161n\u00e9 akce k vy\u0159e\u0161en\u00ed probl\u00e9mu uveden\u00e9ho ve zpr\u00e1v\u011b.
 
 # -------------------------------------------------------------------------------------------------

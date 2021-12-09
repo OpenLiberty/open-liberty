@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,20 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -31,30 +32,23 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 11/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfBspTests {
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.sample";
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //Added 11/2020
     @Server(serverName)
-    public static LibertyServer server;
 
-    //orig from CL:
-    // private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+    public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfBspTests.class;
 
@@ -73,19 +67,23 @@ public class CxfBspTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
-        // rename_webcontent(server);
         String thisMethod = "setup";
 
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
+        } else if (features.contains("jaxws-2.3")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp_wss4j.xml");
+        }
 
-        //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         server.addInstalledAppForValidation("WSSampleSei");
         server.addInstalledAppForValidation("webcontentprovider");
@@ -118,12 +116,16 @@ public class CxfBspTests {
 
         String vendorName = System.getProperty("java.vendor");
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
+
+        String javaVersion = System.getProperty("java.version");
+        Log.info(thisClass, thisMethod, "JDK Version is: " + javaVersion);
+
         ibmJDK = true;
-        if (vendorName.contains("IBM")) {
-            Log.info(thisClass, thisMethod, "Using an IBM JDK");
+        if ((vendorName.contains("IBM")) & (javaVersion.contains("1.8.0"))) {
+            Log.info(thisClass, thisMethod, "Using an IBM JDK 8");
         } else {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
-            System.err.println("Using a NON-IBM JDK - certain tests should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
+            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!");
             ibmJDK = false;
         }
 
@@ -134,8 +136,8 @@ public class CxfBspTests {
     public void testEcho11Service() throws Exception {
         String thisMethod = "testEcho11Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
         }
 
@@ -163,8 +165,8 @@ public class CxfBspTests {
     public void testEcho12Service() throws Exception {
         String thisMethod = "testEcho12Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
         }
 
@@ -192,8 +194,8 @@ public class CxfBspTests {
     public void testEcho13Service() throws Exception {
         String thisMethod = "testEcho13Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
         }
 
@@ -221,8 +223,8 @@ public class CxfBspTests {
     public void testEcho14Service() throws Exception {
         String thisMethod = "testEcho14Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
             return;
         }
 
@@ -336,8 +338,7 @@ public class CxfBspTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
+
     }
 
     private static void printMethodName(String strMethod) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,13 @@ public class CommonLocalLDAPServerSuite {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        HashMap<String, ArrayList<String>> testServers = LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_3_NAME, LDAPUtils.LDAP_SERVER_3_PORT, null, null, null);
-        LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_2_NAME, LDAPUtils.LDAP_SERVER_2_PORT, null, null, testServers);
+        /**
+         * Remote servers are required for some tests that cannot be tested with a local LDAP. If the remote LDAP is not available, the tests will not run.
+         */
+        HashMap<String, ArrayList<String>> testServers = LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_2_NAME, LDAPUtils.LDAP_SERVER_2_PORT, null, null, null);
 
         Log.info(c, "setUp", "Calling LocalLDAPServerSuite.setUpUsingServers()");
-        LocalLDAPServerSuite.setUpUsingServers(testServers);
+        LocalLDAPServerSuite.setUpUsingServers(testServers, false);
     }
 
     @AfterClass

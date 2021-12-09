@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Certifique-se de que o mecanismo
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: O mecanismo do sistema de mensagens {0} respondeu ao pedido de assinatura, a Topologia de Assinatura da Publica\u00e7\u00e3o est\u00e1 agora consistente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Foram feitas comunica\u00e7\u00f5es bem-sucedidas entre os mecanismos de sistemas de mensagens e a Topologia Publica\u00e7\u00e3o Assinatura est\u00e1 consistente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=nenhum(a)
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: O mecanismo do sistema de mensagens {0} respondeu ao pedido de assinatura, a Topologia de Assinatura da Publica\u00e7\u00e3o est\u00e1 agora consistente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Foram feitas comunica\u00e7\u00f5es bem-sucedidas entre os mecanismos de mensagens e a topologia de assinatura de publica\u00e7\u00e3o \u00e9 consistente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=nenhum(a)
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Receptor bloqueado, o receptor n\u00e3o pode fornecer a mensagem de entrada atual pelo motivo {0} no destino {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=O receptor n\u00e3o entrega uma mensagem ao destino pelo motivo fornecido, at\u00e9 que esse problema seja resolvido a entrega de mensagens subseq\u00fcentes estar\u00e1 bloqueada.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=O receptor n\u00e3o \u00e9 capaz de entregar uma mensagem para o destino pelo motivo fornecido. At\u00e9 que esse problema seja resolvido, a entrega de mensagens subsequentes ficar\u00e1 bloqueada.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Se esse estado persistir, execute a a\u00e7\u00e3o apropriada para resolver o problema com a mensagem.
 
 # -------------------------------------------------------------------------------------------------

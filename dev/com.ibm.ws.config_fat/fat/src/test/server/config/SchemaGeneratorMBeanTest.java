@@ -90,7 +90,7 @@ public class SchemaGeneratorMBeanTest {
                       server.waitForStringInLog("CWWKT0016I.*IBMJMXConnectorREST"));
 
         Log.info(logClass, methodName, "Waiting for 'CWWKO0219I.*ssl'");
-        assertNotNull("'CWWKO0219I.*ssl' was not recieved on server",
+        assertNotNull("'CWWKO0219I.*ssl' was not received on server",
                       server.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // Set up the trust store
@@ -242,7 +242,7 @@ public class SchemaGeneratorMBeanTest {
                       server.waitForStringInLog("CWWKT0016I.*IBMJMXConnectorREST"));
 
         Log.info(logClass, methodName, "Waiting for 'CWWKO0219I.*ssl'");
-        assertNotNull("'CWWKO0219I.*ssl' was not recieved on server",
+        assertNotNull("'CWWKO0219I.*ssl' was not received on server",
                       server.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // Verify that the file was cleaned up after server restart

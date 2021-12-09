@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,12 +41,18 @@ public class WebContainerRequestState {
     private Map<String,String> cookieAttributesMap = null;
 
     public IExtendedResponse getCurrentThreadsIExtendedResponse() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "getCurrentThreadsIExtendedResponse", " currentThreadsIExtendedResponse --> " + currentThreadsIExtendedResponse);
+        }
         return currentThreadsIExtendedResponse;
     }
 
     private AsyncContext asyncContext;
 
     public void setCurrentThreadsIExtendedRequest(IExtendedRequest currentThreadsIExtendedRequest) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setCurrentThreadsIExtendedRequest", " new currentThreadsIExtendedRequest --> " + currentThreadsIExtendedRequest);
+        }
         this.currentThreadsIExtendedRequest = currentThreadsIExtendedRequest;
     }
 
@@ -104,7 +110,9 @@ public class WebContainerRequestState {
         if (_attributes==null) {
             _attributes=new HashMap();
         }
-        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+            logger.logp(Level.FINE, CLASS_NAME,"setAttribute", " name --> " + string);
+        } 
         _attributes.put(string, obj);
     }
 	
@@ -119,8 +127,7 @@ public class WebContainerRequestState {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getAttribute", " name --> " + arg0);
         }
-    	Object obj = _attributes.get(arg0);
-        return obj;
+    	return _attributes.get(arg0);
     }
     
     /* (non-Javadoc)
@@ -133,7 +140,7 @@ public class WebContainerRequestState {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"removeAttribute", " name --> " + arg0);
         }
-        Object oldValue=_attributes.remove(arg0);
+        _attributes.remove(arg0);
     }
 
     public boolean isInvokedFilters() {
@@ -177,6 +184,9 @@ public class WebContainerRequestState {
     }
 
     public IExtendedRequest getCurrentThreadsIExtendedRequest() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "getCurrentThreadsIExtendedRequest", " currentThreadsIExtendedRequest --> " + this.currentThreadsIExtendedRequest);
+        }
         return this.currentThreadsIExtendedRequest;
     }
 
@@ -189,6 +199,9 @@ public class WebContainerRequestState {
     }
 
     public void setCurrentThreadsIExtendedResponse(IExtendedResponse hres) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setCurrentThreadsIExtendedResponse", " new currentThreadsIExtendedResponse --> " + hres);
+        }
         this.currentThreadsIExtendedResponse = hres;
     }
     

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,8 @@ public class SipTransactionUserTable {
 			}
 
 			// There is an option of UPDATE request to 
-			// be received on dialog in EARLY state.
+			// be received on dialog in EARLY state  or 
+			// NOTIFY before a 2XX response.
 			// in that case we should check for TU according 
 			// to tag only
 			if (request.getMethod().equals("UPDATE") || request.getMethod().equals("ACK")){
@@ -117,10 +118,12 @@ public class SipTransactionUserTable {
 			//Anat: maybe NOTIFY received before 2XX response
 			if(request.getMethod().equals("NOTIFY")){
 				if (c_logger.isTraceDebugEnabled()) {
-					c_logger.traceDebug(this, "getTransactionUserForInboundRequest", "Trying to find TU without RemoteTag");
+					c_logger.traceDebug(this, "getTransactionUserForInboundRequest", "Trying to find TU without a remote tag");
 				}
+				tag_2 = key.get_tag_2();
 				key.setTag_2(null);
 				transactionUser = SessionRepository.getInstance().getTuWrapper(key);
+				key.setTag_2(tag_2);
 
 				if( transactionUser != null){
 					return transactionUser;
@@ -403,6 +406,27 @@ public class SipTransactionUserTable {
 //		Proxy mode
 		key.setParams(response, sessionId, true);
 		transactionUser = SessionRepository.getInstance().getTuWrapper(key);
+		if (transactionUser == null && response.getCSeqHeader().getMethod().equals("REFER")) {
+			// a response for REFER received after 200 for NOTIFY
+			if(c_logger.isTraceDebugEnabled()){
+				c_logger.traceDebug(this, "getTransactionUserInboundResponse", 
+						"find TU without a remote tag");
+			}
+			String savedTag2 = key.get_tag_2();
+			key.setTag_2(null);
+
+			transactionUser = SessionRepository.getInstance().getTuWrapper(key);
+			key.setTag_2(savedTag2);
+			if (transactionUser != null) {
+				if (transactionUser.getInitialDialogMethod().equals("REFER")) {
+					transactionUser.setRemoteTag_2(savedTag2);
+				}
+				else {
+					transactionUser = null;
+				}
+			}
+			
+		}
 		// UAC mode
 		if(transactionUser == null) {
 			key.setParams(response, response.getCallIdHeader().getCallId(), false);

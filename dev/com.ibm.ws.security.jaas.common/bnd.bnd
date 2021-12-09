@@ -19,11 +19,10 @@ Bundle-Description: Security JAAS Implementation; version=${bVersion}
 # Produce a JakartaEE compliant JAR.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.jaas.internal.common.jar
-#JakartaEE-Bundle-Name: Security JAAS Implementation
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jaas.internal.common
-#JakartaEE-Bundle-Description: Security JAAS Implementation, version 2.0
-#JakartaEE-Bundle-Version: 2.0
+jakartaFinalJarName: io.openliberty.security.jaas.internal.common.jar
+jakartaFinalBundleName: Security JAAS Implementation
+jakartaFinalBundleId: io.openliberty.security.jaas.internal.common
+jakartaFinalBundleDescription: Security JAAS Implementation; Jakarta Enabled
 
 WS-TraceGroup: \
   security
@@ -100,6 +99,6 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest
+	io.openliberty.org.apache.commons.codec;version=latest
 	
 	

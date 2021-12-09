@@ -31,12 +31,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class JAXRS21ReactiveSampleTest extends JAXRS21AbstractTest {
     @Server("jaxrs21.client.JAXRS21ReactiveSampleTest")
     public static LibertyServer server;

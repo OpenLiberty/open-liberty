@@ -162,27 +162,29 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         for (int attempt = 0; attempt < 5; attempt++) {
             // Initialize a session attribute
             List<String> session = newSession();
-            app.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
+            if (session != null) {
+                app.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
 
-            // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
-            // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
-            long start = 0, prevStart = 0;
-            try {
-                for (int i = 0; i < refreshes; i++) {
-                    prevStart = start;
-                    start = System.nanoTime();
-                    TimeUnit.SECONDS.sleep(3);
-                    app.sessionGet("testRefreshInvalidation-foo", "bar", session);
-                }
-                return; // test successful
-            } catch (AssertionError e) {
-                long elapsed = System.nanoTime() - start;
-                if (TimeUnit.NANOSECONDS.toMillis(elapsed) > 4500
-                    || prevStart > 0 && start - prevStart > TimeUnit.SECONDS.toNanos(4)) {
-                    Log.info(c, testName.getMethodName(), "Ignoring failure because too much time has elapsed (slow sytem)");
-                    continue;
-                } else {
-                    throw e;
+                // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
+                // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
+                long start = 0, prevStart = 0;
+                try {
+                    for (int i = 0; i < refreshes; i++) {
+                        prevStart = start;
+                        start = System.nanoTime();
+                        TimeUnit.SECONDS.sleep(3);
+                        app.sessionGet("testRefreshInvalidation-foo", "bar", session);
+                    }
+                    return; // test successful
+                } catch (AssertionError e) {
+                    long elapsed = System.nanoTime() - start;
+                    if (TimeUnit.NANOSECONDS.toMillis(elapsed) > 4500
+                        || prevStart > 0 && start - prevStart > TimeUnit.SECONDS.toNanos(4)) {
+                        Log.info(c, testName.getMethodName(), "Ignoring failure because too much time has elapsed (slow sytem)");
+                        continue;
+                    } else {
+                        throw e;
+                    }
                 }
             }
         }

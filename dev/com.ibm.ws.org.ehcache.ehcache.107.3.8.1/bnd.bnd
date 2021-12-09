@@ -8,7 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.ehcache.modules:ehcache-107;3.8.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.ehcache:ehcache;3.8.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.ehcache:ehcache;3.8.1}!/!META-INF/MANIFEST.MF|META-INF/maven/* 
 
--buildpath: org.ehcache.modules:ehcache-107;version=3.8.1
+-buildpath: org.ehcache:ehcache;version=3.8.1

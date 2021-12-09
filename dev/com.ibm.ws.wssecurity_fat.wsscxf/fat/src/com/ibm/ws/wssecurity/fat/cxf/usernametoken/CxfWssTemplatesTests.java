@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
-//import java.io.File;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
 
@@ -20,17 +20,31 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 
-//Added 11/2020
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTests extends CommonTests {
 
 //    static private UpdateWSDLPortNum newWsdl = null;
+
+    //issue 18363
+    static private String featureVersion = "";
+
+    //issue 18363
+    public static String getFeatureVersion() {
+        return featureVersion;
+    }
+
+    public static void setFeatureVersion(String version) {
+        featureVersion = version;
+    } //End of issue 18363
 
     /**
      * TestDescription:
@@ -49,10 +63,9 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
+
         genericTest(
                     // test name for logging
                     "testCXFUserNameTokenPasswordHashOverSSL",
@@ -91,8 +104,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -133,9 +145,8 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
                     // test name for logging
@@ -178,11 +189,17 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
     public void testCXFUsernameTokenAsEndorsingAndX509Symmetric() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
                     "testCXFUsernameTokenAsEndorsingAndX509Symmetric",
@@ -206,6 +223,14 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc3 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
+
     }
 
     /**
@@ -220,11 +245,17 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
     public void testCXFX509SymmetricAndEndorsing() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
                     "testCXFX509SymmetricAndEndorsing",
@@ -248,6 +279,14 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc5 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
+
     }
 
     /**
@@ -269,11 +308,17 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
     public void testCXFX509SymmetricForMessageAndUntForClient() throws Exception {
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        } //End of 18363
+
         genericTest(
                     // test name for logging
                     "testCXFX509SymmetricForMessageAndUntForClient",
@@ -297,6 +342,14 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc6 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //issue 18363
+        if ("EE7".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        } else if ("EE8".equals(getFeatureVersion())) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End of 18363
+
     }
 
 }

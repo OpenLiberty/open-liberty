@@ -21,7 +21,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml.fat.jaxrs.common.RSSamlAPITests;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -116,10 +115,10 @@ public class RSSamlSolicitedSPInitiatedAPITests extends RSSamlAPITests {
 
         // commented out lines for wc2, wc3 and 2c4 copy all but the ltpatoken cookie from the previous conversation
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
-        WebClient webClient3 = SAMLCommonTestHelpers.getWebClient();
-        WebClient webClient4 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
+        WebClient webClient3 = getAndSaveWebClient();
+        WebClient webClient4 = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsAIPTests(flowType, testSettings);
         Object page1 = genericSAML(_testName, webClient, testSettings, justGetSAMLToken, expectations);

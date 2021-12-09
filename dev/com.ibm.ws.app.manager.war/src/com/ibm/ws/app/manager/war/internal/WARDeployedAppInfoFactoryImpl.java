@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,9 @@ import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -35,6 +37,8 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
 
     private static final TraceComponent tc = Tr.register(WARDeployedAppInfoFactoryImpl.class);
 
+    private static final String DEFAULT_APP_LOCATION = "${server.config.dir}/apps/expanded/";
+
     @Reference
     protected DeployedAppServices deployedAppServices;
     @Reference(target = "(type=web)")
@@ -43,10 +47,25 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     protected ApplicationManager applicationManager;
 
     // WAR expansion ...
-
-    protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
-        expansionResource.create();
+    protected void prepareExpansion(String warName) throws IOException {
+        WsResource expansionResource;
+        try {
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
+            if (expansionResource != null && expansionResource.isType(WsResource.Type.DIRECTORY)) {
+                expansionResource.create();
+            } else {
+                // if we cant resolve the expandLocation value default it and warn the user
+                Tr.warning(tc, "warning.could.not.expand.app.loc", warName, applicationManager.getExpandLocation());
+                expansionResource = null;
+                expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+                expansionResource.create();
+            }
+        } catch (Exception ex) {
+            Tr.warning(tc, "warning.could.not.expand.app.loc", warName, applicationManager.getExpandLocation());
+            expansionResource = null;
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+            expansionResource.create();
+        }
     }
 
     protected WsResource resolveExpansion(String appName) {
@@ -95,7 +114,7 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         } else if (applicationManager.getExpandApps()) {
 
             try {
-                prepareExpansion();
+                prepareExpansion(warName);
 
                 WsResource expandedResource = resolveExpansion(warName);
                 File expandedFile = expandedResource.asFile();
@@ -104,8 +123,40 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
                     expand(warName, warFile, expandedResource, expandedFile);
                 }
 
+                // Issue 17268: APAR PH37460 useJandex is ignored when autoExpand is set
+                //
+                // Transport the application information from the initial application container
+                // the expanded application container.
+                //
+                // See dev/com.ibm.ws.container.service/src/com/ibm/ws/container/service/app/deploy/internal/ApplicationInfoImpl.<init>,
+                // which retrieves the 'ApplicationInfoForContainer' from the application container.
+                //
+                // When this information is available, ApplicationInfoImpl.getUseJandex() delegates it for the use jandex value.
+                //
+                // Interface 'ApplicationInfoForContainer' is implemented by concrete type
+                // 'dev/com.ibm.ws.app.manager/src/com/ibm/ws/app/manager/internal/ApplicationInstallInfo'.  
+                //
+                // ApplicationInstallInfo.<init> is created using an application container.  The initializer has a step which
+                // stores the new instance to the application container's non-persistent cache.                
+
+                // Part 1: Retrieve the container info from the initial container.
+                NonPersistentCache initialCache =
+                    appInfo.getContainer().adapt(NonPersistentCache.class);
+                ApplicationInfoForContainer appContainerInfo = (ApplicationInfoForContainer)
+                    initialCache.getFromCache(ApplicationInfoForContainer.class);
+
+                // Tr.info(tc, "Initial 'useJandex' [ " +
+                //     ((appContainerInfo == null) ? "unavailable" : appContainerInfo.getUseJandex()) + " ]");
+
                 Container expandedContainer = deployedAppServices.setupContainer(warPid, expandedFile);
                 appInfo.setContainer(expandedContainer);
+                
+                // Part 2: Store the container info on the expanded container.                
+                if ( appContainerInfo != null ) {
+                    NonPersistentCache finalCache =
+                        appInfo.getContainer().adapt(NonPersistentCache.class);
+                    finalCache.addToCache(ApplicationInfoForContainer.class, appContainerInfo);
+                }
 
             } catch (IOException e) {
                 Tr.error(tc, "warning.could.not.expand.application", warName, e.getMessage());

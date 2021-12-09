@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,9 +40,8 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.alarm.Alarm;
 import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.TransactionScopeDestroyer;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
@@ -52,6 +51,7 @@ import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
 import com.ibm.ws.Transaction.JTS.Configuration;
 import com.ibm.ws.Transaction.JTS.ResourceCallback;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.LogClosedException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
@@ -252,7 +252,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     private final TransactionSynchronizationRegistry tsr = TransactionSynchronizationRegistryFactory.getTransactionSynchronizationRegistry();
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
-    private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
+
+    // TODO - reinstate this
+    // private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
+    private static final TraceComponent tcSummary = tc;
 
     /**
      * Recovery Constructor
@@ -2988,6 +2991,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 Tr.entry(tc, "RetryAlarm.alarm");
             if (!_finished) {
                 try {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Retry attempt {0}", _count + 1);
+
                     boolean retryRequired = getResources().distributeOutcome();
                     retryRequired |= getResources().distributeForget();
                     if (retryRequired) {
@@ -3016,7 +3022,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                             _alarm = _alarmManager.scheduleDeferrableAlarm(0L, this);
                         } else {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Retrying in " + _wait + " seconds");
+                                Tr.debug(tc, "Retrying in {0} seconds", _wait);
                             _alarm = _alarmManager.scheduleDeferrableAlarm(_wait * 1000L, this);
                         }
                     } else // finished!

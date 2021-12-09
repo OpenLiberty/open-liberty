@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -42,10 +44,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.eclipse.microprofile.context.ThreadContext;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -62,14 +66,17 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
+import com.ibm.ws.concurrent.mp.spi.ThreadContextConfig;
 import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
 import com.ibm.ws.context.service.serializable.ThreadContextManager;
 import com.ibm.ws.javaee.version.JavaEEVersion;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -79,6 +86,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Captures and propagates thread context.
+ * This class implements the Jakarta/Java EE ContextService as well as MicroProfile ThreadContext.
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -88,6 +96,8 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 public class ContextServiceImpl implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
+
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     // Names of references
     private static final String BASE_INSTANCE = "baseInstance",
@@ -105,12 +115,14 @@ public class ContextServiceImpl implements ContextService, //
     private static final List<String> SUPPORTED_PROPERTIES = Arrays.asList(BASE_CONTEXT_REF,
                                                                            ResourceFactory.CREATES_OBJECT_CLASS,
                                                                            ID,
+                                                                           "javaCompDefaultName", // for java:comp/DefaultContextService
                                                                            JNDI_NAME,
                                                                            Constants.OBJECTCLASS,
                                                                            OnErrorUtil.CFG_KEY_ON_ERROR);
 
     /**
      * Component context for this contextService instance.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
     private ComponentContext componentContext;
 
@@ -125,30 +137,54 @@ public class ContextServiceImpl implements ContextService, //
     private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
+     * Hash code for this instance.
+     */
+    private final int hash;
+
+    /**
      * Lock for reading and updating configuration.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    /**
+     * Reference to the
+     * managed executor service under which this context service is nested,
+     * or a MicroProfile ManagedExecutor that uses this ThreadContext.
+     * Otherwise null.
+     */
+    final AtomicReference<Executor> managedExecutorRef = new AtomicReference<Executor>();
 
     /**
      * These listeners (other contextService instances which are using this instance as the base instance)
      * need to be notified when we are modified so that they can uninitialize and pick up the new configuration
      * the next time they are used.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
     private final List<ContextServiceImpl> modificationListeners = new LinkedList<ContextServiceImpl>();
 
     /**
+     * Represents the context propagation settings that are configured on the MicroProfile builder.
+     * Null when used as a declarative services component.
+     */
+    private final ThreadContextConfig mpBuilderConfig;
+
+    /**
      * Name of this thread context service.
-     * The name is the jndiName if specified, otherwise the config id.
+     * When used as a declarative services component, the name is the jndiName if specified, otherwise the config id.
+     * For MicroProfile builders, it is precomputed by the builder.
      */
     protected String name; // TODO this is temporarily switched from private to protected in order to accommodate test case
 
     /**
      * Service properties.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
     private Dictionary<String, ?> properties;
 
     /**
      * Map of thread context provider name to configured thread context.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      *
      * This value will be NULL when the context service hasn't (re)initialized yet.
      */
@@ -156,6 +192,7 @@ public class ContextServiceImpl implements ContextService, //
 
     /**
      * Centralized service that holds all of the registered thread context providers.
+     * Populated only when used as a declarative services component (not for MicroProfile builders).
      */
     private ThreadContextManager threadContextMgr;
 
@@ -163,6 +200,29 @@ public class ContextServiceImpl implements ContextService, //
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+
+    /**
+     * Constructor when used as a declarative services component.
+     */
+    public ContextServiceImpl() {
+        this.hash = super.hashCode();
+        this.mpBuilderConfig = null; // for MicroProfile builders only
+    }
+
+    /**
+     * Constructor for MicroProfile builders.
+     *
+     * @param name      unique name for this instance.
+     * @param int       hash hash code for this instance.
+     * @param eeVersion Jakarta/Java EE version that is enabled in the Liberty server.
+     * @param config    represents thread context propagation configuration.
+     */
+    public ContextServiceImpl(String name, int hash, int eeVersion, ThreadContextConfig config) {
+        this.name = name;
+        this.hash = hash;
+        this.eeVersion = eeVersion;
+        this.mpBuilderConfig = config;
+    }
 
     /**
      * DS method to activate this component.
@@ -222,12 +282,16 @@ public class ContextServiceImpl implements ContextService, //
     @Override
     @Trivial
     public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
-                                                        Map<String, ?>... additionalThreadContextConfig) {
-        return captureThreadContext(executionProperties, null, null, additionalThreadContextConfig);
+                                                        @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
+        if (mpBuilderConfig == null)
+            return captureThreadContext(executionProperties, null, null, additionalThreadContextConfig);
+        else
+            return mpBuilderConfig.captureThreadContext();
     }
 
     /**
      * Capture thread context.
+     * This is for the declarative services path only (not for MicroProfile builders).
      *
      * @param execProps                     execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
      * @param task                          the task for which we are capturing context. This is optional and is used to compute a default value for the IDENTITY_NAME execution
@@ -237,7 +301,13 @@ public class ContextServiceImpl implements ContextService, //
      * @return captured thread context.
      */
     private ThreadContextDescriptor captureThreadContext(Map<String, String> execProps, Object task, Set<String> internalNames,
-                                                         Map<String, ?>... additionalThreadContextConfig) {
+                                                         @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
+        // The createContextualProxy methods are not supported on instances that were
+        // created by MicroProfile builders because MicroProfile ThreadContextProviders
+        // do not support serialization of thread context.
+        if (mpBuilderConfig != null)
+            throw new UnsupportedOperationException();
+
         execProps = execProps == null ? new TreeMap<String, String>() : new TreeMap<String, String>(execProps);
         if (internalNames == null || !execProps.containsKey(TASK_OWNER)) {
             execProps.put(TASK_OWNER, name);
@@ -361,6 +431,12 @@ public class ContextServiceImpl implements ContextService, //
      */
     @Override
     public <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
+        // The createContextualProxy methods are not supported on instances that were
+        // created by MicroProfile builders because MicroProfile ThreadContextProviders
+        // do not support serialization of thread context.
+        if (mpBuilderConfig != null)
+            throw new UnsupportedOperationException();
+
         return threadContextMgr.createContextualProxy(threadContextDescriptor, instance, intf);
     }
 
@@ -407,6 +483,7 @@ public class ContextServiceImpl implements ContextService, //
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
+                @Trivial
                 public Object run() {
                     return Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, handler);
                 }
@@ -455,6 +532,7 @@ public class ContextServiceImpl implements ContextService, //
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<T>() {
                 @Override
+                @Trivial
                 public T run() {
                     return intf.cast(Proxy.newProxyInstance(intf.getClassLoader(), new Class<?>[] { intf }, handler));
                 }
@@ -498,6 +576,87 @@ public class ContextServiceImpl implements ContextService, //
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    /**
+     * Determines the backing executor to use for completion stages that are created by the
+     * withContextCapture methods.
+     *
+     * @return executor to use for completion stages.
+     */
+    private final Executor executorForCompletionStages() {
+        Executor executor;
+        if (MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1)) {
+            if ((executor = managedExecutorRef.get()) == null) {
+                if (mpBuilderConfig == null) {
+                    lock.readLock().lock();
+                    try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
+                        if (properties == null)
+                            throw new IllegalStateException(name);
+                        String parentPid = (String) properties.get("config.parentPID");
+                        if (parentPid != null) {
+                            String filter = FilterUtils.createPropertyFilter("service.pid", parentPid);
+                            BundleContext bc = priv.getBundleContext(componentContext);
+                            Collection<ServiceReference<ManagedExecutorService>> refs = //
+                                            priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, filter + " found:", refs);
+                            Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
+                            if (it.hasNext()) {
+                                ServiceReference<ManagedExecutorService> ref = refs.iterator().next();
+                                executor = priv.getService(bc, ref);
+                                if (executor == null)
+                                    throw new IllegalStateException(filter);
+                                else
+                                    managedExecutorRef.set(executor);
+                            } // else parent pid might be something other than a managed executor service
+                        }
+                    } catch (InvalidSyntaxException x) {
+                        throw new RuntimeException(x); // internal error - this should never happen
+                    } finally {
+                        lock.readLock().unlock();
+                    }
+                }
+                if (executor == null)
+                    executor = new ContextualDefaultExecutor(this);
+            }
+        } else {
+            executor = new UnusableExecutor(this);
+        }
+        return executor;
+    }
+
+    /**
+     * A ContextService (preferably this same instance) that is backed by the managed executor.
+     *
+     * This same ContextService instance can be used if it has a one-to-one relationship with the
+     * managed executor due to the contextService config being a nested element of the managed
+     * executor service config, or due to it being created by a MicroProfile ManagedExecutor builder.
+     *
+     * If this same instance cannot be used, then a new instance must be created for this purpose.
+     *
+     * @param executor           managed executor.
+     * @param executorServicePid service.pid of the managed executor.
+     * @return a ContextService that is backed by this managed executor.
+     */
+    ContextService forManagedExecutor(ManagedExecutorService executor, String executorServicePid) {
+        if (executor == managedExecutorRef.get())
+            return this;
+
+        lock.readLock().lock();
+        try { // look for a parent config element of managedExecutorService or managedScheduledExecutorService
+            if (properties == null)
+                throw new IllegalStateException(name);
+            String parentPid = (String) properties.get("config.parentPID");
+            if (parentPid != null && parentPid.equals(executorServicePid)) {
+                managedExecutorRef.set(executor);
+                return this;
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        return new ContextServiceWithExecutor(this, executor);
     }
 
     @Override
@@ -550,26 +709,6 @@ public class ContextServiceImpl implements ContextService, //
     }
 
     /**
-     * Names of methods to which we should apply context.
-     * When not configured, this returns null, in which case the invoker should
-     * default to all methods that aren't defined on java.lang.Object.
-     * So, for example, myTask.doSomething would run with context but .toString or .equals would not.
-     *
-     * @return list of methods to which we should apply context. Null for default.
-     */
-    @Trivial
-    Collection<String> getContextualMethods() {
-        lock.readLock().lock();
-        try {
-            @SuppressWarnings("unchecked")
-            Collection<String> contextualMethods = (Collection<String>) properties.get(CONTEXTUAL_METHODS);
-            return contextualMethods;
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    /**
      * @see javax.enterprise.concurrent.ContextService#getExecutionProperties(java.lang.Object)
      */
     @Override
@@ -578,6 +717,7 @@ public class ContextServiceImpl implements ContextService, //
         if (contextualProxy != null && Proxy.isProxyClass(contextualProxy.getClass())) {
             InvocationHandler handler = AccessController.doPrivileged(new PrivilegedAction<InvocationHandler>() {
                 @Override
+                @Trivial
                 public InvocationHandler run() {
                     return Proxy.getInvocationHandler(contextualProxy);
                 }
@@ -591,6 +731,12 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(contextualProxy == null ? null : contextualProxy.getClass().getName());
 
         return contextualObject.getExecutionProperties();
+    }
+
+    @Override
+    @Trivial
+    public final int hashCode() {
+        return hash;
     }
 
     /**
@@ -623,6 +769,7 @@ public class ContextServiceImpl implements ContextService, //
 
                     Constructor<T> con = AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>() {
                         @Override
+                        @Trivial
                         public Constructor<T> run() throws NoSuchMethodException {
                             return exceptionClassToRaise.getConstructor(String.class);
                         }
@@ -685,12 +832,7 @@ public class ContextServiceImpl implements ContextService, //
         }
 
         // Inherit complementary thread context config from base instance
-        ContextServiceImpl baseInstance = AccessController.doPrivileged(new PrivilegedAction<ContextServiceImpl>() {
-            @Override
-            public ContextServiceImpl run() {
-                return (ContextServiceImpl) componentContext.locateService(BASE_INSTANCE);
-            }
-        });
+        ContextServiceImpl baseInstance = (ContextServiceImpl) priv.locateService(componentContext, BASE_INSTANCE);
         if (baseInstance != null)
             baseInstance.addComplementaryThreadContextConfigurationsTo(this);
 
@@ -792,6 +934,14 @@ public class ContextServiceImpl implements ContextService, //
         threadContextMgr = (ThreadContextManager) svc;
     }
 
+    @Override
+    @Trivial
+    public final String toString() {
+        // TODO this preserves the toString for instances built by MicroProfile builders.
+        // Should we also include the name (when present) in the toString for EE?
+        return mpBuilderConfig == null ? super.toString() : name;
+    }
+
     /**
      * Declarative Services method for unsetting the service reference to the base contextService instance.
      *
@@ -831,9 +981,7 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
-                        ? new ContextualDefaultExecutor(this) //
-                        : new UnusableExecutor(this);
+        Executor executor = executorForCompletionStages();
 
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
@@ -856,9 +1004,7 @@ public class ContextServiceImpl implements ContextService, //
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
-                        ? new ContextualDefaultExecutor(this) //
-                        : new UnusableExecutor(this);
+        Executor executor = executorForCompletionStages();
 
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);

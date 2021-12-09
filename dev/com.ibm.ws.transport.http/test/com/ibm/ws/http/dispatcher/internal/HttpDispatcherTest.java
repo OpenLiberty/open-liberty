@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.States;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.AfterClass;
@@ -51,6 +52,8 @@ public class HttpDispatcherTest {
     static Field linkRemoteAddress;
     final String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
     final String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
+    final static String HSTS_SHORTNAME = "addstricttransportsecurityheader";
+    final static String HSTS_FULLY_QUALIFIED = "com.ibm.ws.webcontainer.addStrictTransportSecurityHeader";
 
     @BeforeClass
     public static void setupInstance() throws Exception {
@@ -267,6 +270,10 @@ public class HttpDispatcherTest {
             {
                 allowing(mockWCRef).getProperty("trusted");
                 will(returnValue(false));
+                ignoring(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue(""));
+                ignoring(mockWCRef).getProperty(HSTS_FULLY_QUALIFIED);
+                will(returnValue(""));
             }
         });
 
@@ -277,6 +284,317 @@ public class HttpDispatcherTest {
         } finally {
             context.assertIsSatisfied();
         }
+    }
+
+    @Test
+    public void testHSTSHeaderConfigs() throws Exception {
+
+        HttpDispatcher d = new HttpDispatcher();
+        States state = context.states("states");
+        String expectation = null;
+        String reality = null;
+
+        //Baseline expectations:
+        //1. The fully qualified name will only be used once (on the second test state), ignore
+        //it on every other state.
+        //2. The "trusted" property is ignored throught this test
+
+        context.checking(new Expectations() {
+            {
+                ignoring(mockWCRef).getProperty("trusted");
+                will(returnValue(true));
+
+                ignoring(mockWCRef).getProperty(HSTS_FULLY_QUALIFIED);
+                will(returnValue(""));
+                when(state.isNot("second"));
+
+            }
+        });
+
+        //Test state: First
+        //Assume no <webContainer> configuration, values returned will be empty strings
+
+        state.become("first");
+
+        context.checking(new Expectations() {
+            {
+
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue(""));
+                when(state.is("first"));
+
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertNull("Test State: First - no configuration is set so HSTS header MUST be null", reality);
+        context.assertIsSatisfied();
+
+        //Test state: Second
+        //Test <webContainer> setting both properties, expect fully qualified name to be preferred.
+
+        state.become("second");
+
+        context.checking(new Expectations() {
+            {
+                atMost(1).of(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=-1"));
+                when(state.is("second"));
+
+                oneOf(mockWCRef).getProperty(HSTS_FULLY_QUALIFIED);
+                will(returnValue("max-age=2"));
+                when(state.is("second"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=2";
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertEquals("Test State: Second - Prioritize Fully Qualified Property",
+                            expectation, reality);
+        context.assertIsSatisfied();
+
+        //Test state: Third
+        //Test <webContainer> with short name defined and fully qualified name undefined
+
+        state.become("third");
+
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=3"));
+                when(state.is("third"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=3";
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertEquals("Test State: Third - Test shortname property", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Test state: Fourth
+        //Test that a configuration missing the "max-age" directive is not considered valid.
+
+        state.become("fourth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("includeSubDomains; preload"));
+                when(state.is("fourth"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertNull("Test State: Fourth - A missing max-age directive MUST not be considered valid. Result was [" + reality + "]", reality);
+        context.assertIsSatisfied();
+
+        //Test state: Fifth
+        //Test that a configuration with a max-age directive that specifies a value less than 0, is not considered valid.
+
+        state.become("fifth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=-5"));
+                when(state.is("fifth"));
+
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertNull("Test State: Fifth - A negative value on the max-age directive MUST not be considered valid. Result was [" + reality + "]", reality);
+        context.assertIsSatisfied();
+
+        //Test state: Sixth
+        //Test that a configuration with a non-integer value as max-age is not considered valid.
+
+        state.become("sixth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=notANumber"));
+                when(state.is("sixth"));
+
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertNull("Test State: Sixth - A non-integer max-age value MUST not be considered valid. Result was [" + reality + "]", reality);
+        context.assertIsSatisfied();
+
+        //Test state: Seventh
+
+        //Optional Directives: This state will be divided in sub categories as there are
+        //multiple edge cases with regards to the optional directives.
+
+        //The directives 'includeSubDomains' and 'preload' are both recognized as valid, yet optional,
+        //The order in which they are parsed does not matter, but the channel will normalize
+        //the result as: max-age=value; includeSubDomains; preload;
+
+        //Seventh step A: test all known directives in a non-normalized order
+        state.become("seventh.A");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("preload; includeSubDomains; max-age=7"));
+                when(state.is("seventh.A"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=7; includeSubDomains; preload";
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertEquals("Test State: Seventh.A - Test Optional Values", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Seventh step B: test just 'includeSubDomains'
+        state.become("seventh.B");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("includeSubDomains; max-age=7"));
+                when(state.is("seventh.B"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=7; includeSubDomains";
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertEquals("Test State: Seventh.B - Test includeSubDomains", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Seventh step C: test just 'preload'
+        state.become("seventh.C");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("preload; max-age=7"));
+                when(state.is("seventh.C"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=7; preload";
+        reality = HttpDispatcher.getHSTS();
+
+        Assert.assertEquals("Test State: Seventh.C - Test preload", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Seventh step D: test that multiple occurrences of directives are ignored.
+        //The Web Container implementation just chooses the first appearing value, so
+        //this implementation models that behavior. This specification should technically
+        //not be allowed to add multiple repeated values, but to avoid different behavior
+        //between the transport and engine, the behavior will be mimicked.
+        state.become("seventh.D");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=7; preload; includeSubDomains; preload; max-age=7"));
+                when(state.is("seventh.D"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=7; includeSubDomains; preload";
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertEquals("Test State: Seventh.D - Test Repeated Directives", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Seventh step E: test that unrecognized values are ignored.
+        state.become("seventh.E");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age=7; howDidIGetHere?; preload"));
+                when(state.is("seventh.E"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=7; preload";
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertEquals("Test State: Seventh.E - Unrecognized Directive", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Test Step - Eighth
+        //Test that a max-age with no '=' sign is not considered valid
+        state.become("eighth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("max-age8; preload"));
+                when(state.is("eighth"));
+            }
+        });
+        d.setWebContainer(mockWCRef);
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertNull("Test State: Eighth - Malformed max-age. Result was [" + reality + "]", reality);
+        context.assertIsSatisfied();
+
+        //Test Step - Ninth
+        //Test that directives are case-insensitive
+        state.become("ninth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("PrElOaD; MaX-aGe=1"));
+                when(state.is("ninth"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=1; preload";
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertEquals("Test State: Ninth - Case-insensitive Directives", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Test Step - Tenth
+        //Test that spacing in directives is not significant
+        state.become("tenth");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("preload;       max-age   = 10;includeSubDomains"));
+                when(state.is("tenth"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=10; includeSubDomains; preload";
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertEquals("Test State: Tenth - White Spacing should not be relevant", expectation, reality);
+        context.assertIsSatisfied();
+
+        //Test Step - Eleventh
+        //Test that the value of max-age can be quoted
+        state.become("eleventh");
+        context.checking(new Expectations() {
+            {
+                oneOf(mockWCRef).getProperty(HSTS_SHORTNAME);
+                will(returnValue("preload; max-age=\"11\";includeSubDomains"));
+                when(state.is("eleventh"));
+            }
+        });
+
+        d.setWebContainer(mockWCRef);
+        expectation = "max-age=\"11\"; includeSubDomains; preload";
+        reality = HttpDispatcher.getHSTS();
+        Assert.assertEquals("Test State: Eleventh - The max-age directive's value should be, optionally, allowed to be quoted",
+                            expectation, reality);
+        context.assertIsSatisfied();
     }
 
     @Test

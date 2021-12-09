@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,16 @@ bVersion=1.1
 Bundle-Name: wim base
 Bundle-Description:  wim base, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.security.wim.base
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.security.wim.internal.base.jar
+jakartaFinalBundleName: WIM base internal
+jakartaFinalBundleId: io.openliberty.security.wim.internal.base
+jakartaFinalBundleDescription: WIM base internal; Jakarta Enabled
+
 
 Import-Package: \
  !javax.xml.bind.*, \

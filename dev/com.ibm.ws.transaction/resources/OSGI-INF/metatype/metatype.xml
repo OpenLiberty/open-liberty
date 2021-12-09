@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2020 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -33,14 +33,15 @@
         <AD name="%client.inactivity.timeout" description="%client.inactivity.timeout.desc"
             id="clientInactivityTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
+		<!-- heuristicRetryInterval is a synonym for heuristicRetryWait -->
         <AD name="%heuristic.retry.interval" description="%heuristic.retry.interval.desc"
             id="heuristicRetryInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
-        <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
-            id="heuristicRetryWait" required="false" type="Integer" default="5" />
+        <AD name="%heuristic.retry.interval" description="%heuristic.retry.interval.desc"
+            id="heuristicRetryWait" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
         <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
-            id="heuristicRetryLimit" required="false" type="Integer" default="5" />
+            id="heuristicRetryLimit" required="false" type="Integer" default="0" />
 
         <AD name="%max.transaction.timeout" description="%max.transaction.timeout.desc"
             id="propogatedOrBMTTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
@@ -54,13 +55,13 @@
         <AD name="internal" description="%lease.check.strategy.desc"
             id="leaseCheckStrategy" required="false" type="String" default="round-robin" />            
 
-        <AD name="internal" description="%lease.check.interval.desc"
+        <AD name="%lease.check.interval" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
             
-		<AD name="internal" description="%lease.renewal.time.desc"
-            id="leaseRenewalTime" required="false" type="Integer" min="1" max="100" default="90" />
+		<AD name="%lease.renewal.threshold" description="%lease.renewal.threshold.desc"
+            id="leaseRenewalThreshold" required="false" type="Integer" min="1" max="100" default="90" />
 
-        <AD name="internal" description="%lease.length.desc"
+        <AD name="%lease.length" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
         <AD name="%transaction.log.size" description="%transaction.log.size.desc"
@@ -85,17 +86,26 @@
             id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
 
         <AD name="internal" description="internal use only"
-            id="standardTransientErrorRetryTime" required="false" type="Integer" default="10" />
+            id="logRetryInterval" required="false" type="Integer" default="10" />
 
         <AD name="internal" description="internal use only"
-            id="standardTransientErrorRetryAttempts" required="false" type="Integer" default="180" /> 
+            id="logRetryLimit" required="false" type="Integer" default="180" /> 
                         
         <AD name="internal" description="internal use only"
-            id="lightweightTransientErrorRetryTime" required="false" type="Integer" default="1" />
+            id="lightweightLogRetryInterval" required="false" type="Integer" default="1" />
 
         <AD name="internal" description="internal use only"
-            id="lightweightTransientErrorRetryAttempts" required="false" type="Integer" default="2" /> 
-                                               
+            id="lightweightLogRetryLimit" required="false" type="Integer" default="2" /> 
+            
+        <AD name="internal" description="internal use only"
+            id="enableLogRetries" required="false" type="Boolean" default="false" />
+            
+        <AD name="internal" description="internal use only"
+            id="retriableSqlCodes" required="false" type="String" default="" />
+            
+        <AD name="internal" description="internal use only"
+            id="nonRetriableSqlCodes" required="false" type="String" default="" />                    
+                                                                   
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

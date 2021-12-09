@@ -5,7 +5,7 @@
         <feature>jaxws-2.2</feature>
         <feature>ejbLite-3.2</feature>
     </featureManager>
-
+	
     <include location="../fatTestPorts.xml"/>
     
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
@@ -16,6 +16,7 @@
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
     
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
     <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
     
   	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>

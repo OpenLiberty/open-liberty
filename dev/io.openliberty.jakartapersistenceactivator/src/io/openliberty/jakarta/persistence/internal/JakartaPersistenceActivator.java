@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.spi.PersistenceProvider;
 import jakarta.persistence.spi.PersistenceProviderResolver;
@@ -37,6 +40,7 @@ import jakarta.persistence.spi.PersistenceProviderResolverHolder;
  * META-INF/services in addition to those registered in the OSGi service registry.
  */
 public class JakartaPersistenceActivator implements BundleActivator, PersistenceProviderResolver {
+    private final WeakHashMap<ModuleMetaData, List<PersistenceProvider>> providerCache = new WeakHashMap<ModuleMetaData, List<PersistenceProvider>>();
     public static final String PERSISTENCE_PROVIDER = "jakarta.persistence.spi.PersistenceProvider";
 
     private BundleContext ctx = null;
@@ -65,23 +69,55 @@ public class JakartaPersistenceActivator implements BundleActivator, Persistence
 
     @Override
     public void clearCachedProviders() {
+        synchronized (providerCache) {
+            this.providerCache.clear();
+        }
         synchronized (providers) {
             providers.clear();
         }
     }
 
+    /**
+     * This method returns a combination of those persistence providers available from
+     * the application classloader in addition to those in the OSGi service registry.
+     * OSGi providers are not cached and should not be cached because bundles can
+     * be moved in and out of the system and it is the job of the the service tracker
+     * to maintain them.
+     */
     @Override
     public List<PersistenceProvider> getPersistenceProviders() {
-        ArrayList<PersistenceProvider> providerList = new ArrayList<PersistenceProvider>();
-        synchronized (providers) {
-            providerList.addAll(providers.values());
-        }
-        providerList.addAll(findProvidersByClassLoader());
+        List<PersistenceProvider> nonOSGiProviders = null;
 
-        return providerList;
+        final ModuleMetaData mmd = getModuleMetaData();
+
+        // Query the provider cache per-ModuleMetaData
+        if (mmd != null) {
+            synchronized (providerCache) {
+                nonOSGiProviders = providerCache.get(mmd);
+                if (nonOSGiProviders == null) {
+                    nonOSGiProviders = findProvidersByClassLoader();
+                    providerCache.put(mmd, nonOSGiProviders);
+                }
+            }
+        } else {
+            nonOSGiProviders = findProvidersByClassLoader();
+        }
+
+        List<PersistenceProvider> combinedProviders = new ArrayList<PersistenceProvider>(nonOSGiProviders);
+        synchronized (providers) {
+            combinedProviders.addAll(providers.values());
+        }
+        return combinedProviders;
     }
 
-    // TODO: Should implement a secondary map that caches persistence providers bundled with applications
+    private ModuleMetaData getModuleMetaData() {
+        try {
+            return ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     private List<PersistenceProvider> findProvidersByClassLoader() {
         List<PersistenceProvider> nonOSGiProviders = new ArrayList<PersistenceProvider>();
 

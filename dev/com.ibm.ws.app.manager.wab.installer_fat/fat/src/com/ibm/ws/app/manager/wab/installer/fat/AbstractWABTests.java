@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,14 @@ public abstract class AbstractWABTests {
     protected static final String[] PRODUCTS = { PRODUCT1, PRODUCT2 };
 
     protected static final String CONFIGS = "configs/";
+    protected static final String CONFIG_RESET = CONFIGS + "testReset.xml";
     protected static final String CONFIG_DEFAULT = CONFIGS + "testDefault.xml";
+
+    protected static final String APP_AVAIL = "CWWKT0016I: Web application available.*";
+
+    protected static final String[] MESSAGES_DEFAULT = new String[] { APP_AVAIL + "/product1/",
+                                                                      APP_AVAIL + "/product2/",
+    };
 
     protected static LibertyServer server = null;
 
@@ -72,7 +79,15 @@ public abstract class AbstractWABTests {
         }
 
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.app.manager.wab.installer");
-        server.setServerConfigurationFile(CONFIG_DEFAULT);
+        server.setServerConfigurationFile(CONFIG_RESET);
+
+        if (server.getConfigUpdateTimeout() < 30 * 1000) {
+            /*
+             * This timeout (in ms) is set based on whether running locally or in an automated build.
+             * Running locally, the default of 12 seconds is too low and intermittent failures can occur.
+             */
+            server.setConfigUpdateTimeout(30 * 1000);
+        }
 
         for (String product : PRODUCTS) {
             Log.info(c, "setUp", "Installing product properties file for: " + product);
@@ -97,10 +112,10 @@ public abstract class AbstractWABTests {
         Log.info(c, name.getMethodName(), "===== Starting test " + name.getMethodName() + " =====");
     }
 
-    protected void setConfiguration(String config) throws Exception {
+    protected static void setConfiguration(String config, String... additionalMsgs) throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+        server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet(), additionalMsgs);
     }
 
     @After

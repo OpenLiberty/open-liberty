@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=Wychwycono wyj\u0105tek IOException w kodz
 error.exception.ioeinbody.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 warn.unsupported.realm=CWSCT0358W: Nieznana dziedzina uwierzytelniania: {0}.
-warn.unsupported.realm.explanation=Odebrano \u017c\u0105danie SIP dotycz\u0105ce nieznanej dziedziny uwierzytelniania. 
+warn.unsupported.realm.explanation=Odebrano \u017c\u0105danie dotycz\u0105ce nieznanej dziedziny uwierzytelniania.
 warn.unsupported.realm.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 info.unhashed.creds=CWSCT0359I: Nie znaleziono atrybut\u00f3w referencji mieszanych.

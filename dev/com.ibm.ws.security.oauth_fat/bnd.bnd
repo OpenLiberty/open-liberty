@@ -14,6 +14,9 @@ bVersion=1.0
 src: \
     fat/src
 
+tested.features:\
+    appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0
+
 fat.project: true
 
 -buildpath: \
@@ -39,4 +42,8 @@ fat.project: true
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest, \
     com.ibm.ws.security.oauth_test.servlets;version=latest, \
     net.sf.jtidy:jtidy;version=9.3.8, \
-    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest
+    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest,\
+    de.flapdoodle.embed.mongo;version='3.0.0',\
+	de.flapdoodle.embed.process;version='3.0.1',\
+	org.slf4j:slf4j-jdk14;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7

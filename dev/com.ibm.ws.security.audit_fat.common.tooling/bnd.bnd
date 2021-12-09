@@ -27,7 +27,7 @@ test.project: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.security.oauth.2.0;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

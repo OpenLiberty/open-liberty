@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutAnnServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutMixServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutXmlServlet;
@@ -57,15 +58,7 @@ import componenttest.topology.utils.FATServletClient;
 public class AroundTimeoutTest extends FATServletClient {
     private static final Logger logger = Logger.getLogger(AroundTimeoutTest.class.getCanonicalName());
     private static final Set<String> skipWhenLeavingDaylightSavings = new HashSet<String>( //
-                    Arrays.asList("testAdvancedAroundTimeoutInterceptorScheduleAnn", //
-                                  "testAdvancedAroundTimeoutInterceptorScheduleMix", //
-                                  "testAdvancedAroundTimeoutInterceptorScheduleXml", //
-                                  "testAroundTimeoutScheduleAppEx", //
-                                  "testAroundTimeoutScheduleNoEx", //
-                                  "testInheritedAroundTimeoutAnn", //
-                                  "testInheritedTimeoutCallbackAnn", //
-                                  "testMDBNonPersistentAutomaticTimerInterceptorsAnn", //
-                                  "testMDBPersistentAutomaticTimerInterceptorsAnn"));
+                    Arrays.asList("No tests currently skipped for DST"));
     private static boolean leavingDaylightSavings = false;
 
     @Server("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")
@@ -84,7 +77,7 @@ public class AroundTimeoutTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -104,7 +97,7 @@ public class AroundTimeoutTest extends FATServletClient {
         EnterpriseArchive AroundTimeoutTest = ShrinkWrap.create(EnterpriseArchive.class, "AroundTimeoutTest.ear");
         AroundTimeoutTest.addAsModule(AroundTimeoutAnnEJB).addAsModule(AroundTimeoutExcEJB).addAsModule(AroundTimeoutMixEJB).addAsModule(AroundTimeoutXmlEJB).addAsModule(AroundTimeoutWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, AroundTimeoutTest);
+        ShrinkHelper.exportDropinAppToServer(server, AroundTimeoutTest, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

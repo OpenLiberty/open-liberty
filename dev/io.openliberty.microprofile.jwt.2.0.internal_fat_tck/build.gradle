@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+//the tck jar should be removed once we can run the tck unaltered. Also need to hit pom.xml
+
+//remove this dependency on artifactory as the contributor build cannot use it. 
+/*
+dependencies {
+  
+  requiredLibs 'org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck:2.0-20180821.143915-1'
+}
+*/
+
+
+/*
+autoFVT.doLast {     
+	    copy { 
+	      from new File(autoFvtDir, 'lib/microprofile-jwt-auth-tck-2.0-20180821.143915-1.jar')
+	      into new File(autoFvtDir, './microprofile-jwt-auth-tck-2,0-SNAPSHOT-tests.jar')
+	    }  
+}
+*/
+dependencies {
+  requiredLibs 'org.hamcrest:hamcrest-all:1.3'
+}

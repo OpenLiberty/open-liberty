@@ -178,9 +178,27 @@ public class ReflectionUtil {
             int mParamCount = mParamTypes.length;
 
             // Check the number of parameters
-            if (!(paramCount == mParamCount ||
-                    (m.isVarArgs() && paramCount >= mParamCount))) {
+            // Multiple tests to improve readability
+            if (!m.isVarArgs() && paramCount != mParamCount) {
                 // Method has wrong number of parameters
+                continue;
+            }
+            if (m.isVarArgs() && paramCount < mParamCount -1) {
+                // Method has wrong number of parameters
+                continue;
+            }
+            if (m.isVarArgs() && paramCount == mParamCount && paramValues != null &&
+                    paramValues.length > paramCount && !paramTypes[mParamCount -1].isArray()) {
+                // Method arguments don't match
+                continue;
+            }
+            if (m.isVarArgs() && paramCount > mParamCount && paramValues != null &&
+                    paramValues.length != paramCount) {
+                // Might match a different varargs method
+                continue;
+            }
+            if (!m.isVarArgs() && paramValues != null && paramCount != paramValues.length) {
+                // Might match a different varargs method
                 continue;
             }
 
@@ -188,16 +206,22 @@ public class ReflectionUtil {
             int exactMatch = 0;
             int assignableMatch = 0;
             int coercibleMatch = 0;
+            int varArgsMatch = 0;
             boolean noMatch = false;
             for (int i = 0; i < mParamCount; i++) {
                 // Can't be null
-                if (mParamTypes[i].equals(paramTypes[i])) {
-                    exactMatch++;
-                } else if (i == (mParamCount - 1) && m.isVarArgs()) {
+                if (m.isVarArgs() && i == (mParamCount - 1)) {
+                    if (i == paramCount || (paramValues != null && paramValues.length == i)) {
+                        // Var args defined but nothing is passed as varargs
+                        // Use MAX_VALUE so this matches only if nothing else does
+                        varArgsMatch = Integer.MAX_VALUE;
+                        break;
+                    }
                     Class<?> varType = mParamTypes[i].getComponentType();
                     for (int j = i; j < paramCount; j++) {
                         if (isAssignableFrom(paramTypes[j], varType)) {
                             assignableMatch++;
+                            varArgsMatch++;
                         } else {
                             if (paramValues == null) {
                                 noMatch = true;
@@ -205,6 +229,7 @@ public class ReflectionUtil {
                             } else {
                                 if (isCoercibleFrom(ctx, paramValues[j], varType)) {
                                     coercibleMatch++;
+                                    varArgsMatch++;
                                 } else {
                                     noMatch = true;
                                     break;
@@ -215,18 +240,22 @@ public class ReflectionUtil {
                         // lead to a varArgs method matching when the result
                         // should be ambiguous
                     }
-                } else if (isAssignableFrom(paramTypes[i], mParamTypes[i])) {
-                    assignableMatch++;
                 } else {
-                    if (paramValues == null) {
-                        noMatch = true;
-                        break;
+                    if (mParamTypes[i].equals(paramTypes[i])) {
+                        exactMatch++;
+                    } else if (paramTypes[i] != null && isAssignableFrom(paramTypes[i], mParamTypes[i])) {
+                        assignableMatch++;
                     } else {
-                        if (isCoercibleFrom(ctx, paramValues[i], mParamTypes[i])) {
-                            coercibleMatch++;
-                        } else {
+                        if (paramValues == null) {
                             noMatch = true;
                             break;
+                        } else {
+                            if (isCoercibleFrom(ctx, paramValues[i], mParamTypes[i])) {
+                                coercibleMatch++;
+                            } else {
+                                noMatch = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -236,18 +265,18 @@ public class ReflectionUtil {
             }
 
             // If a method is found where every parameter matches exactly,
-            // return it
-            if (exactMatch == paramCount) {
+            // and no vars args are present, return it
+            if (exactMatch == paramCount && varArgsMatch == 0) {
                 return getMethod(base.getClass(), base, m);
             }
 
             candidates.put(m, new MatchResult(
-                    exactMatch, assignableMatch, coercibleMatch, m.isBridge()));
+                    m.isVarArgs(), exactMatch, assignableMatch, coercibleMatch, varArgsMatch, m.isBridge()));
         }
 
         // Look for the method that has the highest number of parameters where
         // the type matches exactly
-        MatchResult bestMatch = new MatchResult(0, 0, 0, false);
+        MatchResult bestMatch = new MatchResult(true, 0, 0, 0, 0, true);
         Method match = null;
         boolean multiple = false;
         for (Map.Entry<Method, MatchResult> entry : candidates.entrySet()) {
@@ -261,7 +290,7 @@ public class ReflectionUtil {
             }
         }
         if (multiple) {
-            if (bestMatch.getExact() == paramCount - 1) {
+            if (bestMatch.getExactCount() == paramCount - 1) {
                 // Only one parameter is not an exact match - try using the
                 // super class
                 match = resolveAmbiguousMethod(candidates.keySet(), paramTypes);
@@ -472,28 +501,41 @@ public class ReflectionUtil {
      */
     private static class MatchResult implements Comparable<MatchResult> {
 
-        private final int exact;
-        private final int assignable;
-        private final int coercible;
+        private final boolean varArgs;
+        private final int exactCount;
+        private final int assignableCount;
+        private final int coercibleCount;
+        private final int varArgsCount;
         private final boolean bridge;
 
-        public MatchResult(int exact, int assignable, int coercible, boolean bridge) {
-            this.exact = exact;
-            this.assignable = assignable;
-            this.coercible = coercible;
+        public MatchResult(boolean varArgs, int exactCount, int assignableCount, int coercibleCount, int varArgsCount,
+                boolean bridge) {
+            this.varArgs = varArgs;
+            this.exactCount = exactCount;
+            this.assignableCount = assignableCount;
+            this.coercibleCount = coercibleCount;
+            this.varArgsCount = varArgsCount;
             this.bridge = bridge;
         }
 
-        public int getExact() {
-            return exact;
+        public boolean isVarArgs() {
+            return varArgs;
         }
 
-        public int getAssignable() {
-            return assignable;
+        public int getExactCount() {
+            return exactCount;
+        }
+
+        public int getAssignableCount() {
+            return assignableCount;
         }
 
         public int getCoercible() {
-            return coercible;
+            return coercibleCount;
+        }
+
+        public int getVarArgsCount() {
+            return varArgsCount;
         }
 
         public boolean isBridge() {
@@ -502,22 +544,56 @@ public class ReflectionUtil {
 
         @Override
         public int compareTo(MatchResult o) {
-            int cmp = Integer.compare(this.getExact(), o.getExact());
+            // Non-varArgs always beats varArgs
+            int cmp = Boolean.compare(o.isVarArgs(), this.isVarArgs());
             if (cmp == 0) {
-                cmp = Integer.compare(this.getAssignable(), o.getAssignable());
+                cmp = Integer.compare(this.getExactCount(), o.getExactCount());
                 if (cmp == 0) {
-                    cmp = Integer.compare(this.getCoercible(), o.getCoercible());
+                    cmp = Integer.compare(this.getAssignableCount(), o.getAssignableCount());
                     if (cmp == 0) {
-                        // The nature of bridge methods is such that it actually
-                        // doesn't matter which one we pick as long as we pick
-                        // one. That said, pick the 'right' one (the non-bridge
-                        // one) anyway.
-                        cmp = Boolean.compare(o.isBridge(), this.isBridge());
+                        cmp = Integer.compare(this.getCoercible(), o.getCoercible());
+                        if (cmp == 0) {
+                            // Fewer var args matches are better
+                            cmp = Integer.compare(o.getVarArgsCount(), this.getVarArgsCount());
+                            if (cmp == 0) {
+                                // The nature of bridge methods is such that it actually
+                                // doesn't matter which one we pick as long as we pick
+                                // one. That said, pick the 'right' one (the non-bridge
+                                // one) anyway.
+                                cmp = Boolean.compare(o.isBridge(), this.isBridge());
+                            }
+                        }
                     }
                 }
             }
             return cmp;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return o == this || (null != o &&
+                    this.getClass().equals(o.getClass()) &&
+                    ((MatchResult)o).getExactCount() == this.getExactCount() &&
+                    ((MatchResult)o).getAssignableCount() == this.getAssignableCount() &&
+                    ((MatchResult)o).getCoercible() == this.getCoercible() &&
+                    ((MatchResult)o).getVarArgsCount() == this.getVarArgsCount() &&
+                    ((MatchResult)o).isVarArgs() == this.isVarArgs() &&
+                    ((MatchResult)o).isBridge() == this.isBridge());
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + assignableCount;
+            result = prime * result + (bridge ? 1231 : 1237);
+            result = prime * result + coercibleCount;
+            result = prime * result + exactCount;
+            result = prime * result + (varArgs ? 1231 : 1237);
+            result = prime * result + varArgsCount;
+            return result;
+        }
+
     }
 
 }

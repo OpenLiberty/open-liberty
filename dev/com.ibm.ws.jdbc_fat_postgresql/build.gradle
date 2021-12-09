@@ -15,9 +15,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-       "org.testcontainers:jdbc:${testcontainersVersion}",
-       "org.testcontainers:postgresql:${testcontainersVersion}"
   postgres 'org.postgresql:postgresql:42.2.5'
 }
 
@@ -37,4 +34,4 @@ task copyAnonymousPostgres(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn copyAnonymousPostgres
-addRequiredLibraries.dependsOn addTestcontainers
+addRequiredLibraries.dependsOn copyTestContainers

@@ -2,6 +2,7 @@ import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
 import { fromJS, List } from "immutable"
 import { getSampleSchema } from "core/utils"
+import { getKnownSyntaxHighlighterLanguage } from "core/utils/jsonParse"
 
 const NOOP = Function.prototype
 
@@ -14,6 +15,7 @@ export default class ParamBody extends PureComponent {
     consumes: PropTypes.object,
     consumesValue: PropTypes.string,
     fn: PropTypes.object.isRequired,
+    getConfigs: PropTypes.func.isRequired,
     getComponent: PropTypes.func.isRequired,
     isExecute: PropTypes.bool,
     specSelectors: PropTypes.object.isRequired,
@@ -96,7 +98,7 @@ export default class ParamBody extends PureComponent {
       isExecute,
       specSelectors,
       pathMethod,
-
+      getConfigs,
       getComponent,
     } = this.props
 
@@ -111,6 +113,11 @@ export default class ParamBody extends PureComponent {
     let consumes = this.props.consumes && this.props.consumes.size ? this.props.consumes : ParamBody.defaultProp.consumes
 
     let { value, isEditBox } = this.state
+    let language = null
+    let testValueForJson = getKnownSyntaxHighlighterLanguage(value)
+    if (testValueForJson) {
+      language = "json"
+    }
 
     return (
       <div className="body-param" data-param-name={param.get("name")} data-param-in={param.get("in")}>
@@ -118,7 +125,9 @@ export default class ParamBody extends PureComponent {
           isEditBox && isExecute
             ? <TextArea className={ "body-param__text" + ( errors.count() ? " invalid" : "")} value={value} onChange={ this.handleOnChange }/>
             : (value && <HighlightCode className="body-param__example"
-                               value={ value }/>)
+                          language={ language }
+                          getConfigs={ getConfigs }
+                          value={ value }/>)
         }
         <div className="body-param-options">
           {
@@ -131,7 +140,12 @@ export default class ParamBody extends PureComponent {
           }
           <label htmlFor="">
             <span>Parameter content type</span>
-            <ContentType value={ consumesValue } contentTypes={ consumes } onChange={onChangeConsumes} className="body-param-content-type" />
+            <ContentType 
+              value={ consumesValue } 
+              contentTypes={ consumes } 
+              onChange={onChangeConsumes} 
+              className="body-param-content-type" 
+              ariaLabel="Parameter content type" />
           </label>
         </div>
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifique la configuraci\u00f3n del 
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Una solicitud a [{0}] no es v\u00e1lida. Falta una cookie obligatoria con un nombre que empieza por WASReqURLOidc. El nombre de host (host name) que se utiliza para acceder al cliente podr\u00eda no coincidir con el nombre registrado en el proveedor. Se devuelve un c\u00f3digo de respuesta de 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Se ha recibido una solicitud que no incluye una cookie obligatoria.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. Es posible que la cookie que falta se deba al hecho de acceder al cliente con un nombre de host distinto al nombre de host de redirecci\u00f3n registrado con el proveedor.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. Es posible que la cookie que falta se deba al hecho de acceder al cliente con un nombre de host distinto al nombre de host de redirecci\u00f3n registrado con el proveedor. Si el atributo sameSiteCookie del elemento webAppSecurity de la configuraci\u00f3n del servidor est\u00e1 establecido en Estrict, intente establecer el valor en Lax o None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: La configuraci\u00f3n del cliente de OpenID Connect (parte dependiente o RP) [{2}] especifica el URL de punto final de descubrimiento [{0}] y los otros puntos finales. RP utilizar\u00e1 la informaci\u00f3n de la solicitud de descubrimiento e ignorar\u00e1 los otros puntos finales configurados [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=El cliente OpenId Connect utiliza el punto final de descubrimiento para ponerse en contacto con el proveedor y utiliza la informaci\u00f3n de la solicitud de descubrimiento para ponerse en contacto con los otros puntos finales como autorizaci\u00f3n y se\u00f1al e informaci\u00f3n de usuario.
@@ -287,5 +287,12 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=Revise el archivo server.xml y corrija la
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una solicitud a [{0}] no es v\u00e1lida. Una cookie necesaria con un nombre que empieza con WASReqURLOidc tiene un valor incorrecto. El nombre de host [{1}] que se utiliza en la cookie no coincide con el nombre que se ha registrado en el proveedor. Se devuelve un c\u00f3digo de respuesta de 500.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Se ha recibido una solicitud que incluye una cookie mal formada.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. La cookie mal formada puede estar causada por la modificaci\u00f3n de cookies en el agente de usuario con un nombre de host que difiere del nombre de host de la redirecci\u00f3n que se ha registrado en el proveedor. Si se espera el nombre de host, a\u00f1\u00e1dalo al atributo wasReqURLRedirectDomainNames del elemento webAppSecurity en server.xml.
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: El cliente de {0} OpenID Connect no puede extraer reclamaciones de la se\u00f1al web JSON (JWT) de la respuesta de la web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La respuesta de la web debe ser una JWT en formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Es posible que la respuesta no est\u00e9 bien formada o que el cliente de OpenID Connect haya encontrado otro error al procesar la respuesta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la respuesta est\u00e1 en formato JWT.
+
+#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

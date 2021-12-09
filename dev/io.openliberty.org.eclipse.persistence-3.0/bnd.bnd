@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ Bundle-SymbolicName: io.openliberty.org.eclipse.persistence-3.0; singleton:=true
 Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 
 Import-Package: \
+  com.ibm.ws.threadContext, \
+  com.ibm.ws.runtime.metadata, \
   org.osgi.framework;version="[1.6,2)", \
   org.osgi.util.tracker;version="[1.5,2)", \
   javax.sql; resolution:=optional

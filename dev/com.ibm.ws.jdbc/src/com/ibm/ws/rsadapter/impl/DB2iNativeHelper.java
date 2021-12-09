@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,8 @@ public class DB2iNativeHelper extends DB2Helper {
     DB2iNativeHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+
         // For the Native driver (unlike the Toolbox driver) the custom property isolationLevelSwitchingSupport is
         // optional and really is only needed if the target database is a remote one.  If this property is not set
         // local DB2 access is assumed and the os.version is checked to determine if isolation level switching is 
@@ -75,11 +77,6 @@ public class DB2iNativeHelper extends DB2Helper {
 
             switchingSupportDetermined = true;
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
         // --- The Native driver will return this CLI SQLState (HY017) whenever a connection is no longer available.
         //     This covers the case when an underlying iSeries QSQSRVR prestart job on the iSeries that represents
@@ -97,12 +94,15 @@ public class DB2iNativeHelper extends DB2Helper {
         // **** DuplicateKeyException *****
         //     SQLCode   SQLState  Toolbox  Native       DatabaseHelper         DB2Helper        DB2iNativeHelper
         //     SQL0803   23505        X       X           SQLState              SQLCode
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                            "HY017");
     }
 
     @Override
     public boolean doConnectionCleanup(java.sql.Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup");
 
@@ -127,6 +127,11 @@ public class DB2iNativeHelper extends DB2Helper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

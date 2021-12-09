@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,10 +38,10 @@ public class DelaySseResource extends Application {
     private static String returnMessage = null;
 
     @GET
-    @Path("/retry3")
+    @Path("/retry2")
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public void send3retries(@Context SseEventSink eventSink, @Context Sse sse) {
-        System.out.println("DelaySseResource:  In send3retries method.  Retry = " + retry);
+    public void send2retries(@Context SseEventSink eventSink, @Context Sse sse) {
+        System.out.println("DelaySseResource:  In send2retries method.  Retry = " + retry);
         if (retry == 0) {
             retry = 1;
             startTime = System.currentTimeMillis();
@@ -65,7 +65,6 @@ public class DelaySseResource extends Application {
             System.out.println("DelaySseResource:  Throwing 503-2:  sdfString = " + sdfString);
             throw new WebApplicationException(Response.status(503).header(HttpHeaders.RETRY_AFTER, sdfString).build());
         } else if (retry == 2) {
-            retry = 3;
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
             if (!(delayTime >= 9000)) {
@@ -79,38 +78,20 @@ public class DelaySseResource extends Application {
             startTime = System.currentTimeMillis();
 
             try (SseEventSink s = eventSink) {
-                System.out.println("DelaySseResource:  sending event with 5000 delay");
-                s.send(sse.newEventBuilder().data(returnMessage).reconnectDelay(5000L).build());
-            }
-            if (!eventSink.isClosed()) {
-                System.out.println("DelaySseResource:  eventSink has autoclosed-1");
-                DelaySseTestServlet.resourceFailures.add("AutoClose in DelaySseResource.send3retries failed for eventSink");
-            }
-        } else if (retry == 3) {
-            delayTime = System.currentTimeMillis() - startTime;
-            //Since HTTP dates are in seconds we need to allow for a slightly lower result
-            if (!(delayTime >= 4000)) {
-                returnMessage = "Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime;
-                System.out.println("DelaySseResource:  Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime);
-            } else {
-                System.out.println("DelaySseResource:  Retry Test 3 Successful");
-                returnMessage = "Reset Test Successful";
-            }
-            try (SseEventSink s = eventSink) {
-                System.out.println("DelaySseResource:  sending event with no delay");
+                System.out.println("DelaySseResource:  sending event");
                 s.send(sse.newEventBuilder().data(returnMessage).build());
             }
+            
             //reset
             retry = 0;
             returnMessage = null;
             startTime = 0;
             delayTime = 0;
-
+            
             if (!eventSink.isClosed()) {
-                System.out.println("DelaySseResource:  eventSink has autoclosed-2");
+                System.out.println("DelaySseResource:  eventSink has autoclosed-1");
                 DelaySseTestServlet.resourceFailures.add("AutoClose in DelaySseResource.send3retries failed for eventSink");
             }
-
         }
-    }
+    }    
 }

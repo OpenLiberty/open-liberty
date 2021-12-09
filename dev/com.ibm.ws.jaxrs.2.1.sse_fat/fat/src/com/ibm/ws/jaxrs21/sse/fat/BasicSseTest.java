@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.sse.fat;
+
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -20,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -80,7 +83,17 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(EE9_FEATURES) // per spec discussions, only unrecoverable connection-related errors should trigger onError
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
+    }
+
+    /**
+     * Note that this test tests a non-spec-defined behavior that the JAX-RS 2.1 and 3.0 TCK
+     * relies upon in order for a client test to pass.
+     */
+    @Test
+    public void testNoEventsResultsIn200() throws Exception {
+        runTest(server, SERVLET_PATH, "testNoEventsResultsIn200");
     }
 }

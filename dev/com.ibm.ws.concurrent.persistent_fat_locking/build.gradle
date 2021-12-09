@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries {
-	dependsOn copyJdbcDrivers
-	dependsOn copyDatabaseRotationDrivers
-}
+addRequiredLibraries.dependsOn copyTestContainers 
+addRequiredLibraries.dependsOn copyJdbcDrivers
+

@@ -41,7 +41,7 @@ public class JNDIServiceBinder implements AllServiceListener {
     static final String OSGI_JNDI_SERVICE_FILTER = "(&(osgi.jndi.service.name=*)(!(osgi.jndi.service.origin=jndi)))";
 
     static Hashtable<String, Object> createServiceProperties(WSName wsName, String className) {
-        Hashtable<String, Object> localEnv = new Hashtable<String, Object>();
+        Hashtable<String, Object> localEnv = new Hashtable<>();
         localEnv.put(OSGI_JNDI_SERVICE_NAME, wsName.toString());
         localEnv.put(OSGI_JNDI_SERVICE_ORIGIN, OSGI_JNDI_SERVICE_ORIGIN_VALUE);
         if (className != null)
@@ -60,7 +60,7 @@ public class JNDIServiceBinder implements AllServiceListener {
      * Store the last known JNDI name for a service so that if
      * it is updated we can remove it from the old location.
      */
-    private final ConcurrentMap<ServiceReference<?>, WSName> serviceNames = new ConcurrentHashMap<ServiceReference<?>, WSName>();
+    private final ConcurrentMap<ServiceReference<?>, WSName> serviceNames = new ConcurrentHashMap<>();
 
     protected void activate(BundleContext bundleContext) {
         try {
@@ -150,21 +150,17 @@ public class JNDIServiceBinder implements AllServiceListener {
 
     @FFDCIgnore(PrivilegedActionException.class)
     private ServiceReference<?>[] getAllServiceReferences(final BundleContext bundleContext) throws InvalidSyntaxException {
-        if (System.getSecurityManager() == null)
-            return bundleContext.getAllServiceReferences(null, OSGI_JNDI_SERVICE_FILTER);
-        else
-            try {
-                return AccessController.doPrivileged(new PrivilegedExceptionAction<ServiceReference<?>[]>() {
-                    @Override
-                    public ServiceReference<?>[] run() throws InvalidSyntaxException {
-                        return bundleContext.getAllServiceReferences(null, OSGI_JNDI_SERVICE_FILTER);
-                    }
-                });
-            } catch (PrivilegedActionException e) {
-                if (e.getCause() instanceof InvalidSyntaxException)
-                    throw (InvalidSyntaxException) e.getCause();
-                else
-                    throw new RuntimeException(e);
-            }
+        if (System.getSecurityManager() == null) return bundleContext.getAllServiceReferences(null, OSGI_JNDI_SERVICE_FILTER);
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<ServiceReference<?>[]>() {
+                @Override
+                public ServiceReference<?>[] run() throws InvalidSyntaxException {
+                    return bundleContext.getAllServiceReferences(null, OSGI_JNDI_SERVICE_FILTER);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof InvalidSyntaxException) throw (InvalidSyntaxException)e.getCause();
+            throw new RuntimeException(e);
+        }
     }
 }

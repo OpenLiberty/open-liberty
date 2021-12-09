@@ -1050,9 +1050,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Stellen Sie sicher, dass die ang
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Die Messaging-Engine {0} hat auf die Subskriptionsanforderung geantwortet. Die Publish/Subscribe-Topologie ist jetzt konsistent.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Die Kommunikation zwischen den Messaging-Engines war erfolgreich, und die Publish/Subscribe-Topologie ist konsistent.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Keine.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Die Messaging-Engine {0} hat auf die Subskriptionsanforderung geantwortet. Die Publish/Subscribe-Topologie ist jetzt konsistent.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Die Kommunikation zwischen den Messaging-Engines war erfolgreich und die Publish/Subscribe-Topologie ist konsistent.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=Keine.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1822,7 +1822,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Blockierter Empf\u00e4nger. Der Empf\u00e4nger kann die aktuelle eingehende Nachricht aufgrund von {0} am Ziel {1} nicht zustellen.
-HEALTHSTATE_STATUS_CWSIP0919.explanation=Der Empf\u00e4nger kann eine Nachricht aus dem angegebenen Grund nicht an das geplante Ziel zustellen. Solange dieses Problem nicht gel\u00f6st ist, bleibt die Zustellung nachfolgender Nachrichten blockiert.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Der Empf\u00e4nger kann eine Nachricht aus dem angegebenen Grund nicht an das geplante Ziel zustellen. Solange dieses Problem nicht gel\u00f6st ist. bleibt die Zustellung nachfolgender Nachrichten blockiert.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Wenn dieser Zustand anh\u00e4lt, ergreifen Sie die entsprechenden Ma\u00dfnahmen, um das Problem mit der Nachricht zu beheben.
 
 # -------------------------------------------------------------------------------------------------

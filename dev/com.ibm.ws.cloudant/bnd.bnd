@@ -18,7 +18,8 @@ DynamicImport-Package: \
     com.ibm.wsspi.ssl
 
 Private-Package:\
-     com.ibm.ws.cloudant.internal
+     com.ibm.ws.cloudant.internal,\
+     com.ibm.ws.cloudant.internal.resources
      
 Export-Package: \
     com.ibm.ws.cloudant

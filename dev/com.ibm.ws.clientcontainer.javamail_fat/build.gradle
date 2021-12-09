@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+addRequiredLibraries.dependsOn addJakartaTransformer
 /* Define greenmail dependencies */
 dependencies {
   requiredLibs 'com.icegreen:greenmail:1.5.10',

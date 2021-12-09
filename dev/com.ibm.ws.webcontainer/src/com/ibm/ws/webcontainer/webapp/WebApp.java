@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1241,10 +1241,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         }
     }
     
-    // Begin 299205, Collaborator added in extension processor recieves no
+    // Begin 299205, Collaborator added in extension processor receives no
     // events
     protected void commonInitializationStart(WebAppConfiguration config, DeployedModule moduleConfig) throws Throwable {
-        // End 299205, Collaborator added in extension processor recieves no
+        // End 299205, Collaborator added in extension processor receives no
         // events
         WebGroupConfiguration webGroupCfg = ((WebGroup) parent).getConfiguration();
         isServlet23 = webGroupCfg.isServlet2_3();
@@ -4039,7 +4039,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             destroyListeners(new ArrayList[] { servletContextListeners, servletContextLAttrListeners, servletRequestListeners,
                                               servletRequestLAttrListeners, sessionListeners, sessionIdListeners, sessionAttrListeners, sessionActivationListeners, sessionBindingListeners });
 
-            // Begin 299205, Collaborator added in extension processor recieves no
+            // Begin 299205, Collaborator added in extension processor receives no
             // events
             finishDestroyCleanup();
 
@@ -4081,7 +4081,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         attributes.clear();
     }
 
-    // End 299205, Collaborator added in extension processor recieves no events
+    // End 299205, Collaborator added in extension processor receives no events
 
     /**
      * Method sendError.
@@ -4101,8 +4101,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // PK82794
         if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE) {
            // reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
-            if (req instanceof SRTServletRequest) {
-                SRTServletRequest srtReq = (SRTServletRequest) req;
+            if (req instanceof IExtendedRequest) {
+                IExtendedRequest srtReq = (IExtendedRequest) req;
                 IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                 if (iReq != null) {
                     HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
@@ -4196,23 +4196,27 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             // set the response status
             res.setStatus(error.getErrorCode());
 
-            // We have to determine the charset to use with the error page
-            String clientEncoding = req.getCharacterEncoding();
-            // PK21127 start
-            if (clientEncoding != null && !EncodingUtils.isCharsetSupported(clientEncoding)) {
-                // charset not supported, continue with the logic to determine
-                // the encoding
-                clientEncoding = null;
-            }
-            // PK21127 end
-            if (clientEncoding == null)
-                clientEncoding = com.ibm.wsspi.webcontainer.util.EncodingUtils.getEncodingFromLocale(req.getLocale());
-            if (clientEncoding == null)
-                clientEncoding = System.getProperty("default.client.encoding");
-            if (clientEncoding == null)
-                clientEncoding = "ISO-8859-1";
+            if(WCCustomProperties.SET_HTML_CONTENT_TYPE_ON_ERROR){
+                // We have to determine the charset to use with the error page
+                String clientEncoding = req.getCharacterEncoding();
+                // PK21127 start
+                if (clientEncoding != null && !EncodingUtils.isCharsetSupported(clientEncoding)) {
+                    // charset not supported, continue with the logic to determine
+                    // the encoding
+                    clientEncoding = null;
+                }
 
-            res.setContentType("text/html;charset=" + clientEncoding);
+                // PK21127 end
+                if (clientEncoding == null)
+                    clientEncoding = com.ibm.wsspi.webcontainer.util.EncodingUtils.getEncodingFromLocale(req.getLocale());
+                if (clientEncoding == null)
+                    clientEncoding = System.getProperty("default.client.encoding");
+                if (clientEncoding == null)
+                    clientEncoding = "ISO-8859-1";
+
+                res.setContentType("text/html;charset=" + clientEncoding);
+            }
+
         } catch (IllegalStateException ise) {
             // failed to set status code.
             // This could be caused by:
@@ -4752,6 +4756,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * @param error
      */
     private void reportRecursiveError(ServletRequest req, ServletResponse res, ServletErrorReport originalErr, ServletErrorReport recurErr) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+            logger.logp(Level.FINE, CLASS_NAME, "reportRecursiveError",  "");
 
         try {
             String message = error_nls.getString("error.page.exception", "Error Page Exception");
@@ -4767,21 +4773,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, CLASS_NAME + ".reportRecursiveError", "985", this);
                 out = new PrintWriter(new OutputStreamWriter(res.getOutputStream(), res.getCharacterEncoding()));
             }
-            if (!WCCustomProperties.SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT) { // PK77421
-                out
-                        .println("<H1>"
-                            + message
-                            + "</H1>\n<H4>"
-                                + nls
-                                        .getString("cannot.use.error.page",
-                                            "The server cannot use the error page specified for your application to handle the Original Exception printed below.") // 406426
-                            + "</H4>");
-                out.println("<BR><H3>" + error_nls.getString("original.exception", "Original Exception") + ": </H3>"); // 406426
-                printErrorInfo(out, originalErr);
-                out.println("<BR><BR><H3>" + error_nls.getString("error.page.exception", "Error Page Exception") + ": </H3>"); // 406426
-                printErrorInfo(out, recurErr);
-                out.flush();
-            }
+            
         } catch (Throwable th) {
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, CLASS_NAME + ".reportRecursiveError", "998", this);
             log("Unable to report exception to client", th);

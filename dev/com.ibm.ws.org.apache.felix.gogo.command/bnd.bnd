@@ -8,12 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.felix:org.apache.felix.gogo.command;0.16.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.felix:org.apache.felix.gogo.command;1.1.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.felix:org.apache.felix.gogo.command;0.16.0}!/!META-INF/maven/*
+   @${repo;org.apache.felix:org.apache.felix.gogo.command;1.1.2}!/!META-INF/maven/*
 
 instrument.disabled: true
 
 -buildpath: \
-	org.apache.felix:org.apache.felix.gogo.command;version=0.16.0
+	org.apache.felix:org.apache.felix.gogo.command;version=1.1.2

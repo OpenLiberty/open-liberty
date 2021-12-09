@@ -1,14 +1,26 @@
 #!/bin/bash
-# This script runs all unit tests and outputs final values [total / successes / failed / skipped]
 
+##############################
+# This script runs all unit tests, and reports failure/success
+# Inputs: none
+# Outputs: 
+#   Files: /dev/unit-results/*    - junit.xml files saved in a common directory used by KyleAure/junit-report-annotations-action
+#   File: /dev/tmp/gradle.log     - Gradle output to be uploaded if there is a failure
+#   Build Output: status          - Reports build status [failure/success]
+############################## 
+
+#Setup gradle
 cd dev
 chmod +x gradlew
 
-echo "Running gradle test and testReport tasks.  This will take approx. 30 minutes."
+# global variables
+OUTPUT_FILE=tmp/gradle.log && mkdir -p -- $(dirname -- $OUTPUT_FILE) && touch -- $OUTPUT_FILE
+UNIT_DIR=$PWD/unit-results/ && mkdir -p $UNIT_DIR
 
 # Redirect stdout to log file that will get archived if build fails
+echo "Running gradle test and testReport tasks.  This will take approx. 30 minutes."
 echo "::group::Gradle Output"
-./gradlew --continue cnf:initialize testResults -Dgradle.test.ignoreFailures=true
+./gradlew --continue cnf:initialize testResults -Dgradle.test.ignoreFailures=true &> $OUTPUT_FILE
 echo "::endgroup::"
 
 # Gradle testResults task will save off results in generated.properties ensure that file exists otherwise fail
@@ -27,10 +39,6 @@ total=$(grep tests.total.all generated.properties | sed 's/[^0-9]*//g')
 successful=$(grep tests.total.successful generated.properties | sed 's/[^0-9]*//g')
 failed=$(grep tests.total.failed generated.properties | sed 's/[^0-9]*//g')
 skipped=$(grep tests.total.skipped generated.properties | sed 's/[^0-9]*//g')
-
-#Setup output directory 
-UNIT_DIR=$PWD/unit-results
-mkdir $UNIT_DIR
 
 #Collect test results in central location
 #Check each project

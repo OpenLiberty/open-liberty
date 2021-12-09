@@ -34,7 +34,7 @@ public class MPContextPropagationTCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKZ0014W"); // Updates after the app is deleted. Can occur due to Arquillian use.
     }
 
     @AllowedFFDC({ "java.lang.IllegalStateException", // transaction cannot be propagated to 2 threads at the same time
@@ -46,5 +46,6 @@ public class MPContextPropagationTCKLauncher {
         // TODO use this to only test with local build
         // if (FATRunner.FAT_TEST_LOCALRUN)
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.2_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
+        MvnUtils.preparePublicationFile();
     }
 }

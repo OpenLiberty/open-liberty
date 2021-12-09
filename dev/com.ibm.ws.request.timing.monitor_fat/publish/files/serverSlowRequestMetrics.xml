@@ -1,0 +1,16 @@
+<server description="request timing test server">
+
+  <!-- Enable features -->
+  <featureManager>
+    <feature>jsp-2.3</feature>
+    <feature>mpMetrics-3.0</feature>
+    <feature>requestTiming-1.0</feature>
+    <feature>monitor-1.0</feature>
+  </featureManager>
+  <mpMetrics authentication="false"/>
+  <include location="../fatTestPorts.xml"/>
+  
+  <requestTiming slowRequestThreshold="10s" hungRequestThreshold="5m"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -203,10 +204,15 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             featureBundlesResolved = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
         }
 
-        Set<String> getFeaturesWithLowerCaseName() {
+        Set<String> getFeaturesWithLowerCaseName(FeatureRepository featureRepo) {
             Set<String> lcnFeatures = new HashSet<String>();
             for (String feature : features) {
-                lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                ProvisioningFeatureDefinition f = featureRepo.getFeature(feature);
+                if (f == null || f.getVisibility() == Visibility.PUBLIC) {
+                    lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                } else {
+                    lcnFeatures.add(feature);
+                }
             }
 
             return lcnFeatures;
@@ -256,6 +262,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * during install/start of feature bundles
      */
     protected OnError onError;
+
+    private final String CONFIG_PACKAGE_SERVER_CONFLICT = "package.server.conflict";
+    private Set<String> packageServerConflict = null;
 
     /** Cache for currently installed features (and for all information we know about features) */
     protected FeatureRepository featureRepository;
@@ -625,6 +634,22 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         onError = (OnError) configuration.get(OnErrorUtil.CFG_KEY_ON_ERROR);
+        String packageServerConflictString = (String) configuration.get(CONFIG_PACKAGE_SERVER_CONFLICT);
+        if (packageServerConflictString != null) {
+            if (!packageServerConflictString.equalsIgnoreCase("false") && packageServerConflictString.length() != 0) {
+                packageServerConflict = new HashSet<>();
+                if (!packageServerConflictString.equalsIgnoreCase("true")) {
+                    int startingIndex = 0;
+                    int index = packageServerConflictString.indexOf(",");
+                    while (index != -1) {
+                        packageServerConflict.add(packageServerConflictString.substring(startingIndex, index).trim());
+                        startingIndex = index + 1;
+                        index = packageServerConflictString.indexOf(",", startingIndex);
+                    }
+                    packageServerConflict.add(packageServerConflictString.substring(startingIndex).trim());
+                }
+            }
+        }
 
         String[] features = (String[]) configuration.get(CFG_KEY_ACTIVE_FEATURES);
         if (features == null) {
@@ -1209,7 +1234,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private Result resolveFeatures(FeatureChange featureChange) {
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         return resolveFeatures(newConfiguredFeatures, new ArrayList<String>(), featureChange.provisioningMode);
     }
@@ -1222,12 +1247,21 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         Repository restrictedRespository;
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
+        boolean featureListIsComplete = false;
+        Set<String> currentPackageServerConflict = null;
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
             allowMultipleVersions = Boolean.getBoolean("internal.minify.ignore.singleton");
+            // For packaging purposes; have an option that just blindly takes
+            // the feature list and uses it without using the resolver.
+            // This feature list may include public, protected, private and auto-features.
+            // No additional feature resolution will be done to pull in additional required features.
+            // The feature list is expected to be complete.
+            featureListIsComplete = Boolean.getBoolean("internal.minify.feature.list.complete");
             // do not restrict any features
             restrictedRespository = featureRepository;
+            currentPackageServerConflict = packageServerConflict;
         } else {
             if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                 // do not restrict any features while resolving, but ....
@@ -1249,18 +1283,81 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 restrictedRespository = temp;
             }
         }
+        Result result;
+        if (featureListIsComplete) {
+            result = createResultFromCompleteList(restrictedRespository, rootFeatures);
+        } else {
+            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions, currentPackageServerConflict);
+        }
+        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
+        return result;
+    }
+
+    private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
+                                       boolean allowMultipleVersions, Set<String> currentPackageServerConflict) {
+
+        // short circuit if package server is expecting conflicts
+        if (currentPackageServerConflict != null) {
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict, EnumSet.allOf(ProcessType.class));
+        }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
-        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(),
+        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(),
                                                         false);
         if (allowMultipleVersions) {
             if (!result.getConflicts().isEmpty()) {
-                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(), true);
+                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
             }
         }
-        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
 
         return result;
+    }
+
+    private Result createResultFromCompleteList(Repository repository, Set<String> rootFeatures) {
+        final Set<String> missing = new HashSet<>();
+        final Set<String> resolved = new LinkedHashSet<>();
+
+        for (String featureName : rootFeatures) {
+            ProvisioningFeatureDefinition feature = repository.getFeature(featureName);
+            if (feature == null) {
+                missing.add(featureName);
+            } else {
+                resolved.add(feature.getFeatureName());
+            }
+        }
+
+        return new Result() {
+
+            @Override
+            public boolean hasErrors() {
+                return !getMissing().isEmpty();
+            }
+
+            @Override
+            public Map<String, Chain> getWrongProcessTypes() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedFeatures() {
+                return resolved;
+            }
+
+            @Override
+            public Set<String> getNonPublicRoots() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Set<String> getMissing() {
+                return missing;
+            }
+
+            @Override
+            public Map<String, Collection<Chain>> getConflicts() {
+                return Collections.emptyMap();
+            }
+        };
     }
 
     /**
@@ -1284,7 +1381,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures()) {
 
@@ -1983,19 +2080,25 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
-    private static char getEeCompatibleVersion(String symbolicName) {
-        return symbolicName.charAt(symbolicName.lastIndexOf("-") + 1);
+    private static int getEeCompatibleVersion(String symbolicName) {
+        String version = symbolicName.substring(symbolicName.lastIndexOf("-") + 1);
+        int dotIndex = version.indexOf('.');
+        if (dotIndex != -1) {
+            version = version.substring(0, dotIndex);
+        }
+        return Integer.parseInt(version);
     }
 
     private String getEeCompatiblePlatform(String symbolicName, boolean ignoreVersion) {
-        char charVersion = getEeCompatibleVersion(symbolicName);
-        switch (charVersion) {
-            case '9':
-                return "Jakarta EE" + ((ignoreVersion) ? "" : " " + charVersion);
-            case '8':
-            case '7':
-            case '6':
-                return "Java EE" + ((ignoreVersion) ? "" : " " + charVersion);
+        int intVersion = getEeCompatibleVersion(symbolicName);
+        switch (intVersion) {
+            case 10:
+            case 9:
+                return "Jakarta EE" + ((ignoreVersion) ? "" : " " + intVersion);
+            case 8:
+            case 7:
+            case 6:
+                return "Java EE" + ((ignoreVersion) ? "" : " " + intVersion);
             default:
                 // TODO this is really just a fall back and for testing
                 // this should come from additional meta-data of the feature
@@ -2004,7 +2107,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (fd != null) {
                     String subsystemName = fd.getHeader("Subsystem-Name");
                     if (subsystemName != null) {
-                        return subsystemName + ((ignoreVersion) ? "" : " " + charVersion);
+                        return subsystemName + ((ignoreVersion) ? "" : " " + intVersion);
                     }
                 }
                 return "Unknown";

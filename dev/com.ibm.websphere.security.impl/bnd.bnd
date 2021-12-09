@@ -59,7 +59,7 @@ Service-Component: \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    commons-logging:commons-logging;version=1.1.1, \
+    io.openliberty.org.apache.commons.logging;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.security.authentication;version=latest, \
 	com.ibm.ws.security.authorization;version=latest

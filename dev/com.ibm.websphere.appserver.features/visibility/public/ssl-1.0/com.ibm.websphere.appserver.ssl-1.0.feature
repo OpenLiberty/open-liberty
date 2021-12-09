@@ -9,7 +9,7 @@ IBM-Process-Types: server, \
  client
 Subsystem-Name: Secure Socket Layer 1.0
 -features=com.ibm.websphere.appserver.channelfw-1.0, \
- com.ibm.websphere.appserver.certificateCreator-1.0; ibm.tolerates:=2.0
+  com.ibm.websphere.appserver.certificateCreator-1.0; ibm.tolerates:="2.0"
 -bundles=com.ibm.ws.ssl, \
  com.ibm.ws.channel.ssl, \
  com.ibm.websphere.security, \

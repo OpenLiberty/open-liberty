@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  *******************************************************************************/
 package web;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,23 +19,24 @@ import java.util.concurrent.TimeUnit;
  */
 public class CancelableTask extends DBIncrementTask {
     private static final long serialVersionUID = 3868336361814085081L;
-    private static final LinkedBlockingQueue<String> canceledSignal = new LinkedBlockingQueue<String>();
-    private static final LinkedBlockingQueue<String> startedSignal = new LinkedBlockingQueue<String>();
+    private static final ConcurrentHashMap<String, CountDownLatch> canceledSignals = new ConcurrentHashMap<String, CountDownLatch>();
+    private static final ConcurrentHashMap<String, CountDownLatch> startedSignals = new ConcurrentHashMap<String, CountDownLatch>();
 
     private final boolean waitForCancel;
 
     public CancelableTask(String key, boolean waitForCancel) {
         super(key);
         this.waitForCancel = waitForCancel;
+        canceledSignals.put(key, new CountDownLatch(1));
+        startedSignals.put(key, new CountDownLatch(1));
     }
 
     @Override
     public Integer call() throws Exception {
-        startedSignal.add(execProps.get(IDENTITY_NAME));
+        startedSignals.get(key).countDown();
         Integer result = super.call();
         if (waitForCancel) {
-            String canceled = canceledSignal.poll(SchedulerFATServlet.TIMEOUT_NS, TimeUnit.NANOSECONDS);
-            if (canceled == null)
+            if (!canceledSignals.get(key).await(SchedulerFATServlet.TIMEOUT_NS, TimeUnit.NANOSECONDS))
                 throw new Exception("Did not receive canceled signal within allotted interval");
         }
         return result;
@@ -42,22 +44,17 @@ public class CancelableTask extends DBIncrementTask {
 
     /**
      * Notify that a CancelableTask has been canceled.
-     * WARNING: This is only valid if no more than one CancelableTask is submitted/running at any given point in time.
      */
     static void notifyTaskCanceled(String key) {
-        canceledSignal.add(key);
+        canceledSignals.get(key).countDown();
     }
 
     /**
      * Wait for the specified task to start.
-     * WARNING: This is only valid if no more than one CancelableTask is submitted/running at any given point in time.
      */
     static void waitForStart(String key) throws Exception {
-        String started = null;
-        do
-            started = CancelableTask.startedSignal.poll(SchedulerFATServlet.TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        while (started != null && !started.equals(key));
-        if (started == null)
+        boolean started = startedSignals.get(key).await(SchedulerFATServlet.TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        if (!started)
             throw new Exception("Task " + key + " not started within allotted interval");
     }
 }

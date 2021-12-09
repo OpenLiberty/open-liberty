@@ -38,7 +38,9 @@ import test.common.SharedOutputManager;
 
 public class OAuthClientTrackerTest extends CommonTestClass {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.oauth.*=all");
+    private static String traceString = "com.ibm.ws.security.oauth*";
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
@@ -103,6 +105,7 @@ public class OAuthClientTrackerTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     @Test

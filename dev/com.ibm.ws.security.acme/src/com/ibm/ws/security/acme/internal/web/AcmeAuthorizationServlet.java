@@ -42,7 +42,11 @@ public class AcmeAuthorizationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8515248242091988849L;
 
-	public static final String APP_NAME = "com.ibm.ws.security.acme";
+	/** The WAB's application name when running EE8-. */
+	public static final String APP_NAME_EE8 = "com.ibm.ws.security.acme";
+	
+	/** The WAB's application name when running EE9+. */
+	public static final String APP_NAME_EE9 = "io.openliberty.security.acme.internal";
 
 	private static final TraceComponent tc = Tr.register(AcmeAuthorizationServlet.class);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,45 +8,60 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+apply from: "../wlp-gradle/subprojects/maven-central-mirror.gradle"
+
+ext.oracleVersion = '21.1.0.0'
 
 configurations {
-  oracle {transitive = false}
-  ucp {transitive = false}
+  oracle	{transitive = false}
+  oraclessl	{transitive = false}
+  ucp     	{transitive = false}
 }
 
 dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-               "org.testcontainers:oracle-xe:${testcontainersVersion}",
-               "org.testcontainers:jdbc:${testcontainersVersion}"
-  oracle 'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
-  ucp 'com.oracle.ojdbc:ucp:19.3.0.0'
+  oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
+  oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
+               	"com.oracle.database.security:oraclepki:${oracleVersion}",
+               	"com.oracle.database.security:osdt_core:${oracleVersion}",
+               	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
+  ucp           "com.oracle.database.jdbc:ucp:${oracleVersion}"
 }
 
 task copyAnonymousOracle(type: Copy) {
   shouldRunAfter jar
   from configurations.oracle
-  into new File(autoFvtDir, 'publish/shared/resources/oracle/')
+  into new File(autoFvtDir, "publish/shared/resources/oracle/")
   rename "ojdbc8_g-.*.", "oracleunknown.jar"
 }
 
 task copySharedOracle(type: Copy) {
   shouldRunAfter jar
   from configurations.oracle
-  into new File(autoFvtDir, 'publish/shared/resources/ucp/')
+  into new File(autoFvtDir, "publish/shared/resources/ucp/")
   rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
 }
 
 task copySharedUCP(type: Copy) {
   shouldRunAfter jar
   from configurations.ucp
-  into new File(autoFvtDir, 'publish/shared/resources/ucp/')
+  into new File(autoFvtDir, "publish/shared/resources/ucp/")
   rename "ucp-.*.", "ucp.jar"
+}
+
+task copySharedOracleSSL(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oraclessl
+  into new File(autoFvtDir, "publish/shared/resources/ssl/")
+  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+  rename "oraclepki.*.", "oraclepki.jar"
+  rename "osdt_core.*.", "osdt_core.jar"
+  rename "osdt_cert.*.", "osdt_cert.jar"
 }
 
 addRequiredLibraries {
   dependsOn copySharedOracle
   dependsOn copySharedUCP
   dependsOn copyAnonymousOracle
-  dependsOn addTestcontainers
+  dependsOn copySharedOracleSSL
+  dependsOn copyTestContainers
 }

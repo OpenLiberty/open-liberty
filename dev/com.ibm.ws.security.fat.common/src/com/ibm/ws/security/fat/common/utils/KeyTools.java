@@ -1,14 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.fat.common.utils;
 
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import org.jose4j.base64url.SimplePEMEncoder;
-
-import com.ibm.websphere.simplicity.log.Log;
+import java.util.Base64;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -22,7 +30,7 @@ public class KeyTools {
     public final static String rsaPrivateSuffix = "-----END PRIVATE KEY-----";
 
     public static String getComplexKey(LibertyServer server, String fileName) throws Exception {
-        Log.info(thisClass, "getComplexKey", "fileName: " + fileName);
+        System.out.println("getComplexKey - fileName: " + fileName);
         return getKeyFromFile(server, fileName);
     }
 
@@ -56,12 +64,22 @@ public class KeyTools {
         int endIndex = privateKeyString.indexOf(rsaPrivateSuffix);
 
         String base64 = privateKeyString.substring(beginIndex, endIndex).trim();
-        //        Log.info(thisClass, "getPrivateKeyFromPem", "base64: " + base64 + " end");
-        byte[] decode = SimplePEMEncoder.decode(base64);
+        System.out.println("getPrivateKeyFromPem - base64: " + base64 + " end");
+        byte[] decode = Base64.getDecoder().decode(base64);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePrivate(spec);
+
+        KeyFactory rsKeyFactory = KeyFactory.getInstance("RSA");
+        KeyFactory ecKeyFactory = KeyFactory.getInstance("EC");
+        PrivateKey key = null;
+        try {
+            key = rsKeyFactory.generatePrivate(spec);
+        } catch (InvalidKeySpecException e) {
+            key = ecKeyFactory.generatePrivate(spec);
+        } // don't catch failures from the final call - if that
+          // fails, we should really fail the request.
+        return key;
+
     }
 
     public static Key getPublicKeyFromPem(String publicKeyString) throws Exception {
@@ -70,12 +88,21 @@ public class KeyTools {
         int endIndex = publicKeyString.indexOf(rsaPublicSuffix);
 
         String base64 = publicKeyString.substring(beginIndex, endIndex).trim();
-        //        Log.info(thisClass, "getPublicKeyFromPem", "base64: " + base64 + " end");
-        byte[] decode = SimplePEMEncoder.decode(base64);
+        System.out.println("getPublicKeyFromPem - base64: " + base64 + " end");
+        byte[] decode = Base64.getDecoder().decode(base64);
 
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decode);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePublic(keySpec);
+
+        KeyFactory rsKeyFactory = KeyFactory.getInstance("RSA");
+        KeyFactory ecKeyFactory = KeyFactory.getInstance("EC");
+        Key key = null;
+        try {
+            key = rsKeyFactory.generatePublic(keySpec);
+        } catch (InvalidKeySpecException e) {
+            key = ecKeyFactory.generatePublic(keySpec);
+        } // don't catch failures from the final call - if that
+          // fails, we should really fail the request.
+        return key;
 
     }
 

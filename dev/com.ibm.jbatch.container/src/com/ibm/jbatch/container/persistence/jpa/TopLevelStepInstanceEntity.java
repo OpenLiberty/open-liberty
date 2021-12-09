@@ -49,7 +49,7 @@ public class TopLevelStepInstanceEntity extends StepThreadInstanceEntity {
 	// This is meant to signify whether the step is partitioned or not.
 	// It is not meant, in contract, to say whether for a partitioned step, 
 	// this object represents the top-level or partition-level thread of the partitioned step.
-	@Column(name="PARTITIONED", nullable=false)
+	@Column(name="PARTITIONED")
 	private boolean isPartitionedStep;
 	
 	// Not a useful constructor from the "real" flow of creating a step execution for the first time,

@@ -12,9 +12,11 @@
 package com.ibm.ws.crypto.util;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +78,8 @@ public class PasswordCipherUtil {
     static final String KEY_ENCRYPTION_SERVICE = "customPasswordEncryption";
     private static AtomicServiceReference<CustomPasswordEncryption> customPasswordEncryption = new AtomicServiceReference<CustomPasswordEncryption>(KEY_ENCRYPTION_SERVICE);
 
+    private static final String HW_PROVIDER = "IBMJCECCA";
+
     private static CustomPasswordEncryption cpeImpl = null;
     private static List<CustomManifest> cms = null;
     // in order to support the custom encryption for the command line parameter, implement a static initialier to check whether
@@ -106,7 +110,7 @@ public class PasswordCipherUtil {
     /**
      * Returns the list of custom password encryption if exists.
      * This method only works under the command line utility environment.
-     * 
+     *
      * @return list of the custom password encryption in JSON format
      * @throws UnsupportedConfigurationException If there are multiple custom password encryption exists.
      */
@@ -175,15 +179,14 @@ public class PasswordCipherUtil {
 
     /**
      * Decipher the input password using the provided algorithm.
-     * 
+     *
      * @param encrypted_bytes
      * @param crypto_algorithm
      * @return byte[] - decrypted password
      * @throws InvalidPasswordCipherException
      * @throws UnsupportedCryptoAlgorithmException
      */
-    public static byte[] decipher(byte[] encrypted_bytes, String crypto_algorithm)
-                    throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
+    public static byte[] decipher(byte[] encrypted_bytes, String crypto_algorithm) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
 
         if (crypto_algorithm == null) {
             logger.logp(Level.SEVERE, PasswordCipherUtil.class.getName(), "decipher", "PASSWORDUTIL_UNKNOWN_ALGORITHM",
@@ -224,7 +227,7 @@ public class PasswordCipherUtil {
             }
         } else {
             logger.logp(Level.SEVERE, PasswordCipherUtil.class.getName(), "decipher", "PASSWORDUTIL_UNKNOWN_ALGORITHM", new Object[] { crypto_algorithm,
-                                                                                                                                      formatSupportedCryptoAlgorithms() });
+                                                                                                                                       formatSupportedCryptoAlgorithms() });
             throw new UnsupportedCryptoAlgorithmException();
         }
 
@@ -273,15 +276,14 @@ public class PasswordCipherUtil {
 
     /**
      * Encipher the raw password using the provided algorithm.
-     * 
+     *
      * @param decrypted_bytes
      * @param crypto_algorithm
      * @return byte[] - enciphered value
      * @throws InvalidPasswordCipherException
      * @throws UnsupportedCryptoAlgorithmException
      */
-    public static byte[] encipher(byte[] decrypted_bytes, String crypto_algorithm)
-                    throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
+    public static byte[] encipher(byte[] decrypted_bytes, String crypto_algorithm) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
         EncryptedInfo info = encipher_internal(decrypted_bytes, crypto_algorithm, (String) null); // TODO check null
         return info.getEncryptedBytes();
     }
@@ -290,8 +292,8 @@ public class PasswordCipherUtil {
     // Method: encipher( decrypted password byte[], crypto algorithm string )
     // Return: encrypted password byte[]
     // ---------------------------------------------------------------------------
-    public static EncryptedInfo encipher_internal(byte[] decrypted_bytes, String crypto_algorithm, String cryptoKey)
-                    throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
+    public static EncryptedInfo encipher_internal(byte[] decrypted_bytes, String crypto_algorithm,
+                                                  String cryptoKey) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
         HashMap<String, String> props = new HashMap<String, String>();
         if (cryptoKey != null) {
             props.put(PasswordUtil.PROPERTY_CRYPTO_KEY, cryptoKey);
@@ -299,8 +301,8 @@ public class PasswordCipherUtil {
         return encipher_internal(decrypted_bytes, crypto_algorithm, props);
     }
 
-    public static EncryptedInfo encipher_internal(byte[] decrypted_bytes, String crypto_algorithm, Map<String, String> properties)
-                    throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
+    public static EncryptedInfo encipher_internal(byte[] decrypted_bytes, String crypto_algorithm,
+                                                  Map<String, String> properties) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
 
         EncryptedInfo info = null;
         byte[] encrypted_bytes = null;
@@ -318,7 +320,7 @@ public class PasswordCipherUtil {
         } else if (HASH.equalsIgnoreCase(crypto_algorithm)) {
             char[] decrypted_chars = null;
             try {
-                String originalString = new String(decrypted_bytes, "UTF-8");
+                String originalString = new String(decrypted_bytes, StandardCharsets.UTF_8);
                 decrypted_chars = originalString.toCharArray();
             } catch (Exception e) {
                 throw new InvalidPasswordCipherException();
@@ -341,7 +343,7 @@ public class PasswordCipherUtil {
             }
         } else {
             logger.logp(Level.SEVERE, PasswordCipherUtil.class.getName(), "encipher", "PASSWORDUTIL_UNKNOWN_ALGORITHM", new Object[] { crypto_algorithm,
-                                                                                                                                      formatSupportedCryptoAlgorithms() });
+                                                                                                                                       formatSupportedCryptoAlgorithms() });
             throw new UnsupportedCryptoAlgorithmException();
         }
 
@@ -372,7 +374,7 @@ public class PasswordCipherUtil {
             if (encodedString != null && PasswordUtil.isHashed(encodedString)) {
                 try {
                     String value = PasswordUtil.removeCryptoAlgorithmTag(encodedString);
-                    HashedData dd = new HashedData(Base64Coder.base64Decode(value.getBytes("UTF-8")));
+                    HashedData dd = new HashedData(Base64Coder.base64Decode(value.getBytes(StandardCharsets.UTF_8)));
                     algorithm = dd.getAlgorithm();
                     iteration = dd.getIteration();
                     length = dd.getOutputLength();
@@ -385,13 +387,11 @@ public class PasswordCipherUtil {
             if (algorithm == null) {
                 algorithm = properties.get(PasswordUtil.PROPERTY_HASH_ALGORITHM);
             }
-            if (algorithm == null) {
-                algorithm = PasswordHashGenerator.getDefaultAlgorithm();
-            }
 
             if (!saltSet) {
                 saltString = properties.get(PasswordUtil.PROPERTY_HASH_SALT);
                 salt = PasswordHashGenerator.generateSalt(saltString);
+                saltSet = true;
             }
 
             if (iteration < 0) {
@@ -400,9 +400,6 @@ public class PasswordCipherUtil {
                     iteration = Integer.parseInt(value);
                 }
             }
-            if (iteration < 0) {
-                iteration = PasswordHashGenerator.getDefaultIteration();
-            }
 
             if (length < 0) {
                 String value = properties.get(PasswordUtil.PROPERTY_HASH_LENGTH);
@@ -410,9 +407,25 @@ public class PasswordCipherUtil {
                     length = Integer.parseInt(value);
                 }
             }
-            if (length < 0) {
-                length = PasswordHashGenerator.getDefaultOutputLength();
-            }
+        }
+
+        // If there were no properties or only a partial set of properties provided to fill in information need to hash
+        // the data then fill in the missing information with the defaults.
+
+        if (algorithm == null) {
+            algorithm = PasswordHashGenerator.getDefaultAlgorithm();
+        }
+
+        if (!saltSet) {
+            salt = PasswordHashGenerator.generateSalt(saltString);
+        }
+
+        if (iteration < 0) {
+            iteration = PasswordHashGenerator.getDefaultIteration();
+        }
+
+        if (length < 0) {
+            length = PasswordHashGenerator.getDefaultOutputLength();
         }
 
         try {
@@ -439,9 +452,18 @@ public class PasswordCipherUtil {
      * @throws UnsupportedCryptoAlgorithmException
      * @throws InvalidPasswordCipherException
      */
-    private static EncryptedInfo aesEncipher(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info, byte[] encrypted_bytes) throws UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
+    private static EncryptedInfo aesEncipher(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info,
+                                             byte[] encrypted_bytes) throws UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
+        byte[] seed = null;
         SecureRandom rand = new SecureRandom();
-        byte[] seed = rand.generateSeed(20);
+        Provider provider = rand.getProvider();
+        String providerName = provider.getName();
+        if (providerName.equals(HW_PROVIDER)) {
+            seed = new byte[20];
+            rand.nextBytes(seed);
+        } else {
+            seed = rand.generateSeed(20);
+        }
         byte[] preEncrypted = new byte[decrypted_bytes.length + 21];
         preEncrypted[0] = 20; // how many seed bytes there are.
         System.arraycopy(seed, 0, preEncrypted, 1, 20);
@@ -474,7 +496,7 @@ public class PasswordCipherUtil {
 
     /**
      * Query the list of supported crypto algorithms.
-     * 
+     *
      * @return String[]
      */
     public static String[] getSupportedCryptoAlgorithms() {
@@ -483,7 +505,7 @@ public class PasswordCipherUtil {
 
     /**
      * Query the fail-safe crypto algorithm.
-     * 
+     *
      * @return String
      */
     public static String getFailSafeCryptoAlgorithm() {

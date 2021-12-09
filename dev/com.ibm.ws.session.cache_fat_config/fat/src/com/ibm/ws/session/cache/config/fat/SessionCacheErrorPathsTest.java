@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -347,6 +348,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         hazelcastFile.setName(originalName);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
+        TimeUnit.SECONDS.sleep(5);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
         run("testCacheContains&attribute=testModifyFileset&value=1", session);

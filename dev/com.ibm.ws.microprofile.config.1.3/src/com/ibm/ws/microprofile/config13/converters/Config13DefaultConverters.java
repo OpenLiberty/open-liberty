@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import com.ibm.ws.microprofile.config.converters.AutomaticConverter;
 import com.ibm.ws.microprofile.config.converters.BitSetConverter;
 import com.ibm.ws.microprofile.config.converters.BooleanConverter;
 import com.ibm.ws.microprofile.config.converters.CurrencyConverter;
-import com.ibm.ws.microprofile.config.converters.OptionalConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config12.converters.ClassConverter;
 import com.ibm.ws.microprofile.config12.converters.ListConverter;
@@ -33,8 +32,6 @@ public class Config13DefaultConverters {
     private static final PriorityConverterMap defaultConverters = new PriorityConverterMap();
 
     static {
-        defaultConverters.addConverter(new OptionalConverter());
-
         defaultConverters.addConverter(new BooleanConverter());
         defaultConverters.addConverter(new AutomaticConverter(Integer.class));
         defaultConverters.addConverter(new AutomaticConverter(Long.class));

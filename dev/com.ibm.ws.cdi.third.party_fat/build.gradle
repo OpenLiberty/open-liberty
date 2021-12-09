@@ -19,8 +19,8 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3',
-    'commons-codec:commons-codec:1.6'
+  requiredLibs project(':io.openliberty.org.apache.commons.logging'),
+    project(':io.openliberty.org.apache.commons.codec')
   deltaspikeWarLibs 'org.apache.deltaspike.core:deltaspike-core-api:1.5.0',
     'org.apache.deltaspike.core:deltaspike-core-impl:1.5.0',
     'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0',
@@ -33,8 +33,8 @@ dependencies {
     'net.sf.jtidy:jtidy:r938'
   hibernateSearchLibs 'org.antlr:antlr:3.5.2',
     'com.google.code.gson:gson:2.8.5',
-    'commons-codec:commons-codec:1.10',
-    'commons-logging:commons-logging:1.1.3',
+    project(':io.openliberty.org.apache.commons.codec'),
+    project(':io.openliberty.org.apache.commons.logging'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
     'org.apache.lucene:lucene-analyzers-common:5.5.5',
     'org.apache.lucene:lucene-core:5.5.5',

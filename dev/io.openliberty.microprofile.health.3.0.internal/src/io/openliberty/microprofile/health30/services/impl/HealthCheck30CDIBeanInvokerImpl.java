@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
-import io.openliberty.microprofile.health30.internal.HealthCheckConstants;
+import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 import io.openliberty.microprofile.health30.services.HealthCheck30CDIBeanInvoker;
 
 @Component(service = HealthCheck30CDIBeanInvoker.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })

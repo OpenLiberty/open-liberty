@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl;
 
+import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
@@ -191,8 +193,10 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         WebSphereCDIDeployment deployment = getDeployment(application);
         if (deployment != null) {
             try {
+                currentDeployment.set(deployment);
                 deployment.shutdown();
             } finally {
+                currentDeployment.remove();
                 unsetDeployment(application);
             }
         }
@@ -242,7 +246,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -604,7 +608,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     if (extensionArchive == null) {
                         extensionArchive = newSPIExtensionArchive(sr, extensionMetaData.getService(), applicationContext);
                         runtimeExtensionMap.put(serviceID, extensionArchive);
-                    } 
+                    }
                 }
                 extensionSet.add(extensionArchive);
             }
@@ -633,30 +637,20 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
         Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
-
-        for (Iterator<Class<? extends Extension>> i = extensionClasses.iterator(); i.hasNext();) {
-            Class extensionClass = i.next();
-            if (extensionClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
-                i.remove();
-                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", extensionClass.getCanonicalName());
-            }
-        }
-
-        for (Iterator<Class<?>> i = beanClasses.iterator(); i.hasNext();) {
-            Class beanClass = i.next();
-            if (beanClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
-                i.remove();
-                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", beanClass.getCanonicalName());
-            }
-        }
+        Set<Class<? extends Annotation>> beanDefiningAnnotationClasses = webSphereCDIExtensionMetaData.getBeanDefiningAnnotationClasses();
 
         Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
 
-        //The simpler SPI does not offer these properties.
         Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        Set<String> extraAnnotations = Collections.emptySet();
+        Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
+        //The simpler SPI does not offer these properties.
         boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;
+
+        if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
+            CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
+            applicationBDAsVisible = internalExtension.applicationBeansVisible();
+        }
 
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                     applicationBDAsVisible,

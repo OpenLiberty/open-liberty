@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import org.apache.hc.core5.http2.frame.RawFrame;
 import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
 import org.apache.hc.core5.http2.ssl.H2ClientTlsStrategy;
+import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.net.NamedEndpoint;
 import org.apache.hc.core5.reactor.ssl.SSLSessionVerifier;
 import org.apache.hc.core5.reactor.ssl.TlsDetails;
@@ -114,8 +115,7 @@ public class SecureHttp2Client {
         latch.await(29, TimeUnit.SECONDS);
 
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "requests complete, shutting down client");
-        requester.initiateShutdown();
-        requester.awaitShutdown(TimeValue.ofSeconds(10));
+        requester.close(CloseMode.GRACEFUL);
         logResponseMessages(responseMessages);
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "client shutdown complete, returning");
         return responseMessages;

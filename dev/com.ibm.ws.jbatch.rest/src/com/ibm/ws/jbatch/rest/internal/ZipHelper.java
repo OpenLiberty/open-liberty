@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -124,9 +125,9 @@ public class ZipHelper {
                                               OutputStream outputStream) throws IOException {
         
         for (File file : files) {
-            outputStream.write( buildAggregateHeader(file, rootDirs).getBytes("UTF-8") );
+            outputStream.write( buildAggregateHeader(file, rootDirs).getBytes(StandardCharsets.UTF_8) );
             copyStream( new FileInputStream(file), outputStream );
-            outputStream.write( buildAggregateFooter(file, rootDirs).getBytes("UTF-8") );
+            outputStream.write( buildAggregateFooter(file, rootDirs).getBytes(StandardCharsets.UTF_8) );
         }
 
     }

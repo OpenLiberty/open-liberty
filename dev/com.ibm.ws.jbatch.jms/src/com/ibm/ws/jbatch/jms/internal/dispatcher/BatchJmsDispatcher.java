@@ -12,6 +12,7 @@ package com.ibm.ws.jbatch.jms.internal.dispatcher;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -875,11 +876,7 @@ public class BatchJmsDispatcher implements BatchDispatcher {
      * @return a J2EEName for the given app / module / comp.
      */
     protected J2EEName createJ2EEName(String j2eeName) {
-        try {
-            return j2eeNameFactory.create( j2eeName.getBytes("UTF-8") );
-        } catch (UnsupportedEncodingException uee) {
-            throw new JobStartException("Failed to parse J2EEName from app name: " + j2eeName, uee);
-        }
+        return j2eeNameFactory.create( j2eeName.getBytes(StandardCharsets.UTF_8) );
     }
 
 

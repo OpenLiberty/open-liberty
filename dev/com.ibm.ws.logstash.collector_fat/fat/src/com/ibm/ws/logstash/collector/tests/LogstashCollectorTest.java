@@ -62,7 +62,7 @@ public abstract class LogstashCollectorTest {
     public static final String EXIT = "Exit";
     public static final String MESSAGE_PREFIX = "Test Logstash Message";
     public static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
-    public static final int DEFAULT_TIMEOUT = 30 * 1000; // 30 seconds
+    public static final int DEFAULT_TIMEOUT = 40 * 1000; // 40 seconds
 
     protected abstract LibertyServer getServer();
 
@@ -186,7 +186,7 @@ public abstract class LogstashCollectorTest {
                     .withFileFromFile("/usr/share/logstash/config/logstash.key", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.key"), 644) //
                     .withFileFromFile("/usr/share/logstash/config/logstash.crt", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.crt"), 644)) //
                                     .withExposedPorts(5043) //
-                                    .withStartupTimeout(Duration.ofSeconds(90)) //
+                                    .withStartupTimeout(Duration.ofSeconds(240)) //
                                     .withLogConsumer(LogstashCollectorTest::log); //
 
     // This helper method is passed into `withLogConsumer()` of the container

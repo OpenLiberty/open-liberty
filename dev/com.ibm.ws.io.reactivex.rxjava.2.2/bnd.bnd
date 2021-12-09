@@ -15,7 +15,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
 
 Import-Package: \
-  org.reactivestreams; version="[1.0,1.1)", \
+  org.reactivestreams; version="[1.1,1.2)", \
   *
 
 Export-Package: \

@@ -27,7 +27,7 @@ export default class Auths extends React.Component {
     e.preventDefault()
 
     let { authActions } = this.props
-    authActions.authorize(this.state)
+    authActions.authorizeWithPersistOption(this.state)
   }
 
   logoutClick =(e) => {
@@ -38,7 +38,12 @@ export default class Auths extends React.Component {
       return key
     }).toArray()
 
-    authActions.logout(auths)
+    this.setState(auths.reduce((prev, auth) => {
+      prev[auth] = ""
+      return prev
+    }, {}))
+
+    authActions.logoutWithPersistOption(auths)
   }
 
   close =(e) => {

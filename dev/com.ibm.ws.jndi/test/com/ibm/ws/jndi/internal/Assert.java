@@ -52,7 +52,7 @@ class Assert extends org.junit.Assert {
     ////////////////////////////////
 
     private static <T extends Comparable<T>> Collection<T> sorted(Set<T> keySet) {
-        ArrayList<T> result = new ArrayList<T>(keySet);
+        ArrayList<T> result = new ArrayList<>(keySet);
         Collections.sort(result);
         return result;
     }

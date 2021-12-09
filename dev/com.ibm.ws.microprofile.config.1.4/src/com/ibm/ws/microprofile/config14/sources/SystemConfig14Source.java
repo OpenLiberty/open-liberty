@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,10 +32,17 @@ public class SystemConfig14Source extends InternalConfigSource implements Extend
     private static final TraceComponent tc = Tr.register(SystemConfig14Source.class);
     static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
+    private final String name;
+
+    @Trivial
+    public SystemConfig14Source() {
+        name = Tr.formatMessage(tc, "system.properties.config.source");
+    }
+
     @Override
     @Trivial
     public String getName() {
-        return Tr.formatMessage(tc, "system.properties.config.source");
+        return name;
     }
 
     /** {@inheritDoc} */
@@ -49,9 +56,13 @@ public class SystemConfig14Source extends InternalConfigSource implements Extend
     public Map<String, String> getProperties() {
         // Return a copy, removing any entries where either the key or value is not a string
         // This is a bit slow
-        return priv.getProperties().entrySet().stream()
-                        .filter(e -> e.getKey() instanceof String && e.getValue() instanceof String)
-                        .collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
+        // Properties.stringPropertyNames() returns an enumeration over the keys that will not change while we're using it
+        Properties props = priv.getProperties();
+        return props.stringPropertyNames().stream()
+                        .collect(Collectors.toMap(e -> e, e -> props.getProperty(e))) //create a new Map<String, String>
+                        .entrySet().stream()
+                        .filter(e -> e.getValue() != null) //remove the null values
+                        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 
     @Override

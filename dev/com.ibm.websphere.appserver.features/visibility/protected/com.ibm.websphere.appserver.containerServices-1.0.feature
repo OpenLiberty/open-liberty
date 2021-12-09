@@ -13,9 +13,9 @@ IBM-SPI-Package: \
  com.ibm.wsspi.resource
 IBM-Process-Types: server, \
  client
--features=com.ibm.websphere.appserver.artifact-1.0, \
- com.ibm.websphere.appserver.javaeedd-1.0, \
- com.ibm.websphere.appserver.anno-1.0; ibm.tolerates:=2.0
+-features=com.ibm.websphere.appserver.javaeedd-1.0, \
+  com.ibm.websphere.appserver.anno-1.0; ibm.tolerates:="2.0", \
+  com.ibm.websphere.appserver.artifact-1.0
 -bundles=com.ibm.ws.resource, \
  com.ibm.ws.container.service, \
  com.ibm.ws.javaee.version, \

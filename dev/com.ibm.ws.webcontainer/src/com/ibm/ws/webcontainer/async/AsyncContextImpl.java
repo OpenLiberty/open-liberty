@@ -344,7 +344,7 @@ public class AsyncContextImpl implements AsyncContext {
         boolean invokeAsyncErrorHandlingOutsideLock = false;
         synchronized(this){
             /*Have to setDispatching inside the synchronized block.
-			If you recieved a workRejected exception, you don't want to be caught between
+			If you received a workRejected exception, you don't want to be caught between
 			setting the dispatching to false in Thread A, starting the async error hanlding in
 			thread B, and then calling executeNextRunnable in Thread A
              */

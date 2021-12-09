@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,25 +62,32 @@ public class InformixJCCHelper extends InformixHelper {
     InformixJCCHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
+
+        mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499);
     }
 
     public void doConnectionSetup(Connection conn) throws SQLException {
-        // don't inherit from Informix helper because external Informix JCC helper didn't either 
+        // don't inherit from Informix helper because external Informix JCC helper didn't either
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
     }
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         try {
             stmt.setCursorName(null);
         } catch (NullPointerException npe) {
@@ -98,16 +105,6 @@ public class InformixJCCHelper extends InformixHelper {
         if (queryTimeout == null)
             queryTimeout = defaultQueryTimeout;
         stmt.setQueryTimeout(queryTimeout);
-    }
-
-    @Override
-    public final boolean doesStatementCacheIsoLevel() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

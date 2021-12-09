@@ -22,23 +22,29 @@ Import-Package: \
     !*.internal.*,*
 
 Export-Package: \
-    com.ibm.ws.jaxrs.defaultexceptionmapper
+    com.ibm.ws.jaxrs.defaultexceptionmapper;thread-context=true
+
+Private-Package: \
+    com.ibm.ws.jaxrs.defaultexceptionmapper.internal
     
+app-resources= \
+  META-INF/services/javax.ws.rs.ext.Providers
 
-DynamicImport-Package: \
- javax.xml.ws, \
- javax.xml.ws.*, \
- javax.xml.bind, \
- javax.xml.bind.annotation, \
- javax.xml.bind.annotation.adapters, \
- javax.xml.bind.attachment, \
- javax.xml.bind.helpers, \
- javax.xml.bind.util
- 
+Service-Component: \
+  com.ibm.ws.jaxrs.defaultexceptionmapper.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Include-Resource:\
+  META-INF=resources/META-INF
+
+-dsannotations: com.ibm.ws.jaxrs.defaultexceptionmapper.internal.DefaultExceptionMapperCallbackTracker
+
+jakartaeeMe: true
+
 Liberty-Monitoring-Components: 
-
--dsannotations:  \
- 	com.ibm.ws.jaxrs.defaultexceptionmapper.*
 
 -buildpath: \
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

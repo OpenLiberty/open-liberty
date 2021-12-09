@@ -9,11 +9,10 @@ Subsystem-Name: Jakarta XML Web Services 3.0
 IBM-API-Package: \
  org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
  org.apache.cxf.databinding;type="internal"
--features=\
- com.ibm.websphere.appserver.eeCompatible-9.0, \
- com.ibm.websphere.appserver.servlet-5.0, \
- io.openliberty.globalhandler-2.0, \
- io.openliberty.xmlws.common-3.0
+-features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+  com.ibm.websphere.appserver.servlet-5.0, \
+  com.ibm.websphere.appserver.globalhandler-1.0, \
+  io.openliberty.xmlws.common-3.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.jaxws.2.3.common.jakarta;start-phase:=CONTAINER_LATE, \
@@ -28,8 +27,11 @@ IBM-API-Package: \
  bin/xmlWS/wsimport.bat, \
  bin/xmlWS/tools/ws-wsimport.jar, \
  bin/xmlWS/wsgen.bat, \
- bin/xmlWS/tools/ws-wsgen.jar
-kind=beta
+ bin/xmlWS/tools/ws-wsgen.jar, \
+ dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
+-jars=\
+  io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
+kind=ga
 edition=base
 WLP-AlsoKnownAs: jaxws-3.0
 WLP-Activation-Type: parallel

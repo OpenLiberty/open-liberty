@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -17,10 +17,11 @@ src:\
     test-applications/basic.war/src,\
     test-applications/websocket11.war/src,\
     test-applications/cdi.war/src,\
+    test-applications/cditx.war/src,\
     test-applications/context.war/src,\
     test-applications/miscellaneous.war/src,\
     test-applications/secure.war/src,\
-    test-applications/trace.war/src,\
+    test-applications/trace.war/src
 
 fat.project: true
 
@@ -28,8 +29,14 @@ fat.project: true
 tested.features: \
     servlet-4.0,\
     servlet-5.0,\
-    websocket-2.0
-
+    websocket-2.0, \
+    messagingserver-3.0, \
+    messagingclient-3.0, \
+    enterprisebeanslite-4.0, \
+    cdi-3.0, \
+    connectors-2.0, \
+    appsecurity-4.0, \
+    expressionlanguage-4.0
 
 -buildpath: \
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
@@ -38,6 +45,10 @@ tested.features: \
     com.ibm.websphere.javaee.cdi.1.0;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
     com.ibm.websphere.javaee.jms.1.1;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
     com.ibm.ws.wsoc;version=latest,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0,\
-    org.apache.httpcomponents.core5:httpcore5;version=5.0
+    org.apache.httpcomponents.core5:httpcore5;version=5.0,\
+    com.ibm.tx.core;version=latest,\
+    com.ibm.ws.tx.embeddable;version=latest,\
+    com.ibm.ws.transaction.test.util;version=latest

@@ -50,7 +50,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 public class ServerPolicySourceImpl implements ServerPolicySource {
 
     /* DS adds the references in the correct ranked order */
-    protected final List<SubsystemFactory> subsystemFactories = new ArrayList<SubsystemFactory>();
+    protected final List<SubsystemFactory> subsystemFactories = new ArrayList<>();
     protected Map<String, Object> properties;
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY)

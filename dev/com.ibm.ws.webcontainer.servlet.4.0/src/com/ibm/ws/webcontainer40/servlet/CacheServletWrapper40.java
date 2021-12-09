@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
-import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
@@ -56,8 +55,8 @@ public class CacheServletWrapper40 extends CacheServletWrapper {
             logger.entering(CLASS_NAME, methodName);
         }
 
-        IExtendedRequest wasreq = (IExtendedRequest) ServletUtil.unwrapRequest(req);
-        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) ((SRTServletRequest40) wasreq).getWebAppDispatcherContext();
+        IExtendedRequest wasreq = ServletUtil.unwrapRequest(req);
+        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) wasreq.getWebAppDispatcherContext();
         mapping = dispatchContext.getServletMapping();
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
@@ -76,7 +75,7 @@ public class CacheServletWrapper40 extends CacheServletWrapper {
         // set the MappingMatch here as when the CacheServletWrapper is being used we will not go
         // through the path of URIMatcher.
         //reqData.setMappingMatch(this.mapping.getMappingMatch());
-        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) ((SRTServletRequest40) req).getWebAppDispatcherContext();
+        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) ((IExtendedRequest) req).getWebAppDispatcherContext();
         dispatchContext.setMappingMatch(mapping.getMappingMatch());
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {

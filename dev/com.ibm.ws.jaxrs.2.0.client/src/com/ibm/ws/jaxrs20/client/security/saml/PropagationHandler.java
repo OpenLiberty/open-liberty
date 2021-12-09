@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.security.saml;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
 
 /**
- * 
+ *
  */
 public class PropagationHandler extends AbstractPhaseInterceptor<Message> {
     private static final TraceComponent tc = Tr.register(PropagationHandler.class, JAXRSClientConstants.TR_GROUP, JAXRSClientConstants.TR_RESOURCE_BUNDLE);
@@ -78,7 +78,7 @@ public class PropagationHandler extends AbstractPhaseInterceptor<Message> {
                 Tr.debug(tc, "About to get a SAML authentication token from the runAs Subject");
             }
 
-            // retrieve the saml token from the runAs Subject in current thread 
+            // retrieve the saml token from the runAs Subject in current thread
             try {
                 saml = getEncodedSaml20Token();
 
@@ -86,7 +86,7 @@ public class PropagationHandler extends AbstractPhaseInterceptor<Message> {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Retrieved the encoded SAML token. About to set it on the request Header " + saml);
                     }
-                    //Authorization=[saml="<SAML_HERE>"] 
+                    //Authorization=[saml="<SAML_HERE>"]
                     @SuppressWarnings("unchecked")
                     Map<String, List<String>> headers = (Map<String, List<String>>) message
                                     .get(Message.PROTOCOL_HEADERS);
@@ -133,14 +133,7 @@ public class PropagationHandler extends AbstractPhaseInterceptor<Message> {
             Tr.warning(tc, "failed_to_extract_saml_token_from_subject", e.getLocalizedMessage());
         }
         if (samlString != null) {
-            byte output[] = null;
-            try {
-                output = samlString.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                // This should not happen.
-                // If it happens, it would be some runtime or operating system issue, so just give up and return null.
-                // ffdc data will be logged automatically.
-            }
+            byte output[] = samlString.getBytes(StandardCharsets.UTF_8);
             if (output != null) {
                 base64Saml = Base64Coder.base64EncodeToString(output);
             } else {

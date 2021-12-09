@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.lang.annotation.Target;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -72,13 +74,17 @@ public class ClientMain {
           // trace entry on behalf of the called method
           Util.getLogger().entering(className,methodName);
           m.invoke(this,null);
+       
         } catch (Throwable t) {
           if (t instanceof java.lang.reflect.InvocationTargetException) t = t.getCause();
           StackTraceElement[] elem = t.getStackTrace();
           String where = (null==elem||0==elem.length?"":" at "+elem[0].getFileName()+":"+elem[0].getLineNumber());
           Util.LOG("Test '"+methodName+"' failed"+where+" with an exception: "+t.toString());
-        }
-        finally {
+          
+          StringWriter stringWriter = new StringWriter();
+          t.printStackTrace(new PrintWriter(stringWriter));
+          Util.LOG(stringWriter);
+        } finally {
           // trace entry on behalf of the called method
           Util.getLogger().exiting(className,methodName);
         }

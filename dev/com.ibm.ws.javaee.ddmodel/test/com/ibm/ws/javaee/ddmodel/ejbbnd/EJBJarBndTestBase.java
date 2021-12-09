@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,214 +10,244 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejbbnd;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.jmock.Expectations;
-import org.osgi.framework.ServiceReference;
-
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
-import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion;
-import com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
+import com.ibm.ws.javaee.ddmodel.ejb.EJBJarTestBase;
 
 /**
  * Test the ejb-jar-bnd.xml parser
  * -concentrate on the pristine path where the ejb-jar-bnd.xml file is
  * well formed.
  */
-
-public class EJBJarBndTestBase extends DDTestBase {
-    protected boolean isWarModule = false;
-
-    protected String getEJBJarPath() {
-        return isWarModule ? "WEB-INF/ejb-jar.xml" : "META-INF/ejb-jar.xml";
+public class EJBJarBndTestBase extends EJBJarTestBase {
+    
+    public EJBJarBndTestBase(boolean ejbInWar) {
+        super(ejbInWar);
     }
 
-    public EJBJarBnd parse(String xml) throws Exception {
-        return parse(xml, null);
+    //
+    
+    protected EJBJarBndAdapter createEJBJarBndAdapter() {
+        return new EJBJarBndAdapter();
     }
 
-    public EJBJarBnd parseEJBJarBinding(String xml, EJBJar ejbJar) throws Exception {
-        return parse(xml, ejbJar);
+    public EJBJarBnd parseEJBJarBndXMI(String ddText, EJBJar ejbJar) throws Exception {
+        return parseEJBJarBnd(ddText, DDParserBndExt.IS_XMI, ejbJar, null);
     }
 
-    private EJBJarBnd parse(final String xml, final EJBJar ejbJar) throws Exception {
-        boolean xmi = ejbJar != null;
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
-        final String entryName = isWarModule ?
-                        (xmi ? EJBJarBndAdapter.XMI_BND_IN_WEB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_WEB_MOD_NAME) :
-                        (xmi ? EJBJarBndAdapter.XMI_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME);
-        return parse(xml, new EJBJarBndAdapter(), entryName, EJBJar.class, ejbJar, WebModuleInfo.class, moduleInfo);
+    public EJBJarBnd parseEJBJarBndXML(String ddText) throws Exception {
+        return parseEJBJarBnd(ddText, !DDParserBndExt.IS_XMI, null, null);
     }
+    
+    public EJBJarBnd parseEJBJarBndXML(String ddText, String altMessage, String...messages) throws Exception {
+        return parseEJBJarBnd(ddText, !DDParserBndExt.IS_XMI, null, altMessage, messages);
+    }    
 
-    public EJBJarBnd getEJBJarBnd(String jarString) throws Exception {
-        return parse(jarString, null);
-    }
+    public EJBJarBnd parseEJBJarBnd(
+            String ddText, boolean xmi, EJBJar ejbJar,
+            String altMessage, String ... messages) throws Exception {
 
-    public EJBJar parseEJBJar(String xml) throws Exception {
-        return parseEJBJar(xml, EJBJar.VERSION_3_2);
-    }
+        boolean ejbInWar = getEJBInWar();
 
-    public EJBJar parseEJBJar(final String xml, final int maxVersion) throws Exception {
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
-        @SuppressWarnings("unchecked")
-        final ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
+        String appPath = null;
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(moduleInfo));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
-
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxVersion));
-            }
-        });
-
-        adapter.setVersion(versionRef);
-        try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
-            Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
+        String modulePath;
+        if ( ejbInWar ) {
+            modulePath = "/root/wlp/usr/servers/server1/apps/myWEB.war";
+        } else {
+            modulePath = "/root/wlp/usr/servers/server1/apps/myEJB.jar";
         }
+
+        String fragmentPath = null;
+
+        String ddPath;
+        if ( ejbInWar ) {
+            ddPath = ( xmi ? EJBJarBndAdapter.XMI_BND_IN_WEB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_WEB_MOD_NAME );
+        } else {
+            ddPath = ( xmi ? EJBJarBndAdapter.XMI_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME );            
+        }
+
+        WebModuleInfo moduleInfo =
+            ( ejbInWar ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null );
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createEJBJarBndAdapter(), ddPath,
+                EJBJar.class, ejbJar,
+                WebModuleInfo.class, moduleInfo,
+                altMessage, messages);
     }
 
-    static final String ejbJar21() {
-        return "<ejb-jar" +
-               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-               " version=\"2.1\"" +
-               " id=\"EJBJar_ID\"" +
-               ">";
+    //
+
+    public String ejbJarBndXMI() {
+        return ejbJarBndXMI( "", ejbBndBodyXMI() );
     }
 
-    static final String ejbJarBinding(String attrs) {
+    public String ejbJarBndXMI(String attrs, String body) {
+        return ejbJarBndXMI( attrs, getEJBJarPath(), body );
+    }
+
+    public static final String ejbJarTailXMI =
+            "</ejbbnd:EJBJarBinding>";
+
+    public static String ejbJarBndXMI(String attrs, String ddPath, String body) {
         return "<ejbbnd:EJBJarBinding" +
-               " xmlns:ejbbnd=\"ejbbnd.xmi\"" +
-               " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-               " xmlns:ejb=\"ejb.xmi\"" +
-               " xmi:version=\"2.0\"" +
-               " " + attrs +
+                   " xmlns:ejbbnd=\"ejbbnd.xmi\"" +
+                   " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                   " xmlns:ejb=\"ejb.xmi\"" +
+                   " xmi:version=\"2.0\"" +
+                   " " + attrs +
+                   " xmi:id=\"ejbbnd_1\"" +
                ">" +
-               "<ejbJar href=\"META-INF/ejb-jar.xml#EJBJar_ID\"/>";
+                   "<ejbJar href=\"META-INF/" + ddPath + "#EJBJar_ID\"/>" + "\n" +
+                   body + "\n" +
+               ejbJarTailXMI;
     }
 
-    static final String ejbJarBnd10() {
+    //
+    
+    public String ejbBndBodyXMI() {
+        return ejbBndBodyXMI( getEJBJarPath() );
+    }
+
+    public static final String ejbBndBodyXMI(String ddPath) {
+        return "<ejbBindings>" + "\n" +
+                    "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + ddPath + "#s0\"/>" + "\n" +
+               "</ejbBindings>";
+    }
+
+    //
+
+    public static final String ejbJarTailXML =
+            "</ejb-jar-bnd>";
+
+    public static final String ejbBndBodyXML() {
+        return "<session name=\"SessionBean1\" simple-binding-name=\"SimpleBindingName2\"/>";
+    }
+    
+    //
+    
+    public static String ejbJarBnd10() {
+        return ejbJarBnd10( ejbBndBodyXML() );
+    }
+
+    public static String ejbJarBnd10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-               "<ejb-jar-bnd  xmlns=\"http://websphere.ibm.com/xml/ns/javaee\" \n" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n " +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee  \n " +
-               " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd\" version=\"1.0\"> ";
+               "<ejb-jar-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
+                   " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd\"" +
+                   " version=\"1.0\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
-    static final String ejbJarBnd11() {
+    public static String ejbJarBnd11() {
+        return ejbJarBnd11( ejbBndBodyXML() );
+    }
+    
+    public static String ejbJarBnd11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-               "<ejb-jar-bnd  xmlns=\"http://websphere.ibm.com/xml/ns/javaee\" \n" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n " +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee  \n " +
-               " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\" version=\"1.1\"> ";
+               "<ejb-jar-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
+                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"\n" +
+                   " version=\"1.1\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
-    static final String ejbJarBnd12() {
+    public static String ejbJarBnd12() {
+        return ejbJarBnd12( ejbBndBodyXML() );
+    }
+
+    public static String ejbJarBnd12(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-               "<ejb-jar-bnd  xmlns=\"http://websphere.ibm.com/xml/ns/javaee\" \n" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n " +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee  \n " +
-               " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_2.xsd\" version=\"1.2\"> ";
+               "<ejb-jar-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
+                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_2.xsd\"\n" +
+                   " version=\"1.2\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
-    String sessionXML8 = "<session name=\"SessionBean8\"> \n" +
-                         "<resource-ref name=\"resourceRefName8\" \n" +
-                         "binding-name=\"resourceRefBinding8\" /> \n" +
-                         "</session> \n";
+    public static final String sessionXML8 =
+            "<session name=\"SessionBean8\">\n" +
+                "<resource-ref name=\"resourceRefName8\"\n" +
+                "binding-name=\"resourceRefBinding8\"/>\n" +
+            "</session>\n";
 
-    String sessionXML11 = "<session name=\"SessionBean11\"> " +
-                          "<resource-ref name=\"ResourceRef11\" binding-name=\"ResourceRefBindingName11\"> " +
-                          "<authentication-alias name=\"AuthAlias11\" />" +
-                          "<custom-login-configuration name=\"customLoginConfiguration11\"> " +
-                          "<property name=\"propname\" value=\"propvalue\"/> " +
-                          "</custom-login-configuration> " +
-                          "</resource-ref>" +
-                          "</session>";
+    public static final String sessionXML11 =
+            "<session name=\"SessionBean11\">" +
+                "<resource-ref name=\"ResourceRef11\" binding-name=\"ResourceRefBindingName11\">" +
+                    "<authentication-alias name=\"AuthAlias11\"/>" +
+                    "<custom-login-configuration name=\"customLoginConfiguration11\">" +
+                        "<property name=\"propname\" value=\"propvalue\"/>" +
+                    "</custom-login-configuration>" +
+                "</resource-ref>" +
+            "</session>";
 
-    String messageDrivenXML9 = "<message-driven name=\"MessageDrivenBean9\">  \n"
-                               + "<jca-adapter activation-spec-binding-name=\"ActivationSpecBindingName9\"/> \n"
-                               + "<resource-env-ref name=\"ResourceEnvRefName9a\" binding-name=\"ResourceEnvRefBindingName9a\"/>  \n"
-                               + "<resource-env-ref name=\"ResourceEnvRefName9b\" binding-name=\"ResourceEnvRefBindingName9b\"/>  \n"
-                               + "</message-driven>  \n";
+    public static final String messageDrivenXML9 =
+            "<message-driven name=\"MessageDrivenBean9\">\n" +
+                "<jca-adapter activation-spec-binding-name=\"ActivationSpecBindingName9\"/>\n" +
+                "<resource-env-ref name=\"ResourceEnvRefName9a\" binding-name=\"ResourceEnvRefBindingName9a\"/>\n" +
+                "<resource-env-ref name=\"ResourceEnvRefName9b\" binding-name=\"ResourceEnvRefBindingName9b\"/>\n" +
+            "</message-driven>";
 
-    String messageDrivenXML7 = "<message-driven name=\"MessageDrivenBean7\"> \n"
-                               + "  <listener-port name=\"lpName\"/> \n "
-                               + "  <resource-ref name=\"ResourceRef7a\" binding-name=\"ResourceRefBindingName7a\"/>  \n"
-                               + "  <resource-ref name=\"ResourceRef7b\" binding-name=\"ResourceRefBindingName7b\"/>  \n"
-                               + "</message-driven>  \n";
+    public static final String messageDrivenXML7 =
+        "<message-driven name=\"MessageDrivenBean7\">\n" +
+            "<listener-port name=\"lpName\"/>\n" +
+            "<resource-ref name=\"ResourceRef7a\" binding-name=\"ResourceRefBindingName7a\"/>\n" +
+            "<resource-ref name=\"ResourceRef7b\" binding-name=\"ResourceRefBindingName7b\"/>\n" +
+        "</message-driven>";
 
-    final String interceptorXML1 = "<interceptor class=\"com.ibm.test.Interceptor1\"> \n" +
-                                   "</interceptor> \n";
+    public static final String interceptorXML1 =
+        "<interceptor class=\"com.ibm.test.Interceptor1\">\n" +
+        "</interceptor>";
 
-    final String messageDetinationXML1 =
-                    "<message-destination name=\"messageDestName1\" binding-name=\"messageDestBinding1\"> \n" +
-                                    "</message-destination> \n";
+    public static final String messageDetinationXML1 =
+            "<message-destination name=\"messageDestName1\" binding-name=\"messageDestBinding1\">\n" +
+            "</message-destination>\n";
 
-    final String defaultCMPConnectionFactoryXMI1 =
-                    " <defaultCMPConnectionFactory xmi:id=\"CMPConnectionFactoryBindingName\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" properties=\"\"/>";
+    public static final String defaultCMPConnectionFactoryXMI1 =
+            "<defaultCMPConnectionFactory xmi:id=\"CMPConnectionFactoryBindingName\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" properties=\"\"/>";
 
-    final String testCMPConnectionFactoryXMI1 =
-                    "<ejbBindings xmi:id=\"EnterpriseBeanBindingName\" jndiName=\"ejb/EnterpriseBeanBinding\">"
-                                    + "  <enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"META-INF/ejb-jar.xml#EnterpriseBean\"/>"
-                                    + "  <cmpConnectionFactory xmi:id=\"CMPConnectionFactoryBindingNAme\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" loginConfigurationName=\"DefaultCMPConnectionFactoryMapping\">"
-                                    + "    <properties xmi:id=\"Property\" name=\"com.ibm.test.testProperty\" value=\"testData\" description=\"Test Post Pls Ignore\"/>"
-                                    + "  </cmpConnectionFactory>"
-                                    + "</ejbBindings>";
+    public String testCMPConnectionFactoryXMI1() {
+        return testCMPConnectionFactoryXMI1( getEJBJarPath() );
+    }
 
-    final String testCurrentBackendID =
-                    "<ejbbnd:EJBJarBinding"
-                                    + " xmi:version=\"2.0\""
-                                    + " xmlns:xmi=\"http://www.omg.org/XMI\""
-                                    + " xmlns:ejbbnd=\"ejbbnd.xmi\""
-                                    + " xmlns:ejb=\"ejb.xmi\" "
-                                    + " xmi:id=\"ejb-jar_ID_Bnd\""
-                                    + " currentBackendId=\"testID\""
-                                    + ">"
-                                    + " </ejbbnd:EJBJarBinding>";
+    public static String testCMPConnectionFactoryXMI1(String ddPath) {
+        return "<ejbBindings xmi:id=\"EnterpriseBeanBindingName\" jndiName=\"ejb/EnterpriseBeanBinding\">" +
+                   "<enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"" + ddPath + "#s0\"/>" +
+                   "<cmpConnectionFactory xmi:id=\"CMPConnectionFactoryBindingNAme\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" loginConfigurationName=\"DefaultCMPConnectionFactoryMapping\">" +
+                       "<properties xmi:id=\"Property\" name=\"com.ibm.test.testProperty\" value=\"testData\" description=\"Test Post Pls Ignore\"/>" +
+                   "</cmpConnectionFactory>" +
+               "</ejbBindings>";
+    }
 
-    final String defaultDataSourceXMI1 =
-                    " <defaultDatasource xmi:id=\"ResourceRefBinding_123\"/>";
+    public static final String ejbBndXMLCurrentBackendID =
+            "<ejbbnd:EJBJarBinding" +
+                " xmi:version=\"2.0\"" +
+                " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                " xmlns:ejbbnd=\"ejbbnd.xmi\"" +
+                " xmlns:ejb=\"ejb.xmi\"" +
+                " xmi:id=\"ejb-jar_ID_Bnd\"" +
+                " currentBackendId=\"testID\"" + 
+            ">" +
+            "</ejbbnd:EJBJarBinding>";
 
-    final String defaultDataSourceXMI2 =
-                    "<defaultDatasource xmi:id=\"ResourceRefBinding_123\">"
-                                    + "   <defaultAuth xmi:type=\"xmiType\" xmi:id=\"BasicAuthData_123\"/>"
-                                    + "</defaultDatasource>";
+    public static final String defaultDataSourceXMI1 =
+            "<defaultDatasource xmi:id=\"ResourceRefBinding_123\"/>";
 
+    public static final String defaultDataSourceXMI2 =
+            "<defaultDatasource xmi:id=\"ResourceRefBinding_123\">" +
+                "<defaultAuth xmi:type=\"xmiType\" xmi:id=\"BasicAuthData_123\"/>" +
+            "</defaultDatasource>";
 }

@@ -121,9 +121,11 @@ public class OAuth20WebAppAuthorizationTableTest {
     private final Configuration groupConfig1 = mock.mock(Configuration.class, "groupConfig1");
     private final Configuration groupConfig2 = mock.mock(Configuration.class, "groupConfig2");
 
+    private static String traceString = "com.ibm.ws.security.*";
+
     @BeforeClass
     public static void setUpBeforeClass() {
-        outputMgr.trace("com.ibm.ws.security.*=all");
+        outputMgr.trace(traceString + "=all");
     }
 
     @Before
@@ -168,7 +170,7 @@ public class OAuth20WebAppAuthorizationTableTest {
 
     @AfterClass
     public static void tearDownAfterClass() {
-        outputMgr.trace("*=all=disabled");
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     /**

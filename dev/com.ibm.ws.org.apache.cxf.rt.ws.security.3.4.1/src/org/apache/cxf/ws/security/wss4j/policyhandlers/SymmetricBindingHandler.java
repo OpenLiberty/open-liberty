@@ -301,6 +301,12 @@ public class SymmetricBindingHandler extends AbstractBindingBuilder {
 
     private void doSignBeforeEncrypt() {
         AbstractTokenWrapper sigAbstractTokenWrapper = getSignatureToken();
+        //Liberty code change start
+        if (sigAbstractTokenWrapper == null) {
+            unassertPolicy(sigAbstractTokenWrapper, "No signature or protection token");
+            return;
+        }
+        //Liberty code change end
         assertTokenWrapper(sigAbstractTokenWrapper);
         AbstractToken sigToken = sigAbstractTokenWrapper.getToken();
         String sigTokId = null;

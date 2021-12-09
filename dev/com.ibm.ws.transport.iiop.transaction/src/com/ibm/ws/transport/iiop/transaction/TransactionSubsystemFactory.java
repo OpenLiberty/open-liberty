@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.transaction;
 
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
-import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxClientTransactionPolicyConfig;
-import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxServerTransactionPolicyConfig;
+import java.util.Map;
+
+import javax.transaction.TransactionManager;
+
 import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
 import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -26,8 +26,9 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import javax.transaction.TransactionManager;
-import java.util.Map;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxClientTransactionPolicyConfig;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxServerTransactionPolicyConfig;
 
 @Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=2" })
 public class TransactionSubsystemFactory extends SubsystemFactory {
@@ -36,6 +37,7 @@ public class TransactionSubsystemFactory extends SubsystemFactory {
         public Class<?> forName(String name) throws ClassNotFoundException {
             return TransactionInitializer.class;
         }
+        @SuppressWarnings("rawtypes")
         public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
             return new TransactionInitializer();
         }

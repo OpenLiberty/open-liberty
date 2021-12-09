@@ -27,6 +27,7 @@ public class WSClassRegistration {
         public Class<?> forName(String name) throws ClassNotFoundException {
             return Class.forName(name);
         }
+        @SuppressWarnings({ "rawtypes", "deprecation" })
         public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
             return cls.newInstance();
         }

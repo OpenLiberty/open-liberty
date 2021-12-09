@@ -55,7 +55,7 @@ abstract public class TestIDLIntfHelper
 
   public static void write (org.omg.CORBA.portable.OutputStream ostream, shared.TestIDLIntf value)
   {
-    ostream.write_Object ((org.omg.CORBA.Object) value);
+    ostream.write_Object (value);
   }
 
   public static shared.TestIDLIntf narrow (org.omg.CORBA.Object obj)

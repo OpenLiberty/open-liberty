@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -39,11 +43,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     private RuntimeMetaDataProvider _runtimeMetaDataProvider;
 
-    private static Dictionary<String, Object> _props;
+    private volatile Map<String, Object> _props;
     ComponentContext _cc;
-    private static String logDir = null;
+    private static String logDir;
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
-    private boolean activateHasBeenCalled = false; // Used for eyecatcher in trace for startup ordering.
+    private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
+    private boolean _dataSourceFactorySet;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -51,20 +56,26 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      */
     private static final AtomicServiceReference<ResourceFactory> dataSourceFactoryRef = new AtomicServiceReference<ResourceFactory>("dataSourceFactory");
 
+    private static final int HEURISTIC_RETRY_INTERVAL_DEFAULT = 60;
+
     /**
      * Flag whether we are using a Transaction Log stored in the filesystem or a Transaction Log
      * stored in an RDBMS.
      */
-    private static boolean _isSQLRecoveryLog = false;
-    private ResourceFactory _theDataSourceFactory = null;
+    private static boolean _isSQLRecoveryLog;
+    private ResourceFactory _theDataSourceFactory;
 
-    private String _recoveryIdentity = null;
-    private String _recoveryGroup = null;
-    private TransactionManagerService tmsRef = null;
+    private String _recoveryIdentity;
+    private String _recoveryGroup;
+    private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    private boolean _setRetriableSqlcodes = false;
+    private boolean _setNonRetriableSqlcodes = false;
+    List<Integer> retriableSqlCodeList;
+    List<Integer> nonRetriableSqlCodeList;
+
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -75,7 +86,22 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
         // Irrespective of the logtype we need to get the properties
-        _props = _cc.getProperties();
+
+        // Make a copy of the properties and store it in a unmodifiable Map.
+        // The properties are queried on each transaction so with using a
+        // Dictionary (Hashtable), it becomes a bottleneck to read a property
+        // with each thread getting a Hashtable lock to do a get operation.
+        Dictionary<String, Object> props = cc.getProperties();
+        Map<String, Object> properties = new HashMap<>();
+        Enumeration<String> keys = props.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            properties.put(key, props.get(key));
+        }
+        properties = Collections.unmodifiableMap(properties);
+        synchronized (this) {
+            _props = properties;
+        }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
 
@@ -120,6 +146,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  retrieved datasourceFactory is " + _theDataSourceFactory);
 
+        // Configuration has changed, may need to reset the lists of sqlcodes
+        _setRetriableSqlcodes = false;
+        _setNonRetriableSqlcodes = false;
     }
 
     protected void deactivate(int reason, ComponentContext cc, Map<String, Object> properties) {
@@ -131,13 +160,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * Called by DS to modify service config properties
      */
-    @SuppressWarnings("unchecked")
-    protected void modified(Map<?, ?> newProperties) {
-        if (newProperties instanceof Dictionary) {
-            _props = (Dictionary<String, Object>) newProperties;
-        } else {
-            _props = new Hashtable(newProperties);
+    protected void modified(Map<String, Object> newProperties) {
+        Map<String, Object> newProps = Collections.unmodifiableMap(new HashMap<>(newProperties));
+
+        synchronized (this) {
+            _props = newProps;
         }
+
+        // Configuration has changed, may need to reset the lists of sqlcodes
+        _setRetriableSqlcodes = false;
+        _setNonRetriableSqlcodes = false;
     }
 
     /*
@@ -168,6 +200,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "post-setReference  datasourceFactory ref " + dataSourceFactoryRef);
 
+        // Set the flag that says that this method has been called
+        _dataSourceFactorySet = true;
         if (!activateHasBeenCalled)
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory has been called before activate");
@@ -218,16 +252,24 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     public int getHeuristicRetryInterval() {
-        // return Integer.valueOf(_props.get("heuristic.retry.interval"));
-        //return ((Integer) _props.get("heuristicRetryInterval")).intValue();
-        Number num = (Number) _props.get("heuristicRetryInterval");
-        return num.intValue();
+        int interval = ((Number) _props.get("heuristicRetryInterval")).intValue();
+        if (interval == HEURISTIC_RETRY_INTERVAL_DEFAULT) {
+            // We got the default for heuristicRetryInterval but maybe
+            // heuristicRetryWait was set like in the olden days
+            int wait = ((Number) _props.get("heuristicRetryWait")).intValue();
+            if (wait != HEURISTIC_RETRY_INTERVAL_DEFAULT) {
+                // heuristicRetryWait was set
+                interval = wait;
+            }
+        }
+
+        return interval;
     }
 
-    // TODO: is this the correct attribute mapping?
     @Override
     public int getHeuristicRetryLimit() {
-        return ((Integer) _props.get("heuristicRetryWait")).intValue();
+        Number num = (Number) _props.get("heuristicRetryLimit");
+        return num.intValue();
     }
 
     @Override
@@ -285,8 +327,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public int getLeaseRenewalTime() {
-        Number num = (Number) _props.get("leaseRenewalTime");
+    public int getLeaseRenewalThreshold() {
+        Number num = (Number) _props.get("leaseRenewalThreshold");
         return num.intValue();
     }
 
@@ -335,10 +377,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean isLoggingForHeuristicReportingEnabled() {
         return (Boolean) _props.get("enableLoggingForHeuristicReporting");
-    }
-
-    public static void setTotalTransactionLifetimeTimeout(int timeout) {
-        _props.put("propogatedOrBMTTranLifetimeTimeout", timeout);
     }
 
     @Override
@@ -659,44 +697,122 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
-    public int getLightweightTransientErrorRetryTime() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryTime");
+    public int getLightweightLogRetryInterval() {
+        Number num = (Number) _props.get("lightweightLogRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
-    public int getLightweightTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("lightweightTransientErrorRetryAttempts");
+    public int getLightweightLogRetryLimit() {
+        Number num = (Number) _props.get("lightweightLogRetryLimit");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
-    public int getStandardTransientErrorRetryTime() {
-        Number num = (Number) _props.get("standardTransientErrorRetryTime");
+    public int getLogRetryInterval() {
+        Number num = (Number) _props.get("logRetryInterval");
         return num.intValue();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
-    public int getStandardTransientErrorRetryAttempts() {
-        Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
+    public int getLogRetryLimit() {
+        Number num = (Number) _props.get("logRetryLimit");
         return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
+     */
+    @Override
+    public boolean enableLogRetries() {
+        return (Boolean) _props.get("enableLogRetries");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("retriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRetriableSqlCodes " + sqlcodes);
+
+        if (!_setRetriableSqlcodes) {
+            retriableSqlCodeList = parseSqlCodes(sqlcodes);
+            _setRetriableSqlcodes = true;
+        }
+
+        return retriableSqlCodeList;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getNonRetriableSqlCodes()
+     */
+    @Override
+    public List<Integer> getNonRetriableSqlCodes() {
+        String sqlcodes = (String) _props.get("nonRetriableSqlCodes");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getNonRetriableSqlCodes " + sqlcodes);
+
+        if (!_setNonRetriableSqlcodes) {
+            nonRetriableSqlCodeList = parseSqlCodes(sqlcodes);
+            _setNonRetriableSqlcodes = true;
+        }
+
+        return nonRetriableSqlCodeList;
+    }
+
+    private List<Integer> parseSqlCodes(String sqlCodesStr) {
+        List<Integer> sqlCodeList = new ArrayList<Integer>();
+        if (sqlCodesStr != null && !sqlCodesStr.trim().isEmpty()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "There are sqlcodes to parse " + sqlCodesStr);
+            List<String> sqlCodeStringList = Arrays.asList(sqlCodesStr.split(","));
+
+            for (String sqlcode : sqlCodeStringList) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Isolated string sqlcode " + sqlcode);
+                int intSqlCode = 0;
+                try {
+                    intSqlCode = Integer.parseInt(sqlcode.trim());
+                } catch (NumberFormatException nfe) {
+                    Tr.audit(tc, "WTRN0107W: " +
+                                 "Malformed sqlcode " + sqlcode + " in configuration " + sqlCodesStr);
+                }
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Isolated integer sqlcode " + intSqlCode);
+                sqlCodeList.add(intSqlCode);
+            }
+        }
+        return sqlCodeList;
+    }
+
+    @Override
+    public boolean isDataSourceFactorySet() {
+        return _dataSourceFactorySet;
     }
 }

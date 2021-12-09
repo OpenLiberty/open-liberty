@@ -21,9 +21,8 @@ IBM-API-Package: javax.mail;  type="spec", \
 IBM-ShortName: javaMail-1.5
 Subsystem-Version: 1.5
 Subsystem-Name: JavaMail 1.5
--features=\
-  com.ibm.websphere.appserver.classloading-1.0,\
-  com.ibm.websphere.appserver.injection-1.0,\
+-features=com.ibm.websphere.appserver.classloading-1.0, \
+  com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.javax.mail-1.5
 -bundles=\
   com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \

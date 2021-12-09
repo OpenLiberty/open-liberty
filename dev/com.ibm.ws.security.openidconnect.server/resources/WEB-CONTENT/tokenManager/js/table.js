@@ -443,13 +443,13 @@ var table = (function() {
 
         // $.when executes a callback based on zero or more Thenable objects.  Pass all the deferreds
         // assembled above for each authentication deletion requested as an array to .when.  A
-        // "Master" deferred object will be created to track the state of all deferreds passed in the
-        // array.  The "Master" deferred resolves when all the deferreds in our delDeferreds
+        // "Primary" deferred object will be created to track the state of all deferreds passed in the
+        // array.  The "Primary" deferred resolves when all the deferreds in our delDeferreds
         // resolve, or fails as soon as ONE of the delDeferreds fails.  Therefore, any failures in
         // apiUtils.deleteSelectedAppPasswordsTokens() will be RESOLVED, not REJECTED, and an object
         // tracking which request failed will be returned with the response so a proper error message
         // can be returned.
-        // Create a "Master" deferred to track the the state of all the deferreds it was passed...
+        // Create a "Primary" deferred to track the the state of all the deferreds it was passed...
         $.when.apply($, delDeferreds).then(function() {
             // The args passed to the done callback provide the resolved values for each of the
             // deferreds and matches the order the deferreds were passed to .when().  A deferred

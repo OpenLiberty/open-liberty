@@ -21,9 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,7 @@ public class FeatureDefinitionUtils {
 
     public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0",
                                                                                            "com.ibm.websphere.appserver.javaeeClient-8.0",
-                                                                                           "io.openliberty.jakartaeeClient-9.0",
+                                                                                           "io.openliberty.jakartaeeClient-9.1",
                                                                                            "com.ibm.websphere.appserver.appSecurityClient-1.0");
 
     public static final String NL = "\r\n";
@@ -271,7 +273,7 @@ public class FeatureDefinitionUtils {
      * manifest.
      *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *            for retrieving information from the manifest.
+     *                    for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {
@@ -681,10 +683,14 @@ public class FeatureDefinitionUtils {
                     return Collections.emptyList();
                 }
 
-                Map<String, Map<String, String>> data = ManifestHeaderProcessor.parseImportString(contents);
+                // using parseExportString to maintain order; but need to prevent dups
+                List<NameValuePair> data = ManifestHeaderProcessor.parseExportString(contents);
                 result = new ArrayList<FeatureResource>(data.size());
-                for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                Set<String> preventDups = new HashSet<>();
+                for (NameValuePair content : data) {
+                    if (preventDups.add(content.getName())) {
+                        result.add(new FeatureResourceImpl(content.getName(), content.getAttributes(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                    }
                 }
 
                 subsystemContent = result;

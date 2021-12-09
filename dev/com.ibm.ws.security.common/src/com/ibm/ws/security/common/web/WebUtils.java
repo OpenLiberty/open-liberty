@@ -18,6 +18,8 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -321,14 +323,18 @@ public class WebUtils {
     }
 
     @Trivial
-    public static String stripSecretsFromUrl(String orig, String[] secretStrings) {
+    public static String stripSecretsFromUrl(String orig, String[] inSecretStrings) {
         String retVal = orig;
 
-        if (secretStrings == null || secretStrings.length == 0) {
-            return orig;
-        }
-        for (int i = 0; i < secretStrings.length; i++) {
-            retVal = stripSecretFromUrl(retVal, secretStrings[i]);
+        if (orig!=null) {
+          String [] secretStrings = getRealSecretList(inSecretStrings);
+
+          if (secretStrings == null || secretStrings.length == 0) {
+              return orig;
+          }
+          for (int i = 0; i < secretStrings.length; i++) {
+              retVal = stripSecretFromUrl(retVal, secretStrings[i]);
+          }
         }
 
         return retVal;
@@ -393,8 +399,12 @@ public class WebUtils {
     // processes the parameter map for tracing, replacing the value
     // for any parameter that matches secret with *****
     @Trivial
-    public static String stripSecretsFromParameters(Map<String, String[]> pMap, String[] secretStrings) {
+    public static String stripSecretsFromParameters(Map<String, String[]> pMap, String[] inSecretStrings) {
         String retVal = null;
+
+        //add 
+        String [] secretStrings = getRealSecretList(inSecretStrings);
+
         if (pMap != null && pMap.size() > 0) {
             java.util.List<String> secretList = null;
             if (secretStrings != null && secretStrings.length != 0) {
@@ -456,4 +466,29 @@ public class WebUtils {
     public static String getRequestStringForTrace(HttpServletRequest request, String secretString) {
         return getRequestStringForTrace(request, new String[] { secretString });
     }
-}
+
+    //
+    // getRealSecretList
+    // add password and Password to list so that everyone inherits 'password'
+    // 'password' is probably enough; I'm adding Password for good measure
+    // 
+    @Trivial
+    private static String [] getRealSecretList(String[] secretStrings) {
+        ArrayList<String> secretList = null;
+
+        if (secretStrings!=null && secretStrings.length!=0) {
+          secretList = new ArrayList<String>(Arrays.asList(secretStrings));
+          if (!secretList.contains("password")) {
+            secretList.add("password");
+          }
+          if (!secretList.contains("Password")) {
+            secretList.add("Password");
+          }
+        } else {
+          secretList = new ArrayList();
+          secretList.add("password");
+          secretList.add("Password");
+        }
+        String type[] = {"type"};
+        return (secretList.toArray(type));
+      }}

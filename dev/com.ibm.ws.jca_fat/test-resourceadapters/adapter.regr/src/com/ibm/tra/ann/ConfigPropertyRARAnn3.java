@@ -158,7 +158,7 @@ public class ConfigPropertyRARAnn3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             if (debug) {
                 ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1: " + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());
@@ -194,7 +194,7 @@ public class ConfigPropertyRARAnn3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
             if (debug) {
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1:" + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());

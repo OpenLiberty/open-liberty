@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
@@ -46,6 +47,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -62,12 +64,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonIOTools;
-import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -84,7 +86,6 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
-import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.LDAPUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
@@ -186,7 +187,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * - Waits for the test apps to start - It sets up the trust manager. -
      * Defines some global variables for use by the follow on tests...
      */
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby,
+                                         List<String> addtlMessages) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, null, null, true, true);
     }
@@ -198,33 +200,44 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * - Waits for the test apps to start - It sets up the trust manager. -
      * Defines some global variables for use by the follow on tests...
      */
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages, boolean secStartMsg, boolean sslCheck) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages,
+                                         boolean secStartMsg, boolean sslCheck) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, null, null, secStartMsg, sslCheck);
     }
 
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages, String targetUrl, String providerType) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages,
+                                         String targetUrl, String providerType) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, targetUrl, providerType, true, true);
     }
 
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages, String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages,
+                                         String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck) throws Exception {
 
-        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, Constants.ACCESS_TOKEN_KEY, Constants.X509_CERT);
+        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, Constants.ACCESS_TOKEN_KEY,
+                           Constants.X509_CERT);
     }
 
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages, String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType, String certType) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages,
+                                         String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType, String certType) throws Exception {
 
-        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, tokenType, certType, Constants.JUNIT_REPORTING);
+        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, tokenType, certType,
+                           Constants.JUNIT_REPORTING);
     }
 
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages, String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType, String certType, boolean reportViaJunit) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, List<String> addtlMessages,
+                                         String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType, String certType,
+                                         boolean reportViaJunit) throws Exception {
 
-        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, false, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, tokenType, certType, reportViaJunit);
+        return commonSetUp(requestedServer, serverXML, testType, addtlApps, useDerby, false, addtlMessages, targetUrl, providerType, secStartMsg, sslCheck, tokenType, certType,
+                           reportViaJunit);
 
     }
 
-    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, boolean useMongo, List<String> addtlMessages, String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType, String certType, boolean reportViaJunit) throws Exception {
+    public static TestServer commonSetUp(String requestedServer, String serverXML, String testType, List<String> addtlApps, boolean useDerby, boolean useMongo,
+                                         List<String> addtlMessages, String targetUrl, String providerType, boolean secStartMsg, boolean sslCheck, String tokenType,
+                                         String certType, boolean reportViaJunit) throws Exception {
 
         Integer defaultPort = null;
         String httpString = null;
@@ -248,6 +261,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 messages.addAll(addtlMessages);
             }
 
+            /*
+             * Transform EE 9 applications.
+             */
+            transformApps(aTestServer);
+
             List<String> checkApps = aTestServer.getDefaultTestApps(testType);
             for (String c : checkApps) {
                 Log.info(thisClass, thisMethod, "Loop at after Default Apps: " + c);
@@ -263,7 +281,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             // libertyinternals-1.0.mf is not needed for RP tests
             if (!testType.equals(Constants.OIDC_RP)) {
                 if (LibertyFileManager.libertyFileExists(aTestServer.getServer().getMachine(), aTestServer.getServer().pathToAutoFVTTestFiles
-                        + "/internalFeatures/securitylibertyinternals-1.0.mf")) {
+                                                                                               + "/internalFeatures/securitylibertyinternals-1.0.mf")) {
                     aTestServer.getServer().copyFileToLibertyInstallRoot("lib/features", "internalFeatures/securitylibertyinternals-1.0.mf");
                 }
             }
@@ -501,14 +519,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             // it
             String ksPath = System.getProperty("javax.net.ssl.keyStore");
             if (ksPath != null && ksPath.length() > 0) {
-                String ksPassword = System
-                        .getProperty("javax.net.ssl.keyStorePassword");
-                String ksType = System
-                        .getProperty("javax.net.ssl.keyStoreType");
+                String ksPassword = System.getProperty("javax.net.ssl.keyStorePassword");
+                String ksType = System.getProperty("javax.net.ssl.keyStoreType");
                 Log.info(thisClass, "setup Keymanager", "ksPath=" + ksPath + " ksPassword=" + ksPassword + " ksType=" + ksType);
                 if (ksPassword != null && ksType != null) {
-                    KeyManagerFactory kmFactory = KeyManagerFactory
-                            .getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                    KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
                     File ksFile = new File(ksPath);
                     KeyStore keyStore = KeyStore.getInstance(ksType);
@@ -542,8 +557,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             // Install the all-trusting trust manager
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(keyManagers, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection
-                    .setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
             // Create all-trusting host name verifier
             @SuppressWarnings("unused")
@@ -560,8 +574,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             Log.info(thisClass, thisMethod, "Setting trustStore to " + Constants.JKS_LOCATION);
             System.setProperty("javax.net.ssl.trustStore", Constants.JKS_LOCATION);
             System.setProperty("javax.net.ssl.trustStorePassword",
-                    // "changeit");
-                    "LibertyClient");
+                               // "changeit");
+                               "LibertyClient");
             System.setProperty("javax.net.debug", "ssl");
             Log.info(thisClass, thisMethod, "javax.net.debug is set to: " + System.getProperty("javax.net.debug"));
 
@@ -680,16 +694,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
-    public WebResponse genericOP(String testcase, WebConversation wc, TestSettings settings, String[] testActions, List<validationData> expectations, WebResponse response, String idToken) throws Exception {
+    public WebResponse genericOP(String testcase, WebConversation wc, TestSettings settings, String[] testActions, List<validationData> expectations, WebResponse response,
+                                 String idToken) throws Exception {
 
         // WebResponse response = null;
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations, testActions);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -801,7 +814,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         return genericOP(testcase, webClient, settings, testActions, expectations, null, null);
     }
 
-    public Object genericOP(String testcase, WebClient webClient, TestSettings settings, String[] testActions, List<validationData> expectations, Object response, String idToken) throws Exception {
+    public Object genericOP(String testcase, WebClient webClient, TestSettings settings, String[] testActions, List<validationData> expectations, Object response,
+                            String idToken) throws Exception {
 
         //        return genericOP(testcase, webClient, settings, testActions, expectations, null, null);
         //
@@ -813,8 +827,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericOP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations, testActions);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         Object thePage = null;
 
@@ -942,8 +956,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -1020,8 +1034,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 
-        //        settings.printTestSettings();
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
         try {
 
@@ -1094,7 +1108,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * test settings and skiptestcase not specified - pass in the defaults of
      * null and false
      */
-    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations) throws Exception {
+    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                             List<endpointSettings> headers, List<validationData> expectations) throws Exception {
 
         return genericInvokeEndpoint(testcase, wc, inResponse, url, method, action, parms, headers, expectations, null, false);
     }
@@ -1103,28 +1118,29 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * test settings passed in, but skiptestcase not specified - pass in the
      * default of false
      */
-    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, TestSettings settings) throws Exception {
+    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                             List<endpointSettings> headers, List<validationData> expectations, TestSettings settings) throws Exception {
 
         return genericInvokeEndpoint(testcase, wc, inResponse, url, method, action, parms, headers, expectations, settings, false);
     }
 
     /* test settings not specified - pass in the default of null */
-    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, boolean skipTestCase) throws Exception {
+    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                             List<endpointSettings> headers, List<validationData> expectations, boolean skipTestCase) throws Exception {
 
         return genericInvokeEndpoint(testcase, wc, inResponse, url, method, action, parms, headers, expectations, null, skipTestCase);
     }
 
-    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, TestSettings settings, boolean skipTestCase) throws Exception {
+    public WebResponse genericInvokeEndpoint(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                             List<endpointSettings> headers, List<validationData> expectations, TestSettings settings, boolean skipTestCase) throws Exception {
 
         WebRequest request = null;
         WebResponse response = null;
         String thisMethod = "genericInvokeEndpoint";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            settings.printTestSettings();
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1198,28 +1214,29 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         return response;
     }
 
-    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, TestSettings settings) throws Exception {
+    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String url, String method, String action, List<endpointSettings> parms,
+                                        List<endpointSettings> headers, List<validationData> expectations, TestSettings settings) throws Exception {
 
         return genericInvokeEndpoint(testcase, webClient, startPage, url, method, action, parms, headers, expectations, settings, false);
     }
 
     /* test settings not specified - pass in the default of null */
-    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, boolean skipTestCase) throws Exception {
+    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String url, String method, String action, List<endpointSettings> parms,
+                                        List<endpointSettings> headers, List<validationData> expectations, boolean skipTestCase) throws Exception {
 
         return genericInvokeEndpoint(testcase, webClient, startPage, url, method, action, parms, headers, expectations, null, skipTestCase);
     }
 
-    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String inUrl, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, TestSettings settings, boolean skipTestCase) throws Exception {
+    public Object genericInvokeEndpoint(String testcase, WebClient webClient, Object startPage, String inUrl, String method, String action, List<endpointSettings> parms,
+                                        List<endpointSettings> headers, List<validationData> expectations, TestSettings settings, boolean skipTestCase) throws Exception {
 
         String thisMethod = "genericInvokeEndpoint";
         com.gargoylesoftware.htmlunit.WebRequest requestSettings = null;
         Page thePage = null;
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            settings.printTestSettings();
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printTestSettings(settings);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1233,33 +1250,33 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             HttpMethod selectedMethod = null;
 
             switch (method) {
-            case Constants.DELETEMETHOD:
-                selectedMethod = HttpMethod.DELETE;
-                break;
-            case Constants.GETMETHOD:
-                selectedMethod = HttpMethod.GET;
-                break;
-            case Constants.HEADMETHOD:
-                selectedMethod = HttpMethod.HEAD;
-                break;
-            case Constants.OPTIONSMETHOD:
-                selectedMethod = HttpMethod.OPTIONS;
-                break;
-            case Constants.PATCHMETHOD:
-                selectedMethod = HttpMethod.PATCH;
-                break;
-            case Constants.POSTMETHOD:
-                selectedMethod = HttpMethod.POST;
-                break;
-            case Constants.PUTMETHOD:
-                selectedMethod = HttpMethod.PUT;
-                break;
-            case Constants.TRACEMETHOD:
-                selectedMethod = HttpMethod.TRACE;
-                break;
-            default:
-                selectedMethod = HttpMethod.GET;
-                break;
+                case Constants.DELETEMETHOD:
+                    selectedMethod = HttpMethod.DELETE;
+                    break;
+                case Constants.GETMETHOD:
+                    selectedMethod = HttpMethod.GET;
+                    break;
+                case Constants.HEADMETHOD:
+                    selectedMethod = HttpMethod.HEAD;
+                    break;
+                case Constants.OPTIONSMETHOD:
+                    selectedMethod = HttpMethod.OPTIONS;
+                    break;
+                case Constants.PATCHMETHOD:
+                    selectedMethod = HttpMethod.PATCH;
+                    break;
+                case Constants.POSTMETHOD:
+                    selectedMethod = HttpMethod.POST;
+                    break;
+                case Constants.PUTMETHOD:
+                    selectedMethod = HttpMethod.PUT;
+                    break;
+                case Constants.TRACEMETHOD:
+                    selectedMethod = HttpMethod.TRACE;
+                    break;
+                default:
+                    selectedMethod = HttpMethod.GET;
+                    break;
             }
 
             requestSettings = new com.gargoylesoftware.htmlunit.WebRequest(url, selectedMethod);
@@ -1346,7 +1363,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @return
      * @throws Exception
      */
-    public WebResponse invokeEndpointWithBody(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations, InputStream source, String contentType) throws Exception {
+    public WebResponse invokeEndpointWithBody(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                              List<endpointSettings> headers, List<validationData> expectations, InputStream source, String contentType) throws Exception {
 
         MessageBodyWebRequest request = null;
         if (method.equals(Constants.POSTMETHOD)) {
@@ -1360,7 +1378,10 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "invokeEndpointWithBody";
 
         msgUtils.printMethodName(thisMethod);
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, null);
+        Log.info(thisClass, thisMethod, "source: " + source);
+        String s = IOUtils.toString(source, StandardCharsets.UTF_8);
+        Log.info(thisClass, thisMethod, "source: " + s);
 
         try {
 
@@ -1386,6 +1407,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 Log.info(thisClass, thisMethod, "No header fields to add");
             }
 
+            msgUtils.printRequestParts(request, thisMethod, "outgoing " + method + " type request");
             response = wc.getResponse(request);
             msgUtils.printResponseParts(response, thisMethod, "Invoke with Parms and Headers: ");
 
@@ -1430,12 +1452,14 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @return
      * @throws Exception
      */
-    public WebResponse genericInvokeForm(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms, List<validationData> expectations) throws Exception {
+    public WebResponse genericInvokeForm(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                         List<validationData> expectations) throws Exception {
         return genericInvokeForm(testcase, wc, inResponse, null, url, method, action, parms, expectations);
 
     }
 
-    public WebResponse genericInvokeForm(String testcase, WebConversation wc, WebResponse inResponse, TestSettings settings, String url, String method, String action, List<endpointSettings> parms, List<validationData> expectations) throws Exception {
+    public WebResponse genericInvokeForm(String testcase, WebConversation wc, WebResponse inResponse, TestSettings settings, String url, String method, String action,
+                                         List<endpointSettings> parms, List<validationData> expectations) throws Exception {
 
         helpers.setMarkToEndOfAllServersLogs();
 
@@ -1444,9 +1468,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeForm";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         try {
 
@@ -1503,12 +1525,14 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
-    public Object genericInvokeForm(String testcase, WebClient webClient, Object inResponse, String url, String method, String action, List<endpointSettings> parms, List<validationData> expectations) throws Exception {
+    public Object genericInvokeForm(String testcase, WebClient webClient, Object inResponse, String url, String method, String action, List<endpointSettings> parms,
+                                    List<validationData> expectations) throws Exception {
         return genericInvokeForm(testcase, webClient, inResponse, null, url, method, action, parms, expectations);
 
     }
 
-    public Object genericInvokeForm(String testcase, WebClient webClient, Object inResponse, TestSettings settings, String inUrl, String method, String action, List<endpointSettings> parms, List<validationData> expectations) throws Exception {
+    public Object genericInvokeForm(String testcase, WebClient webClient, Object inResponse, TestSettings settings, String inUrl, String method, String action,
+                                    List<endpointSettings> parms, List<validationData> expectations) throws Exception {
 
         helpers.setMarkToEndOfAllServersLogs();
 
@@ -1518,9 +1542,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         String thisMethod = "genericInvokeForm";
 
         msgUtils.printMethodName(thisMethod);
-        if (settings != null && settings.getAllowPrint()) {
-            msgUtils.printOAuthOidcExpectations(expectations);
-        }
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, settings);
 
         msgUtils.printAllCookies(webClient);
 
@@ -1601,7 +1623,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
                 propagationTokenCreationDate = System.currentTimeMillis();
                 DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-                Log.info(thisClass, method, "Common propagation token (" + commonPropagationToken + ") created at " + formatter.format(new Date(propagationTokenCreationDate)) + " and will be refreshed in " + testPropagationTokenLifetimeSeconds + " second(s).");
+                Log.info(thisClass, method, "Common propagation token (" + commonPropagationToken + ") created at " + formatter.format(new Date(propagationTokenCreationDate))
+                                            + " and will be refreshed in " + testPropagationTokenLifetimeSeconds + " second(s).");
 
             } catch (Exception e) {
                 Log.error(thisClass, method, e, "Failed to obtain a common propagation token. Tests using the common token may fail.");
@@ -1705,6 +1728,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             try {
                 // update the allowedTimeout count to account for msgs issued during start retries
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
                 tearDownServer(server);
                 newServerRefList.add(server);
             } catch (Exception e) {
@@ -1733,18 +1757,25 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
+    /**
+     * Remove the mongoDB props file used by the CustomStoreSample and stop the locally started MongoDB server.
+     *
+     * @param server
+     * @param cumulativeException
+     * @param exceptionNum
+     * @return
+     */
     private static boolean mongoDBTeardownCleanup(TestServer server, Exception cumulativeException, int exceptionNum) {
         try {
-
-            Log.info(thisClass, "mongoDBTeardownCleanup", "cleanupMongoDBEntries");
-            MongoDBUtils.cleanupMongoDBEntries(server.getHttpString(), server.getHttpDefaultPort());
-
             try {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "delete mongo props file " + MONGO_PROPS_FILE);
                 server.getServer().deleteFileFromLibertyServerRoot(MONGO_PROPS_FILE);
             } catch (Exception e) {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "Exception removing MONGO_PROPS_FILE. If this is a Derby test, ignore this message." + e);
             }
+
+            MongoDBUtils.stopMongoDB(server.getHttpString(), server.getHttpDefaultPort());
+
             return true;
 
         } catch (Exception e) {
@@ -1790,12 +1821,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             Constants.INVOKE_USERINFO_ENDPOINT, parms, null,
      *             expectations);
      **/
-    public void genericInvokeEndpointWithHttpUrlConn(String testcase, String response, String url, String method, String action, List<endpointSettings> parms, List<endpointSettings> headers, List<validationData> expectations) throws Exception {
+    public void genericInvokeEndpointWithHttpUrlConn(String testcase, String response, String url, String method, String action, List<endpointSettings> parms,
+                                                     List<endpointSettings> headers, List<validationData> expectations) throws Exception {
 
         String thisMethod = "genericInvokeEndpointWithHttpUrlConn";
 
         msgUtils.printMethodName(thisMethod);
-        msgUtils.printOAuthOidcExpectations(expectations);
+        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, null);
 
         try {
             helpers.setMarkToEndOfAllServersLogs();
@@ -1805,7 +1837,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
             String updatedUrl = url;
             // Delete doesn't support output - have to build the url with the query string included
-            if (Constants.DELETEMETHOD.equals(method) && builtParms != null) {
+            if ((Constants.DELETEMETHOD.equals(method) || Constants.PUTMETHOD.equals(method)) && builtParms != null) {
                 updatedUrl = url + "?" + builtParms;
             }
             Log.info(thisClass, thisMethod, "Endpoint URL: " + updatedUrl);
@@ -1976,13 +2008,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
-    public WebResponse invokeAuthorizationEndpoint(String testCase, WebConversation wc, WebResponse inResponse, TestSettings settings, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAuthorizationEndpoint(String testCase, WebConversation wc, WebResponse inResponse, TestSettings settings,
+                                                   List<validationData> expectations) throws Exception {
 
         return invokeAuthorizationEndpoint(testCase, wc, inResponse, settings, expectations, Constants.INVOKE_AUTH_SERVER);
 
     }
 
-    public WebResponse invokeAuthorizationEndpoint(String testCase, WebConversation wc, WebResponse inResponse, TestSettings settings, List<validationData> expectations, String basicAuth) throws Exception {
+    public WebResponse invokeAuthorizationEndpoint(String testCase, WebConversation wc, WebResponse inResponse, TestSettings settings, List<validationData> expectations,
+                                                   String basicAuth) throws Exception {
 
         String thisMethod = "invokeAuthorizationEndpoint";
         msgUtils.printMethodName(thisMethod);
@@ -2012,8 +2046,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             parms = eSettings.addEndpointSettings(parms, "code_challenge_method", settings.getCodeChallengeMethod());
         }
 
-        WebResponse response = genericInvokeEndpoint(testCase, wc, inResponse, settings.getAuthorizeEndpt(), Constants.GETMETHOD, Constants.INVOKE_AUTH_ENDPOINT, parms, headers, expectations, settings);
-        ;
+        WebResponse response = genericInvokeEndpoint(testCase, wc, inResponse, settings.getAuthorizeEndpt(), Constants.GETMETHOD, Constants.INVOKE_AUTH_ENDPOINT, parms, headers,
+                                                     expectations, settings);;
         return response;
     }
 
@@ -2023,7 +2057,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
-    public Object invokeAuthorizationEndpoint(String testCase, WebClient webClient, Object startPage, TestSettings settings, List<validationData> expectations, String basicAuth) throws Exception {
+    public Object invokeAuthorizationEndpoint(String testCase, WebClient webClient, Object startPage, TestSettings settings, List<validationData> expectations,
+                                              String basicAuth) throws Exception {
 
         String thisMethod = "invokeAuthorizationEndpoint";
         msgUtils.printMethodName(thisMethod);
@@ -2065,7 +2100,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         Log.info(thisClass, thisMethod, "WebClient isJavaScriptEnabled: " + webClient.getOptions().isJavaScriptEnabled());
 
-        Object response = genericInvokeEndpoint(testCase, webClient, startPage, settings.getAuthorizeEndpt(), Constants.GETMETHOD, Constants.INVOKE_AUTH_ENDPOINT, parms, headers, expectations, settings);
+        Object response = genericInvokeEndpoint(testCase, webClient, startPage, settings.getAuthorizeEndpt(), Constants.GETMETHOD, Constants.INVOKE_AUTH_ENDPOINT, parms, headers,
+                                                expectations, settings);
 
         Set<Cookie> cookies = webClient.getCookieManager().getCookies();
         for (Cookie cookie : cookies) {
@@ -2114,7 +2150,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         if (settings.getCodeVerifier() != null) {
             parms = eSettings.addEndpointSettings(parms, "code_verifier", settings.getCodeVerifier());
         }
-        WebResponse response = genericInvokeEndpoint(_testName, wc, inResponse, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, inResponse, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers,
+                                                     expectations, settings);
 
         return response;
     }
@@ -2134,7 +2171,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         if (settings.getCodeVerifier() != null) {
             parms = eSettings.addEndpointSettings(parms, "code_verifier", settings.getCodeVerifier());
         }
-        Object response = genericInvokeEndpoint(_testName, webClient, startPage, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers, expectations, settings);
+        Object response = genericInvokeEndpoint(_testName, webClient, startPage, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers,
+                                                expectations, settings);
 
         return response;
     }
@@ -2174,7 +2212,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
         parms = eSettings.addEndpointSettings(parms, "scope", settings.getScope());
         parms = eSettings.addEndpointSettings(parms, "grant_type", "client_credentials");
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers,
+                                                     expectations, settings);
 
         return response;
     }
@@ -2211,7 +2250,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         parms = eSettings.addEndpointSettings(parms, "password", settings.getAdminPswd());
         parms = eSettings.addEndpointSettings(parms, "scope", settings.getScope());
         parms = eSettings.addEndpointSettings(parms, "grant_type", Constants.PASSWORD_GRANT_TYPE);
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getTokenEndpt(), Constants.POSTMETHOD, Constants.INVOKE_TOKEN_ENDPOINT, parms, headers,
+                                                     expectations, settings);
 
         return response;
     }
@@ -2239,7 +2279,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
+                                                         List<validationData> expectations) throws Exception {
         return invokeAppPasswordsEndpoint_create(testCase, wc, settings, accessToken, appName, usedBy, Constants.HEADER, expectations);
     }
 
@@ -2267,11 +2308,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy, String clientLocation, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
+                                                         String clientLocation, List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppPasswordsEndpoint_create";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Generating app-password for access_token: [" + accessToken + "] and app_name: [" + appName + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Generating app-password for access_token: [" + accessToken + "] and app_name: [" + appName + "] using clientId: [" + settings.getClientID()
+                                        + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         List<endpointSettings> headers = null;
         List<endpointSettings> parms = null;
@@ -2286,7 +2329,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
         }
 
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppPasswordsEndpt(), Constants.POSTMETHOD, Constants.INVOKE_APP_PASSWORDS_ENDPOINT_CREATE, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppPasswordsEndpt(), Constants.POSTMETHOD, Constants.INVOKE_APP_PASSWORDS_ENDPOINT_CREATE,
+                                                     parms, headers, expectations, settings);
 
         return response;
     }
@@ -2312,7 +2356,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId,
+                                                       List<validationData> expectations) throws Exception {
         return invokeAppPasswordsEndpoint_list(testCase, wc, settings, accessToken, userId, Constants.HEADER, expectations);
     }
 
@@ -2339,11 +2384,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation,
+                                                       List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppPasswordsEndpoint_list";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Listing app-passwords for access_token: [" + accessToken + "] and user_id: [" + userId + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Listing app-passwords for access_token: [" + accessToken + "] and user_id: [" + userId + "] using clientId: [" + settings.getClientID()
+                                        + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         List<endpointSettings> headers = null;
         List<endpointSettings> parms = null;
@@ -2362,7 +2409,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         boolean origScripting = HttpUnitOptions.isScriptingEnabled();
         HttpUnitOptions.setScriptingEnabled(false);
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppPasswordsEndpt(), Constants.GETMETHOD, Constants.INVOKE_APP_PASSWORDS_ENDPOINT_LIST, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppPasswordsEndpt(), Constants.GETMETHOD, Constants.INVOKE_APP_PASSWORDS_ENDPOINT_LIST, parms,
+                                                     headers, expectations, settings);
         HttpUnitOptions.setScriptingEnabled(origScripting);
 
         return response;
@@ -2389,7 +2437,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId, List<validationData> expectations) throws Exception {
+    public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId,
+                                                  List<validationData> expectations) throws Exception {
         invokeAppPasswordsEndpoint_revoke(testCase, wc, settings, accessToken, userId, appId, Constants.HEADER, expectations);
     }
 
@@ -2416,11 +2465,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId, String clientLocation, List<validationData> expectations) throws Exception {
+    public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId,
+                                                  String clientLocation, List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppPasswordsEndpoint_revoke";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Revoking app-passwords for access_token: [" + accessToken + "], user_id: [" + userId + "] and app_id: [" + appId + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Revoking app-passwords for access_token: [" + accessToken + "], user_id: [" + userId + "] and app_id: [" + appId + "] using clientId: ["
+                                        + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         String urlString = null;
         if (appId == null) {
@@ -2490,11 +2541,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppTokensEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy, String clientLocation, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppTokensEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
+                                                      String clientLocation, List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppTokensEndpoint_create";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Generating app-token for access_token: [" + accessToken + "] and app_name: [" + appName + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Generating app-token for access_token: [" + accessToken + "] and app_name: [" + appName + "] using clientId: [" + settings.getClientID()
+                                        + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         List<endpointSettings> headers = null;
         List<endpointSettings> parms = null;
@@ -2509,7 +2562,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
         }
 
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppTokensEndpt(), Constants.POSTMETHOD, Constants.INVOKE_APP_TOKENS_ENDPOINT_CREATE, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppTokensEndpt(), Constants.POSTMETHOD, Constants.INVOKE_APP_TOKENS_ENDPOINT_CREATE, parms,
+                                                     headers, expectations, settings);
 
         return response;
     }
@@ -2535,7 +2589,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId,
+                                                    List<validationData> expectations) throws Exception {
         return invokeAppTokensEndpoint_list(testCase, wc, settings, accessToken, userId, Constants.HEADER, expectations);
     }
 
@@ -2562,11 +2617,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation, List<validationData> expectations) throws Exception {
+    public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation,
+                                                    List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppTokensEndpoint_list";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Listing app-tokens for access_token: [" + accessToken + "] and user_id: [" + userId + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Listing app-tokens for access_token: [" + accessToken + "] and user_id: [" + userId + "] using clientId: [" + settings.getClientID()
+                                        + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         List<endpointSettings> headers = null;
         List<endpointSettings> parms = null;
@@ -2584,7 +2641,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         boolean origScripting = HttpUnitOptions.isScriptingEnabled();
         HttpUnitOptions.setScriptingEnabled(false);
-        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppTokensEndpt(), Constants.GETMETHOD, Constants.INVOKE_APP_TOKENS_ENDPOINT_LIST, parms, headers, expectations, settings);
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, settings.getAppTokensEndpt(), Constants.GETMETHOD, Constants.INVOKE_APP_TOKENS_ENDPOINT_LIST, parms,
+                                                     headers, expectations, settings);
         HttpUnitOptions.setScriptingEnabled(origScripting);
 
         return response;
@@ -2613,7 +2671,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId, List<validationData> expectations) throws Exception {
+    public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId,
+                                               List<validationData> expectations) throws Exception {
         invokeAppTokensEndpoint_revoke(testCase, wc, settings, accessToken, userId, tokenId, Constants.HEADER, expectations);
     }
 
@@ -2642,11 +2701,13 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
      *             error
      */
-    public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId, String clientLocation, List<validationData> expectations) throws Exception {
+    public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId, String clientLocation,
+                                               List<validationData> expectations) throws Exception {
         String thisMethod = "invokeAppTokensEndpoint_revoke";
         msgUtils.printMethodName(thisMethod);
 
-        Log.info(thisClass, thisMethod, "Revoking app-tokens for access_token: [" + accessToken + "], user_id: [" + userId + "] and token_id: [" + tokenId + "] using clientId: [" + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
+        Log.info(thisClass, thisMethod, "Revoking app-tokens for access_token: [" + accessToken + "], user_id: [" + userId + "] and token_id: [" + tokenId + "] using clientId: ["
+                                        + settings.getClientID() + "] and clientSecret: [" + settings.getClientSecret() + "]");
 
         String urlString = null;
         if (tokenId == null) {
@@ -2701,7 +2762,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
-    public WebResponse invokeGenericForm_refreshToken(String testCase, WebConversation wc, TestSettings settings, String originalRefreshToken, List<validationData> expectations) throws Exception {
+    public WebResponse invokeGenericForm_refreshToken(String testCase, WebConversation wc, TestSettings settings, String originalRefreshToken,
+                                                      List<validationData> expectations) throws Exception {
 
         String thisMethod = "invokeGenericForm_refreshToken";
         msgUtils.printMethodName(thisMethod);
@@ -2709,7 +2771,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         List<endpointSettings> parms = setRefreshTokenParms(settings, originalRefreshToken);
 
         // Constants.REFRESH_TOKEN_GRANT_TYPE);
-        WebResponse response = genericInvokeForm(_testName, wc, null, settings, settings.getRefreshTokUrl(), Constants.GETMETHOD, Constants.INVOKE_REFRESH_ENDPOINT, parms, expectations);
+        WebResponse response = genericInvokeForm(_testName, wc, null, settings, settings.getRefreshTokUrl(), Constants.GETMETHOD, Constants.INVOKE_REFRESH_ENDPOINT, parms,
+                                                 expectations);
 
         return response;
     }
@@ -2725,7 +2788,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         return parms;
     }
 
-    public Object invokeGenericForm_refreshToken(String testCase, WebClient webClient, TestSettings settings, String originalRefreshToken, List<validationData> expectations) throws Exception {
+    public Object invokeGenericForm_refreshToken(String testCase, WebClient webClient, TestSettings settings, String originalRefreshToken,
+                                                 List<validationData> expectations) throws Exception {
 
         String thisMethod = "invokeGenericForm_refreshToken";
         msgUtils.printMethodName(thisMethod);
@@ -2733,12 +2797,14 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         List<endpointSettings> parms = setRefreshTokenParms(settings, originalRefreshToken);
 
         // Constants.REFRESH_TOKEN_GRANT_TYPE);
-        Object response = genericInvokeForm(_testName, webClient, null, settings, settings.getRefreshTokUrl(), Constants.POSTMETHOD, Constants.INVOKE_REFRESH_ENDPOINT, parms, expectations);
+        Object response = genericInvokeForm(_testName, webClient, null, settings, settings.getRefreshTokUrl(), Constants.POSTMETHOD, Constants.INVOKE_REFRESH_ENDPOINT, parms,
+                                            expectations);
 
         return response;
     }
 
-    public WebResponse invokeGenericForm_revokeToken(String testCase, WebConversation wc, TestSettings settings, String accessToken, List<validationData> expectations) throws Exception {
+    public WebResponse invokeGenericForm_revokeToken(String testCase, WebConversation wc, TestSettings settings, String accessToken,
+                                                     List<validationData> expectations) throws Exception {
 
         String thisMethod = "invokeGenericForm_revokeToken";
         msgUtils.printMethodName(thisMethod);

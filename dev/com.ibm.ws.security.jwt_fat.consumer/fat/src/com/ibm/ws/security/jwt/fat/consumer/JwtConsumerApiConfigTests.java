@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,11 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
+import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
@@ -72,11 +74,12 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.transformApps(consumerServer, "test-apps/jwtbuilder.war", "test-apps/jwtconsumerclient.war", "dropins/testmarker.war");
+        transformApps(consumerServer);
 
         serverTracker.addServer(consumerServer);
         skipRestoreServerTracker.addServer(consumerServer);
         consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
+        consumerServer.addInstalledAppForValidation(JwtConstants.JWT_SIMPLE_BUILDER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_configTests.xml");
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         // one of the JWT Consumer configs has an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
@@ -84,6 +87,10 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         // set the default signing key for this test class (individual test cases can override if needed)
         consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
+
+        // for some reason some of the keystore configs were taking too long to be loaded
+        ServerInstanceUtils.waitForKeyStores(consumerServer);
+
     }
 
     @Override
@@ -1825,7 +1832,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "missing_sslRef_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1845,7 +1852,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "bad_sslRef_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1864,7 +1871,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "decrypt_ES384");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + "ClassCastException", currentAction, consumerServer, "decrypt_ES384");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "decrypt_ES384", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);

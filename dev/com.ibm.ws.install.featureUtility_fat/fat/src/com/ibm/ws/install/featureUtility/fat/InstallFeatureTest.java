@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,283 +32,428 @@ import com.ibm.websphere.simplicity.log.Log;
 
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
-    private static final Class<?> c = InstallFeatureTest.class;
+	private static final Class<?> c = InstallFeatureTest.class;
 
-    @BeforeClass
-    public static void beforeClassSetup() throws Exception {
-        final String methodName = "beforeClassSetup";
-        Log.entering(c, methodName);
-        setupEnv();
+	@BeforeClass
+	public static void beforeClassSetup() throws Exception {
+		final String methodName = "beforeClassSetup";
+        /* Enable tests only if running on a zOS machine, otherwise skip class */
+		Assume.assumeTrue(!isZos);
+		Log.entering(c, methodName);
+		setupEnv();
+		Log.exiting(c, methodName);
+	}
 
-        // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
-        replaceWlpProperties(getPreviousWlpVersion());
-        replaceWlpProperties(getPreviousWlpVersion());
-        Log.exiting(c, methodName);
-    }
+	@Before
+	public void beforeCleanUp() throws Exception {
+		// rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
+		resetOriginalWlpProps();
+		replaceWlpProperties(getPreviousWlpVersion());
+		replaceWlpProperties(getPreviousWlpVersion());
+	}
 
-    @Before
-    public void beforeCleanUp() throws Exception {
-        resetOriginalWlpProps();
-        replaceWlpProperties(getPreviousWlpVersion());
-        replaceWlpProperties(getPreviousWlpVersion());
-        deleteFeaturesAndLafilesFolders("beforeCleanUp");
-    }
+	@After
+	public void afterCleanUp() throws Exception {
+		resetOriginalWlpProps();
+	}
 
-    @After
-    public void afterCleanUp() throws Exception {
-        resetOriginalWlpProps();
-        replaceWlpProperties(getPreviousWlpVersion());
-        replaceWlpProperties(getPreviousWlpVersion());
-        deleteFeaturesAndLafilesFolders("afterCleanUp");
-    }
+	@AfterClass
+	public static void cleanUp() throws Exception {
+		// TODO
+		if (!isZos) {
+			resetOriginalWlpProps();
+			cleanUpTempFiles();
+			deleteRepo("AfterClassCleanUp");
+		}
 
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        // TODO
-        resetOriginalWlpProps();
-        cleanUpTempFiles();
-    }
+	}
 
-    /**
-     * Test the install of jsp-2.3 from maven central.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testInstallFeature() throws Exception {
-        final String METHOD_NAME = "testInstallFeature";
-        Log.entering(c, METHOD_NAME);
+	protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear)
+			throws Exception {
 
-        String[] param1s = { "installFeature", "jsp-2.3", "--verbose"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+		Log.info(c, methodName, "If Exists, Deleting files for " + featureName);
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
+		for (String filePath : filePathsToClear) {
+			if (server.fileExistsInLibertyInstallRoot(filePath)) {
+				server.deleteFileFromLibertyInstallRoot(filePath);
+			}
+		}
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
-        Log.exiting(c, METHOD_NAME);
-    }
+		server.deleteDirectoryFromLibertyInstallRoot("lafiles");
 
-    /**
-     * Test the installation of features cdi-1.2 and jsf-2.2 together, which should also install the autofeature cdi1.2-jsf2.2.
-     * @throws Exception
-     */
-    @Test
-    public void testInstallAutoFeature() throws Exception {
-        final String METHOD_NAME = "testInstallAutoFeature";
-        Log.entering(c, METHOD_NAME);
+		Log.info(c, methodName, "Finished deleting files associated with " + featureName);
+	}
 
-        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2", "--verbose"};
-        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
-        String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+	/**
+	 * Test the install of jsp-2.2, jsp-2.3 from maven central. Multi-version is not
+	 * supported with installServerFeature as it cannot be installed to same
+	 * resource.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testMultiVersionFeatures() throws Exception {
+		final String METHOD_NAME = "testMultiVersionFeatures";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		replaceWlpProperties("20.0.0.4");
 
+		String[] jsp22FilesList = { relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.jsp-2.2.mf" };
+		String[] jsp23FilesList = { relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.jsp-2.3.mf" };
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
-        assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
+		deleteFiles(METHOD_NAME, "jsp-2.2", jsp22FilesList);
+		deleteFiles(METHOD_NAME, "jsp-2.3", jsp23FilesList);
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-////        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
 
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
 
-        Log.exiting(c, METHOD_NAME);
-    }
+		copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
 
+		copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.2/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/jsp-2.2/20.0.0.4/jsp-2.2-20.0.0.4.esa");
 
-    /**
-     * Test the licenseAcceptance for a base feature. Note that this test case will only be run on an Open Liberty wlp.
-     * It will be skipped for Closed Liberty wlps.
-     * @throws Exception
-     */
-    @Test
-    public void testBaseLicenseAccept() throws Exception {
-        final String METHOD_NAME = "testBaseLicenseAccept";
-        Log.entering(c, METHOD_NAME);
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        if(FeatureUtilityToolTest.isClosedLiberty){
-            Log.info(c, METHOD_NAME,"Wlp is already Closed liberty. This test case will not be run.");
-            Log.exiting(c, METHOD_NAME);
-            return;
-        }
-        replaceWlpProperties("20.0.0.4");
-        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+		// Begin Test
+		String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain jsp-2.2", output.contains("jsp-2.2"));
+		assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
+	}
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+	/**
+	 * Test installation of feature json-1.0 from local repository
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstallFeature() throws Exception {
+		final String METHOD_NAME = "testInstallFeature";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		replaceWlpProperties("21.0.0.4");
+		String[] json10FilesList = {
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+		deleteFiles(METHOD_NAME, "json-1.0", json10FilesList);
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        Map<String, String> propsMap = new HashMap<String, String>();
-        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
-        String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense", "--verbose" };
+		copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        String edition = getClosedLibertyWlpEdition();
-        assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
-        assertTrue("Should be edition Base", (edition.contains("BASE")));
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
+		// Begin Test
+		String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+//		String[] fileLists = { "lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain json-1.0", output.contains("json-1.0"));
 
-        Log.exiting(c, METHOD_NAME);
-    }
+		Log.exiting(c, METHOD_NAME);
+	}
 
-    /**
-     * Test the licenseAcceptance by providing both a base and ND feature, the resulting wlp should be
-     * of version ND.
-     * Note that this test case will only be run on an Open Liberty wlp.
-     *      * It will be skipped for Closed Liberty wlps.
-     * @throws Exception
-     */
-    @Test
-    public void testMultiFeatureLicenseAccept() throws Exception {
-        final String METHOD_NAME = "testMultiFeatureLicenseAccept";
-        Log.entering(c, METHOD_NAME);
+	/**
+	 * Test the installation of features eventLogging-1.0 and osgiConsole-1.0, which
+	 * should also install the autofeature eventLogging-1.0-osgiCOnsole-1.0
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstallAutoFeature() throws Exception {
+		final String METHOD_NAME = "testInstallAutoFeature";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		replaceWlpProperties("21.0.0.4");
+		String[] autoFeaturesFilesList = {
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.eventLogging-1.0.mf",
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf" };
+		deleteFiles(METHOD_NAME, "autoFeatures eventLogging-1.0,osgiConsole-1.0", autoFeaturesFilesList);
 
-        if(FeatureUtilityToolTest.isClosedLiberty){
-            Log.info(c, METHOD_NAME,"Wlp is already Closed liberty. This test case will not be run.");
-            Log.exiting(c, METHOD_NAME);
-            return;
-        }
-        replaceWlpProperties("20.0.0.4");
-        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/com.ibm.websphere.appserver.osgiConsole-1.0.esa");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/osgiConsole-1.0-21.0.0.4.esa");
 
-        Map<String, String> propsMap = new HashMap<String, String>();
-        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
-        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
+		copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.eventLogging-1.0.esa");
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        String edition = getClosedLibertyWlpEdition();
-        assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
-        assertTrue("Should be edition ND", (edition.contains("ND")));
+		copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeJDBC-1.0.esa");
 
+		copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbes-1.0.esa");
 
-        deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
+		copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeServlet-1.0.esa");
 
-        Log.exiting(c, METHOD_NAME);
-    }
+		copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/eventLogging-1.0-21.0.0.4.esa");
 
-    /**
-     * Test the licenseAcceptance by providing both a base and ND feature, the resulting wlp should be
-     * of version ND.
-     * @throws Exception
-     */
-    @Test
-    public void testFeatureLocalRepoOverride() throws Exception {
-        final String METHOD_NAME = "testFeatureLocalRepoOverride";
-        Log.entering(c, METHOD_NAME);
-        replaceWlpProperties("20.0.0.4");
-        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+		// Begin Test
+		String[] param1s = { "installFeature", "eventLogging-1.0", "osgiConsole-1.0", "--verbose" };
+//		String[] fileListA = { "lib/features/com.ibm.websphere.appserver.eventLogging-1.0.mf" };
+//		String[] fileListB = { "lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf" };
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Output should contain eventLogging-1.0", output.indexOf("eventLogging-1.0") >= 0);
+		assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/el-3.0/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/el-3.0/20.0.0.4/el-3.0-20.0.0.4.esa");
+		Log.exiting(c, METHOD_NAME);
+	}
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/com.ibm.websphere.appserver.javax.el-3.0/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/com.ibm.websphere.appserver.javax.el-3.0/20.0.0.4/com.ibm.websphere.appserver.javax.el-3.0-20.0.0.4.esa");
+	/**
+	 * Test the licenseAcceptance for a base feature. Note that this test case will
+	 * only be run on an Open Liberty wlp. It will be skipped for Closed Liberty
+	 * wlps.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testBaseLicenseAccept() throws Exception {
+		final String METHOD_NAME = "testBaseLicenseAccept";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		String[] adminCenter10FilesList = {
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.adminCenter-1.0.mf"
 
+		};
 
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "el-3.0", "--verbose"};
+		deleteFiles(METHOD_NAME, "adminCenter-1.0", adminCenter10FilesList);
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain el-3.0", output.contains("el-3.0"));
+		if (FeatureUtilityToolTest.isClosedLiberty) {
+			Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
+			Log.exiting(c, METHOD_NAME);
+			return;
+		}
+		replaceWlpProperties("20.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
 
-        deleteEtcFolder(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
 
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
 
-        Log.exiting(c, METHOD_NAME);
-    }
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
+		// Begin Test
+		Map<String, String> propsMap = new HashMap<String, String>();
+		propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+		propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", propsMap);
+		String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense", "--verbose" };
 
-    /**
-     * Test the installation of a made up feature.
-     * @throws Exception
-     */
-    @Test
-    public void testInvalidFeature() throws Exception {
-        final String METHOD_NAME = "testInvalidFeature";
-        Log.entering(c, METHOD_NAME);
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String edition = getClosedLibertyWlpEdition();
+		assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
+		assertTrue("Should be edition Base", (edition.contains("BASE")));
 
-        String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose"};
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21",21,  po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E or CWWKF1203E", output.indexOf("CWWKF1402E")>=0 ||output.indexOf("CWWKF1203E") >= 0);
+		deleteProps(METHOD_NAME);
 
-        Log.exiting(c, METHOD_NAME);
-    }
+		Log.exiting(c, METHOD_NAME);
+	}
 
-    /**
-     * Try to install a feature (mpHealth-2.0) twice. Expected to fail.
-     */
-    @Test
-    public void testAlreadyInstalledFeature() throws Exception {
-        final String METHOD_NAME = "testAlreadyInstalledFeature";
-        Log.entering(c, METHOD_NAME);
+	/**
+	 * Test the licenseAcceptance by providing both a base and ND feature, the
+	 * resulting wlp should be of version ND. Note that this test case will only be
+	 * run on an Open Liberty wlp. * It will be skipped for Closed Liberty wlps.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testMultiFeatureLicenseAccept() throws Exception {
+		final String METHOD_NAME = "testMultiFeatureLicenseAccept";
+		Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "mpHealth-2.0", "--verbose"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+		if (FeatureUtilityToolTest.isClosedLiberty) {
+			Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
+			Log.exiting(c, METHOD_NAME);
+			return;
+		}
+		replaceWlpProperties("20.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain mpHealth-2.0", output.contains("mpHealth-2.0"));
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
 
-        po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 22 indicating already installd feature",22, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
 
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/wlp-base-license/20.0.0.4/wlp-base-license-20.0.0.4.zip");
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
-        Log.exiting(c, METHOD_NAME);
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
-    }
+		Map<String, String> propsMap = new HashMap<String, String>();
+		propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+		propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", propsMap);
+		String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
 
-    // test case disabled for now
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String edition = getClosedLibertyWlpEdition();
+		assertTrue("Edition should be found in the WebSphereApplicationServer.properties file", edition != null);
+		assertTrue("Should be edition ND", (edition.contains("ND")));
+
+		deleteProps(METHOD_NAME);
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Test the licenseAcceptance by providing both a base and ND feature, the
+	 * resulting wlp should be of version ND.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testFeatureLocalRepoOverride() throws Exception {
+		final String METHOD_NAME = "testFeatureLocalRepoOverride";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		replaceWlpProperties("20.0.0.4");
+		String[] el30FilesList = { relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.el-3.0.mf" };
+		deleteFiles(METHOD_NAME, "el-3.0", el30FilesList);
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/el-3.0/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/el-3.0/20.0.0.4/el-3.0-20.0.0.4.esa");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/com.ibm.websphere.appserver.javax.el-3.0/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/com.ibm.websphere.appserver.javax.el-3.0/20.0.0.4/com.ibm.websphere.appserver.javax.el-3.0-20.0.0.4.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+		// Begin Test
+		String[] param1s = { "installFeature", "el-3.0", "--verbose" };
+
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain el-3.0", output.contains("el-3.0"));
+
+		deleteEtcFolder(METHOD_NAME);
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Test the installation of a made up feature.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testInvalidFeature() throws Exception {
+		final String METHOD_NAME = "testInvalidFeature";
+		Log.entering(c, METHOD_NAME);
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		String[] param1s = { "installFeature",
+				"veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 21", 21, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain CWWKF1299E or CWWKF1203E",
+				output.indexOf("CWWKF1402E") >= 0 || output.indexOf("CWWKF1203E") >= 0);
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Try to install a feature (ssl-1.0) twice. Expected to fail.
+	 */
+	@Test
+	public void testAlreadyInstalledFeature() throws Exception {
+		final String METHOD_NAME = "testAlreadyInstalledFeature";
+		Log.entering(c, METHOD_NAME);
+		// Setup
+		replaceWlpProperties("21.0.0.4");
+		String[] ssl10FilesList = { relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.ssl-1.0.mf" };
+		deleteFiles(METHOD_NAME, "ssl-1.0", ssl10FilesList);
+
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.certificateCreator-1.0.esa");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.channelfw-1.0.esa");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.ssl-1.0.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+		// Begin Test
+		String[] param1s = { "installFeature", "ssl-1.0", "--verbose" };
+
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain ssl-1.0", output.contains("ssl-1.0"));
+
+		po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 22 indicating already installed feature", 22, po.getReturnCode());
+		output = po.getStdout();
+		assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	// test case disabled for now
 //    @Test
 //    public void testInvalidMavenCoordinateGroupId() throws Exception {
 //        String methodName = "testInvalidMavenCoordinateGroupId";
@@ -323,160 +470,349 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 //
 //    }
 
-    @Test
-    public void testInvalidMavenCoordinateArtifactId() throws Exception {
-        String methodName = "testInvalidMavenCoordinateArtifactId";
+	@Test
+	public void testInvalidMavenCoordinateArtifactId() throws Exception {
+		String methodName = "testInvalidMavenCoordinateArtifactId";
 
-        String [] param1s = {"if", "io.openliberty.features:mpHealth", "--verbose"};
-        ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals("Invalid feature shortname", 21, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Expected CWWKF1402E", output.indexOf("CWWKF1402E") >= 0);
+		String[] param1s = { "if", "io.openliberty.features:mpHealth", "--verbose" };
+		ProgramOutput po = runFeatureUtility(methodName, param1s);
+		assertEquals("Invalid feature shortname", 21, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Expected CWWKF1402E", output.indexOf("CWWKF1402E") >= 0);
 
-    }
+	}
 
-    /**
-     * Test the output when passing in poorly formatted feature names or maven
-     * coordinates
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testInvalidMavenCoordinateVersion() throws Exception {
-        String methodName = "testInvalidMavenCoordinateVersion";
-        // version mismatch. get an old Liberty version.
+	/**
+	 * Test the output when passing in poorly formatted feature names or maven
+	 * coordinates
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInvalidMavenCoordinateVersion() throws Exception {
+		String methodName = "testInvalidMavenCoordinateVersion";
+		// version mismatch. get an old Liberty version.
 
-        String oldVersion = "19.0.0.1";
-        String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion, "--verbose"};
-        ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals("Incompatible feature version" , 21, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Expected CWWKF1395E msg", output.indexOf("CWWKF1395E") >= 0);
+		String oldVersion = "19.0.0.1";
+		String[] param1s = { "if", "io.openliberty.features:mpHealth-2.0:" + oldVersion, "--verbose" };
+		ProgramOutput po = runFeatureUtility(methodName, param1s);
+		assertEquals("Incompatible feature version", 21, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Expected CWWKF1395E msg", output.indexOf("CWWKF1395E") >= 0);
 
-    }
+	}
 
-    /**
-     * The packaging in a maven coordinate can only be "esa", so we must verify that
-     * it only works with esa.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testInvalidMavenCoordinatePackaging() throws Exception {
-        String methodName = "testInvalidMavenCoordinatePackaging";
-        Log.entering(c, methodName);
+	/**
+	 * The packaging in a maven coordinate can only be "esa", so we must verify that
+	 * it only works with esa.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInvalidMavenCoordinatePackaging() throws Exception {
+		String methodName = "testInvalidMavenCoordinatePackaging";
+		Log.entering(c, methodName);
 
-        String currentVersion = getCurrentWlpVersion();
+		String currentVersion = getCurrentWlpVersion();
+
+		String[] jsp23FilesList = { relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.jsp-2.3.mf" };
+		deleteFiles(methodName, "jsp-2.3", jsp23FilesList);
+
+		// test with invalid packaging
+		String[] param1s = { "if", "io.openliberty.features:jsp-2.3:" + currentVersion + ":jar", "--verbose" };
+		ProgramOutput po = runFeatureUtility(methodName, param1s);
+		assertEquals(21, po.getReturnCode());
+		// "CWWKF1395E"
+		String output = po.getStdout();
+		assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E") >= 0);
+
+		// now try with valid packaging
+		String[] param2s = { "if", "io.openliberty.features:jsp-2.3:" + currentVersion + ":esa", "--verbose" };
+		po = runFeatureUtility(methodName, param2s);
+		assertEquals("Should install successfully.", 0, po.getReturnCode());
+		Log.exiting(c, methodName);
+	}
+
+	@Test
+	public void testInvalidMavenCoordinateFormatting() throws Exception {
+		String methodName = "testInvalidMavenCoordinateFormatting";
+		ProgramOutput po;
+		String output;
+		String version = getCurrentWlpVersion();
+
+		String[] param1s = { "if", "groupId:artifactId:" + version + ":esa:unsupportedOption", "--verbose" };
+		po = runFeatureUtility(methodName, param1s);
+		assertEquals(21, po.getReturnCode());
+		output = po.getStdout();
+		assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
+
+		String[] param2s = { "if", ":::", "--verbose" };
+		po = runFeatureUtility(methodName, param2s);
+		assertEquals(21, po.getReturnCode());
+		output = po.getStdout();
+		assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
+
+		String[] param3s = { "if", "groupId::" + version, "--verbose" };
+		po = runFeatureUtility(methodName, param3s);
+		assertEquals(21, po.getReturnCode());
+		output = po.getStdout();
+		assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
+
+		String[] param4s = { "if", "groupId:::esa", "--verbose" };
+		po = runFeatureUtility(methodName, param4s);
+		assertEquals(21, po.getReturnCode());
+		output = po.getStdout();
+		assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
+
+	}
+
+	@Test
+	public void testBlankFeature() throws Exception {
+		String methodName = "testBlankFeature";
+
+		String[] param1s = { "if", " ", "--verbose" };
+		ProgramOutput po = runFeatureUtility(methodName, param1s);
+		assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
+		String output = po.getStdout();
+		assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage") >= 0);
+
+	}
+
+	/**
+	 * Tests the functionality of viewSettings --viewvalidationmessages with a
+	 * well-formatted wlp/etc/featureUtility.properties file
+	 */
+	@Test
+	public void testSettingsValidationClean() throws Exception {
+		final String METHOD_NAME = "testSettingsValidationClean";
+		Log.entering(c, METHOD_NAME);
+
+		// copy over the featureUtility.properties file from the publish folder
+		copyFileToMinifiedRoot("etc", "../../publish/tmp/cleanPropertyFile/featureUtility.properties");
+		String[] param1s = { "viewSettings", "--viewvalidationmessages" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals(0, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should pass validation",
+				output.contains("Validation Results: The properties file successfully passed the validation."));
+
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Tests the functionality of viewSettings --viewvalidationmessages with an
+	 * invalid wlp/etc/featureUtility.properties file
+	 */
+	@Test
+	public void testSettingsValidationInvalid() throws Exception {
+		final String METHOD_NAME = "testSettingsValidationInvalid";
+		Log.entering(c, METHOD_NAME);
+
+		// copy over the featureUtility.properties file from the publish folder
+		copyFileToMinifiedRoot("etc", "../../publish/tmp/invalidPropertyFile/featureUtility.properties");
+		String[] param1s = { "viewSettings", "--viewvalidationmessages" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals(20, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Shouldnt pass validation", output.contains("Number of errors"));
+
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Install an user feature with the "--featuresBom" parameters
+	 */
+	@Test
+	public void testFeatureInstallUserFeature() throws Exception {
+		final String METHOD_NAME = "testFeatureInstallUserFeature";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "enable.options", "true");
+
+		String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+
+		String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8",
+				"--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String output = po.getStdout();
+
+		assertTrue("Should contain testesa1", output.contains("testesa1"));
+		assertFilesExist(filesList);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		deleteUsrExtFolder(METHOD_NAME);
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Install an User feature with the "--to=Extension" parameters
+	 */
+	@Test
+	public void testFeatureInstallUserFeatureToExtension() throws Exception {
+		final String METHOD_NAME = "testFeatureInstallUserFeatureToExtension";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "enable.options", "true");
+
+		String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8",
+				"--to=ext.test", "--verbose" };
+
+		createExtensionDirs("ext.test");
+
+		String[] filesList = { "usr/cik/extensions/ext.test/lib/features/testesa1.mf",
+				"usr/cik/extensions/ext.test/bin/testesa1.bat" };
+
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String output = po.getStdout();
+
+		assertTrue("Should contain testesa1", output.contains("testesa1"));
+		assertFilesExist(filesList);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		deleteUsrToExtFolder(METHOD_NAME);
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Test if user Features.json file exists on provided featuresBOM coordinate
+	 */
+	@Test
+	public void testNonExistentUserFeaturesJson() throws Exception {
+		final String METHOD_NAME = "testNonExistentUserFeaturesJson";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "enable.options", "true");
+
+		String[] param1s = { "installFeature", "testesa1", "--featuresBOM=invalid:invalid:19.0.0.8", "--verbose" };
+
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 21", 21, po.getReturnCode());
+		String output = po.getStdout();
+		assertTrue("Should contain CWWKF1409E", output.contains("CWWKF1409E"));
+
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
+	 * Test invalid featuresBOM Maven coordinate
+	 */
+	@Test
+	public void testInvalidUserFeatureBomCoordinate() throws Exception {
+		final String METHOD_NAME = "testFearureInstallUserFeatureToExtension";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "enable.options", "true");
+
+		String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:invalid",
+				"--verbose" };
+
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String output = po.getStdout();
+
+		assertTrue("Should contain CWWKF1503E", output.contains("CWWKF1503E"));
+		assertEquals("Exit code should be 21", 21, po.getReturnCode());
+
+		deleteEtcFolder(METHOD_NAME);
+		Log.exiting(c, METHOD_NAME);
+	}
+
+	/*
+	 * Test installFeature with iFix applied. With iFix applied, it will usually
+	 * copy the new jar into wlp/lib folder without modifying the original jar (by
+	 * appending date to the file name). However, some iFixes will directly replace
+	 * the jar inside wlp/lib and the file needs to be revalidated. This test case
+	 * will mimic this case.
+	 */
+	@Test
+	public void testInstallFeatureWithIfix() throws Exception {
+		final String METHOD_NAME = "testInstallFeatureWithIfix";
+		Log.entering(c, METHOD_NAME);
+
+		// Set up to install json-1.0 feature locally
+		replaceWlpProperties("21.0.0.4");
+		String[] json10FilesList = {
+				relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+		deleteFiles(METHOD_NAME, "json-1.0", json10FilesList);
+
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		// Set up test iFix
+		copyFileToMinifiedRoot("lib", "../../publish/tmp/iFix/com.ibm.ws.install.testIfix_1.0.jar");
+		// Feature manifest file so the tool picks up the new testIfix_1.0.jar
+		copyFileToMinifiedRoot("lib/platform", "../../publish/tmp/iFix/testIfix-1.0.mf");
+		// Checksum file for testIfix_1.0.jar - Has incorrect checksum so that it fails
+		// initial validation
+		// If 1st check fails, then the tool looks up xml and lpmf files
+		copyFileToMinifiedRoot("lib/platform/checksums",
+				"../../publish/tmp/iFix/com.ibm.websphere.appserver.testIfix-1.0.cs");
+		// These files will have the correct checksum.
+		copyFileToMinifiedRoot("lib/fixes", "../../publish/tmp/iFix/xml.xml");
+		copyFileToMinifiedRoot("lib/fixes", "../../publish/tmp/iFix/lpmf.lpmf");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
 
-        // test with invalid packaging
-        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar", "--verbose"};
-        ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals(21, po.getReturnCode());
-        //"CWWKF1395E"
-        String output = po.getStdout();
-        assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E")>=0);
+		// Begin Test
+		String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
-        // now try with valid packaging
-        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa", "--verbose"};
-        po = runFeatureUtility(methodName, param2s);
-        assertEquals("Should install successfully.", 0, po.getReturnCode());
-        Log.exiting(c, methodName);
-    }
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
 
-    @Test
-    public void testInvalidMavenCoordinateFormatting() throws Exception {
-        String methodName = "testInvalidMavenCoordinateFormatting";
-        ProgramOutput po;
-        String output;
-        String version = getCurrentWlpVersion();
+		// delete manifest file so the tool doesn't pick up.
+		deleteFiles(METHOD_NAME, "testIfix-1.0",
+				new String[] { relativeMinifiedRoot + "/wlp/lib/platform/testIfix-1.0.mf" });
 
+		Log.exiting(c, METHOD_NAME);
+	}
 
-
-        String [] param1s = {"if", "groupId:artifactId:"+version+":esa:unsupportedOption", "--verbose"};
-        po = runFeatureUtility(methodName, param1s);
-        assertEquals(21, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
-
-        String [] param2s = {"if", ":::", "--verbose"};
-        po = runFeatureUtility(methodName, param2s);
-        assertEquals(21, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
-
-
-        String [] param3s = {"if", "groupId::" + version, "--verbose"};
-        po = runFeatureUtility(methodName, param3s);
-        assertEquals(21, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
-
-
-        String [] param4s = {"if", "groupId:::esa", "--verbose"};
-        po = runFeatureUtility(methodName, param4s);
-        assertEquals(21, po.getReturnCode());
-        output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
-
-
-    }
-
-    @Test
-    public void testBlankFeature() throws Exception {
-        String methodName = "testBlankFeature";
-
-        String [] param1s = {"if" , " ", "--verbose"};
-        ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
-        String output = po.getStdout();
-        assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage")>=0);
-
-
-    }
-
-    /**
-     * Tests the functionality of viewSettings --viewvalidationmessages with a well-formatted
-     * wlp/etc/featureUtility.properties file
-     */
-    @Test
-    public void testSettingsValidationClean() throws Exception {
-        final String METHOD_NAME = "testSettingsValidationClean";
-        Log.entering(c, METHOD_NAME);
-
-        // copy over the featureUtility.properties file from the publish folder
-        copyFileToMinifiedRoot("etc","../../publish/tmp/cleanPropertyFile/featureUtility.properties");
-        String [] param1s = {"viewSettings" , "--viewvalidationmessages"};
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals(0, po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should pass validation", output.contains("Validation Results: The properties file successfully passed the validation."));
-
-
-        deleteEtcFolder(METHOD_NAME);
-        Log.exiting(c, METHOD_NAME);
-    }
-
-
-    /**
-     * Tests the functionality of viewSettings --viewvalidationmessages with an invalid
-     * wlp/etc/featureUtility.properties file
-     */
-    @Test
-    public void testSettingsValidationInvalid() throws Exception {
-        final String METHOD_NAME = "testSettingsValidationInvalid";
-        Log.entering(c, METHOD_NAME);
-
-        // copy over the featureUtility.properties file from the publish folder
-        copyFileToMinifiedRoot("etc","../../publish/tmp/invalidPropertyFile/featureUtility.properties");
-        String [] param1s = {"viewSettings" , "--viewvalidationmessages"};
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals(20,  po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Shouldnt pass validation", output.contains("Number of errors"));
-
-
-        deleteEtcFolder(METHOD_NAME);
-        Log.exiting(c, METHOD_NAME);
-    }
 }

@@ -29,7 +29,7 @@ public class Generatorv2WithSchmea11BetaBuildTest extends Generatorv2WithSchema1
   public static void setup() throws Exception {
     version.getParentFile().mkdirs();
     Properties props = new Properties();
-    props.setProperty("com.ibm.websphere.productVersion", "2017.1.0.0");
+    props.setProperty("com.ibm.websphere.productEdition","EARLY_ACCESS");
     props.store(new FileWriter(version), null);
     setup(new String[] {"build/server.xsd", "-outputVersion=2", "-schemaVersion=1.1"});
   }

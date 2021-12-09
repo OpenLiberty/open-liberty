@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,9 @@ package com.ibm.ws.security.javaeesec.fat_helper;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -26,7 +25,7 @@ public class ServerHelper {
 
     protected static Class<?> logClass = ServerHelper.class;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ldapServer = null;
 
     public static void commonStopServer(LibertyServer myServer) throws Exception {
         commonStopServer(myServer, false);
@@ -44,21 +43,20 @@ public class ServerHelper {
     }
 
     public static void setupldapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("HTTPAuthLDAP");
-        ldapServer.addPartition("test", "o=ibm,c=us");
-        ldapServer.startServer(Integer.parseInt(System.getProperty("ldap.1.port")));
+        ldapServer = new InMemoryLDAPServer(false, Integer.getInteger("ldap.1.port", 10389), 0, "o=ibm,c=us");
 
-        Entry entry = ldapServer.newEntry("o=ibm,c=us");
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
+        Entry entry = new Entry("o=ibm,c=us");
+        entry.addAttribute("objectclass", "organization");
+        entry.addAttribute("o", "ibm");
         ldapServer.add(entry);
 
-        entry = ldapServer.newEntry("uid=jaspildapuser1,o=ibm,c=us");
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", "jaspildapuser1");
-        entry.add("sn", "jaspildapuser1sn");
-        entry.add("cn", "jaspiuser1");
-        entry.add("userPassword", "s3cur1ty");
+        entry = new Entry("uid=jaspildapuser1,o=ibm,c=us");
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("objectclass", "person");
+        entry.addAttribute("uid", "jaspildapuser1");
+        entry.addAttribute("sn", "jaspildapuser1sn");
+        entry.addAttribute("cn", "jaspiuser1");
+        entry.addAttribute("userPassword", "s3cur1ty");
         ldapServer.add(entry);
 
     }
@@ -66,7 +64,7 @@ public class ServerHelper {
     public static void stopldapServer() {
         if (ldapServer != null) {
             try {
-                ldapServer.stopService();
+                ldapServer.shutDown();
             } catch (Exception e) {
                 Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
             }

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -47,7 +47,10 @@ import com.ibm.ws.security.fat.common.CommonMessageTools;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
+import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
@@ -304,7 +307,7 @@ public class CommonValidationTools {
                             + " but received [" + responseContent + "]." + fullResponseContent,
                             !responseContent.contains(expected.getValidationValue()));
                 } else {
-                    if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
+                    if (expected.getCheckType().equals(Constants.STRING_MATCHES) || expected.getCheckType().equals(Constants.STRING_EQUALS)) {
                         Pattern pattern = Pattern.compile(expected.getValidationValue());
                         Matcher m = pattern.matcher(responseContent);
 
@@ -585,7 +588,8 @@ public class CommonValidationTools {
         // it can be used to verify the content of the token, or individual segments
         String thisMethod = "validateIdToken";
         String id_token = null;
-        String[] id_token_parts;
+        String id_token_jws = null;
+        String[] jws_token_parts = null;
 
         try {
             String testSigAlg = setExpectedSigAlg(settings);
@@ -597,23 +601,34 @@ public class CommonValidationTools {
 
             // should only get this far if we're needing to validate the contents of the id token
             if (!id_token.equals(Constants.NOT_FOUND)) {
-                id_token_parts = id_token.split("\\.");
+                
+                String decryptKey = settings.getDecryptKey();
+                
+                JwtTokenForTest jwtToken;
+                if (JweHelper.isJwe(id_token) && decryptKey != null) {
+                    jwtToken = new JwtTokenForTest(id_token, decryptKey);
+                } else {
+                    jwtToken = new JwtTokenForTest(id_token);
+                }
 
-                String decodedToken = ApacheJsonUtils.fromBase64StringToJsonString(id_token_parts[1]);
+                id_token_jws = jwtToken.getJwsString();
+                jws_token_parts = id_token_jws.split("\\.");
+
+                String decodedToken = ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[1]);
                 Log.info(thisClass, thisMethod, "Decoded payload Token : " + decodedToken);
                 JSONObject tokenInfo = JSONObject.parse(decodedToken);
 
                 // no keys passed indicates that we want to do general id_token validation (check format, required parms, ...)
                 if (expected.getValidationKey() == null) {
                     // validate general token content
-                    genericIDTokenValidation(settings, testSigAlg, id_token, id_token_parts, tokenInfo);
+                    genericIDTokenValidation(settings, testSigAlg, id_token_jws, jws_token_parts, tokenInfo);
 
                 } else {
                     // validate specific key's value
                     specificKeysTokenValidation(expected, tokenInfo);
                 }
-                // valdiate Header
-                validateJWTTokenHeader(JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(id_token_parts[0])), settings, null);
+                // validate Header
+                validateJWTTokenHeader(JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[0])), settings, null);
 
             } else {
                 Log.info(thisClass, thisMethod, "id_token was not found - it should have been there");
@@ -767,7 +782,7 @@ public class CommonValidationTools {
                     }
                     if (key.equals(Constants.TOKEN_TYPE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "Token Type is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but recieved" + value, value.equals("Bearer"));
+                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but received" + value, value.equals("Bearer"));
                     }
                     // make sure it has value if it exists - we've already done the check for should it be there or not
                     if (key.equals(Constants.ID_TOKEN_KEY)) {
@@ -781,15 +796,19 @@ public class CommonValidationTools {
                         msgUtils.assertTrueAndLog(thisMethod, "Expires in is null", value != null);
                         Long expectedExpires = setAccessTimeout(settings);
                         Long actualExpires = Long.valueOf(value).longValue();
-                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 10L)) {
-                            Log.info(thisClass, thisMethod, "expires in was within 10ms of expected time");
+                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 60L)) {
+                            Log.info(thisClass, thisMethod, "expires in was within 60sec of expected time");
                         } else {
-                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 10ms");
+                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 60sec");
                         }
                     }
                     if (key.equals(Constants.STATE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "State is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
+                        if (Constants.EXIST_WITH_ANY_VALUE.equals(settings.getState())) {
+                            Log.info(thisClass, thisMethod, "Skipping state check at callers request");
+                        } else {
+                            msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
+                        }
                     }
                     // when coding the test where request and server scopes do not match in the future, set the expected response value into
                     // TestSettings, add the expectation, then set the value in TestSettings to the value that the request should pass in (before calling
@@ -1677,7 +1696,7 @@ public class CommonValidationTools {
                     tokenVerifier.verifyAndDeserialize();
                     result = tokenVerifier.isSigned();
                 } else {
-                    if (sigAlg == Constants.SIGALG_RS256) {
+                    if (isInList(Constants.ALL_TEST_SIGALGS, sigAlg)) {
                         // return true - we're not ready to validate RS256 quite yet
                         return true;
                     } else {
@@ -2290,8 +2309,8 @@ public class CommonValidationTools {
     public Expectations getDefault404Expectations(String testAction) {
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_NOT_FOUND));
-        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES, MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+", 
-        		"Did not get public facing error message saying authentication failed."));
+        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES, MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+",
+                "Did not get public facing error message saying authentication failed."));
         return expectations;
     }
 

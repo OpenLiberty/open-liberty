@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2017 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package com.ibm.wsspi.ejbcontainer;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.EJBConfigurationException;
 import com.ibm.websphere.ras.Tr;
@@ -27,8 +29,7 @@ import com.ibm.ws.ejbcontainer.jitdeploy.JIT_StubPluginImpl;
  * @since WAS 7.0
  * @ibm-spi
  **/
-public final class JITDeploy
-{
+public final class JITDeploy {
     private static final TraceComponent tc = Tr.register(JITDeploy.class,
                                                          "JITDeploy",
                                                          "com.ibm.ejs.container.container");
@@ -39,12 +40,15 @@ public final class JITDeploy
     public static final String throwRemoteFromEjb3Stub = "com.ibm.websphere.ejbcontainer.ejb3StubThrowsRemote";
     public static final boolean ThrowRemoteFromEjb3Stub = Boolean.getBoolean((throwRemoteFromEjb3Stub));
 
-    private static final int RMIC_COMPATIBLE_DEFAULT = 0;
+    private static final boolean isJakarta = EJBException.class.getCanonicalName().startsWith("jakarta");
+
+    private static final int RMIC_COMPATIBLE_NONE = 0;
+    private static final int RMIC_COMPATIBLE_ALL = -1;
     private static final int RMIC_COMPATIBLE_VALUES = 1 << 0;
     private static final int RMIC_COMPATIBLE_EXCEPTIONS = 1 << 1;
+    private static final int RMIC_COMPATIBLE_DEFAULT = RMIC_COMPATIBLE_NONE;
 
-    static
-    {
+    static {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Property: RMICCompatible          = " + Integer.toHexString(RMICCompatible));
     }
@@ -52,8 +56,7 @@ public final class JITDeploy
     /**
      * Creating an instance of JITDeploy is not allowed.
      **/
-    private JITDeploy()
-    {
+    private JITDeploy() {
         throw new IllegalStateException();
     }
 
@@ -63,13 +66,12 @@ public final class JITDeploy
      * @return the list of RMIC compatibility options
      */
     // PM94096
-    public static List<String> getRMICCompatibleOptions()
-    {
+    public static List<String> getRMICCompatibleOptions() {
         return Arrays.asList(new String[] {
-                                           "none",
-                                           "all",
-                                           "values",
-                                           "exceptions",
+                                            "none",
+                                            "all",
+                                            "values",
+                                            "exceptions",
         });
     }
 
@@ -80,41 +82,27 @@ public final class JITDeploy
      * @return the compatibility flags
      * @see #isRMICCompatibleValues
      */
-    public static int parseRMICCompatible(String options) // PM46698
-    {
+    public static int parseRMICCompatible(String options) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "parseRMICCompatible: " + options);
 
         int flags;
 
-        if (options == null)
-        {
+        if (options == null) {
             flags = RMIC_COMPATIBLE_DEFAULT;
-        }
-        else if (options.equals("none"))
-        {
-            flags = 0;
-        }
-        else if (options.isEmpty() || options.equals("all"))
-        {
-            flags = -1;
-        }
-        else
-        {
-            flags = 0;
-            for (String option : options.split(","))
-            {
-                if (option.equals("values"))
-                {
+        } else if (options.equals("none")) {
+            flags = RMIC_COMPATIBLE_NONE;
+        } else if (options.isEmpty() || options.equals("all")) {
+            flags = RMIC_COMPATIBLE_ALL;
+        } else {
+            flags = RMIC_COMPATIBLE_NONE;
+            for (String option : options.split(",")) {
+                if (option.equals("values")) {
                     flags |= RMIC_COMPATIBLE_VALUES;
-                }
-                else if (option.equals("exceptions")) // PM94096
-                {
+                } else if (option.equals("exceptions")) {
                     flags |= RMIC_COMPATIBLE_EXCEPTIONS;
-                }
-                else
-                {
+                } else {
                     throw new IllegalArgumentException("unknown RMIC compatibility option: " + option);
                 }
             }
@@ -131,8 +119,7 @@ public final class JITDeploy
      *
      * @param flags rmic compatibility flags
      */
-    public static boolean isRMICCompatibleValues(int flags) // PM46698
-    {
+    public static boolean isRMICCompatibleValues(int flags) {
         return (flags & RMIC_COMPATIBLE_VALUES) != 0;
     }
 
@@ -142,8 +129,7 @@ public final class JITDeploy
      *
      * @param flags rmic compatibility flags
      */
-    public static boolean isRMICCompatibleExceptions(int flags) // PM94096
-    {
+    public static boolean isRMICCompatibleExceptions(int flags) {
         return (flags & RMIC_COMPATIBLE_EXCEPTIONS) != 0;
     }
 
@@ -161,8 +147,7 @@ public final class JITDeploy
      * @return the name of the Stub class that needs to be loaded for the
      *         specified remote interface class. <p>
      **/
-    public static String getStubClassName(Class<?> remoteInterface)
-    {
+    public static String getStubClassName(Class<?> remoteInterface) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getStubClassName : " + remoteInterface.getName());
@@ -185,15 +170,13 @@ public final class JITDeploy
      * Intended for use by WebSphere tooling providers. <p>
      *
      * @param remoteInterface Interface implemented by the generated Stub;
-     *            not required to implement java.rmi.Remote.
+     *                            not required to implement java.rmi.Remote.
      *
      * @return the class bytes for the Stub class corresponding to the
      *         specified remote interface class.
      **/
-    public static byte[] generateStubBytes(Class<?> remoteInterface)
-                    throws EJBConfigurationException
-    {
-        return generateStubBytes(remoteInterface, RMICCompatible);
+    public static byte[] generateStubBytes(Class<?> remoteInterface) throws EJBConfigurationException {
+        return generateStubBytes(remoteInterface, isJakarta ? RMIC_COMPATIBLE_ALL : RMICCompatible);
     }
 
     /**
@@ -206,16 +189,14 @@ public final class JITDeploy
      * Intended for use by WebSphere tooling providers. <p>
      *
      * @param remoteInterface Interface implemented by the generated Stub;
-     *            not required to implement java.rmi.Remote.
-     * @param rmicCompatible The rmic compatibility to use as returned by {@link #parseRMICCompatible}.
+     *                            not required to implement java.rmi.Remote.
+     * @param rmicCompatible  The rmic compatibility to use as returned by {@link #parseRMICCompatible}.
      *
      * @return the class bytes for the Stub class corresponding to the
      *         specified remote interface class.
      **/
     public static byte[] generateStubBytes(Class<?> remoteInterface,
-                                           int rmicCompatible)
-                    throws EJBConfigurationException
-    {
+                                           int rmicCompatible) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "generateStubBytes : " + remoteInterface.getName() +
@@ -246,18 +227,16 @@ public final class JITDeploy
      * delegation model for this ClassLoader. <p>
      *
      * @param classloader the ClassLoader to plugin the new Just-In-Time Stub
-     *            Class Plugin
+     *                        Class Plugin
      *
      * @throws IllegalArgumentException if the specified ClassLoader does not
-     *             support the JIT_StubClassPlugin.
+     *                                      support the JIT_StubClassPlugin.
      **/
     // F1339-8988
-    public static void registerJIT_StubClassPlugin(ClassLoader classloader)
-    {
+    public static void registerJIT_StubClassPlugin(ClassLoader classloader) {
         boolean isRegistered = JIT_StubPluginImpl.register(classloader);
 
-        if (!isRegistered)
-        {
+        if (!isRegistered) {
             throw new IllegalArgumentException("Specified ClassLoader does not support JIT_StubClassPlugin : " + classloader);
         }
     }

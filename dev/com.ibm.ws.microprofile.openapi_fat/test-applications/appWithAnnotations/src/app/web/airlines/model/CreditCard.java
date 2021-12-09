@@ -32,7 +32,8 @@ public class CreditCard {
     @Schema(required = true, example = "04/19")
     private String expiryDate;
 
-    private CreditCard() {}
+    private CreditCard() {
+    }
 
     public String getIssuer() {
         return issuer;

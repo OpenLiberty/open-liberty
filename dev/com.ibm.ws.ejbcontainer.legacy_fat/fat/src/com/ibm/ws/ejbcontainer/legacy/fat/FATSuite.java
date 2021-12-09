@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.CacheTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.EJB1XStatefulTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.EJBinWAR2xTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.PassivationRegressionTest;
@@ -25,6 +26,7 @@ import com.ibm.ws.ejbcontainer.legacy.fat.tests.SLRemoteTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                CacheTest.class,
                 EJB1XStatefulTest.class,
                 EJBinWAR2xTest.class,
                 PassivationRegressionTest.class,

@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2020, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2003I: Monitoring metrics can be retrieved through mpMetrics.
+FEATURE_REGISTERED.explanation=The Performance Monitoring feature and a MicroProfile Metrics feature are enabled. Monitoring metrics can be retrieved through MicroProfile Metrics.
+FEATURE_REGISTERED.useraction=No user action is required.
+
+FEATURE_UNREGISTERED=CWPMI2004I: All monitoring metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.explanation=The Performance Monitoring feature, the MicroProfile Metrics feature, or both features were removed from the server. All monitoring metrics were unregistered from MicroProfile Metrics.
+FEATURE_UNREGISTERED.useraction=No user action is required.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: The MicroProfile Metrics exception mapper detected and is handling an unhandled exception from the JAX-RS application.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=The JAX-RS-based application experienced an exception that is not handled within the application. The MicroProfile code handles it by logging the exception stack trace and returning a 500 Internal Server Error response.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=This behavior might be acceptable. To handle the exception differently, add an ExceptionMapper interface that handles the exception and maps it to a different response.

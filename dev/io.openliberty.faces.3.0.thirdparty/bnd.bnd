@@ -15,15 +15,16 @@ Fragment-Host: io.openliberty.org.apache.myfaces.3.0;bundle-version=1.0
 
 Bundle-Name: Open Liberty Jakarta MyFaces Third Party API
 Bundle-SymbolicName: io.openliberty.faces.3.0.thirdparty
+Implementation-Version: 3.0.1
 
 #Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is from myfaces-builder-annotations-1.0.9.jar
 Export-Package: \
-  org.apache.myfaces.renderkit.html;thread-context=true;version=3.0.0, \
-  org.apache.myfaces.shared.config;version=3.0.0, \
-  org.apache.myfaces.shared.renderkit;version=3.0.0, \
-  org.apache.myfaces.shared.renderkit.html;version=3.0.0, \
-  org.apache.myfaces.shared.renderkit.html.util;version=3.0.0
+  org.apache.myfaces.renderkit.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.config;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit.html;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit.html.util;version=${Implementation-Version}
 
 instrument.ffdc: false
 instrument.classesExcludes: \
@@ -34,4 +35,4 @@ publish.wlp.jar.suffix: dev/api/third-party
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: io.openliberty.org.apache.myfaces.3.0;version=project, \
-    org.apache.myfaces.core:myfaces-impl;version=3.0.0,\
+    org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\

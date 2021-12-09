@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,15 +119,15 @@ public class MongoConfigUpdateTest extends FATServletClient {
         for (MongoElement element : config.getMongos()) {
             element.setAutoConnectRetry(true);
             element.setConnectionsPerHost(11);
-            element.setConnectTimeout(1100);
+            element.setConnectTimeout(11000);
             element.setCursorFinalizerEnabled(true);
             element.setDescription("descccccc");
             element.setMaxAutoConnectRetryTime(Long.valueOf(5666));
-            element.setMaxWaitTime(1895);
+            element.setMaxWaitTime(18950);
             element.setReadPreference("nearest");
             element.setWriteConcern("ACKNOWLEDGED");
             element.setSocketKeepAlive(false);
-            element.setSocketTimeout(1234);
+            element.setSocketTimeout(12345);
             element.setThreadsAllowedToBlockForConnectionMultiplier(125);
         }
         updateConfig(config);
@@ -136,13 +136,13 @@ public class MongoConfigUpdateTest extends FATServletClient {
         Map<String, String> dbConfig = runConfigDump();
         assertEquals("true", dbConfig.get("autoConnectRetry"));
         assertEquals("11", dbConfig.get("connectionsPerHost"));
-        assertEquals("1100", dbConfig.get("connectTimeout"));
+        assertEquals("11000", dbConfig.get("connectTimeout"));
         assertEquals("descccccc", dbConfig.get("description"));
         assertEquals("5666", dbConfig.get("maxAutoConnectRetryTime"));
-        assertEquals("1895", dbConfig.get("maxWaitTime"));
+        assertEquals("18950", dbConfig.get("maxWaitTime"));
         assertEquals("nearest", dbConfig.get("readPreference"));
         assertEquals("false", dbConfig.get("socketKeepAlive"));
-        assertEquals("1234", dbConfig.get("socketTimeout"));
+        assertEquals("12345", dbConfig.get("socketTimeout"));
         assertEquals("125", dbConfig.get("threadsAllowedToBlockForConnectionMultiplier"));
     }
 

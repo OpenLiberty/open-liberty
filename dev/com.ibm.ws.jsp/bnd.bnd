@@ -99,23 +99,25 @@ Import-Package: \
    org.apache.el.parser;version="2.2", \
    org.apache.el.util;version="2.2", \
    org.apache.jasper.el;version="2.2", \
-   com.ibm.wsspi.el;version="2.2", \
-   org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.env;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.impl;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
+   io.openliberty.el.internal.cdi;version="2.2", \
+   org.eclipse.jdt.core.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.classfmt;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.env;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.impl;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.problem;usage="JSP", \
    sun.io;resolution:=optional, \
    *
 
 Include-Resource: \
    @lib/bsf.jar, \
    standard.jar=${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
+   standard.tags.2.0.jar=${repo;io.openliberty.jakarta.servlet.jsp.jstl.2.0.internal}, \
    ard.jar=lib/ard.jar, \
    OSGI-INF=resources/OSGI-INF, \
    com/ibm/ws/jsp/webcontainerext/packageinfo=src/com/ibm/ws/jsp/webcontainerext/packageinfo, \
    com/ibm/ws/jsp/resources/taglibcacheconfig.xml=resources/com/ibm/ws/jsp/resources/taglibcacheconfig.xml, \
+   com/ibm/ws/jsp/resources/taglibcacheconfig.tags.2.0.xml=resources/com/ibm/ws/jsp/resources/taglibcacheconfig.tags.2.0.xml, \
    com/ibm/ws/jsp/resources/optimizedjstltags.xml=resources/com/ibm/ws/jsp/resources/optimizedjstltags.xml, \
    com/ibm/ws/jsp/resources/optimizedtags.xml=resources/com/ibm/ws/jsp/resources/optimizedtags.xml, \
    com/ibm/ws/jsp/jsx/tags/jsxFunction.tld=src/com/ibm/ws/jsp/jsx/tags/jsxFunction.tld, \
@@ -131,7 +133,7 @@ instrument.classesExcludes: com/ibm/ws/jsp/resources/*.class
 
 -buildpath: \
 	lib/bsf.jar;version=file,\
-	com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000;version=latest,\
+	com.ibm.ws.org.eclipse.jdt.core;version=latest,\
 	com.ibm.websphere.javaee.el.2.2;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
 	com.ibm.ws.kernel.service,\
@@ -156,4 +158,7 @@ instrument.classesExcludes: com/ibm/ws/jsp/resources/*.class
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.artifact.url;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.org.apache.taglibs.standard;version=latest
+	com.ibm.ws.org.apache.taglibs.standard;version=latest, \
+	com.ibm.ws.javaee.version;version=latest, \
+	io.openliberty.jakarta.servlet.jsp.jstl.2.0.internal;version=latest, \
+	io.openliberty.el.internal.cdi;version=latest

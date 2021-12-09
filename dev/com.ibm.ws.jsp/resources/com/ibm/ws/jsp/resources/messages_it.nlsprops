@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=Controllare se nel file descrittore libreria 
 system.java.compiler.not.found=JSPG0304W: L''attributo JSP, useJDKCompiler, \u00e8 impostato su true, ma il compilatore SDK Java non \u00e8 stato trovato. Il contenitore JSP utilizza il compilatore integrato nel prodotto per compilare i file JSP nel modulo Web: {0}.
 system.java.compiler.not.found.explanation=Il contenitore JSP non \u00e8 riuscito a trovare il compilatore di sistema, ci\u00f2 generalmente indica che il file jar SDK Java, tools.jar, non \u00e8 stato trovato nel percorso di classe.
 system.java.compiler.not.found.useraction=Verificare che il file jar SDK Java, tools.jar, sia nel percorso di classe e che l'SDK Java supporti l'API compilatore Java. Per maggiori informazioni consultare la richiesta di specifica Java 199.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: la funzione JSP [Pages] non \u00e8 stata caricata con una versione accettabile.
+jsp.feature.not.loaded.correctly.explanation=La funzione JSP [Pages] \u00e8 stata caricata con una versione che corrisponde alla specifica Java [Jakarta] EE di tale funzione JSP [Pages]. La funzione \u00e8 stata caricata senza alcuna versione definita.
+jsp.feature.not.loaded.correctly.useraction=Controllare nel file server.xml se esiste una funzione JSP [Pages]. \u00c8 possibile specificarne solo una.

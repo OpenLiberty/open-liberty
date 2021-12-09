@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,11 +94,9 @@ public class OpenAPIConnection {
         try {
             HttpURLConnection conn = getConnection();
             return readConnection(conn);
-
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            throw new AssertionError("Failed to download from " + constructUrl() + ": " + e.getMessage(), e);
         }
-        return null;
     }
 
     /**
@@ -107,7 +105,9 @@ public class OpenAPIConnection {
      * @throws ProtocolException
      */
     public HttpURLConnection getConnection() throws IOException, ProtocolException {
-        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method, headers, streamToWrite);
+        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method,
+            headers, streamToWrite);
+        conn.setReadTimeout(30 * 1000);
         return conn;
     }
 
@@ -153,7 +153,8 @@ public class OpenAPIConnection {
      * @param headerValue - value of the header
      * @return
      */
-    public OpenAPIConnection header(String headerName, String headerValue) {
+    public OpenAPIConnection header(String headerName,
+                                    String headerValue) {
         this.headers.put(headerName, headerValue);
         return this;
     }
@@ -229,7 +230,8 @@ public class OpenAPIConnection {
         return this.queryParams;
     }
 
-    public OpenAPIConnection queryParam(String paramName, String paramValue) {
+    public OpenAPIConnection queryParam(String paramName,
+                                        String paramValue) {
         this.queryParams.put(paramName, paramValue);
         return this;
     }
@@ -241,7 +243,8 @@ public class OpenAPIConnection {
      * @param secure - if true connection uses HTTPS
      * @return
      */
-    public static OpenAPIConnection openAPIDocsConnection(LibertyServer server, boolean secure) {
+    public static OpenAPIConnection openAPIDocsConnection(LibertyServer server,
+                                                          boolean secure) {
         return new OpenAPIConnection(server, OPEN_API_DOCS).secure(secure);
     }
 }

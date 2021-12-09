@@ -89,3 +89,8 @@ PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
 PROVIDER_ERROR_CWWKD0292E.explanation=A DatabaseStore ezt a hiba\u00fczenetet napl\u00f3zta.
 PROVIDER_ERROR_CWWKD0292E.useraction=Forduljon a DatabaseStore dokument\u00e1ci\u00f3j\u00e1hoz.
 
+#-------------------------------------------------------------------------------
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E=CWWKD0293E: A be\u00e1ll\u00edtott {0} tranzakci\u00f3elk\u00fcl\u00f6n\u00edt\u00e9si szint nem t\u00e1mogatott.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.explanation=A kapcsol\u00f3d\u00f3 adatb\u00e1zis-illeszt\u0151 nem t\u00e1mogatja a k\u00e9rt elk\u00fcl\u00f6n\u00edt\u00e9si szintet.
+UNSUPPORTED_ISOLATION_LEVEL_CWWKD0293E.useraction=Miel\u0151tt \u00fajra megpr\u00f3b\u00e1ln\u00e1, m\u00f3dos\u00edtsa az elk\u00fcl\u00f6n\u00edt\u00e9si szintet.
+

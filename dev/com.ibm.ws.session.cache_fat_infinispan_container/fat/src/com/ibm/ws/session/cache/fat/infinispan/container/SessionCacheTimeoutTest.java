@@ -113,9 +113,11 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testServletTimeout() throws Exception {
         List<String> session = newSession();
-        app.sessionPut("testServletTimeout-foo2", "bar", session, true);
-        app.invokeServlet("sessionGetTimeout&key=testServletTimeout-foo2&expectedValue=bar", session); //Should still get the value
-        app.sessionGet("testServletTimeout-foo2", null, session);
+        if (session != null) {
+            app.sessionPut("testServletTimeout-foo2", "bar", session, true);
+            app.invokeServlet("sessionGetTimeout&key=testServletTimeout-foo2&expectedValue=bar", session); //Should still get the value
+            app.sessionGet("testServletTimeout-foo2", null, session);
+        }
     }
 
     /**

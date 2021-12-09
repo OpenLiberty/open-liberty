@@ -1,0 +1,59 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+nettyVersion=4.1.68.Final
+
+Bundle-Name: Netty SSL classes as an OSGi bundle
+Bundle-SymbolicName: io.openliberty.io.netty.ssl
+Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
+
+Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
+  !com.google.protobuf*, \
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.apache.commons.logging,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  !org.slf4j*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
+  *
+
+Export-Package:\
+  io.netty.handler.ssl.*;version=${nettyVersion}; -split-package:=merge-first
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+# These have been verified as the minimal set for the
+# io.netty.handler.ssl exported above
+-buildpath: \
+  io.netty:netty-buffer;version=${nettyVersion},\
+  io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-http;version=${nettyVersion},\
+  io.netty:netty-codec-http2;version=${nettyVersion},\
+  io.netty:netty-codec-socks;version=${nettyVersion},\
+  io.netty:netty-common;version=${nettyVersion},\
+  io.netty:netty-handler;version=${nettyVersion},\
+  io.netty:netty-handler-proxy;version=${nettyVersion},\
+  io.netty:netty-resolver;version=${nettyVersion},\
+  io.netty:netty-transport;version=${nettyVersion}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
+
+    <persistence-unit name="BEANVALIDATION_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <validation-mode>AUTO</validation-mode>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
+            for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="BEANVALIDATION_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <validation-mode>AUTO</validation-mode>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
+            for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -65,8 +65,7 @@ public final class ClientProviderFactory extends ProviderFactory {
     }
 
     public static ClientProviderFactory getInstance(Message m) {
-        Endpoint e = m.getExchange().getEndpoint();
-        return (ClientProviderFactory) e.get(CLIENT_FACTORY_NAME);
+        return getInstance(m.getExchange().getEndpoint());
     }
 
     public static ClientProviderFactory getInstance(Endpoint e) {

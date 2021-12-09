@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcGoodSSLConfigSample"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthGoodSSLConfigSample" />
+
+	<oauthProvider
+		id="OAuthGoodSSLConfigSample"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/goodSsl,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/noOpenidScope,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/badClientSecret,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/sslHttpsTrue,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/sslHttpsFalse,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/badSharedKey,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/httpDiscovery"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+</server>

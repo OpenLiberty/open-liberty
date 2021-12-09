@@ -26,6 +26,7 @@ import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableType;
 import javax.validation.executable.ValidateOnExecution;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.api.validation.ConstraintType;
 import org.jboss.resteasy.api.validation.ConstraintType.Type;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
@@ -48,10 +49,6 @@ import com.fasterxml.classmate.ResolvedTypeWithMembers;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.classmate.members.RawMethod;
 import com.fasterxml.classmate.members.ResolvedMethod;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
-import io.openliberty.restfulWS.client.ClientBuilderListener;
 
 /**
  *
@@ -63,7 +60,7 @@ import io.openliberty.restfulWS.client.ClientBuilderListener;
 public class GeneralValidatorImpl implements GeneralValidatorCDI
 {
    public static final String SUPPRESS_VIOLATION_PATH = "resteasy.validation.suppress.path";
-   static final TraceComponent tc = Tr.register(GeneralValidatorImpl.class);
+   private static final Logger log = Logger.getLogger(GeneralValidatorImpl.class.getName());
 
    /**
     * Used for resolving type parameters. Thread-safe.
@@ -81,7 +78,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
       this.validatorFactory = validatorFactory;
       this.isExecutableValidationEnabled = isExecutableValidationEnabled;
       this.defaultValidatedExecutableTypes = defaultValidatedExecutableTypes.toArray(new ExecutableType[]{});
-
+      
       try
       {
          cdiActive = ResteasyCdiExtension.isCDIActive();
@@ -152,7 +149,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
          if (violationsContainer != null && violationsContainer.size() > 0)
          {
              ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
-             Tr.warning(tc, ViolationException.getLocalizedMessage());  //Liberty change
+             log.warn(ViolationException.getLocalizedMessage());  //Liberty change
              throw ViolationException;  //Liberty change
          }
       }
@@ -170,7 +167,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
       if (violationsContainer != null && violationsContainer.size() > 0)
       {
           ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
-          Tr.warning(tc, ViolationException.getLocalizedMessage());  //Liberty change
+          log.warn(ViolationException.getLocalizedMessage());  //Liberty change
           throw ViolationException;  //Liberty change
       }
    }
@@ -206,7 +203,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
          && violationsContainer.size() > 0)
       {   
           ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
-          Tr.warning(tc, ViolationException.getLocalizedMessage());  //Liberty change
+          log.warn(ViolationException.getLocalizedMessage());  //Liberty change
           throw ViolationException;
       }
    }
@@ -240,7 +237,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
       if (violationsContainer.size() > 0)
       {
           ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
-          Tr.warning(tc, ViolationException.getLocalizedMessage());  //Liberty change
+          log.warn(ViolationException.getLocalizedMessage());  //Liberty change
           throw ViolationException;  //Liberty change
       }
    }
@@ -605,7 +602,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
          if (violationsContainer.size() > 0)
          {
              ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
-             Tr.warning(tc, ViolationException.getLocalizedMessage());  //Liberty change
+             log.warn(ViolationException.getLocalizedMessage());  //Liberty change
              throw ViolationException;  //Liberty change            
          }
       }

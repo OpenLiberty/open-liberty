@@ -23,6 +23,6 @@ Export-Package: \
   org.eclipse.microprofile.context.spi;version=1.2
 
 Include-Resource: \
-   @${repo;org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;1.2.0.RC1;EXACT}
+   @${repo;org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;1.2;EXACT}
 
 WS-TraceGroup: concurrent

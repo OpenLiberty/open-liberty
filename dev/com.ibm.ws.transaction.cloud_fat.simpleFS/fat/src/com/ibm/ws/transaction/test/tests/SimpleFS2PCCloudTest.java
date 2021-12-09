@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +24,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,7 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -74,6 +77,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
         longLeaseLengthFSServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
@@ -99,7 +103,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         String id = "Core";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -111,21 +115,13 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server1.waitForStringInLog("Dump State:");
 
         // Now re-start cloud1
-        ProgramOutput po = server1.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        FATUtils.startServers(server1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         server1.waitForStringInTrace("Performed recovery for FScloud001");
 
         // Lastly stop server1
-        server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W" }, server1); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
     }
 
     /**
@@ -144,7 +140,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         String id = "Core";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -154,6 +150,10 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         server1.waitForStringInLog("Dump State:");
+
+        // At this point server1's recovery log files should (absolutely!) be present
+        boolean exists = server1.fileExistsInLibertyServerRoot("tranlog");
+        assertTrue(server1.getServerName() + " has no recovery logs", exists);
 
         // Now start server2
         server2.setHttpDefaultPort(FScloud2ServerPort);
@@ -169,7 +169,12 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
 
         server2.waitForStringInTrace("Performed recovery for FScloud001");
-        server2.stopServer();
+
+        // Check to see that the peer recovery log files have been deleted
+        exists = server1.fileExistsInLibertyServerRoot("tranlog");
+        assertFalse(server1.getServerName() + " recovery logs have not been deleted", exists);
+
+        FATUtils.stopServers(server2);
     }
 
     /**
@@ -193,7 +198,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         String id = "Core";
 
         // Start Server1
-        server1.startServer();
+        FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -203,6 +208,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
         server1.waitForStringInLog("Dump State:");
+
         // Now is the time to take the filesys lock
         boolean lockSuccess = lockServerLease("FScloud001");
         if (!lockSuccess) {
@@ -242,7 +248,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for FScloud001");
-        server2.stopServer();
+        FATUtils.stopServers(server2);
     }
 
     private boolean lockServerLease(String recoveryId) throws Exception {

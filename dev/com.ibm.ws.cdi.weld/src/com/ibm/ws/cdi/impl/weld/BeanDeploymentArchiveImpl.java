@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+
 
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -250,6 +254,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public void scan() throws CDIException {
         if (!this.scanned) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {        
+                Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] BEGIN SCAN");
+            }
             //mark as scanned up front to prevent loops
             this.scanned = true;
 
@@ -273,6 +280,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 Class<?> loadedClass = classEntry.getValue();
                 ClassLoader actualClassLoader = loadedClass.getClassLoader();
                 if (actualClassLoader == classLoader || !isAccessibleBean(loadedClass)) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && this.beanClasses.containsKey(className)) {        
+                        Tr.debug(tc, "beanClasses key collision for " + className);
+                        Tr.debug(tc, "Old class " + beanClasses.get(className).getCanonicalName() + beanClasses.get(className).getClassLoader().toString() );
+                        Tr.debug(tc, "New class " + loadedClass.getCanonicalName() + loadedClass.getClassLoader().toString() );
+                    }
                     this.beanClasses.put(className, loadedClass);
                 }
             }
@@ -303,6 +315,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     }
 
     private Set<String> scanForBeanClassNames() throws CDIException {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.entry(tc, "scanForBeanClassNames [ " + getHumanReadableName() + " ]");
+        }
         Set<String> classNames = new HashSet<String>();
 
         BeanDiscoveryMode mode = getBeanDiscoveryMode();
@@ -328,10 +343,18 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             classNames.remove(appMainClassName);
         }
 
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String beanNames = String.join(", ", classNames);
+            Tr.exit(tc, "scanForBeanClassNames [ " + getHumanReadableName() + " ] { " + classNames + " }");
+        }
         return classNames;
     }
 
     private void initializeInjectionClasses(Collection<Class<?>> beanClasses) throws CDIException {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String beanNames = beanClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
+            Tr.entry(tc, "initializeInjectionClasses [ " + getHumanReadableName() + " ] {" + beanNames + "}");
+        }
         Set<Class<?>> classes = new HashSet<Class<?>>();
 
         classes.addAll(beanClasses);
@@ -349,9 +372,17 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         classes.removeAll(getManagedBeanClasses());
 
         this.injectionClasses.addAll(classes);
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String beanNames = this.injectionClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
+            Tr.exit(tc, "initializeInjectionClasses [ " + getHumanReadableName() + " ] {" + beanNames + "}");
+        }
     }
 
     private void initializeJEEComponentClasses(Set<String> allClassNames) throws CDIException {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String classNames = String.join(", ", allClassNames);
+            Tr.entry(tc, "initializeJEEComponentClasses [ " + getHumanReadableName() + " ] {" + classNames + "}");
+        }
         Set<Class<?>> classes = new HashSet<Class<?>>();
 
         //the class names from the InjectionClassList interface covers all of the Web Components
@@ -399,9 +430,16 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         classes.addAll(nonCDIInterceptors);
         this.jeeComponentClasses.addAll(classes);
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String names = this.jeeComponentClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
+            Tr.exit(tc, "initializeJEEComponentClasses [ " + getHumanReadableName() + " ] {" + names + "}");
+        }
     }
 
     private void scanForEndpoints() throws CDIException {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {        
+            Tr.entry(tc, "scanForEndpoints [ " + getHumanReadableName() + " ]");
+        }
 
         if (!endpointsScanned) {
             endpointsScanned = true;
@@ -464,6 +502,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 }
             }
         }
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {        
+            Tr.exit(tc, "scanForEndpoints [ " + getHumanReadableName() + " ]");
+        }
     }
 
     /**
@@ -515,6 +556,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      * @param classes
      */
     private void removeVetoedClasses(Set<Class<?>> classes) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            String vetoedClassNames = classes.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
+            Tr.entry(tc, "removeVetoedClasses [ " + getHumanReadableName() + " ] {" + vetoedClassNames + "}");
+        }
+
         //get hold of classnames
         Set<String> classNames = new HashSet<String>();
         for (Class<?> clazz : classes) {
@@ -531,6 +577,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 iterator.remove();
             }
 
+        }
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.exit(tc, "removeVetoedClasses [ " + getHumanReadableName() + " ]");
         }
     }
 

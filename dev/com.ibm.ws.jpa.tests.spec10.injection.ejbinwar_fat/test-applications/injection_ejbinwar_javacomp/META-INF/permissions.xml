@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd" 
+             version="7">
+   <permission>
+      <class-name>java.lang.reflect.ReflectPermission</class-name>
+      <name>suppressAccessChecks</name>
+   </permission>
+   <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>getClassLoader</name>
+   </permission>
+   <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>accessDeclaredMembers</name>
+   </permission>
+   <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>createClassLoader</name>
+   </permission>
+   <permission>
+      <class-name>java.io.FilePermission</class-name>
+      <name>&lt;&lt;ALL FILES&gt;&gt;</name>
+      <actions>read</actions>
+   </permission>   
+   <permission>
+      <class-name>java.net.URLPermission</class-name>
+      <name>http://localhost:*/DatabaseManagement/DMS</name>
+      <actions>GET</actions>
+   </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>newMBeanServer</name>
+   </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>createMBeanServer</name>
+   </permission>
+
+</permissions>

@@ -28,10 +28,13 @@ fat.project: true
 tested.features: mpConfig-1.3,\
                  mpConfig-1.4,\
                  mpConfig-2.0,\
+                 mpConfig-3.0,\
                  cdi-1.2,\
                  cdi-2.0,\
+                 cdi-3.0,\
                  servlet-3.1,\
                  servlet-4.0, \
+                 servlet-5.0, \
                  localconnector-1.0
 
 -buildpath: \
@@ -39,4 +42,5 @@ tested.features: mpConfig-1.3,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-        com.ibm.ws.microprofile.config.1.1;version=latest
+        com.ibm.ws.microprofile.config.1.1;version=latest,\
+        io.openliberty.org.apache.commons.logging;version=latest

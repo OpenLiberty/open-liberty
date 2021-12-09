@@ -60,4 +60,24 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Multiple REST servlet mapp
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only allowed to be configured with zero or one path mapping. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one mapping is associated with a REST servlet in the web.xml. 
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml for the servlet-mappings that are associated with the REST servlet and remove all or all but one.
 
+INVALID_LONG_PROPERTY_CWWKW1302W=CWWKW1302W: The {0} client property must be a long integer, but was configured incorrectly with {1}. This setting will be ignored.
+INVALID_LONG_PROPERTY_CWWKW1302W.explanation=Client properties, such as timeout settings, must be configured as a positive long integer or a string that can be converted to a long integer. This message indicates that a client property was configured with an invalid value. This property will be ignored.
+INVALID_LONG_PROPERTY_CWWKW1302W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid long integer value.
 
+INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: The {0} client property must be an integer, but was configured incorrectly with {1}. This setting will be ignored.
+INVALID_INT_PROPERTY_CWWKW1303W.explanation=Client properties, such as proxy port settings, must be configured as a positive integer or a string that can be converted to an integer. This message indicates that a client property was configured with an invalid value. This property will be ignored.
+INVALID_INT_PROPERTY_CWWKW1303W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid integer value.
+
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: The {0} client property must be a boolean, but was configured incorrectly with {1}. This setting will be ignored.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Client properties, such as whether to automatically follow redirects, must be configured as a boolean or a string that can be converted to an boolean. This message indicates that a client property was is set to an invalid value. This property will be ignored.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid boolean value.
+
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: The server is ignoring the {0} provider because it is not valid.
+INVALID_PROVIDER_CWWKW1305W.explanation=The specified provider class likely does not contain a valid public constructor or does not implement a Jakarta REST provider interface. The requirements for a valid provider implementation are documented in section 4 of the Jakarta RESTful Web Services specification.
+INVALID_PROVIDER_CWWKW1305W.useraction=Review the application code to ensure that the specified provider properly implements the provider interface and contains a valid public constructor per the specification requirements.
+
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+warn_missing_mpjwt_token=CWWKW0707W: The [{0}] attribute in the [{1}] configuration is set to [{2}], but the MicroProfile JSON Web Token (JWT) is not available. The request does not contain an Authorization header with the token.
+warn_missing_mpjwt_token.explanation=The runtime failed to find the MicroProfile JWT in the runAs subject. This error usually indicates a problem with the authentication. Make sure that no errors are encountered while the MicroProfile JWT feature authenticates a user.
+warn_missing_mpjwt_token.useraction=Check the user action for any prior errors that the server logged.

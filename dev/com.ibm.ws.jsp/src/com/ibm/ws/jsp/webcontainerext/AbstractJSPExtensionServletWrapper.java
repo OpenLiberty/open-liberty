@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
     public static boolean dispatcherRethrowSERROR = WCCustomProperties.DISPATCHER_RETHROW_SERROR;       //PM22919
 
     private boolean warningStatusSet = false;
+    
+    private String loadedPagesVersion = null;
 
     public AbstractJSPExtensionServletWrapper(IServletContext parent, 
                                       JspOptions options, 
@@ -113,7 +115,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
             dependentsList = new ArrayList();
     }
 
-    public void initialize(IServletConfig config) throws Exception {
+    public void initialize(IServletConfig config, String loadedPagesVersion) throws Exception {
         if (config.getFileName() == null || config.getFileName().equals("")) {
             throw new UnavailableException(JspCoreException.getMsg("jsp.error.failed.to.find.resource", new Object[] { config.getFileName() }));
         }
@@ -122,6 +124,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         //} else {
             inputSource = tcontext.getJspInputSourceFactory().createJspInputSource(config.getFileName());
         //}
+            
+        this.loadedPagesVersion = loadedPagesVersion;
         
         super.initialize(config);
     }
@@ -205,7 +209,11 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 return;
             }
             super.handleRequest(req, res);
-            loadClassInformation();
+            
+            synchronized(this){
+                loadClassInformation();
+                classloaderCreated = false;  
+            }
         }
     }
 
@@ -216,7 +224,6 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
     protected void loadClassInformation() {
         if (classloaderCreated && getTarget() instanceof JspClassInformation) {
 
-            synchronized (this) {
                 JspClassInformation jspClassInformation = (JspClassInformation) getTarget();
                 if (options.isTrackDependencies()) {
                     dependentsList.clear();
@@ -235,8 +242,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 debugClassFile = jspClassInformation.isDebugClassFile(); // defect 272935 
                 //}
                 // end 228118: JSP container should recompile if debug enabled
-                // and jsp was not compiled in debug.
-            }
+                // and jsp was not compiled in debug.  
         }
     }
 
@@ -266,7 +272,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE) && versionNumber != null && jspResources != null) {
                 logger.logp(Level.FINE, CLASS_NAME, "checkForTranslation", "Classfile: [" + jspResources.getClassName() + "] version: [" + versionNumber + "]");
             }
-            classloaderCreated = false;
+
             // if (versionNumber !=null && jspResources != null) {
             // System.out.println("Classfile: ["+jspResources.getClassName()+"]
             // version: [" + versionNumber+"]");
@@ -375,7 +381,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
 
                             if (tmpJCI != null) {
                                 //get the current JSP version the server is running for this request
-                                String currentJspVersion = JSPExtensionFactory.getJspVersionFactory().getJspVersion().getJspVersionString();
+                                String currentJspVersion = this.loadedPagesVersion;
                                 //if this does not match the version from the previously compiled version of the JSP then we need to re-translate and re-compile the JSP
                                 if (!currentJspVersion.equals(tmpJCI.getVersionInformation())) {
                                     translationRequired = true;

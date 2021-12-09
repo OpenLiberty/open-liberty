@@ -3922,7 +3922,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Utility method used for adding the header(name and value) to
-     * the master header data storage data structures.
+     * the primary header data storage data structures.
      *
      * @throws MalformedMessageException
      */

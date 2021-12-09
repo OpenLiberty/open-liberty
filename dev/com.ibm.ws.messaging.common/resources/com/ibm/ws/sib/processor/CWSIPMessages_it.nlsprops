@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Accertarsi che il motore di mess
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Il motore di messaggistica {0} ha risposto alla richiesta di sottoscrizione, la topologia di pubblicazione/sottoscrizione ora \u00e8 coerente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Sono state eseguite comunicazioni corrette tra i motori di messaggistica e la topologia di pubblicazione/sottoscrizione \u00e8 coerente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=nessuna
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Il motore di messaggistica {0} ha risposto alla richiesta di sottoscrizione, la topologia di pubblicazione/sottoscrizione ora \u00e8 coerente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Sono state effettuate comunicazioni corrette tra i motori di messaggistica e la topologia di pubblicazione/sottoscrizione \u00e8 coerente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=nessuna
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Destinatario bloccato, il destinatario non pu\u00f2 consegnare il messaggio in entrata corrente a causa di {0} sulla destinazione {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=Il destinatario non riesce a consegnare un messaggio alla destinazione per la causa indicata, fino alla risoluzione di questo problema, sar\u00e0 bloccata la consegna dei messaggi successivi.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Il destinatario non \u00e8 in grado di recapitare un messaggio alla destinazione indicata per la causa specificata. Fino a quando questo problema non verr\u00e0 risolto, la consegna dei messaggi successivi sar\u00e0 bloccata.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Se questo stato persiste eseguire l'azione appropriata per risolvere il problema con il messaggio.
 
 # -------------------------------------------------------------------------------------------------

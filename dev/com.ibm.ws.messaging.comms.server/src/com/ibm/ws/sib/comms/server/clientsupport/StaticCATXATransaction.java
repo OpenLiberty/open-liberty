@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2010 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -379,7 +379,7 @@ public class StaticCATXATransaction
                                    Conversation conversation,
                                    int requestNumber,
                                    boolean allocatedFromBufferPool,
-                                   boolean partOfExchange)
+                                   boolean partOfExchange) throws SIException
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "rcvXAPrepare",
                                            new Object[]
@@ -445,6 +445,11 @@ public class StaticCATXATransaction
          {
             Throwable throwable =
                linkState.getTransactionTable().getExceptionForRollbackOnlyGlobalTransactionBranch(clientTransactionId, xid);
+            if (throwable instanceof SIException) {
+                // Throw low-level SIException back to the client, rather than representing it as some kind of XA exception.
+                // This tells the client the problem is not recoverable, so it will invalidate the connection.
+                throw (SIException)throwable;
+            }
             String errorMsg =
                nls.getFormattedMessage("TRANSACTION_MARKED_AS_ERROR_SICO2029",
                      new Object[]{ throwable },
@@ -595,7 +600,7 @@ public class StaticCATXATransaction
                                   Conversation conversation,
                                   int requestNumber,
                                   boolean allocatedFromBufferPool,
-                                  boolean partOfExchange)
+                                  boolean partOfExchange) throws SIException
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "rcvXACommit",
                                            new Object[]
@@ -696,6 +701,11 @@ public class StaticCATXATransaction
          // an exception notifying the caller that the UOW has been rolled back.
          if (isInvalidTransaction)
          {
+           if (rollbackException instanceof SIException) {
+             // Throw low-level SIException back to the client, rather than representing it as some kind of XA exception.
+             // This tells the client the problem is not recoverable, so it will invalidate the connection.
+             throw (SIException)rollbackException;
+           }
             String errorMsg =
                nls.getFormattedMessage("TRANSACTION_MARKED_AS_ERROR_SICO2029",
                      new Object[]{ rollbackException },
