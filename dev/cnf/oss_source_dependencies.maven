@@ -111,7 +111,7 @@ org.eclipse:yasson:1.0.8
 org.jboss.classfilewriter:jboss-classfilewriter:1.2.5.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final
 org.jboss.logging:jboss-logging:3.3.2.Final
-org.jboss:jandex:2.4.0.Final
+org.jboss:jandex:2.4.1.Final
 org.jvnet.mimepull:mimepull:1.9.7
 org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.core:4.2.0
