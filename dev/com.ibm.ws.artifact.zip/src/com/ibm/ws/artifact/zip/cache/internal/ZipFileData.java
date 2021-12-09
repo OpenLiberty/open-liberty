@@ -610,6 +610,13 @@ ZipFile [Path]
     protected ZipFile reacquireZipFile() throws IOException, ZipException {
         String methodName = "reacquireZipFile";
 
+        if ( ZipCachingProperties.ZIP_REAPER_ASSUME_VALID ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " Zip [ " + path + " ]: Assumed valid");
+            }
+            return zipFile;
+        }
+        
         File rawZipFile = new File(path);
         long newZipLength = FileUtils.fileLength(rawZipFile);
         long newZipLastModified = FileUtils.fileLastModified(rawZipFile);

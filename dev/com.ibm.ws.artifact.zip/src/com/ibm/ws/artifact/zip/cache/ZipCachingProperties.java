@@ -42,6 +42,10 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * zip.cache.entry.limit       0 | (>0)      [ 8192 ]
  * zip.cache.entry.max         0 | (>0)      [ 16 ]
  *
+ * One property is used to disable cache invalidation:
+ * 
+ * zip.reaper.assume.value     false | true  [ false ]
+ *
  * Three properties are used to configure the zip file cache layer:
  *
  * zip.reaper.max.pending     -1 | 0 | (>0)  [ 255 ]
@@ -94,6 +98,12 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * entry maximum property sets the number of entries for which data is held.
  * Setting 0 disables the entry cache.
  *
+ * zip.reaper.assume.valid     false | true  [ false ]
+ * 
+ * By default, when re-acquiring a zip file, size and last-modified
+ * checks are done.  This is expensive when many resources are accessed.
+ * Setting "true" turns off the checks.
+ * 
  * zip.reaper.max.pending     -1 | 0 | (>0)  [ 255 ]
  *
  * The zip file cache layer delays closes of zip files according to the
@@ -274,8 +284,6 @@ public class ZipCachingProperties {
 
     //
 
-    //
-
     /**
      * Property for zip reaper state logging.
      *
@@ -288,8 +296,11 @@ public class ZipCachingProperties {
      * closed, and displaying lifetime statistics for all.</li>
      * </ul>
      */
-    public static final String ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME =
+    public static final String ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME =
         "zip.reaper.debug.state";
+    @Deprecated // Typo.  Constant retained for backwards compatibility.
+    public static final String ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME =
+        ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME;
     public static final boolean ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE = false;
     public static final boolean ZIP_REAPER_DEBUG_STATE;
 
@@ -298,6 +309,12 @@ public class ZipCachingProperties {
     public static final boolean ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE = false;
     public static final boolean ZIP_REAPER_COLLECT_TIMINGS;
 
+    /** Tell whether invalidation is done on reaper cached data. */
+    public static final String ZIP_REAPER_ASSUME_VALID_PROPERTY_NAME =
+        "zip.reaper.assume.valid";
+    public static final boolean ZIP_REAPER_ASSUME_VALID_DEFAULT_VALUE = false;
+    public static final boolean ZIP_REAPER_ASSUME_VALID;
+    
     static {
         String methodName = "<static init>";
 
@@ -306,8 +323,12 @@ public class ZipCachingProperties {
             ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE);
 
         ZIP_REAPER_DEBUG_STATE = getProperty(methodName,
-            ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME,
+            ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME,
             ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE);
+        
+        ZIP_REAPER_ASSUME_VALID = getProperty(methodName,
+            ZIP_REAPER_ASSUME_VALID_PROPERTY_NAME,
+            ZIP_REAPER_ASSUME_VALID_DEFAULT_VALUE);        
     }
 
     /**
