@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -120,6 +121,8 @@ public class OracleHelper extends DatabaseHelper {
                     setSessionTimeZone = new AtomicReference<Method>();
 
     private String matrix[];
+    
+    private static final AtomicBoolean warnedAboutReadOnly = new AtomicBoolean();
 
     @SuppressWarnings("deprecation")
     private static final TraceComponent oraTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.oracle.logwriter", "WAS.database", null); 
@@ -762,22 +765,25 @@ public class OracleHelper extends DatabaseHelper {
     public void setReadOnly(WSRdbManagedConnectionImpl managedConn, boolean readOnly, boolean externalCall) 
     throws SQLException {
         if (tc.isDebugEnabled())
-            Tr.debug(this, tc, "setReadOnly", managedConn, readOnly, externalCall); 
-
-        if (externalCall) 
-        {
-            if (readOnly) {
-                // Fix this message later
-                throw new SQLException(AdapterUtil.getNLSMessage("METHOD_UNSUPPORTED", "setReadOnly", Connection.class.getName()));
-            } else {
-                // ignore it but log an informational message stating that we won't start a transaction
-                Tr.info(tc, "ORA_READONLY"); 
-
-            }
-        } else 
-        {
+            Tr.debug(this, tc, "setReadOnly", managedConn, readOnly, externalCall);
+        
+        if(!externalCall) {
             if (tc.isDebugEnabled())
                 Tr.debug(this, tc, "setReadOnly ignored for internal call"); 
+            
+            return;
+        }
+
+        if (readOnly) {
+            // Fix this message later
+            throw new SQLException(AdapterUtil.getNLSMessage("METHOD_UNSUPPORTED", "setReadOnly", Connection.class.getName()));
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(this, tc, "setReadOnly ignored for external call");
+            if(warnedAboutReadOnly.compareAndSet(false, true)) {
+                // ignore it but log an informational message once stating that we won't start a transaction
+                Tr.warning(tc, "ORA_READONLY");
+            }
         }
     }
 
