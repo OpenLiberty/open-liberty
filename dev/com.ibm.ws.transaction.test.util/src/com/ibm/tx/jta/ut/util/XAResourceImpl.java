@@ -269,7 +269,6 @@ public class XAResourceImpl implements XAResource, Serializable {
         private boolean busyInLongRunningQuery;
         private boolean queryAborted;
         private boolean commitSuicide = true;
-        private final String stateFile;
 
         URL doomedServer;
 
@@ -342,7 +341,6 @@ public class XAResourceImpl implements XAResource, Serializable {
         public XAResourceData(int i) {
             key = i;
             RM = UUID.randomUUID();
-            stateFile = STATE_FILE;
         }
 
         public int getCommitAction() {

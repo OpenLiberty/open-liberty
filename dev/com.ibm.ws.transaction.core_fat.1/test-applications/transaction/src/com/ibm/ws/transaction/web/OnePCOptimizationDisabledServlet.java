@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,8 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/OnePCDisabledServlet")
-public class OnePCDisabledServlet extends FATServlet {
+@WebServlet("/OnePCOptimizationDisabledServlet")
+public class OnePCOptimizationDisabledServlet extends FATServlet {
 
     @Test
     public void test1PCOptimizationDisabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
