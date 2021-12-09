@@ -94,10 +94,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
      */
     @Override
     public int branchCouplingSupported(int couplingType) {
-        // TODO remove this check at GA
-        if (!mcf.dsConfig.get().enableBranchCouplingExtension)
-            return super.branchCouplingSupported(couplingType);
-
         if (couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT)
             return 0x8000; // value of SQLServerXAResource.SSTRANSTIGHTLYCPLD (32768)
 

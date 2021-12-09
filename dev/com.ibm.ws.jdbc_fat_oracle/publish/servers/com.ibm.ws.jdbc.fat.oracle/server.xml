@@ -30,7 +30,7 @@
     	<fileset dir="${shared.resource.dir}/oracle"/>
     </library>
     
-    <dataSource id="DefaultDataSource" enableBranchCouplingExtension="true"><!-- TODO remove attribute once GA -->
+    <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
     	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
     </dataSource>

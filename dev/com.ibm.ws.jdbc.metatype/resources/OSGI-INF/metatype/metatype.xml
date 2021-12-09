@@ -79,11 +79,9 @@
    <Option value="rollback"                       label="%commitRollbk.rollback.desc"/>
   </AD>
   <AD id="enableBeginEndRequest"                  name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="Boolean"/>
-  <AD id="enableBranchCouplingExtension"          name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="Boolean"/>
   <AD id="enableConnectionCasting"                name="%enblConCast"  description="%enblConCast.desc"  ibmui:group="Advanced" type="Boolean" default="false"/>
   <AD id="heritage"                               name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource.heritage" ibm:flat="true"/>
   <AD id="identifyException"                      ibm:beta="true"                                       ibmui:group="Advanced" required="false" type="String"  cardinality="1000" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource.identifyException" ibm:flat="true"/>
-  <!-- TODO remove enableBranchCouplingExtension. It is temporarily used internally to switch on code path for a test case -->
   <AD id="onConnect"                              name="%onConnect"    description="%onConnect.desc"    ibmui:group="Advanced" required="false" type="String"  cardinality="1000"/>
   <AD id="queryTimeout"                           name="%qryTimeout"   description="%qryTimeout.desc"   ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)"/>
   <AD id="recoveryAuthDataRef"                    name="%recoveryAuth" description="%recoveryAuth.desc" ibmui:group="Advanced" required="false" type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config"/>
