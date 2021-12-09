@@ -31,11 +31,13 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
     public void initialize() {
         System.out.println(this.getClass().getName() + ": init param \"soapArg0\" = " + initParam);
         System.out.println(this.getClass().getName() + ": postConstruct is invoked");
+        System.out.flush(); // To force the system to write fast
     }
 
     @PreDestroy
     public void shutdown() {
         System.out.println(this.getClass().getName() + ": PreDestroy is invoked");
+        System.out.flush(); // To force the system to write fast
     }
 
     /*
@@ -52,6 +54,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
         } else {
             System.out.println(this.getClass().getName() + ": handle outbound message");
         }
+        System.out.flush(); // To force the system to write fast
         return true;
     }
 
@@ -63,6 +66,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
     @Override
     public boolean handleFault(SOAPMessageContext context) {
         System.out.println(this.getClass().getName() + ": handle fault message");
+        System.out.flush(); // To force the system to write fast
         return true;
     }
 
@@ -74,7 +78,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
     @Override
     public void close(MessageContext context) {
         System.out.println(this.getClass().getName() + " is closed");
-
+        System.out.flush(); // To force the system to write fast
     }
 
     /*

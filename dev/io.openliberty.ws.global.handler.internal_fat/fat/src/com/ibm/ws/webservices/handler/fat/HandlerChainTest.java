@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 
 import java.io.FileNotFoundException;
-import java.util.Locale;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
@@ -39,8 +38,6 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -60,12 +57,10 @@ public class HandlerChainTest {
     private final static QName serviceQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterService");
     private final static QName portQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterPort");
 
-    
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.deleteAllDropinApplications();
-//            server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
+            server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
             server.stopServer();
         }
     }
@@ -119,8 +114,7 @@ public class HandlerChainTest {
             throw se;
         }
         // Uninstall Applications
-        server.deleteAllDropinApplications(); // This method might be more efficient removing apps from dropins
-        //server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
+        server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
@@ -130,10 +124,9 @@ public class HandlerChainTest {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
         // Test initParams
         assertStatesExisted(".*init param \"arg0\" = testInitParam");
-        
+
         // Test postConstruct and preDestroy
-        assertStatesExistedFromMark(true, new String[] {      // This method is converted to assertStatesExistedFromMark because 
-                                                              //this method is resetting the log mark each time with true parameter 
+        assertStatesExisted(new String[] {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
