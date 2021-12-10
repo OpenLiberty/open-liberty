@@ -17,6 +17,8 @@ import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.handler.LogicalMessageContext;
 import javax.xml.ws.handler.MessageContext;
 
+import java.util.logging.Logger;
+
 /**
  *
  */
@@ -24,17 +26,17 @@ public class TestLogicalHandler implements LogicalHandler<LogicalMessageContext>
     @Resource(name = "arg0")
     private String testArg0;
 
+    private static final java.util.logging.Logger LOG = Logger.getLogger(TestLogicalHandler.class.getName());
+    
     @PostConstruct
     public void initialize() {
-        System.out.println(this.getClass().getName() + ": init param \"arg0\" = " + testArg0);
-        System.out.println(this.getClass().getName() + ": postConstruct is invoked");
-        System.out.flush(); // To force the system to write fast
+        Log(": init param \"arg0\" = " + testArg0);
+        Log(": postConstruct is invoked");
     }
 
     @PreDestroy
     public void shutdown() {
-        System.out.println(this.getClass().getName() + ": PreDestroy is invoked");
-        System.out.flush(); // To force the system to write fast
+        Log(": PreDestroy is invoked");
     }
 
     /*
@@ -47,11 +49,10 @@ public class TestLogicalHandler implements LogicalHandler<LogicalMessageContext>
         boolean isOut = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (!isOut) {
-            System.out.println(this.getClass().getName() + ": handle inbound message");
+            Log(": handle inbound message");
         } else {
-            System.out.println(this.getClass().getName() + ": handle outbound message");
+            Log(": handle outbound message");
         }
-        System.out.flush(); // To force the system to write fast
         return true;
     }
 
@@ -62,8 +63,7 @@ public class TestLogicalHandler implements LogicalHandler<LogicalMessageContext>
      */
     @Override
     public boolean handleFault(LogicalMessageContext context) {
-        System.out.println(this.getClass().getName() + ": handle fault message");
-        System.out.flush(); // To force the system to write fast
+        Log(": handle fault message");
         return true;
     }
 
@@ -74,8 +74,12 @@ public class TestLogicalHandler implements LogicalHandler<LogicalMessageContext>
      */
     @Override
     public void close(MessageContext context) {
-        System.out.println(this.getClass().getName() + " is closed");
-        System.out.flush(); // To force the system to write fast
+        Log(" is closed");
+
+    }
+    
+    private void Log(String message) {
+        LOG.info(this.getClass().getName() + message);
     }
 
 }
