@@ -50,16 +50,6 @@ public class WSATCoordinator extends WSATEndpoint {
     }
 
     /*
-     * Remove the coordinator from the transaction when done
-     */
-    public void remove() {
-        WSATTransaction tran = WSATTransaction.getTran(globalId);
-        if (tran != null) {
-            tran.removeCoordinator();
-        }
-    }
-
-    /*
      * Return a coordinator EPR for a specific participant. This is the same as the
      * basic coordinator EPR but it has an additional ReferenceParameter containing
      * the participant identifier. Later, when the participant calls us back using

@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -72,7 +73,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         }
 
         // wait for 1st server to have gone away
-        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 

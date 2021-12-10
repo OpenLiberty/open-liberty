@@ -18,8 +18,7 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,6 +38,9 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 @WebServlet({ "/MultiRecoverySetupServlet" })
 public class MultiRecoverySetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	@Resource
+	UserTransaction userTransaction;
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -86,15 +88,13 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 
 				bind2.getRequestContext().put("javax.xml.ws.client.connectionTimeout", timeout);
 				bind2.getRequestContext().put("javax.xml.ws.client.receiveTimeout", timeout);
+				
+				userTransaction.begin();
 
 				switch (number) {
 				case 101:
 				case 103:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -110,10 +110,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 102:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -142,10 +138,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 201:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -155,6 +147,7 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 						if (!output.contains("failed"))
 							output += "Get response in the second call: " + res2 + ".";
 						//kill server1
+						XAResourceImpl.dumpState();
 						Runtime.getRuntime().halt(0);
 						output += " Test passed.";
 					}catch(java.lang.Exception e){
@@ -164,10 +157,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 202:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -192,10 +181,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 203:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -211,6 +196,7 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 							System.out.println("Get expected exception " + e.toString() 
 									+ ". Continue to kill myself.");
 						}
+						XAResourceImpl.dumpState();
 						Runtime.getRuntime().halt(0);	
 						output += " Test passed.";
 					}catch(java.lang.Exception e){
@@ -243,10 +229,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 				case 1602:
 				case 1603:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						System.out.println("Call the first web service.");
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
@@ -281,10 +263,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 				case 1202:
 				case 1203:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"), BASE_URL2);
 						if (!output.contains("failed"))
@@ -306,10 +284,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 				case 1502:
 				case 1503:
 					try{
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						//server1 call web service
 						String res1 = proxy.invoke(Integer.parseInt(number+"01"),"");
 						if (!output.contains("failed"))
@@ -329,10 +303,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 				case 3012:
 				case 3013:
 					try {
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						final ExtendedTransactionManager TM = TransactionManagerFactory
 								.getTransactionManager();
 						XAResourceImpl.clear();
@@ -373,10 +343,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 3021:
 					try {
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						final ExtendedTransactionManager TM = TransactionManagerFactory
 								.getTransactionManager();
 						XAResourceImpl.clear();
@@ -417,7 +383,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 							System.out.println("Get expected exception " + e.toString() 
 									+ " when killing myself");
 						}
-						//Runtime.getRuntime().halt(0);
 						output += " Test passed.";
 						userTransaction.commit();
 					}catch(java.lang.Exception e){
@@ -427,10 +392,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 3022:
 					try {
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						final ExtendedTransactionManager TM = TransactionManagerFactory
 								.getTransactionManager();
 						XAResourceImpl.clear();
@@ -477,10 +438,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 3023:
 					try {
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						final ExtendedTransactionManager TM = TransactionManagerFactory
 								.getTransactionManager();
 						XAResourceImpl.clear();
@@ -529,7 +486,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 							System.out.println("Get expected exception " + e.toString() 
 									+ " when killing myself");
 						}
-						//Runtime.getRuntime().halt(0);
 						output += " Test passed.";
 						userTransaction.commit();
 					}catch(java.lang.Exception e){
@@ -539,10 +495,6 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					break;
 				case 3031:
 					try {
-						Context ctx = new InitialContext();
-						UserTransaction userTransaction = (UserTransaction) ctx
-							.lookup("java:comp/UserTransaction");
-						userTransaction.begin();
 						final ExtendedTransactionManager TM = TransactionManagerFactory
 								.getTransactionManager();
 						XAResourceImpl.clear();
@@ -585,6 +537,9 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					/*
 					 * The following are multi server recovery tests
 					 * */
+					default:
+						output += " Invalid test number: " + number + ". Test failed.";
+						userTransaction.rollback();
 				}
 				response.getWriter().println(
 						"<html><header></header><body>" + output + "</body></html>");

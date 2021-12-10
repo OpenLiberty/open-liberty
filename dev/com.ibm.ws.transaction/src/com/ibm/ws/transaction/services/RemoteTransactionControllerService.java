@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,9 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 
 /**
  *
@@ -386,5 +386,40 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         }
 
         return ((DistributableTransaction) uowCoord).getGlobalId();
+    }
+
+    @Override
+    public Object getResource(String globalId) {
+        TransactionWrapper tw = TransactionWrapper.getTransactionWrapper(globalId);
+
+        if (tw != null) {
+            EmbeddableTransactionImpl tx = tw.getTransaction();
+
+            if (tx != null) {
+                return tx.getResource(globalId);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "No matching Transaction");
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "No matching TransactionWrapper");
+
+            DistributableTransaction tx = getTransactionForID(globalId);
+
+            if (tx instanceof EmbeddableTransactionImpl) {
+                return ((EmbeddableTransactionImpl) tx).getResource(globalId);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "No matching DistributableTransaction");
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void putResource(String globalId, Object o) {
+        ((TransactionImpl) getTransactionForID(globalId)).putResource(globalId, o);
     }
 }
