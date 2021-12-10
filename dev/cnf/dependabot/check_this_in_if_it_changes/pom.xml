@@ -188,26 +188,6 @@
     </dependency>
     <dependency>
       <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>com.ibm.componenttest.common</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>com.ibm.ws.topology.helper</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>fat.harness</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>fat.util</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
       <artifactId>mantis-collections</artifactId>
       <version>2.5.0</version>
     </dependency>
@@ -215,16 +195,6 @@
       <groupId>com.ibm.ws.componenttest</groupId>
       <artifactId>mantis-nls-standalone</artifactId>
       <version>2.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>provider.api</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>public.api</artifactId>
-      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.icegreen</groupId>

@@ -855,7 +855,6 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
-     *
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {

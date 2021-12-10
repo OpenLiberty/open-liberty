@@ -33,14 +33,8 @@ com.graphql-java:graphql-java:16.2
 com.graphql-java:java-dataloader:2.2.3
 com.ibm.async:asyncutil:0.1.0
 com.ibm.db2:jcc:11.1.4.4
-com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
-com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
-com.ibm.ws.componenttest:fat.harness:1.0.0
-com.ibm.ws.componenttest:fat.util:1.0.0
 com.ibm.ws.componenttest:mantis-collections:2.5.0
 com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
-com.ibm.ws.componenttest:provider.api:1.0.0
-com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
 com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8

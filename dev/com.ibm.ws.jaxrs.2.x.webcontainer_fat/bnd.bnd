@@ -39,7 +39,6 @@ tested.features: \
   com.ibm.websphere.javaee.servlet.3.1,\
   com.ibm.websphere.javaee.validation.1.1,\
   com.ibm.ws.cdi.interfaces;version=latest,\
-  com.ibm.ws.componenttest:provider.api;version=1.0.0,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   javax.activation:activation;version=1.1,\
   javax.jws:jsr181-api;version=latest,\
