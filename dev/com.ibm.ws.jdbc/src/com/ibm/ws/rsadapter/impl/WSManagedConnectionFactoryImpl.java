@@ -322,11 +322,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @param dsConfigRef reference to update to point at the new data source configuration.
      * @param ifc the type of data source, otherwise java.sql.Driver.
      * @param vendorImpl the data source or driver implementation.
+     * @param loader class loader for JDBC driver classes.
      * @param jdbcRuntime version of the Liberty jdbc feature
      * @throws Exception if an error occurs.
      */
     public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<?> ifc,
-                                          Object vendorImpl, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+                                          Object vendorImpl, ClassLoader loader,
+                                          JDBCRuntimeVersion jdbcRuntime) throws Exception {
         dsConfig = dsConfigRef;
         DSConfig config = dsConfig.get();
 
@@ -339,7 +341,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         instanceID = NUM_INITIALIZED.incrementAndGet();
         vendorImplClass = vendorImpl.getClass();
         type = ifc;
-        jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
+        jdbcDriverLoader = loader;
 
         String implClassName = vendorImplClass.getName();
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
