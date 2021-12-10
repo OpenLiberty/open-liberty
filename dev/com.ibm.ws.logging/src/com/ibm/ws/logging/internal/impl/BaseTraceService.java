@@ -319,13 +319,17 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
+        checkpoint = trConfig.isCheckpoint();
+        restore = trConfig.isRestore();
+        if (isRestore()) {
+            registerLoggerHandlerSingleton();
+            captureSystemStreams();
+        }
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
-        checkpoint = trConfig.isCheckpoint();
-        restore = trConfig.isRestore();
 
         //add hideMessageIds to log header, only for default logging, since for binary logging, the messages will be only hidden in console.log.
         //This is printed when its configured in bootstrap.properties
