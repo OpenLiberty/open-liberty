@@ -229,7 +229,7 @@ public class BaseTraceService implements TrService {
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
 
-    private boolean checkpoint;
+    private boolean checkpoint = false;
     private volatile boolean restore = false;
 
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
@@ -321,7 +321,7 @@ public class BaseTraceService implements TrService {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
         checkpoint = trConfig.isCheckpoint();
         restore = trConfig.isRestore();
-        if (isRestore()) {
+        if (restore) {
             registerLoggerHandlerSingleton();
             captureSystemStreams();
         }

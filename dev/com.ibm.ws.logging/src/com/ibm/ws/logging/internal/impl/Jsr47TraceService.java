@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,10 +46,12 @@ public class Jsr47TraceService extends BaseTraceService {
     }
 
     @Override
-    protected void registerLoggerHandlerSingleton() {}
+    protected void registerLoggerHandlerSingleton() {
+    }
 
     @Override
-    protected void unregisterLoggerHandlerSingleton() {}
+    protected void unregisterLoggerHandlerSingleton() {
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -73,10 +75,12 @@ public class Jsr47TraceService extends BaseTraceService {
             traceLog = new TraceWriter() {
 
                 @Override
-                public void writeRecord(String record) {}
+                public void writeRecord(String record) {
+                }
 
                 @Override
-                public void close() throws IOException {}
+                public void close() throws IOException {
+                }
             };
         }
     }
