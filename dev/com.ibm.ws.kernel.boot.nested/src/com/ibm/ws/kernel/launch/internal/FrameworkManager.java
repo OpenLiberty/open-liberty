@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -53,7 +54,6 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCConfigurator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.boot.BootstrapConfig;
@@ -71,7 +71,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.ws.kernel.launch.internal.LauncherDelegateImpl.ReadOnlyFrameworkProperties;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -279,30 +278,29 @@ public class FrameworkManager {
             // Set the framework variables only if everything succeeded.
             systemBundleCtx = fwk.getBundleContext();
 
-            systemBundleCtx.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
+            if (LaunchArguments.isBetaEdition()) {
+                systemBundleCtx.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
 
-                @Override
-                public CheckpointHook create(Phase phase) {
-                    CheckpointHook checkpointHook = new CheckpointHook() {
-                        @Override
-                        public void prepare() {
-                            logProvider.stop();
-                        }
+                    @Override
+                    public CheckpointHook create(Phase phase) {
+                        CheckpointHook checkpointHook = new CheckpointHook() {
+                            @Override
+                            public void prepare() {
+                                logProvider.stop();
+                            }
 
-                        @Override
-                        public void restore() {
-                            config.put(BootstrapConstants.RESTORE_ENABLED, "true");
-                            Map<String, Object> configMap = Collections.<String, Object> unmodifiableMap(new ReadOnlyFrameworkProperties(config));
-                            TrConfigurator.update(configMap);
-                            FFDCConfigurator.update(configMap);
-                        }
+                            @Override
+                            public void restore() {
+                                Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                                TrConfigurator.update(configMap);
+                            }
 
-                    };
-                    return checkpointHook;
-                }
+                        };
+                        return checkpointHook;
+                    }
 
-            }, null);
-
+                }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+            }
             framework = fwk;
         } catch (BundleException e) {
             throw new RuntimeException(e);

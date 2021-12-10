@@ -210,7 +210,11 @@ public class LogProviderConfigImpl implements LogProviderConfig {
      */
     @Override
     public synchronized void update(Map<String, Object> config) {
-        doCommonInit(config, false);
+        if (config.get(LoggingConstants.RESTORE_ENABLED) != null) {
+            restore = LoggingConfigUtils.getBooleanValue(config.get(LoggingConstants.RESTORE_ENABLED), restore);
+        } else {
+            doCommonInit(config, false);
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -250,8 +254,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
         appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
-
-        restore = LoggingConfigUtils.getBooleanValue(c.get(LoggingConstants.RESTORE_ENABLED), restore);
     }
 
     /**
