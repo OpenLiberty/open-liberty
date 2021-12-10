@@ -148,10 +148,10 @@ public class JPAContainerModifyConfigTest extends FATServletClient {
         // Move the eclipselink jar that has META-INF/services/javax.persistence.spi.PersistenceProvider
         // in it to a different folder
         RemoteFile origJar = null;
-        RemoteFile eclRoot = server.getFileFromLibertyServerRoot("ecl");
+        RemoteFile eclRoot = server.getFileFromLibertySharedDir("resources/ecl"); //  server.getFileFromLibertyServerRoot("ecl");
         RemoteFile[] eclFiles = eclRoot.list(false);
         for (RemoteFile remoteFile : eclFiles) {
-            if (remoteFile.getName().startsWith("com.ibm.websphere.appserver.thirdparty.eclipselink_")) {
+            if (remoteFile.getName().startsWith("com.ibm.websphere.appserver.thirdparty.eclipselink")) {
                 origJar = remoteFile;
                 break;
             }

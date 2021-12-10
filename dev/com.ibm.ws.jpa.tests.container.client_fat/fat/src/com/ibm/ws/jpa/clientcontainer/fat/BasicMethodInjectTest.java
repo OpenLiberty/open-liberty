@@ -51,6 +51,8 @@ public class BasicMethodInjectTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        libClient.addIgnoreErrors("CWWJP9991W");
+
         String thisMethod = "setUp";
         Log.info(c, thisMethod, "setup complete ...");
 
@@ -75,10 +77,11 @@ public class BasicMethodInjectTest extends FATServletClient {
      */
     @Test
     @MinimumJavaLevel(javaLevel = 7)
-    public void testBasicJPAMethodInjection() {
+    public void testBasicJPAMethodInjection() throws Exception {
         // the startParms is just here for future use, and to prevent unused warnings for imports
         List<String> startParms = new ArrayList<String>();
         startParms.add("BasicCalculatorClient.jar");
+
         try {
             Log.info(c, name.getMethodName(), "Starting the client ...");
             CommonTest.commonClientSetUp("BasicJPAMethodInjClient", "BasicJPAMethodInj", "BasicJPAMethodInjectClient");
@@ -102,8 +105,8 @@ public class BasicMethodInjectTest extends FATServletClient {
             // Find End
             assertNotNull("Client should report it found application stop",
                           CommonTest.testClient.waitForStringInCopiedLog(JPA_ACLI_EYECATCHER + "BasicJPAMethodInjAppClient exiting."));
-
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Exception was thrown: " + e);
         }
     }

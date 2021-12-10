@@ -12,9 +12,7 @@
         
         <properties>
             <!-- EclipseLink should create the database schema automatically -->
-            <property name="eclipselink.ddl-generation" value="create-tables" />
-
-            <property name="eclipselink.target-database" value="Derby" />
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
         </properties>
     </persistence-unit>
         
@@ -25,9 +23,7 @@
         
         <properties>
             <!-- EclipseLink should create the database schema automatically -->
-            <property name="eclipselink.ddl-generation" value="create-tables" />
-
-            <property name="eclipselink.target-database" value="Derby" />
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
         </properties>
     </persistence-unit>
 </persistence>

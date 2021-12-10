@@ -161,7 +161,7 @@ public class CommonTest {
     /**
      * Sets up and runs a client. A client.xml file is expected to be present in
      * the client's root directory.
-     * 
+     *
      * @param testClientName
      * @throws Exception
      */
@@ -175,6 +175,7 @@ public class CommonTest {
         }
         List<String> startParms = new ArrayList<String>();
         startParms.add(clientEarName + ".ear -CCjar=" + clientModuleName + ".jar");
+        testClient.addIgnoreErrors("CWWJP9991W");
         testClient.startClient();
         assertNotNull("Application " + clientEarName + " did not report that it started.",
                       testClient.waitForStringInCopiedLog("CWWKZ0001I.*" + clientEarName));
@@ -188,7 +189,7 @@ public class CommonTest {
     /**
      * Sets up and starts a server. A server.xml file is expected to be present
      * in the client's root directory.
-     * 
+     *
      * @param testServerName
      * @throws Exception
      */

@@ -51,6 +51,8 @@ public class BasicFieldInjectTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        libClient.addIgnoreErrors("CWWJP9991W");
+
         String thisMethod = "setUp";
         Log.info(c, thisMethod, "setup complete ...");
 
