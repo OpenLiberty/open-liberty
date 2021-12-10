@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,16 +23,19 @@ import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelException;
 import io.netty.channel.ChannelOption;
+import io.openliberty.accesslists.AccessListKeysFacade;
+import io.openliberty.accesslists.AddressAndHostNameAccessLists;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 /**
  * Configuration object for an individual TCP channel instance.
  * 
  * Adapted from {@link com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration}
  */
+
 public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigConstants, FFDCSelfIntrospectable {
 
     public static final String NEW_BUFF_SIZE = "newConnectionBufferSize";
@@ -98,7 +102,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
 
     private boolean caseInsensitiveHostnames = true; // F184719
 
-    private AccessLists accessLists;
+    private AddressAndHostNameAccessLists accessLists;
 
     /**
      * Constructor.
@@ -121,12 +125,12 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
             }
             throw new NettyException("TCPChannelConfiguration constructed with null properties");
         }
-        accessLists = AccessLists.getInstance(this);
+        accessLists = AddressAndHostNameAccessLists.getInstance(this.accessListKeys());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             outputConfigToTrace();
         }
     }
-    
+
     /**
      * Apply this config to a {@link io.netty.bootstrap.ServerBootstrap}
      * Note that most props are implemented via handlers, see {@link TCPChannelInitializerImpl}
@@ -136,11 +140,12 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
     public void applyConfiguration(ServerBootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
     }
-    
-    public AccessLists getAccessLists() {
+
+    public AddressAndHostNameAccessLists getAccessLists() {
         return accessLists;
     }
 
+    //@formatter:off
     private boolean skipKey(String key) {
         return key.equals("id") ||
                key.equals("type") ||
@@ -149,6 +154,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
                key.startsWith("config.") ||
                key.startsWith("objectClass");
     }
+    //@formatter:on
 
     private void setValues() throws NettyException {
 
@@ -1282,4 +1288,54 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
         throw new UnsupportedOperationException("invalid for TCP config");
     }
 
+    /**
+     * A method that can be used to pull out an access list
+     * from a TCPChannelConfiguration
+     *
+     * @return an object that can provide the access lists
+     */
+    public AccessListKeysFacade accessListKeys() {
+        return new AccessListKeysProvider(this);
+    }
+
+    /**
+     * This class is used to protect consumers of the access list keys from having
+     * visibility of this class, it collects together the methods required by the
+     * common access lists code without that code having to know about this consuming
+     * type.
+     */
+    private class AccessListKeysProvider implements AccessListKeysFacade {
+
+        TCPConfigurationImpl delegate;
+
+        AccessListKeysProvider(TCPConfigurationImpl config) {
+            delegate = config;
+        }
+
+        @Override
+        public String[] getAddressExcludeList() {
+            return delegate.getAddressExcludeList();
+        }
+
+        @Override
+        public String[] getHostNameExcludeList() {
+            return delegate.getHostNameExcludeList();
+        }
+
+        @Override
+        public String[] getAddressIncludeList() {
+            return delegate.getAddressIncludeList();
+        }
+
+        @Override
+        public String[] getHostNameIncludeList() {
+            return delegate.getHostNameIncludeList();
+        }
+
+        @Override
+        public boolean getCaseInsensitiveHostnames() {
+            return delegate.getCaseInsensitiveHostnames();
+        }
+
+    }
 }

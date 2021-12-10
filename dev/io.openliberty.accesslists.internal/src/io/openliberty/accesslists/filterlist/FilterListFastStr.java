@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,34 +8,37 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.http.channel.internal.filter;
+package io.openliberty.accesslists.filterlist;
 
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import io.openliberty.accesslists.AccessListsConstants;
 
 /**
- * Contains the address tree of multiple URL Addresses. This tree can then
- * be used to determine if a new address is contain in this tree. Therefore
- * this object is used to see in an Address is contained in a given list
- * of addresses. The tree is structured such that each substring between
- * periods (".") in a URL is a node of the tree. Subsequent nodes are valid
- * address paths from preceding nodes. A wildcard is allowed to be the first
- * substring in an address that is placed in the tree. For this reason, the
- * tree is built "backwards". The last substring of the URL is the first node
- * in an address path through the tree. This list is "fast" because the nodes
- * are based on the hashcodes of the substrings, therefore
- * tree traversal is faster than if doing string compares.
- *
- * from from com.ibm.ws.tcpchannel.internal.FilterListFastStr
+ * Contains the address tree of multiple URL Addresses. This tree can then be
+ * used to determine if a new address is contain in this tree. Therefore this
+ * object is used to see in an Address is contained in a given list of
+ * addresses. The tree is structured such that each substring between periods
+ * (".") in a URL is a node of the tree. Subsequent nodes are valid address
+ * paths from preceding nodes. A wildcard is allowed to be the first substring
+ * in an address that is placed in the tree. For this reason, the tree is built
+ * "backwards". The last substring of the URL is the first node in an address
+ * path through the tree. This list is "fast" because the nodes are based on the
+ * hashcodes of the substrings, therefore tree traversal is faster than if doing
+ * string compares.
  */
 public class FilterListFastStr implements FilterListStr {
 
-    private static final TraceComponent tc = Tr.register(FilterListFastStr.class);
+    /* In making this common code the tracing xxxConstants are no longer 'Netty' */
+    private static final TraceComponent tc = Tr.register(FilterListFastStr.class, AccessListsConstants.TCP_TRACE_GROUP,
+            AccessListsConstants.TCP_MESSAGES);
 
-    private final byte PERIOD_VALUE = 46;
-    private final byte WILDCARD_VALUE = 42;
+    private byte PERIOD_VALUE = 46;
+    private byte WILDCARD_VALUE = 42;
     private FilterCellFastStr firstCell = null;
     private boolean active = false;
 
@@ -47,25 +50,22 @@ public class FilterListFastStr implements FilterListStr {
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#setActive(boolean)
+     * @see io.openliberty.accesslists.FilterListStr#setActive(boolean)
      */
-    @Override
     public void setActive(boolean value) {
         this.active = value;
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#getActive()
+     * @see io.openliberty.accesslists.FilterListStr#getActive()
      */
-    @Override
     public boolean getActive() {
         return this.active;
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#buildData(String[])
+     * @see io.openliberty.accesslists.FilterListStr#buildData(String[])
      */
-    @Override
     public boolean buildData(String[] data) {
         final int length = data.length;
 
@@ -74,7 +74,7 @@ public class FilterListFastStr implements FilterListStr {
                 return false;
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "host added to list of trusted hosts: " + data[i]);
+                    Tr.debug(tc, "host added to list: " + data[i]);
                 }
             }
         }
@@ -83,57 +83,51 @@ public class FilterListFastStr implements FilterListStr {
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#findInList(String)
+     * @see io.openliberty.accesslists.FilterListStr#findInList(String)
      */
-    @Override
     public boolean findInList(String address) {
         return (findInList(convertToEntries(address)));
     }
 
     /**
      * Add a new address to the address tree
-     *
-     * @param newAddress
-     *            address to add
+     * 
+     * @param newAddress address to add
      */
     private boolean addAddressToList(String newAddress) {
         return putInList(convertToEntries(newAddress));
     }
 
     /**
-     * Determine if an address represented by an Entry object is in the address
-     * tree
-     *
-     * @param oEntry
-     *            Entry object for the address to look for
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * Determine if an address represented by an Entry object is in the address tree
+     * 
+     * @param oEntry Entry object for the address to look for
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     private boolean findInList(Entry oEntry) {
         return findInList(oEntry.getHashcodes(), oEntry.getLengths(), firstCell, oEntry.getCurrentSize() - 1);
     }
 
     /**
-     * Determine, recursively, if an string is in the address tree. The string is
-     * to be represented by an array of hashcodes where the 0th index in the array
-     * is the hashcode of the rightmost substring of the address. A substring is
-     * the characters between two periods (".") in an address. The string is
-     * also represented by an array of lengths, where the 0th index in the array
-     * is the length of the rightmost substring. If hashcodes an length match each
-     * for each entry in the arrays, with a path through the address tree, then
-     * the address is found in the tree.
-     *
-     * @param hashcodes
-     *            - array of hashcodes of the substrings of the address to find
-     * @param lengths
-     *            - array of lengths of the substrings of the address to find
-     * @param cell
-     *            - the current cell that is being traversed in the address tree
-     * @param index
-     *            - the next index into the arrays that is to be matched against the
-     *            tree
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * Determine, recursively, if an string is in the address tree. The string is to
+     * be represented by an array of hashcodes where the 0th index in the array is
+     * the hashcode of the rightmost substring of the address. A substring is the
+     * characters between two periods (".") in an address. The string is also
+     * represented by an array of lengths, where the 0th index in the array is the
+     * length of the rightmost substring. If hashcodes an length match each for each
+     * entry in the arrays, with a path through the address tree, then the address
+     * is found in the tree.
+     * 
+     * @param hashcodes - array of hashcodes of the substrings of the address to
+     *                  find
+     * @param lengths   - array of lengths of the substrings of the address to find
+     * @param cell      - the current cell that is being traversed in the address
+     *                  tree
+     * @param index     - the next index into the arrays that is to be matched
+     *                  against the tree
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     private boolean findInList(int[] hashcodes, int[] lengths, FilterCellFastStr cell, int index) {
 
@@ -157,10 +151,9 @@ public class FilterListFastStr implements FilterListStr {
     }
 
     /**
-     * Add and new address to the address tree, where the new address is
-     * represented
+     * Add and new address to the address tree, where the new address is represented
      * by an Entry object.
-     *
+     * 
      * @param entry
      * @return boolean
      */
@@ -206,11 +199,9 @@ public class FilterListFastStr implements FilterListStr {
 
     /**
      * Convert a single URL address to an Entry object. The entry object will
-     * contain the hashcode array and length array of the substrings of this
-     * address
-     *
-     * @param newAddress
-     *            address to convert
+     * contain the hashcode array and length array of the substrings of this address
+     * 
+     * @param newAddress address to convert
      * @return the Entry object created from this address.
      */
     private Entry convertToEntries(String newAddress) {
@@ -220,7 +211,15 @@ public class FilterListFastStr implements FilterListStr {
             Tr.entry(tc, "convertToEntries");
         }
 
-        ba = newAddress.getBytes(StandardCharsets.ISO_8859_1);
+        try {
+            ba = newAddress.getBytes("ISO-8859-1");
+        } catch (UnsupportedEncodingException x) {
+            // should never happen, log a message and use default encoding
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "ISO-8859-1 encoding not supported.  Exception: " + x);
+            }
+            ba = newAddress.getBytes();
+        }
         int baLength = ba.length;
         int hashValue = 0;
         int hashLength = 0;
@@ -279,14 +278,14 @@ public class FilterListFastStr implements FilterListStr {
     }
 
     /**
-     * An inner class which represents an address using hashcodes and lengths of
-     * the substrings contained in the address.
+     * An inner class which represents an address using hashcodes and lengths of the
+     * substrings contained in the address.
      */
     private static class Entry {
 
         // the maximum number of substrings allowed before new arrays must
         // be created to constain the address
-        private final int incrementalSize = 100;
+        private int incrementalSize = 100;
 
         private int[] hashcodes1 = new int[incrementalSize];
         private int[] lengths1 = new int[incrementalSize];
@@ -309,7 +308,7 @@ public class FilterListFastStr implements FilterListStr {
 
         /**
          * get the current number of substrings that represent this entry
-         *
+         * 
          * @return the current number of substrings that represent this entry
          */
         public int getCurrentSize() {
@@ -318,10 +317,10 @@ public class FilterListFastStr implements FilterListStr {
 
         /**
          * get the array of hashcodes for the substrings that represent this entry
-         *
-         * @return the array of hashcodes for the substrings that represent this
-         *         entry
+         * 
+         * @return the array of hashcodes for the substrings that represent this entry
          */
+        @Trivial
         public int[] getHashcodes() {
             if (iSwitch == 1) {
                 return this.hashcodes1;
@@ -331,9 +330,10 @@ public class FilterListFastStr implements FilterListStr {
 
         /**
          * get the array of lengths for the substrings that represent this entry
-         *
+         * 
          * @return the array of lengths for the substrings that represent this entry
          */
+        @Trivial
         public int[] getLengths() {
             if (iSwitch == 1) {
                 return this.lengths1;
@@ -342,13 +342,11 @@ public class FilterListFastStr implements FilterListStr {
         }
 
         /**
-         * Add a new hashcode and length to the arrays of hashcodes and lengths for
-         * the substrings that represent this entry
-         *
-         * @param hashcode
-         *            hashcode to add
-         * @param length
-         *            length to add
+         * Add a new hashcode and length to the arrays of hashcodes and lengths for the
+         * substrings that represent this entry
+         * 
+         * @param hashcode hashcode to add
+         * @param length   length to add
          */
         public void addEntry(int hashcode, int length) {
             if (iSwitch == 1) {
@@ -390,4 +388,23 @@ public class FilterListFastStr implements FilterListStr {
 
     }
 
+    /**
+     * Create a FilterListFastStr if possible, if not fall back to FilterListStr
+     * 
+     * @param elements
+     * @return the non null, but could be empty, FilterListStr
+     */
+    public static FilterListStr create(String[] elements) {
+        FilterListStr list;
+        list = new FilterListFastStr();
+        if (elements != null) {
+            if (list.buildData(elements) == false) {
+                list = new FilterListSlowStr();
+                list.buildData(elements);
+            }
+            list.setActive(true);
+           
+        }
+        return list;
+    }
 }

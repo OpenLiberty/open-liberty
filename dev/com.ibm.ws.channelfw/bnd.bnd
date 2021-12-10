@@ -25,6 +25,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
+
+# The tcp/udp internal packages are needed by OSGi for *ChannelFactory::active
 Export-Package: com.ibm.websphere.channelfw*;-split-package:=merge-last; provide:=true, \
 	com.ibm.wsspi.channelfw*;provide:=true, \
 	com.ibm.wsspi.connmgmt;provide:=true, \

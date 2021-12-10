@@ -8,26 +8,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.tcpchannel.internal;
+package io.openliberty.accesslists.filterlist;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
- * Contains the address tree of multiple URL Addresses. This tree can then
- * be used to determine if a new address is contain in this tree. Therefore
- * this object is used to see in an Address is contained in a given list
- * of addresses. The tree is structured such that each substring between
- * periods (".") in a URL is a node of the tree. Subsequent nodes are valid
- * address paths from preceding nodes. A wildcard is allowed to be the first
- * substring in an address that is placed in the tree. For this reason, the
- * tree is built "backwards". The last substring of the URL is the first node
- * in an address path through the tree. This list is "slow" because the nodes
- * are based on the substrings and not the hashcodes of the substrings,
- * therefore
- * tree traversal is slower due to string compares.
+ * Contains the address tree of multiple URL Addresses. This tree can then be
+ * used to determine if a new address is contain in this tree. Therefore this
+ * object is used to see in an Address is contained in a given list of
+ * addresses. The tree is structured such that each substring between periods
+ * (".") in a URL is a node of the tree. Subsequent nodes are valid address
+ * paths from preceding nodes. A wildcard is allowed to be the first substring
+ * in an address that is placed in the tree. For this reason, the tree is built
+ * "backwards". The last substring of the URL is the first node in an address
+ * path through the tree. This list is "slow" because the nodes are based on the
+ * substrings and not the hashcodes of the substrings, therefore tree traversal
+ * is slower due to string compares.
  */
 public class FilterListSlowStr implements FilterListStr {
+
+    private static final TraceComponent tc = Tr.register(FilterListSlowStr.class);
 
     static final String wildCard = "*";
 
@@ -42,46 +46,48 @@ public class FilterListSlowStr implements FilterListStr {
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#setActive(boolean)
+     * @see io.openliberty.accesslists.FilterListStr#setActive(boolean)
      */
     public void setActive(boolean value) {
         this.active = value;
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#getActive()
+     * @see io.openliberty.accesslists.FilterListStr#getActive()
      */
     public boolean getActive() {
         return this.active;
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#buildData(String[])
+     * @see io.openliberty.accesslists.FilterListStr#buildData(String[])
      */
     public boolean buildData(String[] data) {
         final int length = data.length;
 
         for (int i = 0; i < length; i++) {
             addAddressToList(data[i]);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "host added to list: " + data[i]);
+            }
         }
 
         return true;
     }
 
     /*
-     * @see com.ibm.ws.tcpchannel.internal.FilterListStr#findInList(String)
+     * @see io.openliberty.accesslists.FilterListStr#findInList(String)
      */
     public boolean findInList(String address) {
         return (findInList(convertToArray(address)));
     }
 
     /**
-     * convert an address to a string array, where each level in the array
-     * represent a substring between two periods (".") of the address.
-     * The rightmost substring will be at index 0, and so on.
+     * convert an address to a string array, where each level in the array represent
+     * a substring between two periods (".") of the address. The rightmost substring
+     * will be at index 0, and so on.
      * 
-     * @param newAddress
-     *            the address to convert
+     * @param newAddress the address to convert
      * @return the String array representing the substrings of the address
      */
     private String[] convertToArray(String newAddress) {
@@ -111,8 +117,7 @@ public class FilterListSlowStr implements FilterListStr {
     /**
      * Add a new address to the address tree.
      * 
-     * @param newAddress
-     *            to add
+     * @param newAddress to add
      */
     private void addAddressToList(String newAddress) {
         putInList(convertToArray(newAddress));
@@ -122,11 +127,9 @@ public class FilterListSlowStr implements FilterListStr {
      * Add and new address to the address tree, where the new address is formatted
      * as a string array. The 0th index of the array is the rightmost substring of
      * the string and so on. Each substring is the chars between two periods (".")
-     * in
-     * a URL address. The last index in the array may be a wildcard ("*").
+     * in a URL address. The last index in the array may be a wildcard ("*").
      * 
-     * @param address
-     *            String array representation of the address, as described above
+     * @param address String array representation of the address, as described above
      */
     private void putInList(String[] address) {
         FilterCellSlowStr currentCell = firstCell;
@@ -157,15 +160,12 @@ public class FilterListSlowStr implements FilterListStr {
     /**
      * Determine if an address is in the address tree
      * 
-     * @param address
-     *            address to look for
-     *            as a string array. The 0th index of the array is the rightmost
-     *            substring of
-     *            the string and so on. Each substring is the chars between two
-     *            periods (".") in
-     *            a URL address.
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address address to look for as a string array. The 0th index of the
+     *                array is the rightmost substring of the string and so on. Each
+     *                substring is the chars between two periods (".") in a URL
+     *                address.
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     private boolean findInList(String[] address) {
         return findInList(address, 0, firstCell, (address.length - 1));
@@ -174,19 +174,16 @@ public class FilterListSlowStr implements FilterListStr {
     /**
      * Determine, recursively, if an address is in the address tree.
      * 
-     * @param address
-     *            address to look for as a string array.
-     *            The 0th index of the array is the rightmost substring of
-     *            the string and so on. Each substring is the chars between
-     *            two periods (".") in a URL address.
-     * @param index
-     *            the next index in the address array to match against the tree.
-     * @param cell
-     *            the current cell in the tree that we are matching against
-     * @param endIndex
-     *            the last index in the address array that we need to match
-     * @return true if this address is found in the address tree, false if
-     *         it is not.
+     * @param address  address to look for as a string array. The 0th index of the
+     *                 array is the rightmost substring of the string and so on.
+     *                 Each substring is the chars between two periods (".") in a
+     *                 URL address.
+     * @param index    the next index in the address array to match against the
+     *                 tree.
+     * @param cell     the current cell in the tree that we are matching against
+     * @param endIndex the last index in the address array that we need to match
+     * @return true if this address is found in the address tree, false if it is
+     *         not.
      */
     private boolean findInList(String[] address, int index, FilterCellSlowStr cell, int endIndex) {
 

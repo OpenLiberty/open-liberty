@@ -24,8 +24,7 @@ WS-TraceGroup: ChannelFramework
 # for the exported API.
 Export-Package: \
 	io.openliberty.accesslists;provide:=true, \
-	com.ibm.ws.tcpchannel.internal;-split-package:=merge-last;provide:=true, \
-	com.ibm.ws.udpchannel.internal;-split-package:=merge-last;provide:=true
+	io.openliberty.accesslists.filterlist;provide:=true
 
 Import-Package: \
 	com.ibm.ws.bytebuffer.internal, \
