@@ -161,9 +161,10 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             }
             builderDelegate.providerFactory(localProviderFactory);
         }
-        if (getBeanManager() != null) {
+        BeanManager beanManager = getBeanManager();
+        if (beanManager != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory(getBeanManager()));
+                    .setInjectorFactory(new CdiInjectorFactory(beanManager));
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 
@@ -814,6 +815,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     ResteasyClientBuilder getBuilderDelegate() {
         return builderDelegate;
     }
+
     private static BeanManager getBeanManager() {
         try {
             CDI<Object> current = CDI.current();
@@ -862,18 +864,18 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
                     if (FT_ANNO_CLASS != null && containsFTannotation(methodBindings)) {
                         methodBindings.add(getFTAnnotation());
                     }
-                    Annotation[] interceptorBindings = merge(methodBindings, classBindings);
+                    Annotation[] mpFTInterceptorBindings = mergeToFTAnnos(methodBindings, classBindings);
 
-                    List<Interceptor<?>> interceptors =
+                    List<Interceptor<?>> mpFTInterceptors = mpFTInterceptorBindings.length == 0 ? Collections.emptyList() :
                                     new ArrayList<>(beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, 
-                                                                                    interceptorBindings));
+                                                                                    mpFTInterceptorBindings));
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Resolved interceptors from beanManager, " + beanManager + ":" + interceptors);
+                        LOGGER.debug("Resolved interceptors from beanManager, " + beanManager + ":" + mpFTInterceptors);
                     }
 
-                    if (!interceptors.isEmpty()) {
+                    if (!mpFTInterceptors.isEmpty()) {
                         List<InterceptorInvoker> chain = new ArrayList<>();
-                        for (Interceptor<?> interceptor : interceptors) {
+                        for (Interceptor<?> interceptor : mpFTInterceptors) {
                             chain.add(new InterceptorInvoker(
                                           interceptor, 
                                           interceptorInstances.computeIfAbsent(interceptor, 
@@ -891,12 +893,17 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
 
     private static boolean containsFTannotation(List<Annotation> interceptorBindings) {
         for (Annotation anno : interceptorBindings) {
-            String className = anno.annotationType().getName();
-            if (className.startsWith("org.eclipse.microprofile.faulttolerance")) {
+            if (isMPFTAnnotation(anno)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static boolean isMPFTAnnotation(Annotation anno) {
+        String className = anno.annotationType().getName();
+        return className.startsWith("org.eclipse.microprofile.faulttolerance")
+            || className.equals("com.ibm.ws.microprofile.faulttolerance.cdi.FaultTolerance");
     }
 
     private static Annotation getFTAnnotation() {
@@ -910,9 +917,6 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     }
 
     private static List<Annotation> getBindings(Set<Annotation> annotations, BeanManager beanManager) {
-        if (annotations == null || annotations.isEmpty()) {
-            return Collections.emptyList();
-        }
         List<Annotation> bindings = new ArrayList<>();
         for (Annotation annotation : annotations) {
             if (beanManager.isInterceptorBinding(annotation.annotationType())) {
@@ -922,7 +926,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         return bindings;
     }
 
-    private static Annotation[] merge(List<Annotation> methodBindings, List<Annotation> classBindings) {
+    private static Annotation[] mergeToFTAnnos(List<Annotation> methodBindings, List<Annotation> classBindings) {
         Set<Class<? extends Annotation>> types = methodBindings.stream()
                                                                .map(a -> a.annotationType())
                                                                .collect(Collectors.toSet());
@@ -932,7 +936,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
                 merged.add(annotation);
             }
         }
-        return merged.toArray(new Annotation[] {});
+        return merged.stream().filter(LibertyRestClientBuilderImpl::isMPFTAnnotation).collect(Collectors.toList()).toArray(new Annotation[] {});
     }
 
     private final MpClientBuilderImpl builderDelegate;
