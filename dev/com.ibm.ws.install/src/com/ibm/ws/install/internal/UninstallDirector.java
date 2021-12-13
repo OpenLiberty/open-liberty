@@ -152,9 +152,11 @@ class UninstallDirector extends AbstractDirector {
     }
 
     /**
-     * @param baseDirs
-     * @param uninstallAsset
-     * @throws InstallException
+     *
+     * @param uninstallAsset the uninstall asset to derive a base directory from
+     * @param baseDir        the base directory of the uninstallAsset
+     * @return the uninstallAsset's base directory derived from the asset and appended to baseDir. For example, if the uninstallAsset location is dev/spi/ibm and baseDir is
+     *         /opt/IBM/WebSphere/AppServer, this will return 'Set[/opt/IBM/WebSphere/AppServer/dev]' iff the path exists, an empty Set otherwise.
      */
     private Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset, File baseDir) {
 
@@ -174,9 +176,9 @@ class UninstallDirector extends AbstractDirector {
     }
 
     /**
-     * @param uninstallAsset
-     * @param resourceFilter
-     * @return
+     * @param uninstallAsset the asset to process for relevant location data
+     * @return a set of strings that are the location data derived from uninstallAsset. This set my be empty if the asset is not BUNDLE_TYPE, JAR_TYPE, BOOT_JAR_TYPE or FILE_TYPE.
+     *         It could also be empty if the getLocation() call returns null or an empty string.
      */
     private Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
         final List<SubsystemContentType> resourceFilter = Arrays.asList(SubsystemContentType.BUNDLE_TYPE, SubsystemContentType.JAR_TYPE, SubsystemContentType.BOOT_JAR_TYPE,
@@ -186,9 +188,10 @@ class UninstallDirector extends AbstractDirector {
     }
 
     /**
-     * @param baseDir
-     * @param location
-     * @return
+     *
+     * @param locString the location string to parse, may be null.
+     * @return the first child directory specified in the locString. For example, if the locString is bin/tools/tools.zip, this method will return 'bin'.
+     *
      */
     private List<String> getFirstChildSubdirectoryFromLocations(String locString) {
         List<String> subdirectories = new ArrayList<>();
@@ -197,6 +200,10 @@ class UninstallDirector extends AbstractDirector {
             for (String loc : locs) {
                 File fle = new File(loc);
                 String fileStr = fle.toString();
+                // skip a leading separator
+                if (fileStr.charAt(0) == File.separatorChar) {
+                    fileStr = fileStr.substring(1);
+                }
                 int index = fileStr.indexOf(File.separator);
                 if (index > 0) {
                     fileStr = fileStr.substring(0, fileStr.indexOf(File.separator));
