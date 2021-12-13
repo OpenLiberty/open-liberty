@@ -51,7 +51,9 @@ public class DSErrorServlet extends FATServlet {
             //
             // javax.naming.NameNotFoundException: Intermediate context does not
             // exist: jdbc/doesnotexist.
-            if (s.contains("CWNEN1001E:") && s.contains("CWWJP0013E:") && s.contains("NameNotFoundException:")) {
+            if (s.contains("CWNEN1001E:") &&
+                ((s.contains("CWWJP0013E:") && s.contains("NameNotFoundException:")) ||
+                 (s.contains("The object referenced by the java:comp/env/jpa/pu JNDI name could not be instantiated.")))) {
                 System.out.println("Caught expected error: " + e);
             } else {
                 throw e;

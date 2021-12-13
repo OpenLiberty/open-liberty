@@ -50,6 +50,6 @@ public class JPADSErrorTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWJP0015E");
+        server.stopServer("CWWJP0015E", "CWNEN0035E", "CWWJP0029E");
     }
 }
