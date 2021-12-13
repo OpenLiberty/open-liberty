@@ -116,6 +116,9 @@ public class HandlerChainTest {
         // Uninstall Applications
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
 
+        // Make server wait for application stop for the test to observe PreDestroy phase
+        //server.waitForStringInLog("CWWKE1101I");
+        
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
@@ -123,10 +126,10 @@ public class HandlerChainTest {
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
         // Test initParams
-        assertStatesExisted(".*init param \"arg0\" = testInitParam");
+        assertStatesExsited(".*init param \"arg0\" = testInitParam");
 
         // Test postConstruct and preDestroy
-        assertStatesExisted(new String[] {
+        assertStatesExsited(new String[] {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
@@ -161,7 +164,7 @@ public class HandlerChainTest {
         }
     }
 
-    private void assertStatesExisted(String... states) {
+    private void assertStatesExsited(String... states) {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {

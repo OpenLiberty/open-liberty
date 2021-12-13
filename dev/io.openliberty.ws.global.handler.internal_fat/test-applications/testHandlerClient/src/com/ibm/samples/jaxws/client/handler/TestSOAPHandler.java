@@ -11,6 +11,7 @@
 package com.ibm.samples.jaxws.client.handler;
 
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -19,7 +20,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import java.util.logging.Logger;
 /**
  *
  */
@@ -27,18 +27,15 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
     @Resource(name = "soapArg0")
     private String initParam;
 
-    private static final java.util.logging.Logger LOG = Logger.getLogger(TestSOAPHandler.class.getName());
-    
     @PostConstruct
     public void initialize() {
-        Log(": init param \"soapArg0\" = " + initParam);
-        Log(": postConstruct is invoked");
-        
+        System.out.println(this.getClass().getName() + ": init param \"soapArg0\" = " + initParam);
+        System.out.println(this.getClass().getName() + ": postConstruct is invoked");
     }
 
     @PreDestroy
     public void shutdown() {
-        Log(": PreDestroy is invoked");
+        System.out.println(this.getClass().getName() + ": PreDestroy is invoked");
     }
 
     /*
@@ -51,11 +48,10 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
         boolean isOut = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (!isOut) {
-            Log(": handle inbound message");
+            System.out.println(this.getClass().getName() + ": handle inbound message");
         } else {
-            Log(": handle outbound message");
+            System.out.println(this.getClass().getName() + ": handle outbound message");
         }
-        
         return true;
     }
 
@@ -66,7 +62,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
      */
     @Override
     public boolean handleFault(SOAPMessageContext context) {
-        Log(": handle fault message");
+        System.out.println(this.getClass().getName() + ": handle fault message");
         return true;
     }
 
@@ -77,7 +73,8 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
      */
     @Override
     public void close(MessageContext context) {
-        Log(" is closed");
+        System.out.println(this.getClass().getName() + " is closed");
+
     }
 
     /*
@@ -88,10 +85,6 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
     @Override
     public Set<QName> getHeaders() {
         return null;
-    }
-    
-    private void Log(String message) {
-        LOG.info(this.getClass().getName() + message);
     }
 
 }
