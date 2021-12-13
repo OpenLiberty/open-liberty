@@ -17,10 +17,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
@@ -146,6 +148,11 @@ public class ManagedExecutorExtension implements CompletionStageExecutor, Manage
     @Override
     public final boolean isTerminated() {
         return ((ExecutorService) executor).isTerminated();
+    }
+
+    @Override
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

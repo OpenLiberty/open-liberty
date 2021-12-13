@@ -36,6 +36,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
@@ -609,6 +610,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             return getNormalPolicyExecutor().isTerminated();
         else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
             throw new IllegalStateException(new UnsupportedOperationException("isTerminated"));
+    }
+
+    @Override
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation) {
+        return new AsyncMethod<>(invoker, invocation, this);
     }
 
     @Override

@@ -12,12 +12,9 @@ package io.openliberty.concurrent.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.annotation.Priority;
@@ -29,13 +26,10 @@ import javax.naming.NamingException;
 import javax.transaction.Transactional;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.enterprise.concurrent.AbortedException;
 import jakarta.enterprise.concurrent.Asynchronous;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Asynchronous
 @Interceptor
@@ -45,8 +39,8 @@ public class AsyncInterceptor implements Serializable {
 
     @AroundInvoke
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
-    public Object intercept(InvocationContext context) throws Exception {
-        Method method = context.getMethod();
+    public Object intercept(InvocationContext invocation) throws Exception {
+        Method method = invocation.getMethod();
         validateTransactional(method);
         if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
             throw new UnsupportedOperationException("@Asynchronous " + method.getDeclaringClass()); // TODO NLS?
@@ -60,7 +54,7 @@ public class AsyncInterceptor implements Serializable {
             && !returnType.equals(Void.TYPE)) // void
             throw new UnsupportedOperationException("@Asynchronous " + returnType.getName() + " " + method.getName()); // TODO NLS?
 
-        ManagedExecutorService executor;
+        WSManagedExecutorService executor;
         try {
             executor = InitialContext.doLookup(anno.executor());
         } catch (ClassCastException x) {
@@ -69,17 +63,44 @@ public class AsyncInterceptor implements Serializable {
             throw new RejectedExecutionException(x);
         }
 
-        // TODO allow join and untimed get to run the method inline if not already started?
-        AsyncMethod asyncMethod = new AsyncMethod(executor, context);
-        Future<?> policyTaskFuture = executor.submit(asyncMethod, asyncMethod);
-        // If caller cancels the future, cancel the policy executor task that will run it
-        // TODO - should this action be taken whenever completed prematurely?
-        asyncMethod.future.exceptionally(failure -> { // TODO this doesn't need thread context overhead
-            if (failure instanceof CancellationException)
-                policyTaskFuture.cancel(true);
-            return null;
-        });
-        return asyncMethod.future;
+        return executor.newAsyncMethod(this::invoke, invocation);
+    }
+
+    /**
+     * Invokes the asynchronous method either on a thread from the managed executor, or possibly
+     * inline in response to a join or untimed get.
+     *
+     * @param <T>        type of result.
+     * @param invocation interceptor's invocation context.
+     * @param future     CompletableFuture that will be returned to the caller of the asynchronous method.
+     * @return the same future that will be returned to the caller of the asynchronous method.
+     */
+    @FFDCIgnore(Throwable.class) // errors raised by an @Asynchronous method implementation
+    public <T> CompletableFuture<T> invoke(InvocationContext invocation, CompletableFuture<T> future) {
+        Asynchronous.Result.setFuture(future);
+        try {
+            Object returnVal = invocation.proceed();
+            if (returnVal != future)
+                if (returnVal == null) {
+                    future.complete(null);
+                } else { // returnVal must be CompletionStage or CompletableFuture per prior validation
+                    @SuppressWarnings("unchecked")
+                    CompletionStage<T> stage = (CompletionStage<T>) returnVal;
+                    stage.whenComplete((result, failure) -> { // TODO inefficient if a ManagedCompletableFuture
+                        if (failure == null)
+                            future.complete(result);
+                        else
+                            future.completeExceptionally(failure);
+                    });
+                }
+        } catch (Throwable x) {
+            if (x instanceof CompletionException && x.getCause() != null)
+                x = x.getCause();
+            future.completeExceptionally(x);
+        } finally {
+            Asynchronous.Result.setFuture(null);
+        }
+        return future;
     }
 
     /**
@@ -88,6 +109,7 @@ public class AsyncInterceptor implements Serializable {
      * @param method annotated method.
      * @throws UnsupportedOperationException for unsupported combinations.
      */
+    @Trivial
     private static void validateTransactional(Method method) throws UnsupportedOperationException {
         Transactional tx = method.getAnnotation(Transactional.class);
         if (tx == null)
@@ -100,87 +122,5 @@ public class AsyncInterceptor implements Serializable {
                 default:
                     throw new UnsupportedOperationException("@Asynchronous @Transactional(" + tx.value().name() + ")");
             }
-    }
-
-    private static class AsyncMethod implements Runnable, ManagedTask, ManagedTaskListener {
-        private final Map<String, String> execProps;
-        private final CompletableFuture<Object> future;
-        private final InvocationContext invocation;
-
-        @Trivial
-        private AsyncMethod(ManagedExecutorService executor, InvocationContext invocation) throws Exception {
-            execProps = Collections.singletonMap(ManagedTask.IDENTITY_NAME, "@Asynchronous " + invocation.getMethod().getName());
-            future = executor.newIncompleteFuture();
-            this.invocation = invocation;
-        }
-
-        @Override
-        @Trivial
-        public Map<String, String> getExecutionProperties() {
-            return execProps;
-        }
-
-        @Override
-        @Trivial
-        public ManagedTaskListener getManagedTaskListener() {
-            return this;
-        }
-
-        /**
-         * Runs the asynchronous method.
-         */
-        @FFDCIgnore(Throwable.class) // application errors are raised directly to the application
-        @Override
-        public void run() {
-            Asynchronous.Result.setFuture(future);
-            try {
-                Object returnVal = invocation.proceed();
-                if (returnVal != future)
-                    if (returnVal instanceof CompletionStage) { // which includes CompletableFuture
-                        @SuppressWarnings("unchecked")
-                        CompletionStage<Object> stage = (CompletionStage<Object>) returnVal;
-                        stage.whenComplete((result, failure) -> {
-                            if (failure == null)
-                                future.complete(result);
-                            else
-                                future.completeExceptionally(failure);
-                        });
-                    } else if (returnVal == null) {
-                        future.complete(null);
-                    } else { // returned object is not a CompletionStage or CompletableFuture
-                        throw new UnsupportedOperationException("@Asynchronous with result type " + returnVal.getClass().getName());
-                    }
-            } catch (Throwable x) {
-                future.completeExceptionally(x);
-                // TODO when is setRollbackOnly appropriate?
-            } finally {
-                Asynchronous.Result.setFuture(null);
-            }
-        }
-
-        /**
-         * Complete the future exceptionally if the task is aborted.
-         */
-        @Override
-        public void taskAborted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
-            if (exception instanceof AbortedException && exception.getCause() != null)
-                exception = new CancellationException(exception.getMessage()).initCause(exception.getCause());
-            future.completeExceptionally(exception);
-        }
-
-        @Override
-        @Trivial
-        public void taskDone(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task, Throwable exception) {
-        }
-
-        @Override
-        @Trivial
-        public void taskStarting(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
-        }
-
-        @Override
-        @Trivial
-        public void taskSubmitted(Future<?> policyTaskFuture, ManagedExecutorService executor, Object task) {
-        }
     }
 }

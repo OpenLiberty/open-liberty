@@ -121,7 +121,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
      */
-    private static final Map<String, String> XPROPS_SUSPEND_TRAN = new TreeMap<String, String>();
+    static final Map<String, String> XPROPS_SUSPEND_TRAN = new TreeMap<String, String>();
     static {
         XPROPS_SUSPEND_TRAN.put("jakarta.enterprise.concurrent.TRANSACTION", "SUSPEND");
         XPROPS_SUSPEND_TRAN.put("javax.enterprise.concurrent.TRANSACTION", "SUSPEND");
@@ -161,7 +161,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Reference is null when the action cannot be async.
      * Value is null when an async action has not yet been submitted.
      */
-    private final AtomicReference<Future<?>> futureRef;
+    final AtomicReference<Future<?>> futureRef;
 
     /**
      * Stores a futureRef value to use during construction of a ManagedCompletableFuture.
@@ -1241,7 +1241,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
      */
-    private static final void rejectManagedTask(Object action) {
+    @Trivial
+    static final void rejectManagedTask(Object action) {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
     }
@@ -1419,7 +1420,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @throws UnsupportedOperation if the executor is incapable of running tasks.
      */
     @Trivial
-    private final static FutureRefExecutor supportsAsync(Executor executor) {
+    final static FutureRefExecutor supportsAsync(Executor executor) {
         if (executor instanceof ExecutorService)
             return new FutureRefExecutor((ExecutorService) executor); // valid
         if (executor instanceof UnusableExecutor)
