@@ -51,7 +51,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     private static final Set<String> APP_NAMES = Collections.singleton(APP_DEFAULT); // jcacheApp not included because it isn't normally configured
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
-    private static final int seconds = 5;
+    private static final int seconds = 10;
 
     private static String[] cleanupList = EMPTY_RECYCLE_LIST;
 
@@ -355,7 +355,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         int start = response.indexOf("session id: [") + 13;
         String sessionId = response.substring(start, response.indexOf(']', start));
 
-        // Due to TIME_BASED_WRITE, the value should be written to cache some time within the next 5 seconds. Poll for it,
+        // Due to TIME_BASED_WRITE, the value should be written to cache some time within the next 10 seconds. Poll for it,
         run("testPollCache&attribute=testWriteFrequency&value=" + newValue + "&sessionId=" + sessionId,
             null); // Avoid having the servlet access the session here because this will block 5 cycles of the time based write.
 
