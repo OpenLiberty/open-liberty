@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -109,25 +106,18 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
             Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                baseDirs.add(engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()));
+                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             }
-            System.out.println("BaseDirs: " + Arrays.toString(baseDirs.toArray()));
-            Instant start = Instant.now();
             for (File baseDir : baseDirs) {
                 try {
                     List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
-                    System.out.println("Paths from BaseDir size = " + allPathsFromBaseDir.size());
-                    StringJoiner sj = new StringJoiner(",");
                     for (Path path : allPathsFromBaseDir) {
-                        sj.add(path.toString());
                         InstallUtils.isFileLocked("ERROR_UNINSTALL_FEATURE_FILE_LOCKED", path.toString(), path.toFile());
                     }
-                    System.out.println("Paths checked for locks: [" + sj.toString() + "]");
                 } catch (IOException e) {
                     throw ExceptionUtils.create(e);
                 }
             }
-            System.out.println("Lock check took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
         }
 
         // proceed to uninstall
@@ -159,6 +149,62 @@ class UninstallDirector extends AbstractDirector {
                     InstallUtils.deleteDirectory(f);
             }
         }
+    }
+
+    /**
+     * @param baseDirs
+     * @param uninstallAsset
+     * @throws InstallException
+     */
+    private Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset, File baseDir) {
+
+        Set<File> baseDirs = new HashSet<>();
+
+        Set<String> assetLocations = getAssetLocations(uninstallAsset);
+        for (String assetLocation : assetLocations) {
+            List<String> subDirs = getFirstChildSubdirectoryFromLocations(assetLocation);
+            for (String subDir : subDirs) {
+                File base = new File(baseDir + File.separator + subDir);
+                if (base.exists()) {
+                    baseDirs.add(base);
+                }
+            }
+        }
+        return baseDirs;
+    }
+
+    /**
+     * @param uninstallAsset
+     * @param resourceFilter
+     * @return
+     */
+    private Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
+        final List<SubsystemContentType> resourceFilter = Arrays.asList(SubsystemContentType.BUNDLE_TYPE, SubsystemContentType.JAR_TYPE, SubsystemContentType.BOOT_JAR_TYPE,
+                                                                        SubsystemContentType.FILE_TYPE);
+        return uninstallAsset.getProvisioningFeatureDefinition().getConstituents(null).stream().filter(s -> resourceFilter.contains(s.getType())
+                                                                                                            && s.getLocation() != null).map(s -> s.getLocation()).collect(Collectors.toSet());
+    }
+
+    /**
+     * @param baseDir
+     * @param location
+     * @return
+     */
+    private List<String> getFirstChildSubdirectoryFromLocations(String locString) {
+        List<String> subdirectories = new ArrayList<>();
+        if (locString != null) {
+            String[] locs = locString.contains(",") ? locString.split(",") : new String[] { locString };
+            for (String loc : locs) {
+                File fle = new File(loc);
+                String fileStr = fle.toString();
+                int index = fileStr.indexOf(File.separator);
+                if (index > 0) {
+                    fileStr = fileStr.substring(0, fileStr.indexOf(File.separator));
+                }
+                subdirectories.add(fileStr);
+            }
+        }
+        return subdirectories;
     }
 
     void uninstall(Collection<String> ids, boolean force) throws InstallException {
