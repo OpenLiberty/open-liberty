@@ -45,6 +45,7 @@ import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -906,8 +907,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "createContainerEMF properties:" + this.toString());
-            Tr.debug(tc, "createContainerEMF integration-properties:" +
-                         integrationProperties);
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            for (Map.Entry<String, Object> entry : integrationProperties.entrySet()) {
+                if (AbstractJPAComponent.isPassword(entry.getKey())) {
+                    props.put(entry.getKey(), new ProtectedString(entry.getValue().toString().toCharArray()).toString());
+                } else {
+                    props.put(entry.getKey(), entry.getValue());
+                }
+            }
+            Tr.debug(tc, "createContainerEMF integration-properties: {0}", props);
         }
 
         EntityManagerFactory emfactory;

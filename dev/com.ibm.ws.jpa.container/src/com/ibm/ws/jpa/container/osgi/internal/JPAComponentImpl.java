@@ -46,9 +46,11 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
@@ -89,6 +91,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.resource.ResourceBindingListener;
@@ -205,6 +208,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         }
     }
 
+    @Sensitive
     private void setDefaultProperties(Dictionary<String, Object> properties) {
         // Look for default integration-level properties
         Map<String, String> dProperties = new HashMap<String, String>();
@@ -212,12 +216,29 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         while (defaultPropertiesIndex >= 0) {
             String name = (String) properties.get(DEFAULT_PROPS_PREFIX + defaultPropertiesIndex + DEFAULT_PROPS_NAME);
             if (name != null) {
-                String value = (String) properties.get(DEFAULT_PROPS_PREFIX + defaultPropertiesIndex + DEFAULT_PROPS_VALUE);
-                if (name.length() > 0 && value != null && value.length() > 0) {
-                    dProperties.put(name, value);
+                // See metatype: 'ibm:obscure="true"'
+                SerializableProtectedString value = (SerializableProtectedString) properties.get(DEFAULT_PROPS_PREFIX + defaultPropertiesIndex + DEFAULT_PROPS_VALUE);
+
+                if (value != null) {
+                    if (!name.isEmpty() && !value.isEmpty()) {
+                        // Convert to java.lang.String to pass the value to the persistence providers
+                        String ovalue = new String(value.getChars());
+                        if (name.contains("persistence.jdbc")) {
+                            if (AbstractJPAComponent.isPassword(name)) {
+                                Tr.warning(tc, "JDBC_PROP_NAME_CWWJP0057W", name, value.toString());
+                            } else {
+                                Tr.warning(tc, "JDBC_PROP_NAME_CWWJP0057W", name, ovalue);
+                            }
+                        } else {
+                            dProperties.put(name, ovalue);
+                        }
+                    } else {
+                        Tr.warning(tc, "EMPTY_PROP_NAME_VALUE_CWWJP0056W", name, new String(value.getChars()));
+                    }
                 } else {
-                    Tr.warning(tc, "EMPTY_PROP_NAME_VALUE_CWWJP0056W", name, value);
+                    Tr.warning(tc, "EMPTY_PROP_NAME_VALUE_CWWJP0056W", name, null);
                 }
+
                 defaultPropertiesIndex++;
             } else {
                 defaultPropertiesIndex = -1;
@@ -656,11 +677,21 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
     /** {@inheritDoc} */
     @Override
-    public void addDefaultProperties(Map<String, Object> persistenceProperties) {
+    public void addDefaultProperties(@Sensitive Map<String, Object> persistenceProperties) {
         if (this.defaultProps != null) {
             persistenceProperties.putAll(defaultProps);
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "addDefaultProperties props: {0}", defaultProps);
+                Map<String, Object> props = new HashMap<String, Object>();
+                for (Map.Entry<String, String> entry : defaultProps.entrySet()) {
+                    if (AbstractJPAComponent.isPassword(entry.getKey())) {
+                        props.put(entry.getKey(), new ProtectedString(entry.getValue().toCharArray()).toString());
+                    } else {
+                        props.put(entry.getKey(), entry.getValue());
+                    }
+                }
+
+                Tr.debug(tc, "addDefaultProperties props: {0}", props);
             }
         }
     }
@@ -1016,6 +1047,11 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         Enumeration<String> keysEnum = props.keys();
         while (keysEnum.hasMoreElements()) {
             String key = keysEnum.nextElement();
+
+            if (key.contains("defaultProperties")) {
+                break;
+            }
+
             Object o = props.get(key);
             if (o != null && o.getClass().isArray()) {
                 out.print("  " + key + " = [ ");
@@ -1042,7 +1078,11 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         out.println("Default Properties:");
         if (defaultProps != null) {
             for (Map.Entry<String, String> entry : defaultProps.entrySet()) {
-                out.println("  " + entry.getKey() + " = " + entry.getValue());
+                if (AbstractJPAComponent.isPassword(entry.getKey())) {
+                    out.println("  " + entry.getKey() + " = " + new ProtectedString(entry.getValue().toCharArray()).toString());
+                } else {
+                    out.println("  " + entry.getKey() + " = " + entry.getValue().toString());
+                }
             }
         }
         out.println();

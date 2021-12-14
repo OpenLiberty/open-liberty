@@ -93,7 +93,8 @@
  
   <OCD id="com.ibm.ws.jpacomponent.defaultProperties.property" name="%default.properties.property" description="%default.properties.property.desc" ibm:beta="true" >
     <AD id="name" required="false" type="String" default="" name="%default.properties.property.name" description="%default.properties.property.name.desc" ibm:beta="true"/>
-    <AD id="value" required="false" type="String" default="" name="%default.properties.property.value" description="%default.properties.property.value.desc" ibm:beta="true"/>
+    <!-- The value may contain a password, so we need to obscure trace. JPAComponent trace will log the values -->
+    <AD id="value" required="false" type="String" default="" name="%default.properties.property.value" description="%default.properties.property.value.desc" ibm:obscure="true" ibm:beta="true"/>
   </OCD>
 
 </metatype:MetaData>
