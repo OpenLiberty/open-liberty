@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Export-Package: com.ibm.ws.userbundle5.myhandler
+Bundle-Version: 1.0.0.201311011655
+Bundle-Name: TestHandler5
+Bundle-Activator: com.ibm.ws.userbundle5.myhandler.MyActivitor5
+Bundle-ManifestVersion: 2
+Import-package: com.ibm.wsspi.webservices.handler,javax.servlet.http;resolution:=optional,javax.xml.ws.handler;resolution:=optional,
+ javax.xml.ws.handler.soap;resolution:=optional,javax.xml.soap;resolution:=optional,javax.xml.ws;resolution:=optional,
+ org.w3c.dom,org.osgi.framework,javax.xml.namespace,javax.xml.transform,javax.xml.transform.dom
+DynamicImport-Package: jakarta.servlet.http, jakarta.xml.ws.handler,jakarta.xml.ws.handler.soap,jakarta.xml.soap,jakarta.xml.ws
+Bundle-SymbolicName: TestHandler5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

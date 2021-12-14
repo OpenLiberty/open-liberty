@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>pages-3.0</feature>
+        <!--  <feature>globalWebservicesHandler-1.0</feature> -->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <logging traceSpecification="*=info:logservice=all:app.manager=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>
