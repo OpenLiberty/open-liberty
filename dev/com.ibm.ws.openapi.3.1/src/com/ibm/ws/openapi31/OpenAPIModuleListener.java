@@ -116,6 +116,7 @@ public class OpenAPIModuleListener implements ModuleMetaDataListener, VirtualHos
 
     @Deactivate
     protected void deactivate(ComponentContext context, int reason) {
+        cancelScheduler();
         executorServiceRef.deactivate(context);
         this.context = null;
     }
