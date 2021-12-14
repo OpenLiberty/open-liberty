@@ -93,41 +93,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * @return The keys of all available forbidden properties resources.
      */
     private static Set<String> loadForbidden() {
-        // Note: The load is within the class path of the application class loader,
-        // the load is *not* within the class path of the application.
-        Enumeration<URL> forbiddenURLs;
-        try {
-            forbiddenURLs = AppClassLoader.class.getClassLoader().getResources(FORBIDDEN_PROPERTIES);
-        } catch ( IOException e ) {
-            // AutoFFDC
-            return Collections.emptySet();
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loading forbidden.properties");
         }
-
         Set<String> forbidden = new HashSet<>();
-
-        Properties props = new Properties();            
-
-        while ( forbiddenURLs.hasMoreElements() ) {
-            URL forbiddenURL = forbiddenURLs.nextElement();
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                Tr.debug(tc, "Loading forbidden " + forbiddenURL);
-            }
-
-            try ( InputStream inputStream = forbiddenURL.openStream() ) {
-                props.load(inputStream);
-            } catch ( IOException e ) {
-                // AutoFFDC
-            }
-
-            for ( Object className : props.keySet() ) {
-                forbidden.add( (String) className );
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, "Forbidden " + className);
-                }
-            }
-            props.clear();
+        try (InputStream inputStream = AppClassLoader.class.getResourceAsStream(FORBIDDEN_PROPERTIES)) {
+            Properties props = new Properties();
+            props.load(inputStream);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Map<String, String> castProps = (Map) props;
+            forbidden.addAll(castProps.keySet());
+        } catch (IOException e) {
+            // AutoFFDC
         }
 
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loaded Forbidden Set" + forbidden);
+        }
         return forbidden;
     }    
 
@@ -620,7 +602,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
             throw new ClassNotFoundException(name);
         }
-        
+
         ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
         try {
