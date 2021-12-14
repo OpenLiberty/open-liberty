@@ -64,4 +64,3 @@ instrument.classesExcludes: com/ibm/ws/security/registry/internal/resources/*.cl
 	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.kernel.boot;version=latest
 
-IBM-Test-Fixes:OLGH15145
