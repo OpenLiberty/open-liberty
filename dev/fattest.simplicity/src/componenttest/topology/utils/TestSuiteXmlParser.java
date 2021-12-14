@@ -16,6 +16,8 @@ import java.util.Scanner;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestSuiteXmlParser extends DefaultHandler {
 
@@ -23,6 +25,7 @@ public class TestSuiteXmlParser extends DefaultHandler {
     private static final String TEST_CASE = "testcase";
     private static final String ERROR = "error";
     private static final String FAILURE = "failure";
+    private static final String PROPERTY = "property";
 
     private TestSuiteResult currentSuite = null;
     private TestCaseResult currentCase = null;
@@ -74,4 +77,23 @@ public class TestSuiteXmlParser extends DefaultHandler {
                 break;
         }
     }
+
+    @Override
+    public void endElement(String uri, String lName, String qName) throws SAXException {
+        switch (qName) {
+            case TEST_SUITE:
+                currentSuite = null;
+                break;
+            case TEST_CASE:
+                currentCase = null;
+                break;
+            case ERROR:
+                //Empty
+                break;
+            case FAILURE:
+                //Empty
+                break;
+        }
+    }
+
 }
