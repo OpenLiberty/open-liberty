@@ -622,14 +622,21 @@ public class FeatureUtility {
     }
 
     /**
-     * Extracts the feature name and version from an ESA filepath. Example:
-     * extractFeature(appSecurity-3.0-19.0.0.8.esa) returns appSecurity-3.0
-     * 
-     * @param filename
-     * @return
-     */
+	 * Extracts the feature name from an ESA filepath. Example:
+	 * extractFeature(appSecurity-3.0-19.0.0.8.esa) returns appSecurity-3.0 filename
+	 * extractFeature(userFeature1-1.0.esa) returns userFeature1 filename filename
+	 * cannot be null
+	 * 
+	 * @param filename
+	 * @return returns the feature name from the esa file path
+	 */
     private String extractFeature(String filename) {
-        return filename.replaceFirst("(-\\d\\d\\.\\d\\.\\d\\.\\d\\.esa)", "");
+		String[] split = filename.split("-");
+		if (split.length > 2) {
+			return split[0] + "-" + split[1];
+		}
+
+		return split[0];
     }
 
     public List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
