@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1144,12 +1146,20 @@ public class MvnUtils {
 
             String adocContent= "";
             String MPversion = "";
+
             String[] specParts = getSpec();
             String specName = capitalise(specParts[0]);
             String MPSpecLower = (specName.toLowerCase()).replace(" ","-");
             String specVersion = specParts[1];
             String rcVersion = specParts[2];
-            String OLVersion = "";
+
+            Date date = new Date();
+            SimpleDateFormat yearNo = new SimpleDateFormat("yy");
+            SimpleDateFormat monthNo = new SimpleDateFormat("MM");
+            String year = yearNo.format(date);
+            String month = monthNo.format(date);
+
+            String OLVersion = year+".0.0."+month;
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
