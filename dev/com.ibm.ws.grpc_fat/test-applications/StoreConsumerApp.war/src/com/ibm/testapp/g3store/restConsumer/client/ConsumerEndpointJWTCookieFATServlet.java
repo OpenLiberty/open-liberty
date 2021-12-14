@@ -42,7 +42,6 @@ import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -126,7 +125,6 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testGetApp_BadRole_JWTCookie_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.getAppName_BadRole_CookieAuth_GrpcClient(req, resp);
     }
