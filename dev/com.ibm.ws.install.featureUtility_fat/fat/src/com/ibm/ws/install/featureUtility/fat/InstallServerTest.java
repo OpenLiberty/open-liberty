@@ -77,68 +77,52 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("usr/servers/serverY", "../../publish/tmp/noFeaturesServerXml/server.xml");
         String[] param2s = { "installServerFeatures", "serverY", "--verbose"};
 
-
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
         String output = po.getStdout();
-
         String noFeaturesMessage = "The server does not require any additional features.";
+
         assertTrue("No features should be installed", output.indexOf(noFeaturesMessage) >= 0);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
 
         Log.exiting(c, METHOD_NAME);
     }
 
-//    /**
-//     * // TODO. this test case will be added once the disableUsrFeatures pull request is merged!!
-//     * @throws Exception
-//     */
-//    @Test
-//    public void testUsrFeatureServerXml() throws Exception {
-//        String METHOD_NAME = "testUsrFeatureServerXml";
-//        copyFileToMinifiedRoot("usr/servers/serverZ", "../../publish/tmp/usrFeaturesServerXml/server.xml");
-//        String[] param2s = { "installServerFeatures", "serverZ"};
-//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-//
-//
-//        ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
-//        assertEquals("Exit code should be 0",0, po.getReturnCode());
-//        String output = po.getStdout();
-//        // server.xml contains jsp-2.3, so jsp-2.3 should be installed.
-//        assertTrue("Output should contain jsp-2.3", output.indexOf("jsp-2.3") >= 0);
-//
-//        String noFeaturesMessage = InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED");
-//        assertTrue("No features should be installed", output.indexOf(noFeaturesMessage) >= 0);
-//    }
 
-//    /**
-//     * Install a server twice.
-//     */
-//    public void testAlreadyInstalledFeatures() throws Exception {
-//        final String METHOD_NAME = "testAlreadyInstalledFeatures";
-//        Log.entering(c, METHOD_NAME);
-//
-//        // replace the server.xml
-//        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/plainServerXml/server.xml");
-//
-//        // install the server
-//        String[] param1s = { "installServerFeatures", "serverX"};
-//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-//        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-//        assertEquals("Exit code should be 0",0, po.getReturnCode());
-//        String output = po.getStdout();
-//        assertTrue("Output should contain jsp-2.3", output.indexOf("jsf-2.2") >= 0);
-//
-//        // install server again
-//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
-//        po = runFeatureUtility(METHOD_NAME, param1s);
-//        assertEquals("Exit code should be 22",22, po.getReturnCode());
-////        output = po.getStdout();
-////        assertTrue("Output should contain jsp-2.3", output.indexOf("jsf-2.2") >= 0);
-//
-//
-//
-//        Log.exiting(c, METHOD_NAME);
-//    }
+
+	/**
+	 * Install a server twice. If new features are added, it should install new
+	 * features. If all features all already installed, then exit with rc = 0.
+	 */
+	@Test
+	public void testAlreadyInstalledFeatures() throws Exception {
+		final String METHOD_NAME = "testAlreadyInstalledFeatures";
+		Log.entering(c, METHOD_NAME);
+
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+
+		// replace the server.xml
+		copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/plainServerXml/server.xml");
+
+		// install the server
+		String[] param1s = { "installServerFeatures", "serverX" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		// install server again
+		po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		Log.exiting(c, METHOD_NAME);
+	}
 
 
     /**
@@ -184,9 +168,9 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         String [] param1s = {"installFeature", "osgiConsole-1.0", "--verbose"};
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
 
         // replace the server.xml and install from server.xml now
         copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
@@ -195,12 +179,11 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 
         po = runFeatureUtility(METHOD_NAME, param2s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
         assertTrue("Output should contain eventLogging-1.0", output.indexOf("eventLogging-1.0") >= 0);
         // assertTrue("The autofeature eventLogging-1.0-osgiConsole-1.0 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.eventLogging-1.0-osgiConsole-1.0.mf").exists());
-
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -215,15 +198,31 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInvalidMultiVersionFeatures";
         Log.entering(c, METHOD_NAME);
         
+		replaceWlpProperties("20.0.0.4");
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
 
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
+
+		copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.2/20.0.0.4",
+				"../../publish/repo/io/openliberty/features/jsp-2.2/20.0.0.4/jsp-2.2-20.0.0.4.esa");
+
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
         copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/multiVersionServerXml/server.xml");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
         String[] param1s = { "installServerFeatures", "serverX", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21",21, po.getReturnCode());
         String output = po.getStdout();
+
         assertTrue("Should contain CWWKF1405E", output.contains("CWWKF1405E"));
 
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+		assertEquals("Exit code should be 21", 21, po.getReturnCode());
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -251,7 +250,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
                 "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
         
         String[] filesList = { "usr/extension/lib/features/testesa1.mf",
 								"usr/extension/bin/testesa1.bat" };
@@ -262,10 +260,12 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         
         assertFilesExist(filesList);
         assertTrue("Should contain testesa1", output.contains("testesa1"));
+
+		deleteUsrExtFolder(METHOD_NAME);
+		deleteEtcFolder(METHOD_NAME);
+
         assertEquals("Exit code should be 0",0, po.getReturnCode());
 
-        deleteUsrExtFolder(METHOD_NAME);
-        deleteEtcFolder(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
     
@@ -294,7 +294,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
                 "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
         
         String[] param1s = { "installServerFeatures", "serverX", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose"};
         
@@ -308,10 +307,11 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         
         assertTrue("Should contain testesa1", output.contains("testesa1"));
         assertFilesExist(filesList);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
 
         deleteUsrToExtFolder(METHOD_NAME);
         deleteEtcFolder(METHOD_NAME);
+
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
         Log.exiting(c, METHOD_NAME);
     }
 
