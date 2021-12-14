@@ -12,7 +12,7 @@ package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -335,10 +335,12 @@ public class OSGiConfigUtils {
      * @return
      */
     static Map<String, String> getVariablesFromServerXML(ConfigVariables configVariables) {
-        Map<String, String> theMap = new HashMap<>();
+        Map<String, String> theMap;
         if (FrameworkState.isValid()) {
             // Retrieve the Map of variables that have been defined in the server.xml
-            theMap.putAll(configVariables.getUserDefinedVariables());
+            theMap = configVariables.getUserDefinedVariables();
+        } else {
+            theMap = Collections.emptyMap();
         }
 
         return theMap;
@@ -350,11 +352,13 @@ public class OSGiConfigUtils {
      * @param configVariables the ConfigVariables service
      * @return
      */
-    static Map<String, String> getDefaultVariablesFromServerXML(ConfigVariables configVariables) {
-        Map<String, String> theMap = new HashMap<>();
+    static Map<String, String> getUserDefinedVariableDefaults(ConfigVariables configVariables) {
+        Map<String, String> theMap;
         if (FrameworkState.isValid()) {
             // Retrieve the Map of variables that have been defined in the server.xml
-            theMap.putAll(configVariables.getUserDefinedVariableDefaults());
+            theMap = configVariables.getUserDefinedVariableDefaults();
+        } else {
+            theMap = Collections.emptyMap();
         }
         return theMap;
     }

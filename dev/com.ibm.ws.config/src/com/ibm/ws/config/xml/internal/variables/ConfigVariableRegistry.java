@@ -63,6 +63,10 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     private Map<String, LibertyVariable> configVariables;
     // variables explicitly defined in bundle defaultInstances files
     private Map<String, LibertyVariable> defaultConfigVariables;
+    // all variables defined by the user
+    private Map<String, String> userDefinedVariables;
+    // all variable defaults defined by the user
+    private Map<String, String> userDefinedDefaultVariables;
 
     // cache of external variables
     private Map<String, Object> variableCache;
@@ -143,6 +147,8 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             }
         }
 
+        updateUserDefinedVariables();
+        updateUserDefinedVariableDefaults();
     }
 
     @Trivial
@@ -314,7 +320,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 registry.removeVariable(variableName);
         }
 
-        configVariables = newVariables;
+        configVariables = Collections.unmodifiableMap(newVariables);
 
         // Override with command line variables if necessary
         for (CommandLineVariable clv : commandLineVariables) {
@@ -325,6 +331,9 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         for (LibertyVariable v : fileSystemVariables.values()) {
             registry.addVariable(v.getName(), v.getValue());
         }
+
+        updateUserDefinedVariables();
+        updateUserDefinedVariableDefaults();
     }
 
     /*
@@ -500,7 +509,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             }
         }
 
-        defaultConfigVariables = variables;
+        defaultConfigVariables = Collections.unmodifiableMap(variables);
 
         for (Map.Entry<String, LibertyVariable> entry : variables.entrySet()) {
             String variableName = entry.getKey();
@@ -517,6 +526,9 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         if (dirty) {
             saveVariableCache();
         }
+
+        updateUserDefinedVariables();
+        updateUserDefinedVariableDefaults();
     }
 
     @Override
@@ -575,6 +587,11 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     @Override
     @Sensitive
     public Map<String, String> getUserDefinedVariables() {
+        return this.userDefinedVariables;
+    }
+
+    @Sensitive
+    private void updateUserDefinedVariables() {
         HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
 
         for (Entry<String, FileSystemVariable> entry : fileSystemVariables.entrySet()) {
@@ -597,7 +614,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         for (CommandLineVariable clVar : commandLineVariables) {
             userDefinedVariables.put(clVar.getName(), clVar.getValue());
         }
-        return userDefinedVariables;
+        this.userDefinedVariables = Collections.unmodifiableMap(userDefinedVariables);
     }
 
     /**
@@ -619,28 +636,32 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      */
     @Override
     public Map<String, String> getUserDefinedVariableDefaults() {
-        HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
+        return this.userDefinedDefaultVariables;
+    }
+
+    private void updateUserDefinedVariableDefaults() {
+        HashMap<String, String> userDefinedDefaultVariables = new HashMap<String, String>();
         for (Map.Entry<String, LibertyVariable> entry : configVariables.entrySet()) {
             LibertyVariable var = entry.getValue();
             if (var.getValue() == null && var.getDefaultValue() != null) {
-                userDefinedVariables.put(var.getName(), var.getDefaultValue());
+                userDefinedDefaultVariables.put(var.getName(), var.getDefaultValue());
             }
         }
         for (Map.Entry<String, LibertyVariable> entry : defaultConfigVariables.entrySet()) {
             LibertyVariable var = entry.getValue();
-            if (userDefinedVariables.containsKey(entry.getKey())) {
+            if (userDefinedDefaultVariables.containsKey(entry.getKey())) {
                 if (var.getValue() != null) {
                     //If a value was specified in defaultInstances, remove the defaultValue from server.xml
-                    userDefinedVariables.remove(entry.getKey());
+                    userDefinedDefaultVariables.remove(entry.getKey());
                 }
             } else {
                 // Add the defaultValue if there is no server.xml version
                 if (var.getValue() == null && var.getDefaultValue() != null) {
-                    userDefinedVariables.put(var.getName(), var.getDefaultValue());
+                    userDefinedDefaultVariables.put(var.getName(), var.getDefaultValue());
                 }
             }
         }
-        return userDefinedVariables;
+        this.userDefinedDefaultVariables = Collections.unmodifiableMap(userDefinedDefaultVariables);
     }
 
     @Override
@@ -671,6 +692,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 }
             }
         }
+        updateUserDefinedVariables();
     }
 
     private boolean removeFileSystemVariable(String name) {
@@ -705,7 +727,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 }
             }
         }
-
+        updateUserDefinedVariables();
     }
 
     public void modifyFileSystemVariables(Collection<File> modifiedFiles, Map<String, DeltaType> deltaMap) {
@@ -745,6 +767,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 }
             }
         }
+        updateUserDefinedVariables();
     }
 
     @Override
