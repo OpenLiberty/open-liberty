@@ -318,9 +318,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected four occurances of the empty header string but found: " + logs.size(), logs.size() == 4);
+        assertTrue("Expected four occurrences of the empty header string but found: " + logs.size(), logs.size() == 4);
 
         //Send the request and verify the expected headers
 
@@ -387,9 +387,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected three occurances of the duplicate header name string but found: " + logs.size(), logs.size() == 3);
+        assertTrue("Expected three occurrences of the duplicate header name string but found: " + logs.size(), logs.size() == 3);
 
         //Send the request and verify the expected headers
 
@@ -457,9 +457,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected two occurances of the previously duplicated header string but found: " + logs.size(), logs.size() == 2);
+        assertTrue("Expected two occurences of the previously duplicated header string but found: " + logs.size(), logs.size() == 2);
 
         //Send the request and verify the expected headers
         Header[] headers = executeExchangeAndGetHeaders(url, testName);
@@ -537,7 +537,7 @@ public class WCResponseHeadersTest {
 
         List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected one occurances of the previously duplicated header string but found: " + logs.size(), logs.size() == 1);
+        assertTrue("Expected one occurrence of the previously duplicated header string but found: " + logs.size(), logs.size() == 1);
 
         //Send the request and verify the expected headers
         Header[] headers = executeExchangeAndGetHeaders(url, testName);
