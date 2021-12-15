@@ -37,7 +37,7 @@ public enum DatabaseContainerType {
     Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
     Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
-           DockerImageName.parse("kyleaure/oracle-18.4.0-slim-expanded:1.0").asCompatibleSubstituteFor("gvenzl/oracle-xe")),
+           DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe")),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
              DockerImageName.parse("postgres:9.6.12")),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //

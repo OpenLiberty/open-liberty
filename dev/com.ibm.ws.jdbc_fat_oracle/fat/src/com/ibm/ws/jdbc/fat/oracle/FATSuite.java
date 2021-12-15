@@ -42,8 +42,8 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-	//TODO update this image to gvenzl/oracle-xe if this issue is ever resolved: https://github.com/gvenzl/oci-oracle-xe/issues/36
-    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-slim-expanded:1.0").asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    //TODO update this image to gvenzl/oracle-xe if this issue is ever resolved: https://github.com/gvenzl/oci-oracle-xe/issues/36
+    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe");
     public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
                     .usingSid()
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
