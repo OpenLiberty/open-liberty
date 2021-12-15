@@ -19,6 +19,7 @@ import static com.ibm.ws.classloading.internal.Util.list;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.net.JarURLConnection;
@@ -36,8 +37,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -71,11 +74,49 @@ import com.ibm.wsspi.library.Library;
  * to discover the special methods:
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
+    static final TraceComponent tc = Tr.register(AppClassLoader.class);
+
+    private static final Set<String> forbiddenClassNames = Collections.unmodifiableSet( loadForbidden() );
+
+    private static final String FORBIDDEN_PROPERTIES = "forbidden.properties";
+
+    /**
+     * Load all available {@link #FORBIDDEN_PROPERTIES} resources, answering
+     * property keys as forbidden class names.  Forbidden class names must be
+     * specified as fully qualified class names.
+     *
+     * Load failures will result in either an empty collection of forbidden
+     * class names, or partially loaded forbidden class names.  A null collection
+     * will never be returned.  A load failure will not throw a non-runtime
+     * exception.
+     *
+     * @return The keys of all available forbidden properties resources.
+     */
+    private static Set<String> loadForbidden() {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loading forbidden.properties");
+        }
+        Set<String> forbidden = new HashSet<>();
+        try (InputStream inputStream = AppClassLoader.class.getResourceAsStream(FORBIDDEN_PROPERTIES)) {
+            Properties props = new Properties();
+            props.load(inputStream);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Map<String, String> castProps = (Map) props;
+            forbidden.addAll(castProps.keySet());
+        } catch (IOException e) {
+            // AutoFFDC
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loaded Forbidden Set" + forbidden);
+        }
+        return forbidden;
+    }    
+
     static {
         ClassLoader.registerAsParallelCapable();
     }
-    static final TraceComponent tc = Tr.register(AppClassLoader.class);
-
+    
     enum SearchLocation {
         PARENT, SELF, DELEGATES
     };
@@ -544,6 +585,24 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        // Fail classes which are forbidden.  For example, by a CVE.
+        if ( forbiddenClassNames.contains(name) ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, "loadClass " + name + " forbidden");
+            }
+            // Since this is not a usual class-not-found case,
+            // directly throw a simple CNFE.
+            //
+            // A more detailed message might be displayed, but,
+            // in most cases the JVM is going to catch the CNFE,
+            // forget the message and then throw a NoClassDefFoundError
+            // with only the class name.  Having a more detailed
+            // message adds little value outside of direct calls
+            // to 'Class.forName' and 'ClassLoader.loadClass'.
+
+            throw new ClassNotFoundException(name);
+        }
+
         ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
         try {
