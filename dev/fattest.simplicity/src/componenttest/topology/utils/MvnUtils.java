@@ -1163,7 +1163,7 @@ public class MvnUtils {
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
-            String[] documentParts = {":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",specName, " ", specVersion, ".\n\n== Open Liberty ",OLVersion," - MicroProfile ",specName," ", specVersion," Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",OLVersion,"/openliberty-runtime-",OLVersion,".zip[Open Liberty ",OLVersion,"]\n","* Specification Name, Version and download URL:\n+\n","link:https://download.eclipse.org/microprofile/microprofile-",MPSpecLower, rcVersion, "/microprofile-",MPSpecLower,rcVersion,".html[MicroProfile ",specName," ",specVersion,rcVersion,"]\n\n* Public URL of TCK Results Summary:\n+\n","link:",OLVersion,"-TCKResults.html[TCK results summary]\n\n","* Java runtime used to run the implementation:\n+\nJava ",javaMajorVersion, ": ",javaVersion,"\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n","Java ", javaMajorVersion,": ",osVersion};
+            String[] documentParts = {":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",specName, " ", specVersion, ".\n\n== Open Liberty ",OLVersion," - MicroProfile ",specName," ", specVersion," Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",OLVersion,"/openliberty-runtime-",OLVersion,".zip[Open Liberty ",OLVersion,"]\n","* Specification Name, Version and download URL:\n+\n","link:https://download.eclipse.org/microprofile/microprofile-",MPSpecLower, "-",specVersion,rcVersion, "/microprofile-",MPSpecLower,"-",specVersion,rcVersion,".html[MicroProfile ",specName," ",specVersion,rcVersion,"]\n\n* Public URL of TCK Results Summary:\n+\n","link:",OLVersion,"-TCKResults.html[TCK results summary]\n\n","* Java runtime used to run the implementation:\n+\nJava ",javaMajorVersion, ": ",javaVersion,"\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n","Java ", javaMajorVersion,": ",osVersion};
             
             for(String part : documentParts){
                 adocContent += part;
@@ -1195,18 +1195,18 @@ public class MvnUtils {
                 if(sCurrentLine.contains("-tck:jar")){
                     Matcher nameMatcher = specNamePattern.matcher(sCurrentLine);
                     Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
-                    while (nameMatcher.find()) {
+                    if (nameMatcher.find()) {
                         specName = nameMatcher.group(1).replaceAll("-"," ");
-                        while(versionMatcher.find()) {
-                            specVersion = versionMatcher.group(1);
-                            if(specVersion.contains("-RC")){
-                                parts = specVersion.split("-RC");
-                                RC = parts[1];
-                                specVersion = parts[0];
-                            }
-                            returnArray[0] = specName; returnArray[1] = specVersion; returnArray[2] = ("-RC"+RC);
-                            return returnArray;
+                    if(versionMatcher.find()) {
+                        specVersion = versionMatcher.group(1);
+                        if(specVersion.contains("-RC")){
+                            parts = specVersion.split("-RC");
+                            RC = parts[1];
+                            specVersion = parts[0];
                         }
+                        returnArray[0] = specName; returnArray[1] = specVersion; returnArray[2] = ("-RC"+RC);
+                        return returnArray;
+                    }
                     }
                     
                 }
