@@ -14,6 +14,8 @@ package com.ibm.websphere.monitor.meters;
 import java.lang.management.ManagementFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -121,12 +123,42 @@ public final class MeterCollection<T> {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Registering MBean to platform MBean Server " + on);
             }
-            mbeanServer.registerMBean(mxBeanImpl, on);
+            try {
+                AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                    mbeanServer.registerMBean(mxBeanImpl, on);
+                    return null;
+                });
+            } catch (PrivilegedActionException pae) {
+                Throwable t = pae.getCause();
+                if (t instanceof InstanceAlreadyExistsException) {
+                    throw (InstanceAlreadyExistsException) t;
+                } else if (t instanceof MBeanRegistrationException) {
+                    throw (MBeanRegistrationException) t;
+                } else if (t instanceof NotCompliantMBeanException) {
+                    throw (NotCompliantMBeanException) t;
+                } else {
+                    throw new RuntimeException(t);
+                }
+            }
         } else if (operation == UNREGISTER_MXBEAN) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "UN-Registering MBean from platform MBean Server " + on);
             }
-            mbeanServer.unregisterMBean(on);
+            try {
+                AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                    mbeanServer.unregisterMBean(on);
+                    return null;
+                });
+            } catch (PrivilegedActionException pae) {
+                Throwable t = pae.getCause();
+                if (t instanceof InstanceNotFoundException) {
+                    throw (InstanceNotFoundException) t;
+                } else if (t instanceof MBeanRegistrationException) {
+                    throw (MBeanRegistrationException) t;
+                } else {
+                    throw new RuntimeException(t);
+                }
+            }
         }
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "MXBeanHelper");
