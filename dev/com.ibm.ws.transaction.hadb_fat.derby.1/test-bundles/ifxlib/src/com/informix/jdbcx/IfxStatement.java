@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.informix.jdbcx;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -116,12 +117,20 @@ public class IfxStatement implements Statement {
             System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
             // if reason code is "-3" then exception is non-transient, otherwise it is transient
             SQLException sqlex;
-            if (reasonCode == -3)
+            if (reasonCode == -3) {
                 // A hard, non-recoverable exception
                 sqlex = new SQLException(sqlReason, sqlState, reasonCode);
-            else
+            } else if (reasonCode == -33) {
+                int[] updateCounts = { 1, 1, Statement.EXECUTE_FAILED };
+                sqlex = new BatchUpdateException(sqlReason, sqlState, reasonCode, updateCounts);
+                SQLException sqlex2 = new SQLException(sqlReason, sqlState, 1);
+                sqlex.setNextException(sqlex2);
+                SQLException sqlex3 = new SQLException(sqlReason, sqlState, -3);
+                sqlex2.setNextException(sqlex3);
+            } else {
                 // A transient, recoverable exception
                 sqlex = new SQLTransientException("A simulated transient SQL Exception");
+            }
             throw sqlex;
         } else {
             System.out.println("SIMHADB: ExecuteBatch");
