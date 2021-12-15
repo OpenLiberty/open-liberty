@@ -61,7 +61,7 @@ public class HandlerChainTest {
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
-            server.clearLogMarks();
+//            server.clearLogMarks();
             server.stopServer();
         }
     }
@@ -118,16 +118,16 @@ public class HandlerChainTest {
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
         
         // Test invoke sequence
-        assertStatesExistedFromMark(true, new String[] {
+        assertStatesExisted(new String[] {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle inbound message",
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
         // Test initParams
-        assertStatesExsited(".*init param \"arg0\" = testInitParam");
+        assertStatesExisted(".*init param \"arg0\" = testInitParam");
 
         // Test postConstruct and preDestroy
-        assertStatesExsited(new String[] {
+        assertStatesExisted(new String[] {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
@@ -138,7 +138,7 @@ public class HandlerChainTest {
         //in InHandler1 handlemessage() method!! : 3 : IN
         //in INHandler2 handlemessage() method!! : 2 : IN
         //in InHandler3 handlemessage() method!  : 1 : IN
-        assertStatesExistedFromMark(true, new String[] {
+        assertStatesExisted(new String[] {
                                                               "in InHandler1 handlemessage method",
                                                               "in INHandler2 handlemessage method",
                                                               "in InHandler3 handlemessage method",
@@ -162,7 +162,7 @@ public class HandlerChainTest {
         }
     }
 
-    private void assertStatesExsited(String... states) {
+    private void assertStatesExisted(String... states) {
         String findStr = null;
         if (states != null && states.length != 0) {
             for (String state : states) {
