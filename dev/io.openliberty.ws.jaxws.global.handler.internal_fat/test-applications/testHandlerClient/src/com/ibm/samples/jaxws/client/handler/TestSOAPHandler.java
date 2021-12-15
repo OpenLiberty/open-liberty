@@ -29,13 +29,13 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
     @PostConstruct
     public void initialize() {
-//        System.out.println(this.getClass().getName() + ": init param \"soapArg0\" = " + initParam);
-//        System.out.println(this.getClass().getName() + ": postConstruct is invoked");
+        System.out.println(this.getClass().getName() + ": init param \"soapArg0\" = " + initParam);
+        System.out.println(this.getClass().getName() + ": postConstruct is invoked");
     }
 
     @PreDestroy
     public void shutdown() {
-//        System.out.println(this.getClass().getName() + ": PreDestroy is invoked");
+        System.out.println(this.getClass().getName() + ": PreDestroy is invoked");
     }
 
     /*
@@ -48,9 +48,9 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
         boolean isOut = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (!isOut) {
-//            System.out.println(this.getClass().getName() + ": handle inbound message");
+            System.out.println(this.getClass().getName() + ": handle inbound message");
         } else {
-//            System.out.println(this.getClass().getName() + ": handle outbound message");
+            System.out.println(this.getClass().getName() + ": handle outbound message");
         }
         return true;
     }
@@ -62,7 +62,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
      */
     @Override
     public boolean handleFault(SOAPMessageContext context) {
-//        System.out.println(this.getClass().getName() + ": handle fault message");
+        System.out.println(this.getClass().getName() + ": handle fault message");
         return true;
     }
 
@@ -73,7 +73,7 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
      */
     @Override
     public void close(MessageContext context) {
-//        System.out.println(this.getClass().getName() + " is closed");
+        System.out.println(this.getClass().getName() + " is closed");
 
     }
 

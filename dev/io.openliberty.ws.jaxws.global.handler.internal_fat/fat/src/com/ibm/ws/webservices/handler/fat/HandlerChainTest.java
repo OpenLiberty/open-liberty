@@ -61,6 +61,7 @@ public class HandlerChainTest {
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
+            server.clearLogMarks();
             server.stopServer();
         }
     }
@@ -115,36 +116,33 @@ public class HandlerChainTest {
         }
         // Uninstall Applications
         server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
-
-        // Make server wait for application stop for the test to observe PreDestroy phase
-        //server.waitForStringInLog("CWWKE1101I");
         
         // Test invoke sequence
-//        assertStatesExistedFromMark(true, new String[] {
-//                                                              "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
-//                                                              "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle inbound message",
-//                                                              "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
-//                                                              "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
+        assertStatesExistedFromMark(true, new String[] {
+                                                              "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
+                                                              "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle inbound message",
+                                                              "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
+                                                              "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle outbound message" });
         // Test initParams
-//        assertStatesExsited(".*init param \"arg0\" = testInitParam");
+        assertStatesExsited(".*init param \"arg0\" = testInitParam");
 
-//        // Test postConstruct and preDestroy
-//        assertStatesExsited(new String[] {
-//                                                "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
-//                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
-//                                                "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
-//                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: PreDestroy is invoked"
-//        });
+        // Test postConstruct and preDestroy
+        assertStatesExsited(new String[] {
+                                                "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
+                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
+                                                "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
+                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: PreDestroy is invoked"
+        });
 
         //check the call sequence: service ranking: Flow
         //in InHandler1 handlemessage() method!! : 3 : IN
         //in INHandler2 handlemessage() method!! : 2 : IN
         //in InHandler3 handlemessage() method!  : 1 : IN
-//        assertStatesExistedFromMark(true, new String[] {
-//                                                              "in InHandler1 handlemessage method",
-//                                                              "in INHandler2 handlemessage method",
-//                                                              "in InHandler3 handlemessage method",
-//        });
+        assertStatesExistedFromMark(true, new String[] {
+                                                              "in InHandler1 handlemessage method",
+                                                              "in INHandler2 handlemessage method",
+                                                              "in InHandler3 handlemessage method",
+        });
 
         //API CHECK:
 
