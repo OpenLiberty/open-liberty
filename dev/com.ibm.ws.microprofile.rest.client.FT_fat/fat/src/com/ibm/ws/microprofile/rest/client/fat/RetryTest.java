@@ -56,7 +56,7 @@ public class RetryTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(appName, SERVER_NAME);
         StringAsset mpConfig = new StringAsset(RetryClient.class.getName() + "/mp-rest/uri=http://localhost:"
-                        + System.getProperty("bvt.prop.HTTP_default", "8010") + "/retryApp");
+                + server.getHttpDefaultPort() + "/retryApp");
         war.addAsWebInfResource(mpConfig, "classes/META-INF/microprofile-config.properties");
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();
@@ -64,6 +64,6 @@ public class RetryTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKW1002W");
+        server.stopServer(true, false, false, "CWWKW1002W");
     }
 }

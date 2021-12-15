@@ -19,6 +19,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Set;
@@ -53,7 +54,8 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
     }
 
     private static Object createDefaultMethodTarget(Class<?> interfaceClass) {
-        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null);
+        return AccessController.doPrivileged((PrivilegedAction<Object>) () -> 
+            Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
     }
 
     private static Object invokeDefaultMethod(Class<?> declaringClass, Object o, Method m, Object[] params)

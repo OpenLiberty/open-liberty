@@ -56,7 +56,7 @@ public class TimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(appName, SERVER_NAME);
         StringAsset mpConfig = new StringAsset(TimeoutClient.class.getName() + "/mp-rest/uri=http://localhost:"
-                        + System.getProperty("bvt.prop.HTTP_default", "8010") + "/timeoutApp");
+                        + server.getHttpDefaultPort() + "/timeoutApp");
         war.addAsWebInfResource(mpConfig, "classes/META-INF/microprofile-config.properties");
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();
