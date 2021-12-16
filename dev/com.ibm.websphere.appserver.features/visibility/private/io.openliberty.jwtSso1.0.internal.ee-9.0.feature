@@ -11,5 +11,5 @@ visibility = private
   io.openliberty.security.common.internal, \
   io.openliberty.security.jwtsso.internal, \
   io.openliberty.security.mp.jwt.internal
-kind=beta
+kind=ga
 edition=core
