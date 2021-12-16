@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,7 +102,7 @@ class UninstallDirector extends AbstractDirector {
     void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
         if (uninstallAssets.isEmpty())
             return;
-
+        Instant start = Instant.now();
         if (InstallUtils.isWindows) {
             // check any file is locked
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
@@ -119,7 +121,8 @@ class UninstallDirector extends AbstractDirector {
                 }
             }
         }
-
+        log(Level.ALL, "Lock check took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
+        start = Instant.now();
         // proceed to uninstall
         int progress = 20;
         int interval = 70 / uninstallAssets.size();
@@ -149,6 +152,8 @@ class UninstallDirector extends AbstractDirector {
                     InstallUtils.deleteDirectory(f);
             }
         }
+        log(Level.ALL, "Uninstall took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
+
     }
 
     /**
