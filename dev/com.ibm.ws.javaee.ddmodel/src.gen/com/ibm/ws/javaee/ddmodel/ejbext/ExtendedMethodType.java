@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,10 +44,12 @@ public class ExtendedMethodType extends com.ibm.ws.javaee.ddmodel.commonext.Meth
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "enterpriseBean".equals(localName)) {
-            this.enterpriseBean = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("enterpriseBean", parser.getCrossComponentType());
+            this.enterpriseBean = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("enterpriseBean", parser.crossComponentDocumentType);
             parser.parse(enterpriseBean);
             com.ibm.ws.javaee.dd.ejb.EnterpriseBean referent = this.enterpriseBean.resolveReferent(parser, com.ibm.ws.javaee.dd.ejb.EnterpriseBean.class);
-            if (referent != null) {
+            if (referent == null) {
+                DDParser.unresolvedReference("enterpriseBean", this.enterpriseBean.getReferenceString());
+            } else {
                 this.ejb = parser.parseString(referent.getName());
             }
             return true;

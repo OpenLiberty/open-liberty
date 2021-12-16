@@ -1,5 +1,0 @@
-<managed-bean-bnd version="1.0">
-    <managed-bean class="com.ibm.jcdi.libs.PojoTwo">
-        <resource-ref name="jdbc/myBinding" binding-name="jdbc/TestDataSource"/>
-    </managed-bean>
-</managed-bean-bnd>

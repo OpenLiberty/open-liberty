@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import org.junit.Assert; 
+import junit.framework.Assert;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -43,7 +43,7 @@ public abstract class CommonTests {
 
      //
 
-    private static final LibertyServer server =
+    private static LibertyServer server =
         LibertyServerFactory.getLibertyServer("ddmodel_fat");
 
     protected static LibertyServer getServer() {
@@ -52,21 +52,8 @@ public abstract class CommonTests {
 
     //
 
-    public static final String RESOURCES_FRAGMENT = "resources";
-
-    public static final String RESOURCES_DEFAULT_SUFFIX = "";    
-    public static final String RESOURCES_PARTIAL_SUFFIX = "-partial";
-    public static final String RESOURCES_MINIMAL_SUFFIX = "-minimal";
-
-    protected static FileAsset addResource(
-            Archive<?> archive,
-            String resourcePath,
-            String resourcesSuffix) {
-        
-        String sourcePath =
-            "test-applications" + '/' + archive.getName() + '/' +
-            RESOURCES_FRAGMENT + resourcesSuffix + '/' + resourcePath;
-
+    protected static FileAsset addResource(Archive archive, String resourcePath) {
+        String sourcePath = "test-applications/" + archive.getName() + "/resources/" + resourcePath;
         String targetPath = "/" + resourcePath;
 
         FileAsset asset = new FileAsset( new File(sourcePath) );
@@ -81,116 +68,90 @@ public abstract class CommonTests {
     // EJBTestNoBnd.jar
     // Test.ear
 
-    protected static WebArchive createTestWar(String resourcesSuffix) {
+    protected static WebArchive createTestWar() {
         WebArchive servletTest = ShrinkWrap.create(WebArchive.class, "ServletTest.war");
         servletTest.addPackage("servlettest.web");
-        addResource(servletTest, "WEB-INF/web.xml", resourcesSuffix);
-        addResource(servletTest, "WEB-INF/ibm-web-bnd.xml", resourcesSuffix);
-        addResource(servletTest, "WEB-INF/ibm-web-ext.xml", resourcesSuffix);
-        addResource(servletTest, "WEB-INF/ibm-ws-bnd.xml", resourcesSuffix);
-        addResource(servletTest, "META-INF/permissions.xml", resourcesSuffix);
+        addResource(servletTest, "WEB-INF/web.xml");
+        addResource(servletTest, "WEB-INF/ibm-web-bnd.xml");
+        addResource(servletTest, "WEB-INF/ibm-web-ext.xml");
+        addResource(servletTest, "WEB-INF/ibm-ws-bnd.xml");
+        addResource(servletTest, "META-INF/permissions.xml");
         return servletTest;
     }
 
-    protected static WebArchive createTestNoBndWar(String resourcesSuffix) {
+    protected static WebArchive createTestNoBndWar() {
         WebArchive servletTestNoBnd = ShrinkWrap.create(WebArchive.class, "ServletTestNoBnd.war");
         servletTestNoBnd.addPackage("servlettestnobnd.web");
-        addResource(servletTestNoBnd, "WEB-INF/web.xml", resourcesSuffix);
+        addResource(servletTestNoBnd, "WEB-INF/web.xml");
         return servletTestNoBnd;
     }
 
-    protected static JavaArchive createTestJar(String resourcesSuffix) {
+    protected static JavaArchive createTestJar() {
         JavaArchive ejbTest = ShrinkWrap.create(JavaArchive.class, "EJBTest.jar");
         ejbTest.addPackage("ejbtest.ejb");
-        addResource(ejbTest, "META-INF/MANIFEST.MF", resourcesSuffix);
-        addResource(ejbTest, "META-INF/ejb-jar.xml", resourcesSuffix);
-        addResource(ejbTest, "META-INF/ibm-ejb-jar-bnd.xmi", resourcesSuffix);
-        addResource(ejbTest, "META-INF/ibm-ejb-jar-ext.xmi", resourcesSuffix);
-        addResource(ejbTest, "META-INF/ibm-managed-bean-bnd.xml", resourcesSuffix);
-        addResource(ejbTest, "META-INF/ibm_ejbext.properties", resourcesSuffix);
+        addResource(ejbTest, "META-INF/MANIFEST.MF");
+        addResource(ejbTest, "META-INF/ejb-jar.xml");
+        addResource(ejbTest, "META-INF/ibm-ejb-jar-bnd.xmi");
+        addResource(ejbTest, "META-INF/ibm-ejb-jar-ext.xmi");
+        addResource(ejbTest, "META-INF/ibm-managed-bean-bnd.xml");
+        addResource(ejbTest, "META-INF/ibm_ejbext.properties");
         return ejbTest;
     }
 
-    protected static JavaArchive createTestNoBndJar(String resourcesSuffix) {
+    protected static JavaArchive createTestNoBndJar() {
         JavaArchive ejbTestNoBnd = ShrinkWrap.create(JavaArchive.class, "EJBTestNoBnd.jar");
         ejbTestNoBnd.addPackage("ejbtestnobnd.ejb");
         return ejbTestNoBnd;
     }
 
     protected static EnterpriseArchive createTestEar() {
-        return createTestEar(RESOURCES_DEFAULT_SUFFIX);
-    }
-    
-    protected static EnterpriseArchive createTestEarPartialHeaders() {
-        return createTestEar(RESOURCES_PARTIAL_SUFFIX);
-    }    
-    
-    protected static EnterpriseArchive createTestEarMinimalHeaders() {
-        return createTestEar(RESOURCES_MINIMAL_SUFFIX);
-    }    
-
-    protected static EnterpriseArchive createTestEar(String resourcesSuffix) {
         EnterpriseArchive testEar =
             ShrinkWrap.create(EnterpriseArchive.class, "Test.ear");
 
         testEar.addAsModules(
-            createTestWar(resourcesSuffix),
-            createTestNoBndWar(resourcesSuffix),
-            createTestJar(resourcesSuffix),
-            createTestNoBndJar(resourcesSuffix) );
+            createTestWar(),
+            createTestNoBndWar(),
+            createTestJar(),
+            createTestNoBndJar() );
 
-        addResource(testEar, "META-INF/application.xml", resourcesSuffix);
-        addResource(testEar, "META-INF/ibm-application-bnd.xml", resourcesSuffix);
-        addResource(testEar, "META-INF/ibm-application-ext.xml", resourcesSuffix);
-        addResource(testEar, "META-INF/permissions.xml", resourcesSuffix);
+        addResource(testEar, "META-INF/application.xml");
+        addResource(testEar, "META-INF/ibm-application-bnd.xml");
+        addResource(testEar, "META-INF/ibm-application-ext.xml");
+        addResource(testEar, "META-INF/permissions.xml");
 
         return testEar;
     };
 
     protected static FailableConsumer<LibertyServer, Exception> setUpTestModules =
         (LibertyServer server) -> {
-            setUpTestModules(RESOURCES_DEFAULT_SUFFIX);
+            ShrinkHelper.exportAppToServer( server, CommonTests.createTestWar(), DeployOptions.SERVER_ONLY );
+            ShrinkHelper.exportAppToServer( server, CommonTests.createTestNoBndWar(), DeployOptions.SERVER_ONLY );
+
+            // The installation message uses the jar name without the ".jar" extension.
+            // Current ShrinkHelper and LibertyServer code does not take this into account,
+            // and look for the jar name with the ".jar" extension.  That causes application
+            // startup verification to fail, leading to a test failure.
+            //
+            // Patches are made to the list of installed application names to work-around this
+            // naming problem.
+            //
+            // See java source file
+            // "open-liberty/dev/fattest.simplicity/src/com/ibm/websphere/simplicity/ShrinkHelper.java"
+            // and method
+            // "exportAppToServer".
+
+            Archive testJar = CommonTests.createTestJar();
+            ShrinkHelper.exportAppToServer( server, testJar, DeployOptions.SERVER_ONLY );
+            String testJarName = testJar.getName();
+            server.removeInstalledAppForValidation(testJarName);
+            server.addInstalledAppForValidation( testJarName.substring(0, testJarName.length() - ".jar".length()) );
+
+            Archive testJarNoBnd = CommonTests.createTestNoBndJar();
+            ShrinkHelper.exportAppToServer( server, testJarNoBnd, DeployOptions.SERVER_ONLY );
+            String testJarNoBndName = testJarNoBnd.getName();
+            server.removeInstalledAppForValidation(testJarNoBndName);
+            server.addInstalledAppForValidation( testJarNoBndName.substring(0, testJarNoBndName.length() - ".jar".length()) );
         };
-            
-    protected static FailableConsumer<LibertyServer, Exception> setUpTestModulesPartialHeaders =
-        (LibertyServer server) -> {
-            setUpTestModules(RESOURCES_PARTIAL_SUFFIX);
-        };            
-
-    protected static FailableConsumer<LibertyServer, Exception> setUpTestModulesMinimalHeaders =
-        (LibertyServer server) -> {
-            setUpTestModules(RESOURCES_MINIMAL_SUFFIX);
-        };            
-        
-    protected static void setUpTestModules(String resourcesSuffix) throws Exception {
-        ShrinkHelper.exportAppToServer( server, createTestWar(resourcesSuffix), DeployOptions.SERVER_ONLY );
-        ShrinkHelper.exportAppToServer( server, createTestNoBndWar(resourcesSuffix), DeployOptions.SERVER_ONLY );
-
-        // The installation message uses the jar name without the ".jar" extension.
-        // Current ShrinkHelper and LibertyServer code does not take this into account,
-        // and look for the jar name with the ".jar" extension.  That causes application
-        // startup verification to fail, leading to a test failure.
-        //
-        // Patches are made to the list of installed application names to work-around this
-        // naming problem.
-        //
-        // See java source file
-        // "open-liberty/dev/fattest.simplicity/src/com/ibm/websphere/simplicity/ShrinkHelper.java"
-        // and method
-        // "exportAppToServer".
-
-        Archive<?> testJar = createTestJar(resourcesSuffix);
-        ShrinkHelper.exportAppToServer( server, testJar, DeployOptions.SERVER_ONLY );
-        String testJarName = testJar.getName();
-        server.removeInstalledAppForValidation(testJarName);
-        server.addInstalledAppForValidation( testJarName.substring(0, testJarName.length() - ".jar".length()) );
-
-        Archive<?> testJarNoBnd = createTestNoBndJar(resourcesSuffix);
-        ShrinkHelper.exportAppToServer( server, testJarNoBnd, DeployOptions.SERVER_ONLY );
-        String testJarNoBndName = testJarNoBnd.getName();
-        server.removeInstalledAppForValidation(testJarNoBndName);
-        server.addInstalledAppForValidation( testJarNoBndName.substring(0, testJarNoBndName.length() - ".jar".length()) );
-    };
 
     protected static FailableConsumer<LibertyServer, Exception> tearDownTestModules =
         (LibertyServer server) -> {
@@ -200,23 +161,9 @@ public abstract class CommonTests {
 
     protected static FailableConsumer<LibertyServer, Exception> setUpTestApp =
         (LibertyServer server) -> {
-            setUpTestApp(RESOURCES_DEFAULT_SUFFIX);
+            ShrinkHelper.exportAppToServer( server, CommonTests.createTestEar(), DeployOptions.SERVER_ONLY );
         };
 
-    protected static FailableConsumer<LibertyServer, Exception> setUpTestAppPartialHeaders =
-        (LibertyServer server) -> {
-            setUpTestApp(RESOURCES_PARTIAL_SUFFIX);
-        };
-
-    protected static FailableConsumer<LibertyServer, Exception> setUpTestAppMinimalHeaders =
-        (LibertyServer server) -> {
-            setUpTestApp(RESOURCES_MINIMAL_SUFFIX);
-        };
-        
-    protected static void setUpTestApp(String resourcesSuffix) throws Exception {
-        ShrinkHelper.exportAppToServer( server, createTestEar(resourcesSuffix), DeployOptions.SERVER_ONLY );
-    }
-        
     protected static FailableConsumer<LibertyServer, Exception> tearDownTestApp =
         (LibertyServer server) -> {
             ShrinkHelper.cleanAllExportedArchives();
@@ -230,18 +177,16 @@ public abstract class CommonTests {
 
         Log.info( testClass, "commonSetup", "Server configuration [ " + serverConfig + " ]" );
 
-        LibertyServer useServer = getServer();
+        appSetUp.accept(server); // throws Exception
 
-        appSetUp.accept(useServer); // throws Exception
+        server.listAllInstalledAppsForValidation();
 
-        useServer.listAllInstalledAppsForValidation();
+        server.setServerConfigurationFile(serverConfig);
 
-        useServer.setServerConfigurationFile(serverConfig);
+        server.copyFileToLibertyInstallRoot("lib/features", "features/libertyinternals-1.0.mf");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/ddmodel.jar");
 
-        useServer.copyFileToLibertyInstallRoot("lib/features", "features/libertyinternals-1.0.mf");
-        useServer.copyFileToLibertyInstallRoot("lib", "bundles/ddmodel.jar");
-
-        useServer.startServer( testClass.getSimpleName() + ".log" );
+        server.startServer( testClass.getSimpleName() + ".log" );
     }
 
     protected static void commonTearDown(
@@ -251,14 +196,12 @@ public abstract class CommonTests {
 
         Log.info( testClass, "commonTearDown", "Expected errors [ " + expectedErrors.length + " ]" );
 
-        LibertyServer useServer = getServer();
-        
-        useServer.stopServer(expectedErrors);
+        server.stopServer(expectedErrors);
 
-        useServer.deleteFileFromLibertyInstallRoot("lib/ddmodel_1.0.0.jar");
-        useServer.deleteFileFromLibertyInstallRoot("lib/features/libertyinternals-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("lib/ddmodel_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/features/libertyinternals-1.0.mf");
 
-        appTearDown.accept(useServer); // throws Exception
+        appTearDown.accept(server); // throws Exception
     }
 
     //
@@ -274,22 +217,13 @@ public abstract class CommonTests {
         Log.info(testClass, description + ": URL", "[ " + url + " ]" );
 
         HttpURLConnection con = getHttpConnection(url);
-        try {
-            try ( BufferedReader br = getConnectionStream(con) ) {
-                String line = br.readLine();
-                if ( !"OK".equals(line) ) {
-                    Log.info( testClass, methodName, description + ": FAILED" );
-                    Assert.fail("Unexpected response [ " + line + " ] expected [ OK ]");
-                } else {
-                    Log.info( testClass, methodName, description + ": PASSED" );
-                }
-                while ( (line = br.readLine()) != null ) {
-                    Log.info( testClass, methodName, "[ " + line + " ]" );
-                }
-            }
-
-        } finally {
-            con.disconnect();
+        BufferedReader br = getConnectionStream(con);
+        String line = br.readLine();
+        if ( !"OK".equals(line) ) {
+            Log.info( testClass, methodName, description + ": FAILED" );
+            Assert.fail("Unexpected response: " + line);
+        } else {
+            Log.info( testClass, methodName, description + ": PASSED" );
         }
     }
 
@@ -300,14 +234,12 @@ public abstract class CommonTests {
         public final String description;
         public final String expectedErrors;
 
-        public ErrorTest(String initialLine, String finalLine,
-                         String configSuffix,
+        public ErrorTest(String initialLine, String finalLine, String configSuffix,
                          String description,
                          String expectedErrors) {
 
             this.initialLine = initialLine;
             this.finalLine = finalLine;
-
             this.configSuffix = configSuffix;
             this.description = description;
             this.expectedErrors = expectedErrors;
@@ -379,7 +311,7 @@ public abstract class CommonTests {
         if ( replacements != 1 ) {
             Log.info( testClass, methodName, description +
                       ": Replacement failure: Expected [ 1 ]; Actual [ " + replacements + " ]" );
-            Assert.assertEquals(description + ": Incorrect count of replacements", 1, replacements);
+            Assert.assertEquals(description + ": Incorrect count of replacements", replacements, 1);
         }
 
         String errorMessage;
@@ -404,8 +336,8 @@ public abstract class CommonTests {
         }
 
         if ( errorMessage == null ) {
-            Log.info(testClass, methodName, description + ": FAILED");
-            Assert.assertNotNull(errorMessage);
+            Log.info(testClass, methodName, description + "FAILED");
+            Assert.assertNotNull(errorTest.description, errorMessage);
         } else {
             Log.info(testClass, methodName, description + "PASSED");
         }

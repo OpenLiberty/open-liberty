@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.javaee.ddmodel.web;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.version.ServletVersion;
@@ -24,44 +25,37 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class WebFragmentAdapter implements ContainerAdapter<WebFragment> {
+
+    private static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
     private ServiceReference<ServletVersion> versionRef;
-    private int version = WebAppEntryAdapter.DEFAULT_MAX_VERSION;
+    private volatile int version = DEFAULT_MAX_VERSION;
 
     public synchronized void setVersion(ServiceReference<ServletVersion> reference) {
+
         versionRef = reference;
         version = (Integer) reference.getProperty("version");
     }
 
     public synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
-        if ( reference == this.versionRef ) {
+        if (reference == this.versionRef) {
             versionRef = null;
-            version = WebAppEntryAdapter.DEFAULT_MAX_VERSION;
+            version = DEFAULT_MAX_VERSION;
         }
     }
 
-    public synchronized int getVersion() {
-        return version;
-    }
-    
     @FFDCIgnore(ParseException.class)
     @Override
-    public WebFragment adapt(
-            Container ddRoot,
-            OverlayContainer rootOverlay,
-            ArtifactContainer artifactContainer,
-            Container ddAdaptRoot) throws UnableToAdaptException {
-
-        Entry ddEntry = ddAdaptRoot.getEntry(WebFragment.DD_NAME);
-        if ( ddEntry == null ) {
-            return null;
+    public WebFragment adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
+        Entry ddEntry = containerToAdapt.getEntry(WebFragment.DD_NAME);
+        if (ddEntry != null) {
+            try {
+                WebFragmentDDParser ddParser = new WebFragmentDDParser(containerToAdapt, ddEntry, version);
+                WebFragment webFragment = ddParser.parse();
+                return webFragment;
+            } catch (ParseException e) {
+                throw new UnableToAdaptException(e);
+            }
         }
-
-        try {
-            WebFragmentDDParser ddParser =
-                new WebFragmentDDParser( ddAdaptRoot, ddEntry, getVersion() );
-            return ddParser.parse();
-        } catch ( ParseException e ) {
-            throw new UnableToAdaptException(e);
-        }
+        return null;
     }
 }

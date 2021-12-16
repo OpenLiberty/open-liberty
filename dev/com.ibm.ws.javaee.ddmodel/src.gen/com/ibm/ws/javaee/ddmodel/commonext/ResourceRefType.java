@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,10 +110,12 @@ public class ResourceRefType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementC
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "resourceRef".equals(localName)) {
-            this.resourceRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("resourceRef", parser.getCrossComponentType());
+            this.resourceRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("resourceRef", parser.crossComponentDocumentType);
             parser.parse(resourceRef);
             com.ibm.ws.javaee.dd.common.ResourceRef referent = this.resourceRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.ResourceRef.class);
-            if (referent != null) {
+            if (referent == null) {
+                DDParser.unresolvedReference("resourceRef", this.resourceRef.getReferenceString());
+            } else {
                 this.name = parser.parseString(referent.getName());
             }
             return true;

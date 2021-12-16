@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,14 +133,14 @@ public class WebservicesType extends DescriptionGroup implements Webservices,
         this.webservice_descriptions.add(wsdes);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void finish(DDParser parser) throws ParseException {
-        super.finish(parser);
-
-        if ( version == null ) {
-            version = parser.parseToken( parser.getDottedVersionText() );
-        }
         this.idMap = parser.idMap;
+        super.finish(parser);
+        if (version == null) {
+            throw new ParseException(parser.requiredAttributeMissing("version"));
+        }
     }
 
     /** {@inheritDoc} */
@@ -164,6 +164,7 @@ public class WebservicesType extends DescriptionGroup implements Webservices,
     /** {@inheritDoc} */
     @Override
     public void describe(Diagnostics diag) {
+
         super.describe(diag);
         diag.describe("version", version);
         diag.describeIfSet("webservice-description", this.webservice_descriptions);
@@ -179,4 +180,5 @@ public class WebservicesType extends DescriptionGroup implements Webservices,
     TokenType version;
     String id;
     WebserviceDescriptionType.ListType webservice_descriptions;
+
 }
