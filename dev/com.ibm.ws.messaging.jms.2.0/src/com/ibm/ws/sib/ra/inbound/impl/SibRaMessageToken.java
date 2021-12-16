@@ -26,7 +26,7 @@ import com.ibm.wsspi.sib.core.SIMessageHandle;
  * an <code>SRDispatcher</code>. The message handle field is a mutable field
  * to allow the token to be reused.
  */
-public final class SibRaMessageToken implements Serializable {
+final class SibRaMessageToken implements Serializable {
 
     /** The classes serial version UID; Added at version 1.1 */
     private static final long serialVersionUID = 3701528563970253962L;

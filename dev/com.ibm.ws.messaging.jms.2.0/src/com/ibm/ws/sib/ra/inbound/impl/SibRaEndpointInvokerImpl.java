@@ -31,7 +31,7 @@ import com.ibm.wsspi.sib.ra.SibRaMessageListener;
  * Implementation of <code>SibRaEndpointInvocation</code> for the delivery of
  * messages to core SPI message-driven beans.
  */
-public final class SibRaEndpointInvokerImpl implements SibRaEndpointInvoker {
+final class SibRaEndpointInvokerImpl implements SibRaEndpointInvoker {
 
     /**
      * An <code>onMessage</code> method.

@@ -28,7 +28,7 @@ import com.ibm.wsspi.sib.core.exception.SIMessageNotLockedException;
 import com.ibm.wsspi.sib.core.exception.SISessionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SISessionUnavailableException;
 
-public class SibRaLockedMessageEnumeration implements LockedMessageEnumeration {
+class SibRaLockedMessageEnumeration implements LockedMessageEnumeration {
 
   // List of messages
   final List messages = new ArrayList();

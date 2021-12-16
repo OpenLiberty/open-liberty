@@ -72,7 +72,7 @@ import com.ibm.wsspi.sib.core.trm.SibTrmConstants;
  * This class is used to connect an MDB to messaging engine(s) dependant upon the destination type, locality
  * of the ME and user specified target preferences
  */
-public abstract class SibRaCommonEndpointActivation extends SibRaEndpointActivation
+abstract class SibRaCommonEndpointActivation extends SibRaEndpointActivation
 {
     /**
      * The component to use for trace.

@@ -22,7 +22,7 @@ import com.ibm.ws.sib.ra.impl.SibRaUtils;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.SIXAResource;
 
-public class SibRaXaResource implements SIXAResource, SibRaDelegatingXAResource {
+class SibRaXaResource implements SIXAResource, SibRaDelegatingXAResource {
 
     /**
      * The <code>SIXAResource</code> to which calls are delegated.

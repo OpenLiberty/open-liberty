@@ -36,7 +36,7 @@ import com.ibm.ws.sib.ra.inbound.SibRaEndpointConfiguration;
 import com.ibm.ws.sib.ra.inbound.SibRaEndpointInvoker;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-public class SibRaColocatingEndpointActivation extends SibRaCommonEndpointActivation
+class SibRaColocatingEndpointActivation extends SibRaCommonEndpointActivation
 {
 
     /**
