@@ -91,7 +91,9 @@ public class FATSuite {
     @ClassRule
     public static GenericContainer<?> infinispan = new GenericContainer<>(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from(
-                    		ImageNameSubstitutor.instance().apply(DockerImageName.parse("infinispan/server:10.0.1.Final")).asCanonicalNameString())
+                                                                       ImageNameSubstitutor.instance()
+                                                                                       .apply(DockerImageName.parse("infinispan/server:10.0.1.Final"))
+                                                                                       .asCanonicalNameString())
                                     .user("root")
                                     .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
                                     .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")
@@ -99,6 +101,7 @@ public class FATSuite {
                     .withFileFromFile("/opt/infinispan_config/config.xml", new File("lib/LibertyFATTestFiles/infinispan/config.xml"))
                     .withFileFromFile("/opt/infinispan/server/conf/users.properties", new File("lib/LibertyFATTestFiles/infinispan/users.properties")))
                                     .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
+                                    .withExposedPorts(11222)
                                     .waitingFor(new LogMessageWaitStrategy()
                                                     .withRegEx(".*ISPN080001: Infinispan Server.*")
                                                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))

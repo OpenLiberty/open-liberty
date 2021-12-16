@@ -15,7 +15,7 @@
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 
-ext.testcontainersVersion = '1.15.3'
+ext.testcontainersVersion = '1.16.2'
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')

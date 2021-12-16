@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,22 +21,21 @@ import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jdbc.fat.krb5.FATSuite;
 
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
 
@@ -52,11 +49,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE = "aguibert/krb5-server:1.2";
-    private static final Path reuseCache = Paths.get("..", "..", "cache", "krb5.properties");
 
-    private boolean reused;
-    private String reused_hostname;
-    private int reused_port;
     private int udp_99;
 
     public KerberosContainer(Network network) {
@@ -75,18 +68,24 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withEnv("KRB5_KDC", "localhost");
         withEnv("KRB5_PASS", KRB5_PASS);
 
-        withLogConsumer(KerberosContainer::log);
+        withLogConsumer(new SimpleLogConsumer(c, "krb5"));
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*KERB SETUP COMPLETE.*$")
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
-        withReuse(true);
         withCreateContainerCmdModifier(cmd -> {
-            List<ExposedPort> ports = new ArrayList<>();
+            //Add previously exposed ports and UDP port
+            List<ExposedPort> exposedPorts = new ArrayList<>();
             for (ExposedPort p : cmd.getExposedPorts()) {
-                ports.add(p);
+                exposedPorts.add(p);
             }
-            ports.add(new ExposedPort(99, InternetProtocol.UDP));
-            cmd.withExposedPorts(ports);
+            exposedPorts.add(ExposedPort.udp(99));
+            cmd.withExposedPorts(exposedPorts);
+
+            //Add previous port bindings and UDP port binding
+            Ports ports = cmd.getPortBindings();
+            ports.bind(ExposedPort.udp(99), Ports.Binding.empty());
+            cmd.withPortBindings(ports);
+            cmd.withHostName(KRB5_KDC);
         });
     }
 
@@ -101,64 +100,14 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         String dockerHostIp = DockerClientFactory.instance().dockerHostIpAddress();
         withEnv("EXTERNAL_HOSTNAME", dockerHostIp);
         Log.info(c, "start", "Using EXTERNAL_HOSTNAME=" + dockerHostIp);
-
-        if (hasCachedContainers()) {
-            // If this is a local run and a cache file exists, that means a DB2 container is already running
-            // and we can just read the host/port from the cache file
-            Log.info(c, "start", "Found existing container cache file. Skipping container start.");
-            Properties props = new Properties();
-            try {
-                props.load(new FileInputStream(reuseCache.toFile()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            reused = true;
-            reused_hostname = props.getProperty("krb5.hostname");
-            reused_port = Integer.valueOf(props.getProperty("krb5.port"));
-            Log.info(c, "start", "Found existing container at host = " + reused_hostname);
-        } else {
-            super.start();
-            if (FATSuite.REUSE_CONTAINERS) {
-                Log.info(c, "start", "Saving KRB5 properties for future runs at: " + reuseCache.toAbsolutePath());
-                try {
-                    Files.createDirectories(reuseCache.getParent());
-                    Properties props = new Properties();
-                    if (reuseCache.toFile().exists()) {
-                        try (FileInputStream fis = new FileInputStream(reuseCache.toFile())) {
-                            props.load(fis);
-                        }
-                    }
-                    props.setProperty("krb5.hostname", getContainerIpAddress());
-                    props.setProperty("krb5.port", "" + getMappedPort(99));
-                    props.store(new FileWriter(reuseCache.toFile()), "Generated by FAT run");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (FATSuite.REUSE_CONTAINERS) {
-            Log.info(c, "stop", "Leaving container running so it can be used in later runs");
-            return;
-        } else {
-            Log.info(c, "stop", "Stopping container");
-            super.stop();
-        }
-    }
-
-    @Override
-    public String getContainerIpAddress() {
-        return reused ? reused_hostname : super.getContainerIpAddress();
+        super.start();
     }
 
     @Override
     public Integer getMappedPort(int originalPort) {
         // For this container assume we always want the UDP port when we ask for port 99
         if (originalPort == 99) {
-            return reused ? reused_port : udp_99;
+            return udp_99;
         } else {
             return super.getMappedPort(originalPort);
         }
@@ -269,27 +218,5 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         @SuppressWarnings("resource")
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "[KRB5]", msg);
-    }
-
-    private static boolean hasCachedContainers() {
-        if (!FATSuite.REUSE_CONTAINERS)
-            return false;
-        if (!reuseCache.toFile().exists())
-            return false;
-        Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream(reuseCache.toFile())) {
-            props.load(fis);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return props.containsKey("krb5.hostname") &&
-               props.containsKey("krb5.port");
     }
 }

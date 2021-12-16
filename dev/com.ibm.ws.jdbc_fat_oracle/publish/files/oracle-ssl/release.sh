@@ -4,10 +4,10 @@
 USER_NAME=kyleaure
 
 #Version of docker image.  Increment if doing a new release
-VERSION=2.0
+VERSION=1.0.full.ssl
 
 #Name of the final image
-IMAGE_NAME=oracle-ssl-18.4.0-xe-prebuilt
+IMAGE_NAME=oracle-18.4.0-expanded
 
 #Docker image signiture in form username/image:version
 SIGNATURE=$USER_NAME/$IMAGE_NAME:$VERSION
@@ -18,7 +18,7 @@ echo "Attempting to build and push $SIGNATURE"
 docker login || (echo "Unable to login to DockerHub" && exit 1)
 
 #This script assumes it is in the same directory as the Dockerfile
-docker build -t $SIGNATURE .
+docker build --no-cache -t $SIGNATURE .
 
 #Extract wallet
 SECURITY_DIR=../../servers/com.ibm.ws.jdbc.fat.oracle.ssl/security/

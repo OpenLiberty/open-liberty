@@ -14,19 +14,16 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ContainersTest.class,       //LITE
+                ContainersTest.class, //LITE
                 DatabaseRotationTest.class, //LITE
-                DockerfileTest.class,       //FULL
+                DockerfileTest.class, //FULL
                 ProgrammaticImageTest.class, //FULL
 })
 /**
@@ -34,44 +31,37 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite {
 
+    /*
+     * NOTE: this static block needs to be in a class that has a reference field, or method that runs.
+     * Static blocks are only run when the class is loaded, and a class that does
+     * not have any referenced fields, or runnable methods will NOT get loaded.
+     * So this block can be moved directly into a test class.
+     */
     static {
         /*
-         * By default the testcontainers component and dependencies will log at the following levels:
-         * - org.testcontainers: INFO
-         * - com.github.dockerjava: WARN
-         * - OTHER: ERROR
+         * THIS METHOD CALL IS REQUIRED TO USE TESTCONTAINERS PLEASE READ:
          *
-         * You can overwrite these default configurations programmatically here.
-         * This can help in debugging build errors related to testcontainers and docker-java.
-         * However, this is not required for successful use of testcontainers.
-         */
-        Logger root = (Logger) LoggerFactory.getLogger("org.testcontainers");
-        root.setLevel(Level.ALL);
-
-        /*
-        * THIS METHOD CALL IS REQUIRED TO USE TESTCONTAINERS PLEASE READ:
-        *
-        * Testcontainers caches data in a properties file located at $HOME/.testcontainers.properties
-        * The ExternalTestServiceDockerClientStrategy.setup* methods will clear and reset the values in this property file.
-        *
-        * By default, testcontainers will attempt to run against a local docker instance and pull from DockerHub.
-        * If you want testcontainers to run against a remote docker host to mirror the behavior of an RTC build
-        * Then, set property: -Dfat.test.use.remote.docker=true
-        * This will only work if you are on the IBM network.
-        *
-        * We will set the following properties:
-        * 1. docker.client.strategy:
-        * Default: [Depends on local OS]
-        * Custom : componenttest.containers.ExternalTestServiceDockerClientStrategy
-        * Purpose: This is the strategy testcontainers uses to locate and run against a remote docker instance.
-        *
-        * 2. image.substitutor:
-        * Default: [none]
-        * Custom : componenttest.containers.ArtifactoryImageNameSubstitutor
-        * Purpose: This defines a strategy for substituting image names.
-        * This is so that we can use a private docker repository to cache docker images
-        * to avoid the docker pull limits.
-        * Example: foo/bar:1.0 it will get changed to wasliberty-docker-remote.artifactory.swg-devops.com/foo/bar:1.0
+         * Testcontainers caches data in a properties file located at $HOME/.testcontainers.properties
+         * The ExternalTestServiceDockerClientStrategy.setup* methods will clear and reset the values in this property file.
+         *
+         * By default, testcontainers will attempt to run against a local docker instance and pull from DockerHub.
+         * If you want testcontainers to run against a remote docker host to mirror the behavior of an RTC build
+         * Then, set property: -Dfat.test.use.remote.docker=true
+         * This will only work if you are on the IBM network.
+         *
+         * We will set the following properties:
+         * 1. docker.client.strategy:
+         * Default: [Depends on local OS]
+         * Custom : componenttest.containers.ExternalTestServiceDockerClientStrategy
+         * Purpose: This is the strategy testcontainers uses to locate and run against a remote docker instance.
+         *
+         * 2. image.substitutor:
+         * Default: [none]
+         * Custom : componenttest.containers.ArtifactoryImageNameSubstitutor
+         * Purpose: This defines a strategy for substituting image names.
+         * This is so that we can use a private docker repository to cache docker images
+         * to avoid the docker pull limits.
+         * Example: foo/bar:1.0 it will get changed to wasliberty-docker-remote.artifactory.swg-devops.com/foo/bar:1.0
          */
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
@@ -41,8 +42,10 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-    public static OracleContainer oracle = new OracleContainer("kyleaure/oracle-18.4.0-xe-prebuilt:2.0")
-                    .withExposedPorts(1521, 5500, 8080) // need to manually expose ports due to regression in 1.14.0
+    //TODO update this image to gvenzl/oracle-xe if this issue is ever resolved: https://github.com/gvenzl/oci-oracle-xe/issues/36
+    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
+                    .usingSid()
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
 
     public static OracleContainer getSharedOracleContainer() {

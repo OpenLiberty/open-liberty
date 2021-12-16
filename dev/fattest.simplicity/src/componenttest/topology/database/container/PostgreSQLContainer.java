@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * This class is a replacement for the regular <code>org.testcontainers.containers.PostgreSQLContainer</code> class.
@@ -37,12 +38,16 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         super(image);
     }
 
+    public PostgreSQLContainer(final DockerImageName image) {
+        super(image);
+    }
+
     /**
      * Add additional configuration options that should be used for this container.
      *
-     * @param key   The PostgreSQL configuration option key. For example: "max_connections"
-     * @param value The PostgreSQL configuration option value. For example: "200"
-     * @return this
+     * @param  key   The PostgreSQL configuration option key. For example: "max_connections"
+     * @param  value The PostgreSQL configuration option value. For example: "200"
+     * @return       this
      */
     public PostgreSQLContainer withConfigOption(String key, String value) {
         if (key == null) {
@@ -64,7 +69,7 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         if (!options.containsKey("fsync"))
             withConfigOption("fsync", "off");
         if (!options.containsKey("max_prepared_transactions"))
-        	withConfigOption("max_prepared_transactions", "2");
+            withConfigOption("max_prepared_transactions", "2");
         List<String> command = new ArrayList<>();
         for (Entry<String, String> e : options.entrySet()) {
             command.add("-c");
@@ -125,7 +130,7 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         this.password = password;
         return self();
     }
-    
+
     /**
      * Sets the necessary config options for enabling SSL for the container. Assumes there is
      * a server.crt and server.key file under /var/lib/postgresql/ in the container.

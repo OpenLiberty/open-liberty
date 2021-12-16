@@ -11,6 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.0
 
+#Common Versions
+testContainerVersion: 1.16.2
+dockerJavaVersion: 3.2.12
+
 Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
 Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
@@ -20,20 +24,17 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 # binary files instead of class files. This is expected and necessary
 
 Export-Package: \
-	ch.qos.logback.classic.*;version="1.2.3",\
-	ch.qos.logback.core.*;version="1.2.3",\
-	com.github.*;version="3.2.8",\
+	com.github.*;version="${dockerJavaVersion}",\
 	com.sun.jna.*;version="5.8.0",\
 	org.apache.commons.*;version="1.20",\
-	org.testcontainers.*;version="1.15.3";-split-package:=merge-last,\
+	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
 	org.rnorth.*;version="1.0.8",\
 	org.slf4j.*;version="1.7.30";-split-package:=merge-last
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.	
 Include-Resource: \
-	@${repo;org.testcontainers:testcontainers;1.15.3;EXACT}!/META-INF/**,\
-	resources/logback-test.xml
+	@${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**
 
 publish.wlp.jar.disabled: true
 
@@ -47,23 +48,20 @@ generate.replacement: true
 # jackson-annotations that is not backwards compatible with 2.11.2 then we will need to upgrade 
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
 -buildpath: \
-	com.github.docker-java:docker-java-api;version=3.2.8,\
-	com.github.docker-java:docker-java-transport;version=3.2.8,\
-	com.github.docker-java:docker-java-transport-zerodep;version=3.2.8,\
+	com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
+	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
+	com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
 	org.apache.commons:commons-compress;version=1.20,\
-	org.testcontainers:testcontainers;version=1.15.3,\
-	org.testcontainers:database-commons;version=1.15.3,\
-	org.testcontainers:jdbc;version=1.15.3,\
-	org.testcontainers:db2;version=1.15.3,\
-	org.testcontainers:kafka;version=1.15.3,\
-	org.testcontainers:mssqlserver;version=1.15.3,\
-	org.testcontainers:oracle-xe;version=1.15.3,\
-	org.testcontainers:postgresql;version=1.15.3,\
-	org.testcontainers:selenium;version=1.15.3,\
+	org.testcontainers:testcontainers;version=${testContainerVersion},\
+	org.testcontainers:database-commons;version=${testContainerVersion},\
+	org.testcontainers:jdbc;version=${testContainerVersion},\
+	org.testcontainers:db2;version=${testContainerVersion},\
+	org.testcontainers:kafka;version=${testContainerVersion},\
+	org.testcontainers:mssqlserver;version=${testContainerVersion},\
+	org.testcontainers:oracle-xe;version=${testContainerVersion},\
+	org.testcontainers:postgresql;version=${testContainerVersion},\
+	org.testcontainers:selenium;version=${testContainerVersion},\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.rnorth.visible-assertions:visible-assertions;version=2.1.2,\
 	org.slf4j:slf4j-api;version=1.7.30,\
 	org.slf4j:slf4j-simple;version=1.7.30,\
-	net.java.dev.jna:jna;version=5.8.0,\
-	ch.qos.logback:logback-classic;version=1.2.3,\
-	ch.qos.logback:logback-core;version=1.2.3
+	net.java.dev.jna:jna;version=5.8.0
