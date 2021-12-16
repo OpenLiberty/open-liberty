@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Allow JSON from applications write directly to System.out/System.err */
     protected volatile boolean appsWriteJson = false;
 
+    private final boolean checkpoint;
+
+    private volatile boolean restore = false;
+
     /**
      * Initial configuration of BaseTraceService from TrServiceConfig.
      *
@@ -196,6 +200,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         serverName = config.get("wlp.server.name");
 
         wlpUsrDir = config.get("wlp.user.dir");
+
+        checkpoint = config.get(LoggingConstants.CHECKPOINT_PROPERTY_NAME) != null ? true : false;
     }
 
     /**
@@ -204,7 +210,11 @@ public class LogProviderConfigImpl implements LogProviderConfig {
      */
     @Override
     public synchronized void update(Map<String, Object> config) {
-        doCommonInit(config, false);
+        if (config.get(LoggingConstants.RESTORE_ENABLED) != null) {
+            restore = LoggingConfigUtils.getBooleanValue(config.get(LoggingConstants.RESTORE_ENABLED), restore);
+        } else {
+            doCommonInit(config, false);
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -432,6 +442,14 @@ public class LogProviderConfigImpl implements LogProviderConfig {
      */
     public boolean loggerUsesTr() {
         return loggerUsesTr;
+    }
+
+    public boolean isCheckpoint() {
+        return checkpoint;
+    }
+
+    public boolean isRestore() {
+        return restore;
     }
 
     @Override

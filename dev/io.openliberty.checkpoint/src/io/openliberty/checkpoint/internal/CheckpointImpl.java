@@ -186,6 +186,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories);
+        if (tc.isInfoEnabled()) {
+            Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
+        }
         prepare(checkpointHooks);
         Collections.reverse(checkpointHooks);
         try {
@@ -200,15 +203,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
-            if (tc.isInfoEnabled()) {
-                Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
-            }
             criu.dump(imageDir, CHECKPOINT_LOG_FILE,
                       getLogsCheckpoint(),
                       getEnvProperties());
-            if (tc.isInfoEnabled()) {
-                Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
-            }
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {
@@ -220,6 +217,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
 
         restore(checkpointHooks);
+        if (tc.isInfoEnabled()) {
+            Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
+        }
         createRestoreMarker();
     }
 

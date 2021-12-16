@@ -65,4 +65,7 @@ public interface LoggingConstants {
     enum FFDCSummaryPolicy {
         DEFAULT, IMMEDIATE
     };
+
+    String CHECKPOINT_PROPERTY_NAME = "io.openliberty.checkpoint";
+    String RESTORE_ENABLED = "RESTORE_ENABLED";
 }

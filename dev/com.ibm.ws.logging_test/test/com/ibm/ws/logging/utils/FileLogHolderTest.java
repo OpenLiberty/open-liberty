@@ -294,7 +294,7 @@ public class FileLogHolderTest {
 
     private void writeFileOnce(String headerLine, String record, String logName, boolean newLogsOnStart) {
         FileLogHolder d1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false, false),
-                                                             testLogDir, logName, 2, 0, newLogsOnStart);
+                                                             testLogDir, logName, 2, 0, newLogsOnStart, false);
 
         d1.writeRecord(record);
 

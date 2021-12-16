@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -50,6 +52,7 @@ import org.osgi.framework.launch.FrameworkFactory;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
@@ -84,6 +87,8 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
@@ -198,7 +203,7 @@ public class FrameworkManager {
      *                        framework management activities (start/stop/.. ), or null
      * @param callback
      */
-    public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
+    public void launchFramework(final BootstrapConfig config, final LogProvider logProvider) {
         if (config == null)
             throw new IllegalArgumentException("bootstrap config must not be null");
         boolean isClient = config.getProcessType().equals(BootstrapConstants.LOC_PROCESS_TYPE_CLIENT);
@@ -272,6 +277,30 @@ public class FrameworkManager {
             }
             // Set the framework variables only if everything succeeded.
             systemBundleCtx = fwk.getBundleContext();
+
+            if (LaunchArguments.isBetaEdition()) {
+                systemBundleCtx.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
+
+                    @Override
+                    public CheckpointHook create(Phase phase) {
+                        CheckpointHook checkpointHook = new CheckpointHook() {
+                            @Override
+                            public void prepare() {
+                                logProvider.stop();
+                            }
+
+                            @Override
+                            public void restore() {
+                                Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                                TrConfigurator.update(configMap);
+                            }
+
+                        };
+                        return checkpointHook;
+                    }
+
+                }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+            }
             framework = fwk;
         } catch (BundleException e) {
             throw new RuntimeException(e);
