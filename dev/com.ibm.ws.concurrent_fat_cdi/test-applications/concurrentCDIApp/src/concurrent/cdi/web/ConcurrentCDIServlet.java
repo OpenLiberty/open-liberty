@@ -611,10 +611,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * Verify that an asynchronous method can run inline upon CompletableFuture.join
+     * Verify that an asynchronous method can run inline upon CompletableFuture.join and untimed get
      * when maxAsync prevents running on a thread from the Liberty global thread pool.
      */
-    // TODO this isn't implemented yet @Test
+    @Test
     public void testInlineAsyncMethod() throws Exception {
         CountDownLatch started = new CountDownLatch(2);
         CountDownLatch blocker = new CountDownLatch(1);
@@ -656,7 +656,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
             assertTrue("looked up " + resultsB.getValue(), resultsB.getValue() instanceof ManagedExecutorService);
 
             // Run inline again,
-            Entry<Integer, Object> resultsC = futureC.join();
+            Entry<Integer, Object> resultsC = futureC.get();
 
             assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), resultsC.getKey());
             assertTrue("looked up " + resultsC.getValue(), resultsC.getValue() instanceof ManagedExecutorService);
@@ -722,7 +722,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 Boolean result = await2stage.toCompletableFuture().get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
                 // TimeoutException from above. It never starts, but it doesn't notice the timeout either.
                 fail("Second async method " + await2stage + " should have timed out per the startTimeout. Instead: " + result);
-            } catch (CancellationException x) {
+            } catch (ExecutionException x) {
+                // TODO ideally the above should be AbortedException, which is a subclass of ExecutionException -
+                // Consider changing it on the main code path for ManagedCompletableFuture.get, not specific to Asynchronous
                 if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E") //
                     || x.getCause() == null || !x.getCause().getClass().getSimpleName().equals("StartTimeoutException"))
                     throw x;
@@ -731,10 +733,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
             // First async method should run
             assertEquals(Boolean.TRUE, await1stage.toCompletableFuture().get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
 
-            // Third async method might run or time out depending on how slow the machine running the test is
+            // Third async method might run or time out depending on timing
             try {
                 await3stage.toCompletableFuture().join();
-            } catch (CancellationException x) {
+            } catch (CompletionException x) {
                 if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E") //
                     || x.getCause() == null || !x.getCause().getClass().getSimpleName().equals("StartTimeoutException"))
                     throw x;
