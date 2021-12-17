@@ -65,12 +65,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // TFB:
-                // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
-                // the gradlew 'buildandrun' invocation.
-                // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
-                // I'm still determining if this is purely a local problem.
-                //              WCPushBuilderSecurityTest.class,
+                // WCPushBuilderSecurityTest.class,
                 WCApplicationMBeanStatusTest.class,
                 WCContextRootPrecedence.class,
                 WCPushBuilderTest.class,
