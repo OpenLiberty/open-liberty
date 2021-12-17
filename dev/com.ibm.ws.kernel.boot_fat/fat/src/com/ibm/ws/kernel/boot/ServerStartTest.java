@@ -16,12 +16,13 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -41,32 +42,15 @@ public class ServerStartTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     private static final String SYMLINK_NAME = "com.ibm.ws.kernel.boot.serverstart.fat.symlink";
-    private static boolean isIBM_v8_JVM = false;
 
     private static LibertyServer server;
 
     @Rule
     public TestName testName = new TestName();
 
-    @BeforeClass
-    public static void before() throws Exception {
+    @Before
+    public void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-
-        // IBM J9 does not contain the jcmd applicaiton to create dumps!
-        String javaHome = server.getMachineJavaJDK();
-        Properties env = new Properties();
-        env.setProperty("JAVA_HOME", javaHome);
-        String javaBinDir = javaHome + "/bin";
-        ProgramOutput javaVersionOutput = server.getMachine().execute(javaBinDir + "/java", new String[] { "-version" }, javaBinDir, env);
-        String stdout = javaVersionOutput.getStdout();
-        String stderr = javaVersionOutput.getStderr();
-        Log.info(c, "before", "java -version  stdout: " + stdout);
-        Log.info(c, "before", "java -version  stderr: " + stderr);
-        assertEquals("Unexpected return code from java -version", 0, javaVersionOutput.getReturnCode());
-
-        if ((stdout != null && stdout.contains("IBM J9 VM")) || (stderr != null && stderr.contains("IBM J9 VM"))) {
-            isIBM_v8_JVM = true;
-        }
     }
 
     @After
@@ -195,7 +179,6 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_AbsolutePath() throws Exception {
-        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_AbsolutePath";
         Log.entering(c, METHOD_NAME);
 
@@ -275,7 +258,6 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RelativePath() throws Exception {
-        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RelativePath";
         Log.entering(c, METHOD_NAME);
 
@@ -361,7 +343,6 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RelativeFolder() throws Exception {
-        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RelativeFolder";
         Log.entering(c, METHOD_NAME);
 
@@ -369,17 +350,14 @@ public class ServerStartTest {
         String command = null;
         String javaCoreLocation = null;
         String folder = "javadumps";
-        String absolutePath = null;
 
         // Cover executing both scripts that utilize this environment variable
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
             command = "bin" + File.separator + "server.bat";
             javaCoreLocation = server.getServerRoot().replace("/", "\\").trim() + File.separator + folder;
-            absolutePath = server.getServerRoot().replace("/", "\\") + File.separator + folder;
         } else {
             command = "bin" + File.separator + "server";
             javaCoreLocation = server.getServerRoot() + File.separator + folder;
-            absolutePath = server.getServerRoot() + File.separator + folder;
         }
         Log.info(c, METHOD_NAME, "server command utilized is = " + command);
 
@@ -452,17 +430,14 @@ public class ServerStartTest {
 
         String executionDir = server.getInstallRoot();
         String command = null;
-        String javaCoreLocation = null;
         String serverWorkingDir = null;
 
         // Cover executing both scripts that utilize this environment variable
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
             command = "bin" + File.separator + "server.bat";
-            javaCoreLocation = server.getServerRoot().replace("/", "\\");
             serverWorkingDir = server.getServerRoot().replace("/", "\\") + File.separator + "logs" + File.separator + "serverWorkingDir";
         } else {
             command = "bin" + File.separator + "server";
-            javaCoreLocation = server.getServerRoot();
             serverWorkingDir = server.getServerRoot() + File.separator + "logs" + File.separator + "serverWorkingDir";
         }
 
@@ -530,7 +505,6 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_RootDefault() throws Exception {
-        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_RootDefault";
         Log.entering(c, METHOD_NAME);
 
@@ -544,7 +518,7 @@ public class ServerStartTest {
             command = "bin" + File.separator + "server.bat";
             javaCoreLocation = server.getServerRoot().replace("/", "\\");
             serverWorkingDir = "C:\\";
-        } else { // Linux
+        } else {
             command = "bin" + File.separator + "server";
             javaCoreLocation = server.getServerRoot();
             serverWorkingDir = "/";
@@ -621,7 +595,6 @@ public class ServerStartTest {
      */
     @Test
     public void test_SWD_InvalidURL() throws Exception {
-        assumeTrue(!isIBM_v8_JVM);
         final String METHOD_NAME = "test_SWD_InvalidURL";
         Log.entering(c, METHOD_NAME);
 
@@ -799,18 +772,31 @@ public class ServerStartTest {
      * @throws Exception
      */
     private String findServerPid() throws Exception {
+        String method = "findServerPid";
         String pid = null;
         String[] cmd = new String[] { "jcmd" };
-        Process process = Runtime.getRuntime().exec(cmd);
 
-        try (Reader reader = new InputStreamReader(process.getInputStream());
-                        BufferedReader br = new BufferedReader(reader);) {
-            String output = null;
-            while ((output = br.readLine()) != null) {
-                if (output.contains("ws-server.jar")) {
-                    pid = output.substring(0, output.indexOf(" "));
-                    return pid;
+        try {
+            Process process = Runtime.getRuntime().exec(cmd);
+
+            try (Reader reader = new InputStreamReader(process.getInputStream());
+                            BufferedReader br = new BufferedReader(reader);) {
+                String output = null;
+                while ((output = br.readLine()) != null) {
+                    if (output.contains("ws-server.jar")) {
+                        pid = output.substring(0, output.indexOf(" "));
+                        return pid;
+                    }
                 }
+            }
+        } catch (IOException ioe) {
+            // On some versions of Java 8 (non-Semeru), the jcmd.exe is not installed.  Skip
+            // the tests on those environments.
+            if (ioe.getMessage().contains("Cannot run program")) {
+                Log.info(c, method, "Unable to find the jcmd.exe application installed for the current jdk.  Skipping this test!");
+                assumeTrue(false);
+            } else {
+                throw new IOException(ioe);
             }
         }
 
