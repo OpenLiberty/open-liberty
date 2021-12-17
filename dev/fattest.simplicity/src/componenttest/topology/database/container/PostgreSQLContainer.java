@@ -19,7 +19,7 @@ import org.testcontainers.utility.DockerImageName;
  * 2. To fix the ordering of configure() so that we can set config options such as max_connections=200
  */
 public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContainer> {
-	
+
     public static final String NAME = "postgresql";
     public static final String IMAGE = "postgres";
     public static final String DEFAULT_TAG = "9.6.8";
@@ -134,7 +134,7 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
     /**
      * Sets the necessary config options for enabling SSL for the container. Assumes there is
      * a server.crt and server.key file under /var/lib/postgresql/ in the container.
-     * An easy way to use this is to combine it with the <code>aguibert/postgresql-ssl:1.0</code>
+     * An easy way to use this is to combine it with the <code>kyleaure/postgres-ssl:1.0</code>
      * or similar base image
      */
     public PostgreSQLContainer withSSL() {

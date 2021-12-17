@@ -48,7 +48,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_PASS = "password";
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "aguibert/krb5-server:1.2";
+    private static final String IMAGE = "kyleaure/krb5-server:1.0";
 
     private int udp_99;
 
