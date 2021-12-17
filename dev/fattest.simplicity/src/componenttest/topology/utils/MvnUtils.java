@@ -1197,6 +1197,7 @@ public class MvnUtils {
                     Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
                     if (nameMatcher.find()) {
                         specName = nameMatcher.group(1).replaceAll("-"," ");
+                    }
                     if(versionMatcher.find()) {
                         specVersion = versionMatcher.group(1);
                         if(specVersion.contains("-RC")){
@@ -1207,12 +1208,9 @@ public class MvnUtils {
                         returnArray[0] = specName; returnArray[1] = specVersion; returnArray[2] = ("-RC"+RC);
                         return returnArray;
                     }
-                    }
-                    
                 }
             }
         }
-        
         catch (IOException e) 
         {
             e.printStackTrace();
