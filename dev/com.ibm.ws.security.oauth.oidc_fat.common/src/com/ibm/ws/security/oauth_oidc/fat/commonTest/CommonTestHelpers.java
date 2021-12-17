@@ -863,12 +863,12 @@ public class CommonTestHelpers extends TestHelpers {
             // Invoke
             WebRequest request = null;
             if (invokeType.equals(Constants.GETMETHOD)) {
-                Log.info(thisClass, thisMethod, "GET request");
+                Log.info(thisClass, thisMethod, "GET request: " + settings.getTestURL());
                 request = new GetMethodWebRequest(settings.getTestURL());
                 thisStep = Constants.GET_LOGIN_PAGE;
 
             } else {
-                Log.info(thisClass, thisMethod, "POST request");
+                Log.info(thisClass, thisMethod, "POST request: " + settings.getTestURL());
                 request = new PostMethodWebRequest(settings.getTestURL(), true);
                 // File binaryFile = new
                 // File("c:/chrisc/screen_savers/party_photo.bmp") ;
@@ -1614,20 +1614,20 @@ public class CommonTestHelpers extends TestHelpers {
         }
     }
 
-//    public void updateServerXml(String serverXml, String attribute, String attributeValue) throws Exception {
-//
-//        String thisMethod = "updateServerXml";
-//        msgUtils.printMethodName(thisMethod);
-//
-//        SAXBuilder builder = new SAXBuilder();
-//        File xmlFile = new File(serverXml);
-//        Document doc = builder.build(xmlFile);
-//        Element rootNode = doc.getRootElement();
-//        Element parent = rootNode.getChild("httpEndpoint");
-//        Log.info(thisClass, thisMethod, "current endpoint httpPort is: " + parent.getAttributeValue("httpPort"));
-//        Log.info(thisClass, thisMethod, "current endpoint httpsPort is: " + parent.getAttributeValue("httpsPort"));
-//
-//    }
+    //    public void updateServerXml(String serverXml, String attribute, String attributeValue) throws Exception {
+    //
+    //        String thisMethod = "updateServerXml";
+    //        msgUtils.printMethodName(thisMethod);
+    //
+    //        SAXBuilder builder = new SAXBuilder();
+    //        File xmlFile = new File(serverXml);
+    //        Document doc = builder.build(xmlFile);
+    //        Element rootNode = doc.getRootElement();
+    //        Element parent = rootNode.getChild("httpEndpoint");
+    //        Log.info(thisClass, thisMethod, "current endpoint httpPort is: " + parent.getAttributeValue("httpPort"));
+    //        Log.info(thisClass, thisMethod, "current endpoint httpsPort is: " + parent.getAttributeValue("httpsPort"));
+    //
+    //    }
 
     public TestSettings fixProviderInUrls(TestSettings settings, String oldProvider, String newProvider) throws Exception {
 

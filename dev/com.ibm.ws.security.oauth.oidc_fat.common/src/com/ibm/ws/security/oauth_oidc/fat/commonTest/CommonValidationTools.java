@@ -601,9 +601,9 @@ public class CommonValidationTools {
 
             // should only get this far if we're needing to validate the contents of the id token
             if (!id_token.equals(Constants.NOT_FOUND)) {
-                
+
                 String decryptKey = settings.getDecryptKey();
-                
+
                 JwtTokenForTest jwtToken;
                 if (JweHelper.isJwe(id_token) && decryptKey != null) {
                     jwtToken = new JwtTokenForTest(id_token, decryptKey);
@@ -965,18 +965,34 @@ public class CommonValidationTools {
 
             String tokenLine = getTokenLineFromResponse(response);
             if (tokenLine != null) {
+                String[] responseLines = tokenLine.split(System.getProperty("line.separator"));
+                if (responseLines.length == 1) {
 
-                String[] entries = tokenLine.split(",");
-                for (String e : entries) {
-                    String part1 = e.split(":")[0];
-                    String part2 = e.split(":")[1];
-                    String part1Strip = removeQuote(part1);
-                    String part2Strip = removeQuote(part2);
-                    if (part1Strip.equals(searchKey)) {
-                        Log.info(thisClass, thisMethod, searchKey + " value: " + part2Strip);
-                        printJWTToken(part2Strip);
-                        return part2Strip;
+                    String[] entries = tokenLine.split(",");
+                    for (String e : entries) {
+                        String part1 = e.split(":")[0];
+                        String part2 = e.split(":")[1];
+                        String part1Strip = removeQuote(part1);
+                        String part2Strip = removeQuote(part2);
+                        if (part1Strip.equals(searchKey)) {
+                            Log.info(thisClass, thisMethod, searchKey + " value: " + part2Strip);
+                            printJWTToken(part2Strip);
+                            return part2Strip;
+                        }
                     }
+                } else {
+                    for (String line : responseLines) {
+                        if (line != null && line.contains(searchKey)) {
+                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length() - 1);
+                            String[] splitLine = part1.split(",");
+                            if (splitLine != null) {
+                                Log.info(thisClass, thisMethod, "token: " + splitLine[0]);
+                                printJWTToken(splitLine[0]);
+                                return splitLine[0];
+                            }
+                        }
+                    }
+
                 }
             } else {
                 String respReceived = AutomationTools.getResponseText(response);
@@ -1423,7 +1439,7 @@ public class CommonValidationTools {
                     msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(!actualKeysValue.contains(expectKeysValue)));
                 } else {
                     if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.matches(expectKeysValue)));
+                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.matches(".*" + expectKeysValue + ".*")));
                     } else {
                         // we don't care what the value is (it may be a random number generated on the server) - we just need to make sure it has a value
                         msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue != null));
