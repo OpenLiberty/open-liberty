@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence 
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+    version="2.1">
+
+    <persistence-unit name="AppCliPU_1">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.clientcontainer.fat.basic.fieldinj.entities.SimpleEntity</class>
+        
+        <properties>
+            <!-- EclipseLink should create the database schema automatically -->
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="AppCliPU_1_ResRef">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <non-jta-data-source>java:app/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.clientcontainer.fat.basic.fieldinj.entities.SimpleEntity</class>
+        
+        <properties>
+            <!-- EclipseLink should create the database schema automatically -->
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="AppCliPU_2">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <class>com.ibm.ws.jpa.clientcontainer.fat.basic.fieldinj.entities.AnotherSimpleEntity</class>     
+        <properties>
+            <!-- EclipseLink should create the database schema automatically -->
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+        </properties>
+    </persistence-unit>
+</persistence>

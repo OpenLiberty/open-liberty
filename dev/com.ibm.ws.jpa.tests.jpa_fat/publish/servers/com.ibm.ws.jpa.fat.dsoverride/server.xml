@@ -1,0 +1,28 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jpa-2.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <application name="dsoverride" location="dsoverride.war"/>
+
+    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <dataSource id="jdbc/AltJTADataSource" jndiName="jdbc/AltJTADataSource" at.modify="true" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <library id="AnonymousJDBCLib" fat.modify="true">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+  
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

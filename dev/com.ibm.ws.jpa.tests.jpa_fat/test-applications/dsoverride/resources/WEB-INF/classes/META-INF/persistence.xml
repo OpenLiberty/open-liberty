@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence 
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+    version="2.1">
+    
+    <persistence-unit name="DSOverride">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <class>com.ibm.ws.jpa.fat.dsoverride.entity.DSOverrideEntity</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>        
+        <properties>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="DSOverride_pointsToAltDB">    
+        <jta-data-source>jdbc/AltJTADataSource</jta-data-source>
+        <class>com.ibm.ws.jpa.fat.dsoverride.entity.DSOverrideEntity</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>        
+        <properties>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="DSOverride_ECL_AUDIT">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <class>com.ibm.ws.jpa.fat.dsoverride.entity.DSOverrideEntity</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>        
+        <properties>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.jdbc.exclusive-connection.mode" value="Always"/>
+            <property name="eclipselink.jdbc.exclusive-connection.is-lazy" value="false"/>
+        </properties>
+    </persistence-unit>    
+</persistence>

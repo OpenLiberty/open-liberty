@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<client description="JPA JNDI Injection Client">
+        <featureManager>
+                <feature>javaeeClient-7.0</feature>
+        </featureManager>
+        
+        <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
+            <jdbcDriver libraryRef="DerbyLib"/>
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />   
+        </dataSource>
+
+        <library id="DerbyLib" fat.modify="true">
+            <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+        </library>
+
+        <application id="BasicJPAJNDIInj" name="BasicJPAJNDIInj" type="ear" location="BasicJPAJNDIInj.ear"/>
+ 
+<!--       
+        <logging  traceSpecification="Injection=all:JPA=all"
+traceFileName="trace.log"
+maxFileSize="200"
+maxFiles="10"
+traceFormat="BASIC" />
+-->
+        <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</client>

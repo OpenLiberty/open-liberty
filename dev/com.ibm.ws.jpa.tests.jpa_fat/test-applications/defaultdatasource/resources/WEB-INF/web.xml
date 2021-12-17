@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID">
+
+  <display-name>Spec JPA 2.1 Default Data Source</display-name>
+  <description>This web app exercises JPA 2.1 functionality using Default Data Sources</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Spec21DDSServlet">
+    <servlet-name>Spec21DDSServlet</servlet-name>
+    <display-name>Spec JPA 2.1 Default DataSource Servlet</display-name>
+    <description>Servlet used for testing JPA 2.1 using Default Data Source</description>
+    <servlet-class>com.ibm.ws.jpa.fat.defaultds.web.Spec21DDSServlet</servlet-class>
+    <load-on-startup/>
+  </servlet>
+
+  <servlet-mapping id="Spec21DDSServlet">
+    <servlet-name>Spec21DDSServlet</servlet-name>
+    <url-pattern>/Spec21DDSServlet</url-pattern>
+  </servlet-mapping>
+
+  <resource-ref id="ResourceRef_21_1">
+    <res-ref-name>jdbc/jpafat/unmanaged</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref id="ResourceRef_21_2">
+    <res-ref-name>jdbc/jpafat/unmanagednonjta</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+</web-app>
