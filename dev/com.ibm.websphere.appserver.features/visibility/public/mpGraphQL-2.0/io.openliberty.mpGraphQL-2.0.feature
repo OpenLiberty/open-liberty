@@ -25,6 +25,6 @@ Subsystem-Name: MicroProfile GraphQL 2.0
  com.ibm.ws.org.jboss.logging
 #already provided by kernel...
 #com.ibm.ws.org.jboss.jandex, \
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
