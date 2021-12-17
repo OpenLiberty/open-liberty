@@ -1,4 +1,4 @@
-FROM ibmcom/db2:11.5.0.0a
+FROM ibmcom/db2:11.5.7.0
 
 RUN yum update -y
 RUN yum -y install krb5-workstation krb5-libs krb5-auth-dialog
