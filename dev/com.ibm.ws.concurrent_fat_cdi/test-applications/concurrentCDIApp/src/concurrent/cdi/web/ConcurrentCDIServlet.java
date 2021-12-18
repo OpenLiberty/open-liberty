@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -480,6 +482,53 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Interrupt asynchronous and inline asynchronous methods.
+     */
+    @Test
+    public void testInterruptAsyncMethod() throws Exception {
+        // use up first (of 2) maxAsync,
+        Exchanger<Object> method1running = new Exchanger<Object>();
+        CountDownLatch method1blocker = new CountDownLatch(1);
+        CompletableFuture<Boolean> method1future = managedBean.exchangeAndAwait(method1running, TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread method1thread = (Thread) method1running.exchange(method1blocker, TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+        // prepare for inline execution,
+        Exchanger<Object> method3running = new Exchanger<Object>();
+        CountDownLatch method3blocker = new CountDownLatch(1);
+
+        // use up second (of 2) maxAsync to interrupt inline execution
+        Future<String> task2future = injectedExec.submit(() -> {
+            Thread servletThread = (Thread) method3running.exchange(method3blocker, TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            servletThread.interrupt();
+            return "task2successful";
+        });
+
+        CompletableFuture<Boolean> method3future = managedBean.exchangeAndAwait(method3running, TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+        // run inline
+        try {
+            Boolean result = method3future.join();
+            fail("Expecting inline execution to be interrupted. Instead: " + result);
+        } catch (CompletionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        // also interrupt the first async method
+        assertFalse(method1future.isDone());
+        method1thread.interrupt();
+        try {
+            Boolean result = method1future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            fail("Expecting async execution to be interrupted. Instead: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        assertEquals("task2successful", task2future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+    }
+
+    /**
      * From the bean, submit a concurrent task.
      */
     @Test
@@ -678,6 +727,63 @@ public class ConcurrentCDIServlet extends HttpServlet {
         ManagedExecutorService expectedExecutor = InitialContext.doLookup("java:app/env/concurrent/sampleExecutorRef");
         CompletableFuture<Object> future = managedBean.asyncLookup("java:app/env/concurrent/sampleExecutorRef");
         assertEquals(expectedExecutor, future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+    }
+
+    /**
+     * Use the CompletableFuture obtrude methods to replace the result or exception
+     * of asynchronous methods that are in progress, already completed, or queued for execution.
+     */
+    @Test
+    public void testObtrudeAsynchronousMethod() throws Exception {
+        CountDownLatch blocker1 = new CountDownLatch(1);
+        CountDownLatch blocker2 = new CountDownLatch(2);
+        LinkedBlockingQueue<Object> started = new LinkedBlockingQueue<Object>();
+        try {
+            // use up maxAsync of 2
+            CompletableFuture<Boolean> future1 = sessionScopedBean.await(blocker1, TIMEOUT_MS, TimeUnit.MILLISECONDS, started);
+            CompletableFuture<Boolean> future2 = sessionScopedBean.await(blocker2, TIMEOUT_MS, TimeUnit.MILLISECONDS, started);
+            assertNotNull(started.poll(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+            assertNotNull(started.poll(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+
+            CompletableFuture<Executor> future3 = requestScopedBean.getExecutorOfAsyncMethods();
+
+            // obtrude a queued asynchronous method:
+            future3.obtrudeException(new IOException("Fake error to test obtrudeException."));
+
+            // obtrude a running asynchronous method:
+            future2.obtrudeValue(true);
+
+            // obtrude an asynchronous method after it completes with a different value
+            blocker1.countDown();
+            assertEquals(Boolean.TRUE, future1.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+            future1.obtrudeValue(false);
+            assertEquals(Boolean.FALSE, future1.join());
+
+            // obtrude it again, this time with an exception
+            future1.obtrudeException(new IOError(new IOException("Another fake error to test obtrudeException.")));
+
+            try {
+                Boolean result = future1.join();
+                fail("Result should have been obtruded by an Error. Instead: " + result);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof IOError) ||
+                    !(x.getCause().getCause() instanceof IOException))
+                    throw x;
+            }
+
+            assertEquals(Boolean.TRUE, future2.getNow(null));
+
+            try {
+                Executor result = future3.getNow(null);
+                fail("Result should have been obtruded by an Exception. Instead: " + result);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof IOException))
+                    throw x;
+            }
+        } finally {
+            blocker1.countDown();
+            blocker2.countDown();
+        }
     }
 
     /**
