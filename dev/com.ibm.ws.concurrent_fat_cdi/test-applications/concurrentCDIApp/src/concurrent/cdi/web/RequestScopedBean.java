@@ -24,12 +24,15 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.context.RequestScoped;
 
 @ContextServiceDefinition(name = "java:comp/concurrent/txcontextunchanged",
                           propagated = APPLICATION,
                           unchanged = TRANSACTION,
                           cleared = ALL_REMAINING)
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/appContextExecutor",
+                                    context = "java:comp/concurrent/txcontextunchanged")
 @RequestScoped
 public class RequestScopedBean {
     private int number;
