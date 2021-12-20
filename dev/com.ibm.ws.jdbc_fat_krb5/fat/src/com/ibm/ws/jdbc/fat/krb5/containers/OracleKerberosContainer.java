@@ -13,11 +13,14 @@ package com.ibm.ws.jdbc.fat.krb5.containers;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
+import java.time.Duration;
+
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
 
 public class OracleKerberosContainer extends OracleContainer {
 
@@ -32,6 +35,7 @@ public class OracleKerberosContainer extends OracleContainer {
         super(IMAGE_NAME);
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+        super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
         super.withNetwork(network);
         super.withLogConsumer(new SimpleLogConsumer(c, "oracle-krb5"));
     }

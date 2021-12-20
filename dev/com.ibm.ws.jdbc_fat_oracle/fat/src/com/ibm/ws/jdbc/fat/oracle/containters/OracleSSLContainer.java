@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle.containters;
 
+import java.time.Duration;
+
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Custom Oracle SSL Container class
@@ -34,6 +37,7 @@ public class OracleSSLContainer extends OracleContainer {
         super.addExposedPort(TCPS_PORT);
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+        super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
         super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-SSL"));
     }
 
