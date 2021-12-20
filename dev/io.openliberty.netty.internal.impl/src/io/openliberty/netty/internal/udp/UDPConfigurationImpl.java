@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -87,6 +88,8 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
                 Tr.debug(tc, "setting receive buffer to size " + getReceiveBufferSize());
             }
             bootstrap.option(ChannelOption.SO_RCVBUF, getReceiveBufferSize());
+            // see https://stackoverflow.com/questions/28090357/the-receivebuffersize-not-being-honored-udp-packet-truncated
+            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(getReceiveBufferSize()));
         }
         if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)
                 && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {

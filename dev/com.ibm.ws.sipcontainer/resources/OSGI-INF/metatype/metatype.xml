@@ -90,8 +90,10 @@
 		<AD id="sipTasksDispatcher" name="%sip.message.dispatcher" description="%sip.message.dispatcher.desc"
    	        ibm:reference="com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler" ibm:type="pid"
             type="String" required="false"/>
-            
-	
+
+		<AD name="%useNettyTransport.name" description="%useNettyTransport.desc" id="useNettyTransport"
+			required="false" type="Boolean" default="true" ibm:beta="true"/>
+
 	</OCD>
 
 	<Designate pid="com.ibm.ws.sip.container.internal.SipContainerComponent">
@@ -153,7 +155,7 @@
 		
 		<AD name="%addTtl.name" description="%addTtl.desc" id="addTtl"
 			required="true" type="Boolean" default="false" />
-			
+
 	</OCD>
 
 	<Designate pid="com.ibm.ws.sip.container.resolver.DomainResolverImpl">
@@ -442,7 +444,6 @@
             ibm:reference="com.ibm.ws.http.virtualhost"
             ibm:final="true"
             id="virtualhostRef" required="false" type="String" default="default_host"/>
-    
     </OCD>
       <Designate factoryPid="com.ibm.ws.sip.endpoint">
         <Object ocdref="com.ibm.ws.sip.endpoint" />
