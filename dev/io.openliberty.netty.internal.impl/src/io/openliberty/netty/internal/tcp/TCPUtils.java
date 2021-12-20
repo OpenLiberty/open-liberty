@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import java.net.Inet6Address;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -83,6 +86,9 @@ public class TCPUtils {
             final int retryCount) {
 
         ChannelFuture oFuture = null;
+        if (inetHost.equals("*")) {
+            inetHost = "0.0.0.0";
+        }
         if (config.isInbound()) {
             oFuture = ((ServerBootstrapExtended) bootstrap).bind(inetHost, inetPort);
         } else {
@@ -92,10 +98,11 @@ public class TCPUtils {
         if (openListener != null) {
             openFuture.addListener(openListener);
         }
+        final String newHost = inetHost;
 
         openFuture.addListener(future -> {
             if (future.isSuccess()) {
-                
+
                 // add the new channel to the set of active channels, and set a close future to
                 // remove it
                 final Channel channel = openFuture.channel();
@@ -104,17 +111,32 @@ public class TCPUtils {
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NameKey).set(config.getExternalName());
-                channel.attr(ConfigConstants.HostKey).set(inetHost);
+                channel.attr(ConfigConstants.HostKey).set(newHost);
                 channel.attr(ConfigConstants.PortKey).set(inetPort);
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInbound());
 
+                // set up the a helpful log message
+                String hostLogString = newHost == "0.0.0.0" ? "*" : newHost;
+                SocketAddress addr = channel.localAddress();
+                InetSocketAddress inetAddr = (InetSocketAddress)addr;
+                String IPvType = "IPv4";
+                if (inetAddr.getAddress() instanceof Inet6Address) {
+                    IPvType = "IPv6";
+                }
+                if (newHost == "0.0.0.0") {
+                    hostLogString = "*  (" + IPvType + ")";
+                } else {
+                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
+                               + inetAddr.getAddress().getHostAddress() + ")";
+                }
+
                 if (config.isInbound()) {
                     Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                            new Object[] { config.getExternalName(), inetHost, String.valueOf(inetPort) });
+                            new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                                new Object[] { config.getExternalName(), inetHost, String.valueOf(inetPort) });
+                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                     }
                 }
             } else {
@@ -137,15 +159,15 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, bootstrap, config, inetHost, inetPort, openListener, retryCount - 1);
+                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
                 } else {
                     if (config.isInbound()) {
-                        Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), inetHost,
+                        Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
                                 String.valueOf(inetPort), openFuture.cause().getMessage() });
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
-                                    inetHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+                                    newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
                         }
                     }
                 }

@@ -10,31 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.jain.protocol.ip.sip;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.ListeningPointUnavailableException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.SipStack;
-import jain.protocol.ip.sip.UnableToDeleteProviderException;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import com.ibm.sip.util.log.*;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.properties.SipPropertiesMap;
 import com.ibm.ws.sip.stack.transaction.SIPTransactionStack;
+
+import jain.protocol.ip.sip.*;
 
 /**
  * 
@@ -165,7 +153,7 @@ public class SipStackImpl
 		ListeningPointImpl lp = (ListeningPointImpl)listeningPoint;
 		if(! m_stack.getTransportCommLayerMgr().getListeningPoints().contains( lp ))
 		{
-			//if the listenning point is a new one , create it
+			//if the listening point is a new one , create it
 			try
 			{
 				 m_stack.getTransportCommLayerMgr().createSIPListenningConnection(lp);
@@ -235,7 +223,7 @@ public class SipStackImpl
 	}
 	
 	/**
-	 * get The underlyn Timer Object
+	 * get The underlyn Timer ObjectO
 	 * @return - the stack's Timer
 	 */
 	public Timer getTimer()

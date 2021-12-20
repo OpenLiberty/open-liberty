@@ -10,34 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jain.protocol.ip.sip;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.SipEvent;
-import jain.protocol.ip.sip.SipException;
-import jain.protocol.ip.sip.SipListener;
-import jain.protocol.ip.sip.SipListenerAlreadyRegisteredException;
-import jain.protocol.ip.sip.SipListenerNotRegisteredException;
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.SipStack;
-import jain.protocol.ip.sip.TransactionDoesNotExistException;
-import jain.protocol.ip.sip.address.URI;
-import jain.protocol.ip.sip.header.CSeqHeader;
-import jain.protocol.ip.sip.header.CallIdHeader;
-import jain.protocol.ip.sip.header.ContactHeader;
-import jain.protocol.ip.sip.header.ContentTypeHeader;
-import jain.protocol.ip.sip.header.FromHeader;
-import jain.protocol.ip.sip.header.HeaderIterator;
-import jain.protocol.ip.sip.header.RecordRouteHeader;
-import jain.protocol.ip.sip.header.RouteHeader;
-import jain.protocol.ip.sip.header.ToHeader;
-import jain.protocol.ip.sip.header.ViaHeader;
-import jain.protocol.ip.sip.message.Request;
-import jain.protocol.ip.sip.message.Response;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TooManyListenersException;
+import java.util.*;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
@@ -49,6 +22,12 @@ import com.ibm.ws.sip.stack.transaction.transactions.SIPTransactionsModel;
 import com.ibm.ws.sip.stack.transaction.transactions.ct.SIPClientTranaction;
 import com.ibm.ws.sip.stack.transaction.transactions.ct.SIPClientTransactionImpl;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
+
+import jain.protocol.ip.sip.*;
+import jain.protocol.ip.sip.address.URI;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.Request;
+import jain.protocol.ip.sip.message.Response;
 
 /**
  * @author Amir kalron
@@ -137,7 +116,7 @@ public class SipProviderImpl implements SipProvider
 	}
 	
 	
-	/** set the handleing stack */
+	/** set the handling stack */
 	public void setSipStack( SipStackImpl stack )
 	{
 		m_stack = stack ;
