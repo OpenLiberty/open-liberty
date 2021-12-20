@@ -23,7 +23,7 @@ import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.sip.parser.util.InetAddressCache;
 import com.ibm.ws.sip.stack.transaction.transport.connections.*;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
-import com.ibm.ws.sip.stack.transport.sip.SIPConnectionFactoryImplWs;
+import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
 
 import jain.protocol.ip.sip.ListeningPoint;
 
@@ -101,14 +101,20 @@ public class SIPConnectionsModel
 				this,tc,
 				"initSupportedTransports","useChannelFramework");
 		}
-		SIPConnectionFactory factory = SIPConnectionFactoryImplWs.instance();
+		
+		SIPConnectionFactory factory = null;
+        if (GenericEndpointImpl.useNetty()) {
+            factory = com.ibm.ws.sip.stack.transport.sip.netty.SIPConnectionFactoryImplWs.instance();
+        } else {
+            factory = com.ibm.ws.sip.stack.transport.sip.chfw.SIPConnectionFactoryImplWs.instance();
+        }
 		
 		// dynamically load SIPConnectionFactoryImplWs from component sip.stack.ws
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(
 				this,tc,
 				"initSupportedTransports",
-				"loading connection factory class");
+				"loading connection factory class: " + factory);
 		}
 		
 		SIPConnectionFactory udpConnectionFactory;

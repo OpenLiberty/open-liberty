@@ -42,6 +42,7 @@ Import-Package: \
   !javax.servlet.sip*, \
   javax.servlet.*, \
   javax.xml.ws.*;version=!,\
+  io.openliberty.netty.internal*,\
   !*.internal.*, \
   com.ibm.websphere.servlet.request.extended, \
   *
@@ -55,7 +56,7 @@ Import-Package: \
   com.ibm.ws.sip.container.was.SipServletConfiguratorHelperFactory, \
   com.ibm.ws.jain.protocol.ip.sip.SipStackImpl, \
   com.ibm.ws.sip.ar.SipApplicationRouterImpl, \
-  com.ibm.ws.sip.stack.transport.chfw.GenericEndpointImpl, \
+  com.ibm.ws.sip.stack.transport.GenericEndpointImpl, \
   com.ibm.ws.sip.container.was.ExecutorMessageDispatchingHandler, \
   com.ibm.ws.sip.container.resolver.DomainResolverImpl, \
   com.ibm.ws.sip.container.annotation.SipFactoryObjectFactory, \
@@ -71,7 +72,8 @@ Import-Package: \
   com.ibm.ws.sip.container.was.message.SipMessageFactory, \
   com.ibm.ws.sip.container.router.SipApplicationListener, \
   com.ibm.ws.sip.container.converged.SessionContextRegistryImplFactoryImplConverged, \
-  com.ibm.ws.sip.container.was.filters.ApplState
+  com.ibm.ws.sip.container.was.filters.ApplState, \
+  com.ibm.ws.sip.util.FeatureUtil
  
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
@@ -108,4 +110,11 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.wsbytebuffer,\
+	io.openliberty.endpoint,\
+	io.openliberty.io.netty,\
+	io.openliberty.netty.internal,\
+	io.openliberty.io.netty.ssl,\
+	io.netty.handler

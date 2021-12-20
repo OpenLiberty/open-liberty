@@ -778,7 +778,7 @@ public class CoreProperties
 	 */
 	public static final String ADD_IBM_PO_TO_LOOPBACK_MSG = "addIBMPOLBMsg";
 	public static final boolean ADD_IBM_PO_TO_LOOPBACK_ACK_DEFAULT = true;
-	
+
 	/**
      * Load default properties and store them in properties.
      * This is the first properties that are loaded and some properties might be overridden later

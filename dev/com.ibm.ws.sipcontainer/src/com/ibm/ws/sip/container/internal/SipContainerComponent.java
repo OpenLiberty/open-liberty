@@ -41,10 +41,10 @@ import com.ibm.ws.sip.container.router.SipRouter;
 import com.ibm.ws.sip.container.timer.BaseTimerService;
 import com.ibm.ws.sip.container.was.WebsphereLauncherImpl;
 import com.ibm.ws.sip.container.was.message.SipMessageFactory;
-import com.ibm.ws.sip.stack.transport.chfw.GenericEndpointImpl;
+import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
+import com.ibm.ws.sip.stack.transport.GenericServiceConstants;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.*;
 
 /**
  * A declarative services component.
@@ -100,6 +100,9 @@ public class SipContainerComponent {
     /** Indicates whether the SIP router is initialized  */
 	private static boolean s_initialized = false;
 
+	private static final String USE_NETTY = "useNettyTransport";
+
+	private static boolean useNetty = true;
 
 	/**SIP Container OSGi bundle context*/
 	public static ComponentContext getContext() {
@@ -125,7 +128,10 @@ public class SipContainerComponent {
 			if (c_logger.isErrorEnabled())
 				c_logger.error("error.initialize.sip.container");
 		}
-		
+        useNetty = MetatypeUtils.parseBoolean(
+                "sipContainer", USE_NETTY,
+                properties.get(USE_NETTY), true);
+
 		genericEndpointRef.activate(context);
 		sipMessageFactoryRef.activate(context);
 	}
@@ -168,6 +174,9 @@ public class SipContainerComponent {
 		if (c_logger.isTraceDebugEnabled())
 			c_logger.traceDebug("SipContainerComponent modified", properties);
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
+        useNetty = MetatypeUtils.parseBoolean(
+                "sipContainer", USE_NETTY,
+                properties.get(USE_NETTY), true);
 	}
 	
 	/**
@@ -528,5 +537,12 @@ public class SipContainerComponent {
     
     }
 
+    /**
+     * Query if Netty has been enabled for this container
+     * @return true if Netty should be used (instead of the channel framework)
+     */
+    public static boolean useNetty() {
+        return useNetty;
+    }
 
 }

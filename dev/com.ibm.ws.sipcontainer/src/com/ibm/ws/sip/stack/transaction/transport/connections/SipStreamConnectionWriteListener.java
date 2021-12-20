@@ -13,7 +13,7 @@
 package com.ibm.ws.sip.stack.transaction.transport.connections;
 
 /**
- * The interface defnining methid which Stream connection
+ * The interface defining method which Stream connection
  * listeners must implement, like accepting write errors/completions
  *  
  * @author nogat
