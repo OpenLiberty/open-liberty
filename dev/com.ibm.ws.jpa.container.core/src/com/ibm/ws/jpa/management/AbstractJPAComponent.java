@@ -13,6 +13,7 @@ package com.ibm.ws.jpa.management;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.exception.RuntimeWarning;
@@ -53,6 +55,12 @@ public abstract class AbstractJPAComponent
                      JPA_TRACE_GROUP,
                      JPA_RESOURCE_BUNDLE_NAME);
 
+    /**
+     * Quick lookup list of known vendor properties that expect to contain passwords in their matching value
+     */
+    private static final List<String> PASSWORD_PROPS = Arrays.asList("javax.persistence.jdbc.password",
+                                                                     "jakarta.persistence.jdbc.password");
+
     // List of installed application in the form of JPAApplInfo objects.
     protected Map<String, JPAApplInfo> applList = Collections.synchronizedMap(new HashMap<String, JPAApplInfo>());
 
@@ -60,6 +68,19 @@ public abstract class AbstractJPAComponent
 
     // Indicates whether or not the TX callback instance has been registered.
     protected boolean ivTxCallbackRegistered = false; // d515803
+
+    /**
+     * Determines, based on the name of a property, if we expect the value might contain a password.
+     *
+     * @param name property name.
+     * @return true if the property value might be expected to contain a password, otherwise false.
+     */
+    @Sensitive
+    public static final boolean isPassword(String name) {
+        if (name == null || name.isEmpty())
+            return false;
+        return PASSWORD_PROPS.contains(name.toLowerCase()) || name.toLowerCase().contains("password");
+    }
 
     public void initialize()
     {
