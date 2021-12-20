@@ -32,15 +32,15 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 @WebServlet(urlPatterns = "/EmbeddableTestServlet")
 public class EmbeddableTestServlet extends JPATestServlet {
     // Container Managed Transaction Scope
-    @PersistenceContext(unitName = "Entity_JTA")
+    @PersistenceContext(unitName = "ENTITY_JTA")
     private EntityManager cmtsEm;
 
     // Application Managed JTA
-    @PersistenceUnit(unitName = "Entity_JTA")
+    @PersistenceUnit(unitName = "ENTITY_JTA")
     private EntityManagerFactory amjtaEmf;
 
     // Application Managed Resource-Local
-    @PersistenceUnit(unitName = "Entity_RL")
+    @PersistenceUnit(unitName = "ENTITY_RL")
     private EntityManagerFactory amrlEmf;
 
     @PostConstruct
@@ -64,7 +64,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -77,7 +76,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -90,7 +88,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -103,7 +100,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -116,7 +112,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -129,7 +124,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -142,7 +136,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -155,7 +148,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -168,7 +160,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -181,7 +172,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -194,7 +184,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "EmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -207,7 +196,6 @@ public class EmbeddableTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLEmbeddedObjectAOEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 }

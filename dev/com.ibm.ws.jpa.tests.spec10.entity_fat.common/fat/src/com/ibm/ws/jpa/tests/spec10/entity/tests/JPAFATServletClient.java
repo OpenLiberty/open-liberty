@@ -204,6 +204,7 @@ public class JPAFATServletClient extends FATServletClient {
     protected static final JavaArchive buildTestAPIJar() throws Exception {
         final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
         testApiJar.addPackage("com.ibm.ws.testtooling.database");
+        testApiJar.addPackage("com.ibm.ws.testtooling.jpaprovider");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");

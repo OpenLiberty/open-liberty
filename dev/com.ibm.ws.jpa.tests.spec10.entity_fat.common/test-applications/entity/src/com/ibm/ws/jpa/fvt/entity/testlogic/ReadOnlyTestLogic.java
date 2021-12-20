@@ -59,10 +59,15 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
             return;
         }
 
+        // TODO: Hibernate does not support "insertable=false" for primitive types as they try to populate NULL values on em.find()
+        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        if (JPAProviderImpl.HIBERNATE.equals(provider)) {
+            return;
+        }
+
         // Execute Test Case
         try {
             System.out.println("ReadOnlyTestLogic.testReadOnly001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -76,7 +81,7 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
             IReadOnlyEntity new_entity = (IReadOnlyEntity) constructNewEntityObject(targetEntityType);
 
             StringBuffer sb = new StringBuffer();
@@ -104,8 +109,7 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
             System.out.println("Clearing persistence context...");
             jpaResource.getEm().clear();
 
-            System.out.println(
-                               "The object instance should contain all the new values, since JPA does not guerentee the in-memory " +
+            System.out.println("The object instance should contain all the new values, since JPA does not guerentee the in-memory " +
                                "state of the entity object.");
             {
                 // 5 Points
@@ -113,10 +117,9 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
                 int expectedNoInsertIntVal = orig_noInsertIntVal;
                 int expectedNopdatableIntVal = orig_noUpdatableIntVal;
                 int expectedReadOnlyIntVal = orig_readOnlyIntVal;
-                Assert.assertEquals(
-                                    "Assert that the entity's id is 1",
+                Assert.assertEquals("Assert that the entity's id is " + pkey_id,
                                     new_entity.getId(),
-                                    1);
+                                    pkey_id);
 
                 // Test Persistable Values
                 Assert.assertEquals("Assert intVal == " + expectedIntVal, expectedIntVal, new_entity.getIntVal());
@@ -144,23 +147,15 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
                     System.out.println("Joining entitymanager to JTA transaction...");
                     jpaResource.getEm().joinTransaction();
                 }
-                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
+                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), pkey_id);
                 jpaResource.getEm().refresh(find_entity1); // Deals with datacache if enabled to force DB fetch
                 System.out.println("Object returned by find: " + find_entity1);
 
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-                Assert.assertNotSame(
-                                     "Assert find did not return the original object",
-                                     new_entity,
-                                     find_entity1);
-                Assert.assertTrue(
-                                  "Assert entity returned by find is managed by the persistence context.",
-                                  jpaResource.getEm().contains(find_entity1));
-                Assert.assertEquals(
-                                    "Assert that the entity's id is 1",
-                                    find_entity1.getId(),
-                                    1);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity1);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+                Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity1.getId(), pkey_id);
 
                 // Test Persistable Values
                 Assert.assertEquals("Assert intVal == " + expectedIntVal, expectedIntVal, find_entity1.getIntVal());
@@ -186,8 +181,8 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
+                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), pkey_id);
                 jpaResource.getEm().refresh(find_entity1); // Deals with datacache if enabled to force DB fetch
                 System.out.println("Object returned by find: " + find_entity1);
 
@@ -234,23 +229,15 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
                     System.out.println("Joining entitymanager to JTA transaction...");
                     jpaResource.getEm().joinTransaction();
                 }
-                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
+                IReadOnlyEntity find_entity1 = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), pkey_id);
                 jpaResource.getEm().refresh(find_entity1); // Deals with datacache if enabled to force DB fetch
                 System.out.println("Object returned by find: " + find_entity1);
 
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-                Assert.assertNotSame(
-                                     "Assert find did not return the original object",
-                                     new_entity,
-                                     find_entity1);
-                Assert.assertTrue(
-                                  "Assert entity returned by find is managed by the persistence context.",
-                                  jpaResource.getEm().contains(find_entity1));
-                Assert.assertEquals(
-                                    "Assert that the entity's id is 1",
-                                    find_entity1.getId(),
-                                    1);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity1);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+                Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity1.getId(), pkey_id);
 
                 // Test Persistable Values
                 Assert.assertEquals("Assert intVal == " + expectedIntVal, expectedIntVal, find_entity1.getIntVal());
@@ -266,6 +253,33 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().clear();
             }
 
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
+            IReadOnlyEntity find_remove_entity = (IReadOnlyEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), pkey_id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
             throw ae;
@@ -275,57 +289,5 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("ReadOnlyTestLogic.testReadOnly001(): End");
         }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("ReadOnlyTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ReadOnlyEntityEnum targetEntityAType = ReadOnlyEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("ReadOnlyTestLogic.testTemplate(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } catch (AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException(t);
-        } finally {
-            System.out.println("ReadOnlyTestLogic.testTemplate(): End");
-        }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), ReadOnlyEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

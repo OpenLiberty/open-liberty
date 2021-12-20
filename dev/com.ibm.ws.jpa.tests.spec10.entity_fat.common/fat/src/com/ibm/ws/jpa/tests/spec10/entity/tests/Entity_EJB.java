@@ -20,11 +20,14 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.entity.tests.ejb.sf.BasicAnnotation_EJB_SF_TestServlet;
 import com.ibm.ws.jpa.fvt.entity.tests.ejb.sf.DatatypeSupport_EJB_SF_TestServlet;
@@ -59,6 +62,8 @@ import com.ibm.ws.jpa.fvt.entity.tests.ejb.sl.PKGenerator_EJB_SL_TestServlet;
 import com.ibm.ws.jpa.fvt.entity.tests.ejb.sl.ReadOnly_EJB_SL_TestServlet;
 import com.ibm.ws.jpa.fvt.entity.tests.ejb.sl.Serializable_EJB_SL_TestServlet;
 import com.ibm.ws.jpa.fvt.entity.tests.ejb.sl.Versioning_EJB_SL_TestServlet;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -75,6 +80,9 @@ import componenttest.topology.utils.PrivHelper;
 @Mode(TestMode.FULL)
 public class Entity_EJB extends JPAFATServletClient {
 
+    @Rule
+    public static SkipRule skipRule = new SkipRule();
+
     private final static String CONTEXT_ROOT = "Entity10EJB";
     private final static String RESOURCE_ROOT = "test-applications/entity/";
     private final static String appFolder = "ejb";
@@ -87,8 +95,8 @@ public class Entity_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA10_ENTITY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA10_ENTITY_CREATE_${dbvendor}.ddl");
+        dropSet.add("JPA10_ENTITY_${provider}_DROP_${dbvendor}.ddl");
+        createSet.add("JPA10_ENTITY_${provider}_CREATE_${dbvendor}.ddl");
     }
 
     @Server("JPA10EJBEntityServer")
@@ -127,9 +135,7 @@ public class Entity_EJB extends JPAFATServletClient {
                     @TestServlet(servlet = PKGenerator_EJB_SFEX_TestServlet.class, path = CONTEXT_ROOT + "/" + "PKGenerator_EJB_SFEX_TestServlet"),
                     @TestServlet(servlet = ReadOnly_EJB_SFEX_TestServlet.class, path = CONTEXT_ROOT + "/" + "ReadOnly_EJB_SFEX_TestServlet"),
                     @TestServlet(servlet = Serializable_EJB_SFEX_TestServlet.class, path = CONTEXT_ROOT + "/" + "Serializable_EJB_SFEX_TestServlet"),
-                    @TestServlet(servlet = Versioning_EJB_SFEX_TestServlet.class, path = CONTEXT_ROOT + "/" + "Versioning_EJB_SFEX_TestServlet"),
-
-    //
+                    @TestServlet(servlet = Versioning_EJB_SFEX_TestServlet.class, path = CONTEXT_ROOT + "/" + "Versioning_EJB_SFEX_TestServlet")
     })
     public static LibertyServer server;
 
@@ -151,6 +157,8 @@ public class Entity_EJB extends JPAFATServletClient {
             server.setConfigUpdateTimeout(120 * 1000);
         }
 
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -165,19 +173,25 @@ public class Entity_EJB extends JPAFATServletClient {
 
         System.out.println(Entity_Web.class.getName() + " Setting up database tables...");
 
+        DatabaseVendor database = getDbVendor();
+        JPAPersistenceProvider provider = AbstractFATSuite.provider;
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipRule.setDatabase(database);
+        skipRule.setProvider(provider);
     }
 
     private static void setupTestApplication() throws Exception {
@@ -193,6 +207,15 @@ public class Entity_EJB extends JPAFATServletClient {
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
+
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            ejbApp.move("/META-INF/persistence-oracle-21.xml", "/META-INF/persistence.xml");
+        }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
@@ -216,6 +239,19 @@ public class Entity_EJB extends JPAFATServletClient {
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
 
+        // setup the thirdparty classloader for Hibernate and OpenJPA
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
+        }
+
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
@@ -232,9 +268,10 @@ public class Entity_EJB extends JPAFATServletClient {
         try {
             // Clean up database
             try {
+                JPAPersistenceProvider provider = AbstractFATSuite.provider;
                 final Set<String> ddlSet = new HashSet<String>();
                 for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                    ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
                 }
                 executeDDL(server, ddlSet, true);
             } catch (Throwable t) {

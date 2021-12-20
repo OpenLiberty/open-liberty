@@ -96,6 +96,7 @@ public class SerializableDatatypeSupportTestEntity implements IDatatypeSupportTe
 
     // Serializable Objects
     // @Basic(fetch=FetchType.EAGER)
+    @Lob
     private SerializableClass serializableClass;
 
     // Transient String
