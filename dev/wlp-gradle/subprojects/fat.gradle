@@ -536,3 +536,8 @@ task buildandrun {
  dependsOn buildfat
  dependsOn runfat
 }
+
+task buildFatAndRelease {
+  dependsOn buildfat
+  dependsOn release
+}
