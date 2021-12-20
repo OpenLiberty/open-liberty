@@ -35,7 +35,7 @@ public class TestSuiteXmlParser extends DefaultHandler {
     public List<TestSuiteResult> getResults() {
         return results;
     }
-
+    
     @Override
     public void startDocument() throws SAXException {
     }
@@ -95,4 +95,5 @@ public class TestSuiteXmlParser extends DefaultHandler {
                 break;
         }
     }
+
 }

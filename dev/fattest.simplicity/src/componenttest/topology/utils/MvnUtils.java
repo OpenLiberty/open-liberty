@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -94,6 +96,7 @@ public class MvnUtils {
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
     private static final String MVN_INSTALL = "install";
+    private static final String MVN_DEPENDENCY = "dependency:list";
 
     private static final String SUREFIRE_REPORTS = "surefire-reports";
     private static final String TESTNG_REPORTS = SUREFIRE_REPORTS + "/junitreports";
@@ -311,6 +314,48 @@ public class MvnUtils {
         stringArrayList.add(mvn);
         stringArrayList.add(MVN_CLEAN); //TODO do we always want to clean?
         stringArrayList.add(MVN_TEST);
+        stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
+        stringArrayList.add("-Dtck_server=" + getServerName());
+        stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
+        stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_port=" + getPort());
+        stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
+        stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
+        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
+
+        stringArrayList.addAll(getJarCliProperties());
+
+        // The cmd below is a base for running the TCK as a whole for this project.
+        // It is possible to use other Testng control xml files (and even generate them
+        // based on examining the TCK jar) in which case the value for suiteXmlFile would
+        // be different.
+        stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+
+        // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
+        stringArrayList.add("-B");
+
+        // add any additional properties passed
+        for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
+            stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
+        }
+
+        String[] cmd = stringArrayList.toArray(new String[0]);
+        return cmd;
+    }
+
+    /**
+     * Generate the array of Strings which will be used to run the "mvn dependency:list" command with all the appropriate parameters
+     *
+     * @return           an array of Strings representing the command to be run
+     * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
+     */
+    private String[] getMvnDependencyCommandArray() throws Exception {
+        String mvn = getMvn();
+
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add(mvn);
+        stringArrayList.add(MVN_DEPENDENCY);
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
         stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
@@ -651,14 +696,24 @@ public class MvnUtils {
                         + "see: ...autoFVT/results/" + getMvnTestOutputFileName() + " for more details");
         }
 
+        String[] mvnDependencyList = getMvnDependencyCommandArray();
+
+        runCmd(mvnDependencyList, getTCKRunnerDir(), getMvnDependencyOutputFile());
         return rc;
     }
 
-    /**
+        /**
      * @return a File which represents the mvn output when "install" is run
      */
     private static File getMvnInstallOutputFile() {
         return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + RepeatTestFilter.getRepeatActionsAsString());
+    }
+
+    /**
+     * @return a File which represents the mvn output when "dependency:list" is run
+     */
+    private static File getMvnDependencyOutputFile() {
+        return new File(getResultsDir(), MVN_FILENAME_PREFIX + "dependency");
     }
 
     /**
@@ -1061,7 +1116,7 @@ public class MvnUtils {
     }
 
     public static void preparePublicationFile() {
-        Path outputPath = Paths.get("results", "CertificationResults.txt");
+        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");        
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -1089,17 +1144,31 @@ public class MvnUtils {
                 saxParser.parse(xmlFile, xmlParser);
             }
 
-            output.write("Summary" + System.lineSeparator() + System.lineSeparator());
-            output.write("Product Name, Version and download URL (if applicable): " + System.lineSeparator());
-            output.write("Specification Name, Version and download URL: " + System.lineSeparator());
-            output.write("Public URL of TCK Results Summary: " + System.lineSeparator());
-            output.write("Java runtime used to run the implementation: " + System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ") + System.lineSeparator());
-            output.write("Summary of the information for the certification environment, operating system, cloud: " + System.getProperty("os.name") + System.lineSeparator());
+            String adocContent= "";
+            String MPversion = "";
 
-            output.write(System.lineSeparator());
+            String[] specParts = getSpec();
+            String specName = capitalise(specParts[0]);
+            String MPSpecLower = (specName.toLowerCase()).replace(" ","-");
+            String specVersion = specParts[1];
+            String rcVersion = specParts[2];
 
-            output.write("Java "+ javaInfo.majorVersion() +" Test results:" + System.lineSeparator());
+            Date date = new Date();
+            SimpleDateFormat yearNo = new SimpleDateFormat("yy");
+            SimpleDateFormat monthNo = new SimpleDateFormat("MM");
+            String year = yearNo.format(date);
+            String month = monthNo.format(date);
 
+            String OLVersion = year+".0.0."+month;
+            String osVersion = System.getProperty("os.name");
+            String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
+            String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
+            String[] documentParts = {":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",specName, " ", specVersion, ".\n\n== Open Liberty ",OLVersion," - MicroProfile ",specName," ", specVersion," Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",OLVersion,"/openliberty-runtime-",OLVersion,".zip[Open Liberty ",OLVersion,"]\n","* Specification Name, Version and download URL:\n+\n","link:https://download.eclipse.org/microprofile/microprofile-",MPSpecLower, "-",specVersion,rcVersion, "/microprofile-",MPSpecLower,"-",specVersion,rcVersion,".html[MicroProfile ",specName," ",specVersion,rcVersion,"]\n\n* Public URL of TCK Results Summary:\n+\n","link:",OLVersion,"-TCKResults.html[TCK results summary]\n\n","* Java runtime used to run the implementation:\n+\nJava ",javaMajorVersion, ": ",javaVersion,"\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n","Java ", javaMajorVersion,": ",osVersion};
+            
+            for(String part : documentParts){
+                adocContent += part;
+            }
+            output.write(adocContent + "\n\nJava "+ javaMajorVersion +" Test results:\n\n+ [source,xml]\n----\n");
             for (TestSuiteResult result : xmlParser.getResults()) {
                 output.write(result.toString());
             }
@@ -1108,5 +1177,63 @@ public class MvnUtils {
         } catch (SAXException e) {
              throw new RuntimeException(e);
         }
+    }
+
+    public static String[] getSpec(){
+        Pattern specNamePattern = Pattern.compile("microprofile-(.*?)-tck:jar", Pattern.DOTALL);
+        String specName = "";
+        String specVersion = "";
+        String RC = "";
+        String[] parts = {};
+        String[] returnArray = {"","",""};
+        Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile",  Pattern.DOTALL);
+        try (BufferedReader br = new BufferedReader(new FileReader("results/mvnOutput_dependency"))) 
+        {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) 
+            {
+                if(sCurrentLine.contains("-tck:jar")){
+                    Matcher nameMatcher = specNamePattern.matcher(sCurrentLine);
+                    Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
+                    if (nameMatcher.find()) {
+                        specName = nameMatcher.group(1).replaceAll("-"," ");
+                    }
+                    if(versionMatcher.find()) {
+                        specVersion = versionMatcher.group(1);
+                        if(specVersion.contains("-RC")){
+                            parts = specVersion.split("-RC");
+                            RC = parts[1];
+                            specVersion = parts[0];
+                        }
+                        returnArray[0] = specName; returnArray[1] = specVersion; returnArray[2] = ("-RC"+RC);
+                        return returnArray;
+                    }
+                }
+            }
+        }
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        return returnArray;
+    }
+    
+
+    public static String capitalise(String spec){
+        char[] charArray = spec.toCharArray();
+        boolean foundSpace = true;
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        spec = String.valueOf(charArray);
+        return spec;
     }
 }
