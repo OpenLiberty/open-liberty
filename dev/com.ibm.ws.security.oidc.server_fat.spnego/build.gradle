@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 configurations {
   derbyJar
   mongoJavaDriver
@@ -21,14 +23,18 @@ dependencies {
   requiredLibs project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                project(':com.ibm.ws.org.apache.commons.lang3'),
                project(':com.ibm.ws.security.jaas.common'),
-               project(':com.ibm.ws.security.oauth.oidc_fat.common'), 
+               project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+               project(':io.openliberty.org.apache.xercesImpl'),
                'jtidy:jtidy:4aug2000r7-dev',
-               'org.apache.httpcomponents:httpclient:4.5.4',
-               'org.apache.sshd:sshd-common:2.5.1',
-               'org.apache.sshd:sshd-core:2.5.1',
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'org.apache.httpcomponents:httpclient:4.5.13',
+               'org.apache.httpcomponents:httpmime:4.5.13',
                'org.apache.sshd:sshd-scp:2.5.1',
-               'net.sourceforge.htmlunit:htmlunit:2.44.0',
-               'rhino:js:1.6R5'
+               'org.brotli:dec:0.1.2',
+               'rhino:js:1.6R5',
+               'xalan:xalan:2.7.2'
 }
 
 /******************************************************************

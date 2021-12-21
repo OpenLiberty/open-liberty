@@ -18,7 +18,12 @@ dependencies {
                'org.apache.sshd:sshd-core:2.5.1',
                'org.apache.sshd:sshd-scp:2.5.1',
                'net.sourceforge.htmlunit:htmlunit:2.44.0',
-               'rhino:js:1.6R5'
+               'rhino:js:1.6R5',
+               project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
+               'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.logging'), // 1.2 (was 1.1.1)
+               project(':com.ibm.ws.org.apache.commons.lang3') // 3.8 (was ????)
 }
 
 /******************************************************************
