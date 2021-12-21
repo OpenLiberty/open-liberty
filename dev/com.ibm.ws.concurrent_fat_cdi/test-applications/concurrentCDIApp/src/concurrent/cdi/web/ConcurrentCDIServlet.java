@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -49,6 +50,7 @@ import java.util.function.BiConsumer;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -1188,6 +1190,215 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Verify that transaction context is propagated to an asynchronous method,
+     * per configuration of the ManagedExecutorService's ContextServiceDefinition.
+     */
+    // TODO @Test
+    public void testTransactionContextPropagatedToAsyncMethod() throws Exception {
+        // Use up maxAsync (1) for the managed executor so that the subsequent asynchronous
+        // method can run upon join that is attempted from a different transaction.
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
+        CountDownLatch blocker = new CountDownLatch(1);
+        executor.submit(() -> blocker.await(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+        try {
+            CompletableFuture<Entry<Object, Integer>> future;
+            Object tx1key, tx2key;
+
+            tran.begin();
+            try {
+                tx1key = tranSyncRegistry.getTransactionKey();
+                future = appScopedBean.getTransactionInfoAndCommit();
+
+                tm.suspend();
+            } finally {
+                if (tranSyncRegistry.getTransactionStatus() == Status.STATUS_ACTIVE)
+                    tran.rollback();
+            }
+
+            tran.begin();
+            try {
+                tx2key = tranSyncRegistry.getTransactionKey();
+
+                Entry<Object, Integer> txInfo = future.join(); // run inline
+                assertEquals(tx1key, txInfo.getKey());
+                assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), txInfo.getValue());
+
+                // Transaction context must be restored afterward
+                assertEquals(tx2key, tranSyncRegistry.getTransactionKey());
+                assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+            } finally {
+                tran.rollback();
+            }
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
+     * Verify that transaction context is propagated to an asynchronous task,
+     * per configuration of the ManagedExecutorService's ContextServiceDefinition.
+     */
+    @Test
+    public void testTransactionContextPropagatedToAsyncTask() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
+
+        // In order to prevent overlap of the transaction on the submitter thread and
+        // the thread of execution, we are making both run on the same managed executor,
+        // which has maxAsync of 1.
+        Future<Entry<Object, Future<Entry<Object, Integer>>>> submitterFuture = executor.submit(() -> {
+            tran.begin();
+            try {
+                Object txKeyExpected = tranSyncRegistry.getTransactionKey();
+                Future<Entry<Object, Integer>> future = executor.submit(() -> {
+                    Object txKey = tranSyncRegistry.getTransactionKey();
+                    int txStatus = tran.getStatus();
+                    tran.commit();
+                    return new SimpleEntry<Object, Integer>(txKey, txStatus);
+                });
+
+                tm.suspend();
+
+                return new SimpleEntry<Object, Future<Entry<Object, Integer>>>(txKeyExpected, future);
+            } finally {
+                if (tran.getStatus() == Status.STATUS_ACTIVE)
+                    tran.rollback();
+            }
+        });
+
+        Entry<Object, Future<Entry<Object, Integer>>> submitterResults = submitterFuture.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+        assertNotNull(submitterResults);
+
+        Object txKeyExpected = submitterResults.getKey();
+        Future<Entry<Object, Integer>> future = submitterResults.getValue();
+
+        Entry<Object, Integer> results = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        assertNotNull(results);
+
+        assertEquals(txKeyExpected, results.getKey());
+        assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), results.getValue());
+    }
+
+    /**
+     * Verify that transaction context is propagated to an inline asynchronous task,
+     * per configuration of the ManagedExecutorService's ContextServiceDefinition.
+     */
+    @Test
+    public void testTransactionContextPropagatedToAsyncTaskInline() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
+
+        // In order to prevent overlap of the transaction on the submitter thread and
+        // the thread of execution, we are making both run on the same managed executor,
+        // which has maxAsync of 1.
+        Future<Entry<Object, Future<Entry<Object, Integer>>>> submitterFuture = executor.submit(() -> {
+            tran.begin();
+            try {
+                Object txKeyExpected = tranSyncRegistry.getTransactionKey();
+                Future<Entry<Object, Integer>> future = executor.submit(() -> {
+                    Object txKey = tranSyncRegistry.getTransactionKey();
+                    int txStatus = tran.getStatus();
+                    tran.commit();
+                    return new SimpleEntry<Object, Integer>(txKey, txStatus);
+                });
+
+                tm.suspend();
+
+                return new SimpleEntry<Object, Future<Entry<Object, Integer>>>(txKeyExpected, future);
+            } finally {
+                if (tran.getStatus() == Status.STATUS_ACTIVE)
+                    tran.rollback();
+            }
+        });
+
+        Entry<Object, Future<Entry<Object, Integer>>> submitterResults = submitterFuture.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+        assertNotNull(submitterResults);
+
+        Object txKeyExpected = submitterResults.getKey();
+        Future<Entry<Object, Integer>> future = submitterResults.getValue();
+
+        Entry<Object, Integer> results = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        assertNotNull(results);
+
+        assertEquals(txKeyExpected, results.getKey());
+        assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), results.getValue());
+    }
+
+    /**
+     * Verify that transaction context is propagated to a completion stage action,
+     * per the configuration of the managed executor's ContextServiceDefinition.
+     */
+    // TODO @Test
+    public void testTransactionContextPropagatedToCompletableFuture() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
+        Object txKey;
+        CompletableFuture<Object> stage1 = executor.newIncompleteFuture();
+        CompletableFuture<?> stage2;
+        tran.begin();
+        try {
+            assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+            txKey = tranSyncRegistry.getTransactionKey();
+
+            stage2 = stage1.thenAcceptAsync(expectedTxKey -> {
+                try {
+                    // transaction context must be propagated to the thread
+                    assertEquals(expectedTxKey, tranSyncRegistry.getTransactionKey());
+                    assertEquals(Status.STATUS_ACTIVE, tranSyncRegistry.getTransactionStatus());
+                    tran.commit();
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            tm.suspend();
+        } finally {
+            if (tranSyncRegistry.getTransactionStatus() == Status.STATUS_ACTIVE)
+                tran.rollback();
+        }
+
+        assertTrue(stage1.complete(txKey));
+        assertNull(stage2.get());
+    }
+
+    /**
+     * Verify that transaction context is propagated to completion stages that
+     * obtained via ContextService.withContextCapture.
+     */
+    // TODO @Test
+    public void testTransactionContextPropagatedWithContextCapture() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/txcontext");
+
+        Object txKey;
+
+        CompletableFuture<Object> stage1 = new CompletableFuture<Object>();
+        CompletableFuture<Object> stage1copy = contextSvc.withContextCapture(stage1);
+        CompletableFuture<Void> stage2;
+        tran.begin();
+        try {
+            txKey = tranSyncRegistry.getTransactionKey();
+            stage2 = stage1copy.thenAcceptAsync(txKeyExpected -> {
+                assertEquals(txKeyExpected, tranSyncRegistry.getTransactionKey());
+                try {
+                    assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+                    tran.commit();
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            tm.suspend();
+        } finally {
+            if (tranSyncRegistry.getTransactionStatus() == Status.STATUS_ACTIVE)
+                tran.rollback();
+        }
+
+        assertTrue(stage1.complete(txKey));
+
+        // Surface any errors that occur when stage2 tests transaction context propagation
+        assertNull(stage2.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+    }
+
+    /**
      * Verify that transaction context is left unchanged per the ContextServiceDefinition configuration.
      */
     @Test
@@ -1211,6 +1422,33 @@ public class ConcurrentCDIServlet extends HttpServlet {
         }
 
         contextualConsumer.accept(Status.STATUS_NO_TRANSACTION, null);
+    }
+
+    /**
+     * Verify that transaction context is left unchanged per the ContextServiceDefinition configuration,
+     * and allows an inline completion stage action to run in the transaction that is already on the thread.
+     */
+    //TODO @Test
+    public void testTransactionContextUnchangedForInlineCompletionStageAction() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
+
+        CompletableFuture<Object> stage1 = executor.newIncompleteFuture();
+        CompletableFuture<Void> stage2 = stage1.thenAccept(txKeyExpected -> {
+            assertEquals(txKeyExpected, tranSyncRegistry.getTransactionKey());
+            try {
+                assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tran.begin();
+        try {
+            assertTrue(stage1.complete(tranSyncRegistry.getTransactionKey()));
+            assertNull(stage2.join());
+        } finally {
+            tran.rollback();
+        }
     }
 
     /**

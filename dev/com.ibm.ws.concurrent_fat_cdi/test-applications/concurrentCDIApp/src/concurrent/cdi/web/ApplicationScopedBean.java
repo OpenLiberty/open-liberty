@@ -14,6 +14,8 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
 import java.io.Serializable;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -21,8 +23,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -31,6 +36,9 @@ import javax.naming.NamingException;
 @ContextServiceDefinition(name = "java:app/concurrent/txcontext",
                           propagated = TRANSACTION,
                           cleared = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:module/concurrent/txexecutor",
+                           context = "java:app/concurrent/txcontext",
+                           maxAsync = 1)
 public class ApplicationScopedBean implements Serializable {
     private static final long serialVersionUID = -2075274815197982538L;
 
@@ -67,6 +75,25 @@ public class ApplicationScopedBean implements Serializable {
 
     public char getCharacter() {
         return character;
+    }
+
+    /**
+     * Obtain the transaction key and status and then commit the active transaction.
+     */
+    @Asynchronous(executor = "java:module/concurrent/txexecutor")
+    public CompletableFuture<Entry<Object, Integer>> getTransactionInfoAndCommit() {
+        try {
+            TransactionSynchronizationRegistry tranSyncRegistry = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+            Object txKey = tranSyncRegistry.getTransactionKey();
+            int txStatus = tranSyncRegistry.getTransactionStatus();
+
+            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+            tx.commit();
+
+            return Asynchronous.Result.complete(new SimpleEntry<Object, Integer>(txKey, txStatus));
+        } catch (Exception x) {
+            throw new CompletionException(x);
+        }
     }
 
     /**
