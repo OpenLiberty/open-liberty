@@ -18,8 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.wink.client.ClientResponse;
-import org.apache.wink.client.RestClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +35,9 @@ import componenttest.topology.utils.HttpUtils;
 public class HandlerRuleTest {
     @Server("HandlerRuleTestServer")
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("HandlerRuleTestServer");
-    private RestClient client;
 
     @Before
     public void setUp() throws Exception {
-        client = new RestClient();
         server.copyFileToLibertyServerRoot("", "addNumbersClientTest/AddNumbers.wsdl");
         //server.installUserBundle("TestHandlerRuleHandler_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "handlerRuleBundle", "com.ibm.ws.handlerrulebundle.myhandler");
@@ -58,6 +54,7 @@ public class HandlerRuleTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
+            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }

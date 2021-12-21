@@ -53,6 +53,7 @@ public class TransportSecurityUsingDispatchClientCertTest extends AbstractJaxWsT
     @AfterClass
     public static void afterAllTests() throws Exception {
         if (server != null && server.isStarted()) {
+            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }

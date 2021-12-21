@@ -60,8 +60,7 @@ public class HandlerChainTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.removeDropinsApplications("testHandlerClient.war", "testHandlerProvider.war");
-//            server.clearLogMarks();
+            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }
@@ -115,10 +114,10 @@ public class HandlerChainTest {
             throw se;
         }
         // Uninstall Applications
-        server.removeDropinsApplications("testHandlerClient.war", "testHandlerClientWithoutXML.war", "testHandlerProvider.war");
+        server.deleteAllDropinApplications();
         
         // Test invoke sequence
-        assertStatesExisted(new String[] {
+        assertStatesExistedFromMark(true, new String[] {
                                                               "com.ibm.samples.jaxws.handler.TestSOAPHandler: handle inbound message",
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle inbound message",
                                                               "com.ibm.samples.jaxws.handler.TestLogicalHandler: handle outbound message",
@@ -138,7 +137,7 @@ public class HandlerChainTest {
         //in InHandler1 handlemessage() method!! : 3 : IN
         //in INHandler2 handlemessage() method!! : 2 : IN
         //in InHandler3 handlemessage() method!  : 1 : IN
-        assertStatesExisted(new String[] {
+        assertStatesExistedFromMark(true, new String[] {
                                                               "in InHandler1 handlemessage method",
                                                               "in INHandler2 handlemessage method",
                                                               "in InHandler3 handlemessage method",

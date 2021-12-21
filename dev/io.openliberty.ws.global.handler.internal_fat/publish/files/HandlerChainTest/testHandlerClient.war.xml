@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<archive>
-    <dir sourceOnDisk="${server.output.dir}/testHandlerClient/WEB-INF" targetInArchive="/WEB-INF" />
-    <dir sourceOnDisk="${server.output.dir}/testHandlerClient/META-INF" targetInArchive="/META-INF" />
-</archive>
