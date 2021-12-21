@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ public class CustomExceptionMapperRegister implements JaxRsProviderRegister {
         if (!clientSide) {
             if (getAddCustomExceptionMapperFlag(providers))
             {
-                providers.add(new CustomWebApplicationExceptionMapper());
+                CustomWebApplicationExceptionMapper customExceptionMapper = new CustomWebApplicationExceptionMapper();
+                customExceptionMapper.setPrintStackTrace(false); // set to 'false' to avoid printing response errors to Messages.log
+                providers.add(customExceptionMapper);
             }
         }
 
