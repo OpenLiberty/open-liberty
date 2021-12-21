@@ -461,7 +461,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor;
-        if (action instanceof ContextualSupplier) {
+        if (action instanceof ContextualRunnable) {
             ContextualRunnable r = (ContextualRunnable) action;
             contextDescriptor = r.getContextDescriptor();
             action = r.getAction();
