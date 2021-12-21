@@ -69,6 +69,12 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableFailover complete");
     }
 
+    public void setupForNonRecoverableBatchFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableBatchFailover");
+        setupTestParameters(request, response, TestType.RUNTIME, -33, 12, 1);
+        System.out.println("FAILOVERSERVLET: setupForNonRecoverableBatchFailover complete");
+    }
+
     public void setupForConnectFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForConnectFailover");
         setupTestParameters(request, response, TestType.CONNECT, 0, 0, 1);
