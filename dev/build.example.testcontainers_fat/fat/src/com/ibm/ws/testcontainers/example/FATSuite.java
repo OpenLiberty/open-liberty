@@ -78,6 +78,6 @@ public class FATSuite {
      * In this example suite I am going to use a different container for each example.
      */
 //    @ClassRule
-//    public static PostgreSQLContainer container = new PostgreSQLContainer("postgres:9.6.12");
+//    public static PostgreSQLContainer container = new PostgreSQLContainer("postgres:14.1-alpine");
 
 }

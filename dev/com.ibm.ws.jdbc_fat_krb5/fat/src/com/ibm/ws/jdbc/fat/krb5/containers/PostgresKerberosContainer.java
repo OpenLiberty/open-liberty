@@ -30,7 +30,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private static final Class<?> c = PostgresKerberosContainer.class;
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "aguibert/krb5-postgresql:1.0";
+    private static final String IMAGE = "kyleaure/postgres-krb5:1.0";
     private static final DockerImageName postgresImage = DockerImageName.parse(IMAGE)
                     .asCompatibleSubstituteFor("postgres");
 

@@ -116,8 +116,8 @@ public class DatabaseContainerFactory {
                     Method acceptDB2License = cont.getClass().getMethod("acceptLicense");
                     acceptDB2License.invoke(cont);
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
-                    Method withStartupTimeout = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeout.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15));
+                    Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
+                    withStartupTimeoutDB2.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15));
                     break;
                 case Derby:
                     break;
@@ -127,6 +127,9 @@ public class DatabaseContainerFactory {
                     //Keep behavior the same as we did before by using a SID instead of pluggable db
                     Method usingSid = cont.getClass().getMethod("usingSid");
                     usingSid.invoke(cont);
+                    //Add startup timeout since Oracle tends to take longer than the default 3 minutes on build machines.
+                    Method withStartupTimeoutOracle = cont.getClass().getMethod("withStartupTimeout", Duration.class);
+                    withStartupTimeoutOracle.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
                     break;
                 case Postgres:
                     //This allows postgres by default to participate in XA transactions (2PC).

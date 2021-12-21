@@ -31,9 +31,9 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-    // The Dockerfile for 'aguibert/couchdb-ssl:1.0' can be found/rebuilt in the cloudant_fat project
+    // The Dockerfile for 'kyleaure/couchdb-ssl:1.0' can be found/rebuilt in the cloudant_fat project
     @ClassRule
-    public static CouchDBContainer couchdb = new CouchDBContainer("aguibert/couchdb-ssl:1.0")
+    public static CouchDBContainer couchdb = new CouchDBContainer("kyleaure/couchdb-ssl:1.0")
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "couchdb"));
 
 }

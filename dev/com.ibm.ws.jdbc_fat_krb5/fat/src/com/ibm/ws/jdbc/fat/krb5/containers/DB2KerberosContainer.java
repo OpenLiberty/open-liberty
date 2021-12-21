@@ -27,7 +27,7 @@ public class DB2KerberosContainer extends Db2Container {
 
     private static final Class<?> c = DB2KerberosContainer.class;
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "aguibert/krb5-db2:1.0";
+    private static final String IMAGE = "kyleaure/db2-krb5:1.0";
     private static final DockerImageName db2Image = DockerImageName.parse(IMAGE)
                     .asCompatibleSubstituteFor("ibmcom/db2");
 

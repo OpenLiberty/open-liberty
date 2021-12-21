@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
 import java.util.Properties;
 
 import org.junit.AfterClass;
@@ -25,6 +26,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
 import oracle.jdbc.pool.OracleDataSource;
 
 @RunWith(Suite.class)
@@ -46,6 +48,7 @@ public class FATSuite {
     private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe");
     public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
                     .usingSid()
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
 
     public static OracleContainer getSharedOracleContainer() {

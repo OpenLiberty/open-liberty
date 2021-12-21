@@ -79,7 +79,7 @@ public class DockerfileTest {
      * You will notice that everything else is configured the same as in the regular ContainersTest test class.
      */
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>("kyleaure/postgres-test-table:2.0")
+    public static GenericContainer<?> container = new GenericContainer<>("kyleaure/postgres-test-table:3.0")
                     .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)

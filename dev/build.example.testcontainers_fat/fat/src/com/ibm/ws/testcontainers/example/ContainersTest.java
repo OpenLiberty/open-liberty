@@ -69,7 +69,7 @@ public class ContainersTest extends FATServletClient {
      * have been used here. This is just an example of how to setup a GenericContainer.
      */
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>("postgres:9.6.12")
+    public static GenericContainer<?> container = new GenericContainer<>("postgres:14.1-alpine")
                     .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)

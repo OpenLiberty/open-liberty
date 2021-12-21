@@ -42,7 +42,7 @@ public class PostgreSQLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:11.2-alpine")
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:14.1-alpine")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
