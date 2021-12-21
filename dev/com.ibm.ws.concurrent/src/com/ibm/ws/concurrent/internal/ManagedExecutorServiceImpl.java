@@ -613,7 +613,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
-    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation) {
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation) {
         return new AsyncMethod<>(invoker, invocation, this);
     }
 

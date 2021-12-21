@@ -12,6 +12,8 @@ package com.ibm.ws.concurrent.internal;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,9 +33,13 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  */
 public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
     /**
-     * Completion stage action that runs the asynchronous method.
+     * Completion stage action that runs the asynchronous method and
+     * returns the stage that the asynchronous method returns.
+     * Often the asynchronous method will return the same completion stage
+     * that is returned to the application, but it has the choice of
+     * returning a different stage.
      */
-    private final BiFunction<I, CompletableFuture<T>, T> action;
+    private final BiFunction<I, CompletableFuture<T>, CompletionStage<T>> action;
 
     /**
      * Thread context that is captured when the asynchronous method is requested,
@@ -66,7 +72,7 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
      * @param invocation the interceptor's InvocationContext that will be supplied to the BiFunction.
      * @param executor   WSManagedExecutorService to submit the asynchronous method to.
      */
-    public AsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation, Executor executor) {
+    public AsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation, Executor executor) {
         super(executor, supportsAsync(executor));
 
         if (JAVA8)
@@ -79,6 +85,20 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
         this.invocation = invocation;
 
         ((Executor) futureRef).execute(this::runIfNotStarted);
+    }
+
+    /**
+     * Action to perform upon completion of the stage that is returned by the
+     * asynchronous method implementation.
+     *
+     * @param result  of the completion stage if successful, otherwise null.
+     * @param failure failure if the completion stage completed exceptionally, otherwise null.
+     */
+    private void complete(T result, Throwable failure) {
+        if (failure == null)
+            complete(result);
+        else
+            completeExceptionally(failure);
     }
 
     @Override
@@ -97,16 +117,30 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
      * Run the method inline if it hasn't started yet,
      * and complete this CompletableFuture with its result.
      */
-    @FFDCIgnore({ Error.class, RuntimeException.class })
+    @FFDCIgnore({ CompletionException.class, Error.class, RuntimeException.class })
     private void runIfNotStarted() {
         if (!isDone() && started.compareAndSet(false, true)) {
-            T result = null;
+            CompletionStage<T> asyncMethodResultStage = null;
             Throwable failure = null;
             ArrayList<ThreadContext> contextApplied = null;
             try {
                 if (contextDescriptor != null)
                     contextApplied = contextDescriptor.taskStarting();
-                result = action.apply(invocation, this);
+                asyncMethodResultStage = action.apply(invocation, this);
+
+                // The asynchronous method implementation can return a different stage or null if it wants to
+                if (asyncMethodResultStage != this)
+                    if (asyncMethodResultStage == null) {
+                        complete(null);
+                    } else {
+                        // TODO inefficient if a ManagedCompletableFuture. Instead do:
+                        //} else if (asyncMethodResultStage instanceof ManagedCompletableFuture) {
+                        //    ((ManagedCompletableFuture) asyncMethodResultStage).super_whenComplete(this::complete);
+                        asyncMethodResultStage.whenComplete(this::complete);
+                    }
+            } catch (CompletionException x) {
+                Throwable cause = x.getCause();
+                failure = cause == null ? x : cause;
             } catch (RuntimeException x) {
                 failure = x;
             } catch (Error x) {
@@ -118,10 +152,8 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
                 } catch (RuntimeException x) {
                     failure = x;
                 } finally {
-                    if (failure == null)
-                        super_complete(result);
-                    else
-                        super_completeExceptionally(failure);
+                    if (failure != null)
+                        completeExceptionally(failure);
                 }
             }
         }

@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 
 import com.ibm.ws.threading.PolicyExecutor;
@@ -56,9 +57,9 @@ public interface WSManagedExecutorService {
      * @param invoker    completion stage action that invokes the asynchronous method.
      *                       The first parameter to the BiFunction is the interceptor's InvocationContext.
      *                       The second parameter is the BiFunction is the CompletableFuture that will be returned to the caller.
-     *                       The result parameter of the BiFunction is the same CompletableFuture.
+     *                       The result parameter of the BiFunction is the CompletionStage (or null) that is returned by the asynchronous method implementation.
      * @param invocation the interceptor's InvocationContext that will be supplied to the BiFunction.
      * @return CompletableFuture that represents the invocation of the asynchronous method.
      */
-    <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation);
+    <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation);
 }

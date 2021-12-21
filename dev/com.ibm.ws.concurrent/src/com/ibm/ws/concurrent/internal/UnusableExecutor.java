@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.internal;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
@@ -62,7 +63,7 @@ class UnusableExecutor implements Executor, WSManagedExecutorService {
     }
 
     @Override
-    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, T> invoker, I invocation) {
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation) {
         throw new UnsupportedOperationException();
     }
 }
