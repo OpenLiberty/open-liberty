@@ -73,34 +73,21 @@ public class AsyncInterceptor implements Serializable {
      * @param <T>        type of result.
      * @param invocation interceptor's invocation context.
      * @param future     CompletableFuture that will be returned to the caller of the asynchronous method.
-     * @return the same future that will be returned to the caller of the asynchronous method.
+     * @return completion stage (or null) that is returned by the asynchronous method.
+     * @throws CompletionException if the asynchronous method invocation raises an exception or error.
      */
     @FFDCIgnore(Throwable.class) // errors raised by an @Asynchronous method implementation
-    public <T> CompletableFuture<T> invoke(InvocationContext invocation, CompletableFuture<T> future) {
+    public <T> CompletionStage<T> invoke(InvocationContext invocation, CompletableFuture<T> future) {
         Asynchronous.Result.setFuture(future);
         try {
-            Object returnVal = invocation.proceed();
-            if (returnVal != future)
-                if (returnVal == null) {
-                    future.complete(null);
-                } else { // returnVal must be CompletionStage or CompletableFuture per prior validation
-                    @SuppressWarnings("unchecked")
-                    CompletionStage<T> stage = (CompletionStage<T>) returnVal;
-                    stage.whenComplete((result, failure) -> { // TODO inefficient if a ManagedCompletableFuture
-                        if (failure == null)
-                            future.complete(result);
-                        else
-                            future.completeExceptionally(failure);
-                    });
-                }
+            @SuppressWarnings("unchecked")
+            CompletionStage<T> asyncMethodResultStage = (CompletionStage<T>) invocation.proceed();
+            return asyncMethodResultStage;
         } catch (Throwable x) {
-            if (x instanceof CompletionException && x.getCause() != null)
-                x = x.getCause();
-            future.completeExceptionally(x);
+            throw (x instanceof CompletionException ? (CompletionException) x : new CompletionException(x));
         } finally {
             Asynchronous.Result.setFuture(null);
         }
-        return future;
     }
 
     /**
