@@ -60,6 +60,7 @@ public class HandlerChainTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
+            server.clearLogMarks();
             server.stopServer();
         }
     }
