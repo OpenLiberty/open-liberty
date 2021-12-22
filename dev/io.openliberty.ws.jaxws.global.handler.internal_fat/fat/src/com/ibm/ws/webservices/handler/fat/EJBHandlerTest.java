@@ -87,7 +87,6 @@ public class EJBHandlerTest {
     @AfterClass
     public static void afterAllTests() throws Exception {
         if (server != null && server.isStarted()) {
-            server.deleteAllDropinApplications();
             server.stopServer();
         }
         server.uninstallUserFeature("TestHandler1Feature1");

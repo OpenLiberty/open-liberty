@@ -54,7 +54,6 @@ public class HandlerRuleTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }

@@ -81,7 +81,6 @@ public class EJBServiceRefBndTest {
         }
 
         if (server.isStarted()) {
-            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }

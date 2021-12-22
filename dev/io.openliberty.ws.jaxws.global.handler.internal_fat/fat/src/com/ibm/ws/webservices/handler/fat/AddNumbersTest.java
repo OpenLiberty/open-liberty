@@ -41,7 +41,6 @@ public class AddNumbersTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.deleteAllDropinApplications();
             server.stopServer();
         }
     }
