@@ -10,36 +10,21 @@
 
 <suite name="microprofile-openapi-2.0-tck" verbose="2" configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.openapi.tck">
+    
+    <packages>
+        <package name="org.eclipse.microprofile.openapi.tck.*"></package>
+    </packages>
 
-        <classes>
-<!-- 
+<!--
+         <classes>
             <class name="org.eclipse.microprofile.openapi.tck.AirlinesAppTest">
--->
             <class name="org.eclipse.microprofile.openapi.tck.OASConfigScanDisableTest">
                 <methods>
-<!-- 
                     <include name="testSchemaProperty" />
--->
                     <include name="testScanDisable" />
                 </methods>
             </class>
         </classes>
-<!-- 
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell">
-                        <![CDATA[
-                            method.getDeclaringClass().getSimpleName().startsWith("ModelReaderAppTest") &&
-                            method.getName().contains("testContentInAPIResponse") ||
-                            method.getName().contains("arquillian")
-                        ]]>
-                </script>
-            </method-selector>
-        </method-selectors>
-            
-        <packages>
-            <package name="org.eclipse.microprofile.openapi.tck.*"></package>
-        </packages>
- -->    
+ -->
     </test>
 </suite>
