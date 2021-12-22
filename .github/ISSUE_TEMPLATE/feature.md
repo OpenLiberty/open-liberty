@@ -1,104 +1,196 @@
 ---
-name: Open Liberty Feature
-about: Create a Feature Epic (Open Liberty org members only)
-title: ''
+name: Open Liberty Feature Template
+about: Steps for Feature Creation and Delivery (Open Liberty org members only)
+title: 'Open Liberty Feature Template'
 labels: Epic
 assignees: ''
 
 ---
-## Description of the high level feature, including any external spec links:  
-The description needs to be detailed enough such that it can be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2) and implemented by the development team.
-<br/><br/><br/>  
+## Description
 
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), blogs post issues(s), and [Aha](https://cloud-platform.ideas.aha.io/) (externally raised RFEs):
-- UFO:
-- FTS:
-- Beta Blog Post (if applicable):
-- Blog Post: 
-- Aha: 
-   - Also, add a comment into the Aha idea linking to this issue.
+Replace this comment with a high level description of the feature. Include enough detail such that the feature can be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2). As needed, add links to any specifications used by the feature.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## List of Steps to complete or get approvals / sign-offs for Onboarding to the Liberty release (GM date)
+## Documents
 
-Instructions:
-- Do the actions below and mark them complete in the checklist when they are done.
-- Make sure all feature readiness approvers put the appropriate tag on the epic to indicate their approval.
+When available, add links to required feature documents. Use "N/A" to mark particular documents which are not required by the feature.
 
-## **Design**
-Before Development Starts or 8 weeks before Onboarding
-- [ ] POC Design / UFO Review Scheduled (David Chang) or N/A.
-- [ ] POC Design / UFO Reviewed (Feature Owner) or N/A.
-- [ ] Complete any follow-ons from the POC Review.
-- [ ] Design / UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
-- [ ] No Design / No UFO Approval ([Alasdair Nottingham](https://github.com/NottyCode)) or N/A.
-  * Note: Design is required if any of the following apply: SVT or Performance testing, new UI, Servicibility considerations, significant documentation changes
-- [ ] ID Requirements identified ([Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty)). (Epic owner / Feature owner with ID focal point)
-  * Note: If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
-- [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.
+- Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
+-- Link the RFE with this issue
+- UFO: Link to (Upcoming Feature Overview)
+- FTS: Link to (Feature Test Summary)
+- Beta Blog: Link to Beta Blog Post Issue
+- GA Blog: Link to GA Blog Post Issue
 
-##
-#### Before proceeding to any items below (active development), this feature MUST be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
-##
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## Process Overview
 
-## **Development**
-When active development has begun 
-- [ ] Add the "In Progress" label to this issue.
+- [Prioritization](#prioritization)
+- [Design](#design)
+- [Implementation](#implementation)
+- [Legal and Translation](#legal-and-translation)
+- [Beta Delivery](#beta-delivery)
+- [GA Delivery](#ga-delivery)
+- [Focal Point Approvals](#focal-point-approvals-(2-to-1-weeks-before-delivery))
+- [Other Deliverables](#other-deliverables)
 
+### General Instructions
+
+The process steps occur roughly in the order as presented. Process steps occasionally overlap.
+
+Each process step has a number of activities which must be completed or must be marked as not applicable ("N/A").
+
+Unless otherwise indicated, activities are the responsibility of the Feature Owner or a Delegate of the Feature Owner.
+
+Important: Labels are used to trigger particular steps and **must be added as indicated.** 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Prioritization**
+
+Area leads are responsible for prioritizing the features and determining which features are being actively worked on.
+
+### **Prioritization**
+- [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
+  - Epics can be added to the board in one of two ways:
+    - From this issue, use the "Projects" section to select the appropriate project board.
+    - From the appropriate project board click "Add card" and select your Feature Epic issue
+- [ ] Priority assigned.
+  - Attend the Liberty Backlog Prioritization meeting
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- ## **Design** (Before Development or 8 weeks before Delivery)
+
+Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trival documentation/ID.
+
+### **Design Preliminaries**
+- [ ] UI requirements identified. (Owner and UI focal point)
+- [ ] ID requirements identified. (Owner and ID focal point) ([Karen Deen](https://github.com/chirp1))
+   - Rerfer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
+   - Feature Owner adds label `ID Required`, if non-trival documentation needs to be created by the ID team.
+   - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
+- [ ] Servicability Requirements Identified. (Owner and Servicability focal point) ([Don Bourne](https://github.com/donbourne))
+- [ ] SVT Requirements Identified. (Owner and SVT focal point) ([Brian Hanczaryk](https://github.com/hanczaryk))
+- [ ] Performance testing requirements identified. (Owner and Performance focal point) ([Jared Anderson](https://github.com/jhanders34))
+
+### **Design**
+- [ ] POC Design / UFO review requested.
+  - Owner adds label `Design Review Request`
+- [ ] POC Design / UFO review scheduled. (David Chang)
+- [ ] POC Design / UFO review completed.
+- [ ] POC / UFO Review follow-ons completed.
+- [ ] Design / UFO approved. ([Alasdair Nottingham](https://github.com/NottyCode) or N/A
+  - ([Alasdair Nottingham](https://github.com/NottyCode) adds label `Design Approved`
+
+### **No Design**
+- [ ] No Design requested.
+-- Owner adds label `No Design Approval Request`
+- [ ] No Design / No UFO approved. ([Alasdair Nottingham](https://github.com/NottyCode) or N/A
+-- Approver adds label `No Design Approved`
+
+### **FAT Documentation**
+- [ ] "Feature Test Summary" child task created
+  - Use the [Feature Test Summary Template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=)
+  - Add FTS issue link to the [Documents](#documents) section.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Implementation**
+
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  GA code may not be delivered until this feature has obtained the "Design Approved" or "No Design Approved" label.
+
+### **Feature Complete** (2 weeks before Delivery)
+- [ ] Add the `In Progress` label
+- [ ] Implementation completed.
+- [ ] Function acceptance tests completed.
+- [ ] Continuation issue created for backlog, if necessary. (what is this? remove?)
+- [ ] Backlog issues are created. (remove?)
+- [ ] Backlog issues reviewed for Stop Ship. (Owner and PM) (remove?)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Legal and Translation**
+
+These steps are usually concurrent with implementation, and must be completed along with the primary implementation before either Beta delivery or GA delivery may be requested.
+
+### **Legal** (3 weeks before Delivery)
+- [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
+- [ ] Licenses and Certificates of Originality (COOs) are updated, or N/A
+
+### **Translation** (3 weeks before Delivery)
+- [ ] PII updates are merged, or N/A. Note timing with translation shipments.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
-If your feature, or portions of it, are going to be included in a beta  
-Before Onboarding the beta
-- [ ] Beta Fence the functionality (`kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`)  
 
-1 week before beta GA
-- [ ] Create, populate, and link to the [Beta blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_beta.md&title=BETA+BLOG+-+title_of_your_update)
+In order to facilitate early feedback from users, all new features and functionality should first be released as part of a beta release.
 
-## **Legal**
-3 weeks before Onboarding
-- [ ] Identify all open source libraries that are changing or are new. Work with Legal Release Services (Cass Tucker or Release PM) to get open source cleared and approved. Or N/A. (Epic Owner).   New or changed open source impacts license and Certificate of Originality.
+### **Beta Delivery**
+- [ ] Beta fence the functionality
+  - `kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`
+- [ ] Beta development complete and feature ready for inclusion in a beta release
+ - Add label `target:beta` and the appropriate `target:YY00X-beta` (where YY00X is the targeted beta version).
+- [ ] Feature delivered into beta
+ - Release Management (Sam Wong) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
 
-## **Translation**
-3 weeks before Onboarding
-- [ ] All new or changed PII messages are checked into the integration branch, before the last translation shipment out. (Epic Owner)
+### **Beta Blog** (1 week before beta GA)
+- [ ] Beta blog issue created and populated using the [template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=ryan-storey&labels=Blog%2C+target%3Abeta&template=blog_post_beta.md&title=BETA+BLOG+-+title_of_your_update).
+  - Add a link to the beta blog issue in the [Documents](#documents) section.
 
-## **Feature Complete**
-2 weeks before Onboarding
-- [ ] Implementation complete. (Epic owner / Feature owner)
-- [ ] All function tests complete. Ready for FAT Approval. (Epic owner / Feature owner)
-- [ ] Review all known issues for Stop Ship. (Epic owner / Feature owner / PM)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **GA Delivery**
 
-## **Focal Point Approvals**
-2 to 1 week before Onboarding
-#### You **MUST** have the Design Approved or No Design Approved label before requesting focal point approvals.
+GA delivery is concurrent with obtaining Focal Point Approval. The trigger for obtaining focal point approvals is the addition of the `target:ga` label. Actual GA delivery occurs only after all focal point approvals have been obtained.
 
-All features (both "Design Approved" and "No Design Approved")
-- [ ] **FAT** - ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers)). SOE FATS are running successfully or N/A . Approver adds label focalApproved:fat to the Epic in Github.
-- [ ] **Demo** - ([Tom Evans](https://github.com/tevans78) or [Chuck Bridgham](https://github.com/cbridgha)). Demo is scheduled for an upcoming EOI. Approver adds label focalApproved:demo to the Epic in Github.
-- [ ] **Globalization** ([Sam Wong](https://github.com/samwatibm) - Liberty / Simy Cheeran - tWAS). Translation is complete or N/A. TVT - complete or N/A. Approver adds label focalApproved:globalization to the Epic in Github.
+### **Remove Beta Fencing**
+- [ ] Beta guards are removed, if necessary.
 
-"Design Approved" features
-- [ ] **Accessibility** - ([Steven Zvonek](https://github.com/steven1046)). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
-- [ ] **ID** - ([Karen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
-  * Note: If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] **Performance** - ([Jared Anderson](https://github.com/jhanders34)). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
-- [ ] **Serviceability** - ([Don Bourne](https://github.com/donbourne)). Serviceability has been addressed.
-- [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.
-- [ ] **SVT** - ([Brian Hanczaryk](https://github.com/hanczaryk) - APS). SVT is complete or N/A . Approver adds label focalApproved:svt to the Epic in Github.
+### **GA Blog**
+- [ ] GA Blog issue created and populated using the [template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=ryan-storey&labels=Blog%2C+target%3Aga&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update).
+ - Add a link to the GA Blog issue in the [Documents](#documents) section.
 
+### **GA Delivery**
+- [ ] GA development complete and feature ready for inclusion in a GA release
+ - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
+ - Inclusion in a release requires the completion of all Focal Point Approvals.
+- [ ] Feature delivered into GA. (?)
+-- (?) adds label `release:YY00X`.
 
-## **Ready for GA**
-1 week before Onboarding
-- [ ] No Stop Ship issues for the feature. (Epic owner / Feature owner / Release PM)
-- [ ] Ship Readiness Review and Release Notes completed (Epic owner / Feature owner / Release PM)
-- [ ] Github Epic and Epic's issues are closed / complete. All PRs are committed to the release branch. (Epic owner / Feature owner / Backlog Subtribe PM)
+### **Ready for GA** (1 week before Delivery)
+- [ ] All PRs are merged.
+- [ ] All epic and child issues are closed.
+- [ ] All stop ship issues are completed.
+- [ ] Ship Readiness Review completed. (Owner and Release PM)
+- [ ] Release Notes completed. (Owner and Release PM)
 
-1 week before GA
-- [ ] Create, populate, and link to the [Blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Focal Point Approvals** (2 to 1 weeks before delivery)
 
-## **Other deliverbles**
-- [ ] **OL Guides** - ([Yee-Kang Chang](https://github.com/yeekangc)). Assessment for OL Guides is complete or N/A.
-- [ ] **WDT** - (Leonard Theivendra). WDT work complete or N/A.
-- [ ] **Blog** - ([Laura Cowen](https://github.com/lauracowen)) Blog article writeup (Epic owner / Feature owner / Laura Cowen)
+These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery will not occur until all approvals are obtained.
+
+### **All Features**
+- [ ] **FAT** SOE FATS are running. (Approver; see [OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
+-- Approver adds label `focalApproved:fat`.
+- [ ] **Demo** Demo is scheduled for an upcoming EOI. ([Tom Evans](https://github.com/tevans78) or [Chuck Bridgham](https://github.com/cbridgha))
+-- Approver adds label `focalApproved:demo`.
+- [ ] **Globalization** Translation and TVT are complete. [Sam Wong](https://github.com/samwatibm)
+-- Approver adds label `focalApproved:globalization`.
+
+### **Design Approved Features, Only**
+- [ ] **Accessibility** Accessibility testing completed. ([Steven Zvonek](https://github.com/steven1046))
+-- Approver adds label `focalApproved:accessibility`.
+- [ ] **ID** Documentation is complete. ([Karen Deen](https://github.com/chirp1))
+-- Approver adds label `focalApproved:id`.
+- [ ] **Performance** Performance testing is complete. ([Jared Anderson](https://github.com/jhanders34))
+-- Approver adds label `focalApproved:performance`.
+- [ ] **Serviceability** Serviceability has been addressed. ([Don Bourne](https://github.com/donbourne))
+-- Approver adds label `focalApproved:sve`.
+- [ ] **STE** STE chart deck is complete. (Swati Kasundra)
+-- Approver adds label `focalApproved:ste`.
+- [ ] **SVT** SVT is complete. ([Brian Hanczaryk](https://github.com/hanczaryk))
+-- Approver adds label `focalApproved:svt`.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Other Deliverables**
+
+- [ ] **OL Guides** OL Guides assessment is complete. ([Yee-Kang Chang](https://github.com/yeekangc))
+- [ ] **WDT** WDT work is complete. (Leonard Theivendra)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
