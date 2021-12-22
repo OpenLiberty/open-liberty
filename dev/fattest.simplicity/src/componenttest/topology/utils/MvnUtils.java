@@ -15,16 +15,18 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,14 +37,12 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -92,6 +92,7 @@ public class MvnUtils {
     private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
 
     private static final String RELATIVE_POM_FILE = "tck/pom.xml";
+    private static final String RELATIVE_POM_FILE2 = "pom.xml";
     private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
@@ -410,7 +411,11 @@ public class MvnUtils {
      * @return the pom.xml File
      */
     private File getPomXmlFile() {
-        return new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        File pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        if (!pomXmlFile.exists()) {
+            pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE2);
+        }
+        return pomXmlFile;
     }
 
     /**
