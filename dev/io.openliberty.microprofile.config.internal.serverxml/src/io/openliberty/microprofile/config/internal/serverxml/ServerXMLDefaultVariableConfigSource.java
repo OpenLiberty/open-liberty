@@ -17,7 +17,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
-import com.ibm.ws.config.xml.LibertyVariable;
 
 /**
  * A ConfigSource which returns default values from variable elements in the server.xml file e.g.
@@ -53,19 +52,7 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
     protected Map<String, String> getServerXMLVariables() {
         ConfigVariables configVariables = getConfigVariables();
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
-            // Bit of a workaround:
-            // * getUserDefinedVariableDefaults includes variables defined in
-            //   defaultInstances.xml, but doesn't include variables with a default
-            //   value which has been overridden.
-            // * getAllLibertyVariables doesn't include variables defined in
-            //   defaultInstances.xml.
-            Map<String, String> result = OSGiConfigUtils.getDefaultVariablesFromServerXML(configVariables);
-            for (LibertyVariable var : configVariables.getAllLibertyVariables()) {
-                if (var.getDefaultValue() != null) {
-                    result.put(var.getName(), var.getDefaultValue());
-                }
-            }
-            return result;
+            return OSGiConfigUtils.getDefaultVariablesFromServerXML(configVariables);
         } else {
             return Collections.emptyMap();
         }
