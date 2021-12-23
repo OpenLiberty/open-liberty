@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,9 @@ public abstract class AbstractDirector {
     /**
      * Creates a Progress event message.
      *
-     * @param state the state integer
+     * @param state    the state integer
      * @param progress the progress integer
-     * @param message the message to be displayed
+     * @param message  the message to be displayed
      */
     void fireProgressEvent(int state, int progress, String message) {
         try {
@@ -65,9 +65,9 @@ public abstract class AbstractDirector {
     /**
      * Creates a Progress event message that can handle cancel exceptions.
      *
-     * @param state the state integer
-     * @param progress the progress integer
-     * @param message the message to be displayed
+     * @param state       the state integer
+     * @param progress    the progress integer
+     * @param message     the message to be displayed
      * @param allowCancel if cancel exceptions should be handled
      * @throws InstallException
      */
@@ -91,7 +91,7 @@ public abstract class AbstractDirector {
      * Logs a message.
      *
      * @param level the level of the message
-     * @param msg the message
+     * @param msg   the message
      */
     void log(Level level, String msg) {
         if (msg != null && !msg.isEmpty())
@@ -102,8 +102,8 @@ public abstract class AbstractDirector {
      * Logs a message with an exception.
      *
      * @param level the level of the message
-     * @param msg the message
-     * @param e the exception causing the message
+     * @param msg   the message
+     * @param e     the exception causing the message
      */
     void log(Level level, String msg, Exception e) {
         if (e != null)
@@ -148,13 +148,19 @@ public abstract class AbstractDirector {
      * Checks if the feature is in installedFeatures
      *
      * @param installedFeatures the map of installed features
-     * @param feature the feature to look for
+     * @param feature           the feature to look for
      * @return true if feature is in installedFeatures
      */
     boolean containFeature(Map<String, ProvisioningFeatureDefinition> installedFeatures, String feature) {
+        if (feature.split(":").length == 2)
+            feature = feature.split(":")[1];
+
         if (installedFeatures.containsKey(feature))
             return true;
         for (ProvisioningFeatureDefinition pfd : installedFeatures.values()) {
+            if (pfd.getSymbolicName().equals(feature)) {
+                return true;
+            }
             String shortName = InstallUtils.getShortName(pfd);
             if (shortName != null && shortName.equalsIgnoreCase(feature))
                 return true;
@@ -166,7 +172,7 @@ public abstract class AbstractDirector {
      * Creates a collection of features that still need to be installed
      *
      * @param requiredFeatures Collection of all features that should be installed
-     * @param download if all features (including already installed) should be downloaded
+     * @param download         if all features (including already installed) should be downloaded
      * @return The subset of requiredFeatures containing features that still need to be installed
      */
     Collection<String> getFeaturesToInstall(Collection<String> requiredFeatures, boolean download) {
