@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: The user registry operation
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= The entity type must be defined with an entity type name and at least one corresponding Relative Distinguished Name (RDN) property.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modify and correct the entity type definition in the server.xml file.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The base entry definition {0} is not valid.  Correct the base entry definition in the server.xml file. For example, the syntax is <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= The specified definition of the base entry is incorrect. The syntax for defining a base entry is <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Modify and correct the base entry definition in the server.xml file.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The base entry definition {0} is not valid.  Correct the base entry definition in the server.xml file.
+INVALID_BASE_ENTRY_DEFINITION.explanation=The specified base entry definition is invalid.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Specify a valid base entry definition in the server.xml file.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: The user registry operation could not be completed. The realm definition {0} is not valid. Correct the realm definition in the server.xml file.
 INVALID_REALM_DEFINITION.explanation= The realm tag is missing, or is invalid because of a missing required attribute.
@@ -220,9 +220,9 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Missing repositoriesFo
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=There is no cross-repository group configuration defined for the repository.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Refer to the log file for the reason of failure. Check your repository configuration.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The entity type {0} specified is not a valid entity type for this operation.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The specified entity type {0} is not valid for this operation.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=An operation has been requested on an entity, but that operation does not support the specified entity type.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities provided in the input are of supported entity types, and remove any unsupported entity types from the input.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities that are provided in the input are of supported entity types, and remove any unsupported entity types from the input.
 
 CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: The {0} RDN property for the {1} entity type was provided in the input. The unique name cannot be created in the underlying repository because the RDN information specified in the input is ambiguous.
 CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=When creating an entity, the relative distinguished name (RDN) must be well formed and contain properties that are not ambiguous. For example, the OrgContainer entity type can represent either an organization (that uses the 'o' RDN property) or an organizational unit (that uses the 'ou' RDN property) in an underlying repository. If both 'o' and 'ou' are specified in the RDN for the input data object for the new entity, a unique name for the new entity cannot be created.
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: The user registry operation could not be comple
 ENTITY_SEARCH_FAILED.explanation=The entity cannot be searched because of the reason specified by the underlying registry.
 ENTITY_SEARCH_FAILED.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed because the password was either missing or empty.
-MISSING_OR_EMPTY_PASSWORD.explanation=If the principal name is specified during login process, then the password cannot be null or empty.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed as the password is either missing or empty.
+MISSING_OR_EMPTY_PASSWORD.explanation=If the principal name is specified during login, the password cannot be null or empty.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specify the password.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: The login operation could not be completed, as the generation of the certificate failed.

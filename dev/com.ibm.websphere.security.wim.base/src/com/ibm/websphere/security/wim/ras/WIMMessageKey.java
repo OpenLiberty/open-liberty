@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1631,50 +1631,45 @@ public interface WIMMessageKey {
     String LOGINPROPERTY_OVERRIDE_USERFILTER = "LOGINPROPERTY_OVERRIDE_USERFILTER";
 
     /**
-     * CWIML4553E: Kerberos login failed using Kerberos principal {0} and Kerberos credential cache (ccache) {1}.
+     * CWIML4507E: Kerberos login failed with the {0} Kerberos principal and the {1} Kerberos credential cache (ccache).
      */
     String KRB5_LOGIN_FAILED_CACHE = "KRB5_LOGIN_FAILED_CACHE";
 
     /**
-     * WIML4554E: Kerberos login failed using Kerberos principal {0} and Kerberos keytab {1}.
+     * CWIML4508E: Kerberos login failed with the {0} Kerberos principal and the {1} Kerberos keytab.
      */
     String KRB5_LOGIN_FAILED_KEYTAB = "KRB5_LOGIN_FAILED_KEYTAB";
 
     /**
-     * CWIML4555E: Kerberos login failed using Kerberos principal {0} and the default Kerberos credential cache (ccache).
+     * CWIML4509E: Kerberos login failed with the {0} Kerberos principal and the default Kerberos credential cache (ccache).
      */
     String KRB5_LOGIN_FAILED_DEFAULT_CACHE = "KRB5_LOGIN_FAILED_DEFAULT_CACHE";
 
     /**
-     * CWIML4556E: Kerberos login failed using Kerberos principal {0} and the default Kerberos keytab.
+     * CWIML4524E: Kerberos login failed using Kerberos principal {0} and the default Kerberos keytab.
      */
     String KRB5_LOGIN_FAILED_DEFAULT_KEYTAB = "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB";
 
     /**
-     * CWIML4557I: LDAPRegistry {0} configured with Kerberos credential cache (ccache) filename {1} and keytab filename {2}, using Kerberos credential cache (ccache) for Kerberos
-     * bind authentication to LDAP server.
+     * CWIML4511E: The {0} LDAP registry is configured with the {1} Kerberos ticket cache (ccache) filename and the {2} keytab filename. The Kerberos credential cache (ccache) is
+     * used for Kerberos bind authentication to LDAP server.
      */
     String KRB5_TICKETCACHE_USED = "KRB5_TICKETCACHE_USED";
 
     /**
-     * CWIML4558E: The {0} Kerberos principal name is incorrectly formatted, or the realm name is missing, or a default realm name cannot be found.
+     * CWIML4512E: The {0} Kerberos principal name is incorrectly formatted, or the realm name is missing, or a default realm name cannot be found.
      */
     String INVALID_KRB5_PRINCIPAL = "INVALID_KRB5_PRINCIPAL";
 
     /**
-     * CWIML4559E: LDAPRegistry {0} could not read the Kerberos file {1}.
+     * CWIML4513E: The {0} LDAP registry cannot read the {1} Kerberos file.
      */
     String CANNOT_READ_KRB5_FILE = "CANNOT_READ_KRB5_FILE";
 
     /**
-     * CWIML4560E: The [{0}] attribute from the {1} element is configured to a file that does not exist at: {2}
+     * CWIML4515E: The {0} attribute from the {1} element is configured to a file that does not exist at the following location: {2}
      */
     String KRB5_FILE_NOT_FOUND = "KRB5_FILE_NOT_FOUND";
-
-    /**
-     * CWIML4561I: The LdapRegistry component is configured to use a {0} file located at {1}
-     */
-    String KRB5_FILE_FOUND = "KRB5_FILE_FOUND";
 
     /**
      * CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
