@@ -2621,7 +2621,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             TxExecutionContextHandler.removeTxn(getXid());
         }
 
-        _status.reset(); // Reset state to NONE
+//        _status.reset(); // Reset state to NONE (why??????)
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "forgetTransaction");
