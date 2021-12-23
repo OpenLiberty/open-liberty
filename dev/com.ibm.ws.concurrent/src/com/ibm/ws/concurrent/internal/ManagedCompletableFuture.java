@@ -1411,6 +1411,17 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * Invokes whenComplete on the superclass, bypassing thread context capture and
+     * propagation.
+     */
+    final void super_whenComplete(BiConsumer<? super T, ? super Throwable> action) {
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+        else
+            super.whenComplete(action);
+    }
+
+    /**
      * Convenience method to validate that an executor supports running asynchronously
      * and to wrap the executor, if an ExecutorService, with FutureRefExecutor.
      * This method is named supportsAsync to make failure stacks more meaningful to users.
