@@ -15,16 +15,18 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,14 +37,12 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -92,6 +92,7 @@ public class MvnUtils {
     private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
 
     private static final String RELATIVE_POM_FILE = "tck/pom.xml";
+    private static final String RELATIVE_POM_FILE2 = "pom.xml";
     private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
@@ -410,7 +411,11 @@ public class MvnUtils {
      * @return the pom.xml File
      */
     private File getPomXmlFile() {
-        return new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        File pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        if (!pomXmlFile.exists()) {
+            pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE2);
+        }
+        return pomXmlFile;
     }
 
     /**
@@ -702,7 +707,7 @@ public class MvnUtils {
         return rc;
     }
 
-        /**
+    /**
      * @return a File which represents the mvn output when "install" is run
      */
     private static File getMvnInstallOutputFile() {
@@ -1116,7 +1121,7 @@ public class MvnUtils {
     }
 
     public static void preparePublicationFile() {
-        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");        
+        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -1125,9 +1130,9 @@ public class MvnUtils {
             factory = SAXParserFactory.newInstance();
             saxParser = factory.newSAXParser();
         } catch (ParserConfigurationException e) {
-             throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } catch (SAXException e) {
-             throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         TestSuiteXmlParser xmlParser = new TestSuiteXmlParser();
 
@@ -1135,7 +1140,7 @@ public class MvnUtils {
             Path junitPath = Paths.get("results", "junit");
             File junitDirectory = junitPath.toFile();
             for (final File xmlFile : junitDirectory.listFiles()) {
-                if (xmlFile.isDirectory()){ 
+                if (xmlFile.isDirectory()) {
                     continue; //this shouldn't happen.
                 }
                 if (xmlFile.length() == 0) {
@@ -1144,12 +1149,12 @@ public class MvnUtils {
                 saxParser.parse(xmlFile, xmlParser);
             }
 
-            String adocContent= "";
+            String adocContent = "";
             String MPversion = "";
 
             String[] specParts = getSpec();
             String specName = capitalise(specParts[0]);
-            String MPSpecLower = (specName.toLowerCase()).replace(" ","-");
+            String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
             String specVersion = specParts[1];
             String rcVersion = specParts[2];
 
@@ -1159,77 +1164,82 @@ public class MvnUtils {
             String year = yearNo.format(date);
             String month = monthNo.format(date);
 
-            String OLVersion = year+".0.0."+month;
+            String OLVersion = year + ".0.0." + month;
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
-            String[] documentParts = {":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",specName, " ", specVersion, ".\n\n== Open Liberty ",OLVersion," - MicroProfile ",specName," ", specVersion," Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",OLVersion,"/openliberty-runtime-",OLVersion,".zip[Open Liberty ",OLVersion,"]\n","* Specification Name, Version and download URL:\n+\n","link:https://download.eclipse.org/microprofile/microprofile-",MPSpecLower, "-",specVersion,rcVersion, "/microprofile-",MPSpecLower,"-",specVersion,rcVersion,".html[MicroProfile ",specName," ",specVersion,rcVersion,"]\n\n* Public URL of TCK Results Summary:\n+\n","link:",OLVersion,"-TCKResults.html[TCK results summary]\n\n","* Java runtime used to run the implementation:\n+\nJava ",javaMajorVersion, ": ",javaVersion,"\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n","Java ", javaMajorVersion,": ",osVersion};
-            
-            for(String part : documentParts){
+            String[] documentParts = { ":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",
+                                       specName, " ", specVersion, ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
+                                       " Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
+                                       OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
+                                       "* Specification Name, Version and download URL:\n+\n", "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-",
+                                       specVersion, rcVersion, "/microprofile-", MPSpecLower, "-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
+                                       rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                       "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
+                                       "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
+                                       osVersion };
+
+            for (String part : documentParts) {
                 adocContent += part;
             }
-            output.write(adocContent + "\n\nJava "+ javaMajorVersion +" Test results:\n\n+ [source,xml]\n----\n");
+            output.write(adocContent + "\n\nJava " + javaMajorVersion + " Test results:\n\n+ [source,xml]\n----\n");
             for (TestSuiteResult result : xmlParser.getResults()) {
                 output.write(result.toString());
             }
         } catch (IOException e) {
-             throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } catch (SAXException e) {
-             throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
-    public static String[] getSpec(){
+    public static String[] getSpec() {
         Pattern specNamePattern = Pattern.compile("microprofile-(.*?)-tck:jar", Pattern.DOTALL);
         String specName = "";
         String specVersion = "";
         String RC = "";
         String[] parts = {};
-        String[] returnArray = {"","",""};
-        Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile",  Pattern.DOTALL);
-        try (BufferedReader br = new BufferedReader(new FileReader("results/mvnOutput_dependency"))) 
-        {
+        String[] returnArray = { "", "", "" };
+        Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile", Pattern.DOTALL);
+        try (BufferedReader br = new BufferedReader(new FileReader("results/mvnOutput_dependency"))) {
             String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) 
-            {
-                if(sCurrentLine.contains("-tck:jar")){
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.contains("-tck:jar")) {
                     Matcher nameMatcher = specNamePattern.matcher(sCurrentLine);
                     Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
                     if (nameMatcher.find()) {
-                        specName = nameMatcher.group(1).replaceAll("-"," ");
+                        specName = nameMatcher.group(1).replaceAll("-", " ");
                     }
-                    if(versionMatcher.find()) {
+                    if (versionMatcher.find()) {
                         specVersion = versionMatcher.group(1);
-                        if(specVersion.contains("-RC")){
+                        if (specVersion.contains("-RC")) {
                             parts = specVersion.split("-RC");
                             RC = parts[1];
                             specVersion = parts[0];
                         }
-                        returnArray[0] = specName; returnArray[1] = specVersion; returnArray[2] = ("-RC"+RC);
+                        returnArray[0] = specName;
+                        returnArray[1] = specVersion;
+                        returnArray[2] = ("-RC" + RC);
                         return returnArray;
                     }
                 }
             }
-        }
-        catch (IOException e) 
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return returnArray;
     }
-    
 
-    public static String capitalise(String spec){
+    public static String capitalise(String spec) {
         char[] charArray = spec.toCharArray();
         boolean foundSpace = true;
-        for(int i = 0; i < charArray.length; i++) {
-            if(Character.isLetter(charArray[i])) {
-                if(foundSpace) {
+        for (int i = 0; i < charArray.length; i++) {
+            if (Character.isLetter(charArray[i])) {
+                if (foundSpace) {
                     charArray[i] = Character.toUpperCase(charArray[i]);
                     foundSpace = false;
                 }
-            }
-            else {
+            } else {
                 foundSpace = true;
             }
         }
