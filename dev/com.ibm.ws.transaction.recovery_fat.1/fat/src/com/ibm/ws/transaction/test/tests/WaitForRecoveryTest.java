@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -87,7 +88,7 @@ public class WaitForRecoveryTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "testRec001 returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);

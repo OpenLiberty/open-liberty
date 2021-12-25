@@ -13,6 +13,7 @@ package com.ibm.ws.transaction.test.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
@@ -44,7 +45,7 @@ public class TestUtils {
             Log.info(TestUtils.class, method, "setupRec" + id + " crashed as expected");
         }
 
-        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State:"));
+        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         crashingServer.postStopServerArchive(); // must explicitly collect since server start failed
 

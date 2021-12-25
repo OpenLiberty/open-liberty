@@ -15,6 +15,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.uow.UOWScope;
 import com.ibm.ws.uow.UOWScopeCallback;
@@ -72,7 +73,7 @@ public class LTCUOWCallback implements UOWScopeCallback // Defect 130321
     @Override
     public void contextChange(int typeOfChange, UOWScope scope) throws IllegalStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "contextChange", new Object[] { typeOfChange, scope, this });
+            Tr.entry(tc, "contextChange", new Object[] { Util.printUOWStatusChangeType(typeOfChange), scope, this });
 
         try {
             // Determine the Tx change type and process.  Ensure we do what

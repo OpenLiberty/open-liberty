@@ -13,8 +13,7 @@ package com.ibm.ws.wsat.fat.client.recovery;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,6 +29,9 @@ public class RecoverySetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final int DIRECTION_COMMIT = 0,
     		DIRECTION_ROLLBACK = 1;
+	
+	@Resource
+	UserTransaction userTransaction;
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -52,9 +54,6 @@ public class RecoverySetupServlet extends HttpServlet {
 			switch (number) {
 			case 1:
 				try{
-					Context ctx = new InitialContext();
-					UserTransaction userTransaction = (UserTransaction) ctx
-						.lookup("java:comp/UserTransaction");
 					userTransaction.begin();
 					output = proxy.invoke(number,"");
 					if (!output.contains("failed"))
@@ -95,10 +94,7 @@ public class RecoverySetupServlet extends HttpServlet {
 			case 48:
 			case 49:
 				try{
-					Context ctx = new InitialContext();
 					String logKeyword = "Jordan said in setupServlet: ";
-					UserTransaction userTransaction = (UserTransaction) ctx
-						.lookup("java:comp/UserTransaction");
 					System.out.println(logKeyword + "userTransaction begin start");
 					userTransaction.begin();
 					System.out.println(logKeyword + "userTransaction begin end");
@@ -121,9 +117,6 @@ public class RecoverySetupServlet extends HttpServlet {
 			case 9:
 			case 10:
 				try{
-					Context ctx = new InitialContext();
-					UserTransaction userTransaction = (UserTransaction) ctx
-						.lookup("java:comp/UserTransaction");
 					userTransaction.begin();
 					output = proxy.invoke(number,"");
 					if (!output.contains("failed"))
@@ -138,6 +131,14 @@ public class RecoverySetupServlet extends HttpServlet {
 				/*
 				 * The following are multi server recovery tests
 				 * */
+			default:
+				output += " Invalid test number: " + number + ". Test failed.";
+				try {
+					userTransaction.rollback();
+				}catch(java.lang.Exception e){
+					e.printStackTrace();
+					output += " Exception happens: " + e.toString() + ". Test failed.";
+				}
 			}
 			response.getWriter().println(
 					"<html><header></header><body>" + output + "</body></html>");

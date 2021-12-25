@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -137,7 +138,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);
@@ -186,7 +187,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -244,7 +245,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 
         // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.

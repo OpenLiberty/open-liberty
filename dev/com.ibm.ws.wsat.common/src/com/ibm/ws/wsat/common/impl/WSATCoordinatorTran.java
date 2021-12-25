@@ -77,13 +77,6 @@ public class WSATCoordinatorTran extends WSATTransaction {
 
     public synchronized void removeParticipant(String partId) {
         participants.remove(partId);
-
-        // If this is a recovery transaction we will not be able to use the TranSyncRegistry
-        // to detect transaction end, so we need to use the fact that we have no participants
-        // left to trigger clean-up.  This is valid for recovery state only.
-        if (isRecovery() && participants.size() == 0) {
-            afterCompletion(0);
-        }
     }
 
     public synchronized WSATParticipant getParticipant(String partId) {

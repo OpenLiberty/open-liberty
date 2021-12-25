@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -85,8 +86,6 @@ public class MultiRecoveryTest {
             // We expect this to fail since it is gonna crash the server
         	result = callSetupServlet(id);
         } catch (Throwable e) {
-            Log.info(this.getClass(), method, "callSetupServlet(" + id + ") crashed as expected");
-            Log.error(this.getClass(), method, e); 
         }
         Log.info(this.getClass(), method, "callSetupServlet(" + id + ") returned: " + result);
 
@@ -94,15 +93,22 @@ public class MultiRecoveryTest {
         final String failMsg = " did not perform recovery";
         //restart server in three modes
         if(startServer.equals("server1")){
-        		FATUtils.startServers(server);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for 1st server to have gone away
+        	assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server);
+        	assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("server2")){
-        		FATUtils.startServers(server2);
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for 2nd server to have gone away
+        	assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server2);
+        	assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("both")){
-        		FATUtils.startServers(server, server2);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for both servers to have gone away
+        	assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server, server2);
+        	assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
+        	assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         }
 
 		try {

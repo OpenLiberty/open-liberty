@@ -301,6 +301,20 @@ public class MultiServerTest extends WSATTest {
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());
 		}
+
+		/*
+
+		Uncomment to recreate 286979
+		
+		Also uncomment similar code in ProtocolImpl, TranManagerImpl, EndToEndClientServlet & TransactionImpl
+		
+		try {
+			Log.info(getClass(), method, "SLEEPING IN testTwoServerTwoCallCoordinatorVotingRollback TO SEE WHAT COMES IN");
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		*/
 	}
 
 	@Test

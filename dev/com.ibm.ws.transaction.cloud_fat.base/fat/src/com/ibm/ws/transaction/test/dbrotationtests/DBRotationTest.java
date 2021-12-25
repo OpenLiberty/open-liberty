@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -79,7 +80,7 @@ public class DBRotationTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
-    	FATSuite.beforeSuite();
+        FATSuite.beforeSuite();
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, "com.ibm.ws.transaction.*");
@@ -112,7 +113,7 @@ public class DBRotationTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-    	FATSuite.afterSuite();
+        FATSuite.afterSuite();
     }
 
     /**
@@ -162,7 +163,7 @@ public class DBRotationTest extends FATServletClient {
 
         // wait for 1st server to have gone away
         Log.info(c, method, "wait for first server to go away in testDBBaseRecovery");
-        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog("Dump State:"));
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // The server has been halted but its status variable won't have been reset because we crashed it. In order to
         // setup the server for a restart, set the server state manually.
@@ -199,7 +200,7 @@ public class DBRotationTest extends FATServletClient {
         } catch (Throwable e) {
         }
 
-        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog("Dump State:"));
+        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -253,7 +254,7 @@ public class DBRotationTest extends FATServletClient {
         } catch (Throwable e) {
         }
 
-        assertNotNull(longLeaseCompeteServer1.getServerName() + " didn't crash properly", longLeaseCompeteServer1.waitForStringInLog("Dump State:"));
+        assertNotNull(longLeaseCompeteServer1.getServerName() + " didn't crash properly", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
         longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.

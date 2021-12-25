@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.wait.strategy.Wait;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -113,7 +114,7 @@ public class SSLRecoveryTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        serverLibertySSL.waitForStringInLog("Dump State:");
+        serverLibertySSL.waitForStringInLog(XAResourceImpl.DUMP_STATE);
         serverLibertySSL.stopServer();
 
         setUp();

@@ -20,6 +20,7 @@ import javax.transaction.xa.XAResource;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 /**
@@ -28,6 +29,22 @@ import com.ibm.ws.ffdc.FFDCFilter;
 public final class Util {
 
     private static TraceComponent tc = Tr.register(com.ibm.ws.Transaction.JTA.Util.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+
+    public static String printUOWStatusChangeType(int statusChangeType) {
+
+        switch (statusChangeType) {
+            case UOWCallback.PRE_BEGIN:
+                return "UOWCallback.PRE_BEGIN";
+            case UOWCallback.POST_BEGIN:
+                return "UOWCallback.POST_BEGIN";
+            case UOWCallback.PRE_END:
+                return "UOWCallback.PRE_END";
+            case UOWCallback.POST_END:
+                return "UOWCallback.POST_END";
+        }
+
+        return "UNKNOWN";
+    }
 
     /**
      * Convert JTA transaction status to String representation
