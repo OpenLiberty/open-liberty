@@ -60,7 +60,6 @@ public class HandlerChainTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.clearLogMarks();
             server.stopServer();
         }
     }
@@ -78,9 +77,6 @@ public class HandlerChainTest {
         // Create the dispatch
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).
                         append(":").append(server.getHttpDefaultPort()).append("/testHandlerProvider/TemperatureConverterService");
-
-//        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).
-//                        append(":").append("8010").append("/testHandlerProvider/TemperatureConverterService");
 
         String endpointUrl = sBuilder.toString();
         Service service = Service.create(serviceQName);

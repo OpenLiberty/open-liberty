@@ -7,4 +7,6 @@
 
     <include location="../fatTestPorts.xml"/>
     
+    <logging traceSpecification="componenttest.topology.impl.*=finer:com.ibm.websphere.simplicity.*=finer"/>
+    
 </server>
