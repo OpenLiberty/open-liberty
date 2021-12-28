@@ -9,4 +9,6 @@
     <include location="../fatTestPorts.xml"/>
 
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+    <logging traceSpecification="componenttest.topology.impl.*=finer:com.ibm.websphere.simplicity.*=finer"/>
 </server>
