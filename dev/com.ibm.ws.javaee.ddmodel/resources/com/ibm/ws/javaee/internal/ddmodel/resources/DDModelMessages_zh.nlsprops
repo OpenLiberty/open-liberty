@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,10 +34,22 @@ required.attribute.missing=CWWKC2251E: \u5728\u7b2c {1} \u884c\u4e0a\u7684 {0} \
 required.attribute.missing.explanation=\u6307\u5b9a\u7684\u5143\u7d20\u4e2d\u7f3a\u5c11\u5fc5\u9700\u7684\u5c5e\u6027\u3002
 required.attribute.missing.useraction=\u8bf7\u901a\u8fc7\u6dfb\u52a0\u7f3a\u5c11\u7684\u5c5e\u6027\u6765\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
 
-invalid.root.element=CWWKC2252E: \u5728\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\uff0c\u6839\u672c\u5730\u540d\u79f0 {2} \u65e0\u6548\u3002
-invalid.root.element.explanation=\u6839\u5143\u7d20\u4e0d\u6b63\u786e\u3002
-invalid.root.element.useraction=\u8bf7\u9a8c\u8bc1 XML \u6587\u4ef6\u4ee5\u786e\u4fdd\u6839\u5143\u7d20\u6b63\u786e\u3002
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
 
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: \u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u5177\u6709\u6839\u5143\u7d20 {2}\uff0c\u4f46\u9700\u8981\u6839\u5143\u7d20 {3}\u3002
+unexpected.root.element.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e0d\u6b63\u786e\u3002
+unexpected.root.element.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u3002
 root.element.not.found=CWWKC2253E: \u5728\u7b2c {1} \u884c\u4e0a\u627e\u4e0d\u5230 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u3002
 root.element.not.found.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7f3a\u5c11\u6839\u5143\u7d20\u3002
 root.element.not.found.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
@@ -66,25 +78,151 @@ unexpected.child.element=CWWKC2259E: \u5728\u7b2c {1} \u884c\u4e0a\u7684 {0} \u9
 unexpected.child.element.explanation=\u9047\u5230\u4e86\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u4e0d\u5e94\u6709\u7684\u5143\u7d20\u3002
 unexpected.child.element.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
 
-invalid.href.prefix=CWWKC2260E: \u5728\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\uff0c{2} \u5143\u7d20\u7684 href \u5c5e\u6027\u503c\u672a\u4ee5 {3} \u5f00\u5934\u3002
-invalid.href.prefix.explanation=href \u5c5e\u6027\u5fc5\u987b\u4ee5\u6240\u5f15\u7528\u63cf\u8ff0\u7b26\u7684\u6b63\u786e\u8def\u5f84\u5f00\u5934\u3002
-invalid.href.prefix.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: \u5c1d\u8bd5\u786e\u5b9a {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u7248\u672c\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002
-unknown.deployment.descriptor.version.explanation=\u7248\u672c\u6216\u540d\u79f0\u7a7a\u95f4\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u65e0\u6548\u6216\u672a\u88ab\u6307\u5b9a\u3002
-unknown.deployment.descriptor.version.useraction=\u8bf7\u9a8c\u8bc1\u5e76\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u7684\u7248\u672c\u6216\u540d\u79f0\u7a7a\u95f4\u3002
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E: \u670d\u52a1\u5668\u65e0\u6cd5\u5904\u7406\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 {3} \u7248\u672c\u548c {2} \u540d\u79f0\u7a7a\u95f4\u3002
-invalid.deployment.descriptor.namespace.explanation=\u6240\u6307\u5b9a\u7248\u672c\u548c\u540d\u79f0\u7a7a\u95f4\u65e0\u6548\uff0c\u6216\u670d\u52a1\u5668\u914d\u7f6e\u6ca1\u6709\u53ef\u5904\u7406\u8be5\u7248\u672c\u548c\u540d\u79f0\u7a7a\u95f4\u7684\u529f\u80fd\u90e8\u4ef6\u3002
-invalid.deployment.descriptor.namespace.useraction=\u8bf7\u9a8c\u8bc1\u5e76\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u7684\u7248\u672c\u6216\u540d\u79f0\u7a7a\u95f4\uff0c\u6216\u9a8c\u8bc1\u5e76\u66f4\u6b63\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u7684\u529f\u80fd\u90e8\u4ef6\u3002
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: HREF \u524d\u7f00 {4} \u4e0e\u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u4e2d\u7684\u9884\u671f\u524d\u7f00 {5} \u4e0d\u5339\u914d\u3002
+invalid.href.prefix.explanation=HREF \u503c\u7684\u524d\u7f00\u6307\u5b9a\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u8def\u5f84\u3002\u8be5\u524d\u7f00\u4e0e\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u8def\u5f84\u4e0d\u5339\u914d\u3002
+invalid.href.prefix.useraction=\u66f4\u6b63 HREF \u503c\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u65e0\u6548\u3002
+invalid.href.explanation=\u8be5\u5143\u7d20\u503c\u662f\u65e0\u6548 HREF \u503c\uff1a\u8be5\u503c\u5fc5\u987b\u6709\u4e00\u4e2a\u201c#\u201d\u5b57\u7b26\uff0c\u5e76\u4e14\u201c#\u201d\u5b57\u7b26\u4e0d\u80fd\u662f\u8be5\u503c\u7684\u7b2c\u4e00\u4e2a\u6216\u6700\u540e\u4e00\u4e2a\u5b57\u7b26\u3002
+invalid.href.useraction=\u66f4\u6b63 HREF \u503c\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: HREF \u5f15\u7528\u7c7b\u578b\u4e3a {5} \u7684\u5bf9\u8c61\uff0c\u4f46\u9700\u8981\u7c7b\u578b\u4e3a {4} \u7684\u5bf9\u8c61\u3002\u8be5\u9519\u8bef\u53d1\u751f\u5728\u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u4e2d\u3002
+incorrect.href.type.explanation=HREF \u503c\u5f15\u7528\u7684\u5bf9\u8c61\u7c7b\u578b\u4e0d\u6b63\u786e\u3002
+incorrect.href.type.useraction=\u66f4\u6b63 HREF \u503c\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: \u65e0\u6cd5\u89e3\u6790\u5f15\u7528\u7684 {5} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 HREF \u6807\u8bc6 {4}\uff08\u6b64\u6807\u8bc6\u662f\u7b2c {1} \u884c\u7684\u5f15\u7528 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u7684\u6807\u8bc6\uff09\u3002
+unresolved.href.explanation=\u8be5 HREF \u6807\u8bc6\u4e0d\u4f1a\u89e3\u6790\u4e3a\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u4efb\u4f55\u53ef\u7528\u5143\u7d20\u3002\u8be5 HREF \u6807\u8bc6\u5fc5\u987b\u4e0e\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5143\u7d20\u7684\u6807\u8bc6\u5339\u914d\u3002
+unresolved.href.useraction=\u66f4\u6b63\u5f15\u7528\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684 HREF \u6807\u8bc6\u6216\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684\u6807\u8bc6\u503c\u3002
 
-invalid.deployment.descriptor.version=CWWKC2263E: \u5728\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u7248\u672c {2} \u5c5e\u6027\u65e0\u6548\u3002
-invalid.deployment.descriptor.version.explanation=\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u6307\u5b9a\u4e86\u65e0\u6548\u7248\u672c\u3002
-invalid.deployment.descriptor.version.useraction=\u8bf7\u9a8c\u8bc1\u5e76\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u7684\u7248\u672c\u53f7\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5143\u7d20 {2} \u4e2d\u4e0d\u5b58\u5728 HREF \u5c5e\u6027\u3002
+missing.href.explanation=\u63d0\u4f9b HREF \u5c5e\u6027\u65f6\u9700\u8981\u8be5\u5143\u7d20\u3002HREF \u5c5e\u6027\u5177\u6709\u540d\u79f0\u201chref\u201d\u3002
+missing.href.useraction=\u5411\u8be5\u5143\u7d20\u6dfb\u52a0 HREF \u5c5e\u6027\u3002
 
-missing.deployment.descriptor.namespace=CWWKC2264E: \u5c1d\u8bd5\u786e\u5b9a\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u540d\u79f0\u7a7a\u95f4\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002
-missing.deployment.descriptor.namespace.explanation=\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u6307\u5b9a\u4e86\u65e0\u6548\u540d\u79f0\u7a7a\u95f4\u3002
-missing.deployment.descriptor.namespace.useraction=\u8bf7\u9a8c\u8bc1\u5e76\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u7684\u540d\u79f0\u7a7a\u95f4\u3002
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u7248\u672c {2}\u3002
+unsupported.descriptor.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u7248\u672c\u5bf9\u8be5\u7c7b\u578b\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
+unsupported.descriptor.version.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u7248\u672c\u3002
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u540d\u79f0\u7a7a\u95f4 {2}\u3002
+unsupported.descriptor.namespace.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u5bf9\u4e8e\u8be5\u7c7b\u578b\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
+unsupported.descriptor.namespace.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7248\u672c {2} \u548c\u540d\u79f0\u7a7a\u95f4 {3}\uff0c\u4f46\u5e94\u8be5\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {4}\u3002
+unsupported.descriptor.namespace.for.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u5bf9\u6307\u5b9a\u7684\u7248\u672c\u6307\u5b9a\u4e86\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u8be5\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
+unsupported.descriptor.namespace.for.version.useraction=\u8bf7\u5c06\u540d\u79f0\u7a7a\u95f4\u66f4\u6b63\u4e3a\u5bf9\u6307\u5b9a\u7248\u672c\u6709\u6548\u7684\u503c\u3002
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7248\u672c {2}\uff0c\u5b83\u9ad8\u4e8e\u5f53\u524d\u914d\u7f6e\u7684\u7248\u672c {3}\u3002
+unprovisioned.descriptor.version.explanation=\u670d\u52a1\u5668\u914d\u7f6e\u6240\u914d\u7f6e\u7684\u529f\u80fd\u90e8\u4ef6\u4e0d\u652f\u6301\u4e3a\u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7684\u7248\u672c\u3002
+unprovisioned.descriptor.version.useraction=\u66f4\u65b0\u670d\u52a1\u5668\u914d\u7f6e\u4ee5\u914d\u7f6e\u652f\u6301\u8be5\u7248\u672c\u7684\u529f\u80fd\u90e8\u4ef6\u3002
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6ca1\u6709\u5fc5\u9700\u7684\u540d\u79f0\u7a7a\u95f4 {2}\u3002
+missing.descriptor.namespace.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u9700\u8981\u5177\u6709\u6307\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002
+missing.descriptor.namespace.useraction=\u5c06\u6240\u9700\u7684\u540d\u79f0\u7a7a\u95f4\u6dfb\u52a0\u5230\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
 
 missing.deployment.descriptor.version=CWWKC2265E: \u5c1d\u8bd5\u786e\u5b9a\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u7248\u672c\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002
 missing.deployment.descriptor.version.explanation=\u672a\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e2d\u6307\u5b9a\u7248\u672c\u3002
@@ -110,13 +248,23 @@ found.duplicate.attribute.value=CWWKC2270E: \u6240\u6709 {1} \u5143\u7d20\u7684 
 found.duplicate.attribute.value.explanation=\u6240\u6307\u5b9a\u5c5e\u6027\u7684\u503c\u5728\u540c\u4e00\u7c7b\u578b\u7684\u6240\u6709\u5143\u7d20\u95f4\u5fc5\u987b\u552f\u4e00\u3002
 found.duplicate.attribute.value.useraction=\u8bf7\u901a\u8fc7\u91cd\u547d\u540d\u6240\u6709\u91cd\u590d\u5c5e\u6027\u503c\u6765\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: \u4e3a {0} \u6a21\u5757\u627e\u5230\u4e86 validation.xml \u6587\u4ef6\u3002\u4f46\u662f\uff0c\u7531\u4e8e\u8be5 validation.xml \u6587\u4ef6\u6ca1\u6709\u914d\u7f6e\u4ee5\u4f9b\u9a8c\u8bc1\uff1b\u6240\u4ee5\u5ffd\u7565\u4e86\u8be5 XML \u6587\u4ef6\u3002
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService \u65e0\u6cd5\u521b\u5efa ValidatorFactory \u56e0\u4e3a\u5728\u89e3\u6790validation.xml \u6587\u4ef6\u548c validation-configuration-1.0.xsd \u6a21\u5f0f\u6587\u4ef6\u65f6\u51fa\u9519\u3002 \u8be5\u9519\u8bef\u53ef\u80fd\u8868\u660e\u6ca1\u6709\u9884\u671f Bean Validation \u8fd0\u884c\u65f6\u4f7f\u7528 validation.xml \u6587\u4ef6\uff1b\u6240\u4ee5\uff0c\u5ffd\u7565\u4e86\u8be5 XML \u6587\u4ef6\u3002
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=\u5982\u679c\u8be5 validation.xml \u6587\u4ef6\u4e0d\u662f\u7528\u6765\u521b\u5efa ValidatorFactory \u5b9e\u4f8b\uff0c\u90a3\u4e48\u5ffd\u7565\u8be5\u4fe1\u606f\u3002\u4f46\u662f\uff0c\u5982\u679c\u8be5 validation.xml \u6587\u4ef6\u662f\u7528\u6765\u521b\u5efa ValidatorFactory \u5b9e\u4f8b\u7684\uff0c\u90a3\u5c31\u5b58\u5728\u95ee\u9898\u3002  \u542f\u7528\u5b9e\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u4e2d\u7684 Eean Validation run-time \u8ddf\u8e2a\uff0c\u505c\u6b62\u5e94\u7528\u7a0b\u5e8f\uff0c\u91cd\u542f\u5e94\u7528\u7a0b\u5e8f\uff0c\u7136\u540e\u4e3a\u8ddf\u8e2a\u4e8b\u4ef6\u68c0\u67e5\u8ddf\u8e2a\u8f93\u51fa\u6587\u4ef6\uff0c\u4f8b\u5982\uff1a\u5728\u5c1d\u8bd5\u53d6\u6d88\u5bf9 validation.xml \u6587\u4ef6\u6392\u5e8f\u65f6\u53d1\u751f\u7684\u610f\u5916\u5f02\u5e38\u3002\u68c0\u67e5\u5f02\u5e38\u5806\u6808\u8ddf\u8e2a\u4ee5\u8c03\u8bd5\u534f\u52a9\u8bbe\u5907\u3002
+unexpected.root.element.bval=CWWKC2271W: \u5ffd\u7565 {1} \u6a21\u5757\u7684 {0} bean \u9a8c\u8bc1\u914d\u7f6e\u6587\u4ef6\u3002\u5728\u7b2c {2} \u884c\u4e2d\u5c06\u6839\u5143\u7d20 {3} \u66ff\u6362\u4e3a {4}\u3002
+unexpected.root.element.bval.explanation=\u9a8c\u8bc1\u914d\u7f6e\u6587\u4ef6\u4e0e\u9a8c\u8bc1\u914d\u7f6e\u67b6\u6784\uff08validation-configuration-1.0.xsd \u548c validation-configuration-1.1.xsd\uff09\u4e0d\u5339\u914d\u3002\u914d\u7f6e\u6587\u4ef6\u4e0d\u9002\u5408\u7528\u4e8e bean \u9a8c\u8bc1\uff0c\u6216\u8005\u914d\u7f6e\u6587\u4ef6\u683c\u5f0f\u9519\u8bef\u3002\u914d\u7f6e\u6587\u4ef6\u5c06\u88ab\u5ffd\u7565\u3002BeanValidationService \u5c06\u4e0d\u4f1a\u521b\u5efa ValidatorFactory\u3002
+unexpected.root.element.bval.useraction=\u5982\u679c\u9a8c\u8bc1\u914d\u7f6e\u6587\u4ef6\u4e0d\u7528\u4e8e bean \u9a8c\u8bc1\uff0c\u5219\u53ef\u4ee5\u5ffd\u7565\u8b66\u544a\u6d88\u606f\u3002\u5982\u679c\u9a8c\u8bc1\u914d\u7f6e\u6587\u4ef6\u7528\u4e8e bean \u9a8c\u8bc1\uff0c\u8bf7\u4e0d\u8981\u5ffd\u7565\u8b66\u544a\u6d88\u606f\u3002bean \u9a8c\u8bc1\u670d\u52a1\u672a\u6309\u9884\u671f\u8fd0\u884c\u3002\u8981\u8bca\u65ad\u95ee\u9898\uff0c\u8bf7\u542f\u7528 bean \u9a8c\u8bc1\u8fd0\u884c\u65f6\u8ddf\u8e2a\uff0c\u505c\u6b62\u5e76\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\uff0c\u5e76\u68c0\u67e5\u8ddf\u8e2a\u8f93\u51fa\u4e2d\u662f\u5426\u5b58\u5728\u4e0e bean \u9a8c\u8bc1\u76f8\u5173\u7684\u610f\u5916\u5f02\u5e38\u3002\u4f8b\u5982\uff0c\u201c\u5c1d\u8bd5\u89e3\u7ec4validation.xml \u6587\u4ef6\u65f6\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002\u201d \u68c0\u67e5\u5f02\u5e38\u5806\u6808\u8ddf\u8e2a\u4ee5\u83b7\u5f97\u8c03\u8bd5\u5e2e\u52a9\u3002
 
 xml.error=CWWKC2272E: \u89e3\u6790\u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u9519\u8bef\u6d88\u606f\u4e3a\uff1a{2}
 xml.error.explanation=\u89e3\u6790 XML \u90e8\u7f72\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u8bf7\u53c2\u9605\u9519\u8bef\u6d88\u606f\u4ee5\u83b7\u53d6\u8fdb\u4e00\u6b65\u89e3\u91ca\u3002
@@ -134,10 +282,92 @@ invalid.long.value=CWWKC2275E: \u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u6
 invalid.long.value.explanation=\u8be5\u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7684\u503c\u4e0d\u662f -9223372036854775808 \u5230 9223372036854775807 \u4e4b\u95f4\u7684\u6570\u5b57\u3002
 invalid.long.value.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u4ee5\u4f7f\u7528\u6709\u6548\u957f\u6574\u578b\u6570\u5b57\u3002
 
-module.name.not.specified=CWWKC2276E: {0} \u5143\u7d20\u5fc5\u987b\u6307\u5b9a\u6a21\u5757\u540d\u79f0\u5c5e\u6027\u3002
-module.name.not.specified.explanation=EJB \u548c Web \u6a21\u5757\u7684\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5fc5\u987b\u5305\u542b\u7528\u4e8e\u6307\u5b9a\u914d\u7f6e\u6240\u5e94\u7528\u7684\u6a21\u5757\u7684 moduleName \u5c5e\u6027\u3002
-module.name.not.specified.useraction=\u5411 web-bnd\u3001web-ext\u3001ejb-bnd \u6216 ejb-ext \u5143\u7d20\u6dfb\u52a0 moduleName \u5c5e\u6027\u3002
+# ---
 
-module.name.invalid=CWWKC2277E: {1} \u5143\u7d20\u4e0a\u7684\u4e00\u4e2a\u6216\u591a\u4e2a\u6a21\u5757\u540d\u79f0\u65e0\u6548\u3002\u65e0\u6548\u6a21\u5757\u540d\u79f0\u4e3a {0}\u3002
-module.name.invalid.explanation=Web \u6a21\u5757\u7684\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5fc5\u987b\u6307\u5b9a\u6709\u6548 moduleName \u5c5e\u6027\u3002\u81f3\u5c11\u4e00\u4e2a\u914d\u7f6e\u6307\u5b9a\u4e86\u65e0\u6548\u6a21\u5757\u540d\u79f0\u3002\u6a21\u5757\u540d\u79f0\u5fc5\u987b\u4e3a\u5305\u542b Web \u6216 EJB \u5e94\u7528\u7a0b\u5e8f\u7684\u5f52\u6863\u6587\u4ef6\u7684\u540d\u79f0\u3002
-module.name.invalid.useraction=\u66f4\u6b63\u7ed1\u5b9a\u6216\u6269\u5c55\u914d\u7f6e\u4e2d\u7684 moduleName \u5c5e\u6027\u3002
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: {0} \u5e94\u7528\u7a0b\u5e8f\u7684\u4e00\u4e2a\u6216\u591a\u4e2a\u201c{1}\u201d\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u7f3a\u5c11\u201cmoduleName\u201d\u5c5e\u6027\u3002
+module.name.not.specified.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u5fc5\u987b\u5177\u6709\u201cmoduleName\u201d\u5c5e\u6027\u3002
+module.name.not.specified.useraction=\u786e\u4fdd\u6240\u6709\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u90fd\u5b58\u5728\u201cmoduleName\u201d\u5c5e\u6027\u3002
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: \u627e\u4e0d\u5230\u5728 {0} \u5e94\u7528\u7a0b\u5e8f\u7684\u201c{1}\u201d\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u6307\u5b9a\u7684 {2}\u201cmoduleName\u201d\u5c5e\u6027\u3002\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u4e3a {3}\u3002
+module.name.not.found.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u201cmoduleName\u201d\u5c5e\u6027\u5fc5\u987b\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u5339\u914d\u3002
+module.name.not.found.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u5339\u914d\u3002
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: \u5728 {0} \u5e94\u7528\u7a0b\u5e8f\u7684\u201c{1}\u201d\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684 {2}\u201cmoduleName\u201d\u5c5e\u6027\u3002
+module.name.duplicated.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u201cmoduleName\u201d\u5c5e\u6027\u4e0d\u80fd\u91cd\u590d\u3002
+module.name.duplicated.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u90fd\u662f\u552f\u4e00\u7684\u3002
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26 {0} \u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u516c\u5171\u6807\u8bc6 {2}\u3002
+unsupported.descriptor.public.id.explanation=\u6b64\u516c\u5171\u6807\u8bc6\u503c\u5bf9\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
+unsupported.descriptor.public.id.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u516c\u5171\u6807\u8bc6\u503c\u3002
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6ca1\u6709\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u3002
+missing.descriptor.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u5fc5\u987b\u5177\u6709\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u3002
+missing.descriptor.version.useraction=\u5c06\u7248\u672c\u3001\u516c\u7528\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u6dfb\u52a0\u5230\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002\u6240\u6dfb\u52a0\u7684\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u5fc5\u987b\u4e0e\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\u5339\u914d\u3002
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u540d\u79f0\u7a7a\u95f4 {2}\uff0c\u4f46\u5e94\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {3}\u3002
+incorrect.descriptor.namespace.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u9700\u8981\u7279\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
+incorrect.descriptor.namespace.useraction=\u5c06\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684\u540d\u79f0\u7a7a\u95f4\u66f4\u6539\u4e3a\u671f\u671b\u7684\u503c\u3002
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7248\u672c {2} \u548c\u540d\u79f0\u7a7a\u95f4 {3}\uff0c\u4f46\u5bf9\u4e8e\u8be5\u7248\u672c\u5e94\u8be5\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {4}\u3002
+incorrect.descriptor.namespace.for.version.explanation=\u6307\u5b9a\u7248\u672c\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u9700\u8981\u7279\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
+incorrect.descriptor.namespace.for.version.useraction=\u5c06\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684\u540d\u79f0\u7a7a\u95f4\u66f4\u6539\u4e3a\u671f\u671b\u7684\u503c\u3002
+

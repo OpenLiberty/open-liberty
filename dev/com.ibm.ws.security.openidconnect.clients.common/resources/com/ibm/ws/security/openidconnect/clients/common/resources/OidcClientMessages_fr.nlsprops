@@ -22,9 +22,9 @@
 
 
 # used by clients project
-OIDC_CLIENT_AUTHORIZE_ERR=CWWKS1702E: Le client de connexion OpenID [{0}] avec le codage [{2}] ne peut pas poursuivre le traitement de la demande en raison de [{1}].
-OIDC_CLIENT_AUTHORIZE_ERR.explanation=Le client de connexion OpenID (partie utilisatrice ou RP) a d\u00e9tect\u00e9 une erreur lors du traitement d'une demande.  Il s'agit tr\u00e8s vraisemblablement d'une erreur de codage.  La raison de cette erreur est affich\u00e9e apr\u00e8s le message. 
-OIDC_CLIENT_AUTHORIZE_ERR.useraction=Relancez la demande avec diff\u00e9rents attributs de configuration du client de connexion OpenID (par exemple, ID client, port\u00e9e).  Consultez l'action utilisateur pour plus de d\u00e9tails sur l'erreur qui s'affiche apr\u00e8s cette erreur.
+OIDC_CLIENT_AUTHORIZE_ERR=CWWKS1702E: Le client OpenID Connect [{0}] avec le codage [{2}] ne peut pas poursuivre le traitement de la demande en raison de [{1}].
+OIDC_CLIENT_AUTHORIZE_ERR.explanation=Le client OpenID Connect (partie utilisatrice ou RP) a d\u00e9tect\u00e9 une erreur lors du traitement d'une demande.  Il s'agit tr\u00e8s vraisemblablement d'une erreur de codage.  La raison de cette erreur est affich\u00e9e apr\u00e8s le message. 
+OIDC_CLIENT_AUTHORIZE_ERR.useraction=Relancez la demande avec diff\u00e9rents attributs de configuration du client OpenID Connect (par exemple, ID client, port\u00e9e).  Consultez l'action utilisateur pour plus de d\u00e9tails sur l'erreur qui s'affiche apr\u00e8s cette erreur.
 
 
 #do not translate enforceHTTPS
@@ -37,33 +37,33 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Le client OpenID Connect (partie 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effectuez l'une des op\u00e9rations suivantes : d'abord, assurez-vous que le fournisseur OpenID Connect prend en charge SSL. 2) Si le fournisseur OpenID Connect ne prend pas en charge SSL, utilisez le client OpenID Connect et d\u00e9finissez la valeur false pour enforceHTTPS dans la configuration du client OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: L''\u00e9tat en cours [{0}] du client de connexion OpenID [{2}] et le param\u00e8tre d''\u00e9tat [{1}] dans la r\u00e9ponse du fournisseur de connexion OpenID ne correspondent pas.  Cette condition n''est pas autoris\u00e9e.
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Le client de connexion OpenID (partie utilisatrice ou RP) a envoy\u00e9 une demande \u00e0 un fournisseur de connexion OpenID (OP) et ce dernier a renvoy\u00e9 une r\u00e9ponse avec un param\u00e8tre d'\u00e9tat qui ne correspond pas \u00e0 l'\u00e9tat de la partie utilisatrice au moment de l'envoi. Le client de connexion OpenID doit inclure dans la r\u00e9ponse le m\u00eame \u00e9tat que celui qui a \u00e9t\u00e9 envoy\u00e9.  Cet \u00e9tat est utilis\u00e9 de cette mani\u00e8re pour \u00e9viter de falsification de demande inter-sites. 
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=V\u00e9rifiez que l'URL du fournisseur de connexion OpenID est correcte. Consultez les fichiers journaux pour vous assurer que votre fournisseur de connexion OpenID a re\u00e7u la demande.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: L''\u00e9tat en cours [{0}] du client OpenID Connect [{2}] et le param\u00e8tre d''\u00e9tat [{1}] dans la r\u00e9ponse du fournisseur OpenID Connect ne correspondent pas.  Cette condition n''est pas autoris\u00e9e.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Le client OpenID Connect (partie utilisatrice ou RP) a envoy\u00e9 une demande \u00e0 un fournisseur OpenID Connect (OP) et ce dernier a renvoy\u00e9 une r\u00e9ponse avec un param\u00e8tre d'\u00e9tat qui ne correspond pas \u00e0 l'\u00e9tat de la partie utilisatrice au moment de l'envoi. Le client OpenID Connect doit inclure dans la r\u00e9ponse le m\u00eame \u00e9tat que celui qui a \u00e9t\u00e9 envoy\u00e9.  Cet \u00e9tat est utilis\u00e9 de cette mani\u00e8re pour \u00e9viter toute falsification de demande intersite. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=V\u00e9rifiez que l'URL du fournisseur OpenID Connect est correcte. Consultez les fichiers journaux pour vous assurer que votre fournisseur OpenID Connect a re\u00e7u la demande.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Le client de connexion OpenID [{0}] n''a pas pu authentifier le jeton d''ID car aucun identificateur de sujet n''a \u00e9t\u00e9 inclus dans le jeton. 
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Pour authentifier un ID jeton, il est n\u00e9cessaire que le client de connexion OpenId (partie utilisatrice ou RP) ait un identificateur de sujet. Le jeton d'ID re\u00e7u dans la r\u00e9ponse du fournisseur de connexion OpenID (OP) ne contenait pas d'identificateur de sujet, de sorte que l'authentification a \u00e9chou\u00e9. 
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Assurez-vous que le fournisseur de connexion OpenID (OP) renvoie un jeton d'ID qui inclut un identificateur de sujet.
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Le client OpenID Connect [{0}] n''a pas pu authentifier le jeton d''ID car aucun identificateur de sujet n''a \u00e9t\u00e9 inclus dans le jeton. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Pour authentifier un ID jeton, il est n\u00e9cessaire que le client OpenID Connect (partie utilisatrice ou RP) ait un identificateur de sujet. Le jeton d'ID re\u00e7u dans la r\u00e9ponse du fournisseur OpenID Connect (OP) ne contenait pas d'identificateur de sujet, de sorte que l'authentification a \u00e9chou\u00e9. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Assurez-vous que le fournisseur OpenID Connect (OP) renvoie un jeton d'ID qui inclut un identificateur de sujet.
 
 #used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Le client de connexion Connect [{1}] n''a pas pu valider le jeton d''ID en raison de [{0}].
-OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Le client de connexion OpenID (partie utilisatrice ou RP) ne peut pas valider le jeton d'ID. Cela peut \u00eatre d\u00fb \u00e0 une d\u00e9faillance dans le processus de validation des revendications requises. Certaines revendications requises du jeton d'ID incluent un \u00e9metteur, une audience et une heure d'\u00e9mission. 
-OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Assurez-vous que l'horloge syst\u00e8me du client de connexion OpenID (RP) est synchronis\u00e9e avec l'horloge syst\u00e8me du fournisseur de connexion OpenID (OP) (si elles se trouvent sur deux syst\u00e8mes diff\u00e9rents). Consultez \u00e9galement l'action utilisateur pour l'erreur qui appara\u00eet apr\u00e8s cette erreur.
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Le client OpenID Connect (partie utilisatrice ou RP) ne peut pas valider le jeton d'ID. Cela peut \u00eatre d\u00fb \u00e0 une d\u00e9faillance dans le processus de validation des revendications requises. Certaines revendications requises du jeton d'ID incluent un \u00e9metteur, une audience et une heure d'\u00e9mission. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Assurez-vous que l'horloge syst\u00e8me du client OpenID Connect (RP) est synchronis\u00e9e avec l'horloge syst\u00e8me du fournisseur OpenID Connect (OP) (si elles se trouvent sur deux syst\u00e8mes diff\u00e9rents). Consultez \u00e9galement l'action utilisateur pour l'erreur qui appara\u00eet apr\u00e8s cette erreur.
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Le client de connexion OpenID [{1}] n''a pas pu cr\u00e9er un contexte SSL en raison de [{0}]. V\u00e9rifiez que votre fonction d''URL est correctement configur\u00e9e.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Le client OpenID Connect [{1}] n''a pas pu cr\u00e9er un contexte SSL en raison de [{0}]. V\u00e9rifiez que votre fonction d''URL est correctement configur\u00e9e.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=La configuration du client OpenID Connect (partie utilisatrice ou serveur de ressources) sp\u00e9cifie d'utiliser le sch\u00e9ma HTTPS, mais une connexion HTTPS n'a pas pu \u00eatre \u00e9tablie. Il se peut que la fonction SSL ne soit pas activ\u00e9e. L'\u00e9l\u00e9ment keyStore est peut-\u00eatre manquant ou incorrect.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Assurez-vous que les informations SSL sont correctes dans le fichier server.xml. Consultez l'action utilisateur pour plus de d\u00e9tails sur l'erreur qui s'affiche avant ce message.
 
 #used_by_clients
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE=CWWKS1708E: Le client OpenID Connect [{1}] ne parvient pas \u00e0 contacter le fournisseur OpenID Connect sur [{2}] pour recevoir un jeton en raison de [{0}].
-OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=Le client de connexion OpenID (partie utilisatrice ou RP) n'a pas pu obtenir un jeton d'ID du fournisseur de connexion OpenID (OP) car aucune connexion n'a pu \u00eatre \u00e9tablie avec le fournisseur. Il se peut que l'OP n'ait pas \u00e9t\u00e9 disponible au moment de la demande, que celle-ci n'ait pas \u00e9t\u00e9 dirig\u00e9e vers un point d'extr\u00e9mit\u00e9 valide ou qu'une non concordance de configuration existe entre l'OP et le RP. La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
-OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=V\u00e9rifiez la configuration du serveur pour vous assurer que l'URL de point d'extr\u00e9mit\u00e9 de jeton configur\u00e9e d\u00e9signe une URL valide et qu'elle pointe vers le point d'extr\u00e9mit\u00e9 de jeton d'un fournisseur OpenID Connect actif. Consultez les actions pour cette erreur qui figurent apr\u00e8s ce message.
+OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=Le client OpenID Connect (partie utilisatrice ou RP) n'a pas pu obtenir un jeton d'ID du fournisseur OpenID Connect (OP) car aucune connexion n'a pu \u00eatre \u00e9tablie avec le fournisseur. Il se peut que l'OP n'ait pas \u00e9t\u00e9 disponible au moment de la demande, que celle-ci n'ait pas \u00e9t\u00e9 dirig\u00e9e vers un noeud final valide ou qu'une non concordance de configuration existe entre l'OP et le RP. La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
+OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=V\u00e9rifiez la configuration du serveur pour vous assurer que l'URL de noeud final de jeton configur\u00e9e d\u00e9signe une URL valide et qu'elle pointe vers le noeud final de jeton d'un fournisseur OpenID Connect actif. Consultez les actions pour cette erreur qui figurent apr\u00e8s ce message.
 
 
 # used by clients
-OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: Le client de connexion OpenID [{1}] a d\u00e9tect\u00e9 une erreur lors du traitement de la r\u00e9ponse HTTP re\u00e7ue du fournisseur de connexion OpenID en raison de [{0}].
+OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: Le client OpenID Connect [{1}] a d\u00e9tect\u00e9 une erreur lors du traitement de la r\u00e9ponse HTTP re\u00e7ue du fournisseur OpenID Connect en raison de [{0}].
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.explanation=Le client OpenID Connect (partie utilisatrice ou serveur de ressources) a re\u00e7u une r\u00e9ponse du fournisseur OpenID Connect (OP), mais une erreur s'est produite lors du traitement de la r\u00e9ponse par la partie utilisatrice ou le serveur de ressources. La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Consultez les actions pour cette erreur qui figurent apr\u00e8s ce message.
 
@@ -78,8 +78,8 @@ OAUTH_REQUEST_ACCESS_DENIED.useraction=L'utilisateur doit autoriser le fournisse
 #
 #used by clients project
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Le client OpenID Connect [{0}] n''a pas re\u00e7u de jeton d''ID du fournisseur OpenID Connect [{1}].
-OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.explanation=Le client OpenID Connect (partie utilisatrice ou RP) n'a pas pu obtenir un jeton d'ID du fournisseur OpenID Connect (OP). Il se peut que l'OP n'ait pas \u00e9t\u00e9 disponible au moment de la demande, que celle-ci n'ait pas \u00e9t\u00e9 dirig\u00e9e vers un point d'extr\u00e9mit\u00e9 valide ou qu'une non concordance de configuration existe entre l'OP et le RP. 
-OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.useraction=V\u00e9rifiez la configuration du serveur pour vous assurer que l'URL de point d'extr\u00e9mit\u00e9 de jeton configur\u00e9e d\u00e9signe une URL valide et qu'elle pointe vers le point d'extr\u00e9mit\u00e9 de jeton d'un fournisseur OpenID Connect actif. Consultez \u00e9galement les actions concernant les erreurs rencontr\u00e9es avant ce message.
+OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.explanation=Le client OpenID Connect (partie utilisatrice ou RP) n'a pas pu obtenir un jeton d'ID du fournisseur OpenID Connect (OP). Il se peut que l'OP n'ait pas \u00e9t\u00e9 disponible au moment de la demande, que celle-ci n'ait pas \u00e9t\u00e9 dirig\u00e9e vers un noeud final valide ou qu'une non concordance de configuration existe entre l'OP et le RP. 
+OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.useraction=V\u00e9rifiez la configuration du serveur pour vous assurer que l'URL de noeud final de jeton configur\u00e9e d\u00e9signe une URL valide et qu'elle pointe vers le noeud final de jeton d'un fournisseur OpenID Connect actif. Consultez \u00e9galement les actions concernant les erreurs rencontr\u00e9es avant ce message.
 
 # used by clients
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Le demande du client OpenID Connect [{0}] requiert une port\u00e9e [openid] mais la port\u00e9e requise est absente de l''ensemble de port\u00e9es [{1}] sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect.
@@ -94,7 +94,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=V\u00e9rifiez que le fournisseur Ope
 # 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
-PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton d''acc\u00e8s ne contient pas la demande [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}].
+PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton d''acc\u00e8s ne contient pas la revendication [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}].
 PROPAGATION_TOKEN_MISSING_USERID.explanation=Le jeton d'acc\u00e8s soumis ne contient pas la revendication sp\u00e9cifi\u00e9e et l'environnement d'ex\u00e9cution ne peut pas poursuivre la proc\u00e9dure d'authentification.
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) V\u00e9rifiez que la configuration du client OpenID Connect sp\u00e9cifie le nom de revendication correct 2) V\u00e9rifiez que le fournisseur OpenID Connect (OP) \u00e9met le jeton d'acc\u00e8s avec la revendication sp\u00e9cifi\u00e9e.
 
@@ -105,31 +105,31 @@ PROPAGATION_TOKEN_MISSING_USERID.useraction=Effectuez l'une des op\u00e9rations 
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car la m\u00e9thode de validation [{0}] n''\u00e9tait pas appropri\u00e9e pour l''URL du noeud final de validation [{1}].
-PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=L'\u00e9l\u00e9ment validationEndpointUrl sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect n'est pas le point d'extr\u00e9mit\u00e9 appropri\u00e9 pour la m\u00e9thode de validation sp\u00e9cifi\u00e9e.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car la m\u00e9thode de validation [{0}] n''\u00e9tait pas appropri\u00e9e pour l''URL de noeud final de validation [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=L'\u00e9l\u00e9ment validationEndpointUrl sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect n'est pas le noeud final appropri\u00e9 pour la m\u00e9thode de validation sp\u00e9cifi\u00e9e.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Mettez \u00e0 jour la configuration du client OpenID Connect en modifiant l'\u00e9l\u00e9ment validationMethod ou validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le type de donn\u00e9es de la demande [{0}] dans le jeton d''acc\u00e8s associ\u00e9 \u00e0 l''attribut de configuration [{1}] n''est pas valide. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le type de donn\u00e9es de la revendication [{0}] dans le jeton d''acc\u00e8s associ\u00e9 \u00e0 l''attribut de configuration [{1}] n''est pas valide. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Le type de donn\u00e9es de la revendication dans le jeton d'acc\u00e8s soumis n'est pas valide et l'environnement d'ex\u00e9cution ne peut pas poursuivre la proc\u00e9dure d'authentification.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=V\u00e9rifiez que la configuration du client OpenID Connect sp\u00e9cifie le nom de revendication correct pour l'attribut.
 
 #unused
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton d''acc\u00e8s ne contient pas la demande [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}].
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton d''acc\u00e8s ne contient pas la revendication [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}].
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Le jeton d'acc\u00e8s soumis ne contient pas la revendication sp\u00e9cifi\u00e9e pour identifier le domaine et l'environnement d'ex\u00e9cution ne peut pas poursuivre la proc\u00e9dure d'authentification.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) V\u00e9rifiez que la configuration du client OpenID Connect sp\u00e9cifie l'attribut realmName 2) V\u00e9rifiez que le fournisseur OpenID Connect (OP) \u00e9met le jeton d'acc\u00e8s avec la revendication sp\u00e9cifi\u00e9e 3) V\u00e9rifiez si l'OP peut \u00e9mettre le jeton d'acc\u00e8s avec la revendication "iss". 
 
 # 1732, 33 used by client bundle, don't use here.
 
 #used by clients project
-OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: Le client de connexion OpenID [{0}] n''a pas pu authentifier le jeton d''ID car la demande [{1}] sp\u00e9cifi\u00e9e par l''attribut de configuration [{2}] n''a \u00e9t\u00e9 incluse dans le jeton.
+OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: Le client OpenID Connect [{0}] n''a pas pu authentifier le jeton d''ID car la revendication [{1}] sp\u00e9cifi\u00e9e par l''attribut de configuration [{2}] n''a \u00e9t\u00e9 incluse dans le jeton.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.explanation=L'attribut de configuration sp\u00e9cifi\u00e9 d\u00e9finit la revendication de jeton d'ID \u00e0 utiliser lors de la cr\u00e9ation d'un sujet utilisateur. La revendication sp\u00e9cifi\u00e9e est introuvable dans le jeton d'ID, ce dernier n'a donc pas pu \u00eatre authentifi\u00e9 et aucun sujet utilisateur n'a pu \u00eatre cr\u00e9\u00e9.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=Configurez l'attribut sp\u00e9cifi\u00e9 afin qu'il fasse r\u00e9f\u00e9rence \u00e0 une revendication existante dans le jeton d'ID et puisse \u00eatre utilis\u00e9 pour cr\u00e9er un sujet.
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car la r\u00e9ponse du noeud final de la validation [{0}] comportait la demande [{1}], mais l''attribut [{2}] est d\u00e9fini sur true.
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=La configuration du client OpenID Connect sp\u00e9cifiant "disableIssChecking", le serveur de ressources s'attend \u00e0 ce que la r\u00e9ponse json du point d'extr\u00e9mit\u00e9 de validation ne contienne pas la revendication "iss".  
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) Mettez \u00e0 jour la configuration du client OpenID Connect et d\u00e9finissez "disableIssChecking" sur "false" 2) Faites en sorte que le point d'extr\u00e9mit\u00e9 de validation n'\u00e9mette pas la revendication "iss".
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car la r\u00e9ponse du noeud final de validation [{0}] comportait la revendication [{1}], mais l''attribut [{2}] a pour valeur true.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=La configuration du client OpenID Connect sp\u00e9cifiant "disableIssChecking", le serveur de ressources s'attend \u00e0 ce que la r\u00e9ponse json du noeud final de validation ne contienne pas la revendication "iss".  
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) Mettez \u00e0 jour la configuration du client OpenID Connect et d\u00e9finissez "disableIssChecking" sur "false" 2) Faites en sorte que le noeud final de validation n'\u00e9mette pas la revendication "iss".
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
@@ -148,7 +148,7 @@ OIDC_CLIENT_JWT_VERIFY_ERR.useraction=Consultez l'action utilisateur \u00e0 enga
 # Do not translate "JSON Web Token"
 #0=OIDC client ID, 1=JWT claim (such as aud, iat, exp), 2=Client config attribute (userIdentifier or userIdentityToCreateSubject)
 #used by clients project
-OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: Le client OpenID Connect [{0}] n''est pas parvenu \u00e0 authentifier le jeton Web JSON vu que l''injonction [{1}] sp\u00e9cifi\u00e9e par l''attribut de configuration [{2}] n''\u00e9tait pas incluse dans le jeton.
+OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: Le client OpenID Connect [{0}] n''est pas parvenu \u00e0 authentifier le jeton Web JSON car la revendication [{1}] sp\u00e9cifi\u00e9e par l''attribut de configuration [{2}] n''\u00e9tait pas incluse dans le jeton.
 OIDC_CLIENT_JWT_MISSING_CLAIM.explanation=L'attribut de configuration sp\u00e9cifi\u00e9 d\u00e9finit la revendication du jeton Web JSON \u00e0 utiliser lors de la cr\u00e9ation d'un sujet utilisateur. La revendication sp\u00e9cifi\u00e9e \u00e9tant introuvable dans le jeton Web JSON, ce jeton n'a pas pu \u00eatre authentifi\u00e9 et un sujet utilisateur n'a pas pu \u00eatre cr\u00e9\u00e9.
 OIDC_CLIENT_JWT_MISSING_CLAIM.useraction=Effectuez l'une des actions suivantes : 1) Modifiez la configuration de l'attribut sp\u00e9cifi\u00e9 en vous r\u00e9f\u00e9rant \u00e0 une revendication existante dans le jeton Web JSON. 2) Modifiez le jeton Web JSON en incluant l'attribut sp\u00e9cifi\u00e9.
 
@@ -199,16 +199,21 @@ JWK_RETRIEVE_FAILED.explanation=Aucune cl\u00e9 Web JSON n'a pu \u00eatre retour
 JWK_RETRIEVE_FAILED.useraction=V\u00e9rifiez que le format de l'URL soit incorrect et sp\u00e9cifie un emplacement ne pouvant pas renvoyer des cl\u00e9s Web JSON. Pour plus d'informations, v\u00e9rifiez le statut de la r\u00e9ponse et son contenu.
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-USERINFO_RETREIVE_FAILED=CWWKS1748E: L''URL UserInfo [{0}] n''a pas pu \u00eatre contact\u00e9e. Le statut de la r\u00e9ponse \u00e9tait [{1}] et le contenu retourn\u00e9 \u00e9tait [{2}].
+USERINFO_RETREIVE_FAILED=CWWKS1748E: L''URL UserInfo [{0}] n''a pas pu \u00eatre contact\u00e9e.  Le statut de la r\u00e9ponse \u00e9tait [{1}] et le contenu retourn\u00e9 \u00e9tait [{2}].
 USERINFO_RETREIVE_FAILED.explanation=Les donn\u00e9es utilisateur (User Info) n'a pas pu \u00eatre obtenues de l'URL sp\u00e9cifi\u00e9e. Il se peut que l'URL ne soit pas valide, que le jeton d'acc\u00e8s fourni ne soit pas valide, que la r\u00e9ponse de l'URL soit vide, ou encore qu'une erreur inconnue se soit produite.
 USERINFO_RETREIVE_FAILED.useraction=V\u00e9rifiez que l'URL a un format correct et sp\u00e9cifie un emplacement capable de retourner des donn\u00e9es User Info. Pour plus d'informations, v\u00e9rifiez le statut de la r\u00e9ponse et son contenu.
 
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_INVALID=CWWKS1749E: Les donn\u00e9es User Info [{0}] ne sont pas valides car la revendication ''sub'' (sujet) ne correspond pas \u00e0 celle du jeton d''ID [{1}].
-USERINFO_INVALID.explanation=La revendication 'sub' (sujet) des informations utilisateur doit \u00eatre identique \u00e0 celle du jeton d'ID. Or, ce n'est pas le cas.
+USERINFO_INVALID.explanation=La revendication 'sub' (sujet) des informations utilisateur doit \u00eatre identique \u00e0 celle du jeton d'ID. Or, ce n'est pas le cas. 
 USERINFO_INVALID.useraction=Assurez-vous que le fournisseur OpenID Connect g\u00e9n\u00e8re des donn\u00e9es User Info valides.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Le client OpenID Connect {0} ne peut pas extraire les revendications JWT (JSON Web Token) de la r\u00e9ponse Web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La r\u00e9ponse Web doit \u00eatre un jeton JWT au format JWE (JSON Web Encryption) ou JWS (JSON Web Signature). Il se peut que la syntaxe de la r\u00e9ponse soit incorrecte ou que le client OpenID Connect ait rencontr\u00e9 une autre erreur lors du traitement de la r\u00e9ponse.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que la r\u00e9ponse est au format JWT.
 
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Le client OpenID Connect [{0}] requiert une URL de noeud final d''autorisation, mais celle-ci n''est pas d\u00e9finie.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Une URL de noeud final d'autorisation doit \u00eatre d\u00e9finie pour obtenir un code d'autorisation ou les jetons requis.
@@ -228,5 +233,21 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pour accepter les jetons J
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Le jeton n''est pas au format JWE (JSON Web Encryption) car il ne contient pas cinq parties alors que le client OpenID Connect [{0}] accepte uniquement les jetons au format JWE.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il se peut que le jeton soit mal form\u00e9 ou qu'il soit au format JWS (JSON Web Signature). Les jetons doivent \u00eatre au format JWE si l'attribut keyManagementKeyAlias est configur\u00e9.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pour accepter les jetons JWS au lieu des jetons JWE, supprimez l'attribut keyManagementKeyAlias dans la configuration du client OpenID Connect. Sinon, assurez-vous que seuls des jetons JWE sont envoy\u00e9s \u00e0 cette ressource.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: Les donn\u00e9es extraites de la r\u00e9ponse du noeud final UserInfo ne sont pas au format JSON. Les donn\u00e9es extraites sont les suivantes : [{0}]. L''erreur est la suivante : [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=Le noeud final UserInfo doit renvoyer des revendications en tant que membres d'un objet JSON ou d'un jeton Web JSON (JWT). Il se peut que le format de la r\u00e9ponse ne soit pas valide ou que la r\u00e9ponse ne respecte pas le format sp\u00e9cifi\u00e9 par l'en-t\u00eate Content-Type.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=V\u00e9rifiez le format de la r\u00e9ponse du noeud final UserInfo pour vous assurer qu'elle est au format JSON ou JWT.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: La r\u00e9ponse Web [{0}] doit \u00eatre un jeton Web JSON (JWT), mais elle n''est pas au format JWS (JSON Web Signature) ou JWE (JSON Web Encryption).
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=L'en-t\u00eate Content-Type dans la r\u00e9ponse Web indique que la r\u00e9ponse contient un jeton Web JSON (JWT) mais que le corps de r\u00e9ponse n'est pas dans un format JWT valide.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Assurez-vous que la r\u00e9ponse Web est dans un format attendu par le client OpenID Connect.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Le client OpenID Connect {0} ne peut pas extraire d''informations sur le jeton d''acc\u00e8s depuis le noeud final UserInfo : {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Il se peut que la r\u00e9ponse du noeud final UserInfo ne soit pas dans un format attendu. Le client OpenID Connect peut avoir rencontr\u00e9 une erreur lors de la soumission de la demande UserInfo.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Consultez le message d'erreur pour plus d'informations. V\u00e9rifiez que le contenu de la r\u00e9ponse UserInfo correspond \u00e0 l'en-t\u00eate HTTP Content-Type.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

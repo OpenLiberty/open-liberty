@@ -67,12 +67,15 @@ OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Consultez les journaux de l'outi
 
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Les probl\u00e8mes suivants sont survenus lors de la fusion de documents OpenAPI : {0}
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=La documentation OpenAPI de plusieurs modules Web ne peut pas \u00eatre fusionn\u00e9e. Les noeuds finaux des modules signal\u00e9s ne sont pas inclus dans le document OpenAPI g\u00e9n\u00e9r\u00e9.
-OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=onsultez les probl\u00e8mes de fusion pour identifier les raisons pour lesquelles les documents OpenAPI g\u00e9n\u00e9r\u00e9s ne peuvent pas \u00eatre fusionn\u00e9s.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Prenez connaissance des probl\u00e8mes de fusion afin d'identifier les raisons pour lesquelles les documents OpenAPI g\u00e9n\u00e9r\u00e9s ne peuvent pas \u00eatre fusionn\u00e9s.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=Le chemin {0} du module {1} est en conflit avec un chemin du module {2}. {1} ne sera pas fusionn\u00e9.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Le chemin d'acc\u00e8s est constitu\u00e9 de deux modules. Les deux instances du chemin ne peuvent pas \u00eatre incluses dans le m\u00eame document OpenAPI. Ce message est renvoy\u00e9 dans le cadre de CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Modifiez l'un des modules en conflit ou configurez la fonction mpOpenApi-2.0 pour en exclure un. Ce probl\u00e8me peut \u00eatre caus\u00e9 si les serveurs sont inclus dans le document OpenAPI et que l'URL du serveur ne se termine pas par la racine de contexte de l'application (par exemple, parce que l'application est accessible \u00e0 une adresse URL diff\u00e9rente via un proxy inverse).
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Le chemin {0} du module {1} est en conflit avec un chemin du module {2}. Le module {1} ne peut pas \u00eatre fusionn\u00e9.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Le chemin d'acc\u00e8s est constitu\u00e9 de deux modules. Les deux instances du chemin ne peuvent pas \u00eatre incluses dans le m\u00eame document OpenAPI. Ce message fait partie du message CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Modifiez l'un des modules conflictuel ou configurez la fonction mpOpenApi-2.0 pour exclure l'un des modules. Ce probl\u00e8me peut survenir si des serveurs sont inclus dans le document OpenAPI et que l'URL du serveur ne se termine pas par la racine de contexte de l'application, par exemple lorsque l'application est accessible \u00e0 une adresse URL diff\u00e9rente par le biais d'un proxy inverse.
 
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=La cl\u00e9 d''extension {0} du module {1} entre en conflit avec la m\u00eame cl\u00e9 d''extension du module {2}. Le module {1} ne peut pas \u00eatre fusionn\u00e9.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Deux modules d\u00e9clarent la m\u00eame extension avec des valeurs diff\u00e9rentes au niveau sup\u00e9rieur du document OpenAPI. Les deux instances de l'extension ne peuvent \u00eatre incluses dans le m\u00eame document OpenAPI. Ce message fait partie du message CWWKO1662.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Modifiez l'un des modules conflictuel pour retirer l'extension ou configurez la fonction mpOpenApi-2.0 pour exclure l'un des modules. 
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: La combinaison de la documentation OpenAPI de plusieurs modules est d\u00e9sactiv\u00e9e. Seul {0} est utilis\u00e9 pour g\u00e9n\u00e9rer la documentation OpenAPI. Pour activer la fusion de la documentation OpenAPI de tous les modules, d\u00e9finissez la propri\u00e9t\u00e9 config mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A moins que la fusion de la documentation OpenAPI n'est activ\u00e9e, la documentation OpenAPI n'est g\u00e9n\u00e9r\u00e9e que pour le premier module OpenAPI d\u00e9ploy\u00e9.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Si vous souhaitez que tous vos modules Web soient utilis\u00e9s pour g\u00e9n\u00e9rer la documentation OpenAPI, d\u00e9finissez la propri\u00e9t\u00e9 MicroProfile Config qui est list\u00e9e dans le message. Cette propri\u00e9t\u00e9 peut \u00eatre d\u00e9finie dans n'importe lequel des emplacements o\u00f9 MicroProfile Config recherche des propri\u00e9t\u00e9s de configuration, telles que dans une propri\u00e9t\u00e9 syst\u00e8me Java ou une variable d'environnement.
@@ -81,9 +84,10 @@ OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: L''objet info configur\u00e9 a
 OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Si la propri\u00e9t\u00e9 est d\u00e9finie, elle doit \u00eatre d\u00e9finie sur une section info compl\u00e8te au format JSON, les propri\u00e9t\u00e9s de titre et de version \u00e9tant d\u00e9finies sur des valeurs valides.
 OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Corrigez la valeur info configur\u00e9e.
 
-OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: La propri\u00e9t\u00e9 de configuration {0} ne peut pas \u00eatre analys\u00e9e comme JSON. La valeur est la suivante : {1}\nThe error is: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: La propri\u00e9t\u00e9 de configuration {0} ne peut pas \u00eatre analys\u00e9e comme JSON. La valeur est la suivante : {1}\nL''erreur est la suivante : {2}
 OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Si la propri\u00e9t\u00e9 est d\u00e9finie, elle doit \u00eatre d\u00e9finie sur une section info compl\u00e8te au format JSON.
 OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Consultez le texte de l'erreur pour identifier le probl\u00e8me et corriger la valeur info configur\u00e9e de sorte qu'elle soit valide.
+
 OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Nom non valide trouv\u00e9 dans {0} : {1}. Chaque nom doit utiliser le format "applicationName" ou "applicationName/moduleName".
 OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=La propri\u00e9t\u00e9 config doit contenir une liste de noms d'application et de modules s\u00e9par\u00e9s par des virgules, ou une des valeurs sp\u00e9ciales "all", "first" ou "none".
 OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Consultez le texte d'erreur pour identifier le probl\u00e8me et corriger la propri\u00e9t\u00e9 de configuration indiqu\u00e9e.
