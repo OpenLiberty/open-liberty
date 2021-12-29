@@ -436,9 +436,14 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                 // instantiate and start a new CS
                 try {
                     if (channelType == CS_CONNECTOR) {
-                        CS[nextOpen] = new ConnectChannelSelector(this, nextOpen, CS_CONNECTOR);
+                        CS[nextOpen] = new ConnectChannelSelector(this, nextOpen, CS_CONNECTOR, startImmediately);
                     } else {
-                        CS[nextOpen] = new SocketRWChannelSelector(wakeupOption, this, nextOpen, channelType, checkCancel);
+                        if (channelType == CS_READ_OUTBOUND || channelType == CS_WRITE_OUTBOUND) {
+                            CS[nextOpen] = new SocketRWChannelSelector(wakeupOption, this, nextOpen, channelType, checkCancel, startImmediately);
+                        } else {
+                            CS[nextOpen] = new SocketRWChannelSelector(wakeupOption, this, nextOpen, channelType, checkCancel);
+                        }
+
                     }
                 } catch (IOException x) {
                     FFDCFilter.processException(x, getClass().getName(), "120", this);

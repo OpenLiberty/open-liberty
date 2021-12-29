@@ -84,7 +84,7 @@ public class AioTCPChannel extends TCPChannel implements ChannelTermination {
             }
             super.connectionManager = new ConnectionManager(this, wqm);
             if (startSelectors) {
-                boolean startImmediately = getConfig().getStartOutboundSelectorsImmediately();
+                boolean startImmediately = true;
                 wqm.startSelectors(false, startImmediately);
             }
         }

@@ -25,7 +25,6 @@ public class AioWorkQueueManager extends WorkQueueManager {
 
     private static final TraceComponent tc = Tr.register(AioWorkQueueManager.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
-    @Override
     protected void startSelectors(boolean inBound) throws ChannelException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -51,7 +50,7 @@ public class AioWorkQueueManager extends WorkQueueManager {
                     connectCount[i] = CS_NULL;
                 }
 
-                connect[0] = new ConnectChannelSelector(this, 0, CS_CONNECTOR, this.startImmediately);
+                connect[0] = new ConnectChannelSelector(this, 0, CS_CONNECTOR, true);
                 createNewThread(connect[0], CS_CONNECTOR, 1);
                 connectCount[0] = CS_OK;
             }

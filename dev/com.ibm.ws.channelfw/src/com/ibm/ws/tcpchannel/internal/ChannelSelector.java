@@ -103,7 +103,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         this.checkCancel = _checkCancel;
         this.workQueue1 = new LinkedList<Object>();
         this.workQueue2 = new LinkedList<Object>();
-        startSelectorImmediately = _startImmediately;
+        this.startSelectorImmediately = _startImmediately;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2021 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     protected static final String DIRECT_BUFFS = "allocateBuffersDirect";
     protected static final String ACCEPT_THREAD = "acceptThread";
     protected static final String WAIT_TO_ACCEPT = "waitToAccept";
-    protected static final String START_OUTBOUND_SELECTORS_IMMEDIATELY = "startOutboundSelectorsImmediately";
     protected static final String PORT_OPEN_RETRIES = "portOpenRetries";
     protected static final String COMM_OPTION = "commOption";
     protected static final String DUMP_STATS_INTERVAL = "dumpStatsInterval";
@@ -84,7 +83,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     private int sendBufferSize = -1;
     private boolean acceptThread = false;
     private boolean waitToAccept = false;
-    private boolean startOutboundSelectorsImmediately = false;
     private int dumpStatsInterval = 0;
     private String endPointName = null;
 
@@ -383,15 +381,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     if (key.equalsIgnoreCase(PORT_OPEN_RETRIES)) {
                         //This is a valid configuration option but outbound channels do not use it
                         //Adding this prevents a message from being output saying it's invalid
-                        continue;
-                    }
-
-                    if (key.equalsIgnoreCase(START_OUTBOUND_SELECTORS_IMMEDIATELY)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
-                        this.startOutboundSelectorsImmediately = convertBooleanValue(value);
-                        result = ValidateUtils.VALIDATE_OK;
-
                         continue;
                     }
                 }
@@ -736,15 +725,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     }
                 } else {
                     // outbound only parameters
-                    if (key.equalsIgnoreCase(START_OUTBOUND_SELECTORS_IMMEDIATELY)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
-                        oldBool = this.startOutboundSelectorsImmediately;
-                        if (convertBooleanValue(value) != oldBool) {
-                            result = ValidateUtils.VALIDATE_NOT_EQUAL;
-                        }
-                        continue;
-                    }
                 }
 
                 if (key.equalsIgnoreCase(NO_DELAY)) {
@@ -1328,16 +1308,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
         public boolean getCaseInsensitiveHostnames() {
             return delegate.getCaseInsensitiveHostnames();
         }
-    }
 
-    /**
-     * Query whether this TCP channel is going to delay starting outbound selectors until
-     * the server is known to be completely started.
-     *
-     * If set to true, all selectors on outbound channels will start immediately.
-     */
-    public boolean getStartOutboundSelectorsImmediately() {
-        return this.startOutboundSelectorsImmediately;
     }
 
 }

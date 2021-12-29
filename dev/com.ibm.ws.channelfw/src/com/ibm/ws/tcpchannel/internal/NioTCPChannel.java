@@ -53,7 +53,7 @@ public class NioTCPChannel extends TCPChannel {
 
         if (!config.isInbound()) {
             connectionManager = new ConnectionManager(this, workQueueManager);
-            startImmediately = config.getStartOutboundSelectorsImmediately();
+            startImmediately = true;
         }
 
         workQueueManager.startSelectors(config.isInbound(), startImmediately);
