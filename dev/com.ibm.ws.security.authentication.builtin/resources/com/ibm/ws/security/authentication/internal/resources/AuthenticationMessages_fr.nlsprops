@@ -20,7 +20,7 @@
 
 AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE=CWWKS1000E: Le service JAAS n'est pas disponible.
 AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.explanation=Le service d'authentification n'est pas configur\u00e9 avec le service JAAS.
-AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Aucune action de l'utilisateur n'est requise.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Aucune action n'est requise.
 
 # JAAS Message prefix block: CWWKS1100 - CWWKS1132
 
@@ -46,7 +46,7 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=V\u00e9rifiez que l'
 
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Impossible de charger le module de connexion JAAS \u00e0 partir de la biblioth\u00e8que partag\u00e9e.  Une erreur interne s'est produite.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Une erreur interne s'est produite.
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Reportez-vous aux informations d'identification de probl\u00e8me sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: L''authentification n''a pas r\u00e9ussi pour l''ID utilisateur {0}. Un ID utilisateur non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9.
 JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=L'authentification n'a pas r\u00e9ussi car l'ID utilisateur sp\u00e9cifi\u00e9 n'est pas valide.
@@ -55,10 +55,6 @@ JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=V\u00e9rifiez que l'ID utilisateur
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Les options WSLoginModuleProxy sont vides ou de type null.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=L'authentification n'a pas abouti car l'\u00e9l\u00e9ment options de WSLoginModuleProxy est vide ou de type null.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=V\u00e9rifiez que la configuration WSLoginModuleProxy inclut l'\u00e9l\u00e9ment options.
-
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: L'option de d\u00e9l\u00e9gation WSLoginModuleProxy n'est pas d\u00e9finie.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=L'authentification n'a pas abouti car l'\u00e9l\u00e9ment jaasLoginModule ayant l'ID WSLoginModuleProxy ne dispose pas de l'attribut delegate dans l'\u00e9l\u00e9ment options.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=V\u00e9rifiez que l'\u00e9l\u00e9ment jaasLoginModule ayant l'ID WSLoginModuleProxy inclut l'attribut delegate dans l'\u00e9l\u00e9ment options.  
 
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy n'est pas prise en charge dans jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=L'entr\u00e9e WSLoginModuleProxy n'est pas prise en charge dans jaasLoginContextEntry system.DEFAULT.

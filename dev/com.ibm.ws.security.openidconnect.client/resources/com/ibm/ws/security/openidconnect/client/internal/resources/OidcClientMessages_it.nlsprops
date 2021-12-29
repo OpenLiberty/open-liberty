@@ -80,7 +80,7 @@ OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibi
 OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
 
 #used_by_client_project
-PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Il server di risorse ha fallito la richiesta di autenticazione perch\u00e9 il token di accesso nella richiesta \u00e8 scaduto. L''ora discadenza ("exp") \u00e8 [{0}] e l''ora corrente \u00e8 [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Il server di risorse ha fallito la richiesta di autenticazione perch\u00e9 il token di accesso nella richiesta \u00e8 scaduto. L''ora di scadenza ("exp") \u00e8 [{0}] e l''ora corrente \u00e8 [{1}].
 PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Il token di accesso \u00e8 scaduto e il runtime non pu\u00f2 continuare con la propagazione del token di accesso.
 PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Assicurarsi di fornire un token di accesso valido e di sincronizzare l'ora tra i sistemi.
 
@@ -178,7 +178,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Effettuare una delle seg
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: La versione Java utilizzata da questo runtime [{0}] non \u00e8 supportata dalla libreria token web JSON. La versione Java supportata \u00e8 [{1}] o successive.
 OIDC_CLIENT_JWT_JDK7.explanation=Le librerie open source per l'elaborazione dei token web JSON non supporta la versione Java correntemente utilizzata da Liberty Server.
-OIDC_CLIENT_JWT_JDK7.useraction=Installare una versione Java equivalente o supe riore al livello Java mostrato nel messaggio.
+OIDC_CLIENT_JWT_JDK7.useraction=Installare una versione Java equivalente o superiore al livello Java mostrato nel messaggio.
 
 #1737 used in clients.common bundle, do not use here.
 #1738 is unused.
@@ -288,11 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una richiesta per [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che include un cookie con un formato non corretto.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie con il formato non corretto pu\u00f2 essere causato dalla modifica del cookie presso l'agent utente con un nome host diverso dal nome host del reindirizzamento registrato con il provider. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity in server.xml.
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Il client OpenID Connect {0} non \u00e8 in grado di estrarre le richieste JWT (JSON Web Token) dalla risposta web. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La risposta web deve essere un JWT in formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Il formato della risposta potrebbe non essere corretto oppure il client OpenID Connect ha rilevato un altro errore durante l'elaborazione della risposta.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la risposta sia in formato JWT.
-
-#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
+# 1533-1540 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

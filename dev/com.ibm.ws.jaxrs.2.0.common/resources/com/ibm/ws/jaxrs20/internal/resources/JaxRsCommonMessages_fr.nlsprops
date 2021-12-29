@@ -212,5 +212,6 @@ error.jacksonproviderregister.exception.useraction= Assurez-vous que le fourniss
 
 warn.invalid.authorization.token.type=CWWKW0061W: Le type de jeton d''autorisation sp\u00e9cifi\u00e9 dans la configuration du serveur, {0}, n''est pas valide et sera ignor\u00e9.
 warn.invalid.authorization.token.type.explanation=Le type de jeton d'autorisation sp\u00e9cifi\u00e9 dans la configuration du serveur n'est pas valide.
-warn.invalid.authorization.token.type.useraction=Sp\u00e9cifiez un type de jeton d'autorisation valide. 
-  
+warn.invalid.authorization.token.type.useraction=Sp\u00e9cifiez un type de jeton d'autorisation valide.
+
+continuation.not.supported=Suite non prise en charge. Assurez-vous que tous les servlets et filtres de servlet prennent en charge les op\u00e9rations asynchrones.
