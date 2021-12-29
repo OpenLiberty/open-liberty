@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
@@ -38,7 +39,6 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
@@ -214,13 +214,13 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                         skip.append(skip.length() == 0 ? "" : ",").append(type);
                     } else {
                         for (String pid : pids)
-                            skip.append(skip.length() == 0 ? "" : ",").append(pid);
+                            skip.append(skip.length() == 0 ? "" : ",").append(pid).append(".provider");
                     }
                 }
             } // TODO else error for duplicate usage
 
         if (skip.length() > 0)
-            contextSvcProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, skip.toString());
+            contextSvcProps.put("context.unchanged", skip.toString());
 
         // propagated
         TreeSet<String> propagated3PCtx = new TreeSet<String>();
@@ -419,6 +419,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
     /**
      * Convert map to text, fully expanding String[] values to make them visible in trace.
      */
+    @Trivial
     private static final String toString(Map<String, Object> map) {
         boolean first = true;
         StringBuilder b = new StringBuilder(200).append('{');

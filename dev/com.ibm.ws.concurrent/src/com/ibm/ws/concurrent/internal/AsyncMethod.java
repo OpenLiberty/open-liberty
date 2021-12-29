@@ -78,8 +78,6 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
         if (JAVA8)
             throw new UnsupportedOperationException();
 
-        rejectManagedTask(invoker);
-
         this.asyncMethodImpl = invoker;
         this.contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
         this.invocation = invocation;

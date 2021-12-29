@@ -66,6 +66,7 @@ import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
@@ -1177,7 +1178,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 } catch (Exception x) {
                     throw new CompletionException(x);
                 }
-            }));
+            }), unmanagedThreads);
 
             tm.suspend();
         } finally {
@@ -1466,6 +1467,37 @@ public class ConcurrentCDIServlet extends HttpServlet {
             assertEquals(result1 == 10 ? 15 : 5, result2);
         } finally {
             tran.commit();
+        }
+    }
+
+    /**
+     * When ContextServiceDefinition does not specify ALL_REMAINING for any category of context,
+     * ALL_REMAINING is automatically added to the cleared types. Verify that application context
+     * and transaction context are cleared from the thread while running the task.
+     */
+    @Test
+    public void testUnspecifiedContextTypesCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/allcontextcleared");
+
+        tran.begin();
+        try {
+            Integer txStatusOfCallable = contextSvc.contextualCallable(() -> {
+                try {
+                    Object unexpected = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
+                    throw new AssertionError("Application context must be cleared. Looked up " + unexpected);
+                } catch (NamingException x) {
+                    // expected because application component namespace is cleared
+                    return tran.getStatus();
+                }
+            }).call();
+
+            // transaction status must be cleared for contextual callable
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), txStatusOfCallable);
+
+            // transaction status must be restored on thread afterward,
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            tran.rollback();
         }
     }
 }

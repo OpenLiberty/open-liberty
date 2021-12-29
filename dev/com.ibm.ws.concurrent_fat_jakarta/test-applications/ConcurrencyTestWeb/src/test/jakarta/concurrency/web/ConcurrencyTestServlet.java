@@ -207,7 +207,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Look up an application-defined ContextService that is configured to
      * propagate some third-party context (ZipCode and List),
      * clear other third-party context (Priority and Timestamp),
-     * and lave other types of context, such as Application, unchanged.
+     * and leave other types of context, such as Application, unchanged.
      * Verify that the ContextService behaves as configured.
      */
     @Test
@@ -244,7 +244,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 };
             });
 
-            // Alter soem of the context on the current thread
+            // Alter some of the context on the current thread
             ZipCode.set(55906);
             ListContext.newList();
             ListContext.add(5);
