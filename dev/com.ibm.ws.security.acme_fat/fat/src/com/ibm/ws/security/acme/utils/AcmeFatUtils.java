@@ -890,7 +890,7 @@ public class AcmeFatUtils {
 
 		if (os.startsWith("win")) {
 			if ((javaVendor.contains("openjdk") || javaVendor.contains("oracle")) && (javaVersion.equals("11.0.11") || javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
-					|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17"))) {
+					|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17") || javaVersion.equals("11.0.13") )) {
 				/*
 				 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
 				 * deleting the Acme related files. Later JDK11s seem to be working. 11.0.7+10, 11.0.8+10, 11.0.10+9, 11.0.12+7
