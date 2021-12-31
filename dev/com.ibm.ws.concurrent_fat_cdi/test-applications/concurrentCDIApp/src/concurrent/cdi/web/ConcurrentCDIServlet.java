@@ -46,6 +46,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
@@ -787,6 +788,91 @@ public class ConcurrentCDIServlet extends HttpServlet {
             blocker1.countDown();
             blocker2.countDown();
         }
+    }
+
+    /**
+     * Verify that application context is propagated when the ContextServiceDefinition does not
+     * configure it explicitly, but specifies to propagate all remaining context types.
+     */
+    @Test
+    public void testRemainingContextPropagated() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/txcontextcleared");
+        Supplier<?> contextualSupplier = contextSvc.contextualSupplier(() -> {
+            try {
+                return InitialContext.doLookup("java:module/concurrent/txcontextcleared");
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        CompletableFuture<?> future = CompletableFuture.supplyAsync(contextualSupplier, unmanagedThreads);
+
+        Object result = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        assertNotNull(result);
+        assertTrue(result.toString(), result instanceof ContextService);
+    }
+
+    /**
+     * Verify that transaction context and application context are left alone when the
+     * ContextServiceDefinition does not configure them explicitly, but specifies to
+     * leave all remaining context types unchanged.
+     */
+    @Test
+    public void testRemainingContextUnchangedNoneCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/remainingcontextunchanged");
+        Supplier<Object> lookUpAndGetActiveTransaction = contextSvc.contextualSupplier(() -> {
+            try {
+                assertNotNull(InitialContext.doLookup("java:module/concurrent/remainingcontextunchanged"));
+
+                TransactionSynchronizationRegistry txSyncRegistry = //
+                                InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+                return txSyncRegistry.getTransactionKey();
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tran.begin();
+        try {
+            Object txExpected = tranSyncRegistry.getTransactionKey();
+            assertEquals(txExpected, lookUpAndGetActiveTransaction.get());
+            assertEquals(txExpected, tranSyncRegistry.getTransactionKey()); // original context must remain on thread afterward
+        } finally {
+            tran.rollback();
+        }
+
+        assertEquals(null, lookUpAndGetActiveTransaction.get());
+    }
+
+    /**
+     * Verify that transaction context is left alone while application context is cleared
+     * when the ContextServiceDefinition does not configure transaction context explicitly,
+     * but specifies to leave all remaining context types unchanged.
+     */
+    @Test
+    public void testRemainingContextUnchangedSomeCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/appcontextcleared");
+        Supplier<Object> getActiveTransaction = contextSvc.contextualSupplier(() -> {
+            try {
+                Object unexpected = InitialContext.doLookup("java:module/concurrent/appcontextcleared");
+                throw new AssertionError("Must not be able to look up " + unexpected);
+            } catch (NamingException x) {
+                // expected
+            }
+
+            return tranSyncRegistry.getTransactionKey();
+        });
+
+        tran.begin();
+        try {
+            Object txExpected = tranSyncRegistry.getTransactionKey();
+            assertEquals(txExpected, getActiveTransaction.get());
+            assertEquals(txExpected, tranSyncRegistry.getTransactionKey()); // original context must remain on thread afterward
+        } finally {
+            tran.rollback();
+        }
+
+        assertEquals(null, getActiveTransaction.get());
     }
 
     /**

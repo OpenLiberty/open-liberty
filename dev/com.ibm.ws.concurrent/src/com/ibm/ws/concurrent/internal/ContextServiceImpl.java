@@ -253,7 +253,7 @@ public class ContextServiceImpl implements ContextService, //
             // execution properties for ContextServiceDefinition
             execProps = new TreeMap<String, String>();
             execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
-            String contextToSkip = (String) props.get("context.unchanged");// TODO check for Remaining and in that case omit above property?
+            String contextToSkip = (String) props.get("context.unchanged");
             if (contextToSkip != null)
                 execProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, contextToSkip);
         }
