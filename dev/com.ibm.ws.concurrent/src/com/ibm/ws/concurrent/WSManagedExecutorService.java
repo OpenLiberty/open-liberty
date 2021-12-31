@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,12 @@ public interface WSManagedExecutorService {
      * or creates new thread context as determined by the execution properties.
      * Do not expect the captured context to be serializable.</p>
      *
-     * @param props execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
+     * @param props execution properties. Custom property keys must not begin with
+     *                  "javax.enterprise.concurrent." or "jakarta.enterprise.concurrent.".
+     *                  Null indicates to use execution properties that are consistent with
+     *                  with the managed executor's ContextServiceDefinition, or lacking a
+     *                  ContextServiceDefinition use execution properties that suspend the
+     *                  transaction on the thread of execution.
      * @return captured thread context.
      */
     ThreadContextDescriptor captureThreadContext(Map<String, String> props);

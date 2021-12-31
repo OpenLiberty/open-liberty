@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
             throw new UnsupportedOperationException();
 
         this.asyncMethodImpl = invoker;
-        this.contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
+        this.contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(null);
         this.invocation = invocation;
 
         ((Executor) futureRef).execute(this::runIfNotStarted);

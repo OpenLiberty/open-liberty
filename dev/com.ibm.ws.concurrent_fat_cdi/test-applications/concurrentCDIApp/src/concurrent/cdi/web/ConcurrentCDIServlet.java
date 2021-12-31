@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1194,7 +1194,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to an asynchronous method,
      * per configuration of the ManagedExecutorService's ContextServiceDefinition.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedToAsyncMethod() throws Exception {
         // Use up maxAsync (1) for the managed executor so that the subsequent asynchronous
         // method can run upon join that is attempted from a different transaction.
@@ -1208,7 +1208,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
             tran.begin();
             try {
                 tx1key = tranSyncRegistry.getTransactionKey();
-                future = appScopedBean.getTransactionInfoAndCommit();
+                future = appScopedBean.getTransactionInfoAndCommit(tranSyncRegistry, tran);
 
                 tm.suspend();
             } finally {
@@ -1329,7 +1329,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to a completion stage action,
      * per the configuration of the managed executor's ContextServiceDefinition.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedToCompletableFuture() throws Exception {
         ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
         Object txKey;
@@ -1365,7 +1365,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to completion stages that
      * obtained via ContextService.withContextCapture.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedWithContextCapture() throws Exception {
         ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/txcontext");
 
@@ -1429,7 +1429,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is left unchanged per the ContextServiceDefinition configuration,
      * and allows an inline completion stage action to run in the transaction that is already on the thread.
      */
-    //TODO @Test
+    @Test
     public void testTransactionContextUnchangedForInlineCompletionStageAction() throws Exception {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
 

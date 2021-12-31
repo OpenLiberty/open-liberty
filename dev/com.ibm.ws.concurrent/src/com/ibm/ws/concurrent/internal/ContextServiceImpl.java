@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,7 +141,7 @@ public class ContextServiceImpl implements ContextService, //
      * If ContextServiceDefinition is used, the execution properties are populated upon activate
      * to control which context types are cleared vs left unchanged. Otherwise, it remains empty.
      */
-    private Map<String, String> execProps = Collections.emptyMap();
+    Map<String, String> execProps = Collections.emptyMap();
 
     /**
      * Hash code for this instance.
@@ -253,7 +253,7 @@ public class ContextServiceImpl implements ContextService, //
             // execution properties for ContextServiceDefinition
             execProps = new TreeMap<String, String>();
             execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
-            String contextToSkip = (String) props.get("context.unchanged");
+            String contextToSkip = (String) props.get("context.unchanged");// TODO check for Remaining and in that case omit above property?
             if (contextToSkip != null)
                 execProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, contextToSkip);
         }

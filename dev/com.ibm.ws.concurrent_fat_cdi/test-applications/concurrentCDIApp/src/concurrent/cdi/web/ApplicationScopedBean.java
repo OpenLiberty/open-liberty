@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,13 +81,12 @@ public class ApplicationScopedBean implements Serializable {
      * Obtain the transaction key and status and then commit the active transaction.
      */
     @Asynchronous(executor = "java:module/concurrent/txexecutor")
-    public CompletableFuture<Entry<Object, Integer>> getTransactionInfoAndCommit() {
+    public CompletableFuture<Entry<Object, Integer>> getTransactionInfoAndCommit(TransactionSynchronizationRegistry tranSyncRegistry,
+                                                                                 UserTransaction tx) {
         try {
-            TransactionSynchronizationRegistry tranSyncRegistry = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
             Object txKey = tranSyncRegistry.getTransactionKey();
             int txStatus = tranSyncRegistry.getTransactionStatus();
 
-            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
             tx.commit();
 
             return Asynchronous.Result.complete(new SimpleEntry<Object, Integer>(txKey, txStatus));
