@@ -35,7 +35,7 @@ public class MultiRecoveryTest {
 	protected static String BASE_URL;
 	protected static String BASE_URL2;
 
-	private final static int REQUEST_TIMEOUT = 10;
+	private final static int REQUEST_TIMEOUT = HttpUtils.DEFAULT_TIMEOUT;
 	private final static int START_TIMEOUT = 300000; // in ms
 	
 	private final static String recoveryClient = "recoveryClient";
@@ -165,26 +165,24 @@ public class MultiRecoveryTest {
         URL url1 = new URL(urlStr1);
         URL url2 = new URL(urlStr2);
 
-        while (result1.isEmpty() || result2.isEmpty())
-        {
+        while (result1.isEmpty() || result2.isEmpty()) {
         	if (result1.isEmpty()) {
         		HttpURLConnection con1 = null;
 
         		try {
         			Log.info(getClass(), method, "Getting connection to " + urlStr1);
         			con1 = HttpUtils.getHttpConnection(url1, expectedConnectionCode, REQUEST_TIMEOUT);
+            		if (con1 != null) {
+            			Log.info(getClass(), method, "Getting result from " + urlStr1);
+        				result1 = HttpUtils.getConnectionStream(con1).readLine();
+            			Log.info(getClass(), method, "result: " + result1);
+            		}
         		} catch (Exception e) {
         			Log.error(getClass(), method, e);
-        		}
-        		
-        		if (con1 != null) {
-        			try {
-            			Log.info(getClass(), method, "Getting result from " + urlStr1);
-        				BufferedReader br1 = HttpUtils.getConnectionStream(con1);
-        				result1 = br1.readLine();
-        			} finally {
+        		} finally {
+            		if (con1 != null) {
         				con1.disconnect();
-        			}
+            		}
         		}
         	}
 
@@ -194,16 +192,15 @@ public class MultiRecoveryTest {
         		try {
         			Log.info(getClass(), method, "Getting connection to " + urlStr2);
         			con2 = HttpUtils.getHttpConnection(url2, expectedConnectionCode, REQUEST_TIMEOUT);
+        			if (con2 != null) {
+        				Log.info(getClass(), method, "Getting result from " + urlStr2);
+        				result2 = HttpUtils.getConnectionStream(con2).readLine();
+        				Log.info(getClass(), method, "result: " + result2);
+        			}
         		} catch (Exception e) {
         			Log.error(getClass(), method, e);
-        		}
-
-        		if (con2 != null) {
-        			try {
-            			Log.info(getClass(), method, "Getting result from " + urlStr2);
-        				BufferedReader br2 = HttpUtils.getConnectionStream(con2);
-        				result2 = br2.readLine();
-        			} finally {
+        		} finally {
+        			if (con2 != null) {
         				con2.disconnect();
         			}
         		}
