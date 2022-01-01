@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,15 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Java EE Concurrency execution properties that specify to suspend the current transaction.
      */
     private static final Map<String, String> JAVAX_SUSPEND_TRAN = Collections.singletonMap("javax.enterprise.concurrent.TRANSACTION", "SUSPEND");
+
+    /**
+     * Execution properties that specify to suspend the current transaction.
+     */
+    private static final Map<String, String> XPROPS_SUSPEND_TRAN = new TreeMap<String, String>();
+    static {
+        XPROPS_SUSPEND_TRAN.putAll(JAKARTA_SUSPEND_TRAN);
+        XPROPS_SUSPEND_TRAN.putAll(JAVAX_SUSPEND_TRAN);
+    }
 
     private final boolean allowLifeCycleMethods;
 
@@ -302,11 +311,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
 
     @Override
     public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
-        WSContextService contextSvc;
+        ContextServiceImpl contextSvc;
         if (mpContextService == null)
-            contextSvc = contextSvcRef.getServiceWithException();
+            contextSvc = (ContextServiceImpl) contextSvcRef.getServiceWithException();
         else
             contextSvc = mpContextService;
+
+        if (props == null)
+            props = contextSvc.execProps.isEmpty() ? XPROPS_SUSPEND_TRAN : contextSvc.execProps;
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContext = contextSvc.captureThreadContext(props);

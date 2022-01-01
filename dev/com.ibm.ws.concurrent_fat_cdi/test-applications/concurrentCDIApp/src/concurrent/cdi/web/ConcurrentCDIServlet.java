@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
@@ -66,6 +67,7 @@ import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
@@ -789,6 +791,91 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Verify that application context is propagated when the ContextServiceDefinition does not
+     * configure it explicitly, but specifies to propagate all remaining context types.
+     */
+    @Test
+    public void testRemainingContextPropagated() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/txcontextcleared");
+        Supplier<?> contextualSupplier = contextSvc.contextualSupplier(() -> {
+            try {
+                return InitialContext.doLookup("java:module/concurrent/txcontextcleared");
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        CompletableFuture<?> future = CompletableFuture.supplyAsync(contextualSupplier, unmanagedThreads);
+
+        Object result = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        assertNotNull(result);
+        assertTrue(result.toString(), result instanceof ContextService);
+    }
+
+    /**
+     * Verify that transaction context and application context are left alone when the
+     * ContextServiceDefinition does not configure them explicitly, but specifies to
+     * leave all remaining context types unchanged.
+     */
+    @Test
+    public void testRemainingContextUnchangedNoneCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/remainingcontextunchanged");
+        Supplier<Object> lookUpAndGetActiveTransaction = contextSvc.contextualSupplier(() -> {
+            try {
+                assertNotNull(InitialContext.doLookup("java:module/concurrent/remainingcontextunchanged"));
+
+                TransactionSynchronizationRegistry txSyncRegistry = //
+                                InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+                return txSyncRegistry.getTransactionKey();
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tran.begin();
+        try {
+            Object txExpected = tranSyncRegistry.getTransactionKey();
+            assertEquals(txExpected, lookUpAndGetActiveTransaction.get());
+            assertEquals(txExpected, tranSyncRegistry.getTransactionKey()); // original context must remain on thread afterward
+        } finally {
+            tran.rollback();
+        }
+
+        assertEquals(null, lookUpAndGetActiveTransaction.get());
+    }
+
+    /**
+     * Verify that transaction context is left alone while application context is cleared
+     * when the ContextServiceDefinition does not configure transaction context explicitly,
+     * but specifies to leave all remaining context types unchanged.
+     */
+    @Test
+    public void testRemainingContextUnchangedSomeCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/appcontextcleared");
+        Supplier<Object> getActiveTransaction = contextSvc.contextualSupplier(() -> {
+            try {
+                Object unexpected = InitialContext.doLookup("java:module/concurrent/appcontextcleared");
+                throw new AssertionError("Must not be able to look up " + unexpected);
+            } catch (NamingException x) {
+                // expected
+            }
+
+            return tranSyncRegistry.getTransactionKey();
+        });
+
+        tran.begin();
+        try {
+            Object txExpected = tranSyncRegistry.getTransactionKey();
+            assertEquals(txExpected, getActiveTransaction.get());
+            assertEquals(txExpected, tranSyncRegistry.getTransactionKey()); // original context must remain on thread afterward
+        } finally {
+            tran.rollback();
+        }
+
+        assertEquals(null, getActiveTransaction.get());
+    }
+
+    /**
      * Specify the asynchronous method annotation at both class and method level,
      * with conflicting values for the executor parameter. Verify that method level
      * takes precedence.
@@ -1177,7 +1264,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 } catch (Exception x) {
                     throw new CompletionException(x);
                 }
-            }));
+            }), unmanagedThreads);
 
             tm.suspend();
         } finally {
@@ -1193,7 +1280,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to an asynchronous method,
      * per configuration of the ManagedExecutorService's ContextServiceDefinition.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedToAsyncMethod() throws Exception {
         // Use up maxAsync (1) for the managed executor so that the subsequent asynchronous
         // method can run upon join that is attempted from a different transaction.
@@ -1207,7 +1294,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
             tran.begin();
             try {
                 tx1key = tranSyncRegistry.getTransactionKey();
-                future = appScopedBean.getTransactionInfoAndCommit();
+                future = appScopedBean.getTransactionInfoAndCommit(tranSyncRegistry, tran);
 
                 tm.suspend();
             } finally {
@@ -1328,7 +1415,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to a completion stage action,
      * per the configuration of the managed executor's ContextServiceDefinition.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedToCompletableFuture() throws Exception {
         ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/txexecutor");
         Object txKey;
@@ -1364,7 +1451,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is propagated to completion stages that
      * obtained via ContextService.withContextCapture.
      */
-    // TODO @Test
+    @Test
     public void testTransactionContextPropagatedWithContextCapture() throws Exception {
         ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/txcontext");
 
@@ -1428,7 +1515,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that transaction context is left unchanged per the ContextServiceDefinition configuration,
      * and allows an inline completion stage action to run in the transaction that is already on the thread.
      */
-    //TODO @Test
+    @Test
     public void testTransactionContextUnchangedForInlineCompletionStageAction() throws Exception {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
 
@@ -1466,6 +1553,37 @@ public class ConcurrentCDIServlet extends HttpServlet {
             assertEquals(result1 == 10 ? 15 : 5, result2);
         } finally {
             tran.commit();
+        }
+    }
+
+    /**
+     * When ContextServiceDefinition does not specify ALL_REMAINING for any category of context,
+     * ALL_REMAINING is automatically added to the cleared types. Verify that application context
+     * and transaction context are cleared from the thread while running the task.
+     */
+    @Test
+    public void testUnspecifiedContextTypesCleared() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/allcontextcleared");
+
+        tran.begin();
+        try {
+            Integer txStatusOfCallable = contextSvc.contextualCallable(() -> {
+                try {
+                    Object unexpected = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
+                    throw new AssertionError("Application context must be cleared. Looked up " + unexpected);
+                } catch (NamingException x) {
+                    // expected because application component namespace is cleared
+                    return tran.getStatus();
+                }
+            }).call();
+
+            // transaction status must be cleared for contextual callable
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), txStatusOfCallable);
+
+            // transaction status must be restored on thread afterward,
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            tran.rollback();
         }
     }
 }

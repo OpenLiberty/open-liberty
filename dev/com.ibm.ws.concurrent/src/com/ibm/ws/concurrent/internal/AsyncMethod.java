@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
      * that is returned to the application, but it has the choice of
      * returning a different stage.
      */
-    private final BiFunction<I, CompletableFuture<T>, CompletionStage<T>> action;
+    private final BiFunction<I, CompletableFuture<T>, CompletionStage<T>> asyncMethodImpl;
 
     /**
      * Thread context that is captured when the asynchronous method is requested,
@@ -78,10 +78,8 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
         if (JAVA8)
             throw new UnsupportedOperationException();
 
-        rejectManagedTask(invoker);
-
-        this.action = invoker;
-        this.contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
+        this.asyncMethodImpl = invoker;
+        this.contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(null);
         this.invocation = invocation;
 
         ((Executor) futureRef).execute(this::runIfNotStarted);
@@ -120,22 +118,22 @@ public class AsyncMethod<I, T> extends ManagedCompletableFuture<T> {
     @FFDCIgnore({ CompletionException.class, Error.class, RuntimeException.class })
     private void runIfNotStarted() {
         if (!isDone() && started.compareAndSet(false, true)) {
-            CompletionStage<T> asyncMethodResultStage = null;
             Throwable failure = null;
             ArrayList<ThreadContext> contextApplied = null;
             try {
                 if (contextDescriptor != null)
                     contextApplied = contextDescriptor.taskStarting();
-                asyncMethodResultStage = action.apply(invocation, this);
+
+                CompletionStage<T> asyncMethodResultStage = asyncMethodImpl.apply(invocation, this);
 
                 // The asynchronous method implementation can return a different stage or null if it wants to
                 if (asyncMethodResultStage != this)
                     if (asyncMethodResultStage == null) {
                         complete(null);
+                    } else if (asyncMethodResultStage instanceof ManagedCompletableFuture) {
+                        // bypass thread context capture & propagation because it is unnecessary here
+                        ((ManagedCompletableFuture<T>) asyncMethodResultStage).super_whenComplete(this::complete);
                     } else {
-                        // TODO inefficient if a ManagedCompletableFuture. Instead do:
-                        //} else if (asyncMethodResultStage instanceof ManagedCompletableFuture) {
-                        //    ((ManagedCompletableFuture) asyncMethodResultStage).super_whenComplete(this::complete);
                         asyncMethodResultStage.whenComplete(this::complete);
                     }
             } catch (CompletionException x) {
