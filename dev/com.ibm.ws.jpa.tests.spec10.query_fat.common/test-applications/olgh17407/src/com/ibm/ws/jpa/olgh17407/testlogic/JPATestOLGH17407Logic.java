@@ -129,7 +129,7 @@ public class JPATestOLGH17407Logic extends AbstractTestLogic {
             TypedQuery<String> query = em.createQuery(""
                                                       + "SELECT t.itemString1 FROM SimpleEntityOLGH17407 t "
                                                       + "GROUP BY t.itemString1 HAVING COUNT(t.itemString1) > ?1", String.class);
-            query.setParameter(1, 2);
+            query.setParameter(1, 2L);
 
             List<String> dto01 = query.getResultList();
             Assert.assertNotNull(dto01);

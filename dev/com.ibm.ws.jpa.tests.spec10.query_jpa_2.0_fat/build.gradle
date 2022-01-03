@@ -10,6 +10,8 @@
  *******************************************************************************/
 
 configurations {
+  hibernateJPA20
+  openjpaJPA20
   jpaFatTools
 }
 
@@ -76,11 +78,10 @@ clean.doLast {
   if (file('build').exists()) {
     file('build').deleteDir()
   }
-  if (file('publish').exists()) {
-    file('publish').deleteDir()
+  if (file('publish/servers').exists()) {
+    file('publish/servers').deleteDir()
   }
   if (file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests').exists()) {
     file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests').deleteDir()
   }
 }
-

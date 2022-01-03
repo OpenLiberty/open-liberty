@@ -19,6 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.ibm.ws.query.entities.interfaces.IAddressBean;
+import com.ibm.ws.query.entities.interfaces.IAddressPK;
 
 @Entity
 @Table(name = "JPAAddressBean")
@@ -49,13 +50,13 @@ public class AddressBean implements IAddressBean, Serializable {
     }
 
     @Override
-    public String getStreet() {
-        return street.getName();
+    public AddressPK getStreet() {
+        return street;
     }
 
     @Override
-    public void setStreet(String street) {
-        this.street = new AddressPK(street);
+    public void setStreet(IAddressPK street) {
+        this.street = (AddressPK) street;
     }
 
     @Override

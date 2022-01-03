@@ -79,7 +79,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             Query q = em.createQuery("SELECT MIN(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             Object res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -90,7 +90,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MIN(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -102,7 +102,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT MAX(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -113,7 +113,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MAX(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -125,7 +125,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT AVG(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -136,7 +136,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT AVG(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -148,7 +148,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT SUM(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Long(0) is returned
                  */
@@ -159,7 +159,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT SUM(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -230,7 +230,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             Query q = em.createQuery("SELECT MIN(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             Object res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -241,7 +241,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MIN(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -253,7 +253,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT MAX(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -264,7 +264,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MAX(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -276,7 +276,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT AVG(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -288,7 +288,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT SUM(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Long(0) is returned
                  */
@@ -299,7 +299,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT SUM(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA20Feature()) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -308,6 +308,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                 //The specification defined assertion
                 Assert.assertEquals(null, res);
             }
+
             q = em.createQuery("SELECT SUM(n.itemBigInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
             Assert.assertEquals(null, res);
@@ -414,7 +415,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(new Long(40), res);
             q = em.createQuery("SELECT SUM(se.itemFloat1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && (isUsingJPA20Feature() || this.isUsingJPA21ContainerFeature(true))) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Float when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -538,7 +539,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(new Long(42), res);
             q = em.createQuery("SELECT SUM(se.itemFloat2) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && (isUsingJPA20Feature() || this.isUsingJPA21ContainerFeature(true))) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Float when the JPA 2.0 specification
                  * clearly states the return type should be Double

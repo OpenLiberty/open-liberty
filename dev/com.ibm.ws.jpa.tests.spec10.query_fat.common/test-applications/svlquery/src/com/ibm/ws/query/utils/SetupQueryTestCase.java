@@ -200,46 +200,46 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         System.out.println("starting createPOJOs()");
         if (isXmlOrMap) {
             System.out.println("createPOJOs for XML");
-            d1 = new com.ibm.ws.query.entities.xml.DeptBean(210, "Development");
-            d2 = new com.ibm.ws.query.entities.xml.DeptBean(220, "Service");
-            d3 = new com.ibm.ws.query.entities.xml.DeptBean(300, "Sales");
-            d4 = new com.ibm.ws.query.entities.xml.DeptBean(200, "Admin");
-            d5 = new com.ibm.ws.query.entities.xml.DeptBean(100, "CEO");
+            d1 = new com.ibm.ws.query.entities.xml.XMLDeptBean(210, "Development");
+            d2 = new com.ibm.ws.query.entities.xml.XMLDeptBean(220, "Service");
+            d3 = new com.ibm.ws.query.entities.xml.XMLDeptBean(300, "Sales");
+            d4 = new com.ibm.ws.query.entities.xml.XMLDeptBean(200, "Admin");
+            d5 = new com.ibm.ws.query.entities.xml.XMLDeptBean(100, "CEO");
 
-            a1 = new com.ibm.ws.query.entities.xml.AddressBean("1780 Mercury Way", "Morgan Hill", "CA", "95037");
-            a2 = new com.ibm.ws.query.entities.xml.AddressBean("512 Venus Drive", "Morgan Hill", "CA", "95037");
-            a3 = new com.ibm.ws.query.entities.xml.AddressBean("12440 Vulcan Avenue", "Los Altos", "CA", "95130");
-            a4 = new com.ibm.ws.query.entities.xml.AddressBean("4983 Plutonium Avenue", "Palo Alto", "CA", "95140");
-            a5 = new com.ibm.ws.query.entities.xml.AddressBean("182 Martian Street", "San Jose", "CA", "95120");
-            a6 = new com.ibm.ws.query.entities.xml.AddressBean("555 Silicon Valley Drive", "San Jose", "CA", "94120");
-            a7 = new com.ibm.ws.query.entities.xml.AddressBean("6200 Vegas Drive", "San Jose", "CA", "95120");
-            a8 = new com.ibm.ws.query.entities.xml.AddressBean("150 North First Apt E1", "San Jose", "CA", "94003");
-            a9 = new com.ibm.ws.query.entities.xml.AddressBean("8900 Jupiter Park", "San Jose", "CA", "94005");
+            a1 = new com.ibm.ws.query.entities.xml.XMLAddressBean("1780 Mercury Way", "Morgan Hill", "CA", "95037");
+            a2 = new com.ibm.ws.query.entities.xml.XMLAddressBean("512 Venus Drive", "Morgan Hill", "CA", "95037");
+            a3 = new com.ibm.ws.query.entities.xml.XMLAddressBean("12440 Vulcan Avenue", "Los Altos", "CA", "95130");
+            a4 = new com.ibm.ws.query.entities.xml.XMLAddressBean("4983 Plutonium Avenue", "Palo Alto", "CA", "95140");
+            a5 = new com.ibm.ws.query.entities.xml.XMLAddressBean("182 Martian Street", "San Jose", "CA", "95120");
+            a6 = new com.ibm.ws.query.entities.xml.XMLAddressBean("555 Silicon Valley Drive", "San Jose", "CA", "94120");
+            a7 = new com.ibm.ws.query.entities.xml.XMLAddressBean("6200 Vegas Drive", "San Jose", "CA", "95120");
+            a8 = new com.ibm.ws.query.entities.xml.XMLAddressBean("150 North First Apt E1", "San Jose", "CA", "94003");
+            a9 = new com.ibm.ws.query.entities.xml.XMLAddressBean("8900 Jupiter Park", "San Jose", "CA", "94005");
 
             // used when no sequence generation for empbean
-            e1 = new com.ibm.ws.query.entities.xml.EmpBean(1, "david", 12.1, (com.ibm.ws.query.entities.xml.DeptBean) d1);
-            e2 = new com.ibm.ws.query.entities.xml.EmpBean(2, "andrew", 13.1, (com.ibm.ws.query.entities.xml.DeptBean) d1);
-            e3 = new com.ibm.ws.query.entities.xml.EmpBean(3, "minmei", 15.5, (com.ibm.ws.query.entities.xml.DeptBean) d4);
-            e4 = new com.ibm.ws.query.entities.xml.EmpBean(4, "george", 0, (com.ibm.ws.query.entities.xml.DeptBean) d4);
-            e5 = new com.ibm.ws.query.entities.xml.EmpBean(5, "ritika", 0, (com.ibm.ws.query.entities.xml.DeptBean) d2);
-            e6 = new com.ibm.ws.query.entities.xml.EmpBean(6, "ahmad", 0, (com.ibm.ws.query.entities.xml.DeptBean) d5);
-            e7 = new com.ibm.ws.query.entities.xml.EmpBean(7, "charlene", 0, (com.ibm.ws.query.entities.xml.DeptBean) d1);
-            e8 = new com.ibm.ws.query.entities.xml.EmpBean(8, "Tom Rayburn", 0, (com.ibm.ws.query.entities.xml.DeptBean) d5);
-            e9 = new com.ibm.ws.query.entities.xml.EmpBean(9, "harry", 0, (com.ibm.ws.query.entities.xml.DeptBean) d1);
-            e10 = new com.ibm.ws.query.entities.xml.EmpBean(10, "Catalina Wei", 0, null);
+            e1 = new com.ibm.ws.query.entities.xml.XMLEmpBean(1, "david", 12.1, (com.ibm.ws.query.entities.xml.XMLDeptBean) d1, 1, false, a1, a6);
+            e2 = new com.ibm.ws.query.entities.xml.XMLEmpBean(2, "andrew", 13.1, (com.ibm.ws.query.entities.xml.XMLDeptBean) d1, 1, false, a1, a6);
+            e3 = new com.ibm.ws.query.entities.xml.XMLEmpBean(3, "minmei", 15.5, (com.ibm.ws.query.entities.xml.XMLDeptBean) d4, 2, true, a1, a6);
+            e4 = new com.ibm.ws.query.entities.xml.XMLEmpBean(4, "george", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d4, 2, true, a2, a6);
+            e5 = new com.ibm.ws.query.entities.xml.XMLEmpBean(5, "ritika", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d2, 3, true, a3, a6);
+            e6 = new com.ibm.ws.query.entities.xml.XMLEmpBean(6, "ahmad", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d5, 3, true, a4, a4);
+            e7 = new com.ibm.ws.query.entities.xml.XMLEmpBean(7, "charlene", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d1, 4, true, a5, a6);
+            e8 = new com.ibm.ws.query.entities.xml.XMLEmpBean(8, "Tom Rayburn", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d5, 4, true, a7, a6);
+            e9 = new com.ibm.ws.query.entities.xml.XMLEmpBean(9, "harry", 0, (com.ibm.ws.query.entities.xml.XMLDeptBean) d1, 5, true, a8, a9);
+            e10 = new com.ibm.ws.query.entities.xml.XMLEmpBean(10, "Catalina Wei", 0, null, 5, true, null, a6);
 
-            pj1 = new com.ibm.ws.query.entities.xml.ProjectBean(1000, "WebSphere Version 1", (byte) 10, (short) 20, 50, (com.ibm.ws.query.entities.xml.DeptBean) d1);
-            pj2 = new com.ibm.ws.query.entities.xml.ProjectBean(2000, "WebSphere Feature Pack", (byte) 40, (short) 10, 100, (com.ibm.ws.query.entities.xml.DeptBean) d2);
-            pj3 = new com.ibm.ws.query.entities.xml.ProjectBean(3000, "WebSphere Community Edition", (byte) 45, (short) 10, 100, null);
+            pj1 = new com.ibm.ws.query.entities.xml.XMLProjectBean(1000, "WebSphere Version 1", (byte) 10, (short) 20, 50, (com.ibm.ws.query.entities.xml.XMLDeptBean) d1);
+            pj2 = new com.ibm.ws.query.entities.xml.XMLProjectBean(2000, "WebSphere Feature Pack", (byte) 40, (short) 10, 100, (com.ibm.ws.query.entities.xml.XMLDeptBean) d2);
+            pj3 = new com.ibm.ws.query.entities.xml.XMLProjectBean(3000, "WebSphere Community Edition", (byte) 45, (short) 10, 100, null);
 
-            t1 = new com.ibm.ws.query.entities.xml.TaskBean(1010, "Design ", "Design ", (com.ibm.ws.query.entities.xml.ProjectBean) pj1);
-            t2 = new com.ibm.ws.query.entities.xml.TaskBean(1020, "Code", "Code", (com.ibm.ws.query.entities.xml.ProjectBean) pj1);
-            t3 = new com.ibm.ws.query.entities.xml.TaskBean(1030, "Test", "Test", (com.ibm.ws.query.entities.xml.ProjectBean) pj1);
-            t4 = new com.ibm.ws.query.entities.xml.TaskBean(2010, "Design", "Design", (com.ibm.ws.query.entities.xml.ProjectBean) pj2);
-            t5 = new com.ibm.ws.query.entities.xml.TaskBean(2020, "Code, Test", "Code, Test", (com.ibm.ws.query.entities.xml.ProjectBean) pj2);
+            t1 = new com.ibm.ws.query.entities.xml.XMLTaskBean(1010, "Design ", "Design ", (com.ibm.ws.query.entities.xml.XMLProjectBean) pj1);
+            t2 = new com.ibm.ws.query.entities.xml.XMLTaskBean(1020, "Code", "Code", (com.ibm.ws.query.entities.xml.XMLProjectBean) pj1);
+            t3 = new com.ibm.ws.query.entities.xml.XMLTaskBean(1030, "Test", "Test", (com.ibm.ws.query.entities.xml.XMLProjectBean) pj1);
+            t4 = new com.ibm.ws.query.entities.xml.XMLTaskBean(2010, "Design", "Design", (com.ibm.ws.query.entities.xml.XMLProjectBean) pj2);
+            t5 = new com.ibm.ws.query.entities.xml.XMLTaskBean(2020, "Code, Test", "Code, Test", (com.ibm.ws.query.entities.xml.XMLProjectBean) pj2);
 
-            cf1 = new com.ibm.ws.query.entities.xml.CharityFund("WorldWildlifeFund", 1000.);
-            cf2 = new com.ibm.ws.query.entities.xml.CharityFund("GlobalWarmingFund", 2000.);
+            cf1 = new com.ibm.ws.query.entities.xml.XMLCharityFund("WorldWildlifeFund", 1000.);
+            cf2 = new com.ibm.ws.query.entities.xml.XMLCharityFund("GlobalWarmingFund", 2000.);
 
         } else {
             System.out.println("createPOJOs for ANO");
@@ -260,16 +260,16 @@ public class SetupQueryTestCase extends AbstractTestLogic {
             a9 = new com.ibm.ws.query.entities.ano.AddressBean("8900 Jupiter Park", "San Jose", "CA", "94005");
 
             // used when no sequence generation for empbean
-            e1 = new com.ibm.ws.query.entities.ano.EmpBean(1, "david", 12.1, (com.ibm.ws.query.entities.ano.DeptBean) d1);
-            e2 = new com.ibm.ws.query.entities.ano.EmpBean(2, "andrew", 13.1, (com.ibm.ws.query.entities.ano.DeptBean) d1);
-            e3 = new com.ibm.ws.query.entities.ano.EmpBean(3, "minmei", 15.5, (com.ibm.ws.query.entities.ano.DeptBean) d4);
-            e4 = new com.ibm.ws.query.entities.ano.EmpBean(4, "george", 0, (com.ibm.ws.query.entities.ano.DeptBean) d4);
-            e5 = new com.ibm.ws.query.entities.ano.EmpBean(5, "ritika", 0, (com.ibm.ws.query.entities.ano.DeptBean) d2);
-            e6 = new com.ibm.ws.query.entities.ano.EmpBean(6, "ahmad", 0, (com.ibm.ws.query.entities.ano.DeptBean) d5);
-            e7 = new com.ibm.ws.query.entities.ano.EmpBean(7, "charlene", 0, (com.ibm.ws.query.entities.ano.DeptBean) d1);
-            e8 = new com.ibm.ws.query.entities.ano.EmpBean(8, "Tom Rayburn", 0, (com.ibm.ws.query.entities.ano.DeptBean) d5);
-            e9 = new com.ibm.ws.query.entities.ano.EmpBean(9, "harry", 0, (com.ibm.ws.query.entities.ano.DeptBean) d1);
-            e10 = new com.ibm.ws.query.entities.ano.EmpBean(10, "Catalina Wei", 0, null);
+            e1 = new com.ibm.ws.query.entities.ano.EmpBean(1, "david", 12.1, (com.ibm.ws.query.entities.ano.DeptBean) d1, 1, false, a1, a6);
+            e2 = new com.ibm.ws.query.entities.ano.EmpBean(2, "andrew", 13.1, (com.ibm.ws.query.entities.ano.DeptBean) d1, 1, false, a1, a6);
+            e3 = new com.ibm.ws.query.entities.ano.EmpBean(3, "minmei", 15.5, (com.ibm.ws.query.entities.ano.DeptBean) d4, 2, true, a1, a6);
+            e4 = new com.ibm.ws.query.entities.ano.EmpBean(4, "george", 0, (com.ibm.ws.query.entities.ano.DeptBean) d4, 2, true, a2, a6);
+            e5 = new com.ibm.ws.query.entities.ano.EmpBean(5, "ritika", 0, (com.ibm.ws.query.entities.ano.DeptBean) d2, 3, true, a3, a6);
+            e6 = new com.ibm.ws.query.entities.ano.EmpBean(6, "ahmad", 0, (com.ibm.ws.query.entities.ano.DeptBean) d5, 3, true, a4, a4);
+            e7 = new com.ibm.ws.query.entities.ano.EmpBean(7, "charlene", 0, (com.ibm.ws.query.entities.ano.DeptBean) d1, 4, true, a5, a6);
+            e8 = new com.ibm.ws.query.entities.ano.EmpBean(8, "Tom Rayburn", 0, (com.ibm.ws.query.entities.ano.DeptBean) d5, 4, true, a7, a6);
+            e9 = new com.ibm.ws.query.entities.ano.EmpBean(9, "harry", 0, (com.ibm.ws.query.entities.ano.DeptBean) d1, 5, true, a8, a9);
+            e10 = new com.ibm.ws.query.entities.ano.EmpBean(10, "Catalina Wei", 0, null, 5, true, null, a6);
 
             pj1 = new com.ibm.ws.query.entities.ano.ProjectBean(1000, "WebSphere Version 1", (byte) 10, (short) 20, 50, (com.ibm.ws.query.entities.ano.DeptBean) d1);
             pj2 = new com.ibm.ws.query.entities.ano.ProjectBean(2000, "WebSphere Feature Pack", (byte) 40, (short) 10, 100, (com.ibm.ws.query.entities.ano.DeptBean) d2);
@@ -297,7 +297,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
             }
             _em.getTransaction().commit();
 
-            original = new com.ibm.ws.query.entities.xml.PersonBean();
+            original = new com.ibm.ws.query.entities.xml.XMLPersonBean();
         } else {
             _em.getTransaction().begin();
             List<IPersonBean> dlist = _em.createQuery("select s from com.ibm.ws.query.entities.ano.PersonBean s").getResultList();
@@ -325,12 +325,12 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         // fk cascade delete,needs clear())
 
         if (isXmlOrMap) {
-            List<IDeptBean> dlist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.DeptBean s").getResultList();
+            List<IDeptBean> dlist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.XMLDeptBean s").getResultList();
             for (IDeptBean s : dlist) {
                 _em.remove(s);
             }
             _em.flush();
-            List<ITaskBean> telist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.EmpBean e, in (e.tasks) s").getResultList();
+            List<ITaskBean> telist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.XMLEmpBean e, in (e.tasks) s").getResultList();
             for (ITaskBean s : telist) {
                 _em.remove(s);
             }
@@ -343,7 +343,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
             }
             _em.flush();
             List<IEmpBean> elist = _em.createQuery(
-                                                   "select s from com.ibm.ws.query.entities.xml.EmpBean s")
+                                                   "select s from com.ibm.ws.query.entities.xml.XMLEmpBean s")
                             .getResultList();
             for (IEmpBean s : elist) {
                 _em.remove(s);
@@ -429,42 +429,6 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         // create entity instances
         createPOJOs();
 
-        e1.setIsManager(false);
-        e1.setHome(a1);
-        e1.setWork(a6);
-
-        e2.setIsManager(false);
-        e2.setHome(a1);
-        e2.setWork(a6);
-
-        e3.setIsManager(true);
-        e3.setHome(a1);
-        e3.setWork(a6);
-
-        e4.setIsManager(true);
-        e4.setHome(a2);
-        e4.setWork(a6);
-
-        e5.setHome(a3);
-        e5.setWork(a6);
-
-        e6.setIsManager(true);
-        e6.setHome(a4);
-        e6.setWork(a4);
-
-        e7.setHome(a5);
-        e7.setWork(a6);
-
-        e8.setIsManager(true);
-        e8.setHome(a7);
-        e8.setWork(a6);
-
-        e9.setHome(a8);
-        e9.setWork(a9);
-
-        e10.setIsManager(true);
-        e10.setHome(null);
-        e10.setWork(a6);
         t1.addEmp(e1);
         t2.addEmp(e1);
         t2.addEmp(e2);
@@ -493,16 +457,6 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         _em.persist(e8);
         _em.persist(e9);
         _em.persist(e10);
-        e1.setRating(1);
-        e2.setRating(1);
-        e3.setRating(2);
-        e4.setRating(2);
-        e5.setRating(3);
-        e6.setRating(3);
-        e7.setRating(4);
-        e8.setRating(4);
-        e9.setRating(5);
-        e10.setRating(5);
 
         _em.persist(t1);
         _em.persist(t2);
@@ -518,10 +472,6 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         _em.persist(d3);
         _em.persist(d4);
         _em.persist(d5);
-
-        pj1.setName("Project:" + pj1.getProjid());
-        pj2.setName("Project:" + pj2.getProjid());
-        pj3.setName("Project:" + pj3.getProjid());
 
         d1.setReportsTo(d4);
         d2.setReportsTo(d4);
@@ -543,7 +493,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
 
         // gfh needed for test 53,55 because of defect
         if (isXmlOrMap) {
-            List<IEmpBean> elist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.EmpBean s").getResultList();
+            List<IEmpBean> elist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.XMLEmpBean s").getResultList();
         } else {
             List<IEmpBean> elist = _em.createQuery("select s from com.ibm.ws.query.entities.ano.EmpBean s").getResultList();
         }
@@ -555,7 +505,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
         if (isXmlOrMap) {
             _em.getTransaction().begin();
 
-            List<ISupplier> slist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.Supplier s").getResultList();
+            List<ISupplier> slist = _em.createQuery("select s from com.ibm.ws.query.entities.xml.XMLSupplier s").getResultList();
             for (ISupplier s : slist) {
                 s.getSupplies().clear();
                 _em.remove(s);
@@ -564,7 +514,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
             for (IUsage u : ulist) {
                 _em.remove(u);
             }
-            List<IPart> plist = _em.createQuery("select p from com.ibm.ws.query.entities.xml.Part as p").getResultList();
+            List<IPart> plist = _em.createQuery("select p from com.ibm.ws.query.entities.xml.XMLPart as p").getResultList();
             for (IPart p : plist) {
                 _em.remove(p);
             }
@@ -590,27 +540,27 @@ public class SetupQueryTestCase extends AbstractTestLogic {
 
             _em.getTransaction().commit();
 
-            s1 = new com.ibm.ws.query.entities.xml.Supplier(1, "S1");
-            s2 = new com.ibm.ws.query.entities.xml.Supplier(2, "S2");
+            s1 = new com.ibm.ws.query.entities.xml.XMLSupplier(1, "S1");
+            s2 = new com.ibm.ws.query.entities.xml.XMLSupplier(2, "S2");
 
-            p1 = new com.ibm.ws.query.entities.xml.PartBase(10, "P10", 10.00, 15.25);
-            p2 = new com.ibm.ws.query.entities.xml.PartBase(11, "P11", 110.00, 25.80);
-            p3 = new com.ibm.ws.query.entities.xml.PartBase(12, "P12", 114.00, 82.01);
+            p1 = new com.ibm.ws.query.entities.xml.XMLPartBase(10, "P10", 10.00, 15.25);
+            p2 = new com.ibm.ws.query.entities.xml.XMLPartBase(11, "P11", 110.00, 25.80);
+            p3 = new com.ibm.ws.query.entities.xml.XMLPartBase(12, "P12", 114.00, 82.01);
 
-            p4 = new com.ibm.ws.query.entities.xml.PartComposite(20, "C20", 7.5, 1.0);
-            p5 = new com.ibm.ws.query.entities.xml.PartComposite(21, "C21", 0, 15.0);
-            p6 = new com.ibm.ws.query.entities.xml.PartComposite(99, "C99", 10, 20);
+            p4 = new com.ibm.ws.query.entities.xml.XMLPartComposite(20, "C20", 7.5, 1.0);
+            p5 = new com.ibm.ws.query.entities.xml.XMLPartComposite(21, "C21", 0, 15.0);
+            p6 = new com.ibm.ws.query.entities.xml.XMLPartComposite(99, "C99", 10, 20);
 
-            c1 = new com.ibm.ws.query.entities.xml.CustomerBean(01, "cust1", 1);
-            c2 = new com.ibm.ws.query.entities.xml.CustomerBean(02, "cust2", 2);
+            c1 = new com.ibm.ws.query.entities.xml.XMLCustomerBean(01, "cust1", 1);
+            c2 = new com.ibm.ws.query.entities.xml.XMLCustomerBean(02, "cust2", 2);
 
-            pr1 = new com.ibm.ws.query.entities.xml.Product(1, "baffles", 10);
+            pr1 = new com.ibm.ws.query.entities.xml.XMLProduct(1, "baffles", 10);
 
-            o1 = new com.ibm.ws.query.entities.xml.OrderBean(1, 502.5, false, (com.ibm.ws.query.entities.xml.CustomerBean) c1);
-            o2 = new com.ibm.ws.query.entities.xml.OrderBean(2, 502.5, false, (com.ibm.ws.query.entities.xml.CustomerBean) c2);
+            o1 = new com.ibm.ws.query.entities.xml.XMLOrderBean(1, 502.5, false, (com.ibm.ws.query.entities.xml.XMLCustomerBean) c1);
+            o2 = new com.ibm.ws.query.entities.xml.XMLOrderBean(2, 502.5, false, (com.ibm.ws.query.entities.xml.XMLCustomerBean) c2);
 
-            l1 = new com.ibm.ws.query.entities.xml.LineItem(1, (com.ibm.ws.query.entities.xml.Product) pr1, 5, 100.5, (com.ibm.ws.query.entities.xml.OrderBean) o1);
-            l2 = new com.ibm.ws.query.entities.xml.LineItem(2, (com.ibm.ws.query.entities.xml.Product) pr1, 5, 100.5, (com.ibm.ws.query.entities.xml.OrderBean) o2);
+            l1 = new com.ibm.ws.query.entities.xml.XMLLineItem(1, (com.ibm.ws.query.entities.xml.XMLProduct) pr1, 5, 100.5, (com.ibm.ws.query.entities.xml.XMLOrderBean) o1);
+            l2 = new com.ibm.ws.query.entities.xml.XMLLineItem(2, (com.ibm.ws.query.entities.xml.XMLProduct) pr1, 5, 100.5, (com.ibm.ws.query.entities.xml.XMLOrderBean) o2);
 
         } else {
             _em.getTransaction().begin();

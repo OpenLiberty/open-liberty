@@ -51,7 +51,7 @@ public class ProjectBean implements IProjectBean, Serializable {//,ProjectBeanIn
 
     public ProjectBean(int id, String description, byte pm, short dur, long start, DeptBean dept) {
         this.projid = id;
-        name = "Project:" + String.valueOf(id);
+        this.name = "Project:" + String.valueOf(id);
         this.description = description;
         this.personMonths = pm;
         this.durationDays = dur;

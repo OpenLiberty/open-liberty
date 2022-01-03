@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -50,6 +51,8 @@ import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_018_Servlet;
 import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_019_Servlet;
 import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_020_Servlet;
 import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_021_Servlet;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -65,6 +68,11 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
+
+    @Rule
+    public static SkipRule skipRule = new SkipRule();
+
+    private final static String CONTEXT_ROOT = "svlquery";
     private final static String RESOURCE_ROOT = "test-applications/svlquery/";
     private final static String appFolder = "web";
     private final static String appName = "svlquery";
@@ -77,36 +85,35 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA_SVLQUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA_SVLQUERY_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA_SVLQUERY_${provider}_DROP_${dbvendor}.ddl");
+        createSet.add("JPA_SVLQUERY_${provider}_CREATE_${dbvendor}.ddl");
+        populateSet.add("JPA_SVLQUERY_${provider}_POPULATE_${dbvendor}.ddl");
     }
 
     @Server("JPA10SVLQueryLoopServer")
     @TestServlets({
-
                     // XML
-                    @TestServlet(servlet = JULoopQueryXMLTest_001_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_001_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_002_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_002_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_003_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_003_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_004_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_004_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_005_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_005_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_006_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_006_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_007_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_007_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_008_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_008_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_009_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_009_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_010_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_010_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_011_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_011_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_012_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_012_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_013_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_013_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_014_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_014_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_015_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_015_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_016_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_016_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_017_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_017_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_018_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_018_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_019_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_019_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_020_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_020_Servlet"),
-                    @TestServlet(servlet = JULoopQueryXMLTest_021_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_021_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_001_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_001_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_002_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_002_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_003_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_003_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_004_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_004_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_005_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_005_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_006_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_006_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_007_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_007_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_008_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_008_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_009_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_009_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_010_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_010_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_011_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_011_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_012_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_012_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_013_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_013_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_014_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_014_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_015_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_015_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_016_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_016_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_017_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_017_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_018_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_018_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_019_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_019_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_020_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_020_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_021_Servlet.class, path = CONTEXT_ROOT + "/" + "JULoopQueryXMLTest_021_Servlet")
     })
     public static LibertyServer server;
 
@@ -128,6 +135,8 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
             server.setConfigUpdateTimeout(120 * 1000);
         }
 
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -142,29 +151,31 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
 
         System.out.println(TestSVLLoopXMLQuery_Web.class.getName() + " Setting up database tables...");
 
+        DatabaseVendor database = getDbVendor();
+        JPAPersistenceProvider provider = AbstractFATSuite.provider;
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
         ddlSet.clear();
         for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
-    }
 
-    private void populate(String servletName) {
-
+        skipRule.setDatabase(database);
+        skipRule.setProvider(provider);
     }
 
     private static void setupTestApplication() throws Exception {
@@ -177,10 +188,18 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.query.web");
         webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryano");
         webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryxml");
-
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
+
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            webApp.move("/WEB-INF/classes/META-INF/persistence-oracle-21.xml", "/WEB-INF/classes/META-INF/persistence.xml");
+        }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
@@ -202,10 +221,24 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-        ClassloaderElement loader = new ClassloaderElement();
-        loader.setApiTypeVisibility("+third-party");
-        cel.add(loader);
+
+        // setup the thirdparty classloader for Hibernate and OpenJPA
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
+        } else {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.setApiTypeVisibility("+third-party");
+            cel.add(loader);
+        }
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -223,9 +256,10 @@ public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
         try {
             // Clean up database
             try {
+                JPAPersistenceProvider provider = AbstractFATSuite.provider;
                 final Set<String> ddlSet = new HashSet<String>();
                 for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                    ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
                 }
                 executeDDL(server, ddlSet, true);
             } catch (Throwable t) {

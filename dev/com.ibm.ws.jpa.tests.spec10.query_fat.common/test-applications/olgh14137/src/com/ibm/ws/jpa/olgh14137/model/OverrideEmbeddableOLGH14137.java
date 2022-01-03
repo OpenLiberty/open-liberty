@@ -2,10 +2,20 @@ package com.ibm.ws.jpa.olgh14137.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 @Embeddable
+/*
+ * Hibernate defaults to PROPERTY access type for Embedded objects.
+ * EclipseLink/OpenJPA defaults to FIELD access type.
+ *
+ * Access type needs to explicitly be defined here so that Hibernate can obtain the defined annotations
+ */
+@Access(AccessType.FIELD)
 public class OverrideEmbeddableOLGH14137 implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -15,6 +25,7 @@ public class OverrideEmbeddableOLGH14137 implements Serializable {
     @Column(name = "value2")
     private Integer value2;
 
+    @Embedded
     private OverrideNestedEmbeddableOLGH14137 nestedValue;
 
     public OverrideEmbeddableOLGH14137() {
@@ -23,6 +34,30 @@ public class OverrideEmbeddableOLGH14137 implements Serializable {
     public OverrideEmbeddableOLGH14137(Integer value, Integer value2, OverrideNestedEmbeddableOLGH14137 nestedValue) {
         this.value = value;
         this.value2 = value2;
+        this.nestedValue = nestedValue;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public Integer getValue2() {
+        return value2;
+    }
+
+    public void setValue2(Integer value2) {
+        this.value2 = value2;
+    }
+
+    public OverrideNestedEmbeddableOLGH14137 getNestedValue() {
+        return nestedValue;
+    }
+
+    public void setNestedValue(OverrideNestedEmbeddableOLGH14137 nestedValue) {
         this.nestedValue = nestedValue;
     }
 

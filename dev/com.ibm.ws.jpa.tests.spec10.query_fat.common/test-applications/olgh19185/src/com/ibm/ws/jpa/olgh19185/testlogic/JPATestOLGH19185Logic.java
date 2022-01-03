@@ -96,6 +96,18 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
                 em.joinTransaction();
             }
 
+            /*
+             * https://issues.apache.org/jira/browse/OPENJPA-2847
+             * OpenJPA does not support `javax.persistence.criteria.CriteriaBuilder.createCriteriaUpdate()`
+             * which is part of the JPA 2.1 specification
+             *
+             * TODO: This test should be moved to a spec21 bucket
+             */
+            // OpenJPA does not support this part of the JPA 2.1 specification yet
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+                return;
+            }
+
             try {
                 // test 1 equivalent CriteriaBuilder
                 CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -218,6 +230,18 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
                 em.joinTransaction();
             }
 
+            /*
+             * https://issues.apache.org/jira/browse/OPENJPA-2847
+             * OpenJPA does not support `javax.persistence.criteria.CriteriaBuilder.createCriteriaUpdate()`
+             * which is part of the JPA 2.1 specification
+             *
+             * TODO: This test should be moved to a spec21 bucket
+             */
+            // OpenJPA does not support this part of the JPA 2.1 specification yet
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+                return;
+            }
+
             try {
                 // test 1 equivalent CriteriaBuilder
                 CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -226,6 +250,13 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
 
                 ParameterExpression<Integer> intValue = cb.parameter(Integer.class);
                 ParameterExpression<String> strValue = cb.parameter(String.class);
+                // TODO: https://hibernate.atlassian.net/browse/HHH-15113
+                if (JPAPersistenceProvider.HIBERNATE.equals(provider)
+                    && (isUsingJPA21ContainerFeature(true) || isUsingJPA22ContainerFeature(true) || isUsingJPA30ContainerFeature(true))) {
+                    intValue = cb.parameter(Integer.class, "test");
+                    strValue = cb.parameter(String.class, "test2");
+                }
+
                 cquery.set(root.get(SimpleEntityOLGH19185_.itemInteger1), intValue);
                 cquery.where(cb.equal(root.get(SimpleEntityOLGH19185_.itemString2), strValue));
 
@@ -241,6 +272,12 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
                 if (jpaResource.getTj().isTransactionActive()) {
                     jpaResource.getTj().rollbackTransaction();
                 }
+            }
+
+            // TODO: Enable when defect is fixed: https://hibernate.atlassian.net/browse/HHH-15113
+            if (JPAPersistenceProvider.HIBERNATE.equals(provider)
+                && (isUsingJPA21ContainerFeature(true) || isUsingJPA22ContainerFeature(true) || isUsingJPA30ContainerFeature(true))) {
+                return;
             }
 
             // Begin new transaction
@@ -259,6 +296,7 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
 
                 ParameterExpression<Integer> intValue = cb.parameter(Integer.class);
                 ParameterExpression<String> strValue = cb.parameter(String.class);
+
                 cquery.set("itemInteger1", intValue);
                 cquery.where(cb.equal(root.get("itemString2"), strValue));
 

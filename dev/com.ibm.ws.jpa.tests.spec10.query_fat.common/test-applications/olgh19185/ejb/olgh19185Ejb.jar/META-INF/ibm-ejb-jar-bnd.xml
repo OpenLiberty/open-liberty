@@ -18,14 +18,14 @@ xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.
 version="1.0">
     <session name="OLGH19185SFEJB">
         <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="OLGH19185SFExEJB">
         <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="OLGH19185SLEJB">
         <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
 </ejb-jar-bnd>

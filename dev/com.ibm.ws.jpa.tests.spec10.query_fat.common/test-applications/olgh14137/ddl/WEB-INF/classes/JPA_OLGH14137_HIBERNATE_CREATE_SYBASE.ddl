@@ -1,0 +1,3 @@
+CREATE TABLE ${schemaname}.ct_override_entity_b (entity_b_ct_entity_b INT NULL, ct_b_override_value INT NULL, value2 INT NULL, ct_b_override_nested_value INT NULL, nested_value2 INT NULL, UNQ_INDEX NUMERIC IDENTITY UNIQUE);
+CREATE TABLE ${schemaname}.override_entity_b (b_id INT NOT NULL, UNQ_INDEX NUMERIC IDENTITY UNIQUE, PRIMARY KEY (b_id));
+CREATE INDEX I_CT_VY_B_ENTITY_B_CT_ENTITY_B ON ${schemaname}.ct_override_entity_b (entity_b_ct_entity_b);

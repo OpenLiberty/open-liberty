@@ -13,22 +13,16 @@ package com.ibm.ws.jpa.tests.spec10.query;
 
 import java.io.File;
 
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+
 import componenttest.common.apiservices.Bootstrap;
-import componenttest.rules.repeater.EE6FeatureReplacementAction;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 
 /**
  *
  */
-public class RepeatWithJPA20 extends FeatureReplacementAction {
-    public static final String ID = "JPA20_FEATURES";
-
-    public RepeatWithJPA20() {
-        super(EE8FeatureReplacementAction.EE8_FEATURE_SET, EE6FeatureReplacementAction.EE6_FEATURE_SET);
-        forceAddFeatures(false);
-        this.withID(ID);
-    }
+public class RepeatWithJPA20 implements RepeatTestAction {
+    public static final String ID = "JPA20";
 
     @Override
     public boolean isEnabled() {
@@ -44,6 +38,17 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
 
     @Override
     public String toString() {
-        return "Set JPA feature to 2.0 version";
+        return "JPA 2.0";
+    }
+
+    @Override
+    public void setup() throws Exception {
+        FATSuite.repeatPhase = "jpa20-cfg.xml";
+        FATSuite.provider = JPAPersistenceProvider.OPENJPA;
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }
