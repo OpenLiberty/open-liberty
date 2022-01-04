@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
@@ -76,6 +77,13 @@ public class OidcClientSignatureAlgTests extends CommonTest {
             }
         };
 
+        // apps are taking too long to start up for the normal app check, but, we need to be sure that they're ready before we try to use them.
+        List<String> opExtraMsgs = new ArrayList<String>() {
+            {
+                add("CWWKZ0001I.*" + Constants.TOKEN_ENDPOINT_SERVLET);
+            }
+        };
+
         testSettings = new TestSettings();
 
         // Set config parameters for Access token with X509 Certificate in OP config files
@@ -84,7 +92,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
 
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_sigAlg.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
-                Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+                Constants.DO_NOT_USE_DERBY, opExtraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_withOpStub_sigAlg.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
