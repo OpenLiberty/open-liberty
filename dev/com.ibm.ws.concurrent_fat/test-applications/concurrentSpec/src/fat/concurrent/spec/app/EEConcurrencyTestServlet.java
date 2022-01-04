@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,6 +149,9 @@ public class EEConcurrencyTestServlet extends FATServlet {
 
     // Interval (in milliseconds) up to which tests should wait for a single task to run
     static final long TIMEOUT = TimeUnit.MINUTES.toMillis(2);
+
+    // Interval (in nanoseconds) up to which tests should wait for a single task to run
+    static final long TIMEOUT_NS = TimeUnit.MILLISECONDS.toNanos(TIMEOUT);
 
     /**
      * Schedule/submit a task that is both a Callable and a Runnable.
@@ -2954,9 +2957,10 @@ public class EEConcurrencyTestServlet extends FATServlet {
 
         ScheduledFuture<String> future = mschedxsvcClassloaderContext.schedule(getIdentityName, getIdentityName);
 
-        String result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
-        if ("[]".equals(result)) // can be empty if the first execution is reported
-            result = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        // Result can be empty if the first execution is reported. Wait for the subsequent execution.
+        String result = "[]";
+        for (long start = System.nanoTime(), elapsed; (elapsed = System.nanoTime() - start) < TIMEOUT_NS && "[]".equals(result);)
+            result = future.get(TIMEOUT_NS - elapsed, TimeUnit.NANOSECONDS);
 
         assertEquals("testIdentityNamePrecedence-Expected", result);
     }
