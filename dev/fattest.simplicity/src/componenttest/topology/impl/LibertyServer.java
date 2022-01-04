@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2599,7 +2599,7 @@ public class LibertyServer implements LogMonitorClient {
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
         try {
-            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$");
+            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$"); // uses getDefaultLogFile()
             if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
@@ -2609,7 +2609,7 @@ public class LibertyServer implements LogMonitorClient {
                 for (String errorInLog : errorsInLogs) {
                     sb.append("\n <br>");
                     sb.append(errorInLog);
-                    Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
+                    Log.info(c, method, "Error/warning found in log " + getDefaultLogFile() + ": " + errorInLog);
                     if (errorInLog.contains("CWWKO0221E")) {
                         printProcessHoldingPort(errorInLog);
                     }
