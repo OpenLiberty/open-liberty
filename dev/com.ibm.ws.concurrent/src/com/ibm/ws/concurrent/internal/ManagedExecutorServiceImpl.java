@@ -504,21 +504,36 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             throw new NullPointerException(Tr.formatMessage(tc, "CWWKC1111.task.invalid", (Object) null));
 
         Map<String, String> execProps = task instanceof ManagedTask ? ((ManagedTask) task).getExecutionProperties() : null;
-        if (execProps == null)
-            execProps = defaultExecutionProperties.get();
-        else {
-            execProps = new TreeMap<String, String>(execProps);
-            String tranPropKey;
-            String tranProp = execProps.remove(tranPropKey = "jakarta.enterprise.concurrent.TRANSACTION");
-            if (tranProp == null)
-                tranProp = execProps.remove(tranPropKey = "javax.enterprise.concurrent.TRANSACTION");
-            if (tranProp != null && !"SUSPEND".equals(tranProp)) // USE_TRANSACTION_OF_EXECUTION_THREAD not valid for managed tasks
-                throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1130.xprop.value.invalid", name, tranPropKey, tranProp));
-            if (!execProps.containsKey(WSContextService.DEFAULT_CONTEXT))
+
+        ServiceReference<?> ref = contextSvcRef.getReference();
+        if (ref == null || "file".equals(ref.getProperty("config.source"))) {
+            if (execProps == null)
+                execProps = defaultExecutionProperties.get();
+            else {
+                execProps = new TreeMap<String, String>(execProps);
+                String tranPropKey;
+                String tranProp = execProps.remove(tranPropKey = "jakarta.enterprise.concurrent.TRANSACTION");
+                if (tranProp == null)
+                    tranProp = execProps.remove(tranPropKey = "javax.enterprise.concurrent.TRANSACTION");
+                if (tranProp != null && !"SUSPEND".equals(tranProp)) // USE_TRANSACTION_OF_EXECUTION_THREAD not valid for managed tasks
+                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1130.xprop.value.invalid", name, tranPropKey, tranProp));
+                if (!execProps.containsKey(WSContextService.DEFAULT_CONTEXT))
+                    execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
+                if (!execProps.containsKey(WSContextService.TASK_OWNER))
+                    execProps.put(WSContextService.TASK_OWNER, name.get());
+            }
+        } else { // ContextServiceDefinition is used
+            if (execProps != null) {
+                execProps = new TreeMap<String, String>(execProps);
                 execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
-            if (!execProps.containsKey(WSContextService.TASK_OWNER))
-                execProps.put(WSContextService.TASK_OWNER, name.get());
+                String contextToSkip = (String) ref.getProperty("context.unchanged");
+                if (contextToSkip != null)
+                    execProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, contextToSkip);
+                if (!execProps.containsKey(WSContextService.TASK_OWNER))
+                    execProps.put(WSContextService.TASK_OWNER, name.get());
+            }
         }
+
         return execProps;
     }
 

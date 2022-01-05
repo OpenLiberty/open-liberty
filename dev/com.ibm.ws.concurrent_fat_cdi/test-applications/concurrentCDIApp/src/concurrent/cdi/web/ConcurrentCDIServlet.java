@@ -26,8 +26,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -51,7 +54,9 @@ import java.util.function.Supplier;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -530,6 +535,173 @@ public class ConcurrentCDIServlet extends HttpServlet {
         }
 
         assertEquals("task2successful", task2future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
+    }
+
+    /**
+     * Verify that when a task runs inline, the transaction and application context are cleared
+     * from the thread when the managed executor's ContextServiceDefinition lets those context types
+     * default to being cleared.
+     */
+    @Test
+    public void testInvokeInlineWithClearedTransactionAndAppContext() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:global/concurrent/allcontextclearedexecutor");
+        tran.begin();
+        try {
+            Object txKey = tranSyncRegistry.getTransactionKey();
+            Object result = executor.invokeAny(Collections.singleton(() -> {
+                try {
+                    Object unexpected = InitialContext.doLookup("java:global/concurrent/allcontextclearedexecutor");
+                    throw new AssertionError("Must not be able to look up " + unexpected +
+                                             " because Application context must be cleared per the ContextServiceDefinition");
+                } catch (NamingException x) {
+                    // expected
+                }
+                return tranSyncRegistry.getTransactionKey();
+            }));
+            assertNull(result);
+            assertEquals(txKey, tranSyncRegistry.getTransactionKey());
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * Verify that when a task runs inline, the transaction remains on the thread
+     * when the managed executor's ContextServiceDefinition specifies that transaction
+     * context remain unchanged.
+     */
+    @Test
+    public void testInvokeInlineWithinSameTransaction() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/appContextExecutor");
+        long servletThreadId = Thread.currentThread().getId();
+        Callable<Boolean> task = () -> {
+            boolean inline = Thread.currentThread().getId() == servletThreadId;
+            // Transaction must remain on thread when running inline:
+            if (inline)
+                tran.commit();
+            // Application context is propagated:
+            assertNotNull(InitialContext.doLookup("java:comp/concurrent/appContextExecutor"));
+            return inline;
+        };
+        List<Future<Boolean>> futures;
+        tran.begin();
+        try {
+            futures = executor.invokeAll(Collections.singleton(task));
+            assertEquals(futures.toString(), 1, futures.size());
+            boolean executedInline = futures.get(0).get(100, TimeUnit.MILLISECONDS);
+            if (executedInline)
+                assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus());
+        } finally {
+            if (tran.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tran.rollback();
+        }
+    }
+
+    /**
+     * Verify that when a task runs inline, the application context and transaction remain
+     * on the thread when the managed executor's ContextServiceDefinition specifies that
+     * application and transaction context remain unchanged.
+     */
+    @Test
+    public void testInvokeInlineWithinSameTransactionAndAppContext() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/remainingcontextunchangedexecutor");
+        long servletThreadId = Thread.currentThread().getId();
+        Callable<Boolean> task = () -> {
+            boolean inline = Thread.currentThread().getId() == servletThreadId;
+            if (inline) {
+                // Transaction must remain on thread when running inline:
+                tran.rollback();
+                // Application context must also remain on the thread:
+                assertNotNull(InitialContext.doLookup("java:comp/concurrent/remainingcontextunchangedexecutor"));
+            }
+            return inline;
+        };
+        tran.begin();
+        try {
+            Boolean executedInline = executor.invokeAny(Collections.singleton(task));
+            if (executedInline)
+                assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus());
+        } finally {
+            if (tran.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tran.rollback();
+        }
+    }
+
+    /**
+     * Verify that when a task runs inline, the transaction remains on the thread
+     * and the application context is cleared when the managed executor's ContextServiceDefinition
+     * specifies that transaction context remain unchanged and the application context is cleared.
+     */
+    @Test
+    public void testInvokeInlineWithinSameTransactionWithAppContextCleared() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/appcontextclearedexecutor");
+        long servletThreadId = Thread.currentThread().getId();
+        Callable<Boolean> task = () -> {
+            boolean inline = Thread.currentThread().getId() == servletThreadId;
+            // Transaction must remain on thread when running inline:
+            if (inline)
+                tran.setRollbackOnly();
+            // Application context must not be propagated:
+            try {
+                Object unexpected = InitialContext.doLookup("java:comp/concurrent/appcontextclearedexecutor");
+                throw new AssertionError("Must not be able to look up " + unexpected +
+                                         " because Application context must be cleared per the ContextServiceDefinition");
+            } catch (NamingException x) {
+                // expected
+            }
+            return inline;
+        };
+        tran.begin();
+        try {
+            Boolean executedInline = executor.invokeAny(Collections.singleton(task));
+            if (executedInline)
+                assertEquals(Status.STATUS_MARKED_ROLLBACK, tran.getStatus());
+        } finally {
+            tran.rollback();
+        }
+    }
+
+    /**
+     * Verify that when a task runs inline, the application context remains on the thread
+     * but the transaction does not when the managed executor's ContextServiceDefinition
+     * specifies that both application and transaction context remain unchanged, but an
+     * execution property overrides the transaction context to suspend it.
+     */
+    @Test
+    public void testInvokeInlineWithSameAppContext_TranSuspendedByExecutionProperty() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/remainingcontextunchangedexecutor");
+
+        Map<String, String> execPropsSuspendTx = new TreeMap<String, String>();
+        execPropsSuspendTx.put(ManagedTask.IDENTITY_NAME, "testInvokeInlineWithSameAppContext_TranSuspendedByExecutionProperty");
+        execPropsSuspendTx.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+
+        long servletThreadId = Thread.currentThread().getId();
+        tran.begin();
+        try {
+            Callable<Boolean> task = () -> {
+                // Transaction must be cleared per execution property:
+                assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus());
+
+                boolean inline = Thread.currentThread().getId() == servletThreadId;
+                if (inline) {
+                    // Application context must remain on the thread:
+                    assertNotNull(InitialContext.doLookup("java:comp/concurrent/remainingcontextunchangedexecutor"));
+                }
+                return inline;
+            };
+
+            task = ManagedExecutors.managedTask(task, execPropsSuspendTx, null);
+
+            List<Future<Boolean>> futures = executor.invokeAll(Collections.singleton(task));
+
+            // cause any errors that occur when running the task to be raised and fail the test
+            assertNotNull(futures.get(0).get());
+
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            tran.rollback();
+        }
     }
 
     /**
