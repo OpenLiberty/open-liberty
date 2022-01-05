@@ -12,6 +12,7 @@ package com.ibm.ws.cdi.impl.managedobject;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.jsp.HttpJspPage;
 
@@ -38,22 +39,19 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class CDIManagedObjectService implements ManagedObjectService {
 
     private final DefaultManagedObjectService defaultMOS;
-    private CDIRuntime cdiRuntime;
+    private final CDIRuntime cdiRuntime;
+    //CDI can get deactivated after this object is created, so we need to track that and ensure we do not send calls deeper into CDI after it is deactivated.
+    private AtomicBoolean isActive = new AtomicBoolean();
 
     @Activate
-    public CDIManagedObjectService(@Reference DefaultManagedObjectService defaultMOS) {
-
-        this.defaultMOS = defaultMOS;
-    }
-
-    @Reference
-    protected void setCDIRuntime(CDIService cdiService) {
+    public CDIManagedObjectService(@Reference CDIService cdiService, @Reference DefaultManagedObjectService defaultMOS) {
         this.cdiRuntime = (CDIRuntime) cdiService;
+        this.defaultMOS = defaultMOS;
+        isActive.set(true);
     }
 
-    //CDIRuntime can get deactivated after this object is created, so we need to track that and ensure we do not send calls towards it after it is deactivated.
-    protected void unsetCDIRuntime(CDIService cdiService) {
-        this.cdiRuntime = null;
+    public void deactivate(ComponentContext cc) {
+        isActive.set(false);
     }
 
     @Override
@@ -86,7 +84,7 @@ public class CDIManagedObjectService implements ManagedObjectService {
     }
 
     private boolean isCDIEnabled(ModuleMetaData mmd) {
-        return cdiRuntime != null && cdiRuntime.isModuleCDIEnabled(mmd);
+        return isActive.get() && cdiRuntime.isModuleCDIEnabled(mmd);
     }
 
     /** {@inheritDoc} */
