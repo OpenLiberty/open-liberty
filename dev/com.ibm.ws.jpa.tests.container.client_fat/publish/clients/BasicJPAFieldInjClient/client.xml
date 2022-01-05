@@ -4,13 +4,13 @@
                 <feature>javaeeClient-7.0</feature>
         </featureManager>
         
-        <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
+        <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" transactional="false">
             <jdbcDriver libraryRef="DerbyLib"/>
             <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />   
         </dataSource>
 
-        <library id="DerbyLib" fat.modify="true">
-            <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+        <library id="DerbyLib" >
+            <file name="${shared.resource.dir}/derby/derby.jar"/>
         </library>
 
         <application id="BasicJPAFieldInj" name="BasicJPAFieldInj" type="ear" location="BasicJPAFieldInj.ear"/>
