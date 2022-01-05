@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -108,7 +108,7 @@ public class OSGiConfigUtils {
      * @param bundleContext the bundle context to use to find the service
      * @return the admin service
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
-     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
+     * @throws ServiceNotFoundException if an instance of the requested service can not be found
      */
     static ConfigurationAdmin getConfigurationAdmin(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigurationAdmin.class);
@@ -120,7 +120,7 @@ public class OSGiConfigUtils {
      * @param bundleContext the context to use to find the CDIService
      * @return the CDIService
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
-     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
+     * @throws ServiceNotFoundException if an instance of the requested service can not be found
      */
     static CDIService getCDIService(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, CDIService.class);
@@ -132,7 +132,7 @@ public class OSGiConfigUtils {
      * @param bundleContext the context to use to find the ConfigVariables service
      * @return the ConfigVariables service
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
-     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
+     * @throws ServiceNotFoundException if an instance of the requested service can not be found
      */
     static ConfigVariables getConfigVariables(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigVariables.class);
@@ -142,10 +142,10 @@ public class OSGiConfigUtils {
      * Find a service of the given type
      *
      * @param bundleContext The context to use to find the service
-     * @param serviceClass  The class of the required service
+     * @param serviceClass The class of the required service
      * @return the service instance
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
-     * @throws ServiceNotFoundException       if an instance of the requested service can not be found
+     * @throws ServiceNotFoundException if an instance of the requested service can not be found
      */
     private static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) throws InvalidFrameworkStateException {
         if (!FrameworkState.isValid()) {
@@ -173,7 +173,7 @@ public class OSGiConfigUtils {
     /**
      * Get the Application ServiceReferences which has the given name, or null if not found
      *
-     * @param bundleContext   The context to use to find the application service references
+     * @param bundleContext The context to use to find the application service references
      * @param applicationName The application name to look for
      * @return A ServiceReference for the given application
      */
@@ -203,7 +203,7 @@ public class OSGiConfigUtils {
     /**
      * Get the internal OSGi identifier for the Application with the given name
      *
-     * @param bundleContext   The context to use to find the Application reference
+     * @param bundleContext The context to use to find the Application reference
      * @param applicationName The application name to look for
      * @return The application pid
      */
@@ -288,8 +288,8 @@ public class OSGiConfigUtils {
     /**
      * Get the Configuration object which represents a <appProperties> element in the server.xml for a given application
      *
-     * @param admin           The ConfigurationAdmin service to use
-     * @param bundleContext   The context to use in looking up OSGi service references
+     * @param admin The ConfigurationAdmin service to use
+     * @param bundleContext The context to use in looking up OSGi service references
      * @param applicationName The application name to look for
      * @return The Configuration instance
      */
@@ -335,13 +335,10 @@ public class OSGiConfigUtils {
      * @return
      */
     static Map<String, String> getVariablesFromServerXML(ConfigVariables configVariables) {
-        Map<String, String> theMap = new HashMap<>();
         if (FrameworkState.isValid()) {
-            // Retrieve the Map of variables that have been defined in the server.xml
-            theMap.putAll(configVariables.getUserDefinedVariables());
+            return configVariables.getUserDefinedVariables();
         }
-
-        return theMap;
+        return Collections.emptyMap();
     }
 
     /**
@@ -351,11 +348,10 @@ public class OSGiConfigUtils {
      * @return
      */
     static Map<String, String> getDefaultVariablesFromServerXML(ConfigVariables configVariables) {
-        Map<String, String> theMap = new HashMap<>();
         if (FrameworkState.isValid()) {
             // Retrieve the Map of variables that have been defined in the server.xml
-            theMap.putAll(configVariables.getUserDefinedVariableDefaults());
+            return configVariables.getUserDefinedVariableDefaults();
         }
-        return theMap;
+        return Collections.emptyMap();
     }
 }
