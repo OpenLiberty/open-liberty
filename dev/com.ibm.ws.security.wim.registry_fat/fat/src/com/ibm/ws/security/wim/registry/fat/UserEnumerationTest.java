@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -112,6 +113,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
+    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationDefaultSettings() throws Exception {
         // The timing for this test only works if we're making a remote call, local LDAP calls have too small of a window
         Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
@@ -138,6 +140,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
+    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationDisabled() throws Exception {
         // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
         Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
@@ -168,6 +171,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
+    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationCustomConfig() throws Exception {
         // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
         Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
@@ -197,7 +201,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @AllowedFFDC(value = { "javax.naming.CommunicationException", "java.lang.IllegalArgumentException" })
     public void testUserEnumerationInvalidValues() throws Exception {
         // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
         Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
