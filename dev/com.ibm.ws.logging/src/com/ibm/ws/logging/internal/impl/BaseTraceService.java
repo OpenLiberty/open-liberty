@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
@@ -319,7 +320,8 @@ public class BaseTraceService implements TrService {
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
-        hideMessageids = trConfig.getMessagesToHide();
+        //Remove any items in hideMessageids that are empty strings. Create a "new" list as original is backed by an array and cannot be removed.
+        hideMessageids = trConfig.getMessagesToHide().stream().filter(s -> !s.isEmpty()).collect(Collectors.toList());
         //add hideMessageIds to log header, only for default logging, since for binary logging, the messages will be only hidden in console.log.
         //This is printed when its configured in bootstrap.properties
         if (hideMessageids.size() > 0 && !isHpelEnabled) {
