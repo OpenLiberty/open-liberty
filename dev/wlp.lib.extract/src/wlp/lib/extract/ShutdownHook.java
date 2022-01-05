@@ -38,9 +38,9 @@ public class ShutdownHook implements Runnable {
     /**
      * The only constructor.
      *
-     * @param platformType         - platform type: unix(1), windows(2), cygwin(3)
-     * @param dir                  - extraction directory
-     * @param serverName           - name of server from jar (in extraction directory)
+     * @param platformType - platform type: unix(1), windows(2), cygwin(3)
+     * @param dir - extraction directory
+     * @param serverName - name of server from jar (in extraction directory)
      * @param extractDirPredefined - flag which indicates if WLP_JAR_EXTRACT_DIR was predefined by user
      */
     public ShutdownHook(int platformType,
@@ -97,7 +97,7 @@ public class ShutdownHook implements Runnable {
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
             // use command as-is
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
-            cmd = "cmd /k " + cmd;
+            cmd = "cmd /c " + cmd;
         } else if (platformType == SelfExtractUtils.PlatformType_CYGWIN) {
             cmd = "bash -c  " + '"' + cmd.replace('\\', '/') + '"';
         }
@@ -140,7 +140,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for windows cleanup script
      *
      * @param file - script File object
-     * @param bw   - bufferedWriter to write into script file
+     * @param bw - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeWindowsCleanup(File file, BufferedWriter bw) throws IOException {
@@ -176,7 +176,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for Unix cleanup script
      *
      * @param file - script File object
-     * @param bw   - bufferedWriter to write into script file
+     * @param bw - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeUnixCleanup(File file, BufferedWriter bw) throws IOException {
@@ -209,7 +209,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for Cygwin cleanup script
      *
      * @param file - script File object
-     * @param bw   - bufferedWriter to write into script file
+     * @param bw - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeCygwinCleanup(File file, BufferedWriter bw) throws IOException {
