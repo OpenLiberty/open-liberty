@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -907,7 +907,7 @@ public class AcmeFatUtils {
 				 * more if/else branches to making it easier to follow.
 				 */
 				skipOnWin = true;
-			} else if (javaVendor.contains("eclipse adoptium") && javaVersion.equals("11.0.13")) {
+			} else if (javaVendor.contains("eclipse adoptium") && (javaVersion.equals("11.0.13") || javaVersion.equals("17.0.1"))) {
 				/*
 				 * Delete issue popped on new AdoptOpenJDK name, eclipse adoptium, as well. The "if" check was getting complicated to read so breaking these vendor/version checks into
 				 * more if/else branches to making it easier to follow.
