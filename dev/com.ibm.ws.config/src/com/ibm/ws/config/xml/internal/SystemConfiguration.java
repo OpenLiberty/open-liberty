@@ -12,12 +12,15 @@ package com.ibm.ws.config.xml.internal;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -132,7 +135,8 @@ class SystemConfiguration implements CheckpointHook {
         registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
 
         // register restore hook to reprocess config if necessary
-        bc.registerService(CheckpointHook.class, this, null);
+        // Service ranking of this hook here needs to than service ranking of restore hook in "com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl.WsLocationAdminImpl(BundleContext, Map<String, Object>)". This is important in order to maintain the order of running the hooks"
+        bc.registerService(CheckpointHook.class, this, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 1000)));
     }
 
     @Override

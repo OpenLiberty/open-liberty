@@ -345,6 +345,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
         SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, variableSourceDirs);
 
         if (bundleContext != null) {
+            //Service ranking of this hook here needs to less than service ranking of restore hook in "com.ibm.ws.config.xml.internal.SystemConfiguration.SystemConfiguration(BundleContext, SystemConfigSupport, ConfigurationAdmin). This is important in order to maintain the order of running the hooks"
             bundleContext.registerService(CheckpointHook.class, new CheckpointHook() {
                 @Override
                 public void restore() {
