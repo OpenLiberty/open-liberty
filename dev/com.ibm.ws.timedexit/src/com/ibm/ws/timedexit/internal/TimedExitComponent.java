@@ -18,6 +18,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * A declarative services component can be completely POJO based
  * (no awareness/use of OSGi services).
@@ -35,6 +38,14 @@ public class TimedExitComponent implements org.osgi.framework.BundleActivator {
         try {
             Tr.audit(tc, "TE9900.timedexit.enabled");
 
+            if (context.getServiceReference(CheckpointPhase.class) != null) {
+                context.registerService(CheckpointHook.class, new CheckpointHook() {
+                    @Override
+                    public void restore() {
+                        Tr.audit(tc, "TE9900.timedexit.enabled");
+                    }
+                }, null);
+            }
             String timeoutProperty = System.getProperty("com.ibm.ws.timedexit.timetolive");
             if (timeoutProperty != null) {
                 long timeout = Long.parseLong(timeoutProperty);
