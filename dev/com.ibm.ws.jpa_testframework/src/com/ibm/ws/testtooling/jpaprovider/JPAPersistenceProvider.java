@@ -11,6 +11,10 @@
 
 package com.ibm.ws.testtooling.jpaprovider;
 
+import javax.persistence.EntityManager;
+
+import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
+
 /**
  * Simple Utility class for indicating the JPA Persistence Provider
  */
@@ -47,6 +51,43 @@ public enum JPAPersistenceProvider {
         }
 
         return DEFAULT;
+    }
+
+    public static JPAPersistenceProvider resolveJPAPersistenceProvider(JPAResource jpaRsc) {
+        if (jpaRsc == null) {
+            return null;
+        }
+
+        return JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaRsc.getEm());
+    }
+
+    public static JPAPersistenceProvider resolveJPAPersistenceProvider(EntityManager em) {
+        if (em == null) {
+            return null;
+        }
+
+        String delegateClassStr = em.getDelegate().getClass().getName();
+        if (delegateClassStr == null) {
+            return null;
+        }
+
+        if (delegateClassStr.toLowerCase().contains("openjpa")) {
+            return JPAPersistenceProvider.OPENJPA;
+        }
+
+        if (delegateClassStr.toLowerCase().contains("com.ibm")) {
+            return JPAPersistenceProvider.OPENJPA;
+        }
+
+        if (delegateClassStr.toLowerCase().contains("eclipse")) {
+            return JPAPersistenceProvider.ECLIPSELINK;
+        }
+
+        if (delegateClassStr.toLowerCase().contains("hibernate")) {
+            return JPAPersistenceProvider.HIBERNATE;
+        }
+
+        return JPAPersistenceProvider.DEFAULT;
     }
 
     /**

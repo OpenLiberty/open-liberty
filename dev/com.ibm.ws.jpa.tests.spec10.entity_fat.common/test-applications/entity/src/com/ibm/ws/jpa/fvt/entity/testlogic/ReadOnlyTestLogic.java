@@ -15,6 +15,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.fvt.entity.entities.IReadOnlyEntity;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.ReadOnlyEntityEnum;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -60,8 +61,8 @@ public class ReadOnlyTestLogic extends AbstractTestLogic {
         }
 
         // TODO: Hibernate does not support "insertable=false" for primitive types as they try to populate NULL values on em.find()
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
-        if (JPAProviderImpl.HIBERNATE.equals(provider)) {
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             return;
         }
 
