@@ -23,6 +23,7 @@ import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.NotificationHelper;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
+import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
 import com.ibm.ws.app.manager.internal.ApplicationInstallInfo;
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor;
 import com.ibm.ws.threading.FutureMonitor;
@@ -45,6 +46,7 @@ class StartAction implements Action {
     private final boolean _update;
     private volatile boolean cancelled = false;
     private final AtomicReference<Future<?>> _slowMessageAction = new AtomicReference<Future<?>>();
+    private final ApplicationConfigurator _configurator;
     private final CompletionListener<Boolean> _listener = new CompletionListener<Boolean>() {
 
         @Override
@@ -58,6 +60,9 @@ class StartAction implements Action {
                                                        AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName(),
                                                                                                              TimestampUtils.getElapsedTimeNanos(_startTime.get())));
                     AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName(), TimestampUtils.getElapsedTimeNanos(_startTime.get()));
+                    _configurator.restoreMessage(() -> {
+                        AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName(), TimestampUtils.getElapsedTime());
+                    });
                     callback.changed();
                 } else {
                     if (!cancelled) {
@@ -65,6 +70,9 @@ class StartAction implements Action {
                         NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
                                                            AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName()));
                         AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
+                        _configurator.restoreMessage(() -> {
+                            AppMessageHelper.get(_aii.getHandler()).audit(key, _config.getName());
+                        });
                     }
                     callback.failed(null);
                 }
@@ -85,6 +93,9 @@ class StartAction implements Action {
                 NotificationHelper.broadcastChange(_config.getMBeanNotifier(), _config.getMBeanName(), _update ? "application.update" : "application.start", Boolean.FALSE,
                                                    AppMessageHelper.get(_aii.getHandler()).formatMessage(key, _config.getName(), t.toString()));
                 AppMessageHelper.get(_aii.getHandler()).error(key, _config.getName(), t.toString());
+                _configurator.restoreMessage(() -> {
+                    AppMessageHelper.get(_aii.getHandler()).error(key, _config.getName(), t.toString());
+                });
                 callback.failed(t);
             } else {
                 if (_tc.isEventEnabled()) {
@@ -105,13 +116,15 @@ class StartAction implements Action {
                        boolean update, ApplicationMonitor appMonitor,
                        ApplicationInstallInfo appInstallInfo,
                        StateChangeCallback scc,
-                       FutureMonitor fm) {
+                       FutureMonitor fm,
+                       ApplicationConfigurator configurator) {
         _config = config;
         _aii = appInstallInfo;
         _callback.set(scc);
         _monitor = fm;
         _appMonitor = appMonitor;
         _update = update;
+        _configurator = configurator;
     }
 
     /** {@inheritDoc} */

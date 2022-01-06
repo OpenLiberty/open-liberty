@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -417,7 +418,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private volatile ScheduledExecutorService _scheduledExecutor;
     private volatile AppMonitorConfigurator _appMonitorConfigurator;
     private volatile ApplicationManager _applicationManager;
-    private final CheckpointPhase checkpointPhase;
+    private final CheckpointPhase _checkpointPhase;
+    private final List<Runnable> _restoreMessages = new CopyOnWriteArrayList<Runnable>();
 
     private static final Collection<String> SIMPLE_INITIAL_UPDATE_NOTIFICATIONS = Arrays.asList(new String[] { RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED,
                                                                                                                RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED,
@@ -425,7 +427,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     @Activate
     public ApplicationConfigurator(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
-        this.checkpointPhase = checkpointPhase;
+        this._checkpointPhase = checkpointPhase;
     }
 
     @Activate
@@ -1084,7 +1086,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         ApplicationStateMachine asm = ApplicationStateMachine.newInstance(_ctx, _locAdmin, _futureMonitor,
                                                                           _artifactFactory, _moduleFactory,
                                                                           _executor, _scheduledExecutor,
-                                                                          app, _appMonitorConfigurator.getMonitor());
+                                                                          app, _appMonitorConfigurator.getMonitor(),
+                                                                          this);
         app.setStateMachine(asm);
         return asm;
     }
@@ -2078,8 +2081,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     }
 
+    public void restoreMessage(Runnable message) {
+        if (_checkpointPhase != null) {
+            _restoreMessages.add(message);
+        }
+    }
+
     @Override
     public synchronized void restore() {
         _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
+        _restoreMessages.forEach(Runnable::run);
+        _restoreMessages.clear();
     }
 }

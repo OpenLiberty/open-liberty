@@ -39,6 +39,7 @@ import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
+import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
 import com.ibm.ws.app.manager.internal.ApplicationDependency;
 import com.ibm.ws.app.manager.internal.ApplicationInstallInfo;
 import com.ibm.ws.app.manager.internal.FutureCollectionCompletionListener;
@@ -700,11 +701,13 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final ScheduledExecutorService _scheduledExecutorService;
     private final ApplicationStateMachine.ASMHelper _asmHelper;
     private final ApplicationMonitor _appMonitor;
+    private final ApplicationConfigurator _configurator;
 
     ApplicationStateMachineImpl(BundleContext ctx, WsLocationAdmin locAdmin, FutureMonitor futureMonitor,
                                 ArtifactContainerFactory artifactFactory, AdaptableModuleFactory moduleFactory,
                                 ExecutorService executorService, ScheduledExecutorService scheduledExecutorService,
-                                ApplicationStateMachine.ASMHelper asmHelper, ApplicationMonitor appMonitor) {
+                                ApplicationStateMachine.ASMHelper asmHelper, ApplicationMonitor appMonitor,
+                                ApplicationConfigurator configurator) {
         _asmSeqNo = asmSequenceNumber.getAndIncrement();
         _ctx = ctx;
         _locAdmin = locAdmin;
@@ -715,6 +718,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         _scheduledExecutorService = scheduledExecutorService;
         _asmHelper = asmHelper;
         _appMonitor = appMonitor;
+        _configurator = configurator;
 
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, "ASM[" + _asmSeqNo + "]: created");
@@ -1342,7 +1346,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             ApplicationInstallInfo aii = new ApplicationInstallInfo(_appConfig.get(), _appContainer.getAndSet(null), _resolvedLocation.getAndSet(null), _handler.get(), ApplicationStateMachineImpl.this);
                             _appInstallInfo.set(aii); // capture the handler so we call the same one for stopping.
                             startCallback = new StartActionCallback();
-                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor);
+                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
                             _currentAction.set(startAction);
                         }
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STARTING);
