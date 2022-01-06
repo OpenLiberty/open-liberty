@@ -155,6 +155,19 @@ public class LogsVerificationTest {
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
+    @Test
+    public void testVariableSourceDirUpdateDuringRestore() throws Exception {
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer();
+
+        server.copyFileToLibertyServerRoot("varfiles/server.env");
+
+        server.checkpointRestore();
+        // CWWKG0017I: The server configuration was successfully updated
+        assertEquals("Expected restore message not found", 1, server.findStringsInLogs("CWWKG0017I", server.getDefaultLogFile()).size());
+
+    }
+
     @After
     public void tearDown() throws Exception {
         server.stopServer();

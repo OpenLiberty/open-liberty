@@ -17,4 +17,6 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
+    
+    <variable name="VARIABLE_SOURCE_DIRS" defaultValue="defaultSrcDir" />
 </server>
