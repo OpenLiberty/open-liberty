@@ -16,11 +16,7 @@
 
   <!--  Required to read the remote server's port system property -->
   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
-  <!-- Required for Johnzon -->
-  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
-  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <!-- Called in test servlet -->
   <javaPermission className="javax.net.ssl.SSLPermission" name="*" actions="setHostnameVerifier" />
 
 </server>

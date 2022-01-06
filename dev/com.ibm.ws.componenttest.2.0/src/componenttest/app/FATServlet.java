@@ -82,13 +82,21 @@ public abstract class FATServlet extends HttpServlet {
                     t = t.getCause();
                 }
 
-                System.out.println("ERROR: " + t);
                 StringWriter sw = new StringWriter();
                 t.printStackTrace(new PrintWriter(sw));
                 System.err.print(sw);
-
-                writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
-                t.printStackTrace(writer);
+                if (t instanceof AssertionError && t.getCause() == null) {
+                    AssertionError e = (AssertionError) t;
+                    System.out.println("ASSERTION ERROR: " + e);
+                    writer.write(AssertionErrorSerializer.START_TAG);
+                    AssertionError simple = AssertionErrorSerializer.simplify(getClass(), method, e);
+                    AssertionErrorSerializer.serialize(simple, writer);
+                    writer.write(AssertionErrorSerializer.END_TAG);
+                } else {
+                    System.out.println("ERROR: " + t);
+                    writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
+                    t.printStackTrace(writer);
+                }
             }
         } else {
             System.out.println("ERROR: expected testMethod parameter");

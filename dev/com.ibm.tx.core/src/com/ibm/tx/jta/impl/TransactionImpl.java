@@ -1,5 +1,3 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
  * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -230,8 +229,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public static final long GLOBAL_TRANSACTION_LOCAL_ID_MODIFIER = 0x6000000000000000L;
 
     private Thread _mostRecentThread;
-
-    protected static boolean _isZos;
 
     public ConfigurationProvider _configProvider = ConfigurationProviderManager.getConfigurationProvider();
 
@@ -773,7 +770,26 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         try {
             stage2CommitProcessing(state);
         } finally {
-            // Get state incase its updated by notifyCompletion
+
+            /*
+             *
+             * Uncomment to recreate 286979
+             *
+             * Also uncomment similar code in ProtocolImpl, TranManagerImpl, MultiServerTest & EndToEndClientServlet
+             *
+             *
+             * try {
+             * if (tc.isDebugEnabled())
+             * Tr.debug(tc, "SLEEPING IN PROCESSCOMMIT");
+             * Thread.sleep(10000);
+             * } catch (InterruptedException e) {
+             * // TODO Auto-generated catch block
+             * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+             * e.printStackTrace();
+             * }
+             */
+
+            // Get state in case its updated by notifyCompletion
             state = _status.getState();
             notifyCompletion();
         }
@@ -800,7 +816,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                     state = TransactionState.STATE_COMMITTED;
                     _status.setState(state);
                     postCompletion(Status.STATUS_COMMITTED);
-                } else if (_resources.isOnlyAgent()) {
+                } else if (_resources.isOnlyAgent() && !_configProvider.isForcePrepare()) {
                     state = commitXAResources();
                 } else {
                     state = prepareResources();
@@ -1180,8 +1196,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 throw se;
             }
 
-            perfPreparing();
-
             try {
                 // Optimization to allow 1PC (non-LA) and no logging
                 int vote;
@@ -1202,10 +1216,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
                 final boolean isXALastAgent = getResources().isLastAgentEnlisted();
 
-                if (_isZos) {
-                    vote = prepareZOSResources(isXALastAgent, vote);
-                }
-
                 if (isXALastAgent) {
                     vote = getResources().commitLastAgent(vote == RegisteredResources.XA_OK, xaOKVote); // d250698
                 }
@@ -1222,8 +1232,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                                 _status.setState(TransactionState.STATE_COMMITTING);
                             break;
                         case RegisteredResources.ONE_PHASE_OPT:
-                            // Inform PMI of 1PC optimization
-                            perfOnePhase();
                             // Follow through as if XA_RDONLY result
                         case RegisteredResources.XA_RDONLY:
                             _status.setState(TransactionState.STATE_COMMITTED);
@@ -1231,9 +1239,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                             break;
                         case RegisteredResources.ONE_PHASE_OPT_ROLLBACK:
                             _status.setState(TransactionState.STATE_ROLLED_BACK);
-
-                            // Inform PMI of 1PC optimization and completion
-                            perfOnePhase();
 
                             postCompletion(Status.STATUS_ROLLEDBACK);
 
@@ -1350,24 +1355,16 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         return _status.getState();
     }
 
-    protected void perfOnePhase() {
-        // Not used in JTM
-    }
-
     @SuppressWarnings("unused")
     protected int prepareZOSResources(boolean isXALastAgent, int vote) throws RollbackException, HeuristicMixedException, SystemException {
         return vote;
     }
 
     protected boolean canOptimise() {
-        final boolean ret = (!_subordinate && _configProvider.isOnePCOptimization());
+        final boolean ret = (!_subordinate && _configProvider.isOnePCOptimization() && !_configProvider.isForcePrepare());
         if (tc.isDebugEnabled())
             Tr.debug(tc, "canOptimise", ret);
         return ret;
-    }
-
-    protected void perfPreparing() {
-        // Not used in JTM
     }
 
     /**
@@ -1466,22 +1463,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             // we have to go via preparing.
             _status.setState(TransactionState.STATE_COMMITTING_ONE_PHASE);
 
-            // Inform PMI that we are committing. I (Andy) think that
-            // the perf metrics code requires its methods to be driven
-            // in sequence so we call preparing and then immediately
-            // call committing. Later on we call onePhase to indicate
-            // the we've used a 1PC optimization to complete the tran.
-            // implementation
-            perfPreparing();
-            perfCommitting();
-
             int status = Status.STATUS_COMMITTED;
 
             try {
                 getResources().flowCommitOnePhase(false);
-
-                // Inform PMI that we've used 1PC
-                perfOnePhase();
 
                 _status.setState(TransactionState.STATE_COMMITTED);
                 // if heuristic is thrown, notifyCompletion will set state
@@ -1532,33 +1517,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     public void internalCommit() throws HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException, SystemException {
-        internalCommit(false, false); /* @377762.2A4 */
-    }
-
-    public void internalCommit(boolean cascaded, boolean boolafter) throws HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException, SystemException /*
-                                                                                                                                                                           * 377762.
-                                                                                                                                                                           * 2A
-                                                                                                                                                                           */
-    {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "internalCommit");
 
-        if (cascaded && boolafter) /* @377762.2A5 */
-        {
-            postCompletion(Status.STATUS_COMMITTED, cascaded, boolafter);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "internalCommit");
-            return;
-        }
-        // Inform PMI of commit
-        perfCommitting();
-
         HeuristicMixedException savedHme = null;
         try {
-            if (_isZos) {
-                savedHme = internalZOSCommit();
-            }
-
             getResources().distributeCommit();
         } catch (HeuristicMixedException hme) {
             // FFDC in RegisteredResources
@@ -1573,7 +1536,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             logHeuristic(true);
             throw hre;
         } finally {
-            postCompletion(Status.STATUS_COMMITTED, cascaded, boolafter); /* @377762.2C */
+            postCompletion(Status.STATUS_COMMITTED);
             if (savedHme != null) // override any exception from distributeCommit
             {
                 if (tc.isEntryEnabled())
@@ -1586,53 +1549,17 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
     }
 
-    protected HeuristicMixedException internalZOSCommit() {
-        // Not used in JTM
-        return null;
-    }
+    public void internalRollback() throws HeuristicMixedException, HeuristicHazardException, HeuristicCommitException, SystemException {
 
-    protected void perfCommitting() {
-        // Not used in JTM
-    }
-
-    public void internalRollback() throws HeuristicMixedException, HeuristicHazardException, HeuristicCommitException, SystemException /* @377762.2A4 */
-    {
-        internalRollback(false, false);
-    }
-
-    public void internalRollback(boolean cascaded, boolean cascafter) throws HeuristicMixedException, HeuristicHazardException, HeuristicCommitException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "internalRollback");
 
-        if (cascaded && cascafter) /* @377762.2A5 */
-        {
-            postCompletion(Status.STATUS_ROLLEDBACK, cascaded, cascafter);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "internalRollback");
-            return;
-        }
         SystemException ex = null;
         try {
-            HeuristicMixedException savedHme = null; /* @225356A */
-
-            if (_isZos) {
-                try {
-                    internalZOSRollback();
-                } catch (HeuristicMixedException hme) {
-                    savedHme = hme;
-                } catch (SystemException se) {
-                    ex = se;
-                }
-            }
-
             // Fully distribute ends
             // Don't care if we had some failures so ignore return value
             getResources().distributeEnd(XAResource.TMSUCCESS);
-
             getResources().distributeRollback();
-
-            if (savedHme != null)
-                throw savedHme; /* @225356A */
         } catch (HeuristicMixedException hme) {
             // FFDC in RegisteredResources
             logHeuristic(false);
@@ -1646,7 +1573,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             logHeuristic(false);
             throw hce;
         } finally {
-            postCompletion(Status.STATUS_ROLLEDBACK, cascaded, cascafter); /* @377762.2C */
+            postCompletion(Status.STATUS_ROLLEDBACK);
             if (ex != null) // override any exception from distributeRollback
             {
                 if (tc.isEntryEnabled())
@@ -1659,11 +1586,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
     }
 
-    @SuppressWarnings("unused")
-    protected void internalZOSRollback() throws HeuristicMixedException, SystemException {
-        // Not used in JTM
-    }
-
     //
     // To be called on recovery only.
     //
@@ -1674,9 +1596,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     //
     protected void recoverCommit(boolean waitForHeuristic) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "recoverCommit", new Object[] { waitForHeuristic, _doNotRetryRecovery });
+            Tr.entry(tc, "recoverCommit", waitForHeuristic);
 
-        if (!_doNotRetryRecovery) {
+        if (!isDoNotRetryRecovery()) {
             auditTransaction();
             final int state = _status.getState();
             try {
@@ -1720,7 +1642,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                     prolongFinish();
                 }
 
-                _doNotRetryRecovery = true; // Reset - postCompletion may set it again...
+                setDoNotRetryRecovery(); // Reset - postCompletion may set it again...
 
                 // Issue any forgets to local resources if need be (this may set retry)
                 // and determine if we need to retry recovery again
@@ -1735,6 +1657,27 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             Tr.exit(tc, "recoverCommit");
     }
 
+    /**
+     *
+     */
+    private void setDoNotRetryRecovery() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setDoNotRetryRecovery, requireRetry={0}", requireRetry());
+        _doNotRetryRecovery = true;
+    }
+
+    private void resetDoNotRetryRecovery() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "resetDoNotRetryRecovery, requireRetry={0}", requireRetry());
+        _doNotRetryRecovery = false;
+    }
+
+    protected boolean isDoNotRetryRecovery() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isDoNotRetryRecovery={0}, requireRetry={1}", _doNotRetryRecovery, requireRetry());
+        return _doNotRetryRecovery;
+    }
+
     protected void handleHeuristicOnCommit(boolean waitForHeuristic) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "handleHeuristicOnCommit", waitForHeuristic);
@@ -1744,7 +1687,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         // a superior as we do not log, it so on recovery may still be waiting for it.
         // Really when we get a forget we should remove our subordinate and heuristic
         // status from the log.  Check of superior has gone.
-        if (_doNotRetryRecovery && waitForHeuristic &&
+        if (isDoNotRetryRecovery() && waitForHeuristic &&
             TransactionState.STATE_HEURISTIC_ON_COMMIT == _status.getState()) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "recoverCommit", "Checking if we can forget transaction");
@@ -1770,9 +1713,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     //
     public void recoverRollback(boolean waitForHeuristic) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "recoverRollback", new java.lang.Object[] { waitForHeuristic, _doNotRetryRecovery });
+            Tr.entry(tc, "recoverRollback", waitForHeuristic);
 
-        if (!_doNotRetryRecovery) {
+        if (!isDoNotRetryRecovery()) {
             auditTransaction();
             final int state = _status.getState();
             try {
@@ -1820,11 +1763,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                     prolongFinish();
                 }
 
-                _doNotRetryRecovery = true; // Reset - postCompletion may set it again...
+                setDoNotRetryRecovery();
 
                 // Issue any forgets to local resources if need be (this may set retry)
                 // and determine if we need to retry recovery again
-                postCompletion(Status.STATUS_ROLLEDBACK);
+//                postCompletion(Status.STATUS_ROLLEDBACK);
                 notifyCompletion();
             }
         }
@@ -1844,7 +1787,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         // a superior as we do not log, it so on recovery may still be waiting for it.
         // Really when we get a forget we should remove our subordinate and heuristic
         // status from the log.  Check of superior has gone.
-        if (_doNotRetryRecovery && waitForHeuristic &&
+        if (isDoNotRetryRecovery() && waitForHeuristic &&
             TransactionState.STATE_HEURISTIC_ON_ROLLBACK == _status.getState()) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "recoverRollback", "Checking if we can forget transaction");
@@ -2465,12 +2408,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     // This method is called inline by commit/rollback at the end of the transaction.
     //
     protected void postCompletion(int status) {
-        postCompletion(status, false, false); /* @377762.2A4 */
-    }
-
-    protected void postCompletion(int status, boolean cascaded, boolean cascafter) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "postCompletion", status);
+            Tr.entry(tc, "postCompletion", Util.printStatus(status));
 
         // call back into the CDI transaction scope code, telling it to destroy bean instances
         // created within the scope of this tran.
@@ -2492,20 +2431,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionImpl.postCompletion", "2738", this);
         }
 
-        if (cascaded && cascafter) /* @377762.2A14 */
-        {
-            try {
-                distributeAfter(status);
-            } catch (SystemException e) {
-                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionImpl.postCompletion", "2870", this);
-                _systemExceptionOccured = true;
-            }
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "postCompletion");
-            return;
-        }
-        perfCompleted(status);
-
         try {
             if (_resources != null &&
                 HeuristicOutcome.isHeuristic(_resources.getHeuristicOutcome())) {
@@ -2516,8 +2441,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 }
             }
 
-            if (_isZos && postZOSCompletion()) {
-            } else if (requireRetry()) {
+            if (requireRetry()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "We DO require retry");
+
                 // Need to retry to complete resources - handle recovery and normal txns separately
                 if (_inRecovery) {
                     // Called from recoverCommit or recoverRollback
@@ -2538,7 +2465,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                         _retryAttempts++;
                         // inhibit forgetTransaction
                         prolongFinish();
-                        _doNotRetryRecovery = false;
+                        resetDoNotRetryRecovery();
                     } else {
                         Tr.warning(tc, "WTRN0055_GIVING_UP_OUTCOME_DELIVERY", getTranName());
                         // do clean up ...
@@ -2552,9 +2479,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             }
         } finally {
             try {
-                if (!cascaded) { /* @377762.2A2 */
-                    distributeAfter(status);
-                }
+                distributeAfter(status);
             } catch (SystemException e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionImpl.postCompletion", "2870", this);
                 _systemExceptionOccured = true;
@@ -2565,16 +2490,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             Tr.exit(tc, "postCompletion");
     }
 
-    protected boolean postZOSCompletion() {
-        // Not used in JTM
-        return false;
-    }
-
-    @SuppressWarnings("unused")
-    protected void perfCompleted(int status) {
-        // Not used in JTM
-    }
-
     //
     // Distribute the after completion callbacks.
     //
@@ -2582,7 +2497,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     //
     protected void distributeAfter(int status) throws SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "distributeAfter", status);
+            Tr.entry(tc, "distributeAfter", Util.printStatus(status));
 
         // Take the transaction off the thread to allow container
         // mediated dispatches on components requiring a tx from
@@ -2656,10 +2571,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "forgetTransaction", transactionCompleted);
 
-        if (_isZos) {
-            forgetZOSTransaction();
-        }
-
         //
         // Call any resource callbacks for destroy
         //
@@ -2698,10 +2609,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         //
         LocalTIDTable.removeLocalTID(_localTID);
 
-        if (_isZos) {
-            removeZOSTransaction();
-        }
-
         // Let the failure scope controller know that this transaction is complete so that it
         // no longer worries about it when its asked to shutdown (either at server shutdown or
         // peer recovery termination)
@@ -2714,18 +2621,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             TxExecutionContextHandler.removeTxn(getXid());
         }
 
-        _status.reset(); // Reset state to NONE
+//        _status.reset(); // Reset state to NONE (why??????)
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "forgetTransaction");
-    }
-
-    protected void removeZOSTransaction() {
-        // Not used in JTM
-    }
-
-    protected void forgetZOSTransaction() {
-        // Not used in JTM
     }
 
     /**

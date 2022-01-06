@@ -138,6 +138,13 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
+        // Add EE10 features that are not part of EE9
+        for (String feature : JakartaEE10Action.EE10_FEATURE_SET) {
+            if (!JakartaEE9Action.EE9_FEATURE_SET.contains(feature)) {
+                nonEE9JavaEEFeatures.add(feature);
+            }
+        }
+
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
         incompatibleValueAddFeatures.add("openapi-3.1"); // depends on mpOpenAPI
         incompatibleValueAddFeatures.add("opentracing-1.0"); // opentracing depends on mpConfig
@@ -321,8 +328,16 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // They will conflict by their long name
         for (String feature : JakartaEE10Action.EE10_FEATURE_SET) {
             if (!JakartaEE9Action.EE9_FEATURE_SET.contains(feature)) {
-                specialEE9Conflicts.put(feature,
-                                        feature.startsWith("servlet-") ? "com.ibm.websphere.appserver.servlet" : "io.openliberty." + feature.substring(0, feature.indexOf('-')));
+                // The features below are not included in the convenience feature
+                // so they will not conflict on the long name.
+                if (!feature.startsWith("jsonpContainer-") &&
+                    !feature.startsWith("jsonbContainer-") &&
+                    !feature.startsWith("facesContainer-") &&
+                    !feature.startsWith("jakartaeeClient-")) {
+                    specialEE9Conflicts.put(feature,
+                                            feature.startsWith("servlet-") ? "com.ibm.websphere.appserver.servlet" : ("io.openliberty."
+                                                                                                                      + feature.substring(0, feature.indexOf('-'))));
+                }
             }
         }
 
@@ -385,9 +400,10 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
                     if (specialConflict != null) {
                         if (!conflicts.containsKey(specialConflict)) {
                             errors.add("Got unexpected conflict for " + feature + " " + conflicts.keySet() + '\n');
-                        } else if (conflicts.containsKey("com.ibm.websphere.appserver.eeCompatible")) {
-                            errors.add("Got eeCompatible conflict in additional to special conflict for " + feature + " " + conflicts.keySet() + '\n');
                         }
+                        // else if (conflicts.containsKey("com.ibm.websphere.appserver.eeCompatible")) {
+                        //     errors.add("Got eeCompatible conflict in addition to special conflict for " + feature + " " + conflicts.keySet() + '\n');
+                        // }
                     } else if (!conflicts.containsKey("com.ibm.websphere.appserver.eeCompatible")) {
                         errors.add("Expected a conflict for com.ibm.websphere.appserver.eeCompatible for " + feature + " " + conflicts.keySet() + '\n');
                     }

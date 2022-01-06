@@ -14,7 +14,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.BundleContext;
@@ -88,5 +91,10 @@ class ContextualDefaultExecutor implements Executor, WSManagedExecutorService {
     @Trivial
     public int hashCode() {
         return contextService.hashCode(); // for easy correlation in trace with the context service that created it
+    }
+
+    @Override
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation) {
+        throw new UnsupportedOperationException();
     }
 }

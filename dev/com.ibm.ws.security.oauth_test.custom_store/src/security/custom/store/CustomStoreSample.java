@@ -95,7 +95,7 @@ public class CustomStoreSample implements OAuthStore {
     boolean runRemote = true;
 
     public CustomStoreSample() {
-        System.out.println("CustomStoreSample init");
+        System.out.println("CustomStoreSample init, running Open Liberty version");
 
         /*
          * Local mongoDB does not run on z/OS, use remote
@@ -504,6 +504,7 @@ public class CustomStoreSample implements OAuthStore {
 
     @Override
     public void update(OAuthClient oauthClient) throws OAuthStoreException {
+        System.out.println("CustomStoreSample update entry for " + oauthClient.getClientId());
         try {
             for (int i = 0; i < RETRY_COUNT; i++) {
                 try {
@@ -524,9 +525,23 @@ public class CustomStoreSample implements OAuthStore {
                 }
             }
             System.out.println("CustomStoreSample update on " + oauthClient.getClientId());
+            String cs = oauthClient.getClientSecret();
+            if (cs == null) {
+                cs = "null_secret";
+            } else if (cs.equals("")) {
+                cs = "empty_secret";
+            } else if (cs.startsWith("{xor}")) {
+                cs = "xor";
+            } else if (cs.startsWith("{hash}")) {
+                cs = "hash";
+            } else {
+                cs = "plain";
+            }
+            System.out.println("CustomStoreSample hash type is " + cs);
         } catch (Exception e) {
             throw new OAuthStoreException("Failed on update for OAuthClient for " + oauthClient.getClientId(), e);
         }
+        System.out.println("CustomStoreSample update exit for " + oauthClient.getClientId());
     }
 
     @Override

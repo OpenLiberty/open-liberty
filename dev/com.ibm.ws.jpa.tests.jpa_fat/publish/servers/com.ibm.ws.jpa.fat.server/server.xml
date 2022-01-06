@@ -1,0 +1,112 @@
+<server>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>servlet-3.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>jpa-2.0</feature>
+    </featureManager>
+
+     
+    <jpa
+        defaultJtaDataSourceJndiName="default/jtadatasource"
+        defaultNonJtaDataSourceJndiName="default/nonjtadatasource" />
+
+    <library id="AnonymousJDBCLib" fat.modify="true">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+  
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+    <dataSource id="default/jtadatasource" jndiName="default/jtadatasource" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:defaultdatasource" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="default/nonjtadatasource" jndiName="default/nonjtadatasource" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:defaultdatasource" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/containermanaged" jndiName="jdbc/jpafat/containermanaged" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:containermanagedmanualenhancement" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/containermanagednonjta" jndiName="jdbc/jpafat/containermanagednonjta" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:containermanagedmanualenhancement" createDatabase="create"/>
+    </dataSource>
+      
+    <!-- Use a distinct database for the manually enhanced entities to avoid problems or confusion -->
+    <dataSource id="jdbc/jpafat/containermanagedmanualenhancement" jndiName="jdbc/jpafat/containermanagedmanualenhancement" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:containermanaged" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/containermanagedmanualenhancementnonjta" jndiName="jdbc/jpafat/containermanagedmanualenhancementnonjta" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:containermanaged" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/unmanaged" jndiName="jdbc/jpafat/unmanaged" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:unmanaged" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/unmanagednonjta" jndiName="jdbc/jpafat/unmanagednonjta" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:unmanaged" createDatabase="create"/>
+    </dataSource>
+ 
+     <dataSource id="jdbc/jpafat/applicationmanagedinjected"
+                jndiName="jdbc/jpafat/applicationmanagedinjected"
+                jdbcDriverRef="AnonymousJDBCLib">
+        <properties databaseName="memory:applicationmanagedinjected"
+                    createDatabase="create" />
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/applicationmanagedinjectednonjta"
+                jndiName="jdbc/jpafat/applicationmanagedinjectednonjta"
+                jdbcDriverRef="AnonymousJDBCLib"
+                transactional="false">
+        <properties databaseName="memory:applicationmanagedinjected"
+                    createDatabase="create" />
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/containermanagedinjected"
+                jndiName="jdbc/jpafat/containermanagedinjected"
+                jdbcDriverRef="AnonymousJDBCLib">
+        <properties databaseName="memory:containermanagedinjected"
+                    createDatabase="create" />
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/containermanagedinjectednonjta"
+                jndiName="jdbc/jpafat/containermanagedinjectednonjta"
+                jdbcDriverRef="AnonymousJDBCLib"
+                transactional="false">
+        <properties databaseName="memory:containermanagedinjected"
+                    createDatabase="create" />
+    </dataSource>
+    
+    <dataSource id="jdbc/jpafat/loosecontainermanaged" jndiName="jdbc/jpafat/loosecontainermanaged" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:loosecontainermanaged" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/loosecontainermanagednonjta" jndiName="jdbc/jpafat/loosecontainermanagednonjta" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:loosecontainermanaged" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="jdbc/jpafat/validationjpadatasource" jndiName="jdbc/jpafat/validationjpadatasource" jdbcDriverRef="AnonymousJDBCLib">
+      <properties databaseName="memory:containermanagedvalidation" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/jpafat/validationjpadatasourcenonjta" jndiName="jdbc/jpafat/validationjpadatasourcenonjta" jdbcDriverRef="AnonymousJDBCLib" transactional="false">
+      <properties databaseName="memory:containermanagedvalidation" createDatabase="create"/>
+    </dataSource>
+        
+
+	<applicationMonitor pollingRate="1s"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
+</server>

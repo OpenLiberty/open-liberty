@@ -25,7 +25,12 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public final class EJBJarAdapter implements ContainerAdapter<EJBJar> {
 
     @Override
-    public EJBJar adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
+    public EJBJar adapt(
+        Container root,
+        OverlayContainer rootOverlay,
+        ArtifactContainer artifactContainer,
+        Container containerToAdapt) throws UnableToAdaptException {
+
         NonPersistentCache cache = containerToAdapt.adapt(NonPersistentCache.class);
         WebModuleInfo webModuleInfo = (WebModuleInfo) cache.getFromCache(WebModuleInfo.class);
         Entry ddEntry;

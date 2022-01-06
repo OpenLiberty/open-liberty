@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,7 @@
  *******************************************************************************/
 package mpRestClientFT.timeout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TimeoutTestServlet")
@@ -53,6 +52,9 @@ public class TimeoutTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(JakartaEE9Action.ID) // this is proper behavior - @Timeout not expected to stop blocking I/O operations
+                                        // note that this works with previous MP Rest Client versions because we set the http
+                                        // connect and read timeouts based on the value of the @Timeout annotation.
     public void testTimeoutOnSyncMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         testTimeout(() -> {return client.sync(WAIT_TIME);}, WAIT_TIME);
     }

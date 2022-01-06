@@ -70,7 +70,6 @@ import com.ibm.ws.rsadapter.ConnectionSharing;
 import com.ibm.ws.rsadapter.DSConfig; 
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
-import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 /**
@@ -4460,9 +4459,15 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     public void abort(Executor ex) throws Exception {
         if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_1))
           throw new SQLFeatureNotSupportedException();
-        
-        mcf.jdbcRuntime.doAbort(sqlConn, ex);
-        setAborted(true);
+
+        Connection con = sqlConn;
+        if (con == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "unable to abort a destroyed connection");
+        } else {
+            mcf.jdbcRuntime.doAbort(con, ex);
+            setAborted(true);
+        }
     }
     
     @Override

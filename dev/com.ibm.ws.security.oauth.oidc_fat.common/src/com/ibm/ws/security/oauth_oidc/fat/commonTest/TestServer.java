@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -133,18 +133,22 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         if (expected == null) {
             throw new Exception("Cannot search for expected value in server log: The provided expectation is null!");
         }
+        String expectedValue = expected.getValidationValue();
         try {
             Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType());
 
             String logName = getGenericLogName(expected.getWhere());
-            String expectedValue = expected.getValidationValue();
             Log.info(thisClass, thisMethod, "Searching for [" + expectedValue + "] in " + logName);
 
             String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
-            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!",
-                                      searchResult != null);
-            Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
 
+            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH)) {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting NOT to find [" + expectedValue + "] in " + logName + ", but did find it there!", searchResult == null);
+                Log.info(thisClass, thisMethod, "DID NOT message: " + expectedValue);
+            } else {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!", searchResult != null);
+                Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Failure searching for string [" + expected.getValidationValue() + "] in " + expected.getWhere());
@@ -214,9 +218,9 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
      **/
     boolean isInvalidSSLConfigTest(String testName) {
         if (testName != null &&
-            ((testName.equals("skip")) ||
-             (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredNoSSLConfig")) ||
-             (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredInvalidSSLConfig")))) {
+                ((testName.equals("skip")) ||
+                        (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredNoSSLConfig")) ||
+                        (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredInvalidSSLConfig")))) {
             return true;
         }
         return false;

@@ -22,6 +22,6 @@ Export-Package: \
   org.eclipse.microprofile.config.spi;version=3.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.config:microprofile-config-api;3.0}
+  @${repo;org.eclipse.microprofile.config:microprofile-config-api;3.0.1;EXACT}
 
 WS-TraceGroup: APPCONFIG

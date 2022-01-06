@@ -62,18 +62,18 @@ public class ProgrammaticImageTest {
      *
      * NOTE: building from a Dockerfile should be avoided at all costs.
      *
-     * Here we are pulling from a base image postgres:11.2-alpine
+     * Here we are pulling from a base image postgres:14.1-alpine
      *
      * However, we use special processing for the image name to ensure that when testing locally we pull
      * from DockerHub, and when testing against a remote docker image we use a subsituted image name to pull
      * from artifactory.
      *
      * Example:
-     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("postgres:11.2-alpine")).asCanonicalNameString()
+     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("postgres:14.1-alpine")).asCanonicalNameString()
      *
-     * When testing locally a DefaultImageNameSubstitutor will be used and postgres:11.2-alpine will be returned as normal.
+     * When testing locally a DefaultImageNameSubstitutor will be used and postgres:14.1-alpine will be returned as normal.
      * When testing on a remote docker host, our internal ArtifactoryImageNameSubstitutor will be used and
-     *   wasliberty-docker-remote.artifactory.swg-devops.com/postgres:11.2-alpine will be returned
+     *   wasliberty-docker-remote.artifactory.swg-devops.com/postgres:14.1-alpine will be returned
      *
      * </pre>
      *
@@ -84,7 +84,7 @@ public class ProgrammaticImageTest {
     public static GenericContainer<?> container = new GenericContainer<>(//
                     new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(//
                                                                                                 ImageNameSubstitutor.instance()
-                                                                                                                .apply(DockerImageName.parse("postgres:11.2-alpine"))
+                                                                                                                .apply(DockerImageName.parse("postgres:14.1-alpine"))
                                                                                                                 .asCanonicalNameString()) //
                                     .copy("/docker-entrypoint-initdb.d/initDB.sql", "/docker-entrypoint-initdb.d/initDB.sql")
                                     .build())

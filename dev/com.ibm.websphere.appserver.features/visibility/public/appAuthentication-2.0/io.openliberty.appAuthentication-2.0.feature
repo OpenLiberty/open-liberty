@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.appAuthentication-2.0
 visibility=public
+singleton=true
 IBM-API-Package: \
   jakarta.security.auth.message; type="spec", \
   jakarta.security.auth.message.callback; type="spec", \

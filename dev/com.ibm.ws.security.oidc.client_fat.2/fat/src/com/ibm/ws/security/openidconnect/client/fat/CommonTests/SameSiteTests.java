@@ -21,7 +21,6 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.SameSiteTestTools;
@@ -30,12 +29,10 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.structures.SameSiteTestExpectations;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 
-@MinimumJavaLevel(javaLevel = 7)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 public class SameSiteTests extends CommonTest {
@@ -49,19 +46,33 @@ public class SameSiteTests extends CommonTest {
         String subTestPrefix = "(" + inSubTestPrefix + "): ";
         List<validationData> expectations = new ArrayList<validationData>();
 
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, subTestPrefix + "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_TITLE);
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, subTestPrefix + "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
-        expectations = validationTools.addRequestParmsExpectations(expectations, _testName, Constants.LOGIN_USER, settings);
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE,
+                Constants.STRING_CONTAINS, subTestPrefix + "Did Not get the OpenID Connect login page.", null,
+                Constants.LOGIN_TITLE);
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL,
+                Constants.STRING_CONTAINS, subTestPrefix + "Did Not get the OpenID Connect login page.", null,
+                Constants.LOGIN_PROMPT);
+        expectations = validationTools.addRequestParmsExpectations(expectations, _testName, Constants.LOGIN_USER,
+                settings);
         if (settings.getRsTokenType().equals(Constants.ACCESS_TOKEN_KEY)) {
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, subTestPrefix + "Did not see the access_token printed in the app output", null, "access_token=");
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL,
+                    Constants.STRING_CONTAINS, subTestPrefix + "Did not see the access_token printed in the app output",
+                    null, "access_token=");
         } else {
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, subTestPrefix + "Did not see the JWT Token printed in the app output", null, Constants.JWT_STR_START + ".*\"iss\":");
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL,
+                    Constants.STRING_MATCHES, subTestPrefix + "Did not see the JWT Token printed in the app output",
+                    null, Constants.JWT_STR_START + ".*\"iss\":");
         }
         if (settings.getRequestParms() != null && settings.getWhere().contains(Constants.PARM)) {
-            String testApp = settings.getRequestParms().get("targetApp"); // if we're trying to get the app name for verification, we should have a test app set...
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, subTestPrefix + "Did not go to the correct app", null, "Param: targetApp with value: " + testApp);
+            String testApp = settings.getRequestParms().get("targetApp"); // if we're trying to get the app name for
+                                                                          // verification, we should have a test app
+                                                                          // set...
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL,
+                    Constants.STRING_CONTAINS, subTestPrefix + "Did not go to the correct app", null,
+                    "Param: targetApp with value: " + testApp);
         }
-        expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.IDToken_STR);
+        expectations = validationTools.addIdTokenStringValidation(vData, expectations, Constants.LOGIN_USER,
+                Constants.RESPONSE_FULL, Constants.IDToken_STR);
         return expectations;
 
     }
@@ -72,8 +83,14 @@ public class SameSiteTests extends CommonTest {
         List<validationData> expectations = null;
 
         expectations = vData.addSuccessStatusCodes();
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, subTestPrefix + "Did not receive another redirect to login again as the cookie is dropped - Title", null, "Redirect To OP");
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, subTestPrefix + "Did not receive another redirect to login again as the cookie is dropped", null, "client01");
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_TITLE,
+                Constants.STRING_CONTAINS,
+                subTestPrefix + "Did not receive another redirect to login again as the cookie is dropped - Title",
+                null, "Redirect To OP");
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL,
+                Constants.STRING_CONTAINS,
+                subTestPrefix + "Did not receive another redirect to login again as the cookie is dropped", null,
+                "client01");
 
         return expectations;
     }
@@ -83,14 +100,21 @@ public class SameSiteTests extends CommonTest {
         String subTestPrefix = "(" + inSubTestPrefix + "): ";
         List<validationData> expectations = null;
 
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, subTestPrefix + "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null, MessageConstants.CWOAU0073E_FRONT_END_ERROR);
-        expectations = validationTools.addMessageExpectation(server, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, subTestPrefix + "Server log did not contain an error message about the missing WASReqURLOidc cookie.", MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL,
+                Constants.STRING_CONTAINS, subTestPrefix + "Did not receive error message "
+                        + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response",
+                null, MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+        expectations = validationTools.addMessageExpectation(server, expectations, Constants.LOGIN_USER,
+                Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                subTestPrefix + "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
 
         return expectations;
 
     }
 
-    public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, TestSettings settings, String subTestPrefix) throws Exception {
+    public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, TestSettings settings,
+            String subTestPrefix) throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
 
@@ -134,7 +158,8 @@ public class SameSiteTests extends CommonTest {
     }
 
     // run variations (caller will specify which server may have problems on a specific variation)
-    public void runVariations(SameSiteTestExpectations testExpectations, Map<String, String> inOPSettings, Map<String, String> inRPSettings) throws Exception {
+    public void runVariations(SameSiteTestExpectations testExpectations, Map<String, String> inOPSettings,
+            Map<String, String> inRPSettings) throws Exception {
 
         Map<String, String> opSettings = samesiteTestTools.createOrRestoreConfigSettings(inOPSettings);
         Map<String, String> rpSettings = samesiteTestTools.createOrRestoreConfigSettings(inRPSettings);
@@ -144,17 +169,17 @@ public class SameSiteTests extends CommonTest {
         /*********************************************************/
         /* test using http with the request to the app on the RP */
         /*********************************************************/
-        // NOTE:  we are updating the actual "TestSettings" with a different url
+        // NOTE: we are updating the actual "TestSettings" with a different url
         // only this test is using the updated settings (not updatedTestSettings passed in call to mainPathTest)
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(testRPServer.getServerHttpString() + "/" + Constants.OPENID_APP + "/" + Constants.DEFAULT_SERVLET);
+        updatedTestSettings.setTestURL(
+                testRPServer.getServerHttpString() + "/" + Constants.OPENID_APP + "/" + Constants.DEFAULT_SERVLET);
         mainPathTest(testExpectations.getHttpRPAppUrlTestResult(), updatedTestSettings, "Http RP App request");
         // No server config's were updated in the previous test, so, nothing has to be restored
 
         /*********************************************************/
         /*
-         * test with the RP using http redirect
-         * redirect always requires https
+         * test with the RP using http redirect redirect always requires https
          */
         /*********************************************************/
         rpSettings.put(SameSiteTestTools.RedirectHostKey, testRPServer.getServerHttpString());
@@ -163,8 +188,7 @@ public class SameSiteTests extends CommonTest {
 
         /*********************************************************/
         /*
-         * test with RP using http authorization endpoint
-         * authorization endpoint always requires https
+         * test with RP using http authorization endpoint authorization endpoint always requires https
          */
         /*********************************************************/
         opSettings = samesiteTestTools.createOrRestoreConfigSettings(inOPSettings);
@@ -172,12 +196,12 @@ public class SameSiteTests extends CommonTest {
         rpSettings.put(SameSiteTestTools.AuthorizationHostKey, testOPServer.getServerHttpString());
         samesiteTestTools.updateServerSettings(testOPServer, opSettings);
         samesiteTestTools.updateServerSettings(testRPServer, rpSettings);
-        mainPathTest(testExpectations.getHttpAuthEndpointUrlTestResult(), testSettings, "Http RP Authorization Endpoint");
+        mainPathTest(testExpectations.getHttpAuthEndpointUrlTestResult(), testSettings,
+                "Http RP Authorization Endpoint");
 
         /*********************************************************/
         /*
-         * test with RP using http token endpoint
-         * token endpoint always requires https
+         * test with RP using http token endpoint token endpoint always requires https
          */
         /*********************************************************/
         opSettings = samesiteTestTools.createOrRestoreConfigSettings(inOPSettings);
@@ -213,7 +237,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
 
     }
@@ -241,7 +266,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -299,7 +325,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -361,7 +388,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 
@@ -381,7 +409,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
 
     }
@@ -442,7 +471,8 @@ public class SameSiteTests extends CommonTest {
 
         SameSiteTestExpectations testExpectations = new SameSiteTestExpectations();
         testExpectations.setHttpRPAppUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_GENERIC_FAILURE);
-        testExpectations.setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
+        testExpectations
+                .setHttpRedirectUrlTestResult(SameSiteTestExpectations.TestServerExpectations.RP_REDIRECT_FAILURE);
         runVariations(testExpectations, opSettings, rpSettings);
     }
 

@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 public class CDIArchiveHelper {
 
     public static final String BEANS_XML = "beans.xml";
+    public static final String JAVAX_EXTENSION = javax.enterprise.inject.spi.Extension.class.getName();
 
     /**
      * Create an empty WEB-INF/beans.xml file in a war
@@ -171,6 +172,26 @@ public class CDIArchiveHelper {
      */
     public static JavaArchive addBeansXML(JavaArchive archive, Package srcPackage) {
         return archive.addAsManifestResource(srcPackage, BEANS_XML, BEANS_XML);
+    }
+
+    /**
+     * Add a META-INF/services/javax.enterprise.inject.spi.Extension file to an archive
+     *
+     * @param archive     The JAR to create the javax.enterprise.inject.spi.Extension in
+     * @param owningClass The class to which the source javax.enterprise.inject.spi.Extension belongs. Must be in the same package.
+     */
+    public static <T extends Archive<T>> T addCDIExtensionFile(ManifestContainer<T> archive, Class<?> owningClass) {
+        return addCDIExtensionFile(archive, owningClass.getPackage());
+    }
+
+    /**
+     * Add a META-INF/services/javax.enterprise.inject.spi.Extension file to an archive
+     *
+     * @param archive    The archive to create the javax.enterprise.inject.spi.Extension in
+     * @param srcPackage The package where the source javax.enterprise.inject.spi.Extension file can be found
+     */
+    public static <T extends Archive<T>> T addCDIExtensionFile(ManifestContainer<T> archive, Package srcPackage) {
+        return archive.addAsManifestResource(srcPackage, JAVAX_EXTENSION, "services/" + JAVAX_EXTENSION);
     }
 
     /**

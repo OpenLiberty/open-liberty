@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,7 @@ public class OpenAPIModuleListener implements ModuleMetaDataListener, VirtualHos
 
     @Deactivate
     protected void deactivate(ComponentContext context, int reason) {
+        cancelScheduler();
         executorServiceRef.deactivate(context);
         this.context = null;
     }
@@ -337,16 +338,10 @@ public class OpenAPIModuleListener implements ModuleMetaDataListener, VirtualHos
             }
         }
 
-        //We have processed all WABs, so we can now cancel our scheduler
-        getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Finished processing WABs, so cleaning up scheduler");
-                }
-                cancelScheduler();
-            }
-        });
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Finished processing WABs, so cleaning up scheduler");
+        }
+        cancelScheduler();
     }
 
     private void cancelScheduler() {

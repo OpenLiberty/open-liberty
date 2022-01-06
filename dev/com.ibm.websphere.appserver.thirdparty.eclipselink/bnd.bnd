@@ -12,10 +12,11 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=2.6.8.WAS
-eclHash=ce829af
+eclVersion=2.6.9.WAS
+eclHash=c34c592
 eclFullVersion=${eclVersion}-${eclHash}
 eclPackageVersion=1.0.16
+asmFullVersion=9.2.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink
 Bundle-Description: EclipseLink JPA
@@ -35,7 +36,7 @@ Export-Package: \
             org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
-            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${asmFullVersion}", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
             org.eclipse.persistence.*;version="${eclVersion}"
@@ -110,7 +111,7 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\

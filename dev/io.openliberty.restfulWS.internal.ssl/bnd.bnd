@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,40 +24,59 @@ publish.wlp.jar.include: io.openliberty.restfulWS.internal.ssl.jakarta.jar
 -dsannotations-inherit: true
 
 
+app-resources= \
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientListener
 
-#Export-Package: \
+Service-Component: \
+  io.openliberty.restfulWS.internal.ssl.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
+Export-Package: io.openliberty.restfulWS.internal.ssl.component;thread-context=true
 
-Private-Package: io.openliberty.restfulWS.internal.ssl.component
+Import-Package: \
+  !org.eclipse.microprofile.rest.client,\
+  !org.eclipse.microprofile.rest.client.spi,\
+  *
 
-#Include-Resource:\
-#  io/openliberty=${bin}/io/openliberty, \
-#  META-INF=resources/META-INF
+DynamicImport-Package: \
+  org.eclipse.microprofile.rest.client,\
+  org.eclipse.microprofile.rest.client.spi
+
+#Private-Package: 
+
+Include-Resource:\
+  io/openliberty=${bin}/io/openliberty, \
+  META-INF=resources/META-INF
 
 -buildpath: \
   io.openliberty.org.jboss.resteasy.common;version=latest,\
-  com.ibm.websphere.javaee.annotation.1.3, \
-  com.ibm.websphere.javaee.cdi.2.0, \
-  com.ibm.websphere.javaee.interceptor.1.2, \
-  com.ibm.websphere.javaee.jaxb.2.2, \
-  com.ibm.websphere.javaee.jaxrs.2.1, \
-  com.ibm.websphere.javaee.jsonb.1.0, \
-  com.ibm.websphere.javaee.servlet.4.0, \
-  com.ibm.websphere.javaee.validation.2.0;version=latest, \
-  com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest, \
-  com.ibm.websphere.org.osgi.core;version=latest, \
-  com.ibm.websphere.org.osgi.service.component;version=latest, \
-  com.ibm.ws.adaptable.module;version=latest, \
-  com.ibm.ws.anno;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.3,\
+  com.ibm.websphere.javaee.cdi.2.0,\
+  com.ibm.websphere.javaee.interceptor.1.2,\
+  com.ibm.websphere.javaee.jaxb.2.2,\
+  com.ibm.websphere.javaee.jaxrs.2.1,\
+  com.ibm.websphere.javaee.jsonb.1.0,\
+  com.ibm.websphere.javaee.servlet.4.0,\
+  com.ibm.websphere.javaee.validation.2.0;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.adaptable.module;version=latest,\
+  com.ibm.ws.anno;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
-  com.ibm.ws.logging.core, \
-  com.ibm.ws.org.jboss.logging, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.ssl;version=latest, \
-  com.ibm.ws.webcontainer;version=latest, \
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+  com.ibm.ws.logging.core,\
+  com.ibm.ws.org.jboss.logging,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.ssl;version=latest,\
+  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  io.openliberty.org.jboss.resteasy.common;version=latest,\
+  io.openliberty.org.eclipse.microprofile.rest.client.2.0
 
 jakartaeeMe: true

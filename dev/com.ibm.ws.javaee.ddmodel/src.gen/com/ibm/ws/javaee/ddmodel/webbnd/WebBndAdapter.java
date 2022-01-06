@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.webbnd;
 
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.dd.app.Module;
+
+import com.ibm.ws.javaee.dd.webbnd.WebBnd;
+
 import org.osgi.service.component.annotations.*;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
-import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.common.BndExtAdapter;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -32,116 +24,88 @@ import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
+/**
+ * Top level processing for Web bindings.
+ * 
+ * The core implementation is shared between all four of
+ * EJB and Web bindings and extensions.
+ * 
+ * A simplified pattern is used by application client bindings,
+ * and by application bindings and extensions.  Those patterns
+ * are implemented directly.
+ * 
+ * See {@link com.ibm.ws.javaee.ddmodel.common.BndExtAdapter} for
+ * more information.
+ */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.javaee.dd.webbnd.WebBnd" })
-public class WebBndAdapter implements ContainerAdapter<com.ibm.ws.javaee.dd.webbnd.WebBnd> {
+    property = { "service.vendor=IBM",
+                 "toType=com.ibm.ws.javaee.dd.webbnd.WebBnd" })
+public class WebBndAdapter extends BndExtAdapter<WebBnd> {
 
-     private static final String MODULE_NAME_INVALID = "module.name.invalid";
-     private static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
-     private static final TraceComponent tc = Tr.register(WebBndAdapter.class);
-
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-volatile List<com.ibm.ws.javaee.dd.webbnd.WebBnd> configurations;
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    volatile List<WebBnd> configurations;
 
     @Override
-    @FFDCIgnore(ParseException.class)
-    public com.ibm.ws.javaee.dd.webbnd.WebBnd adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
-        com.ibm.ws.javaee.dd.web.WebApp primary = containerToAdapt.adapt(com.ibm.ws.javaee.dd.web.WebApp.class);
-        String primaryVersion = primary == null ? null : primary.getVersion();
-        String ddEntryName;
-        boolean xmi = "2.2".equals(primaryVersion) || "2.3".equals(primaryVersion) || "2.4".equals(primaryVersion);
-        if (xmi) {
-            ddEntryName = com.ibm.ws.javaee.dd.webbnd.WebBnd.XMI_BND_NAME;
-        } else {
-            ddEntryName = com.ibm.ws.javaee.dd.webbnd.WebBnd.XML_BND_NAME;
-        }
-
-        Entry ddEntry = containerToAdapt.getEntry(ddEntryName);
-com.ibm.ws.javaee.ddmodel.webbnd.WebBndComponentImpl fromConfig = getConfigOverrides(rootOverlay, artifactContainer);
-if (ddEntry == null && fromConfig == null)
-    return null;
-        if (ddEntry != null) {
-            try {
-                com.ibm.ws.javaee.dd.webbnd.WebBnd fromApp = 
-              new com.ibm.ws.javaee.ddmodel.webbnd.WebBndDDParser(containerToAdapt, ddEntry, xmi).parse();
-               if (fromConfig == null) {
-                   return fromApp;
-                } else {  
-                   fromConfig.setDelegate(fromApp);
-                    return fromConfig;
-                }
-            } catch (ParseException e) {
-                throw new UnableToAdaptException(e);
-            }
-        }
-
-        return fromConfig;
+    public List<? extends WebBnd> getConfigurations() {
+        return configurations;
     }
-private com.ibm.ws.javaee.ddmodel.webbnd.WebBndComponentImpl getConfigOverrides(OverlayContainer overlay, ArtifactContainer artifactContainer) throws UnableToAdaptException {
-     if (configurations == null || configurations.isEmpty())
-          return null;
+    
+    //
 
-     ApplicationInfo appInfo = (ApplicationInfo) overlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
-        ModuleInfo moduleInfo = null;
-	if (appInfo == null) {
-          moduleInfo = (ModuleInfo) overlay.getFromNonPersistentCache(artifactContainer.getPath(), ModuleInfo.class);
-          if (moduleInfo == null)
-               return null;
-          appInfo = moduleInfo.getApplicationInfo();
-     }
-     NestedConfigHelper configHelper = null;
-     if (appInfo != null && appInfo instanceof ExtendedApplicationInfo)
-          configHelper = ((ExtendedApplicationInfo) appInfo).getConfigHelper();
-      if (configHelper == null)
-          return null;
+    @Override
+    public WebBnd adapt(
+        Container ddRoot,
+        OverlayContainer ddOverlay,
+        ArtifactContainer ddArtifactRoot,
+        Container ddAdaptRoot) throws UnableToAdaptException {
 
-	 OverlayContainer rootOverlay = overlay;
-     if (overlay.getParentOverlay() != null)
-		rootOverlay = overlay.getParentOverlay();
-	  
-     Set<String> configuredModuleNames = new HashSet<String>();
-     String servicePid = (String) configHelper.get("service.pid");
-     String extendsPid = (String) configHelper.get("ibm.extends.source.pid");
-     for (com.ibm.ws.javaee.dd.webbnd.WebBnd config : configurations) {
-          com.ibm.ws.javaee.ddmodel.webbnd.WebBndComponentImpl configImpl = (com.ibm.ws.javaee.ddmodel.webbnd.WebBndComponentImpl) config;
-          String parentPid = (String) configImpl.getConfigAdminProperties().get("config.parentPID");
-          if ( servicePid.equals(parentPid) || parentPid.equals(extendsPid)) {
-               if (moduleInfo == null)
-                    return configImpl;
-               String moduleName = (String) configImpl.getConfigAdminProperties().get("moduleName");
-               if (moduleName == null) {
-                    if (rootOverlay.getFromNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebBndAdapter.class) == null) {
-                    Tr.error(tc, "module.name.not.specified", "web-bnd" );
-                    rootOverlay.addToNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebBndAdapter.class, MODULE_NAME_NOT_SPECIFIED);
-                    }
-                    continue;
-               }
-               moduleName = stripExtension(moduleName);
-               configuredModuleNames.add(moduleName);
-               if (moduleInfo.getName().equals(moduleName))
-                    return configImpl;
-     }
-     }
-     if (moduleInfo != null && !configuredModuleNames.isEmpty()) {
-      if (rootOverlay.getFromNonPersistentCache(MODULE_NAME_INVALID, WebBndAdapter.class) == null) {
-          HashSet<String> moduleNames = new HashSet<String>();
-          Application app = appInfo.getContainer().adapt(Application.class);
-          for (Module m : app.getModules()) {
-               moduleNames.add(stripExtension(m.getModulePath()));
-          }
-          configuredModuleNames.removeAll(moduleNames);
-          if ( !configuredModuleNames.isEmpty() )
-               Tr.error(tc, "module.name.invalid", configuredModuleNames, "web-bnd");
-          rootOverlay.addToNonPersistentCache(MODULE_NAME_INVALID, WebBndAdapter.class, MODULE_NAME_INVALID);
-          }
-     }
-     return null;
-}
-     private String stripExtension(String moduleName) {
-          if (moduleName.endsWith(".war") || moduleName.endsWith(".jar")) {
-               return moduleName.substring(0, moduleName.length() - 4);
-          }
-          return moduleName;
-     }
+        String webVersion = getWebVersion(ddAdaptRoot);
+        boolean xmi = ( "2.2".equals(webVersion) ||
+                        "2.3".equals(webVersion) ||
+                        "2.4".equals(webVersion) );
+        String ddPath = ( xmi ? WebBnd.XMI_BND_NAME : WebBnd.XML_BND_NAME );  
+
+        return process(
+                ddRoot, ddOverlay, ddArtifactRoot, ddAdaptRoot,
+                ddPath, xmi);
+    }    
+
+    //
+    
+    @Override    
+    protected WebBnd parse(Container ddAdaptRoot, Entry ddEntry, boolean xmi)
+            throws ParseException {
+        return ( new WebBndDDParser(ddAdaptRoot, ddEntry, xmi) ).parse();                
+    }
+
+    //
+
+    @Override    
+    protected String getParentPid(WebBnd webBnd) {
+        WebBndComponentImpl webBndImpl = (WebBndComponentImpl) webBnd;
+        return (String) webBndImpl.getConfigAdminProperties().get("config.parentPID");        
+    }
+
+    @Override    
+    protected String getModuleName(WebBnd webBnd) {
+        return (String) ((WebBndComponentImpl) webBnd).getConfigAdminProperties().get("moduleName");    
+    }
+
+    @Override    
+    protected String getElementTag() {
+        return "web-bnd";
+    }
+
+    @Override    
+    protected Class<?> getCacheType() {
+        return WebBndAdapter.class;
+    }
+    
+    @Override    
+    protected void setDelegate(WebBnd webBnd, WebBnd webBndDelegate) {
+        ((WebBndComponentImpl) webBnd).setDelegate(webBndDelegate);
+    }    
 }

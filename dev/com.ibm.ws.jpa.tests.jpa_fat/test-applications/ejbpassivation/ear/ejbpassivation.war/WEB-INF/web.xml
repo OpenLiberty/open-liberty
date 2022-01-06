@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID">
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="JpaPassivationServlet">
+    <servlet-name>JpaPassivationServlet</servlet-name>
+    <servlet-class>com.ibm.ws.jpa.fat.web.JpaPassivationServlet</servlet-class>
+    <load-on-startup/>
+  </servlet>
+
+  <servlet-mapping id="JpaPassivationServlet">
+    <servlet-name>JpaPassivationServlet</servlet-name>
+    <url-pattern>/JpaPassivationServlet</url-pattern>
+  </servlet-mapping>
+  
+  <ejb-local-ref>
+        <ejb-ref-name>ejb/StatefulSessionBean</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fat.ejb.StatefulSessionBeanLocal</local>
+        <ejb-link>StatefulSessionBean</ejb-link>
+    </ejb-local-ref>
+</web-app>

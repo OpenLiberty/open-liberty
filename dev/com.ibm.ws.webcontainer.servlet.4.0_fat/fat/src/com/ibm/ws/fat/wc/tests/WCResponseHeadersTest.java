@@ -71,7 +71,6 @@ public class WCResponseHeadersTest {
     @Before
     public void setUpBeforeEachTest() throws Exception {
         if (server != null && savedConfig != null) {
-            Exception failure = null;
             String consoleLogFileName = WCResponseHeadersTest.class.getSimpleName() + ".log";
 
             if (!server.isStarted()) {
@@ -79,29 +78,11 @@ public class WCResponseHeadersTest {
                 server.startServer(consoleLogFileName);
                 Log.info(ME, "setUpBeforeEachTest", "server started, log file is " + consoleLogFileName);
             } else if (restoreSavedConfig) {
-                try {
-                    //Allow the warning messages we may have generated on purpose
-                    //
-                    // W CWWKT0042W: An empty header name was found when the {0} configuration was parsed. This value is ignored.
-                    //
-                    // W CWWKT0043W: A duplicate header name was found in the [{0}] header using the {1} configuration. All configurations
-                    // for the [{0}] header are ignored. Any header that is defined by the remove, add, set, or setIfMissing configurations
-                    //must be unique across all configurations.
-                    //
-                    // W CWWKT0044W: The [{0}] header, which is marked as a duplicate header name, was found in the {1} configuration.
-                    // The [{0}] header is ignored. Any header that is defined by the {1} configuration must contain unique header names.
-
-                    server.stopServer("CWWKT0042W", "CWWKT0043W", "CWWKT0044W");
-                } catch (Exception e) {
-                    failure = e;
-                }
+                server.setMarkToEndOfLog();
                 server.updateServerConfiguration(savedConfig);
-                server.startServer(consoleLogFileName, true);
-                Log.info(getClass(), "setUpBeforeTest", "server restarted, log file is " + consoleLogFileName);
+                server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*ResponseHeadersTest.*");
+                Log.info(getClass(), "setUpBeforeTest", "server running, log file is " + consoleLogFileName);
             }
-            restoreSavedConfig = true;
-            if (failure != null)
-                throw failure;
         }
     }
 
@@ -337,9 +318,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected four occurances of the empty header string but found: " + logs.size(), logs.size() == 4);
+        assertTrue("Expected four occurrences of the empty header string but found: " + logs.size(), logs.size() == 4);
 
         //Send the request and verify the expected headers
 
@@ -406,9 +387,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected three occurances of the duplicate header name string but found: " + logs.size(), logs.size() == 3);
+        assertTrue("Expected three occurrences of the duplicate header name string but found: " + logs.size(), logs.size() == 3);
 
         //Send the request and verify the expected headers
 
@@ -476,9 +457,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected two occurances of the previously duplicated header string but found: " + logs.size(), logs.size() == 2);
+        assertTrue("Expected two occurences of the previously duplicated header string but found: " + logs.size(), logs.size() == 2);
 
         //Send the request and verify the expected headers
         Header[] headers = executeExchangeAndGetHeaders(url, testName);
@@ -554,9 +535,9 @@ public class WCResponseHeadersTest {
 
         Log.info(ME, testName, "Updated server configuration: " + configuration);
 
-        List<String> logs = server.findStringsInLogs(stringToSearchFor);
+        List<String> logs = server.findStringsInLogsUsingMark(stringToSearchFor, server.getDefaultLogFile());
 
-        assertTrue("Expected one occurances of the previously duplicated header string but found: " + logs.size(), logs.size() == 1);
+        assertTrue("Expected one occurrence of the previously duplicated header string but found: " + logs.size(), logs.size() == 1);
 
         //Send the request and verify the expected headers
         Header[] headers = executeExchangeAndGetHeaders(url, testName);
@@ -1379,7 +1360,7 @@ public class WCResponseHeadersTest {
                 expectedHeader = null;
                 expectedHeader = response.getFirstHeader("foo");
                 assertNotNull("Servlet request did not contain the configured header", expectedHeader);
-                Log.info(ME, testName, "Servlet reques header name: " + expectedHeader.getName());
+                Log.info(ME, testName, "Servlet request header name: " + expectedHeader.getName());
                 Log.info(ME, testName, "Servlet request header value: " + expectedHeader.getValue());
                 assertTrue("Servlet request did not have custom header", "foo".equalsIgnoreCase(expectedHeader.getName()) && "bar".equalsIgnoreCase(expectedHeader.getValue()));
 

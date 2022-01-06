@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -294,7 +295,7 @@ public class SingleRecoveryTest {
 				+ result);
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
-		server1.waitForStringInLog("Dump State:");
+		server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 		System.out.println(logKeyword + "waitForStringInLog Dump State end");
 
 		ProgramOutput po;
@@ -308,7 +309,7 @@ public class SingleRecoveryTest {
 			}
 
 			// make sure it's dead
-			server1.waitForStringInLog("Dump State:");
+			server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
 		}
 
 		po = server1.startServerAndValidate(false, true, true);

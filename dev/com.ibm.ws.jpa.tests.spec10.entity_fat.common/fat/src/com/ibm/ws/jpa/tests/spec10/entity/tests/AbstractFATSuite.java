@@ -14,6 +14,8 @@ package com.ibm.ws.jpa.tests.spec10.entity.tests;
 import org.junit.ClassRule;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 
@@ -33,4 +35,8 @@ public class AbstractFATSuite {
 
     @ClassRule
     public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
+    public static String repeatPhase = "";
+
+    public static JPAPersistenceProvider provider = JPAPersistenceProvider.DEFAULT;
 }

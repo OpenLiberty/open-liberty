@@ -13,39 +13,31 @@ package com.ibm.ws.jdbc.fat.krb5.containers;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Properties;
 
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.OracleContainer;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jdbc.fat.krb5.FATSuite;
-
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
 public class OracleKerberosContainer extends OracleContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
-    private static final Path reuseCache = Paths.get("..", "..", "cache", "oracle.properties");
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "kyleaure/krb5-oracle:2.0";
 
-    private boolean reused = false;
-    private String reused_hostname;
-    private int reused_port;
+    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
+    //TODO update this image to be built on top of gvenzl/oracle-xe
+    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-18.4.0-expanded:1.0.full.krb5";
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleKerberosContainer(Network network) {
-        super(IMAGE);
-        withNetwork(network);
+        super(IMAGE_NAME);
+        super.withPassword("oracle"); //Tell superclass the hardcoded password
+        super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+        super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
+        super.withNetwork(network);
+        super.withLogConsumer(new SimpleLogConsumer(c, "oracle-krb5"));
     }
 
     @Override
@@ -56,81 +48,7 @@ public class OracleKerberosContainer extends OracleContainer {
         });
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC);
-        withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
-        waitingFor(new LogMessageWaitStrategy()
-                        .withRegEx("^.*DONE: Executing user defined scripts.*$")
-                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
-        withLogConsumer(OracleKerberosContainer::log);
-        withReuse(true);
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(OracleKerberosContainer.class, "[Oracle]", msg);
-    }
-
-    @Override
-    public void start() {
-        if (hasCachedContainers()) {
-            // If this is a local run and a cache file exists, that means a DB2 container is already running
-            // and we can just read the host/port from the cache file
-            Log.info(c, "start", "Found existing container cache file. Skipping container start.");
-            Properties props = new Properties();
-            try {
-                props.load(new FileInputStream(reuseCache.toFile()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            reused = true;
-            reused_hostname = props.getProperty("oracle.hostname");
-            reused_port = Integer.valueOf(props.getProperty("oracle.port"));
-            Log.info(c, "start", "Found existing container at host = " + reused_hostname);
-            Log.info(c, "start", "Found existing container on port = " + reused_port);
-            return;
-        }
-
-        super.start();
-
-        if (FATSuite.REUSE_CONTAINERS) {
-            Log.info(c, "start", "Saving Oracle properties for future runs at: " + reuseCache.toAbsolutePath());
-            try {
-                Files.createDirectories(reuseCache.getParent());
-                Properties props = new Properties();
-                if (reuseCache.toFile().exists()) {
-                    try (FileInputStream fis = new FileInputStream(reuseCache.toFile())) {
-                        props.load(fis);
-                    }
-                }
-                props.setProperty("oracle.hostname", getContainerIpAddress());
-                props.setProperty("oracle.port", "" + getMappedPort(1521));
-                props.store(new FileWriter(reuseCache.toFile()), "Generated by FAT run");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (FATSuite.REUSE_CONTAINERS) {
-            Log.info(c, "stop", "Leaving container running so it can be used in later runs");
-            return;
-        } else {
-            Log.info(c, "stop", "Stopping container");
-            super.stop();
-        }
-    }
-
-    @Override
-    public Integer getMappedPort(int originalPort) {
-        return (reused && originalPort == 1521) ? reused_port : super.getMappedPort(originalPort);
-    }
-
-    @Override
-    public String getContainerIpAddress() {
-        return reused ? reused_hostname : super.getContainerIpAddress();
+        super.configure();
     }
 
     @Override
@@ -166,25 +84,4 @@ public class OracleKerberosContainer extends OracleContainer {
     public OracleContainer withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
-
-    @Override
-    protected void waitUntilContainerStarted() {
-        getWaitStrategy().waitUntilReady(this);
-    }
-
-    private static boolean hasCachedContainers() {
-        if (!FATSuite.REUSE_CONTAINERS)
-            return false;
-        if (!reuseCache.toFile().exists())
-            return false;
-        Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream(reuseCache.toFile())) {
-            props.load(fis);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return props.containsKey("oracle.hostname") &&
-               props.containsKey("oracle.port");
-    }
-
 }

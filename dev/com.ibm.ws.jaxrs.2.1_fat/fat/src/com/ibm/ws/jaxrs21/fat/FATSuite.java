@@ -15,12 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jaxrs21.fat.security.annotations.JAXRS21SecurityAnnotationsTest;
-import com.ibm.ws.jaxrs21.fat.security.annotations.JAXRS21SecurityAnnotationsTestRolesAsGroups;
-import com.ibm.ws.jaxrs21.fat.security.ssl.JAXRS21SecuritySSLTest;
-import com.ibm.ws.jaxrs21.fat.securitycontext.JAXRS21SecurityContextTest;
-import com.ibm.ws.jaxrs21.fat.uriInfo.UriInfoTest;
-
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -29,6 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+                CxfReservedTypeAndCTypeTest.class,
                 JAXRS21SecurityAnnotationsTest.class,
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,

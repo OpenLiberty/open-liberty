@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,22 @@
 // NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.appbnd;
 
+import com.ibm.ws.javaee.dd.appbnd.ApplicationBnd;
+import com.ibm.ws.javaee.dd.appbnd.Profile;
+import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
+import com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupType;
 
-public class ApplicationBndType extends com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupType implements com.ibm.ws.javaee.dd.appbnd.ApplicationBnd, DDParser.RootParsable {
+public class ApplicationBndType 
+    extends RefBindingsGroupType
+    implements ApplicationBnd, DDParser.RootParsable {
+
     public ApplicationBndType(String ddPath) {
-        this(ddPath, false);
+        this(ddPath, !IS_XMI);
     }
+
+    public static final boolean IS_XMI = true;
 
     public ApplicationBndType(String ddPath, boolean xmi) {
         super(xmi);
@@ -25,10 +35,10 @@ public class ApplicationBndType extends com.ibm.ws.javaee.ddmodel.commonbnd.RefB
 
     private final String deploymentDescriptorPath;
     private DDParser.ComponentIDMap idMap;
-    private com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType xmiRef;
+    private CrossComponentReferenceType xmiRef;
     com.ibm.ws.javaee.ddmodel.StringType version;
-    DDParser.ParsableListImplements<com.ibm.ws.javaee.ddmodel.appbnd.SecurityRoleType, com.ibm.ws.javaee.dd.appbnd.SecurityRole> security_role;
-    DDParser.ParsableListImplements<com.ibm.ws.javaee.ddmodel.appbnd.ProfileType, com.ibm.ws.javaee.dd.appbnd.Profile> profile;
+    DDParser.ParsableListImplements<SecurityRoleType, SecurityRole> security_role;
+    DDParser.ParsableListImplements<ProfileType, Profile> profile;
     com.ibm.ws.javaee.ddmodel.commonbnd.JASPIRefType jaspi_ref;
     com.ibm.ws.javaee.ddmodel.StringType appName;
     AuthorizationTableXMIType authorizationTable;
@@ -75,9 +85,19 @@ public class ApplicationBndType extends com.ibm.ws.javaee.ddmodel.commonbnd.RefB
         return idMap.getIdForComponent(ddComponent);
     }
 
+    /**
+     * Override: Ensure that the version is assigned.
+     * 
+     * Use the version computed by the parser to ensure
+     * the local version variable is assigned. 
+     */
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
         super.finish(parser);
+
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }
         this.idMap = parser.idMap;
 
         if (xmi) {
@@ -107,6 +127,24 @@ public class ApplicationBndType extends com.ibm.ws.javaee.ddmodel.commonbnd.RefB
                     SecurityRoleType role = getSecurityRole(runAs.securityRoleName, roleMap);
                     role.run_as = runAs.authData;
                 }
+            }
+        } else {
+            if ( version == null ) {
+                String versionText;
+                switch ( parser.version ) {
+                case ApplicationBnd.VERSION_1_2:
+                    versionText = ApplicationBnd.VERSION_1_2_STR;
+                    break;
+                case ApplicationBnd.VERSION_1_3:
+                    versionText = ApplicationBnd.VERSION_1_3_STR;
+                    break;
+                case ApplicationBnd.VERSION_1_4:
+                    versionText = ApplicationBnd.VERSION_1_4_STR;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported application bindings version [ " + parser.version + " ]");
+                }
+                version = parser.parseToken(versionText);
             }
         }
     }

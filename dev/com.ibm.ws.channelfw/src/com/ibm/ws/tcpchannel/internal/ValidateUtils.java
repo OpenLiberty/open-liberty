@@ -12,6 +12,8 @@ package com.ibm.ws.tcpchannel.internal;
 
 import com.ibm.wsspi.tcpchannel.TCPConfigConstants;
 
+import io.openliberty.accesslists.filterlist.FilterList;
+
 /**
  * Utility class for validation the TCP channel and factory configuration
  * values.

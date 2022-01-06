@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1431,9 +1431,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: Die Enterprise-Bean {0} im
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=Der Implementierungsdeskriptor definiert einen Zeitgeber f\u00fcr die angegebene Methode, gibt aber nicht an, wie viele Parameter die Methode akzeptiert. Es gibt mehrere Methoden desselben Namens in der Klassenhierarchie der Bean, die f\u00fcr den Empfang von Zeitgeber-Callbacks in Frage kommen. Deshalb kann der EJB-Container nicht bestimmen, f\u00fcr welche Methode der Zeitgeber ausgel\u00f6st werden muss.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=\u00c4ndern Sie den Implementierungsdeskriptor so, dass der Zeitgeber explizit angibt, ob er f\u00fcr die Version ohne Parameter oder f\u00fcr die Version mit einem einzigen Parameter der Methode bestimmt ist.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Die Stateful-Session-Bean {0} im Modul {1} der Anwendung {2} hat keine Abh\u00e4ngigkeit von der Persistenzreferenz {3} deklariert.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Wenn eine Stateful-Session-Bean in einer WAR-Datei enthalten ist, muss sie alle Abh\u00e4ngigkeiten von allen Persistenzkontextreferenzen und Persistenzeinheitenreferenzen deklarieren, auf die sie zugreifen will.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=F\u00fcgen Sie der Stateful-Session-Bean die entsprechende Quellcodeannotation @PersistenceContext oder @PersistenceUnit hinzu oder f\u00fcgen Sie dem entsprechenden Element session im XML-Implementierungsdeskriptor das entsprechende Element persistence-context-ref bzw. persistence-unit-ref hinzu.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Es wurde ein Ressourcenreferenzkonflikt gefunden. {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Eine Ressourcenreferenz wurde an mehreren Stellen definiert, aber die jeweiligen Informationen sind widerspr\u00fcchlich.

@@ -69,9 +69,13 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Si sono verificati i seguenti prob
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=Impossibile unire correttamente la documentazione OpenAPI da pi\u00f9 moduli web. Gli endpoint dai moduli riportati non sono inclusi nel documento OpenAPI generato.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Esaminare i problemi di unione per identificare il motivo per cui non \u00e8 possibile unire i documenti OpenAPI generati.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=Il percorso {0} dal modulo {1} \u00e8 in conflitto con un percorso dal modulo {2}. {1} non verr\u00e0 unito.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Il percorso {0} dal modulo {1} \u00e8 in conflitto con un percorso dal modulo {2}. Impossibile unire il modulo {1}.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=Il percorso consiste di due moduli. Non \u00e8 possibile includere entrambe le istanze del percorso nello stesso documento OpenAPI. Questo messaggio viene restituito come parte di CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Modificare uno dei moduli in conflitto oppure configurare la funzionalit\u00e0 mpOpenApi-2.0 per escluderne uno dei due. Questo problema pu\u00f2 essere causato dall'inclusione dei server nel documento OpenAPI quando l'URL del server non termina con il root di contesto dell'applicazione (ad esempio, perch\u00e9 l'accesso all'applicazione viene eseguito utilizzando un URL differente tramite un proxy inverso).
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Modificare uno dei moduli in conflitto oppure configurare la funzionalit\u00e0 mpOpenApi-2.0 per escludere uno dei moduli. Questo problema pu\u00f2 verificarsi se i server sono inclusi nel documento OpenAPI e l'URL del server non termina con la root di contesto dell'applicazione. Ad esempio, quando l'accesso all'applicazione viene eseguito tramite un URL diverso attraverso un proxy inverso.
+
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=La chiave di estensione {0} dal modulo {1} \u00e8 in conflitto con la stessa chiave di estensione dal modulo {2}. Impossibile unire il modulo {1}.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Due moduli dichiarano la stessa estensione con valori differenti al livello principale del documento OpenAPI. Non \u00e8 possibile includere entrambe le istanze dell'estensione nello stesso documento OpenAPI. Questo messaggio viene restituito come parte di CWWKO1662.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Modificare uno dei moduli in conflitto per rimuovere l'estensione oppure configurare la funzionalit\u00e0 mpOpenApi-2.0 per escludere uno dei moduli.
 
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: La combinazione della documentazione OpenAPI da pi\u00f9 moduli \u00e8 disabilitata. Viene utilizzato solo {0} per generare la documentazione OpenAPI. Per abilitare l''unione della documentazione OpenAPI da tutti i moduli, impostare la propriet\u00e0 di configurazione mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A meno che l'unione della documentazione OpenAPI non sia abilitata, la documentazione OpenAPI viene generata solo per il primo modulo OpenAPI distribuito.
@@ -81,7 +85,7 @@ OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: L''oggetto Info configurato co
 OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=Se la propriet\u00e0 \u00e8 impostata, deve essere impostata su una sezione Info completa in formato JSON, con le propriet\u00e0 del titolo e della versione impostate su valori validi.
 OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Correggere il valore Info configurato.
 
-OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Impossibile analizzare la propriet\u00e0 di configurazione {0} come JSON. Il valore \u00e8: {1}\nThe error is: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: Impossibile analizzare la propriet\u00e0 di configurazione {0} come JSON. Il valore \u00e8: {1}\nL''errore \u00e8: {2}
 OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=Se la propriet\u00e0 \u00e8 impostata, deve essere impostata su una sezione Info completa in formato JSON.
 OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Esaminare il testo dell'errore per identificare il problema e correggere il valore Info configurato in modo che sia un JSON valido.
 

@@ -213,4 +213,5 @@ error.jacksonproviderregister.exception.useraction= Assicurarsi che il provider 
 warn.invalid.authorization.token.type=CWWKW0061W: Il tipo di token di autorizzazione {0} specificato nella configurazione del server non \u00e8 valido e verr\u00e0 ignorato.
 warn.invalid.authorization.token.type.explanation=Il tipo di token di autorizzazione specificato nella configurazione del server non \u00e8 valido.
 warn.invalid.authorization.token.type.useraction=Specificare un tipo di token di autorizzazione valido.
-  
+
+continuation.not.supported=Continuazione non supportata. Assicurarsi che tutti i servlet e i filtri servlet supportino le operazioni asincrone.

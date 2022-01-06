@@ -10,13 +10,14 @@
  *******************************************************************************/
 
 configurations {
+  hibernateJPA20
+  openjpaJPA20
   jpaFatTools
 }
 
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.spec10.entity_fat.common")
-  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task addJPAFATTools (type: Copy) {
@@ -61,6 +62,7 @@ addRequiredLibraries {
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
   dependsOn copyFAT
+  dependsOn copyTestContainers
 }
 
 jar {
@@ -76,11 +78,10 @@ clean.doLast {
   if (file('build').exists()) {
     file('build').deleteDir()
   }
-  if (file('publish').exists()) {
-    file('publish').deleteDir()
+  if (file('publish/servers').exists()) {
+    file('publish/servers').deleteDir()
   }
   if (file('fat/src/com/ibm/ws/jpa/tests/spec10/entity/tests').exists()) {
     file('fat/src/com/ibm/ws/jpa/tests/spec10/entity/tests').deleteDir()
   }
 }
-

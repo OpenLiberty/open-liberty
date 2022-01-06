@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -42,7 +44,7 @@ abstract class ConfigElement {
     private String elementValue = "";
 
     private ConfigElement parent;
-    private List<ConfigElement> children = new ArrayList<ConfigElement>();
+    private Set<ConfigElement> children = new HashSet<ConfigElement>();
     protected String childAttributeName;
     protected MergeBehavior mergeBehavior;
 
@@ -405,7 +407,7 @@ abstract class ConfigElement {
         return this.parent;
     }
 
-    public List<ConfigElement> getChildren() {
+    public Set<ConfigElement> getChildren() {
         return this.children;
     }
 

@@ -60,6 +60,7 @@ public class Mpjwt20TCKLauncher_aud_noenv2 {
         // need to pass the correct url for PublicKeyAsJWKLocationURLTest
         additionalProps.put("mp.jwt.tck.jwks.baseURL", "http://localhost:" + port + "/PublicKeyAsJWKLocationURLTest/");
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_aud_noenv2.xml", additionalProps, Collections.emptySet());
+        MvnUtils.preparePublicationFile();
 
     }
 }

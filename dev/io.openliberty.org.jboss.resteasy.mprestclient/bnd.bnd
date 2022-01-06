@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.mprestclient
 
+Multi-Release: true
+
 # Only publish the Jakarta one
 publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.mprestclient.jakarta.jar
 
@@ -49,6 +51,9 @@ Import-Package: \
   javax.ws.rs.core,\
   org.eclipse.microprofile.rest.client.*;version='!',\
   *
+
+DynamicImport-Package: \
+  com.ibm.ws.microprofile.faulttolerance.cdi
 
 Private-Package: \
   io.openliberty.microprofile.rest.client30.internal

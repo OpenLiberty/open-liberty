@@ -31,7 +31,7 @@ dependencies {
                'org.apache.httpcomponents:httpcomponents-client:4.5.3',
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0',
+               project(':io.openliberty.org.apache.xercesImpl'),
                'xml-apis:xml-apis:1.4.01'
                                  
 }

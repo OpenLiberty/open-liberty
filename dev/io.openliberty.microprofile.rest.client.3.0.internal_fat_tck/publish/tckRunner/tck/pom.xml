@@ -17,7 +17,7 @@
     <name>MicroProfile RestClient 3.0 TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.rest.client.version>3.0-RC5</microprofile.rest.client.version>
+        <microprofile.rest.client.version>3.0</microprofile.rest.client.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>3.0-RC5</version>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>

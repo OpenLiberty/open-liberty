@@ -8,7 +8,9 @@ IBM-Process-Types: server, \
  com.ibm.ws.channelfw, \
  com.ibm.ws.timer, \
  io.openliberty.endpoint, \
- com.ibm.ws.wsbytebuffer
+ com.ibm.ws.wsbytebuffer, \
+ io.openliberty.accesslists.internal
+
 -jars=com.ibm.websphere.appserver.api.endpoint; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.endpoint_1.0-javadoc.zip
 kind=ga

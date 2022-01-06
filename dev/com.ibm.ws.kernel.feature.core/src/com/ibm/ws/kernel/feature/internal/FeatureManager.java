@@ -2104,19 +2104,25 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
-    private static char getEeCompatibleVersion(String symbolicName) {
-        return symbolicName.charAt(symbolicName.lastIndexOf("-") + 1);
+    private static int getEeCompatibleVersion(String symbolicName) {
+        String version = symbolicName.substring(symbolicName.lastIndexOf("-") + 1);
+        int dotIndex = version.indexOf('.');
+        if (dotIndex != -1) {
+            version = version.substring(0, dotIndex);
+        }
+        return Integer.parseInt(version);
     }
 
     private String getEeCompatiblePlatform(String symbolicName, boolean ignoreVersion) {
-        char charVersion = getEeCompatibleVersion(symbolicName);
-        switch (charVersion) {
-            case '9':
-                return "Jakarta EE" + ((ignoreVersion) ? "" : " " + charVersion);
-            case '8':
-            case '7':
-            case '6':
-                return "Java EE" + ((ignoreVersion) ? "" : " " + charVersion);
+        int intVersion = getEeCompatibleVersion(symbolicName);
+        switch (intVersion) {
+            case 10:
+            case 9:
+                return "Jakarta EE" + ((ignoreVersion) ? "" : " " + intVersion);
+            case 8:
+            case 7:
+            case 6:
+                return "Java EE" + ((ignoreVersion) ? "" : " " + intVersion);
             default:
                 // TODO this is really just a fall back and for testing
                 // this should come from additional meta-data of the feature
@@ -2125,7 +2131,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (fd != null) {
                     String subsystemName = fd.getHeader("Subsystem-Name");
                     if (subsystemName != null) {
-                        return subsystemName + ((ignoreVersion) ? "" : " " + charVersion);
+                        return subsystemName + ((ignoreVersion) ? "" : " " + intVersion);
                     }
                 }
                 return "Unknown";

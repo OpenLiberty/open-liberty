@@ -10,16 +10,23 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +41,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -57,6 +66,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.AssertionFailedError;
 
@@ -82,10 +92,12 @@ public class MvnUtils {
     private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
 
     private static final String RELATIVE_POM_FILE = "tck/pom.xml";
+    private static final String RELATIVE_POM_FILE2 = "pom.xml";
     private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
     private static final String MVN_INSTALL = "install";
+    private static final String MVN_DEPENDENCY = "dependency:list";
 
     private static final String SUREFIRE_REPORTS = "surefire-reports";
     private static final String TESTNG_REPORTS = SUREFIRE_REPORTS + "/junitreports";
@@ -334,6 +346,48 @@ public class MvnUtils {
     }
 
     /**
+     * Generate the array of Strings which will be used to run the "mvn dependency:list" command with all the appropriate parameters
+     *
+     * @return           an array of Strings representing the command to be run
+     * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
+     */
+    private String[] getMvnDependencyCommandArray() throws Exception {
+        String mvn = getMvn();
+
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add(mvn);
+        stringArrayList.add(MVN_DEPENDENCY);
+        stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
+        stringArrayList.add("-Dtck_server=" + getServerName());
+        stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
+        stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_port=" + getPort());
+        stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
+        stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
+        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
+
+        stringArrayList.addAll(getJarCliProperties());
+
+        // The cmd below is a base for running the TCK as a whole for this project.
+        // It is possible to use other Testng control xml files (and even generate them
+        // based on examining the TCK jar) in which case the value for suiteXmlFile would
+        // be different.
+        stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+
+        // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
+        stringArrayList.add("-B");
+
+        // add any additional properties passed
+        for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
+            stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
+        }
+
+        String[] cmd = stringArrayList.toArray(new String[0]);
+        return cmd;
+    }
+
+    /**
      * Get a File which represents the mvn output file when the tests are run. Typically ${component_Root_Directory}/results/mvnOutput_test_${suite_name}
      *
      * @return the mvn output file when running tests.
@@ -357,7 +411,11 @@ public class MvnUtils {
      * @return the pom.xml File
      */
     private File getPomXmlFile() {
-        return new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        File pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+        if (!pomXmlFile.exists()) {
+            pomXmlFile = new File(getTCKRunnerDir(), RELATIVE_POM_FILE2);
+        }
+        return pomXmlFile;
     }
 
     /**
@@ -643,6 +701,9 @@ public class MvnUtils {
                         + "see: ...autoFVT/results/" + getMvnTestOutputFileName() + " for more details");
         }
 
+        String[] mvnDependencyList = getMvnDependencyCommandArray();
+
+        runCmd(mvnDependencyList, getTCKRunnerDir(), getMvnDependencyOutputFile());
         return rc;
     }
 
@@ -651,6 +712,13 @@ public class MvnUtils {
      */
     private static File getMvnInstallOutputFile() {
         return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + RepeatTestFilter.getRepeatActionsAsString());
+    }
+
+    /**
+     * @return a File which represents the mvn output when "dependency:list" is run
+     */
+    private static File getMvnDependencyOutputFile() {
+        return new File(getResultsDir(), MVN_FILENAME_PREFIX + "dependency");
     }
 
     /**
@@ -1052,4 +1120,130 @@ public class MvnUtils {
         return version;
     }
 
+    public static void preparePublicationFile() {
+        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");
+        File outputFile = outputPath.toFile();
+        SAXParserFactory factory = null;
+        SAXParser saxParser = null;
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        try {
+            factory = SAXParserFactory.newInstance();
+            saxParser = factory.newSAXParser();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+        TestSuiteXmlParser xmlParser = new TestSuiteXmlParser();
+
+        try (FileWriter output = new FileWriter(outputFile)) {
+            Path junitPath = Paths.get("results", "junit");
+            File junitDirectory = junitPath.toFile();
+            for (final File xmlFile : junitDirectory.listFiles()) {
+                if (xmlFile.isDirectory()) {
+                    continue; //this shouldn't happen.
+                }
+                if (xmlFile.length() == 0) {
+                    continue; //this probably will happen. We create an empty file then populate it after we're expecting this method to run.
+                }
+                saxParser.parse(xmlFile, xmlParser);
+            }
+
+            String adocContent = "";
+            String MPversion = "";
+
+            String[] specParts = getSpec();
+            String specName = capitalise(specParts[0]);
+            String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
+            String specVersion = specParts[1];
+            String rcVersion = specParts[2];
+
+            Date date = new Date();
+            SimpleDateFormat yearNo = new SimpleDateFormat("yy");
+            SimpleDateFormat monthNo = new SimpleDateFormat("MM");
+            String year = yearNo.format(date);
+            String month = monthNo.format(date);
+
+            String OLVersion = year + ".0.0." + month;
+            String osVersion = System.getProperty("os.name");
+            String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
+            String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
+            String[] documentParts = { ":page-layout: certification \n= TCK Results\n\nAs required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of MicroProfile ",
+                                       specName, " ", specVersion, ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
+                                       " Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
+                                       OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
+                                       "* Specification Name, Version and download URL:\n+\n", "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-",
+                                       specVersion, rcVersion, "/microprofile-", MPSpecLower, "-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
+                                       rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                       "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
+                                       "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
+                                       osVersion };
+
+            for (String part : documentParts) {
+                adocContent += part;
+            }
+            output.write(adocContent + "\n\nJava " + javaMajorVersion + " Test results:\n\n+ [source,xml]\n----\n");
+            for (TestSuiteResult result : xmlParser.getResults()) {
+                output.write(result.toString());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String[] getSpec() {
+        Pattern specNamePattern = Pattern.compile("microprofile-(.*?)-tck:jar", Pattern.DOTALL);
+        String specName = "";
+        String specVersion = "";
+        String RC = "";
+        String[] parts = {};
+        String[] returnArray = { "", "", "" };
+        Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile", Pattern.DOTALL);
+        try (BufferedReader br = new BufferedReader(new FileReader("results/mvnOutput_dependency"))) {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.contains("-tck:jar")) {
+                    Matcher nameMatcher = specNamePattern.matcher(sCurrentLine);
+                    Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
+                    if (nameMatcher.find()) {
+                        specName = nameMatcher.group(1).replaceAll("-", " ");
+                    }
+                    if (versionMatcher.find()) {
+                        specVersion = versionMatcher.group(1);
+                        if (specVersion.contains("-RC")) {
+                            parts = specVersion.split("-RC");
+                            RC = parts[1];
+                            specVersion = parts[0];
+                        }
+                        returnArray[0] = specName;
+                        returnArray[1] = specVersion;
+                        returnArray[2] = ("-RC" + RC);
+                        return returnArray;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnArray;
+    }
+
+    public static String capitalise(String spec) {
+        char[] charArray = spec.toCharArray();
+        boolean foundSpace = true;
+        for (int i = 0; i < charArray.length; i++) {
+            if (Character.isLetter(charArray[i])) {
+                if (foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            } else {
+                foundSpace = true;
+            }
+        }
+        spec = String.valueOf(charArray);
+        return spec;
+    }
 }

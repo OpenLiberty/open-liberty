@@ -28,7 +28,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
@@ -44,8 +43,6 @@ public class UserInfoHelper {
     private static final TraceComponent tc = Tr.register(UserInfoHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private ConvergedClientConfig clientConfig = null;
     private Jose4jUtil jose4jUtil = null;
-
-    private static boolean issuedBetaMessage = false;
 
     public UserInfoHelper(ConvergedClientConfig config, SSLSupport sslSupport) {
         this.clientConfig = config;
@@ -205,7 +202,7 @@ public class UserInfoHelper {
         String claimsStr = null;
         if (contentType.contains("application/json")) {
             claimsStr = jresponse;
-        } else if (contentType.contains("application/jwt") && isRunningBetaMode()) {
+        } else if (contentType.contains("application/jwt")) {
             claimsStr = extractClaimsFromJwtResponse(jresponse, clientConfig, oidcClientRequest);
         }
         return claimsStr;
@@ -261,16 +258,4 @@ public class UserInfoHelper {
         return null;
     }
 
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
-    }
 }

@@ -33,15 +33,15 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 @WebServlet(urlPatterns = "/VersioningTestServlet")
 public class VersioningTestServlet extends JPATestServlet {
     // Container Managed Transaction Scope
-    @PersistenceContext(unitName = "Entity_JTA")
+    @PersistenceContext(unitName = "ENTITY_JTA")
     private EntityManager cmtsEm;
 
     // Application Managed JTA
-    @PersistenceUnit(unitName = "Entity_JTA")
+    @PersistenceUnit(unitName = "ENTITY_JTA")
     private EntityManagerFactory amjtaEmf;
 
     // Application Managed Resource-Local
-    @PersistenceUnit(unitName = "Entity_RL")
+    @PersistenceUnit(unitName = "ENTITY_RL")
     private EntityManagerFactory amrlEmf;
 
     @PostConstruct
@@ -73,7 +73,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -88,7 +87,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -104,7 +102,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -120,7 +117,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -136,7 +132,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -152,7 +147,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -168,7 +162,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -183,7 +176,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -199,7 +191,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -215,7 +206,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -231,7 +221,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -247,7 +236,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedIntWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -263,7 +251,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -278,7 +265,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -294,7 +280,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -310,7 +295,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -326,7 +310,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -342,7 +325,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -358,7 +340,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -373,7 +354,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -389,7 +369,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -405,7 +384,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -421,7 +399,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -437,7 +414,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedLongWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -453,7 +429,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -468,7 +443,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -484,7 +458,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -500,7 +473,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -516,7 +488,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -532,7 +503,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -548,7 +518,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -563,7 +532,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -579,7 +547,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -595,7 +562,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -611,7 +577,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -627,7 +592,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedShortWrapperEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -643,7 +607,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -658,7 +621,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -674,7 +636,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -690,7 +651,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -706,7 +666,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "VersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 
@@ -722,7 +681,6 @@ public class VersioningTestServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
 
-        executeDDL("JPA10_ENTITY_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResourcesList, properties);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,6 +137,13 @@ public class ContextServiceImpl implements ContextService, //
     private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
+     * Execution properties.
+     * If ContextServiceDefinition is used, the execution properties are populated upon activate
+     * to control which context types are cleared vs left unchanged. Otherwise, it remains empty.
+     */
+    Map<String, String> execProps = Collections.emptyMap();
+
+    /**
      * Hash code for this instance.
      */
     private final int hash;
@@ -241,6 +248,15 @@ public class ContextServiceImpl implements ContextService, //
         String contextSvcName = (String) props.get(JNDI_NAME);
         if (contextSvcName == null)
             contextSvcName = (String) props.get(CONFIG_ID);
+
+        if (!"file".equals(props.get("config.source"))) {
+            // execution properties for ContextServiceDefinition
+            execProps = new TreeMap<String, String>();
+            execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
+            String contextToSkip = (String) props.get("context.unchanged");
+            if (contextToSkip != null)
+                execProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, contextToSkip);
+        }
 
         lock.writeLock().lock();
         try {
@@ -362,7 +378,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
@@ -372,7 +388,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
@@ -382,7 +398,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
@@ -392,7 +408,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
@@ -402,7 +418,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
@@ -412,7 +428,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
@@ -422,7 +438,7 @@ public class ContextServiceImpl implements ContextService, //
             throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 
@@ -556,7 +572,7 @@ public class ContextServiceImpl implements ContextService, //
     @Override
     public Executor currentContextExecutor() {
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(execProps);
         return new ContextualExecutor(contextDescriptor);
     }
 

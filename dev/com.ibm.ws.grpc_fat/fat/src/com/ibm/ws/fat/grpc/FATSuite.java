@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.junit.ClassRule;
 
 import org.junit.runner.RunWith;
@@ -46,8 +49,16 @@ public class FATSuite {
 
     private static final Class<?> c = FATSuite.class;
 
+    static String[] removedFeatures = {"mpOpenAPI-1.1", "mpMetrics-2.3", "mpJwt-1.1", "mpConfig-1.3", "mpRestClient-1.3", "appSecurity-2.0"};
+
+    static String[] addedFeatures = {"mpOpenAPI-3.0", "mpMetrics-4.0", "mpJwt-2.0", "mpConfig-3.0", "mpRestClient-3.0", "appSecurity-4.0"};
+
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("servlet-4.0").alwaysAddFeature("servlet-5.0"));
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                             .andWith(FeatureReplacementAction.EE9_FEATURES()
+                             .removeFeatures(new HashSet<>(Arrays.asList(removedFeatures)))
+                             .addFeatures(new HashSet<>(Arrays.asList(addedFeatures)))
+                             .alwaysAddFeature("servlet-5.0")
+                             .alwaysAddFeature("jsonb-2.0"));
 
 }

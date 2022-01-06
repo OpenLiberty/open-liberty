@@ -294,7 +294,9 @@ public class ApplicationProcessor {
             
             openAPIModel = OpenApiProcessor.modelFromReader(config, tccl);
             openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromStaticFile(staticFile));
-            openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
+            if (!config.scanDisable()) {
+                openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
+            }
             
             OASFilter filter = OpenApiProcessor.getFilter(config, appClassloader);
             if (filter != null) {

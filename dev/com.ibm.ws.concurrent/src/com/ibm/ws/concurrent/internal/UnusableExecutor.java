@@ -11,7 +11,10 @@
 package com.ibm.ws.concurrent.internal;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
@@ -57,5 +60,10 @@ class UnusableExecutor implements Executor, WSManagedExecutorService {
     @Override
     public int hashCode() {
         return contextService.hashCode(); // for easy correlation in trace with the context service that created it
+    }
+
+    @Override
+    public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation) {
+        throw new UnsupportedOperationException();
     }
 }

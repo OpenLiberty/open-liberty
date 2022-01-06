@@ -11,7 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-smallryeGraphQLVersion=1.0.9
+smallryeGraphQLVersion=1.0.26
 
 Bundle-Name: SmallRye GraphQL and GraphQL Servlet Implementation
 Bundle-SymbolicName: com.ibm.ws.io.smallrye.graphql
@@ -25,11 +25,14 @@ Import-Package: \
   !io.smallrye.metrics,\
   !io.opentracing,\
   !io.smallrye.common.annotation,\
+  !io.smallrye.mutiny.*,\
   !javax.validation,\
   !javax.validation.executable,\
   !javax.validation.metadata,\
   !javax.ws.rs.client,\
   !javax.ws.rs.core,\
+  !org.eclipse.microprofile.context,\
+  !org.eclipse.microprofile.context.spi,\
   !org.eclipse.microprofile.metrics,\
   !org.eclipse.microprofile.metrics.annotation,\
   *
@@ -40,6 +43,8 @@ DynamicImport-Package: \
   javax.validation.metadata,\
   javax.ws.rs.client,\
   javax.ws.rs.core,\
+  org.eclipse.microprofile.context,\
+  org.eclipse.microprofile.context.spi,\
   org.eclipse.microprofile.metrics,\
   org.eclipse.microprofile.metrics.annotation
 
@@ -104,3 +109,5 @@ Service-Component: \
   com.ibm.ws.org.jboss.jandex;version=latest,\
   com.ibm.ws.org.jboss.logging;version=latest,\
   com.ibm.ws.webcontainer;version=latest
+
+jakartaeeMe: true

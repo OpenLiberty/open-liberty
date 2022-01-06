@@ -17,6 +17,7 @@ import java.util.Iterator;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.JTA.Util;
 
 public class UOWScopeCallbackManager {
     private static final TraceComponent tc = Tr.register(UOWScopeCallbackManager.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
@@ -55,13 +56,13 @@ public class UOWScopeCallbackManager {
 
     public void notifyCallbacks(int contextChangeType, UOWScope scope) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "notifyCallbacks", new Object[] { contextChangeType, scope, this });
+            Tr.entry(tc, "notifyCallbacks", new Object[] { Util.printUOWStatusChangeType(contextChangeType), scope, this });
 
         if (_callbacks != null) {
-            final Iterator callbacks = _callbacks.iterator();
+            final Iterator<UOWScopeCallback> callbacks = _callbacks.iterator();
 
             while (callbacks.hasNext()) {
-                ((UOWScopeCallback) callbacks.next()).contextChange(contextChangeType, scope);
+                callbacks.next().contextChange(contextChangeType, scope);
             }
         }
 

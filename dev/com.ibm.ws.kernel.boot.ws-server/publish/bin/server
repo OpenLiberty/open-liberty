@@ -76,6 +76,13 @@
 # WLP_ZOS_JOBNAME - The job name to use when starting the server in
 #              a z/OS environment.
 #
+# SERVER_WORKING_DIR - The directory containing output files from the JVM.  For 
+#              example the javadump files.  The default value is the location
+#              ${WLP_OUTPUT_DIR}/serverName. If set with an absolute path 
+#              (ex, /logs), that location will be utilized, else if a relative 
+#              path (ex, logs) is set it will be relative to the default 
+#              location.
+#
 ###############################################################################
 SERVER_UNKNOWN_STATUS=5
 
@@ -758,7 +765,7 @@ mergeJVMOptions()
 readServerEnv()
 {
   # By default, we do not attempt to resolve variables in server.env
-  variableResolutionEnabled=0
+  variableExpansionEnabled=0
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
@@ -767,17 +774,17 @@ readServerEnv()
 
       \#*)
            # line is a comment.
-           # A comment line enables variable resolution if it contains the keyword,
-           # "enable_variable_resolution", and nothing else (ignoring case and white space).
+           # A comment line enables variable expansion if it contains the keyword,
+           # "enable_variable_expansion", and nothing else (ignoring case and white space).
            # If found, we use the source command ( . ) which performs all of the server.env
            # variable assignments while resolving any variable references.
-           if [ $variableResolutionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_resolution") ]
+           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
            then
               processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
-              if [ "#enable_variable_resolution" = $processedLine ]
+              if [ "#enable_variable_expansion" = $processedLine ]
               then
                  eval ". $1"
-                 variableResolutionEnabled=1
+                 variableExpansionEnabled=1
               fi
            fi ;;
       *=*)
@@ -787,15 +794,15 @@ readServerEnv()
            *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
            *)
-              # if variable resolution is enabled, then we have already "sourced" the entire file.  As a result
+              # if variable expansion is enabled, then we have already "sourced" the entire file.  As a result
               # all of the variables in server.env have already been defined as shell variables.  To make them
               # accessible to child processes, they need to be exported.
-              if [ $variableResolutionEnabled = 1 ]
+              if [ $variableExpansionEnabled = 1 ]
               then
                  eval "export ${var}"
               else
-                 # Variable resolution is not enabled.  Just set the variable to whatever is on the right side 
-                 # of the assignment and export it.  If a later line enables variable resolution, the source
+                 # Variable expansion is not enabled.  Just set the variable to whatever is on the right side 
+                 # of the assignment and export it.  If a later line enables variable expansion, the source
                  # command will reassign the variable (which is already exported) to the resolved value.
                  extractValueAndEscapeForEval "${line}"
                  eval "${var}=${escapeForEvalResult}; export ${var}"
@@ -831,12 +838,23 @@ readNativeFile() {
 }
 
 ##
-## serverWorkingDirectory: Change the working directory to ${SERVER_OUTPUT_DIR}
+## serverWorkingDirectory: Change the JVM working directory to ${SERVER_WORKING_DIR}
 serverWorkingDirectory()
 {
-  # Change the working directory to ${SERVER_OUTPUT_DIR}.
-  mkdirs "${SERVER_OUTPUT_DIR}"
-  cd "${SERVER_OUTPUT_DIR}"
+  if [ -z "${SERVER_WORKING_DIR}" ]; then
+    SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR
+  else
+    case "${SERVER_WORKING_DIR}" in
+      /*) len=${#SERVER_WORKING_DIR}
+          if [ $len -eq 1 ]; then
+            SERVER_WORKING_DIR=$SERVER_OUTPUT_DIR 
+          fi ;;
+      *) SERVER_WORKING_DIR="${SERVER_OUTPUT_DIR}/${SERVER_WORKING_DIR}" ;;
+    esac
+  fi
+
+  mkdirs "${SERVER_WORKING_DIR}"
+  cd "${SERVER_WORKING_DIR}"
 }
 
 ## set the umask value to remove all permissions for the Other category

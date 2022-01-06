@@ -18,6 +18,9 @@ src: \
 	test-libraries/PriorityContext/src,\
 	test-libraries/StatUtils/src
 
+javac.args.release: current
+
+fat.minimum.java.level: 11
 fat.project: true
 
 -buildpath: \

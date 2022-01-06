@@ -46,10 +46,18 @@ public class DumpArchive extends ZipFile{
         FATLogging.info(DumpArchive.class, methodName, outputString);
     }
 
+
+    private File archive;
+
     private DumpArchive(File dumpArchive) throws IOException{
         super(dumpArchive);
+        this.archive = dumpArchive;
     }
 
+    public boolean deleteFile() {
+        return this.archive.delete();
+    }
+    
     private ZipEntry getIntrospectorDumpFile(String introspectorFileName){
         Enumeration<? extends ZipEntry> e = entries();
         ZipEntry currentEntry = e.nextElement();

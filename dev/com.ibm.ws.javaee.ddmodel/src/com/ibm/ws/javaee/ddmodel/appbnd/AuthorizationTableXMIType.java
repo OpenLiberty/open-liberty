@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,9 +61,7 @@ public class AuthorizationTableXMIType extends DDParser.ElementContentParsable {
                 role = new CrossComponentReferenceType("role", Application.class);
                 parser.parse(role);
                 SecurityRole referent = role.resolveReferent(parser, SecurityRole.class);
-                if (referent == null) {
-                    DDParser.unresolvedReference("role", role.getReferenceString());
-                } else {
+                if (referent != null) {
                     roleName = parser.parseString(referent.getRoleName());
                 }
                 return true;

@@ -4,61 +4,27 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
     version="1.0">
 
-    <persistence-unit name="Cleanup" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+    <persistence-unit name="ENTITY_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
         <properties>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true"/>
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            
-            <!-- Eclipselink Support Properties -->
-            <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
-            <!--
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="sql-script"/>
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="ecl_script.ddl"/> -->
 
-            <!-- Hibernate Support Properties -->
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
-        </properties>
-    </persistence-unit>
-    
-    <persistence-unit name="Entity_JTA">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <properties>
-            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            
             <!-- Eclipselink Support Properties -->
-            <property name="eclipselink.cache.shared.default" value="false"/>
             <property name="eclipselink.logging.parameters" value="true"/>
-            
-            
-            <!--
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="sql-script"/>
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="ecl_script.ddl"/> -->
-
-            <!-- Hibernate Support Properties -->
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>
 
-    <persistence-unit name="Entity_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+    <persistence-unit name="ENTITY_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true"/>
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            
+
             <!-- Eclipselink Support Properties -->
-            <property name="eclipselink.cache.shared.default" value="false"/>
             <property name="eclipselink.logging.parameters" value="true"/>
-            
-            <!-- Hibernate Support Properties -->
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

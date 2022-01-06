@@ -34,7 +34,8 @@
     <!-- This datasource is not intended to actually make an SSL connection to the oracle backend, 
     instead we are just creating this datasource to ensure that the passwords in the connectionProperties are hidden in trace.-->
     <dataSource id="conn-prop-ds" jndiName="jdbc/conn-prop-ds">
-    	<properties.oracle URL="${env.URL}" connectionProperties="
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" 
+    	connectionProperties="
 	    	oracle.net.ssl_version=1.2;
 	    	oracle.net.authentication_services=(TCPS);
 	    	javax.net.ssl.keyStore=path-to-keystore/keystore.p12;
@@ -48,7 +49,8 @@
     </dataSource>
     
     <dataSource id="conn-prop-ds-generic" jndiName="jdbc/conn-prop-ds-generic">
-    	<properties URL="${env.URL}" connectionProperties="
+    	<properties URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"
+    	connectionProperties="
 	    	oracle.net.ssl_version=1.2;
 	    	oracle.net.authentication_services=(TCPS);
 	    	javax.net.ssl.keyStore=path-to-keystore/keystore.p12;

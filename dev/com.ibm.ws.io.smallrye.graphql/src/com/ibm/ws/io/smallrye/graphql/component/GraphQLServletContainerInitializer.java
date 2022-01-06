@@ -117,39 +117,39 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.webinfClassesUrl = webinfClassesUrl;
 
         GraphQLConfig config = new GraphQLConfig() {
-        	@Override
+            @Override
             public String getDefaultErrorMessage() {
                 return ConfigFacade.getOptionalValue(ConfigKey.DEFAULT_ERROR_MESSAGE, String.class)
                                    .orElse("Server Error");
             }
 
-        	@Override
+            @Override
             public boolean isPrintDataFetcherException() {
                 return ConfigFacade.getOptionalValue("mp.graphql.printDataFetcherException", boolean.class)
                                    .orElse(false);
             }
 
-        	@Override
+            @Override
             public Optional<List<String>> getHideErrorMessageList() {
                 return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, String.class)
-                		                               .map(s -> Arrays.asList(s.split(",")))
+                                                       .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
-        	@Override
+            @Override
             public Optional<List<String>> getShowErrorMessageList() {
                 return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, String.class)
-                		                               .map(s -> Arrays.asList(s.split(",")))
+                                                       .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
-        	@Override
+            @Override
             public boolean isAllowGet() {
                 return ConfigFacade.getOptionalValue("mp.graphql.allowGet", boolean.class)
                                    .orElse(false);
             }
 
-        	@Override
+            @Override
             @FFDCIgnore({Throwable.class})
             public boolean isMetricsEnabled() {
                 try {
@@ -159,14 +159,20 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 }
             }
 
-        	@SuppressWarnings("unchecked")
-			@Override
-        	public <T> T getConfigValue(String key, Class<T> type, T defaultValue) {
-        		if ("smallrye.graphql.metrics.enabled".equals(key)) {
-        			return (T) Boolean.TRUE;
-        		}
-        		return super.getConfigValue(key, type, defaultValue);
-        	}
+            @SuppressWarnings("unchecked")
+            @Override
+            public <T> T getConfigValue(String key, Class<T> type, T defaultValue) {
+                if ("smallrye.graphql.metrics.enabled".equals(key)) {
+                    return (T) Boolean.TRUE;
+                }
+                return super.getConfigValue(key, type, defaultValue);
+            }
+
+            @Override
+            public Optional<List<String>> getUnwrapExceptions() {
+                Optional<List<String>> unwrapExceptions = super.getUnwrapExceptions();
+                return unwrapExceptions == null ? Optional.empty() : unwrapExceptions;
+            }
         };
         diagBag.config = config;
         
@@ -184,7 +190,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 return;
             }
             diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config).getGraphQLSchema();
+            graphQLSchema = Bootstrap.bootstrap(schema, config);
         } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
             throw new ServletException(t);
@@ -197,7 +203,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
 
         ctx.setAttribute(SchemaServlet.SCHEMA_PROP, graphQLSchema);
 
-        ExecutionService executionService = new ExecutionService(config, graphQLSchema);
+        ExecutionService executionService = new ExecutionService(config, graphQLSchema, null);
         
         String path = "/" + ConfigFacade.getOptionalValue("mp.graphql.contextpath", String.class)
                                         .filter(s -> {return s.replaceAll("/", "").length() > 0;})
@@ -211,10 +217,10 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         schemaServletReg.addMapping(path + "/schema.graphql");
 
         boolean enableGraphQLUIServlet = ConfigFacade.getOptionalValue("io.openliberty.enableGraphQLUI", boolean.class)
-        		                                     .orElse(false);
+                                                     .orElse(false);
         if (enableGraphQLUIServlet) {
-        	GraphiQLUIServlet uiServlet = new GraphiQLUIServlet();
-        	ServletRegistration.Dynamic uiServletReg = ctx.addServlet(UI_SERVLET_NAME, uiServlet);
+            GraphiQLUIServlet uiServlet = new GraphiQLUIServlet();
+            ServletRegistration.Dynamic uiServletReg = ctx.addServlet(UI_SERVLET_NAME, uiServlet);
             uiServletReg.addMapping("/graphql-ui");
         }
 

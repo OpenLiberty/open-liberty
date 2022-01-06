@@ -378,7 +378,6 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     Map<ServiceRefType, Map<XSDTokenType, HandlerType>> handlerNameToHandlerMap;
 
     String path;
-    // Component ID map
     DDParser.ComponentIDMap idMap;
 
     @Override
@@ -681,7 +680,7 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     }
 
     @Override
-    public void finish(DDParser parser) throws ParseException {
+    public void finish(DDParser parser) throws ParseException {        
         this.idMap = parser.idMap;
     }
 

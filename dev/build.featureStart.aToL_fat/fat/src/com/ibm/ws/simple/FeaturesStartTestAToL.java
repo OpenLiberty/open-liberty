@@ -248,8 +248,8 @@ public class FeaturesStartTestAToL {
 
         // Don't test this feature if environment is using Java level below minimum required
         // specified in properties file. Not every feature has a mapping in that file.
-        if (featureJavaLevels.containsKey(feature)) {
-            Integer javaLevel = featureJavaLevels.get(feature);
+        if (featureJavaLevels.containsKey(feature.toLowerCase())) {
+            Integer javaLevel = featureJavaLevels.get(feature.toLowerCase());
             if (JAVA_LEVEL < javaLevel) {
                 Log.info(c, testName.getMethodName(), "Skipping " + feature + " since it needs a minimum Java level of " + javaLevel.toString());
                 return true;
@@ -271,7 +271,7 @@ public class FeaturesStartTestAToL {
             } else if (JAVA_LEVEL >= 11) {
                 // IBM JDK 11+ (Semeru) is based on Adopt JDK 11+ and it doesn't include Health Center
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because IBM JDK 11+ doesn't include Health Center.");
-                return true;                
+                return true;
             } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
                 return true;

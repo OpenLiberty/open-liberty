@@ -25,3 +25,7 @@ RUN chmod 777 /etc/krb5.keytab
 
 ADD startup/db_setup.sh /docker-entrypoint-initdb.d/db_setup.sh
 RUN chmod 777 /docker-entrypoint-initdb.d/db_setup.sh
+
+
+
+# Currently tagged in DockerHub as: kyleaure/postgres-krb5:1.0

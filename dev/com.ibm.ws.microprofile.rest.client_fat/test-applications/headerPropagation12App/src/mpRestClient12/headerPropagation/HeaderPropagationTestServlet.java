@@ -34,7 +34,9 @@ import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @ApplicationScoped
@@ -108,6 +110,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP50_ID) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()
@@ -126,6 +129,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP50_ID) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaCDIEnabledFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()

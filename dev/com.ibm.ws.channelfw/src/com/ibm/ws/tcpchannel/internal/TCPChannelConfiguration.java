@@ -24,6 +24,8 @@ import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.tcpchannel.TCPConfigConstants;
 
+import io.openliberty.accesslists.AccessListKeysFacade;
+
 /**
  * Configuration object for an individual TCP channel instance.
  */
@@ -1256,6 +1258,57 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
      */
     protected boolean getWaitToAccept() {
         return this.waitToAccept;
+    }
+
+    /**
+     * A method that can be used to pull out an access list
+     * from a TCPChannelConfiguration
+     *
+     * @return an object that can provide the access lists
+     */
+    public AccessListKeysFacade accessListKeys() {
+        return new AccessListKeysProvider(this);
+    }
+
+    /**
+     * This class is used to protect consumers of the access list keys from having
+     * visibility of this class, it collects together the methods required by the
+     * common access lists code without that code having to know about this consuming
+     * type.
+     */
+    private class AccessListKeysProvider implements AccessListKeysFacade {
+
+        TCPChannelConfiguration delegate;
+
+        AccessListKeysProvider(TCPChannelConfiguration config) {
+            delegate = config;
+        }
+
+        @Override
+        public String[] getAddressExcludeList() {
+            return delegate.getAddressExcludeList();
+        }
+
+        @Override
+        public String[] getHostNameExcludeList() {
+            return delegate.getHostNameExcludeList();
+        }
+
+        @Override
+        public String[] getAddressIncludeList() {
+            return delegate.getAddressIncludeList();
+        }
+
+        @Override
+        public String[] getHostNameIncludeList() {
+            return delegate.getHostNameIncludeList();
+        }
+
+        @Override
+        public boolean getCaseInsensitiveHostnames() {
+            return delegate.getCaseInsensitiveHostnames();
+        }
+
     }
 
 }

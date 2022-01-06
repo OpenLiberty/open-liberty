@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -23,6 +26,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import mpRestClientFT.retry.RetryClient;
 import mpRestClientFT.retry.RetryTestServlet;
 
 /**
@@ -39,7 +43,8 @@ public class RetryTest extends FATServletClient {
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.2", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.3", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.4", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("2.0", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("2.0", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("3.0", SERVER_NAME));
 
     private static final String appName = "retryApp";
 
@@ -49,12 +54,16 @@ public class RetryTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, appName, SERVER_NAME);
+        WebArchive war = ShrinkHelper.buildDefaultApp(appName, SERVER_NAME);
+        StringAsset mpConfig = new StringAsset(RetryClient.class.getName() + "/mp-rest/uri=http://localhost:"
+                + server.getHttpDefaultPort() + "/retryApp");
+        war.addAsWebInfResource(mpConfig, "classes/META-INF/microprofile-config.properties");
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKW1002W");
+        server.stopServer(true, false, false, "CWWKW1002W");
     }
 }

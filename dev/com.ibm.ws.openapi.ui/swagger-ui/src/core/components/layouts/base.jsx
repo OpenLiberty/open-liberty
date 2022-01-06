@@ -120,7 +120,7 @@ export default class BaseLayout extends React.Component {
                 <Models/>
               </Col>
             </Row>
-            <FooterContainer/>  
+            <FooterContainer/>
           </VersionPragmaFilter>
         </div>
       )

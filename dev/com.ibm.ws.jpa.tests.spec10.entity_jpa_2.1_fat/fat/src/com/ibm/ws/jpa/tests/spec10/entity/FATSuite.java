@@ -20,7 +20,6 @@ import com.ibm.ws.jpa.tests.spec10.entity.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.spec10.entity.tests.Entity_EJB;
 import com.ibm.ws.jpa.tests.spec10.entity.tests.Entity_Web;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -32,6 +31,9 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite extends AbstractFATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES());
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatWithJPA21())
+                    .andWith(new RepeatWithJPA21Hibernate())
+                    .andWith(new RepeatWithJPA21OpenJPA());
 
 }

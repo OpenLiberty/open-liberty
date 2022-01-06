@@ -19,9 +19,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.openliberty.accesslists.AddressAndHostNameAccessLists;
 
 /**
- * Channel handler for {@link AccessLists}: if the remote address for the current context is 
+ * Channel handler for {@link AddressAndHostNameAccessLists}: if the remote address for the current context is 
  * not allowed per the include/exclude lists, then it will be terminated here.
  */
 @Sharable
@@ -30,9 +31,9 @@ public class AccessListHandler extends ChannelInboundHandlerAdapter {
     private static final TraceComponent tc = Tr.register(AccessListHandler.class, TCPMessageConstants.NETTY_TRACE_NAME, 
             TCPMessageConstants.TCP_BUNDLE);
 
-    AccessLists accessLists;
+    AddressAndHostNameAccessLists accessLists;
 
-    public AccessListHandler(AccessLists acl) {
+    public AccessListHandler(AddressAndHostNameAccessLists acl) {
         this.accessLists = acl;
     }
 

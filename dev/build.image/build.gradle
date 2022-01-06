@@ -489,17 +489,13 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     
-    //BETA
+    //GA
     task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile5Features
         outputTo packageDir
         doLast {
-            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
-                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
-            }
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
@@ -654,14 +650,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile4
 
-    //BETA: Includes both kind=ga and kind=beta features.
+    // GA: Includes only kind=ga features.
     task zipOpenLibertyMicroProfile5(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile5
         dependsOn genChecksums
         baseName 'openliberty-microProfile5'
         from packageDir
         destinationDir distsDir
-        version betaVersion
+        version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
             rootProject.storeProps()

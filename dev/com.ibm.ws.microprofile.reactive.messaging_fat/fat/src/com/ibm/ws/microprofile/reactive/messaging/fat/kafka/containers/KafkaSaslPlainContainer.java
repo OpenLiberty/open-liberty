@@ -50,7 +50,7 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
      * @param confluentPlatformVersion
      */
     public KafkaSaslPlainContainer(String confluentPlatformVersion) {
-        super(TestcontainersConfiguration.getInstance().getKafkaImage() + ":" + confluentPlatformVersion);
+        super("confluentinc/cp-kafka:" + confluentPlatformVersion);
 
         network = Network.newNetwork();
 

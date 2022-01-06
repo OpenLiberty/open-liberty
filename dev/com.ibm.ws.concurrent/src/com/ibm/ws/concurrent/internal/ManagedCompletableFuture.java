@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,15 +119,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Execution property that indicates a task should run with any previous transaction suspended.
-     */
-    private static final Map<String, String> XPROPS_SUSPEND_TRAN = new TreeMap<String, String>();
-    static {
-        XPROPS_SUSPEND_TRAN.put("jakarta.enterprise.concurrent.TRANSACTION", "SUSPEND");
-        XPROPS_SUSPEND_TRAN.put("javax.enterprise.concurrent.TRANSACTION", "SUSPEND");
-    }
-
-    /**
      * Privileged action that obtains the Liberty non-deferrable ScheduledExecutorService.
      */
     private static PrivilegedAction<ScheduledExecutorService> getScheduledExecutorAction = () -> {
@@ -161,7 +152,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Reference is null when the action cannot be async.
      * Value is null when an async action has not yet been submitted.
      */
-    private final AtomicReference<Future<?>> futureRef;
+    final AtomicReference<Future<?>> futureRef;
 
     /**
      * Stores a futureRef value to use during construction of a ManagedCompletableFuture.
@@ -461,12 +452,12 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor;
-        if (action instanceof ContextualSupplier) {
+        if (action instanceof ContextualRunnable) {
             ContextualRunnable r = (ContextualRunnable) action;
             contextDescriptor = r.getContextDescriptor();
             action = r.getAction();
         } else if (executor instanceof WSManagedExecutorService) {
-            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
+            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(null);
         } else {
             contextDescriptor = null;
         }
@@ -515,7 +506,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             contextDescriptor = s.getContextDescriptor();
             action = s.getAction();
         } else if (executor instanceof WSManagedExecutorService) {
-            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(XPROPS_SUSPEND_TRAN);
+            contextDescriptor = ((WSManagedExecutorService) executor).captureThreadContext(null);
         } else {
             contextDescriptor = null;
         }
@@ -697,7 +688,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (managedExecutor == null)
             return null;
 
-        return managedExecutor.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        return managedExecutor.captureThreadContext(null);
     }
 
     /**
@@ -1241,7 +1232,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
      */
-    private static final void rejectManagedTask(Object action) {
+    @Trivial
+    static final void rejectManagedTask(Object action) {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
     }
@@ -1410,6 +1402,17 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * Invokes whenComplete on the superclass, bypassing thread context capture and
+     * propagation.
+     */
+    final void super_whenComplete(BiConsumer<? super T, ? super Throwable> action) {
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+        else
+            super.whenComplete(action);
+    }
+
+    /**
      * Convenience method to validate that an executor supports running asynchronously
      * and to wrap the executor, if an ExecutorService, with FutureRefExecutor.
      * This method is named supportsAsync to make failure stacks more meaningful to users.
@@ -1419,7 +1422,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @throws UnsupportedOperation if the executor is incapable of running tasks.
      */
     @Trivial
-    private final static FutureRefExecutor supportsAsync(Executor executor) {
+    final static FutureRefExecutor supportsAsync(Executor executor) {
         if (executor instanceof ExecutorService)
             return new FutureRefExecutor((ExecutorService) executor); // valid
         if (executor instanceof UnusableExecutor)

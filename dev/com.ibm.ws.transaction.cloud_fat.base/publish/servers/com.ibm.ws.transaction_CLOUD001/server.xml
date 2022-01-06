@@ -47,6 +47,7 @@
     </dataSource>
     
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}derby2/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>

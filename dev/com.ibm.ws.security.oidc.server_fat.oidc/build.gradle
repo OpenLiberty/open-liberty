@@ -51,7 +51,7 @@ dependencies {
                'org.apache.httpcomponents:httpmime:4.5.12',
                'org.brotli:dec:0.1.2',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0',
+               project(':io.openliberty.org.apache.xercesImpl'),
                'xml-apis:xml-apis:1.4.01'
 }
 

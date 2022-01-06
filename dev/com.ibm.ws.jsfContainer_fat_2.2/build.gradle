@@ -21,7 +21,7 @@ dependencies {
     'net.sourceforge.htmlunit:webdriver:2.6',
     'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
     'org.brotli:dec:0.1.2',
-    'xerces:xercesImpl:2.11.0',
+    project(':io.openliberty.org.apache.xercesImpl'),
     'xalan:xalan:2.7.2',
     project(':com.ibm.ws.org.apache.commons.io'),
     'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',

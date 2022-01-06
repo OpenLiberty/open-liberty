@@ -25,6 +25,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
+
+# The tcp/udp internal packages are needed by OSGi for *ChannelFactory::active
 Export-Package: com.ibm.websphere.channelfw*;-split-package:=merge-last; provide:=true, \
 	com.ibm.wsspi.channelfw*;provide:=true, \
 	com.ibm.wsspi.connmgmt;provide:=true, \
@@ -46,7 +48,7 @@ Private-Package: com.ibm.io.async, \
 	com.ibm.ws.tcpchannel.internal.resources, \
 	com.ibm.ws.udpchannel.internal, \
 	com.ibm.ws.udpchannel.internal.resources
-	
+
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
@@ -86,7 +88,8 @@ instrument.disabled: true
 	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.wsbytebuffer, \
-	io.openliberty.endpoint
+	io.openliberty.endpoint, \
+	io.openliberty.accesslists.internal
 
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties

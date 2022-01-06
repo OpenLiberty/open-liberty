@@ -1,4 +1,8 @@
-FROM ibmcom/db2:11.5.5.1
+FROM ibmcom/db2:11.5.7.0
+
+#Contains vulnerable log4j library for features not needed for SSL
+RUN rm -rf /opt/ibm/db2/V11.5/federation
+RUN rm -rf /opt/ibm/db2/V11.5/db2tss
 
 # Copy custom startup script that will run when server starts
 COPY custom/ /var/custom/
@@ -21,4 +25,5 @@ ENV ARCHIVE_LOGS=false
 
 # Expose new port
 EXPOSE 50001
-# Currently tagged in DockerHub as: kyleaure/db2-ssl:2.0
+
+# Currently tagged in DockerHub as: kyleaure/db2-ssl:3.0

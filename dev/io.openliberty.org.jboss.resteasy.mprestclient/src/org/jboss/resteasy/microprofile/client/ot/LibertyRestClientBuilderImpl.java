@@ -39,7 +39,6 @@ import org.jboss.resteasy.microprofile.client.DefaultMediaTypeFilter;
 import org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper;
 import org.jboss.resteasy.microprofile.client.ExceptionMapping;
 import org.jboss.resteasy.microprofile.client.MethodInjectionFilter;
-import org.jboss.resteasy.microprofile.client.ProxyInvocationHandler;
 import org.jboss.resteasy.microprofile.client.RestClientBuilderImpl;
 import org.jboss.resteasy.microprofile.client.RestClientListeners;
 import org.jboss.resteasy.microprofile.client.RestClientProxy;
@@ -53,11 +52,18 @@ import org.jboss.resteasy.microprofile.client.publisher.MpPublisherMessageBodyRe
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ResteasyUriBuilder;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 import io.openliberty.microprofile.rest.client30.internal.OsgiServices;
 import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.BeanParam;
@@ -85,8 +91,12 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -98,6 +108,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_HOST;
 import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_PORT;
@@ -116,10 +127,28 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
     public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
+    private static final Class<?> FT_ANNO_CLASS = getFTAnnotationClass();
+
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
     public static void setProviderFactory(ResteasyProviderFactory providerFactory) {
         PROVIDER_FACTORY = providerFactory;
+    }
+
+    @FFDCIgnore(PrivilegedActionException.class)
+    private static Class<?> getFTAnnotationClass() {
+        try {
+            return AccessController.doPrivileged(
+                (PrivilegedExceptionAction<Class<?>>) () -> {
+                    return Class.forName("com.ibm.ws.microprofile.faulttolerance.cdi.FaultTolerance");
+            });
+        } catch (PrivilegedActionException pae) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Exception checking for MP Fault Tolerance class - " +
+                             "expected if FT feature isnot enabled", pae);
+            }
+            return null;
+        }
     }
 
     public LibertyRestClientBuilderImpl() {
@@ -132,9 +161,10 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             }
             builderDelegate.providerFactory(localProviderFactory);
         }
-        if (getBeanManager() != null) {
+        BeanManager beanManager = getBeanManager();
+        if (beanManager != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory(getBeanManager()));
+                    .setInjectorFactory(new CdiInjectorFactory(beanManager));
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 
@@ -379,8 +409,9 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         interfaces[2] = Closeable.class;
 
         final BeanManager beanManager = getBeanManager();
+        Map<Method, List<InterceptorInvoker>> interceptorInvokers = initInterceptorInvokers(beanManager, aClass);
         T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
-                new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
+                new LibertyProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager, interceptorInvokers));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
         return proxy;
     }
@@ -784,6 +815,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     ResteasyClientBuilder getBuilderDelegate() {
         return builderDelegate;
     }
+
     private static BeanManager getBeanManager() {
         try {
             CDI<Object> current = CDI.current();
@@ -805,6 +837,106 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             return clazz.getClassLoader();
         }
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) clazz::getClassLoader);
+    }
+
+    private static Map<Method, List<InterceptorInvoker>> initInterceptorInvokers(BeanManager beanManager,
+                                                                                 Class<?> restClient) {
+
+        Map<Method, List<InterceptorInvoker>> invokers = new HashMap<>();
+        if (beanManager != null) {
+            CreationalContext<?> creationalContext = beanManager != null ? beanManager.createCreationalContext(null) : null;
+
+            // Interceptor as a key in a map is not entirely correct (custom interceptors) but should work in most cases
+            Map<Interceptor<?>, Object> interceptorInstances = new HashMap<>();
+
+            AnnotatedType<?> restClientType = beanManager.createAnnotatedType(restClient);
+
+            List<Annotation> classBindings = getBindings(restClientType.getAnnotations(), beanManager);
+
+            for (AnnotatedMethod<?> method : restClientType.getMethods()) {
+                Method javaMethod = method.getJavaMember();
+                if (javaMethod.isDefault() || method.isStatic()) {
+                    continue;
+                }
+                List<Annotation> methodBindings = getBindings(method.getAnnotations(), beanManager);
+
+                if (!classBindings.isEmpty() || !methodBindings.isEmpty()) {
+                    if (FT_ANNO_CLASS != null && containsFTannotation(methodBindings)) {
+                        methodBindings.add(getFTAnnotation());
+                    }
+                    Annotation[] mpFTInterceptorBindings = mergeToFTAnnos(methodBindings, classBindings);
+
+                    List<Interceptor<?>> mpFTInterceptors = mpFTInterceptorBindings.length == 0 ? Collections.emptyList() :
+                                    new ArrayList<>(beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, 
+                                                                                    mpFTInterceptorBindings));
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Resolved interceptors from beanManager, " + beanManager + ":" + mpFTInterceptors);
+                    }
+
+                    if (!mpFTInterceptors.isEmpty()) {
+                        List<InterceptorInvoker> chain = new ArrayList<>();
+                        for (Interceptor<?> interceptor : mpFTInterceptors) {
+                            chain.add(new InterceptorInvoker(
+                                          interceptor, 
+                                          interceptorInstances.computeIfAbsent(interceptor, 
+                                                                               i -> beanManager.getReference(i, 
+                                                                                                             i.getBeanClass(), 
+                                                                                                             creationalContext))));
+                        }
+                        invokers.put(javaMethod, chain);
+                    }
+                }
+            }
+        }
+        return invokers;
+    }
+
+    private static boolean containsFTannotation(List<Annotation> interceptorBindings) {
+        for (Annotation anno : interceptorBindings) {
+            if (isMPFTAnnotation(anno)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isMPFTAnnotation(Annotation anno) {
+        String className = anno.annotationType().getName();
+        return className.startsWith("org.eclipse.microprofile.faulttolerance")
+            || className.equals("com.ibm.ws.microprofile.faulttolerance.cdi.FaultTolerance");
+    }
+
+    private static Annotation getFTAnnotation() {
+        return new Annotation() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return (Class<? extends Annotation>) FT_ANNO_CLASS;
+            }};
+    }
+
+    private static List<Annotation> getBindings(Set<Annotation> annotations, BeanManager beanManager) {
+        List<Annotation> bindings = new ArrayList<>();
+        for (Annotation annotation : annotations) {
+            if (beanManager.isInterceptorBinding(annotation.annotationType())) {
+                bindings.add(annotation);
+            }
+        }
+        return bindings;
+    }
+
+    private static Annotation[] mergeToFTAnnos(List<Annotation> methodBindings, List<Annotation> classBindings) {
+        Set<Class<? extends Annotation>> types = methodBindings.stream()
+                                                               .map(a -> a.annotationType())
+                                                               .collect(Collectors.toSet());
+        List<Annotation> merged = new ArrayList<>(methodBindings);
+        for (Annotation annotation : classBindings) {
+            if (!types.contains(annotation.annotationType())) {
+                merged.add(annotation);
+            }
+        }
+        return merged.stream().filter(LibertyRestClientBuilderImpl::isMPFTAnnotation).collect(Collectors.toList()).toArray(new Annotation[] {});
     }
 
     private final MpClientBuilderImpl builderDelegate;

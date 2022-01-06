@@ -8,9 +8,10 @@ IBM-ShortName: messagingClient-3.0
 WLP-AlsoKnownAs: wasJmsClient-3.0
 Subsystem-Name: Messaging Server 3.0 Client
 -features=com.ibm.websphere.appserver.channelfw-1.0, \
-  io.openliberty.messaging-3.0.internal, \
-  com.ibm.websphere.appserver.eeCompatible-9.0, \
-  com.ibm.websphere.appserver.transaction-2.0
+  io.openliberty.messaging.internal-3.0; ibm.tolerates:="3.1", \
+  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
+  com.ibm.websphere.appserver.transaction-2.0, \
+  io.openliberty.jakarta.messaging-3.0; ibm.tolerates:="3.1"
 -bundles=com.ibm.ws.messaging.common, \
  com.ibm.ws.resource, \
  com.ibm.ws.messaging.utils, \

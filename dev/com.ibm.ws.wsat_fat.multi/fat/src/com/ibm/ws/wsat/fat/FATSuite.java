@@ -15,12 +15,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import com.ibm.ws.wsat.fat.tests.MultiServerTest;
+
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-
-import com.ibm.ws.wsat.fat.tests.MultiServerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -30,8 +29,8 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()
-                            .removeFeature("jaxws-2.2").alwaysAddFeature("jaxws-2.3").withID("jaxws-2.3"))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3")); 
+            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()
+                    .removeFeature("jaxws-2.2").alwaysAddFeature("jaxws-2.3").withID("jaxws-2.3"))
+            .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3")); 
 }

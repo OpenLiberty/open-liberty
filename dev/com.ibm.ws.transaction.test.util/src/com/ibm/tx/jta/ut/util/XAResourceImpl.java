@@ -172,6 +172,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int COMMITTED_ONE_PHASE = 256;
 
     protected static String STATE_FILE = "XAResourceData.dat";
+    public static final String DUMP_STATE = "Dump State: ";
 
     // This variable may be set to true to allow more chatty output.
     protected static boolean DEBUG_OUTPUT = true;
@@ -269,7 +270,6 @@ public class XAResourceImpl implements XAResource, Serializable {
         private boolean busyInLongRunningQuery;
         private boolean queryAborted;
         private boolean commitSuicide = true;
-        private final String stateFile;
 
         URL doomedServer;
 
@@ -342,7 +342,6 @@ public class XAResourceImpl implements XAResource, Serializable {
         public XAResourceData(int i) {
             key = i;
             RM = UUID.randomUUID();
-            stateFile = STATE_FILE;
         }
 
         public int getCommitAction() {
@@ -1437,7 +1436,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         // Defect 168553 - this string needs to be written in order for the
         // test infrastructure to see that the
         // server has been halted.
-        System.out.println("Dump State: " + _resources.values().size());
+        System.out.println(DUMP_STATE + _resources.values().size());
     }
 
     public synchronized static int loadState() {

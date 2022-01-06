@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,16 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,15 +28,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
+import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
 
@@ -58,7 +69,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
         MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
         MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
-    
+
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
@@ -117,5 +128,29 @@ public class ApplicationProcessorTest extends FATServletClient {
         JsonNode titleNode = infoNode.get("title");
         assertNotNull(titleNode);
         assertEquals(titleNode.asText(), "Title from JAX-RS app + title from filter");
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testScanDisabled() throws Exception {
+        PropertiesAsset config = new PropertiesAsset()
+            .addProperty("mp.openapi.scan.disable", "true");
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testScanDisabled.war")
+            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+            .addAsResource(config, "META-INF/microprofile-config.properties");
+
+        server.setTraceMarkToEndOfDefaultTrace();
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+
+        // Scanning disabled, expect no paths
+        OpenAPITestUtil.checkPaths(openapiNode, 0);
+
+        // Assert that we didn't go near the scanning code
+        assertThat(server.findStringsInLogsUsingMark("openapi20.utils.IndexUtils", server.getDefaultTraceFile()),
+            is(empty()));
     }
 }

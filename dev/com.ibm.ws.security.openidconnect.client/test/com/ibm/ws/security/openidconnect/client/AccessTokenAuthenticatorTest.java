@@ -120,12 +120,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private static final String SUPPORTED = "supported";
     private static final String REQUIRED = "required";
 
-    private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator() {
-        @Override
-        boolean isRunningBetaMode() {
-            return true;
-        }
-    };
+    private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator();
     private final AccessTokenAuthenticator sslTokenAuth = new FakeAccessTokenAuthenticator(sslSupport);
     private final ReferrerURLCookieHandler referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecConfig);
     private final Map<String, Object> respMap = new HashMap<String, Object>();

@@ -56,10 +56,6 @@ JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Opzioni WSLoginModuleProxy nu
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=L'autenticazione non \u00e8 riuscita perch\u00e9 l'elemento opzioni WSLoginModuleProxy \u00e8 null o vuoto.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Verificare che la configurazione di WSLoginModuleProxy includa l'elemento opzioni.
 
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: L'opzione delegate di WSLoginModuleProxy non \u00e8 impostata.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=L'autenticazione non \u00e8 riuscita perch\u00e9 jaasLoginModule con id WSLoginModuleProxy non dispone dell'attributo delegate nell'elemento opzioni.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verificare che il jaasLoginModule con id WSLoginModuleProxy includa l'attributo delegate sull'elemento opzioni.
-
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy non \u00e8 supportato in jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=WSLoginModuleProxy non \u00e8 supportato in jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Rimuovere la voce proxy dall'attributo loginModuleRef di jaasLoginContextEntry system.DEFAULT.

@@ -21,6 +21,6 @@ Export-Package: \
   org.eclipse.microprofile.metrics.annotation;version=4.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;4.0.0.RC4;EXACT}
+  @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;4.0.0;EXACT}
 
 WS-TraceGroup: METRICS

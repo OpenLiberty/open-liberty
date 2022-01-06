@@ -20,6 +20,8 @@ src: \
     test-applications/olgh17373/src,\
     test-applications/olgh17376/src,\
     test-applications/olgh17407/src,\
+    test-applications/olgh19185/src,\
+    test-applications/olgh19342/src,\
     test-applications/svlquery/src,\
     test-applications/helpers/DatabaseManagement/src
 
@@ -41,15 +43,12 @@ instrument.disabled: true
     com.ibm.ws.jpa_testframework;version=latest,\
     fattest.simplicity;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-    com.ibm.websphere.javaee.jms.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.persistence.2.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-    com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3
+    org.jboss.shrinkwrap:shrinkwrap-api;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=latest

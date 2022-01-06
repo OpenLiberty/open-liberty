@@ -12,10 +12,20 @@ package componenttest.topology.database.container;
 
 import java.lang.reflect.Constructor;
 
+import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_microsoft_sqlserver;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_postgresql;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
@@ -23,37 +33,36 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", "org.testcontainers.containers.Db2Container", "Properties_db2_jcc"),
-    Derby("derby.jar", "componenttest.topology.database.container.DerbyNoopContainer", "Properties_derby_embedded"),
-    DerbyClient("derbyclient.jar", "componenttest.topology.database.container.DerbyClientContainer", "Properties_derby_client"),
-    Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.OracleContainer", "Properties_oracle"),
-    Postgres("postgresql.jar", "componenttest.topology.database.container.PostgreSQLContainer", "Properties_postgresql"),
-    SQLServer("mssql-jdbc.jar", "org.testcontainers.containers.MSSQLServerContainer", "Properties_microsoft_sqlserver");
+    DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, DockerImageName.parse("ibmcom/db2:11.5.7.0")),
+    Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
+    DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
+    Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
+           DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe")),
+    Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
+             DockerImageName.parse("postgres:14.1-alpine")),
+    SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
+              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04"));
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
+    private final DockerImageName imageName;
 
     @SuppressWarnings("unchecked")
-    DatabaseContainerType(final String driverName, final String containerClassName, final String dataSourcePropertiesClassName) {
+    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass, final DockerImageName imageName) {
         this.driverName = driverName;
 
         //Use reflection to get classes at runtime.
-        Class containerClass = null, dsPropsClass = null;
+        Class containerClass = null;
         try {
             containerClass = Class.forName(containerClassName);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name(), e);
         }
 
-        try {
-            dsPropsClass = Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name(), e);
-        }
-
         this.containerClass = containerClass;
         this.dsPropsClass = dsPropsClass;
+        this.imageName = imageName;
     }
 
     /**
@@ -83,6 +92,15 @@ public enum DatabaseContainerType {
      */
     public Class getContainerClass() {
         return containerClass;
+    }
+
+    /**
+     * Returns the default image name for this testcontainer type.
+     *
+     * @return String - Image Name
+     */
+    public DockerImageName getImageName() {
+        return imageName;
     }
 
     /**
