@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
@@ -87,5 +89,12 @@ public class OracleTraceTest extends FATServletClient {
         int sslPasswords = server.findStringsInTrace(Pattern.quote(SSL_PASSWORD)).size();
         if (sslPasswords > 0)
             fail("SSL passwords logged in trace " + sslPasswords + " times. SSL Password: " + SSL_PASSWORD);
+    }
+
+    @Test
+    public void testReadOnlyInfo() throws Exception {
+        runTest(server, JEE_APP + "/" + SERVLET_NAME, getTestMethodSimpleName());
+        List<String> occurrences = server.findStringsInLogs("DSRA8207I");
+        assertEquals("The DSRA8207I message should have only been logged exactly once", 1, occurrences.size());
     }
 }
