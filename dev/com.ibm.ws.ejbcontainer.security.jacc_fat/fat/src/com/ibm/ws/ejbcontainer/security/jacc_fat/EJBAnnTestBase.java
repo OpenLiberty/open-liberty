@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2022  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,8 @@ public class EJBAnnTestBase {
                 server.stopServer("SRVE9967W", // Quite a few
                                   "CWWKS9112W", // PureAnnServletToEJBRunAsTest, EJBJarMixM07ExtTest, EJBJarMixM08ExtTest, EJBJarMixM09ExtTest
                                   "CWWKS9405E", // EJBJarMixM07ExtTest, EJBJarMixM08ExtTest, EJBJarMixM09ExtTest
-                                  "CNTR0338W" // Quite a few - Ambiguous EJB Binding
+                                  "CNTR0338W", // Quite a few - Ambiguous EJB Binding
+                                  "CWWKG0027W" // Occasional CWWKG0027W: Timeout while updating server configuration.
                 );
             } finally {
                 JACCFatUtils.uninstallJaccUserFeature(server);
