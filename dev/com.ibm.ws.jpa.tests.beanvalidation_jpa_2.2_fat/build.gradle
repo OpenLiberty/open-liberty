@@ -48,13 +48,13 @@ task addJPAFATTools (type: Copy) {
 task addhibernateJPA22(type: Copy) {
   shouldRunAfter jar
   from configurations.hibernateJPA22
-  into new File(autoFvtDir, 'publish/shared/resources/jpa22_hibernate')
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_beanvalidation_fat_jpa22_hibernate')
 }
 
 task addOpenJPA_JPA22(type: Copy) {
   shouldRunAfter jar
   from configurations.openjpaJPA22
-  into new File(autoFvtDir, 'publish/shared/resources/jpa22_openjpa')
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_beanvalidation_fat_jpa22_openjpa')
 }
 
 task copyFAT {
