@@ -18,11 +18,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
@@ -80,7 +82,7 @@ public class TimestampUtils {
                         }
                         TimestampUtils.internalStartTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
                     }
-                }, null);
+                }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE + 1)));
             }
         }
     }
